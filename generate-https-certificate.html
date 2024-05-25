@@ -243,7 +243,8 @@
               cert.setExtensions([
                     {
                           name                : 'basicConstraints',
-                          cA                  : config.ca
+                          cA                  : config.ca,
+                          pathLenConstraint   : config.pathlen,
                     },
                     {
                           name                : 'keyUsage',
@@ -302,6 +303,7 @@
                     var config      = {};
                     
                     config.ca       = false;
+                    config.pathlen  = 0;  
                 
                     config.from     = today;
                     config.to       = one_year;
