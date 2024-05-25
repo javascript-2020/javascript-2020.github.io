@@ -239,8 +239,7 @@
 
               cert.setSubject(attrs);
               cert.setIssuer(attrs);
-      
-              cert.setExtensions([
+              var ext=[
                     {
                           name                : 'basicConstraints',
                           cA                  : config.ca,
@@ -279,8 +278,11 @@
                     {
                           name                : 'subjectKeyIdentifier'
                     }
-              ]);
-              
+              ]
+              if(config.ca){
+                  ext[0].pathLenConstraint  = config.pathlen;
+              }
+              cert.setExtensions(ext);
               cert.sign(keys.privateKey);
               
               var key           = pki.privateKeyToPem(keys.privateKey);
