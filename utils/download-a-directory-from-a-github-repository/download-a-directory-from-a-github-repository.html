@@ -211,15 +211,11 @@ import jszip from 'https://cdn.jsdelivr.net/npm/jszip/+esm';
               
               zip.generateAsync({type:'blob'}).then(blob=>{
               
-                    output.style.display    = 'block';
-                    output.append('** stackoverflow downloads disabled **\n');
-                    
                     var url         = window.URL.createObjectURL(blob);
                     var a           = document.createElement('a');
                     a.href          = url;
                     a.download      = file;
-                    a.textContent   = file+' ( right-click, save link as )';
-                    output.append(a,'\n');
+                    a.click();
                     
               });
               
