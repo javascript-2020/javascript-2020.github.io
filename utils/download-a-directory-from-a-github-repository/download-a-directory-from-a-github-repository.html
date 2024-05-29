@@ -27,8 +27,12 @@ body {
           font-size               : 16px;
           padding                 : 5px 10px;
     }
-    
-    
+      code {
+            whitespace:pre;
+            background:rgba(246,246,246,1);
+            padding:20px 10px;
+      }
+      
 /*
   page-hdr
 */
@@ -72,7 +76,7 @@ home
                     </div>
                 </div>
                 <h3 style="color: blue; font-weight: bold;" id="title">
-generate https certificate
+download a directory from a github repository
                     <span style="float: right; color: black; font-size: 16px; font-weight: normal;">
 28 &#x2F; 05 &#x2F; 2024
                     </span>
@@ -223,5 +227,89 @@ import jszip from 'https://cdn.jsdelivr.net/npm/jszip/+esm';
               
         }//download
         </script>
+        <div>
+        </div>
+        <div style="margin-top: 50px;">
+browser code
+        </div>
+        <code id="browser" style="white-space: pre; margin-top: 20px;">
+&lt;script type=module&gt;
+
+        import jszip from &#39;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;jszip&#x2F;+esm&#39;;
+        var zip     = new jszip();
+
+        var owner   = &#39;javascript-2020&#39;;
+        var repo    = &#39;javascript-2020.github.io&#39;;
+        var branch  = &#39;main&#39;;
+        var path    = &#39;code-projects&#39;;
+        
+        if(path.slice(-1)!=&#39;&#x2F;&#39;)path+=&#39;&#x2F;&#39;;
+        var file    = `${path.split(&#39;&#x2F;&#39;).filter(Boolean).at(-1)||repo}.zip`;
+
+        var url     = `https:&#x2F;&#x2F;api.github.com&#x2F;repos&#x2F;${owner}&#x2F;${repo}&#x2F;git&#x2F;trees&#x2F;${branch}?recursive=true`;
+        var json    = await fetch(url).then(res=&gt;res.json());
+        
+        await Promise.all(json.tree.map(async item=&gt;{
+        
+              if(!item.path.startsWith(path))return;
+              
+              var fn    = item.path.slice(path.length);
+              if(item.type==&#39;tree&#39;){
+                    zip.folder(fn);
+              }else{
+                    var res     = await fetch(item.url);
+                    var blob    = await res.blob();
+                    zip.file(fn,blob);
+              }
+              
+        }));
+
+        zip.generateAsync({type:&#39;blob&#39;}).then(blob=&gt;{
+        
+              var url       = window.URL.createObjectURL(blob);
+              var a         = document.createElement(&#39;a&#39;);
+              a.href        = url;
+              a.download    = file;
+              a.click();
+              
+        });
+
+&lt;&#x2F;script&gt;
+        </code>
+        <div style="margin-top: 30px;">
+node.js code
+        </div>
+        <code id="node-js" style="white-space: pre; margin-top: 20px;">
+&#x2F;&#x2F;download-repo-dir.mjs
+
+    import fs from &#39;fs&#39;;
+
+    var owner   = &#39;javascript-2020&#39;;
+    var repo    = &#39;javascript-2020.github.io&#39;;
+    var branch  = &#39;main&#39;;
+    var path    = &#39;code-projects&#39;;
+
+    if(path.slice(-1)!=&#39;&#x2F;&#39;)path+=&#39;&#x2F;&#39;;
+    var file    = `${path.split(&#39;&#x2F;&#39;).filter(Boolean).at(-1)||repo}&#x2F;`;
+    fs.mkdirSync(file);
+
+    var url     = `https:&#x2F;&#x2F;api.github.com&#x2F;repos&#x2F;${owner}&#x2F;${repo}&#x2F;git&#x2F;trees&#x2F;${branch}?recursive=true`;
+    var json    = await fetch(url).then(res=&gt;res.json());
+
+    await Promise.all(json.tree.map(async item=&gt;{
+
+          if(!item.path.startsWith(path))return;
+
+          var fn    = item.path.slice(path.length);
+          if(item.type==&#39;tree&#39;){
+                fs.mkdirSync(file+fn);
+          }else{
+                var res     = await fetch(item.url);
+                var txt     = await res.text();
+                fs.writeFileSync(file+fn,txt);
+          }
+
+    }));
+        </code>
     </body>
 </html>
