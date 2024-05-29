@@ -277,22 +277,18 @@ browser code
               if(item.type==&#39;tree&#39;){
                     zip.folder(fn);
               }else{
-                    var res     = await fetch(item.url);
-                    var blob    = await res.blob();
+                    var blob    = await fetch(item.url).then(res=&gt;res.blob());
                     zip.file(fn,blob);
               }
               
         }));
 
-        zip.generateAsync({type:&#39;blob&#39;}).then(blob=&gt;{
-        
-              var url       = window.URL.createObjectURL(blob);
-              var a         = document.createElement(&#39;a&#39;);
-              a.href        = url;
-              a.download    = file;
-              a.click();
-              
-        });
+        var blob      = await zip.generateAsync({type:&#39;blob&#39;});
+        var url       = window.URL.createObjectURL(blob);
+        var a         = document.createElement(&#39;a&#39;);
+        a.href        = url;
+        a.download    = file;
+        a.click();
 
 &lt;&#x2F;script&gt;
         </code>
