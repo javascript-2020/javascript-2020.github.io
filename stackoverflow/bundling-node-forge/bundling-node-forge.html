@@ -1,0 +1,158 @@
+<h3>bundling node-forge</h3>
+<div>work in progress</div>
+<div>please find me in </div>
+<div><a href='https://chat.stackoverflow.com/rooms/17/javascript'>stackoverflow javascript chat</a></div>
+<div>for more discussion</div>
+
+<br>
+<br>
+<br>
+
+for some reason, unknown to me at the time of writing, we cant just import the node-forge library into node.js like this
+
+
+    //nodeforge.mjs
+    
+          import nodeForge from 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
+    
+          //  ...
+          
+
+and then run with
+
+
+    node --experimental-network-imports ./nodeforge.mjs
+
+result
+
+    ReferenceError: window is not defined
+        at https://cdn.jsdelivr.net/npm/node-forge/+esm:7:27570
+
+disclaimer here : i am busy working on other things, so my approach is somewhat naïve, anyone more familiar with webpack that can help to further this process would be greatly appreciated, please leave comments or find me in the [stackoverflow javascript chat room][5] and i'll update this procedure
+
+ok, so just directly importing from the cdn in node.js didnt, i attempted to use webpack to create a module bundle that could be hosted on github and imported from there, ( i did the following in docker )
+
+
+    npm install node-forge webpack webpack-cli
+
+<br>
+
+    //index.mjs
+    
+            import nodeforge from 'node-forge';
+            export default nodeforge;
+<br>
+
+    //webpack.config.js
+    
+            module.exports = {
+              entry: './index.mjs',
+              target: 'node',
+              mode:'production',
+              experiments: {
+                outputModule: true,
+            } ,  
+              output: {
+                path: __dirname+'',
+                filename: 'bundle.mjs',
+                chunkFormat: 'module',
+                library: {
+                  type: 'module',
+                },
+              }
+            };
+<br>
+
+    npx webpack
+
+<br>
+and it works locally
+
+    //test.mjs
+    
+            import nodeforge from './bundle.mjs';
+    
+            console.log(nodeforge.pki.createCertificate);  
+
+<br>
+
+
+    node ./test.mjs
+
+    //  [Function (anonymous)]
+
+
+but not from a url import
+
+    //test.mjs
+    
+          import nodeForge from 'https://raw.githubusercontent.com/javascript-2020/npm/main/bundle.mjs';
+    
+          console.log(nodeForge);
+<br>
+
+    node --experimental-network-imports ./test.mjs
+
+    //  RangeError [ERR_UNKNOWN_MODULE_FORMAT]: Unknown module format: null for URL https://raw.githubusercontent.com/javascript-2020/npm/main/bundle.js
+
+i must have built the module wrong from webpack
+
+so now i do
+
+    //index.js
+    
+            var nodeforge     = require('node-forge');
+            modules.exports   = nodeforge;
+<br>
+
+    //webpack.config.js
+    
+            module.exports = {
+              entry: './index.js',
+              target: 'node',
+              mode:'production',  
+              output: {
+                path: __dirname+'',
+                filename: 'bundle.js',
+                library: {
+                  name: 'nodeforge',
+                  type: 'umd',
+                },
+              }
+            };
+<br>
+
+    npx webpack
+
+and it works locally
+
+    //test.js
+    
+            var nodeforge=require('./bundle.js');
+    
+            console.log(nodeforge.pki.createCertificate);
+<br>
+
+    node test.js
+    
+    //  [Function (anonymous)]
+
+and to get it into node.js i use
+
+    //test.js
+    
+    (async()=>{
+    
+          var nodeforge=await fetch('https://raw.githubusercontent.com/javascript-2020/npm/main/bundle.js')
+                  .then(res=>res.text().then(txt=>new Promise(res=>{eval(txt);res(module.exports)})));
+                  
+          console.log(nodeforge.pki.createCertificate);
+      
+    })();
+
+<br>
+
+    node test.js
+    
+    // [Function (anonymous)]
+
