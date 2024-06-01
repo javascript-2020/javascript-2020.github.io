@@ -153,7 +153,7 @@ but not from a url import
     
     //test.mjs
     
-          import nodeForge from 'https://raw.githubusercontent.com/javascript-2020/npm/main/bundle.mjs';
+          import nodeForge from 'https://raw.githubusercontent.com/javascript-2020/npm/main/node-forge/node-forge-nodejs-import.mjs';
     
           console.log(nodeForge);
     
@@ -165,7 +165,7 @@ but not from a url import
     
     node --experimental-network-imports ./test.mjs
 
-    //  RangeError [ERR_UNKNOWN_MODULE_FORMAT]: Unknown module format: null for URL https://raw.githubusercontent.com/javascript-2020/npm/main/bundle.js
+    //  RangeError [ERR_UNKNOWN_MODULE_FORMAT]: Unknown module format: null for URL https://raw.githubusercontent.com/javascript-2020/npm/...
 
 </code>
 
@@ -249,7 +249,7 @@ and to get it into node.js i use
     
     (async()=>{
     
-          var nodeforge=await fetch('https://raw.githubusercontent.com/javascript-2020/npm/main/bundle.js')
+          var nodeforge=await fetch('https://raw.githubusercontent.com/javascript-2020/npm/main/node-forge/node-forge-nodejs-eval.js')
                   .then(res=>res.text().then(txt=>new Promise(res=>{eval(txt);res(module.exports)})));
                   
           console.log(nodeforge.pki.createCertificate);
@@ -268,7 +268,9 @@ and to get it into node.js i use
 
 </code>
 
-
+<div>
+    if anyone can shed any light onto how to bundle pacakages with webpack, rollup etc for url imports any help would be greatly appreciated
+</div>
 
 
 
