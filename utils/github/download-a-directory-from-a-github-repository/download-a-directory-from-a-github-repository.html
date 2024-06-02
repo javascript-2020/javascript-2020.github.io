@@ -114,7 +114,6 @@
             grid-template-columns       : auto 1fr;
             gap                         : 10px;
             align-items                 : center;
-            margin                      : 5px;
       }
       
       input {
@@ -148,25 +147,26 @@ var JSZip;
 
 window.addEventListener('load',function(){
 
-        var $           = sel=>document.querySelector(`.${sel}`);
+        var $           = sel=>document.querySelector(sel);
         $.all           = sel=>[...document.querySelectorAll(sel)];
+        
         var params      = new URLSearchParams(window.location.search);
         var values      = {};
         
         if(values.owner    = params.get('owner')){
-              $('owner').value   = values.owner;
+              $('.owner').value   = values.owner;
         }
         
         if(values.repo   = params.get('repo')){
-              $('repo').value    = values.repo;
+              $('.repo').value    = values.repo;
         }
         
         if(values.branch   = params.get('branch')){
-              $('branch').value    = values.branch;
+              $('.branch').value    = values.branch;
         }
         
         if(values.path   = params.get('path')){
-              $('path').value    = values.path;
+              $('.path').value    = values.path;
         }
         
         
@@ -196,11 +196,66 @@ window.addEventListener('load',function(){
               
         });
         
+        
+        $('[value=parse]').onclick   = e=>{
+        
+              var url               = $('#url').value;
+              url                   = parse(url);
+              
+              $('.owner').value     = url.owner;
+              $('.repo').value      = url.repo;
+              $('.branch').value    = url.branch;
+              $('.path').value      = url.path;
+              
+        };
+        
+        
+        
+        
 });//onload
 
 
+//https://github.com/javascript-2020/libs/tree/main/github
 
-
+        function parse(url){
+        
+              var owner       = find(3);
+              var repo        = find(4);
+              var branch      = find(6);
+              var path        = find(7,true);
+              
+              var i           = path.lastIndexOf('/');
+              var filename    = path.slice(i+1);
+              
+              var i           = path.lastIndexOf('.');
+              var ext         = path.slice(i+1);
+              
+              return {owner,repo,branch,path,filename,ext};
+              
+              
+              function find(n,end){
+              
+                    var i1   = 0;
+                    for(var i=0;i<n;i++){
+                    
+                          i1   = url.indexOf('/',i1)+1;
+                          
+                    }//for
+                    
+                    if(end){
+                          var s   = url.slice(i1);
+                          return s;
+                    }
+                    
+                    var i2    = url.indexOf('/',i1);
+                    var s     = url.slice(i1,i2);
+                    return s;
+                    
+              }//find
+              
+        }//parse
+        
+        
         async function download(){
         
               var $         = sel=>document.querySelector(`.${sel}`).value;
@@ -271,6 +326,24 @@ npm
         </div>
         <div id="scroll">
             <div id="center" style="">
+                <div id="parse" style="margin-bottom: 40px;">
+                    <div style="margin-bottom: 10px;">
+parse url
+                        <span style="margin-left: 20px;">
+ex :
+                        </span>
+                        <span style="margin-left: 10px;">
+https:&#x2F;&#x2F;github.com&#x2F;${owner}&#x2F;${repo}&#x2F;tree&#x2F;${branch}&#x2F;${path}
+                        </span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <img id="url-paste" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAYxJREFUOE/NlLFKw1AUhs9thDSSNhYEC1LIdWj2bl07OPcJxMUXMFsHjUsXrdBdB3HwARxLwIIQXJxcUooHbCOEutRKh9AYucXGtknTGhw8Y3Lud89//stP4I+LRPEopdb3/31EbKxydyhQluVjQoiaTCZTPM9Dv98Hz/M0nufPTdMcRIF9oKIoKcdx3ifNHMeBJEkgiiJYlgWu605zsohoh4F9IJsqs+5pp+UeHNxsgSAIQMiPgOFwCGflHjTbAtw+ia+IuL0UmE1/asbhyxgYVuyyq4c01JuZ3wGjdlS/2/hnQNcDePvg/KEvDQkuDMkejUYF9rHT6TBzfMdmTJnscFry3nUW7p+FqC00EHF30rAUuHNCoVqtQrFYDEANw4BKpQKI6HNWBtZqtQBQVdX4QNM0A0BFUeIDmbT5YquILXmRK7GBsSZcSxBtU5wJAbAH3NjlfD4fGLLVai2WzLpZQMyfIoQclUqlRC6XCwC73S7ouh7+bBbtiFLKkuIx4mUXpqMsMrFXSej5ni+XXuAVg6oGswAAAABJRU5ErkJggg==" style="width: 30px; height: 30px; cursor: pointer; margin-right: 10px;" />
+                        <input id="url" style="flex: 1 1 0%;">
+                        </input>
+                        <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; min-width: 60px; margin-left: 10px;" type="button" value="parse" id="parse">
+                        </input>
+                    </div>
+                </div>
                 <section id="values">
                     <div>
 owner
