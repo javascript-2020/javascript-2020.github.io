@@ -292,15 +292,54 @@ window.addEventListener('load',function(){
         
 });//onload
 
-
+//https://github.com/javascript-2020/javascript-2020.github.io
 //https://github.com/${owner}/${repo}/tree/${branch}/${path}
 
         function parse(url){
         
-              var owner       = find(3);
-              var repo        = find(4);
-              var branch      = find(6);
-              var path        = find(7,true);
+              var n   = url.split('/').length;
+              if(n==4)return parse.repo(url);
+              return parse.dir(url);
+              
+        }//parse
+        
+        parse.find=function(url,n,end){
+        
+              var i1   = 0;
+              for(var i=0;i<n;i++){
+              
+                    i1   = url.indexOf('/',i1)+1;
+                    
+              }//for
+              
+              if(end){
+                    var s   = url.slice(i1);
+                    return s;
+              }
+              
+              var i2    = url.indexOf('/',i1);
+              var s     = url.slice(i1,i2);
+              return s;
+              
+        }//find
+        
+        parse.repo=function(url){
+        
+              var owner     = parse.find(url,3);
+              var repo      = parse.find(url,4);
+              var branch    = 'main';
+              var path      = '';
+              
+              return {owner,repo,branch,path};
+              
+        }//parse.repo
+        
+        parse.dir=function(url){
+        
+              var owner       = parse.find(url,3);
+              var repo        = parse.find(url,4);
+              var branch      = parse.find(url,6);
+              var path        = parse.find(url,7,true);
               
               var i           = path.lastIndexOf('/');
               var filename    = path.slice(i+1);
@@ -310,37 +349,16 @@ window.addEventListener('load',function(){
               
               return {owner,repo,branch,path,filename,ext};
               
-              
-              function find(n,end){
-              
-                    var i1   = 0;
-                    for(var i=0;i<n;i++){
-                    
-                          i1   = url.indexOf('/',i1)+1;
-                          
-                    }//for
-                    
-                    if(end){
-                          var s   = url.slice(i1);
-                          return s;
-                    }
-                    
-                    var i2    = url.indexOf('/',i1);
-                    var s     = url.slice(i1,i2);
-                    return s;
-                    
-              }//find
-              
-        }//parse
+        }//dir
         
         
         async function download(){
         
               var $         = sel=>document.querySelector(`.${sel}`).value;
-              var owner     = $('owner');
-              var repo      = $('repo');
-              var branch    = $('branch');
-              var path      = $('path');
+              var owner     = $('.owner');
+              var repo      = $('.repo');
+              var branch    = $('.branch');
+              var path      = $('.path');
               
               if(path.slice(-1)!='/')path+='/';
               var file    = `${path.split('/').filter(Boolean).at(-1)||repo}.zip`;
