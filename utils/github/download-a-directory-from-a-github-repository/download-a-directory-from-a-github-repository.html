@@ -233,7 +233,7 @@ h3 {
         </style>
         <script style="display: none;">
 var JSZip;
-        
+
 (async()=>{
 
         JSZip   = (await import('https://cdn.jsdelivr.net/npm/jszip/+esm')).default;
@@ -297,9 +297,30 @@ window.addEventListener('load',function(){
 
         function parse(url){
         
-              var n   = url.split('/').length;
+              var n   = count(url,'/');
               if(n==4)return parse.repo(url);
               return parse.dir(url);
+              
+              function count(haystack,needle){
+              
+                    var n   = needle.length;
+                    if(n==0){
+                          return undefined;
+                    }
+                    
+                    var c   = 0;
+                    var i   = haystack.indexOf(needle);
+                    
+                    while(i>-1){
+                    
+                          c++;
+                          i   = haystack.indexOf(needle,i+n);
+                          
+                    }//while
+                    
+                    return c;
+                    
+              }//count
               
         }//parse
         
