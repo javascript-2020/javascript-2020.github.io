@@ -4,6 +4,15 @@ var image   = {};
 
         window.addEventListener('load',()=>{
         
+              var hdr                       = $('#hdr');
+              var h1                        = hdr.offsetHeight;
+              var ftr                       = $('#ftr');
+              var h2                        = ftr.offsetHeight;
+              var background                = $('#background');
+              background.style.top          = h1+'px';
+              background.style.height       = window.innerHeight-h1-h2+'px';
+              
+              
               $.all('.code').forEach(node=>{
               
                     var img         = document.createElement('img');
