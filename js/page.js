@@ -1,16 +1,22 @@
 
-var image   = {};
-
-
+        var hdr;
+        var background;
+        var center
+        var ftr;
+        
+        var image   = {};
+        
+        
         window.addEventListener('load',()=>{
         
-              var hdr                       = $('#hdr');
+              hdr                           = $('#hdr');
               var h1                        = hdr.offsetHeight;
-              var ftr                       = $('#ftr');
+              ftr                           = $('#ftr');
               var h2                        = ftr.offsetHeight;
-              var background                = $('#background');
+              background                    = $('#background');
               background.style.top          = h1+'px';
               background.style.height       = window.innerHeight-h1-h2+'px';
+              center                        = $('#center');
               
               
               $.all('.code').forEach(node=>{
