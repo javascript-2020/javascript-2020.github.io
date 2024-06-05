@@ -131,7 +131,7 @@
               var offscreen           = canvas.transferControlToOffscreen();
               
               var iframe              = document.createElement('iframe');
-              iframe.sandbox          = 'allow-scripts';
+              iframe.sandbox          = 'allow-scripts allow-same-origin';
               iframe.style.cssText    = 'display:none;';
               iframe.onload           = onload;
               iframe.srcdoc           = srcdoc;
