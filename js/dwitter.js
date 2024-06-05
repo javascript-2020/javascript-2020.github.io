@@ -1,6 +1,6 @@
 
 (()=>{
-        
+
         var worker    = `
         
           //  official dwitter context
@@ -11,18 +11,18 @@
                 var R       = (r,g,b,a)=>\`rgba(\${r},\${g},\${b},\${a})\`;
                 var c;
                 var x;
-          
+                
           //  unofficial dwitter context
           
                 var i       = 0;
-        
+                
         (()=>{
-          
+        
                 var start;
                 var ct;
                 var n   = 1000;
                 var abort;
-          
+                
                 self.onmessage=({data})=>{
                 
                       if(data.type=='init'){
@@ -80,14 +80,14 @@
                       
                 }//update
                 
-        })();        
-                
-                
+        })();
+        
+        
         `;
         
         var srcdoc    = `
         
-              <script>      
+              <script>
               
                     window.onmessage=({data})=>{
                     
@@ -101,27 +101,31 @@
                     };//onmessage
                     
               </script>
-                    
+              
         `;
         
-        var canvas              = document.createElement('canvas');
-        canvas.style.cssText    = 'width:100%;height:100%';
-        background.append(canvas);
-        var offscreen           = canvas.transferControlToOffscreen();
+        window.addEventListener('load',()=>{
         
-        var iframe              = document.createElement('iframe');
-        iframe.sandbox          = 'allow-scripts';
-        iframe.style.cssText    = 'display:none;';
-        iframe.onload           = onload;
-        iframe.srcdoc           = srcdoc;
-        document.body.append(iframe);
-        
-        function onload(){
-        
-              iframe.contentWindow.postMessage({canvas:offscreen,worker},'*',[offscreen]);
+              var canvas              = document.createElement('canvas');
+              canvas.style.cssText    = 'width:100%;height:100%';
+              background.append(canvas);
+              var offscreen           = canvas.transferControlToOffscreen();
               
-        }//onload
-                
+              var iframe              = document.createElement('iframe');
+              iframe.sandbox          = 'allow-scripts';
+              iframe.style.cssText    = 'display:none;';
+              iframe.onload           = onload;
+              iframe.srcdoc           = srcdoc;
+              document.body.append(iframe);
+              
+              function onload(){
+              
+                    iframe.contentWindow.postMessage({canvas:offscreen,worker},'*',[offscreen]);
+                    
+              }//onload
+              
+        });//load
+        
         
 })();
 
