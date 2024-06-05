@@ -71,7 +71,14 @@
                 
                       var t   = (performance.now()-start)/1000;
                       
-                      u(t);
+                      console.log(1);
+                      try{
+                            u(t);
+                      }
+                      catch(err){
+                            console.log(err);
+                      }
+                      console.log(2);
                       
                       ct++;
                       console.log(ct,n);
