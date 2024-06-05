@@ -74,6 +74,7 @@
                       u(t);
                       
                       ct++;
+                      console.log(ct,n);
                       if(ct>n)return;
                       if(abort)return;
                       requestAnimationFrame(update);
