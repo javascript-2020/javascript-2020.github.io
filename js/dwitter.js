@@ -76,7 +76,7 @@
                             u(t);
                       }
                       catch(err){
-                            console.log(err);
+                            console.log('error',err);
                       }
                       console.log(2);
                       
