@@ -85,6 +85,11 @@
                       
                 }//update
                 
+                self.onerror=err=>{
+                
+                      console.log('onerror',err);
+                      
+                }//
         })();
         
         
