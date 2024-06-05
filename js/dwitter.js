@@ -67,7 +67,7 @@
                       
                 }//load
                 
-                function update(){console.log('update',u.toString());
+                function update(){console.log('update2',u.toString());
                 
                       var t   = (performance.now()-start)/1000;
                       
