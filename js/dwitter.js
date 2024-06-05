@@ -75,8 +75,12 @@
                       
                       ct++;
                       console.log(ct,n);
-                      if(ct>n)return;
-                      if(abort)return;
+                      if(ct>n){console.log('ct');
+                            return;
+                      }
+                      if(abort){console.log('abort');
+                            return;
+                      }
                       requestAnimationFrame(update);
                       
                 }//update
