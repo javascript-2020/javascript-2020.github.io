@@ -81,7 +81,8 @@
                       if(abort){console.log('abort');
                             return;
                       }
-                      requestAnimationFrame(update);
+                      //requestAnimationFrame(update);
+                      setTimeout(update,100);
                       
                 }//update
                 
