@@ -679,7 +679,7 @@ to upload a file in nodejs
 var url     = &#39;https:&#x2F;&#x2F;localhost:3000&#x2F;upload?my-file.txt&#39;;
 var body    = require(&#39;fs&#39;).readFileSync(&#39;my-file.txt&#39;);
 
-var req     = require(&#39;https&#39;).request(url,{method:&#39;post&#39;},rec);
+var req     = require(&#39;https&#39;).request(url,{method:&#39;post&#39;,rejectUnauthorized:false},rec);
 req.write(body);
 req.end();
 
@@ -690,13 +690,35 @@ req.on(&#39;error&#39;, function(err){
 async function rec(res){
 
       var body = &#39;&#39;;
-      for await(data of res)body+=data;
-      console.log(body);
+      res.on(&#39;data&#39;,data=&gt;body+=data);
+      res.on(&#39;end&#39;,()=&gt;console.log(body));
       
 }&#x2F;&#x2F;rec
                         </code>
                         <div>
-to upload a file from the browser
+to upload a large binary file in nodejs
+                        </div>
+                        <code class="code">
+var fd      = require(&#39;fs&#39;).createReadStream(&#39;video.mp4&#39;);
+
+var url     = &#39;https:&#x2F;&#x2F;localhost:3000&#x2F;upload?video.mp4&#39;;
+var opts    = {method:&#39;post&#39;,rejectUnauthorized:false};
+
+var req     = require(&#39;https&#39;).request(url,opts,rec);
+req.on(&#39;error&#39;,err=&gt;console.log(err));
+fd.pipe(req);
+
+
+async function rec(res){
+
+      var body = &#39;&#39;;
+      res.on(&#39;data&#39;,data=&gt;body+=data);
+      res.on(&#39;end&#39;,()=&gt;console.log(body));
+      
+}&#x2F;&#x2F;rec
+                        </code>
+                        <div>
+to upload a file from the browser, remember to accept the server cert in the browser
                         </div>
                         <code class="code">
 var input         = document.createElement(&#39;input&#39;);
