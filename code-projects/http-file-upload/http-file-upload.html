@@ -605,7 +605,7 @@ or perform a http request
                             </li>
                         </ol>
                         <div>
-perform a http request in node.js
+download a txt file in node
                         </div>
                         <code class="code">
 var url     = &#39;https:&#x2F;&#x2F;localhost:3000&#x2F;download?myfile.js&#39;;
@@ -613,9 +613,32 @@ var opts    = {rejectUnauthorized:false};
 
 require(&#39;https&#39;).get(url,opts,async res=&gt;{
 
+  &#x2F;&#x2F; node &gt;v20
+  
       var body    = &#39;&#39;;
       for await(data of res)body   += data;
       console.log(body);   
+
+  
+  &#x2F;&#x2F; not using for await ...
+  
+      var body  = &#39;&#39;;
+      res.on(&#39;data&#39;,data=&gt;body+=data);
+      res.on(&#39;end&#39;,()=&gt;console.log(body));
+      
+});
+                        </code>
+                        <div>
+download a large binary file in node
+                        </div>
+                        <code class="code">
+var url     = &#39;https:&#x2F;&#x2F;localhost:3000&#x2F;download?video.mp4&#39;;
+var opts    = {rejectUnauthorized:false};
+
+require(&#39;https&#39;).get(url,opts,async res=&gt;{
+
+      var fd    = require(&#39;fs&#39;).createWriteStream(&#39;&#x2F;tmp&#x2F;video.mp4&#39;);
+      res.pipe(fd);
   
 });
                         </code>
@@ -630,18 +653,21 @@ var https   = require(&#39;https&#39;);
 https.get(`${url}download-list`,opts,async res=&gt;{
 
       var body    = &#39;&#39;;
-      for await(data of res)body   += data;
+      res.on(&#39;data&#39;,data=&gt;body+=data);
+      res.on(&#39;end&#39;,()=&gt;{
       
-      var json    = JSON.parse(body);
-      json.files.forEach(file=&gt;{
-      
-            https.get(`${url}download?${file}`,opts,res=&gt;{
+            var json    = JSON.parse(body);
+            json.files.forEach(file=&gt;{
             
-                  var fd    = fs.createWriteStream(filename);
-                  res.pipe(fd);
+                  https.get(`${url}download?${file}`,opts,res=&gt;{
+                  
+                        var fd    = fs.createWriteStream(file);
+                        res.pipe(fd);
+                    
+                  });
               
             });
-        
+            
       });
   
 });
