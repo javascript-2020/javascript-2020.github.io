@@ -17,11 +17,13 @@
               background                    = $('#background');
               background.style.top          = h1+'px';
               background.style.height       = window.innerHeight-h1-h2+'px';
-              contents                      = $('#contents');
               center                        = $('#center');
               var l                         = center.offsetLeft;
+              
+              contents                      = $('#contents');
               contents.style.top            = h1+'px';
-              contents.style.right          = l-25+'px';
+              var w                         = contents.offsetWidth;
+              contents.style.left           = l-w-25+'px';
               
               
               $.all('.code').forEach(node=>{
@@ -68,6 +70,21 @@
               return list;
               
         }//all
+        
+        $.computed=function(root,sel,prop){
+        
+              if(!prop){
+                    prop    = sel;
+                    sel     = root;
+                    root    = document;
+              }
+              var node      = $(root,sel);
+              var cstyle    = window.getComputedStyle(node);
+              var value     = cstyle.getPropertyValue(prop);
+              return value;
+              
+        }//computed
+        
         
         
         image.copy    =
