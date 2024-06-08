@@ -20,6 +20,7 @@
               contents                      = $('#contents');
               center                        = $('#center');
               var l                         = center.offsetLeft;
+              contents.style.top            = h1+'px';
               contents.style.right          = l-25+'px';
               
               
