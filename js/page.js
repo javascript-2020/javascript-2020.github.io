@@ -1,6 +1,7 @@
 
         var hdr;
         var background;
+        var contents;
         var center
         var ftr;
         
@@ -16,7 +17,10 @@
               background                    = $('#background');
               background.style.top          = h1+'px';
               background.style.height       = window.innerHeight-h1-h2+'px';
+              contents                      = $('#contents');
               center                        = $('#center');
+              var l                         = center.offsetLeft;
+              contents.style.right          = l-25+'px';
               
               
               $.all('.code').forEach(node=>{
