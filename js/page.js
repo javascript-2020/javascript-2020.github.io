@@ -19,9 +19,10 @@
               background.style.height       = window.innerHeight-h1-h2+'px';
               center                        = $('#center');
               var l                         = center.offsetLeft;
+              var t                         = center.offsetTop;
               
               contents                      = $('#contents');
-              contents.style.top            = h1+'px';
+              contents.style.top            = t+'px';
               var w                         = contents.offsetWidth;
               contents.style.left           = l-w-25+'px';
               
