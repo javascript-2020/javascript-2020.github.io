@@ -7,9 +7,9 @@
         
         var image   = {};
         
-        window.addEventListener('DOMContentLoaded',()=>console.log('dom content#));
+        window.addEventListener('DOMContentLoaded',()=>console.log('dom content'));
         
-        window.addEventListener('load',()=>{
+        //window.addEventListener('load',()=>{
         
               hdr                           = $('#hdr');
               var h1                        = hdr.offsetHeight;
@@ -45,7 +45,7 @@
                     
               });
               
-        });//load
+        //});//load
         
         
         
