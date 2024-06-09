@@ -40,7 +40,7 @@
               if(winw>1200){
                     content.style.display           = 'block';
                     content.style.top               = t4+'px';
-                    content.style.height            = h5-10+'px';
+                    content.style.maxHeight         = h5-10+'px';
                     var w6                          = content.offsetWidth;
                     
                     if(w4+w6+20>winw){
