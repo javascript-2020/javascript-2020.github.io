@@ -37,6 +37,7 @@
               var h5                        = scroll.offsetHeight;
               
               content                       = $('#content');
+              content_create();
               if(winw>1200){
                     content.style.display           = 'block';
                     content.style.top               = t4+'px';
@@ -55,7 +56,6 @@
                           center.style.marginLeft   = tl+'px';
                     }
               }
-              content_create();
               
               
               $.all('.code').forEach(node=>{
@@ -81,27 +81,82 @@
         function content_create(){
         
               var prev;
-              var list    = [].concat($.all('#content .content-heading'),$.all('#content .content-sub'));
-              list.forEach(node=>{
+              var card    = $(content,'#content-card');
+              var list    = read();
               
-                    node.onmouseenter   = e=>node.style.borderColor   = 'rgba(0,191,255,1)';
+              list.forEach(item=>{
+              
+                    var node    = document.createElement('div');
+                    if(item.type=='heading'){
+                          node.className    = 'content-heading';
+                    }else{
+                          node.className    = 'content-sub';
+                    }
+                    node.textContent    = item.txt;
+                    node.onclick        = e=>click(node,item.target);
+                    node.onmouseenter   = e=>node.style.borderColor   = 'var(--content-highlight)';
                     node.onmouseleave   = e=>node.style.borderColor   = '';
-                    node.onclick        = e=>click(node);
+                    card.append(node);
+                    
               });
               
-              function click(node){
+              
+              function click(node,target){
               
                     if(prev){
                           prev.style.border   = '';
                     }
                     
-                    var target    = $(center,'#'+node.id);
                     target.scrollIntoView({behavior:'smooth'});
-                    target.style.border   = '3px solid var(--blue)';
+                    target.style.border   = '3px solid var(--content-highlight)';
                     
                     prev    = target;
                     
               }//click
+              
+              
+              function read(){
+              
+                    var list    = [];
+                    var node    = center;
+                    
+                    process(node);
+                    
+                    return list;
+                    
+                    
+                    function process(node){
+                    
+                          if(node.nodeType!=Node.ELEMENT_NODE){
+                                return;
+                          }
+                          
+                          var type    = false;
+                          if(node.classList.contains('heading')){
+                                type    = 'heading';
+                          }
+                          if(node.classList.contains('sub-title')){
+                                type    = 'sub-title';
+                          }
+                          if(type){
+                                var txt       = node.textContent.trim();
+                                var target    = node.parentNode;
+                                console.log(type,txt,target);
+                                list.push({txt,target,type});
+                          }
+                          
+                          var cnodes    = node.childNodes;
+                          var n         = cnodes.length;
+                          for(var i=0;i<n;i++){
+                          
+                                var node2   = cnodes[i];
+                                process(node2);
+                                
+                          }//for
+                          
+                    }//process
+                    
+              }//read
               
         }//content
         
