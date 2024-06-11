@@ -141,7 +141,6 @@
                           if(type){
                                 var txt       = node.textContent.trim();
                                 var target    = node.parentNode;
-                                console.log(type,txt,target);
                                 list.push({txt,target,type});
                           }
                           
