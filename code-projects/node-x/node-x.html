@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
     <head style="display: block;">
         <meta style="display: block;" name="viewport" content="width=device-width, initial-scale=1">
@@ -431,6 +432,85 @@ contents
 node-x
                     </h3>
                     <section style="margin-top: 0px;">
+                        <div>
+node-x is a script launcher for node.js
+                        </div>
+                        <div>
+so where before we would use
+                        </div>
+                        <code class="code">
+node server.js
+                        </code>
+                        <div>
+now the default syntax is
+                        </div>
+                        <code class="code">
+node-x server.js
+                        </code>
+                        <div>
+it works by adding directories that you want node-x to be able to access
+                        </div>
+                        <div>
+when a directory has been added to node-x, additional features can be used, such as
+                        </div>
+                        <table>
+                            <tr>
+                                <td>
+execute
+                                </td>
+                                <td>
+execute a script in that directory from anywhere
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+multiple directories
+                                </td>
+                                <td>
+create lists of directories then run scripts from those directories from anywhere node-x is accessible
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+aliases
+                                </td>
+                                <td>
+long commands that are used often can be aliased
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+cat
+                                </td>
+                                <td>
+print to the console the contents of a file accessible to node-x
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+findstr
+                                </td>
+                                <td>
+search in files accessible to node-x for a list of words
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+find
+                                </td>
+                                <td>
+find a file
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+ls
+                                </td>
+                                <td>
+list the contents of a directory accessible to node-x
+                                </td>
+                            </tr>
+                        </table>
                     </section>
                 </div>
                 <div id="install" class="margin target">
@@ -451,7 +531,7 @@ npm install node-x -g
                                 </code>
                                 <div>
                                     <i>
-http-file-upload
+node-x
                                     </i>
 can then be run from anywhere on the file system by entering on the command line
                                 </div>
@@ -488,40 +568,6 @@ node-x.cmd -version
                                 </code>
                             </div>
                         </div>
-                        <div id="node-x" style="" class="target">
-                            <h4 class="sub-title">
-node-x
-                            </h4>
-                            <div class="sub-section">
-                                <div>
-i also have another utility for running node.js scripts :
-                                    <a href="#" title="no yet implemented" style="color: blue;">
-node-x
-                                    </a>
-                                    <div title="coming soon" style="height: 50px; border: 1px solid lightgray; width: 150px; display: flex; justify-content: center; align-items: center; cursor: pointer; margin-top: 10px;">
-npm : node-x
-                                    </div>
-                                </div>
-                                <div style="margin-top: 10px;">
-install locally with npm
-                                </div>
-                                <code class="code">
-npm install http-file-upload
-                                </code>
-                                <div>
-if the directory is not already accessible to node-x, add the current directory
-                                </div>
-                                <code class="code">
-node-x -add
-                                </code>
-                                <div>
-then run from anywhere on the command line with
-                                </div>
-                                <code class="code">
-node-x http-file-upload.js -version
-                                </code>
-                            </div>
-                        </div>
                         <div style="margin-top: 40px;">
 see also
                             <a href="#alternate-install" style="color: blue;">
@@ -553,6 +599,253 @@ npm uninstall http-file-upload -g
 operation
                     </h3>
                     <section>
+                        <div id="command-line-parameters" class="target">
+                            <h4 class="sub-title">
+command line parameters
+                            </h4>
+                            <div class="sub-section">
+                                <div style="margin-top: 20px;">
+                                    <i>
+node-x
+                                    </i>
+supports the following command line parameters
+                                </div>
+                                <div>
+the parameters can be specified in any order, with or without the dash or with a double dash
+                                </div>
+                                <table style="">
+                                    <tbody>
+                                        <tr id="add">
+                                            <td style="width: 120px;">
+add
+                                            </td>
+                                            <td style="width: 180px;">
+&lt;dir&gt;
+                                            </td>
+                                            <td>
+add &lt;dir&gt; to the list,
+                                            </td>
+                                        </tr>
+                                        <tr id="rem">
+                                            <td>
+rem
+                                            </td>
+                                            <td>
+                                                <div>
+&lt;dir&gt;
+                                                </div>
+                                            </td>
+                                            <td>
+remove directory &lt;dir&gt; from list, if &lt;dir&gt; is not given the current directory is used
+                                            </td>
+                                        </tr>
+                                        <tr id="list">
+                                            <td>
+list | dirs
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+display the current list of directories
+                                            </td>
+                                        </tr>
+                                        <tr id="files">
+                                            <td>
+files
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+display all files currently accessible
+                                            </td>
+                                        </tr>
+                                        <tr id="find">
+                                            <td>
+find
+                                            </td>
+                                            <td>
+&lt;file&gt;
+                                            </td>
+                                            <td>
+search of files for &lt;file&gt;
+                                            </td>
+                                        </tr>
+                                        <tr id="regex">
+                                            <td>
+regex
+                                            </td>
+                                            <td>
+&lt;exp&gt;
+                                            </td>
+                                            <td>
+search the directory list for files that match the regex
+                                            </td>
+                                        </tr>
+                                        <tr id="cat">
+                                            <td>
+cat
+                                            </td>
+                                            <td>
+&lt;file&gt;
+                                            </td>
+                                            <td>
+display the contents of &lt;file&gt;
+                                            </td>
+                                        </tr>
+                                        <tr id="findstr">
+                                            <td>
+findstr
+                                            </td>
+                                            <td>
+&lt;valueN&gt;
+                                            </td>
+                                            <td>
+search for &lt;value&gt; within file list, multiple values supported
+                                            </td>
+                                        </tr>
+                                        <tr id="clear">
+                                            <td>
+clear
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+clear all configuration data
+                                            </td>
+                                        </tr>
+                                        <tr id="ls">
+                                            <td>
+ls
+                                            </td>
+                                            <td>
+&lt;dir&gt;
+                                            </td>
+                                            <td>
+display the contents of directory &lt;dir&gt;
+                                            </td>
+                                        </tr>
+                                        <tr id="del">
+                                            <td>
+del
+                                            </td>
+                                            <td>
+&lt;file&gt;
+                                            </td>
+                                            <td>
+delete &lt;file&gt;
+                                            </td>
+                                        </tr>
+                                        <tr id="alias">
+                                            <td>
+alias
+                                            </td>
+                                            <td>
+&lt;name&gt; &lt;value&gt;
+                                            </td>
+                                            <td>
+create alias &lt;name&gt; with &lt;value&gt;, value can be more than one space seperated values
+                                            </td>
+                                        </tr>
+                                        <tr id="alias-rem">
+                                            <td>
+alias-rem
+                                            </td>
+                                            <td>
+&lt;name&gt;
+                                            </td>
+                                            <td>
+remove alias &lt;name&gt;
+                                            </td>
+                                        </tr>
+                                        <tr id="config">
+                                            <td>
+config
+                                            </td>
+                                            <td>
+&lt;name&gt;
+                                            </td>
+                                            <td>
+switch to configuration &lt;name&gt;, without &lt;name&gt; lists available configurations
+                                            </td>
+                                        </tr>
+                                        <tr id="config-add">
+                                            <td>
+config-add
+                                            </td>
+                                            <td>
+&lt;name&gt;
+                                            </td>
+                                            <td>
+add new default configuration &lt;name&gt;
+                                            </td>
+                                        </tr>
+                                        <tr id="config-rem">
+                                            <td>
+config-rem
+                                            </td>
+                                            <td>
+&lt;name&gt;
+                                            </td>
+                                            <td>
+remove configuration &lt;name&gt;
+                                            </td>
+                                        </tr>
+                                        <tr id="config-info">
+                                            <td>
+config-info
+                                            </td>
+                                            <td>
+&lt;name&gt;
+                                            </td>
+                                            <td>
+display configuration info for &lt;name&gt;
+                                            </td>
+                                        </tr>
+                                        <tr id="config-cur">
+                                            <td>
+config-cur
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+display the current configuration information
+                                            </td>
+                                        </tr>
+                                        <tr id="config-rename">
+                                            <td>
+config-rename
+                                            </td>
+                                            <td>
+&lt;name&gt;
+                                            </td>
+                                            <td>
+rename the current configuration
+                                            </td>
+                                        </tr>
+                                        <tr id="help">
+                                            <td>
+h | help
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+display command line help
+                                            </td>
+                                        </tr>
+                                        <tr id="version">
+                                            <td>
+v | version
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+display the current program version
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </section>
                 </div>
                 <div id="example-useage" class="margin target">
@@ -560,6 +853,74 @@ operation
 example useage
                     </h3>
                     <section>
+                        <div id="add-directory" class="target">
+                            <h4 class="sub-title" style="margin-top: 0px;">
+add directory
+                            </h4>
+                            <div class="sub-section">
+                                <div>
+                                    <span>
+add the directory
+                                    </span>
+                                    <code>
+&#x2F;work&#x2F;scripts&#x2F;
+                                    </code>
+                                    <span>
+to the current configuration list
+                                    </span>
+                                </div>
+                                <code class="code">
+node-x add &#x2F;work&#x2F;scripts&#x2F;
+                                </code>
+                                <div>
+                                    <span>
+add the current directory to the current list
+                                    </span>
+                                </div>
+                                <code class="code">
+node-x add
+                                </code>
+                            </div>
+                        </div>
+                        <div id="rem-directory" class="target">
+                            <h4 class="sub-title" style="margin-top: 0px;">
+remove directory
+                            </h4>
+                            <div class="sub-section">
+                                <div>
+                                    <span>
+remove the directory
+                                    </span>
+                                    <code>
+&#x2F;work&#x2F;scripts&#x2F;
+                                    </code>
+                                    <span>
+to the current configuration list
+                                    </span>
+                                </div>
+                                <code class="code">
+node-x rem &#x2F;work&#x2F;scripts&#x2F;
+                                </code>
+                                <div>
+                                    <span>
+remove the current directory to the current list
+                                    </span>
+                                </div>
+                                <code class="code">
+node-x rem
+                                </code>
+                            </div>
+                        </div>
+                        <div id="list-directory" class="target">
+                            <h4 class="sub-title" style="margin-top: 0px;">
+list the current directory list
+                            </h4>
+                            <div class="sub-section">
+                                <code class="code">
+node-x list
+                                </code>
+                            </div>
+                        </div>
                     </section>
                 </div>
                 <div id="alternate-install" class="margin target">
