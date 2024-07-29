@@ -1,0 +1,63 @@
+
+
+<h3>download github folder as zip</h3>
+
+<pre>
+      user=javascript-2020,repo=stackoverflow,branch=main,<path>
+</pre>
+
+<script type=module>
+
+        var url       = window.location.toString();
+        var i         = url.indexOf('?');
+        var search    = url.slice(i+1);
+        var parts     = search.split(',');
+        var path      = parts.pop();
+        var params    = {};
+        parts.forEach(param=>{
+        
+              var [key,value]   = param.split('=');
+              params[key]       = value;
+              
+        });
+        
+        var user      = params.user||'javascript-2020';
+        var repo      = params.repo||'stackoverflow';
+        var branch    = params.branch||'main';
+        path          = params.path||'';
+        
+        if(path[0]=='/')path    = path.slice(1);
+        if(path && path.slice(-1)!='/')path  += '/';
+        
+        import jszip from 'https://cdn.jsdelivr.net/npm/jszip/+esm';
+        var zip     = new jszip();
+
+        var file    = `${path.split('/').filter(Boolean).at(-1)||repo}.zip`;
+
+        var url     = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=true`;
+        var json    = await fetch(url).then(res=>res.json());
+        
+        await Promise.all(json.tree.map(async item=>{
+        
+              if(!item.path.startsWith(path))return;
+              
+              var fn    = item.path.slice(path.length);
+              if(item.type=='tree'){
+                    zip.folder(fn);
+              }else{
+                    var url     = `https://api.github.com/repos/${owner}/${repo}/contents/${item.path}?ref=${branch}`;
+                    var opts    = {headers:{accept:'application/vnd.github.raw+json'}};
+                    var blob    = await fetch(url,opts).then(res=>res.blob());
+                    zip.file(fn,blob);
+              }
+              
+        }));
+
+        var blob      = await zip.generateAsync({type:'blob'});
+        var url       = window.URL.createObjectURL(blob);
+        var a         = document.createElement('a');
+        a.href        = url;
+        a.download    = file;
+        a.click();
+
+</script>
