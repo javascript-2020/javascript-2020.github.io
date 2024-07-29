@@ -24,17 +24,17 @@
         var user      = params.user||'javascript-2020';
         var repo      = params.repo||'stackoverflow';
         var branch    = params.branch||'main';
-        path          = params.path||'';
+        path          = params.path||path;
                                                                                 console.log(user,repo,branch,path);
-        
+                                                                                
         if(path[0]=='/')path    = path.slice(1);
         if(path && path.slice(-1)!='/')path  += '/';
         
         import jszip from 'https://cdn.jsdelivr.net/npm/jszip/+esm';
         var zip     = new jszip();
-
+        
         var file    = `${path.split('/').filter(Boolean).at(-1)||repo}.zip`;
-
+        
         var url     = `https://api.github.com/repos/${user}/${repo}/git/trees/${branch}?recursive=true`;
         var json    = await fetch(url).then(res=>res.json());
         
@@ -53,12 +53,12 @@
               }
               
         }));
-
+        
         var blob      = await zip.generateAsync({type:'blob'});
         var url       = window.URL.createObjectURL(blob);
         var a         = document.createElement('a');
         a.href        = url;
         a.download    = file;
         a.click();
-
+        
 </script>
