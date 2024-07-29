@@ -42,7 +42,17 @@
         var file    = `${path.split('/').filter(Boolean).at(-1)||repo}.zip`;
         
         var url     = `https://api.github.com/repos/${user}/${repo}/git/trees/${branch}?recursive=true`;
-        var json    = await fetch(url).then(res=>res.json());
+        var res     = await fetch(url);
+        
+        if(!res.ok){
+              var br    = document.createElement('br');
+              document.body.append('failed',br.cloneNode());
+              var txt   = await res.text();
+              document.body.append(txt);
+              return;
+        }
+        
+        var json    = await res.json();
         
         await Promise.all(json.tree.map(async item=>{
         
