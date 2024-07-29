@@ -34,7 +34,7 @@
 
         var file    = `${path.split('/').filter(Boolean).at(-1)||repo}.zip`;
 
-        var url     = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=true`;
+        var url     = `https://api.github.com/repos/${user}/${repo}/git/trees/${branch}?recursive=true`;
         var json    = await fetch(url).then(res=>res.json());
         
         await Promise.all(json.tree.map(async item=>{
