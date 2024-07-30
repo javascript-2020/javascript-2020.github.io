@@ -148,7 +148,13 @@ github
               
         }));
         
+        spc();
+        var node    = dispn('generating zip ...');
+        
         var blob      = await zip.generateAsync({type:'blob'});
+        
+        node.remove();
+        
         var url       = window.URL.createObjectURL(blob);
         var a         = document.createElement('a');
         a.href        = url;
