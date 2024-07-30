@@ -19,7 +19,7 @@
         fetch.import.me       = url=>{var i=url.indexOf('/'),repo=url.slice(0,i),path=url.slice(i+1);
                                       return fetch.import.gitraw(`javascript-2020/${repo}/main/${path}`)};
 
-        var hs    = fetch.import.me('libs/js/string/hs');
+        var hs    = await fetch.import.me('libs/js/string/hs');
 
         
 (async ()=>{
@@ -79,7 +79,7 @@
               }else{
                     var url,opts;
                     if(raw){
-                          url     = 'https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}';
+                          url     = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
                           opts    = {};
                     }else{
                           url     = `https://api.github.com/repos/${user}/${repo}/contents/${item.path}?ref=${branch}`;
