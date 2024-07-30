@@ -3,7 +3,10 @@
 <h3>download github folder as zip</h3>
 
 <pre>
-      https://javascript-2020.github.io/download/github-folder?user=javascript-2020,repo=stackoverflow,branch=main,&lt;path>
+      https://javascript-2020.github.io/download/github-folder?user=javascript-2020,repo=stackoverflow,branch=main,raw=true,&lt;path>
+</pre>
+
+<pre id=output>
 </pre>
 
 <script type=module>
@@ -11,7 +14,7 @@
         import jszip from 'https://cdn.jsdelivr.net/npm/jszip/+esm';
                                                                                 console.clear();
         
-(async ()=>{debugger;
+(async ()=>{
 
         var url       = window.location.toString();
         var i         = url.indexOf('?');
@@ -33,7 +36,9 @@
         var repo      = params.repo||'stackoverflow';
         var branch    = params.branch||'main';
         path          = params.path||path;
-                                                                                console.log(user,repo,branch,path);
+        var raw       = params.raw||true;
+        
+                                                                                disp('user='+user,'repo='+repo,'branch='+branch,'path='+path,'raw='+raw);
         if(path[0]=='/')path    = path.slice(1);
         if(path && path.slice(-1)!='/')path  += '/';
         
@@ -53,19 +58,37 @@
         }
         
         var json    = await res.json();
-        
+        var c       = 0;
         await Promise.all(json.tree.map(async item=>{
         
               if(!item.path.startsWith(path))return;
               
-              var fn    = item.path.slice(path.length);
+              var fn      = item.path.slice(path.length);
+              var node    = disp(++c,fn);
+              
               if(item.type=='tree'){
                     zip.folder(fn);
               }else{
-                    var url     = `https://api.github.com/repos/${user}/${repo}/contents/${item.path}?ref=${branch}`;
-                    var opts    = {headers:{accept:'application/vnd.github.raw+json'}};
-                    var blob    = await fetch(url,opts).then(res=>res.blob());
+                    var url,opts;
+                    if(raw){
+                          url     = 'https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}';
+                          opts    = {};
+                    }else{
+                          url     = `https://api.github.com/repos/${user}/${repo}/contents/${item.path}?ref=${branch}`;
+                          opts    = {headers:{accept:'application/vnd.github.raw+json'}};
+                    }
+                    
+                    var res   = await fetch(url,opts);
+                    try{
+                          var hdr   = res.headers.get('content-length')
+                          node.append(' ',hdr);
+                    }
+                    catch(){}
+                    
+                    var blob    = await res.blob();
                     zip.file(fn,blob);
+                    
+                    node.append(' ',(blob.size/1000000).toFixed(1),' MB');
               }
               
         }));
@@ -76,6 +99,21 @@
         a.href        = url;
         a.download    = file;
         a.click();
+        
+        
+        function disp(fn){
+        
+              var node;
+              [...arguments].forEach(str=>{
+              
+                    node                = document.createElement('div');
+                    node.textContent    = str;
+                    output.append(node);
+                    
+              });
+              return node;
+              
+        }//disp
 
 })();        
 
