@@ -13,7 +13,8 @@
         
         
         function initdom(){   //c
-        
+        console.log('initdom');
+                
               var winw                      = window.innerWidth;
               
               hdr                           = $('#hdr');
