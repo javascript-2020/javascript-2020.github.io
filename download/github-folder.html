@@ -81,7 +81,7 @@
               }else{
                     var url,opts;
                     if(raw){
-                          url     = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
+                          url     = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${item.path}`;
                           opts    = {};
                     }else{
                           url     = `https://api.github.com/repos/${user}/${repo}/contents/${item.path}?ref=${branch}`;
@@ -91,14 +91,12 @@
                     var res   = await fetch(url,opts);
                     try{
                           var hdr   = res.headers.get('content-length')
-                          node.append(' ','content-length',' ',hdr);
+                          node.append(' ','content-length',' ',hs(hdr));
                     }
                     catch(err){}
                     
                     var blob    = await res.blob();
                     zip.file(fn,blob);
-                    
-                    node.append(' ',hs(blob.size),' MB');
               }
               
         }));
