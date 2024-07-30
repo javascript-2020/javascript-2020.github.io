@@ -38,24 +38,26 @@
               var h5                        = scroll.offsetHeight;
               
               content                       = $('#content');
-              content_create();
-              if(winw>1200){
-                    content.style.display           = 'block';
-                    content.style.top               = t4+'px';
-                    content.style.maxHeight         = h5-10+'px';
-                    var w6                          = content.offsetWidth;
-                    
-                    if(w4+w6+20>winw){
-                          var tw                    = winw-w4-30;
-                          content.style.left        = '10px';
-                          content.style.width       = tw+'px';
-                          center.style.marginLeft   = tw+20+'px';
-                    }else{
-                          var tl                    = (winw-w4-w6-30)/2;
-                          content.style.left        = tl+'px';
-                          var tl                    = tl+w6+20;
-                          center.style.marginLeft   = tl+'px';
-                    }
+              if(content){
+                      content_create();
+                      if(winw>1200){
+                            content.style.display           = 'block';
+                            content.style.top               = t4+'px';
+                            content.style.maxHeight         = h5-10+'px';
+                            var w6                          = content.offsetWidth;
+                            
+                            if(w4+w6+20>winw){
+                                  var tw                    = winw-w4-30;
+                                  content.style.left        = '10px';
+                                  content.style.width       = tw+'px';
+                                  center.style.marginLeft   = tw+20+'px';
+                            }else{
+                                  var tl                    = (winw-w4-w6-30)/2;
+                                  content.style.left        = tl+'px';
+                                  var tl                    = tl+w6+20;
+                                  center.style.marginLeft   = tl+'px';
+                            }
+                      }
               }
               
               
@@ -81,10 +83,6 @@
         
         function content_create(){
 
-              if(!content){
-                    return;
-              }
-                
               var prev;
               var card    = $(content,'#content-card');
               var list    = read();
