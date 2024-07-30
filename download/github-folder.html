@@ -13,6 +13,13 @@
 
         import jszip from 'https://cdn.jsdelivr.net/npm/jszip/+esm';
                                                                                 console.clear();
+
+        fetch.import          = url=>fetch(url).then(res=>res.text().then(js=>Promise.resolve(eval(`(${js})`))));
+        fetch.import.gitraw   = url=>fetch.import('https://raw.githubusercontent.com/'+url);
+        fetch.import.me       = url=>(i=url.indexOf('/'),repo=url.slice(0,i),path=url.slice(i+1),fetch.import.gitraw(`javascript-2020/${repo}/main/${path}`));
+
+        var hs    = fetch.import.me('libs/js/string/hs');
+
         
 (async ()=>{
 
@@ -38,7 +45,7 @@
         path          = params.path||path;
         var raw       = params.raw||true;
         
-                                                                                disp('user='+user,'repo='+repo,'branch='+branch,'path='+path,'raw='+raw);
+                                                                                dispn('user='+user,'repo='+repo,'branch='+branch,'path='+path,'raw='+raw);
         if(path[0]=='/')path    = path.slice(1);
         if(path && path.slice(-1)!='/')path  += '/';
         
@@ -81,14 +88,14 @@
                     var res   = await fetch(url,opts);
                     try{
                           var hdr   = res.headers.get('content-length')
-                          node.append(' ',hdr);
+                          node.append(' ','content-length',' ',hdr);
                     }
                     catch(err){}
                     
                     var blob    = await res.blob();
                     zip.file(fn,blob);
                     
-                    node.append(' ',(blob.size/1000000).toFixed(1),' MB');
+                    node.append(' ',hs(blob.size),' MB');
               }
               
         }));
@@ -100,8 +107,19 @@
         a.download    = file;
         a.click();
         
-        
+  //:
+  
         function disp(fn){
+        
+              var str             = [...arguments].join(' ');
+              var node            = document.createElement('div');
+              node.textContent    = str;
+              output.append(node);
+              return node;
+              
+        }//disp
+        
+        function dispn(fn){
         
               var node;
               [...arguments].forEach(str=>{
@@ -113,7 +131,8 @@
               });
               return node;
               
-        }//disp
+        }//dispn
+
 
 })();        
 
