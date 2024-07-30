@@ -1,0 +1,43 @@
+<style>
+      html {height:100%}
+      body{height:calc(100% - 16px)}
+      embed{height:100%}
+</style>
+
+<div id=embed></div>
+
+<script type=module>
+
+/*
+https://developer.stackblitz.com/platform/api/javascript-sdk
+https://developer.stackblitz.com/platform/api/javascript-sdk-options
+https://webcontainers.io/api
+*/
+
+        import sdk from 'https://cdn.jsdelivr.net/npm/@stackblitz/sdk/+esm';
+        
+        var files   = {};
+        setup();
+        
+        var project   = {
+              title         : 'dynamically generated project',
+              description   : 'created with <3',
+              template      : 'node',
+              files         : {}
+        };
+        
+        var vm    = await sdk.embedProject('embed',project,{
+              forceEmbedLayout    : true,
+              //openFile            : 'index.html',
+              theme               : 'light',
+              hideExplorer        : true,
+              hideNavigation      : false,
+              width               : '100%',
+              height              : '100%',
+              terminalHeight      : '50',
+              view                : 'default'
+        });
+
+</script>
+
+
