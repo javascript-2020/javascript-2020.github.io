@@ -80,7 +80,11 @@
         
         
         function content_create(){
-        
+
+              if(!content){
+                    return;
+              }
+                
               var prev;
               var card    = $(content,'#content-card');
               var list    = read();
