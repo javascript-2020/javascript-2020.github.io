@@ -29,14 +29,14 @@
       
       save.time       = 5000;
       save.debounce   = ()=>{clearTimeout(save.timer);save.timer=setTimeout(save,save.time)};
-      function save(){
+      async function save(){
       
             var body    = JSON.stringify({v:1,txt:editor.getValue});
             if(id)fetch(url+id,{method:'put',body});
             else{
                   var res                   = await fetch(url,{method:'post',body});
                   window.location.search    = res.headers.get('location');
-                   
+                  
             }
             
       }//save
@@ -48,5 +48,7 @@
       var txt     = await fetch(`${url}${id}`).then(res=>res.text());
       var json    = JSON.parse(txt);
       editor.setValue(json.txt,-1);
-
+      
 </script>
+
+
