@@ -13,10 +13,7 @@
 <script type=module>
       import ace from 'https://cdn.jsdelivr.net/npm/ace-builds/+esm';
       var editor                    = ace.edit('editor');
-      editor.container.onkeydown    = e=>{if(e.key=='Enter' && e.ctrlKey){
-                                          var doc=iframe.contentDocument;
-                                          doc.open();doc.write(editor.getValue());doc.close()
-                                      }};
+      editor.container.onkeydown    = e=>{e.key=='Enter' && e.ctrlKey && (iframe.srcDoc=editor.getValue())}
+      editor.showPrintMargin(false);
       editor.focus();
 </script>
-
