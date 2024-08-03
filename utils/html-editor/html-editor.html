@@ -43,11 +43,12 @@
       
       var str     = window.location.toString();
       var i       = str.indexOf('?');
-      if(i==-1)return;
-      id          = str.slice(i+1);
-      var txt     = await fetch(`${url}${id}`).then(res=>res.text());
-      var json    = JSON.parse(txt);
-      editor.setValue(json.txt,-1);
+      if(i!=-1){
+            id          = str.slice(i+1);
+            var txt     = await fetch(`${url}${id}`).then(res=>res.text());
+            var json    = JSON.parse(txt);
+            editor.setValue(json.txt,-1);
+      }
       
 </script>
 
