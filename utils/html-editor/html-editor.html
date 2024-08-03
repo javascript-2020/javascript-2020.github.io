@@ -13,7 +13,7 @@
 <script type=module>
 
       import ace from 'https://cdn.jsdelivr.net/npm/ace-builds/+esm';
-      var url   = 'https://jsonblob.com/api/jsonBlob';
+      var url   = 'https://jsonblob.com/api/jsonBlob/';
       var id;
       
       var editor                    = ace.edit('editor');
@@ -45,9 +45,12 @@
       var i       = str.indexOf('?');
       if(i!=-1){
             id          = str.slice(i+1);
-            var txt     = await fetch(`${url}${id}`).then(res=>res.text());
-            var json    = JSON.parse(txt);
-            editor.setValue(json.txt,-1);
+            var res     = await fetch(url+id)
+            if(res.ok){
+                  var txt     = await res.text();
+                  var json    = JSON.parse(txt);
+                  editor.setValue(json.txt,-1);
+            }
       }
       
 </script>
