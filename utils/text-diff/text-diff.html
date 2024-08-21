@@ -1,0 +1,141 @@
+        
+        
+        <style>
+              html{height:100%}
+              body{height:calc(100% - 16px);display:flex;flex-direction:column;font-family:arial}
+              input{font-size:16;padding:5px;cursor:pointer}
+              #main {display:flex;flex:1;margin:5px 0}
+              #view1{flex:1;display:flex;flex-direction:column}
+              #view2{flex:1;display:flex;flex-direction:column}
+              #editor {flex:1;margin-top:5px;}
+              #display {flex:1;border:1px solid lightgray;overflow:auto;margin:0}
+              
+              .red {position:absolute;background:rgba(209,153,153,1);z-index:20}
+              .green {position:absolute;background:rgba(153,204,153,1);z-index:20}
+
+        </style>
+        
+        <link href="https://cdn.jsdelivr.net/npm/ace-builds@1.35.5/css/ace.min.css" rel="stylesheet">
+        
+        <div id=hdr>
+              <span>text diff</div>
+              <input type=button value=check>
+        </div>
+        
+        <div id=main>
+              <div id=view1>
+                    <div id=hdr>
+                          <input type=button value=load>
+                          <input type=button value=paste>
+                    </div>
+                    <div id=editor></div>
+              </div>
+              <div id=view2>
+                    <div id=hdr>
+                          <input type=button value=load>
+                          <input type=button value=paste>
+                    </div>
+                    <div id=editor></div>
+              </div>
+        </div>
+        
+        <div id=display></div>
+        
+        <script type="module">
+                                                                                            console.clear();                
+                import ace from 'https://cdn.jsdelivr.net/npm/ace-builds/+esm';
+                import * as diff from 'https://esm.run/diff';
+
+                function check(){
+                
+                      var txt1        = editor['1'].getValue();
+                      var txt2        = editor['2'].getValue();
+                      var d           = diff.diffChars(txt1,txt2);
+                      console.log(d);
+                      
+                      var list    = [];
+                      var txt     = '';
+                      d.forEach(part=>{
+                      
+                            var start   = txt.length;
+                            txt        += part.value;
+                            var end     = txt.length;
+                            var color   = part.added ? 'green' : part.removed ? 'red' : 'grey';
+                            if(color!='grey'){
+                                  list.push({start,end,color});
+                            }
+                            
+                      });
+                      editor.output.setValue(txt,-1);
+                      list.forEach(part=>{
+                      
+                            var start   = editor.output.getSession().doc.indexToPosition(part.start);
+                            var end     = editor.output.getSession().doc.indexToPosition(part.end);
+                            var range   = new ace.Range(start.row,start.column,end.row,end.column);console.log(start,end,part.color);
+                            editor.output.getSession().addMarker(range,part.color,'text');
+                            
+                      });
+/*                      
+                      var fragment    = document.createDocumentFragment();
+                      d.forEach(part=>{
+                      
+                            var span            = document.createElement('span');
+                            var color           = part.added ? 'green' : part.removed ? 'red' : 'grey';
+                            span.style.color    = color;
+                            var tn              = document.createTextNode(part.value);console.log(part.value);
+                            span.appendChild(tn);
+                            fragment.appendChild(span);
+                            
+                      });
+                      display.replaceChildren(fragment);
+*/                      
+                
+                }//check
+                
+                var $                         = (node,sel)=>(!sel ? (sel=node,document) : node).querySelector(sel);
+                
+                $('[value=check]').onclick    = check
+                var editor                    = {};
+                editor.output                 = ace.edit('display');
+                
+                create(['1','2']);
+
+                
+                function create(args){
+                
+                      args.forEach(id=>{console.log(id);
+                      
+                            var view                          = $('#view'+id);
+                            $(view,'[value=load]').onclick    = load;
+                            $(view,'[value=paste]').onclick   = paste;
+                            editor[id]                        = ace.edit($(view,'#editor'));
+                            
+                            function load(){
+                            
+                                  var input   = document.createElement('input');
+                                  input.type    = 'file';
+                                  input.click();
+                                  input.onchange    = async e=>{
+                                  
+                                        var txt   = await input.files[0].text();
+                                        editor[id].setValue(txt,-1);
+                                        
+                                  }//onchange
+                                  
+                            }//load
+                            
+                            async function paste(){
+                            
+                                  var txt   = await navigator.clipboard.readText();
+                                  editor[id].setValue(txt,-1);
+                                  
+                            }//paste
+                            
+                      });
+                      
+                }//create
+                
+        </script>
+        
+        
+        
