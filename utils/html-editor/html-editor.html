@@ -153,7 +153,20 @@
       ui.menu         = {};
       
       setTimeout(initdom,50);
+
+
+      window.onmessage    = function(e){
       
+            var json    = JSON.parse(e.data);
+            if(json.code){
+                  editor.setValue(json.code,-1);
+            }
+            if(json.run){
+                  run();
+            }
+            
+      }//onmessage
+
       
       async function initdom(){   //c
       
@@ -167,9 +180,9 @@
             $('#run').onclick             = run;
             $('#save').oncick             = save;
             autosave                      = $('#autosave input');
-            autosave.checked              = true;
+            autosave.checked              = false;
             autorun                       = $('#autorun input');
-            autorun.checked               = true;
+            autorun.checked               = false;
             
             
             var node                      = $('#local-menu');
