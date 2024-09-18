@@ -36,6 +36,8 @@
             <button id=fork>fork</button>
             <button id=run>run</button>
             <button id=save>save</button>
+            <button id=copy>copy</button>
+            <button id=paste>paste</button>
             <label id=autosave class=slider>
                   <span class=track></span>
                   <input type=checkbox>
@@ -178,7 +180,10 @@
             $('#fork').onclick            = fork;
             
             $('#run').onclick             = run;
-            $('#save').oncick             = save;
+            $('#save').onclick            = save;
+            $('#copy').onclick            = copy;
+            $('#paste').onclick           = paste;
+            
             autosave                      = $('#autosave input');
             autosave.checked              = false;
             autorun                       = $('#autorun input');
@@ -347,6 +352,22 @@
             jsonblob.util.save(ui.read());
             
       }//save
+      
+      function copy(){
+      
+            var txt       = editor.getValue();
+            var promise   = navigator.clipboard.writeText(txt);
+            promise.catch(err=>{});
+            
+      }//copy
+      
+      function paste(){
+      
+            var promise   = navigator.clipboard.readText();
+            promise.then(txt=>editor.setValue(txt,-1));
+            promise.catch(err=>{});
+  
+      }//paste
       
       function horiz(){
             localStorage.setItem('orientation','horiz');
