@@ -242,8 +242,13 @@ editor
       var ext   =  await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js').then(res=>res.text().then(eval));
       ext.df    = false;
       
-      var [$,datatype,create]   = await ext.load.libs('js/dom/$','js/core/datatype','js/dom/create');
+      var [$,datatype]   = await ext.load.libs('js/dom/$','js/core/datatype');
       console.log(1);
+      
+      ext.df=true;
+      var create=await ext.load.libs('js/dom/create');
+      console.log(2);
+      create=create();
       
       var menumod   = await ext.load.libs['js/dom/menumod/menumod.js'];
       console.log(menumod);
