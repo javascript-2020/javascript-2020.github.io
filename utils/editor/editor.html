@@ -239,19 +239,13 @@ editor
                                                                                 console.clear();
                                                                                 console.log('editor');
 
-      var ext   =  await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js').then(res=>res.text().then(eval));
-      ext.df    = false;
+      var txt   =  await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js').then(res=>res.text());
+      var ext   = eval(txt);
       
-      var [$,datatype]   = await ext.load.libs('js/dom/$','js/core/datatype');
-      console.log(1);
-      
-      //ext.df=true;
-      var create=await ext.load.libs('js/dom/create');
-      console.log(2);
-      create=create();
+      var [$,datatype,create]   = await ext.load.libs('js/dom/$','js/core/datatype','js/dom/create');
+      create    = create();
       
       var menumod   = await ext.load.libs['js/dom/menumod/menumod.js'];
-      console.log(menumod);
       
       var css   = await ext.text.libs['js/dom/menumod/menumod.css'];
       var style   = create.style({textContent:css});
@@ -260,7 +254,6 @@ editor
       import ace from 'https://cdn.jsdelivr.net/npm/ace-builds/+esm';
       
       var jsonblob    = await ext.load.libs['js/io/jsonblob/jsonblob.js'];
-      console.log(jsonblob);
       jsonblob        = jsonblob();
       
       var menu        = menumod();
@@ -297,7 +290,7 @@ editor
             keydown.initdom();
             keydown.add(kd);
             //document.addEventListener('keydown',keydown,true);
-            
+            debugger;
             $('#new').onclick             = newwin;
             $('#fork').onclick            = fork;
             
