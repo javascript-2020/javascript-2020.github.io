@@ -1,27 +1,134 @@
 <html>
       <head>
             <title>editor</title>
+
+            <style>
+            
+                  html {
+                        height                      : 100%;
+                  }
+                  
+                  body {
+                        font-family                 : arial;
+                        margin                      : 20px;
+                        height                      : calc(100% - 40px);
+                        display                     : flex;
+                        flex-direction              : column;
+                  }
+                  
+                  
+                  .hdr {
+                        position                    : relative;
+                        padding-bottom              : 10px;
+                        border-bottom               : 1px solid lightblue;
+                        margin-top                  : 0;
+                        margin-bottom               : 20px;
+                        font-family                 : arial;
+                  }
+                  
+                  .hdr-icon {
+                        display                     : inline-block;
+                        text-align                  : center;
+                        background                  : whitesmoke;
+                        border-radius               : 5px;
+                        border                      : 1px solid lightgray;
+                        padding                     : 5px 3px 0px;
+                        cursor                      : pointer;
+                        margin-right                : 10px;
+                        min-width                   : 50px;
+                  }
+                  
+                  .hdr-icon-img {
+                  }
+                  
+                  .hdr-icon-label {
+                        margin                      : 2px 0 0;
+                  }
+                  
+                  .hdr-title {
+                        text-align                  : center;
+                        position                    : absolute;
+                        left                        : 0;
+                        right                       : 0;
+                        top                         : 5px;
+                        z-index                     : -1;
+                        margin                      : 0;
+                  }
+                  
+                  .hdr-date {
+                        float                       : right;
+                  }
+                  
+                  .ftr {
+                        background-color            : rgb(238, 232, 170);
+                        height                      : 50px;
+                        margin-top                  : 70px;
+                  }
+                  
+                  
+                  #center {
+                        width                       : 100%;
+                        max-width                   : 1000px;
+                        margin                      : auto;
+                        flex                        : 1;
+                  }
+                  
+                  
+                  .heading {
+                        border-left                 : 5px solid rgba(238,232,170,1);
+                        background                  : rgba(239,247,250,1);
+                        padding                     : 20px 20px;
+                  }
+                  
+                  
+                  a {
+                        color                       : blue;
+                  }
+                  a:visited {
+                        color                       : blue;
+                  }
+      
+            </style>
           
             <style>
-                  html,body{margin:0;height:100%}
-                  body {display:flex;flex-direction:column;font-family:arial}
                   #hdr {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
                   #view {display:none;flex:1}
                   #editor{height:100%}
                   .icon{border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
                   button {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
                   .spc {flex:1;max-width:200px}
+
                   
                   .local {position:relative}
                   .local-menu {position:absolute;left:-50px;top:40px}
+                  
                   .github {position:relative}
-                  #github-menu {right:0;position:absolute;top:50px;width:700px;flex-direction:column;}
+                  #github-menu {right:0;position:absolute;top:50px;width:700px;flex-direction:column;}                  
+
                   
             </style>
             
       </head>
 
       <body>
+      
+            <section style="box-sizing:border-box" class="hdr">
+                <div id="home" onclick="window.location='https://javascript-2020.github.io/'" class="hdr-icon">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAABA5JREFUOE+lkVtsVEUYx//fnDnn7KW73XZ7peVSWtvSC5duGrXGkBLFUH1AfdD0DWNMn3zwwURJZA2++CKJvtCoSBMkaoLEBDEYpBQCldRSUnq11La4lF7YstfuntuM2cIjKLGTTDLJN//f9/1mCE+womdP+Ae+u1V/99Ls8IHZ49l/i9AT8JA+czx06du5nxam459t8fg/b78Yth+X+09gODyqdW3ua5mfSLQOXkrEa3Tt5PqA3yx3FmXvvMiFzRY8G/vDB0qPrkv542NLB+Pp1GEpBAV8viOH3ip9b13Aj75cOBhLxg8LIagoUHAk/HbZ/wNeGZNvKhyha8MxNRhQ3yUiWloxjz2zI3BXEmbanqKvHzXpYz/l6qT8ghG6LEcmGENh7qJty5imMo8ATrXVUucjgVJKdusW1EgEjs8HcrtBo6NwCqozrddGFrozhrMdkA+zBE1lU60NJV2puby+xkYomQxkMglZWQmlpgYWXR6XtZyjUzgYAUMeAUVk48K5y3cnLMJpAHsXlhfhOAIVZWUgQr8lsvv2P7+1WnLskcA9CKSYgibbxknqH5MtNomfpZRuAIyIDEHijd6+5d+hKaelkHvHpqYghIOG2joojPVnLHVfx25fiEn2vZRSByCIKMMle5l6zieCI5ORU5msuTvn5dKVyYYtJR2BAk9qas74wTDFbkA8VGY55cHKDZ79mWRCnZxd/iVrOXW5otul9TXVVb5O73TPewoc+0eAXsoVfB7FeHpn8Sd5bt5sOeLVmb9X1fISV04VkYUsqio9tsbpt9Ws82v/jXuHU6u250E3ee6+wl+j8ImonyznrBDiOSEEdE2Bx21mGZMKAFVKrMHWIgIgljvAEZLM1YzmNkwHjLHcviJVpYM+6IkEdaGdvxeN7lyJx1BfXY2Az4KSCxIgpIRh2CAiqJzl3nAN7gggnlQxPj2NwvwAioLBGwYzX6APu2fLdc17wTSNesu2EfDnobU5kFNHxrQw8ucSlu+n4XVpcOkcVRsLUFLoRTLtYOBmDLFECirn0DR9wjDTe+hQz8omJuxeIcRWKSU0jSPUmA+vm2E2ch9/jM5DVRn8XhdSqybKi33YUV8G0wIGR+MwzQfTM8b+Eoy3U/irpRri1Dtze64ylkhge/02tDYXQkoLt+djWFpJQ1EYvG4NGcOCW+fYUOKHz+vFwM0VDE+MI+D3o2rT5oi0ZTuFj841kO4+MzQyUhxLxvHsrhBam0ugKBZiySySaRMKI+g6X5uGc2UN6nZ5MTC8hP6hQQR8+djV1LQsjcwr9P6nEz5P0L9rcGKcx2NxtIVa0NJQilQ2jTuLMUSjaXDOkefVkU0b4C4FwXwXKipKcX14EVcHryM/kI9Q/TZ7NZoY+gdEZNOa/2ZSPwAAAABJRU5ErkJggg==" class="hdr-icon-img" />
+                    <div class="hdr-icon-label">
+home
+                    </div>
+                </div>
+                <h3 style="color: blue; font-weight: bold;" class="hdr-title">
+javascript-2020
+                </h3>
+                <div style="" class="hdr-date">
+22 Nov 2024
+                </div>
+            </section>
+      
+      
+      
       
             <div id=hdr>
             
@@ -131,13 +238,21 @@
                                                                                 console.log('editor');
 
       var ext    =  await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js').then(res=>res.text().then(eval));
-      var [$,datatype,create]   = await ext.load.libs('js/dom/$','js/core/datatype','js/dom/create');
-      console.log($,datatype,create);
       
-      ext.text.libs['js/dom/menumod/menumod.css'].then(css=>{
-      });
+      var [$,datatype,create]   = await ext.load.libs('js/dom/$','js/core/datatype','js/dom/create');      
+      console.log(1);
+      
+      var menumod   = await ext.load.libs['js/dom/menumod/menumod.js'];
+      console.log(menumod);
+      
+      var css   = await ext.text.libs['js/dom/menumod/menumod.css'];
+      var style   = create.style({textContent:css});
+      document.head.append(style);
       
       import ace from 'https://cdn.jsdelivr.net/npm/ace-builds/+esm';
+      
+      var jsonblob    = await ext.load.libs['js/io/jsonblob/jsonblob.js'];
+      console.log(jsonblob);
       jsonblob        = jsonblob();
       
       var menu        = menumod();
@@ -369,7 +484,7 @@
   //:
   //:
   
-  
+/*  
 function jsonblob(){
 //  https://jsonblob.com/api
   var obj   = {};
@@ -490,6 +605,7 @@ function jsonblob(){
   return obj;
   
 }//jsonblob
+*/
 
 </script>
 
@@ -564,7 +680,7 @@ function jsonblob(){
               
         }//keydown
         
-        
+/*        
         function datatype(v){
         
               var str   = Object.prototype.toString.call(v);
@@ -587,7 +703,9 @@ function jsonblob(){
               return false;
               
         }//node
-        
+*/
+
+/*
         function $(root,sel){
         
               if(!sel){
@@ -645,7 +763,8 @@ function jsonblob(){
               return false;
               
         }//is.parent
-        
+*/
+
 </script>
 
 
@@ -653,6 +772,7 @@ function jsonblob(){
 
   //:
   //:
+  /*
         function menumod(){
         
           var obj   = {};
@@ -1233,8 +1353,11 @@ function jsonblob(){
           return obj;
           
         }//menumodmod
-        
+*/
+
 </script>
+
+<!--
 
 <style>
 /*
@@ -1284,6 +1407,9 @@ function jsonblob(){
         }
         
 </style>
+
+-->
+
 
       </body>
 </html>
