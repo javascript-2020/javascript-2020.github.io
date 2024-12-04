@@ -1,23 +1,19 @@
-        
-        
-<!--
-      all credits : https://codepen.io/dilums/pen/MWjEqaa
-      matt
--->
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
 
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="https://fonts.googleapis.com/css?family=Mountains+of+Christmas" rel="stylesheet">
+
 <style>
         body {  margin:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;
                 background:#161616;color:#c5a880;font-family:"Mountains of christmas";font-size:32px;}
         #title {position:absolute;left:3px;right:3px;text-align:center;display:none;}
         #overlay {text-align:center;display:none;}
-        #credit {position:absolute;bottom:3px;left:3px;right:3px;text-align:right;z-index:9;font-family:sans-serif;font-size:16px;
-                  display:flex;justify-content:space-between;}
+        #credit {position:absolute;top:3px;left:3px;right:3px;text-align:center;z-index:9;font-family:sans-serif;font-size:16px;}
         a {display:block}
         a:link {color:#c5a880} a:visited {color:#c5a880}
-        #controls {position:absolute;bottom:3px;text-align:center;font-size:16px;display:flex;font-size:20px}
+        #controls {position:absolute;bottom:3px;left:3px;right:3px;text-align:center;font-size:16px;font-size:20px}
         .spc {margin:0 10px}
+        .desktop, .desktop-inline, .desktop-flex {display:none}
+        .mobile, .mobile-inline, .mobile-flex {display:none}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.115.0/build/three.min.js"></script>
@@ -27,11 +23,16 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.115.0/examples/js/shaders/CopyShader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.115.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.115.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="https://hammerjs.github.io/dist/hammer.js"></script>
 
 <div id=user style=text-align:center>
 
-      <div style='margin-bottom:20px;'>Click / Tap To Start</div>
-      <div style=margin-bottom:40px;'>
+      <div style='margin-bottom:20px;'>
+            <span class=desktop-inline>Click</span>
+            <span class=mobile-inline>Tap</span>
+            To Start
+      </div>
+      <div class=desktop style=margin-bottom:40px;'>
             <div>Enter - Play Song Again</div>
             <div>Arrows - Next Song</div>
             <div>Space - Load Song</div>
@@ -54,7 +55,7 @@
             
             <div>reworked</div>
             <div>
-                  <a style='font-family:arial' href='javascript-2020.github.io/'>javascript-2020.github.io</a>
+                  <a style='font-family:arial' href='https://javascript-2020.github.io/'>javascript-2020.github.io</a>
             </div>
       </div>
       
@@ -68,23 +69,35 @@
 <div id=title>Merry Christmas</div>
 
 <div id=credit>
-  <a href='javascript-2020.github.io/'>javascript-2020.github.io</a>
+  <a href='https://javascript-2020.github.io/'>javascript-2020.github.io</a>
 </div>
 
 <div id=controls>
-      <div>Enter - Play Again</div>
-      <div class=spc></div>
-      <div>Arrows - Next Song</div>
-      <div class=spc></div>
-      <div>Space - Load Song</div>
-      <div class=spc></div>
-      <div>Escape - Stop</div>
+      <div class=desktop-flex style='justify-content:center;'>
+            <span>Enter - Play Again / Stop</span>
+            <span class=spc></span>
+            <span>Arrows - Next Song</span>
+            <span class=spc></span>
+            <span>Space - Load Song</span>
+            <span class=spc></span>
+            <span>Escape - Stop</span>
+      </div>
+      <div class=mobile style='width:100%'>
+            <div style='display:flex;justify-content:space-between;'>
+                  <div>Tap - Start / Stop</div>
+                  <div>Swipe - Next Song</div>
+            </div>
+            <div>Press - Load Song</div>
+      </div>
 </div>
 
 
 <script>
 
 
+        var hammer;
+        
+        
         var {PI,sin,cos}    = Math;
         var TAU             = 2*PI;
         
@@ -100,10 +113,29 @@
         var timer;
         
         
+        var mode              = 'desktop';
+        var tree              = {};
+        tree.scale            = 1.0;
+        
+        if(window.matchMedia('(max-width: 800px)').matches){
+              mode            = 'mobile';
+              document.querySelectorAll('.mobile').forEach(node=>node.style.display           = 'block');
+              document.querySelectorAll('.mobile-inline').forEach(node=>node.style.display    = 'inline');
+              document.querySelectorAll('.mobile-flex').forEach(node=>node.style.display      = 'flex');
+        }else{
+              document.querySelectorAll('.desktop').forEach(node=>node.style.display          = 'block');
+              document.querySelectorAll('.desktop-inline').forEach(node=>node.style.display   = 'inline');
+              document.querySelectorAll('.desktop-flex').forEach(node=>node.style.display     = 'flex');
+        }
+        
+        
+        
         var uniforms          = {
                                       time          : {type:'f',value:0.0},
                                       step          : {type:'f',value:0.0},
-                                      tAudioData    : {value:null}
+                                      tAudioData    : {value:null},
+                                      
+                                      test          : {type:'f',value:tree.scale},
                                 };
         var params            = {
                                       exposure          : 1,
@@ -115,9 +147,7 @@
         var listener          = new THREE.AudioListener();
         var audio             = new THREE.Audio(listener);
         var index             = 0;
-        
-        
-        var overlay           = document.getElementById("overlay");
+        var loading;
         
         
         var files   = [
@@ -139,22 +169,40 @@
         
         
         window.onresize         = resize;
+        var overlay           = document.getElementById("overlay");
         
-        user_start();
+        document.querySelectorAll('a').forEach(a=>{
+        
+              a.onclick                 = e=>e.stopPropagation();
+              
+        });
+        
+        
+        
+        var fn                  = {};
+        
         
   //:
   
+        user_start();
+        
         function user_start(){
         
-              document.onpointerdown    = ready;
+              document.onclick          = ready;
               document.onkeydown        = ready;
               
         }//user_start
         
         function ready(){
         
-              document.onmousedown    = null;
-              document.onkeydown      = keydown;
+              document.onpointerdown    = null;
+              document.onkeydown        = keydown;
+              
+              if(mode=='mobile'){
+                    hammer              = new Hammer(document.body);
+                    hammer.on('panleft panright tap press',touch);
+              }
+              
               user.remove();
               overlay.style.display   = 'block';
               loadAudio();
@@ -174,6 +222,7 @@
         
         function loadAudio(){
         
+              loading       = true;
               var file      = files[index];
               var loader    = new THREE.AudioLoader();
               loader.load(file,audioReady);
@@ -192,6 +241,7 @@
               
                     index         = null;
                     var buffer    = await input.files[0].arrayBuffer();
+                    loading       = true;
                     listener.context.decodeAudioData(buffer,audioReady);
                     
               }//click
@@ -202,6 +252,7 @@
         function audioReady(buffer){
         
               hide();
+              loading   = false;
               if(audio.isPlaying){
                     audio.stop();
               }
@@ -270,6 +321,12 @@
   
         function animate(time){
         
+              if(!audio.isPlaying){
+                    uniforms.test.value   = 0.06;
+              }else{
+                    uniforms.test.value   = 0.0;
+              }
+              
               analyser.getFrequencyData();
               uniforms.tAudioData.value.needsUpdate   = true;
               
@@ -286,6 +343,8 @@
         
         function resize(){
         
+              if(!camera)return;
+              
               var width       = window.innerWidth;
               var height      = window.innerHeight;
               
@@ -310,7 +369,7 @@
                     varying float opacity;
                     
                     uniform sampler2D tAudioData;
-                    
+                    uniform float test;
                     
                     float norm(float value,float min,float max){
                     
@@ -340,7 +399,7 @@
                             opacity                   = map(mvPosition.z,-200.0,15.0,0.0,1.0);
                             
                             float amplitude           = texture2D(tAudioData,vec2(mIndex,0.1)).r;
-                            float amplitudeClamped    = clamp(amplitude-0.4,0.0,0.6);
+                            float amplitudeClamped    = clamp(amplitude-0.4,test,0.6);
                             float sizeMapped          = map(amplitudeClamped,0.0,0.6,1.0,20.0);
                             
                             gl_PointSize              = sizeMapped*(100.0/-mvPosition.z);
@@ -425,19 +484,19 @@
                     var attr;
                     
                     attr    = new THREE.Float32BufferAttribute(positions,3).setUsage(THREE.DynamicDrawUsage);
-                    geometry.setAttribute("position",attr);
+                    geometry.setAttribute('position',attr);
                     
                     attr    = new THREE.Float32BufferAttribute(colors,3);
-                    geometry.setAttribute("color",attr);
+                    geometry.setAttribute('color',attr);
                     
                     attr    = new THREE.Float32BufferAttribute(sizes,1);
-                    geometry.setAttribute("size",attr);
+                    geometry.setAttribute('size',attr);
                     
                     attr    = new THREE.Float32BufferAttribute(phases,1);
-                    geometry.setAttribute("phase",attr);
+                    geometry.setAttribute('phase',attr);
                     
                     attr    = new THREE.Float32BufferAttribute(mIndexs,1);
-                    geometry.setAttribute("mIndex",attr);
+                    geometry.setAttribute('mIndex',attr);
                     
                     const tree            = new THREE.Points(geometry,shaderMaterial);
                     tree.position.x       = pos.x;
@@ -485,6 +544,7 @@
                           
                     }//map
                     
+                    
                     void main() {
                     
                         float t           = time*0.0006;
@@ -525,7 +585,6 @@
               
               
               sprites.forEach(create);
-              
               
               function create(sprite){
               
@@ -708,28 +767,87 @@
         
         function show(msg){overlay.innerHTML    = '<div>Please Wait...</div>'}
         function hide(){overlay.replaceChildren();title.style.display='block';}
-        function keydown(e){console.log(e.key,audio.isPlaying);
+        
+  //:
+  
+        touch.time    = 0;
+        function touch(e){
+        
+              var now   = Date.now();
+              if(now-touch.time<500){
+                    return;
+              }
+              touch.time    = now;
+              
+              switch(e.type){
+              
+                case 'tap'        : fn.toggle();      break;
+                case 'press'      : fn.upload();      break;
+                case 'panleft'    : fn.next();        break;
+                case 'panright'   : fn.next();        break;
+                
+              }//switch
+              
+        }//touch
+        
+        function keydown(e){
         
               if(e.key=='Enter'){
-                    if(!audio.isPlaying){
-                          loadAudio();
-                    }
+                    fn.toggle();
               }
-              if(e.key=='ArrowLeft' || e.key=='ArrowRight'){console.log('---');
-                    if(audio.isPlaying){
-                          audio.stop();
-                    }
-                    next();
+              if(e.key=='ArrowLeft' || e.key=='ArrowRight'){
+                    fn.next();
               }
               if(e.key==' '){
-                    uploadAudio();
+                    fn.upload();
               }
               if(e.key=='Escape'){
-                    audio.stop();
+                    fn.stop();
               }
               
         }//keydown
         
+        fn.toggle=function(){
+        
+              if(!audio)return;
+              if(audio.isPlaying){
+                    fn.stop();
+              }else{
+                    fn.play();
+              }
+              
+        }//toggle
+        
+        fn.play=function(){
+        
+              if(!audio.isPlaying && !loading){
+                    loadAudio();
+              }
+              
+        }//enter
+        
+        fn.next=function(){
+        
+              if(audio.isPlaying){
+                    audio.stop();
+              }
+              next();
+              
+        }//next
+        
+        fn.stop=function(){
+        
+              audio.stop();
+              
+        }//stop
+        
+        fn.upload=function(){
+        
+              if(!loading){
+                    uploadAudio();
+              }
+              
+        }//upload
+        
 </script>
-
 
