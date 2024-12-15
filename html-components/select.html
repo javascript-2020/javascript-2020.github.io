@@ -1,105 +1,109 @@
 <html>
       <head>
       
+            <style>
+                  body {margin:20px;font-family:arial}
+                  code {white-space:pre;background:lightgray;border-radius:10px;display:block;
+                        margin:20px;padding:20px;font-size:16px;line-height:1.3;border:1px solid gray}
+                  .title {padding:10px 20px;background:blue;color:white;margin-bottom:20px;
+                          font-weight:bold;font-size:18px}
+                  .demo{margin-bottom:20px;background:lightblue;padding:10px;font-weight:bold;}
+            </style>
       
       </head>
       
       <body>
       
-            <code>
-&lt;html&gt;
-      &lt;head&gt;
+<div class=title>
+custom select
+</div>
       
-      
-      &lt;/head&gt;
-      
-      &lt;body&gt;
-      
-            &lt;code&gt;
-            &lt;/code&gt;
-            
-&lt;!-- demo --&gt;
+<div>
+a simple starter example, a custom select element
+</div>
 
-&lt;select-one&gt;
-  &lt;template shadowrootmode=open&gt;
-    &lt;style&gt;
-      :host {
-        --darkgray: lightgray;
-      }
+
       
-      select {
-        /* Reset Select */
-        appearance: none;
-        outline: 10px red;
-        border: 0;
-        box-shadow: none;
-        /* Personalize */
-        flex: 1;
-        padding: 0 1em;
-        color: dimgray;
-        background-color: var(--darkgray);
-        background-image: none;
-        cursor: pointer;
-        padding:5px 10px;
-      }
-      /* Remove IE arrow */
-      select::-ms-expand {
-        display: none;
-      }
-      /* Custom Select wrapper */
-      .select {
-        position: relative;
-        display: inline-flex;
-        width: 150px;
-        /*height: 3em;*/
-        border-radius: .25em;
-        overflow: hidden;
-        color: dimgray;
-      }
-      /* Arrow */
-      .select::after {
-        content: '\25BC';
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        /*padding: 1em;*/
-        background-color: var(--darkgray);
-        transition: .25s all ease;
-        pointer-events: none;
-      }
-      /* Transition */
-      .select:hover::after {
-        color: #f39c12;
-      }
-    &lt;/style&gt;
-  
-  
-    &lt;div class="select"&gt;
-      &lt;select&gt;
-        &lt;option value="1"&gt;Americano&lt;/option&gt;
-        &lt;option value="2"&gt;Latte&lt;/option&gt;
-        &lt;option value="3"&gt;Green Tea&lt;/option&gt;
-      &lt;/select&gt;      
-    &lt;/div&gt;
+<code>&lt;select-one&gt;
+      &lt;template shadowrootmode=open&gt;
+        &lt;style&gt;
+          :host {
+            --darkgray: lightgray;
+          }
+          
+          select {
+            /* Reset Select */
+            appearance: none;
+            outline: 10px red;
+            border: 0;
+            box-shadow: none;
+            /* Personalize */
+            flex: 1;
+            padding: 0 1em;
+            color: dimgray;
+            background-color: var(--darkgray);
+            background-image: none;
+            cursor: pointer;
+            padding:5px 10px;
+          }
+          /* Remove IE arrow */
+          select::-ms-expand {
+            display: none;
+          }
+          /* Custom Select wrapper */
+          .select {
+            position: relative;
+            display: inline-flex;
+            width: 150px;
+            /*height: 3em;*/
+            border-radius: .25em;
+            overflow: hidden;
+            color: dimgray;
+          }
+          /* Arrow */
+          .select::after {
+            content: '\25BC';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            /*padding: 1em;*/
+            background-color: var(--darkgray);
+            transition: .25s all ease;
+            pointer-events: none;
+          }
+          /* Transition */
+          .select:hover::after {
+            color: #f39c12;
+          }
+        &lt;/style&gt;
+      
+      
+        &lt;div class="select"&gt;
+          &lt;select&gt;
+            &lt;option value="1"&gt;Americano&lt;/option&gt;
+            &lt;option value="2"&gt;Latte&lt;/option&gt;
+            &lt;option value="3"&gt;Green Tea&lt;/option&gt;
+          &lt;/select&gt;      
+        &lt;/div&gt;
+        
+      &lt;/template&gt;
+    &lt;select-one&gt;
     
-  &lt;/template&gt;
-&lt;select-one&gt;
+    &lt;script&gt;
+    
+          var node=document.querySelector('select-one');
+          var select=node.shadowRoot.querySelector('select');
+          select.onchange=e=&gt;alert(select.value);
+          
+    &lt;/script&gt;
+</code>
 
-&lt;script&gt;
 
-      var node=document.querySelector('select-one');
-      var select=node.shadowRoot.querySelector('select');
-      select.onchange=e=&gt;alert(select.value);
-      
-&lt;/script&gt;
 
-&lt;!-- demo --&gt;
-      &lt;/body&gt;
-&lt;/html&gt;    
-              
-            </code>
-            
-<!-- demo -->
+<div class=demo>
+demo
+</div>
+
 
 <select-one>
   <template shadowrootmode=open>
