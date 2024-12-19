@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 
-    <!-- blank.html -->
+    <!-- select.html -->
     
     <head style="display: block;">
     
@@ -34,7 +34,9 @@ github
                 </div>
             </a>
             
-            <img id="title" style="" class="hdr-title" src="blank.png" />
+            <h3 class=hdr-title>
+                  select components
+            </h3>
             
             <div style="" id="date" class="hdr-date">
 30 Jul 2024
@@ -46,8 +48,405 @@ github
 
         <div id="scroll">
             <div id="center" style="">
-
+                
 <!-- page html -->
+
+
+
+<!-- demo 1 -->
+
+<section>
+
+    <div class=sub-title>
+    custom select 1
+    </div>
+          
+    <div class=sub-section>
+    a simple starter example, a custom select element, a static example with isolated style tags
+    </div>
+    
+    
+          
+    <code class=code>&lt;select-one&gt;
+          &lt;template shadowrootmode=open&gt;
+            &lt;style&gt;
+              :host {
+                --darkgray: lightgray;
+              }
+              
+              select {
+                                                  /* Reset Select */
+                appearance: none;
+                outline: 10px red;
+                border: 0;
+                box-shadow: none;
+                                                  /* Personalize */
+                flex: 1;
+                padding: 0 1em;
+                color: dimgray;
+                background-color: var(--darkgray);
+                background-image: none;
+                cursor: pointer;
+                padding:5px 10px;
+              }
+                                                /* Remove IE arrow */
+              select::-ms-expand {
+                display: none;
+              }
+                                                /* Custom Select wrapper */
+              .select {
+                position: relative;
+                display: inline-flex;
+                width: 150px;
+                /*height: 3em;*/
+                border-radius: .25em;
+                overflow: hidden;
+                color: dimgray;
+              }
+                                                /* Arrow */
+              .select::after {
+                content: '\25BC';
+                position: absolute;
+                top: 5px;
+                right: 10px;
+                /*padding: 1em;*/
+                background-color: var(--darkgray);
+                transition: .25s all ease;
+                pointer-events: none;
+              }
+                                              /* Transition */
+              .select:hover::after {
+                color: #f39c12;
+              }
+            &lt;/style&gt;
+          
+          
+            &lt;div class="select"&gt;
+              &lt;select&gt;
+                &lt;option value="1"&gt;Americano&lt;/option&gt;
+                &lt;option value="2"&gt;Latte&lt;/option&gt;
+                &lt;option value="3"&gt;Green Tea&lt;/option&gt;
+              &lt;/select&gt;      
+            &lt;/div&gt;
+            
+          &lt;/template&gt;
+        &lt;select-one&gt;
+        
+        &lt;script&gt;
+        
+              var node=document.querySelector('select-one');
+              var select=node.shadowRoot.querySelector('select');
+              select.onchange=e=&gt;alert(select.value);
+              
+        &lt;/script&gt;
+    </code>
+    
+    
+    
+    <div class=sub>
+    demo 1
+    </div>
+    
+    
+    <select-one>
+      <template shadowrootmode=open>
+        <style>
+          :host {
+            --darkgray: lightgray;
+          }
+          
+          select {
+            /* Reset Select */
+            appearance: none;
+            outline: 10px red;
+            border: 0;
+            box-shadow: none;
+            /* Personalize */
+            flex: 1;
+            padding: 0 1em;
+            color: dimgray;
+            background-color: var(--darkgray);
+            background-image: none;
+            cursor: pointer;
+            padding:5px 10px;
+          }
+          /* Remove IE arrow */
+          select::-ms-expand {
+            display: none;
+          }
+          /* Custom Select wrapper */
+          .select {
+            position: relative;
+            display: inline-flex;
+            width: 150px;
+            /*height: 3em;*/
+            border-radius: .25em;
+            overflow: hidden;
+            color: dimgray;
+          }
+          /* Arrow */
+          .select::after {
+            content: '\25BC';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            /*padding: 1em;*/
+            background-color: var(--darkgray);
+            transition: .25s all ease;
+            pointer-events: none;
+          }
+          /* Transition */
+          .select:hover::after {
+            color: #f39c12;
+          }
+        </style>
+      
+      
+        <div class="select">
+          <select>
+            <option value="1">Americano</option>
+            <option value="2">Latte</option>
+            <option value="3">Green Tea</option>
+          </select>      
+        </div>
+        
+      </template>
+    </select-one>
+    
+    <script>
+    
+          var node=document.querySelector('select-one');
+          var select=node.shadowRoot.querySelector('select');
+          select.onchange=e=>alert(select.value);
+    
+    
+    </script>
+    
+</section>
+
+<!-- demo 1 -->
+
+
+<div class=section-margin></div>
+
+
+<!-- demo 2 -->
+
+<section>
+
+    <div class=sub-title>
+    custom select2
+    </div>
+          
+    <div class=sub-section>
+    second example, a custom select element, user supplied characteristics, 
+    available multiple times on a single page
+    </div>
+    
+    
+    <code class=code>
+    &lt;select-two&gt;
+      &lt;template id=select-two-template&gt;
+        
+          &lt;style&gt;
+            :host {
+              --darkgray: lightgray;
+            }
+            
+            ::slotted(select) {
+              /* Reset Select */
+              appearance: none;
+              outline: 10px red;
+              border: 0;
+              box-shadow: none;
+              /* Personalize */
+              flex: 1;
+              padding: 0 1em;
+              color: dimgray;
+              background-color: var(--darkgray);
+              background-image: none;
+              cursor: pointer;
+              padding:5px 10px;
+            }
+            /* Remove IE arrow */
+            ::slotted(select)::-ms-expand {
+              display: none;
+            }
+            
+            /* Custom Select wrapper */
+            .select {
+              position: relative;
+              display: inline-flex;
+              width: 150px;
+              /*height: 3em;*/
+              border-radius: .25em;
+              overflow: hidden;
+              color: dimgray;
+            }
+            /* Arrow */
+            .select::after {
+              content: '\25BC';
+              position: absolute;
+              top: 5px;
+              right: 10px;
+              /*padding: 1em;*/
+              background-color: var(--darkgray);
+              transition: .25s all ease;
+              pointer-events: none;
+            }
+            /* Transition */
+            .select:hover::after {
+              color: #f39c12;
+            }
+          &lt;/style&gt;
+        
+        
+          &lt;div class="select"&gt;
+              &lt;slot&gt;&lt;/slot&gt;
+          &lt;/div&gt;
+        
+      &lt;/template&gt;
+        
+      &lt;script&gt;
+          class SelectTwo extends HTMLElement {
+            constructor() {
+              super();
+              
+              var template = document.getElementById("select-two-template");
+              var templateContent = template.content;
+              var shadowRoot = this.attachShadow({mode:"open"});
+              shadowRoot.appendChild(templateContent.cloneNode(true));
+    
+            }
+          }
+          customElements.define('my-select2',SelectTwo);
+      &lt;/script&gt;
+    &lt;/select-two&gt;
+    
+    &lt;my-select2&gt;
+          &lt;select&gt;
+            &lt;option value="1"&gt;Americano&lt;/option&gt;
+            &lt;option value="2"&gt;Latte&lt;/option&gt;
+            &lt;option value="3"&gt;Green Tea&lt;/option&gt;
+          &lt;/select&gt;      
+    &lt;/my-select2&gt;
+    
+    
+    &lt;script&gt;
+    
+      var node=document.querySelector('my-select2 select');
+      node.onchange=e=&gt;alert(node.value);
+      
+    &lt;/script&gt;
+    
+    </code>
+    
+    <div class=demo>
+    demo 2
+    </div>
+    
+    
+    <select-two>
+      <template id=select-two-template>
+        
+          <style>
+            :host {
+              --darkgray: lightgray;
+            }
+            
+            ::slotted(select) {
+              /* Reset Select */
+              appearance: none;
+              outline: 10px red;
+              border: 0;
+              box-shadow: none;
+              /* Personalize */
+              flex: 1;
+              padding: 0 1em;
+              color: dimgray;
+              background-color: var(--darkgray);
+              background-image: none;
+              cursor: pointer;
+              padding:5px 10px;
+            }
+            /* Remove IE arrow */
+            ::slotted(select)::-ms-expand {
+              display: none;
+            }
+            
+            /* Custom Select wrapper */
+            .select {
+              position: relative;
+              display: inline-flex;
+              width: 150px;
+              /*height: 3em;*/
+              border-radius: .25em;
+              overflow: hidden;
+              color: dimgray;
+            }
+            /* Arrow */
+            .select::after {
+              content: '\25BC';
+              position: absolute;
+              top: 5px;
+              right: 10px;
+              /*padding: 1em;*/
+              background-color: var(--darkgray);
+              transition: .25s all ease;
+              pointer-events: none;
+            }
+            /* Transition */
+            .select:hover::after {
+              color: #f39c12;
+            }
+          </style>
+        
+        
+          <div class="select">
+              <slot></slot>
+          </div>
+        
+      </template>
+        
+      <script>
+          class SelectTwo extends HTMLElement {
+            constructor() {
+              super();
+              
+              var template = document.getElementById("select-two-template");
+              var templateContent = template.content;
+              var shadowRoot = this.attachShadow({mode:"open"});
+              shadowRoot.appendChild(templateContent.cloneNode(true));
+    
+            }
+          }
+          customElements.define('my-select2',SelectTwo);
+      </script>
+      
+    </select-two>
+    
+    <my-select2>
+          <select>
+            <option value="1">Americano</option>
+            <option value="2">Latte</option>
+            <option value="3">Green Tea</option>
+          </select>      
+    </my-select2>
+    
+    
+    <script>
+    
+      var node=document.querySelector('my-select2 select');
+      node.onchange=e=>alert(node.value);
+      
+    </script>
+
+</section>
+
+<!-- demo 2 -->
+
+
+
 
 <!-- page html -->
 
