@@ -1,10 +1,19 @@
 
 
 
+var ext;
+var $;
 
-
-var ext   =  await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js').then(res=>res.text().then(eval));
-var [$]   = ext.load.libs['js/dom/$'];
+fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js')
+  .then(res=>res.text().then(txt=>{
+  
+      ext   = eval(txt);
+      $     = ext.load.libs['js/dom/$'];
+      
+      initdom();
+      
+  }));
+  
 
 
 
@@ -18,11 +27,11 @@ var [$]   = ext.load.libs['js/dom/$'];
         var image   = {};
         
         
-        setTimeout(initdom,50);
+        //setTimeout(initdom,50);
         
         
         function initdom(){   //c
-        console.log('initdom');
+                                                                          console.log('initdom');
                 
               var winw                      = window.innerWidth;
               
