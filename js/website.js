@@ -5,10 +5,10 @@ var ext;
 var $;
 
 fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js')
-  .then(res=>res.text().then(txt=>{
+  .then(res=>res.text().then(async txt=>{
   
       ext   = eval(txt);
-      $     = ext.load.libs['js/dom/$'];
+      $     = await ext.load.libs['js/dom/$'];
       
       initdom();
       
