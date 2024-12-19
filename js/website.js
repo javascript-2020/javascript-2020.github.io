@@ -2,13 +2,13 @@
 
 
 var ext;
-var $;
+var $,datatype;
 
 fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js')
   .then(res=>res.text().then(async txt=>{
   
       ext   = eval(txt);
-      $     = await ext.load.libs['js/dom/$'];
+      [$,datatype]    = await ext.load.libs('js/dom/$','js/core/datatype');
       
       initdom();
       
