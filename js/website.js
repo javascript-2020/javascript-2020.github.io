@@ -1,4 +1,13 @@
 
+
+
+
+
+var ext   =  await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js').then(res=>res.text().then(eval));
+var [$]   = ext.load.libs['js/dom/$'];
+
+
+
         var hdr;
         var background;
         var content;
@@ -163,7 +172,8 @@
         }//content
         
         
-        
+/*        
+
         function $(root,sel){
         
               if(!sel){
@@ -200,6 +210,8 @@
               
         }//computed
         
+*/
+
         
         
   //images:
