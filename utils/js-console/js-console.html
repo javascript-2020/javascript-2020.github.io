@@ -1,84 +1,97 @@
 <html>
     <head>
+        <title>js console</title>
         <style>
-        
-              html {
-                    height                      : 100%;
-              }
-              
-              body {
-                    font-family                 : arial;
-                    height                      : calc(100% - 16px);
-                    display                     : flex;
-                    flex-direction              : column;
-              }
-              
-              
-              .hdr {
-                    display:flex;
-                    justify-content:space-between;
-                    align-items:center;
-                    margin-top                  : 0;
-                    font-family                 : arial;
-              }
-              
-              .hdr-icon {
-                    display                     : inline-block;
-                    text-align                  : center;
-                    background                  : whitesmoke;
-                    border-radius               : 5px;
-                    border                      : 1px solid lightgray;
-                    padding                     : 5px 3px 0px;
-                    cursor                      : pointer;
-                    margin-right                : 10px;
-                    min-width                   : 50px;
-              }
-              
-              .hdr-icon-img {
-              }
-              
-              .hdr-icon-label {
-                    margin                      : 2px 0 0;
-              }
-              
-              .hdr-title {
-                    margin                      : 0;
-              }
-              
-              .hdr-date {
-                    float                       : right;
-              }
-              
-              .ftr {
-                    background-color            : rgb(238, 232, 170);
-                    height                      : 50px;
-                    margin-top                  : 70px;
-              }
-              
-              
-              #center {
-                    width                       : 100%;
-                    max-width                   : 1000px;
-                    margin                      : auto;
-                    flex                        : 1;
-              }
-              
-              
-              .heading {
-                    border-left                 : 5px solid rgba(238,232,170,1);
-                    background                  : rgba(239,247,250,1);
-                    padding                     : 20px 20px;
-              }
-              
-              
-              a {
-                    color                       : blue;
-              }
-              a:visited {
-                    color                       : blue;
-              }
-  
+                  html {
+                        height                      : 100%;
+                  }
+                  
+                  body {
+                        font-family                 : arial;
+                        /*margin                      : 20px;*/
+                        height                      : calc(100% - 16px);
+                        display                     : flex;
+                        flex-direction              : column;
+                  }
+                  
+                  
+                  .hdr {
+                        position                    : relative;
+                        display:flex;
+                        /*padding-bottom              : 10px;*/
+                        /*border-bottom               : 1px solid lightblue;*/
+                        margin-top                  : 0;
+                        /*margin-bottom               : 20px;*/
+                        font-family                 : arial;
+                  }
+                  
+                  .hdr-icon {
+                        display                     : inline-block;
+                        text-align                  : center;
+                        background                  : whitesmoke;
+                        border-radius               : 5px;
+                        border                      : 1px solid lightgray;
+                        padding                     : 5px 3px 0px;
+                        cursor                      : pointer;
+                        margin-right                : 10px;
+                        min-width                   : 50px;
+                  }
+                  
+                  .hdr-icon-img {
+                  }
+                  
+                  .hdr-icon-label {
+                        margin                      : 2px 0 0;
+                  }
+                  
+                  .hdr-title {
+                        text-align                  : center;
+                        position                    : absolute;
+                        left                        : 0;
+                        right                       : 0;
+                        top                         : 0px;
+                        z-index                     : -1;
+                        margin                      : 0;
+                  }
+                  
+                  .hdr-date {
+                        float                       : right;
+                  }
+                  
+                  .ftr {
+                        background-color            : rgb(238, 232, 170);
+                        height                      : 50px;
+                        margin-top                  : 70px;
+                  }
+                  
+                  
+                  #center {
+                        width                       : 100%;
+                        max-width                   : 1000px;
+                        margin                      : auto;
+                        flex                        : 1;
+                  }
+                  
+                  
+                  .heading {
+                        border-left                 : 5px solid rgba(238,232,170,1);
+                        background                  : rgba(239,247,250,1);
+                        padding                     : 20px 20px;
+                  }
+                  
+                  
+                  a {
+                        color                       : blue;
+                  }
+                  a:visited {
+                        color                       : blue;
+                  }
+          
+                  #filename {flex:1;margin-left:20px;}
+                    
         </style>
+        <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
+        
     </head>
     
     <body>
@@ -89,11 +102,14 @@
 home
                     </div>
                 </a>
+                
+                <div id=filename>filename</div>
+                
                 <h3 style="color: blue; font-weight: bold;" class="hdr-title">
 js console
                 </h3>
                 <div style="" class="hdr-date">
-22 Nov 2024
+20 Dec 2024
                 </div>
             </section>
 
@@ -218,8 +234,6 @@ save
         
 (async()=>{
                                                                                 console.clear();
-              var ace             = await import('https://cdn.jsdelivr.net/npm/ace-builds/+esm');
-              ace                 = ace.default;
               
               
               var url             = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js';
@@ -290,11 +304,13 @@ save
         
               node.addEventListener('mousedown',md);
               
-              var mx,my;
+              var mx;
+              var my;
               
               function md(e){
               
-                    mx=e.pageX;my=e.pageY;
+                    mx    = e.pageX;
+                    my    = e.pageY;
                     document.addEventListener('mousemove',mm);
                     document.addEventListener('mouseup',mu);
                     
@@ -302,9 +318,11 @@ save
               
               function mm(e){
               
-                    var ox    = e.pageX-mx,oy=e.pageY-my;
+                    var ox    = e.pageX-mx;
+                    var oy    = e.pageY-my;
+                    mx        = e.pageX;
+                    my        = e.pageY;
                     callback(ox,oy);
-                    mx=e.pageX;my=e.pageY;
                     
               }//mm
               
@@ -316,6 +334,8 @@ save
               }//mu
               
         }//track
+
+
         
         function slider(ox,oy){
         
