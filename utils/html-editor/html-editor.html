@@ -477,7 +477,19 @@ HTML Editor
                         body            = JSON.stringify(body);
                         var headers     = {authorization:`Bearer ${token}`};
                         var opts        = {method:'put',headers,body};
-                        var res         = await fetch(url,opts);
+                        
+                        var err;
+                        try{
+                              var res         = await fetch(url,opts);
+                        }
+                        catch(err2){
+                              err   = err2;
+                        }
+                        if(err){
+                              alert(err.message);
+                              return;
+                        }
+                        
                         if(res.ok){
                                                                         console.log('saved');
                               filename(path);
