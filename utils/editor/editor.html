@@ -18,14 +18,12 @@
                   
                   
                   .hdr {
+                        position                    : relative;
                         display:flex;
-                        justify-content:space-between;
-                        align-items:center;
-                        /*position                    : relative;
-                        padding-bottom              : 10px;
-                        border-bottom               : 1px solid lightblue;
-                        margin-bottom               : 20px;*/
+                        /*padding-bottom              : 10px;*/
+                        /*border-bottom               : 1px solid lightblue;*/
                         margin-top                  : 0;
+                        /*margin-bottom               : 20px;*/
                         font-family                 : arial;
                   }
                   
@@ -49,12 +47,12 @@
                   }
                   
                   .hdr-title {
-                        /*text-align                  : center;
+                        text-align                  : center;
                         position                    : absolute;
                         left                        : 0;
                         right                       : 0;
-                        top                         : 5px;
-                        z-index                     : -1;*/
+                        top                         : 0px;
+                        z-index                     : -1;
                         margin                      : 0;
                   }
                   
@@ -90,7 +88,9 @@
                   a:visited {
                         color                       : blue;
                   }
-      
+          
+                  #filename {flex:1;margin-left:20px;}
+                  
             </style>
           
             <style>
@@ -107,10 +107,10 @@
                   
                   .github {position:relative}
                   #github-menu {right:0;position:absolute;top:50px;width:700px;flex-direction:column;}                  
-
                   
             </style>
             
+            <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
       </head>
 
       <body>
@@ -121,6 +121,9 @@
 home
                     </div>
                 </a>
+                
+                <div id=filename>filename</div>
+                
                 <h3 style="color: blue; font-weight: bold;" class="hdr-title">
 editor
                 </h3>
@@ -251,8 +254,6 @@ editor
       var style   = create.style({textContent:css});
       document.head.append(style);
       
-      import ace from 'https://cdn.jsdelivr.net/npm/ace-builds/+esm';
-      
       var jsonblob    = await ext.load.libs['js/io/jsonblob/jsonblob.js'];
       jsonblob        = jsonblob();
       
@@ -342,6 +343,20 @@ editor
       }//initdom
       
       
+      function filename(path){
+      
+            var i   = path.lastIndexOf('/');
+            if(i==-1){
+                  fn    = path;
+            }else{
+                  fn    = path.slice(i+1);
+            }
+            document.title                = fn;
+            $('#filename').textContent    = fn;
+            
+      }//filename
+
+      
       ui.read=function(){
       
             var json    = {v:1,txt:editor.getValue()};
@@ -384,6 +399,7 @@ editor
                         input.onchange    = async ()=>{
                         
                                                   var file    = input.files[0];
+                                                  filename(file.name);
                                                   var txt     = await file.text();
                                                   editor.setValue(txt,-1);
                                                   
@@ -409,18 +425,32 @@ editor
                   var repo      = $(github,'#repo').value;
                   var branch    = $(github,'#branch').value;
                   var path      = $(github,'#path').value;
-                  console.log(owner,repo,branch,path);
+                                                                console.log(owner,repo,branch,path);
                   if(opt.id=='github-load'){
                         var url   = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`;
-                        console.log('load',url);
-                        var res   = await fetch(url);
+                                                                console.log('load',url);
+                        var err;
+                        try{                        
+                              var res   = await fetch(url);
+                        }
+                        catch(err2){
+                              err   = err2;
+                        }
+                        if(err){
+                              alert(err.message);
+                              return;
+                        }
+                        
                         var txt   = await res.text();
                         if(!res.ok){
                               alert(txt);
                               return;
                         }
+                        
+                        filename(path);
                         editor.setValue(txt,-1);
                   }
+                  
                   if(opt.id=='github-save'){
                         var txt         = editor.getValue();
                         var content     = window.btoa(txt);
@@ -432,8 +462,21 @@ editor
                         body            = JSON.stringify(body);
                         var headers     = {authorization:`Bearer ${token}`};
                         var opts        = {method:'put',headers,body};
-                        var res         = await fetch(url,opts);
+                        
+                        var err;
+                        try{
+                              var res         = await fetch(url,opts);
+                        }
+                        catch(err2){
+                              err   = err2;
+                        }
+                        if(err){
+                              alert(err.message);
+                              return;
+                        }
+                        
                         if(res.ok){
+                              filename(path);
                               console.log('saved');
                               return true;
                         }
