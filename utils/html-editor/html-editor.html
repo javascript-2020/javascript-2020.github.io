@@ -243,14 +243,31 @@ HTML Editor
             </div>
             <div id=view>
                   <div id=editor></div>
-                  <div id=page-slider></div>
+                  <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   <iframe id=iframe></iframe>
             </div>
       </body>
       
 <script type=module>
                                                                                 console.clear();
-      jsonblob        = jsonblob();
+      var ext;
+      var $,datatype,jsonblob;
+      
+      fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js')
+        .then(res=>res.text().then(async txt=>{
+        
+            ext   = eval(txt);
+            
+            [$,datatype,jsonblob
+            ]   = await ext.load.libs('js/dom/$','js/core/datatype','js/io/jsonblob/jsonblob.js');
+            
+            window.$          = $;
+            window.datatype   = datatype;
+            
+            init();
+            
+        }));
+  
       
       var menu        = menumod();
       
@@ -263,24 +280,24 @@ HTML Editor
       var iframe;
       
       var ui          = {};
+      ui.mode         = 'vert';
       ui.menu         = {};
-      
-      setTimeout(initdom,50);
 
 
-      window.onmessage    = function(e){
+  //:
+  
+  
+      function init(){
       
-            var json    = JSON.parse(e.data);
-            if(json.code){
-                  editor.setValue(json.code,-1);
-            }
-            if(json.run){
-                  run();
-            }
-            
-      }//onmessage
-
+            jsonblob        = jsonblob();
+            initdom();
       
+      }//init
+      
+      
+  //:
+  
+  
       async function initdom(){   //c
       
             keydown.initdom();
@@ -327,10 +344,15 @@ HTML Editor
             editor.session.setOptions({tabSize:2,useSoftTabs:true});
             //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
             editor.focus();
-            
+
+
             iframe                        = $('iframe');
+
+
+            ui.slider(editor.container,'#page-slider',iframe);
             
             
+
             ui.setup();
             
             var json    = await jsonblob.util.query();
@@ -361,7 +383,77 @@ HTML Editor
             
       }//filename
 
+  
+  //:
+
+  
+        ui.slider=function(node1,slider_node,node2){
+        
+              if(typeof slider_node=='string'){
+                    slider_node   = $(slider_node);
+              }
+              ui.slider.node    = slider_node;
+              $.track(slider_node,slider);
+
+              
+              function slider(ox,oy){
+              
+                    if(ui.mode=='vert'){
+                          slider.vert(ox);
+                    }else{
+                          slider.horiz(oy);
+                    }
+                    
+              }//slider
+              
+              slider.vert=function(ox){
+              
+                    var w1    = node1.offsetWidth;
+                    var w2    = node2.offsetWidth;
+                    
+                    if(w1+ox<25)return;
+                    if(w2-ox<25)return;
+                    
+                    node1.style.width   = w1+ox+'px';
+                    node2.style.width   = w2-ox+'px';
+                    
+              }//vert
+              
+              slider.horiz=function(oy){
+              
+                    var h1    = node1.offsetHeight;
+                    var h2    = node2.offsetHeight;
+                    
+                    if(h1+oy<40)return;
+                    if(h2-oy<40)return;
+                    
+                    node1.style.height    = h1+oy+'px'
+                    node2.style.height    = h2-oy+'px';
+                    
+              }//horiz
+
+        }//ui.slider
+        
+        
+  //:
+  
+
+      window.onmessage    = function(e){
       
+            var json    = JSON.parse(e.data);
+            if(json.code){
+                  editor.setValue(json.code,-1);
+            }
+            if(json.run){
+                  run();
+            }
+            
+      }//onmessage
+
+  
+  //:
+
+  
       ui.read=function(){
       
             var json    = {v:1,txt:editor.getValue()};
@@ -537,21 +629,49 @@ HTML Editor
             promise.catch(err=>{});
   
       }//paste
+
       
       function horiz(){
+      
             localStorage.setItem('orientation','horiz');
+            
+            ui.mode                         = 'horiz';
+            ui.slider.node.style.cursor     = 'ns-resize';
+            ui.slider.node.style.width      = '100%';
+            ui.slider.node.style.height     = '10px';            
+            
             view.style.flexDirection        = 'column';
+            
             editor.container.style.width    = '100%';
             editor.container.style.height   = '50%';
+            
+            iframe.style.width              = '100%';
+            iframe.style.height             = '50%';
+            
             editor.focus();
+            
       }//horiz
+
       
       function vert(){
+      
             localStorage.setItem('orientation','vert');
+            
+            ui.mode                         = 'vert';
+            ui.slider.node.style.cursor     = 'ew-resize';
+            ui.slider.node.style.width      = '10px';
+            ui.slider.node.style.height     = '100%';
+            
             view.style.flexDirection        = 'row';
+            
             editor.container.style.width    = '50%';
             editor.container.style.height   = '100%';
+            
+            iframe.style.width              = '50%';
+            iframe.style.height             = '100%';
+            
             editor.focus();
+            
       }//vert
       
   //:
@@ -569,127 +689,6 @@ HTML Editor
   //:
   //:
   
-  
-function jsonblob(){
-//  https://jsonblob.com/api
-  var obj   = {};
-  
-        var url           = 'https://jsonblob.com/api/jsonBlob/';
-        var id;
-        var time          = 500;
-        var timer;
-        var headers       = {'content-type':'application/json'};
-        
-        var util          = {};
-        util.query        = {};
-        obj.util          = {};
-  //:
-        obj.util.query=async function(){
-        
-              var tst     = window.location.search.slice(1);
-              if(!tst)return;
-              var json    = await read(tst);
-              if(!json)return;
-              id          = tst;
-              return json;
-              
-        }//query
-        
-        obj.util.query.set=function(){return util.query.set()}
-        util.query.set=function(){
-        
-              var url       = window.location.toString();
-              var search    = window.location.search;
-              if(search){
-                    url     = url.slice(0,-search.length);
-              }
-              if(id){
-                    url    += '?'+id;
-              }
-              window.history.replaceState(null,'',url);
-              
-        }//set
-        
-        obj.util.save=function(json,set=true){return util.save(json,set=true)}
-        util.save=async function(json,set=true){
-        
-              if(id){
-                    await update(id,json);
-              }else{
-                    await create(json);
-              }
-              if(set){
-                    util.query.set();
-              }
-              
-        }//save
-        
-        obj.util.save.debounce=function(fn){
-        
-              clearTimeout(timer);
-              var json    = fn();
-              timer       = setTimeout(util.save,time,json);
-              
-        }//debounce
-        
-        obj.util.delete=async function(set=true){
-        
-              if(id){
-                    var result    = await del(id);
-                    if(result){
-                          id    = null;
-                    }
-              }
-              if(!set)return;
-              util.query.set();
-              
-        }//delete
-        
-  //:
-  
-        obj.create=function(json){return create(json)}
-        async function create(json){
-        
-              var body    = JSON.stringify(json);
-              var res     = await fetch(url,{method:'post',headers,body});
-              if(!res.ok)return;
-              var loc     = res.headers.get('location');
-              var i       = loc.lastIndexOf('/');
-              id          = loc.slice(i+1);
-              return id;
-              
-        }//create
-        
-        obj.read=function(id){return read(id)}
-        async function read(id){
-        
-              var res     = await fetch(url+id);
-              if(!res.ok)return;
-              var json    = await res.json();
-              return json;
-              
-        }//read
-        
-        obj.update=async function(id,json){return update(id,json)}
-        async function update(id,json){
-        
-              var body    = JSON.stringify(json);
-              var res     = await fetch(url+id,{method:'put',headers,body});
-              return res.ok;
-              
-        }//update
-        
-        obj.delete=function(id){return del(id)}
-        async function del(id){
-        
-              var res   = await fetch(url+id,{method:'delete'});
-              return res.ok;
-              
-        }//delete
-        
-  return obj;
-  
-}//jsonblob
 
 </script>
 
@@ -764,87 +763,6 @@ function jsonblob(){
               
         }//keydown
         
-        
-        function datatype(v){
-        
-              var str   = Object.prototype.toString.call(v);
-              str       = str.slice(8,-1);
-              str       = str.toLowerCase();
-              return str;
-              
-        }//datatype
-        
-        datatype.is   = {};
-        
-        datatype.is.node=function(v){
-        
-              if(v===null || typeof v!='object'){
-                    return false;
-              }
-              if('nodeType' in v){
-                    return true;
-              }
-              return false;
-              
-        }//node
-        
-        function $(root,sel){
-        
-              if(!sel){
-                    if(datatype.is.node(root)){
-                          return root;
-                    }
-                    sel     = root;
-                    root    = document;
-              }
-              var node    = root.querySelector(sel);
-              return node;
-              
-        }//$
-        
-        $.is    = {};
-        
-        $.all=function(root,sel){
-        
-              if(!sel){
-                    if(datatype.is.node(root)){
-                          return root;
-                    }
-                    sel     = root;
-                    root    = document;
-              }
-              var list    = [...root.querySelectorAll(sel)];
-              return list;
-              
-        }//all
-        
-        $.show=function(root,sel){
-        
-              var node    = $(root,sel);
-              if(!node)return;
-              node.style.display    = '';
-              
-        }//show
-        
-        $.hide=function(root,sel){
-        
-              var node    = $(root,sel);
-              if(!node)return;
-              node.style.display    = 'none';
-              
-        }//hide
-        
-        $.is.parent=function(par,node){
-        
-              while(node){
-              
-                    if(node===par)return true;
-                    node    = node.parentNode;
-                    
-              }//while
-              return false;
-              
-        }//is.parent
         
 </script>
 
