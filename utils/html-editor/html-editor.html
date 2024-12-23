@@ -258,8 +258,9 @@ HTML Editor
         
             ext   = eval(txt);
             
+            var promise   = ext.load.libs('js/dom/$','js/core/datatype','js/io/jsonblob/jsonblob.js');
             [$,datatype,jsonblob
-            ]   = await ext.load.libs('js/dom/$','js/core/datatype','js/io/jsonblob/jsonblob.js');
+            ]   = await promise;
             
             window.$          = $;
             window.datatype   = datatype;
@@ -290,7 +291,10 @@ HTML Editor
       function init(){
       
             jsonblob        = jsonblob();
+            
+            
             initdom();
+
       
       }//init
       
@@ -364,6 +368,9 @@ HTML Editor
             }
             
             view.style.display    = 'flex';
+            
+            
+            
             
       }//initdom
       
