@@ -96,8 +96,8 @@
             <style>
                   #hdr {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
                   #view {flex:1}
-                  #editor{height:100%}
-                  .icon{border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+                  #editor {height:100%;width:100%}
+                  .icon {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
                   button {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
                   .spc {flex:1;max-width:200px}
 
@@ -317,9 +317,6 @@ editor
             editor.focus();
             
             
-            
-            ui.setup();
-            
             var json    = await jsonblob.util.query();
             if(json){
                   editor.setValue(json.txt,-1);
@@ -327,6 +324,7 @@ editor
                         run();
                   }
             }
+
             
       }//initdom
       
@@ -352,15 +350,6 @@ editor
             return json;
             
       }//read
-      
-      ui.setup=function(){
-      
-            var o   = localStorage.getItem('orientation');
-            if(o==='horiz'){
-                  horiz();
-            }
-            
-      }//setup
       
       function kd(e){
       
