@@ -96,7 +96,7 @@
                   #editor {width:50%}
                   #iframe-hldr {flex:1;box-sizing:border-box;position:relative}
                   iframe {width:100%;height:100%}
-                  #iframe-glass {width:100%;height:100%;position:absolute;left:0;top:0}
+                  #iframe-glass {width:100%;height:100%;position:absolute;left:0;top:0;background:lightgreen}
                   .icon {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
                   button {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
                   .spc {flex:1;max-width:200px}
@@ -359,7 +359,7 @@ HTML Editor
             iframe.glass                  = $('#iframe-glass');
 
 
-            ui.slider(editor.container,'#page-slider',iframe);
+            ui.slider('#editor','#page-slider','#iframe-hldr');
             
             
 
@@ -396,24 +396,22 @@ HTML Editor
             
       }//filename
 
-      function glass(show=true){
-      
-            if(show){
-                  iframe.glass.style.display    = '';
-            }else{
-                  iframe.glass.style.display    = 'none';
-            }
-            
-      }//glass
       
   //:
 
   
         ui.slider=function(node1,slider_node,node2){
         
+              if(typeof node1=='string'){
+                    node1   = $(node1);
+              }
               if(typeof slider_node=='string'){
                     slider_node   = $(slider_node);
               }
+              if(typeof node2=='string'){
+                    node2   = $(node2);
+              }
+              
               ui.slider.node    = slider_node;
               $.track(slider_node,slider);
 
@@ -427,6 +425,21 @@ HTML Editor
                     }
                     
               }//slider
+
+              
+              slider.md=function(){
+              
+                    glass();
+                    
+              }//slider.md
+
+              
+              slider.mu=function(){
+              
+                    glass(false);
+                  
+              }//slider.mu
+              
               
               slider.vert=function(ox){
               
@@ -455,6 +468,17 @@ HTML Editor
               }//horiz
 
         }//ui.slider
+
+
+        function glass(show=true){
+        
+              if(show){
+                    iframe.glass.style.display    = '';
+              }else{
+                    iframe.glass.style.display    = 'none';
+              }
+              
+        }//glass
         
         
   //:
