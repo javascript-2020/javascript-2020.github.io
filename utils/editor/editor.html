@@ -269,23 +269,11 @@ editor
       
       var ui          = {};
       ui.menu         = {};
+
+
       
       setTimeout(initdom,50);
 
-
-      window.onmessage    = function(e){
-      
-            var json    = JSON.parse(e.data);
-            if(json.code){
-                  editor.setValue(json.code,-1);
-            }
-            if(json.run){
-                  run();
-            }
-            
-      }//onmessage
-
-      
       async function initdom(){   //c
       
             keydown.initdom();
@@ -523,6 +511,21 @@ editor
             promise.catch(err=>{});
   
       }//paste
+
+
+      window.onmessage    = function(e){
+      
+            var json    = JSON.parse(e.data);
+            if(json.code){
+                  editor.setValue(json.code,-1);
+            }
+            if(json.run){
+                  run();
+            }
+            
+      }//onmessage
+
+
       
 
 </script>
