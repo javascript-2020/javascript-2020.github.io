@@ -258,15 +258,18 @@ HTML Editor
 <script type=module>
                                                                                 console.clear();
       var ext;
-      var $,datatype,jsonblob,menumod;
+      var $,datatype,jsonblob,menumod,keydown;
       
       fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js')
         .then(res=>res.text().then(async txt=>{
         
             ext   = eval(txt);
             
-            var promise   = ext.load.libs('js/dom/$','js/core/datatype','js/io/jsonblob/jsonblob.js','js/dom/menumod/menumod.js');
-            [$,datatype,jsonblob,menumod]   = await promise;
+            var promise   = ext.load.libs(
+                  'js/dom/$','js/core/datatype','js/io/jsonblob/jsonblob.js','js/dom/menumod/menumod.js',
+                  'js/dom/keydown/keydown'
+            );
+            [$,datatype,jsonblob,menumod,keydown]   = await promise;
 
             
             var css     = await ext.text.libs('js/dom/menumod/menumod.css');
@@ -560,13 +563,15 @@ HTML Editor
             
             if(e.key=='s' && e.ctrlKey){
                   e.preventDefault();
-                  if(cur){
-                        if(cur.type=='github'){
-                              ui.menu.github.save();
-                        }
-                        if(cur.type=='local'){
-                              ui.menu.local.save();
-                        }
+                  if(!cur){
+                        log.orange('no file');
+                        return;
+                  }
+                  if(cur.type=='github'){
+                        ui.menu.github.save();
+                  }
+                  if(cur.type=='local'){
+                        ui.menu.local.save();
                   }
             }
             
@@ -928,6 +933,15 @@ HTML Editor
 
         }//green
 
+
+        log.orange=function(){
+        
+              var nlog    = log.apply(null,arguments);
+              nlog.style.borderColor    = 'orange';
+              nlog.style.color          = 'orange';
+              
+        }//orange
+        
         
 </script>
 
@@ -936,7 +950,8 @@ HTML Editor
 <script>
   //:
   //:
-  
+/*
+
         keydown.initdom=function(){
         
               document.addEventListener('keydown',keydown,true);
@@ -1003,7 +1018,9 @@ HTML Editor
               
         }//keydown
         
-        
+*/
+
+
 </script>
 
 
