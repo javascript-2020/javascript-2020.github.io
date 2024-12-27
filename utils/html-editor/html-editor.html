@@ -276,9 +276,9 @@ HTML Editor
         }));
   
       
-      var menu        = menumod();
+      var menu;
 
-      var file;
+      var cur;
       
       var autosave;
       var autorun;
@@ -298,6 +298,7 @@ HTML Editor
   
       function init(){
       
+            menu            = menumod();
             jsonblob        = jsonblob();
             
             
@@ -373,6 +374,7 @@ HTML Editor
             
             log.initdom(document.body);
             
+            editor.focus();
             
       }//initdom
       
@@ -551,11 +553,11 @@ HTML Editor
             
             if(e.key=='s' && e.ctrlKey){
                   e.preventDefault();
-                  if(file){
-                        if(file.type=='github'){
+                  if(cur){
+                        if(cur.type=='github'){
                               ui.menu.github.save();
                         }
-                        if(file.type=='local'){
+                        if(cur.type=='local'){
                               ui.menu.local.save();
                         }
                   }
@@ -592,6 +594,7 @@ HTML Editor
                                       filename(file.name);
                                       var txt     = await file.text();
                                       editor.setValue(txt,-1);
+                                      cur         = {type:'local'};
                                       
                                 }
       
@@ -605,11 +608,12 @@ HTML Editor
             a.href        = url;
             a.download    = 'file.txt';
             a.click();
+            cur           = {type:'local'};
       
       }//save
 
       
-      ui.menu.github=function(type,opt){console.log('github',type,opt?.id);
+      ui.menu.github=function(type,opt){
       
             if(type=='opt'){
                   if(opt.id=='github-load'){
@@ -663,6 +667,7 @@ HTML Editor
             }
             filename(path);
             editor.setValue(txt,-1);
+            cur   = {type:'github'};
       
       }//load
       
@@ -712,6 +717,7 @@ HTML Editor
             if(res.ok){
                                                             console.log('saved');
                   filename(path);
+                  cur   = {type:'github'};
                   return true;
             }
             var txt         = await res.text();
