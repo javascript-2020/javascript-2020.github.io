@@ -276,6 +276,8 @@ HTML Editor
   
       
       var menu        = menumod();
+
+      var file;
       
       var autosave;
       var autorun;
@@ -341,20 +343,11 @@ HTML Editor
             $('#vert').onclick            = vert;
             
             view                          = $('#view');
+
             
-            editor                        = ace.edit('editor');
-            editor.setShowInvisibles(false);
-            editor.setShowPrintMargin(false);
-            editor.setPrintMarginColumn(false);
-            editor.setBehavioursEnabled(false);
-            editor.setDisplayIndentGuides(false);
-            editor.setScrollSpeed(2);
-            editor.setFontSize(16);
-            editor.session.setOptions({tabSize:2,useSoftTabs:true});
-            //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
-            editor.focus();
+            ui.editor();
 
-
+            
             iframe                        = $('iframe');
             iframe.glass                  = $('#iframe-glass');
 
@@ -364,6 +357,7 @@ HTML Editor
             
 
             ui.setup();
+
             
             var json    = await jsonblob.util.query();
             if(json){
@@ -400,6 +394,23 @@ HTML Editor
   //:
 
   
+        ui.editor=function(){
+        
+            editor    = ace.edit('editor');
+            editor.setShowInvisibles(false);
+            editor.setShowPrintMargin(false);
+            editor.setPrintMarginColumn(false);
+            editor.setBehavioursEnabled(false);
+            editor.setDisplayIndentGuides(false);
+            editor.setScrollSpeed(2);
+            editor.setFontSize(16);
+            editor.session.setOptions({tabSize:2,useSoftTabs:true});
+            //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
+            editor.focus();
+
+        }//editor
+        
+        
         ui.slider=function(node1,slider_node,node2){
         
               if(typeof node1=='string'){
@@ -453,6 +464,7 @@ HTML Editor
                     node2.style.width   = w2-ox+'px';
                     
               }//vert
+
               
               slider.horiz=function(oy){
               
@@ -506,6 +518,7 @@ HTML Editor
             return json;
             
       }//read
+
       
       ui.setup=function(){
       
@@ -515,130 +528,184 @@ HTML Editor
             }
             
       }//setup
+
       
       function kd(e){
       
             if(e.key=='Enter' && e.ctrlKey){
                   run();
             }
+            
             if(e.key=='s' && e.ctrlKey){
                   e.preventDefault();
-                  var json    = ui.read();
-                  jsonblob.util.save(json);
+                  if(file){
+                        if(file.type=='github'){
+                              ui.menu.github.save();
+                        }
+                        if(file.type=='local'){
+                              ui.menu.local.save();
+                        }
+                  }
             }
+            
             if(e.key=='Delete' && e.ctrlKey){
                   jsonblob.util.delete()
             }
             
       }//keydown
+
       
       ui.menu.local=function(type,opt){
       
             if(type=='opt'){
                   if(opt.id=='load'){
-                        var input   = document.createElement('input');
-                        input.type    = 'file';
-                        input.click();
-                        input.onchange    = async ()=>{
-                        
-                                                  var file    = input.files[0];
-                                                  filename(file.name);
-                                                  var txt     = await file.text();
-                                                  editor.setValue(txt,-1);
-                                                  
-                                            }
+                        ui.menu.local.load();
                   }
                   if(opt.id=='save'){
-                        var blob      = new Blob([editor.getValue()]);
-                        var url       = window.URL.createObjectURL(blob);
-                        var a         = document.createElement('a');
-                        a.href        = url;
-                        a.download    = 'file.txt';
-                        a.click();
+                        ui.menu.local.save();
                   }
             }
             
       }//local
       
+      ui.menu.local.load=function(){
+      
+            var input   = document.createElement('input');
+            input.type    = 'file';
+            input.click();
+            input.onchange    = async ()=>{
+            
+                                      var file    = input.files[0];
+                                      filename(file.name);
+                                      var txt     = await file.text();
+                                      editor.setValue(txt,-1);
+                                      
+                                }
+      
+      }//load
+      
+      ui.menu.local.save=function(){
+      
+            var blob      = new Blob([editor.getValue()]);
+            var url       = window.URL.createObjectURL(blob);
+            var a         = document.createElement('a');
+            a.href        = url;
+            a.download    = 'file.txt';
+            a.click();
+      
+      }//save
+
+      
       ui.menu.github=async function(type,opt){console.log('github',type,opt?.id);
       
             if(type=='opt'){
-                  var token     = $(github,'#token').value;
-                  var owner     = $(github,'#owner').value;
-                  var repo      = $(github,'#repo').value;
-                  var branch    = $(github,'#branch').value;
-                  var path      = $(github,'#path').value;
-                                                                console.log(owner,repo,branch,path);
                   if(opt.id=='github-load'){
-                        var url   = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`;
-                                                                console.log('load',url);
-                        var err;
-                        try{
-                              var res   = await fetch(url);
-                        }
-                        catch(err2){
-                              err   = err2;
-                        }
-                        if(err){
-                              alert(err.message);
-                              return;
-                        }
-                        
-                        var txt   = await res.text();
-                        if(!res.ok){
-                              alert(txt);
-                              return;
-                        }
-                        filename(path);
-                        editor.setValue(txt,-1);
+                        ui.menu.github.load();
                   }
                   if(opt.id=='github-save'){
-                        var txt         = editor.getValue();
-                        var content     = window.btoa(txt);
-                        var message     = 'save text';
-                        var url         = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-                        
-                        var err;
-                        try{
-                              var json        = await fetch(url).then(res=>res.json());
-                        }
-                        catch(err2){
-                              err   = err2;
-                        }
-                        if(err){
-                              alert(err.message);
-                              return;
-                        }
-                        
-                        var sha         = json.sha;
-                        var body        = {content,sha,message};
-                        body            = JSON.stringify(body);
-                        var headers     = {authorization:`Bearer ${token}`};
-                        var opts        = {method:'put',headers,body};
-                        
-                        var err;
-                        try{
-                              var res         = await fetch(url,opts);
-                        }
-                        catch(err2){
-                              err   = err2;
-                        }
-                        if(err){
-                              alert(err.message);
-                              return;
-                        }
-                        
-                        if(res.ok){
-                                                                        console.log('saved');
-                              filename(path);
-                              return true;
-                        }
-                        var txt         = await res.text();
-                        alert(txt);
+                        ui.menu.github.save();
                   }
             }
             
       }//github
+      
+      ui.menu.github.read=function(){
+      
+            var token     = $(github,'#token').value;
+            var owner     = $(github,'#owner').value;
+            var repo      = $(github,'#repo').value;
+            var branch    = $(github,'#branch').value;
+            var path      = $(github,'#path').value;
+                                                                console.log(owner,repo,branch,path);
+            return {token,owner,repo,branch,path};
+            
+      }//read
+      
+      ui.menu.github.load=function(){
+      
+            var {token,owner,repo,branch,path}    = ui.menu.github.read();
+            
+            var url   = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`;
+                                                                console.log('load',url);
+            var err;
+            try{
+            
+                  var res   = await fetch(url);
+                  
+            }
+            catch(err2){
+            
+                  err   = err2;
+                  
+            }
+            if(err){
+                  alert(err.message);
+                  return;
+            }
+            
+            var txt   = await res.text();
+            if(!res.ok){
+                  alert(txt);
+                  return;
+            }
+            filename(path);
+            editor.setValue(txt,-1);
+      
+      }//load
+      
+      ui.menu.github.save=function(){
+      
+            var {token,owner,repo,branch,path}    = ui.menu.github.read();
+            
+            var txt         = editor.getValue();
+            var content     = window.btoa(txt);
+            var message     = 'save text';
+            var url         = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+            
+            var err;
+            try{
+            
+                  var json        = await fetch(url).then(res=>res.json());
+                  
+            }
+            catch(err2){
+            
+                  err   = err2;
+                  
+            }
+            if(err){
+                  alert(err.message);
+                  return;
+            }
+            
+            var sha         = json.sha;
+            var body        = {content,sha,message};
+            body            = JSON.stringify(body);
+            var headers     = {authorization:`Bearer ${token}`};
+            var opts        = {method:'put',headers,body};
+            
+            var err;
+            try{
+                  var res         = await fetch(url,opts);
+            }
+            catch(err2){
+                  err   = err2;
+            }
+            if(err){
+                  alert(err.message);
+                  return;
+            }
+            
+            if(res.ok){
+                                                            console.log('saved');
+                  filename(path);
+                  return true;
+            }
+            var txt         = await res.text();
+            alert(txt);
+      
+      }//save
+
       
       function newwin(){
       
@@ -650,16 +717,20 @@ HTML Editor
             window.open(url);
             
       }//newwin
+
       
       function fork(){
       }//fork
       
+
       function save(){
       
-            jsonblob.util.save(ui.read());
+            var json    = ui.read();
+            jsonblob.util.save(json);
             
       }//save
       
+
       function copy(){
       
             var txt       = editor.getValue();
@@ -668,6 +739,7 @@ HTML Editor
             
       }//copy
       
+
       function paste(){
       
             var promise   = navigator.clipboard.readText();
@@ -719,6 +791,7 @@ HTML Editor
             editor.focus();
             
       }//vert
+
       
   //:
   
@@ -737,7 +810,6 @@ HTML Editor
   
 
 </script>
-
 
 <script>
   //:
