@@ -723,26 +723,29 @@ HTML Editor
             
             var err;
             try{
+            
                   var res         = await fetch(url,opts);
+                  
             }
             catch(err2){
+            
                   err   = err2;
+                  
             }
             if(err){
                   log.red(err.message);
                   return;
             }
-            
-            if(res.ok){
-                                                            console.log('saved');
-                  cur       = {type:'github'};
-                  var fn    = filename(path);
-                  log.green(fn,'saved');
-                  return true;
+            if(!res.ok){
+                  var txt         = await res.text();
+                  log.red(txt);
+                  return;
             }
-            var txt         = await res.text();
-            log.red(txt);
-      
+                                                                          console.log('saved');
+            cur       = {type:'github'};
+            var fn    = filename(path);
+            log.green(fn,'saved');
+            
       }//save
 
 
@@ -870,7 +873,7 @@ HTML Editor
 <style>
 
         #log-root {position:absolute;left:10px;bottom:3px;right:10px;z-index:99999}
-        #log {display:flex;background:white;border:2px solid transparent;padding:10px;border-radius:5px}
+        #log {display:flex;background:white;border:2px solid transparent;padding:10px;border-radius:5px;cursor:pointer}
         #log-text {flex:1;white-space:pre-wrap}
         #log-close {width:15px;height:15px}
         
