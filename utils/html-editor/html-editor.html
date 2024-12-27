@@ -257,155 +257,186 @@ HTML Editor
       
 <script type=module>
                                                                                 console.clear();
-      var ext;
-      var $,datatype,jsonblob,menumod,keydown;
-      
-      fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js')
-        .then(res=>res.text().then(async txt=>{
+        var ext;
+        var $,datatype,jsonblob,menumod,keydown;
         
-            ext   = eval(txt);
-            
-            var promise   = ext.load.libs(
-                  'js/dom/$','js/core/datatype','js/io/jsonblob/jsonblob.js','js/dom/menumod/menumod.js',
-                  'js/dom/keydown/keydown'
-            );
-            [$,datatype,jsonblob,menumod,keydown]   = await promise;
-
-            
-            var css     = await ext.text.libs('js/dom/menumod/menumod.css');
-            var style   = document.createElement('style');
-            style.textContent   = css;
-            document.head.append(style);
-            
-            
-            window.$          = $;
-            window.datatype   = datatype;
-            
-            init();
-            
-        }));
-  
-      
-      var menu;
-
-      var cur;
-      
-      var autosave;
-      var autorun;
-      var local;
-      var github;
-      var view;
-      var editor;
-      var iframe;
-      
-      var ui          = {};
-      ui.mode         = 'vert';
-      ui.menu         = {};
-
-
-  //:
-  
-  
-      function init(){
-      
-            menu            = menumod();
-            jsonblob        = jsonblob();
-            
-            
-            initdom();
-
-      
-      }//init
-      
-      
-  //:
-  
-  
-      async function initdom(){   //c
-      
-            keydown.initdom();
-            keydown.add(kd);
+        fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js')
+          .then(res=>res.text().then(async txt=>{
           
-            $('#clear').onclick           = clear;
-            $('#new').onclick             = newwin;
-            $('#fork').onclick            = fork;
-            
-            $('#run').onclick             = run;
-            $('#save').onclick            = save;
-            $('#copy').onclick            = copy;
-            $('#paste').onclick           = paste;
-            
-            autosave                      = $('#autosave input');
-            autosave.checked              = false;
-            autorun                       = $('#autorun input');
-            autorun.checked               = false;
-            
-            
-            var node                      = $('#local-menu');
-            $('#local').onclick           = menu.click(node,false,false,ui.menu.local);
-            
+              ext   = eval(txt);
+              
+              var promise   = ext.load.libs(
+                    'js/dom/$','js/core/datatype','js/io/jsonblob/jsonblob.js','js/dom/menumod/menumod.js',
+                    'js/dom/keydown/keydown'
+              );
+              [$,datatype,jsonblob,menumod,keydown]   = await promise;
+  
+              
+              var css     = await ext.text.libs('js/dom/menumod/menumod.css');
+              var style   = document.createElement('style');
+              style.textContent   = css;
+              document.head.append(style);
+              
+              
+              window.$          = $;
+              window.datatype   = datatype;
+              
+              init();
+              
+          }));
+    
+        
+        var menu;
+  
+        var cur;
+        
+        var autosave;
+        var autorun;
+        var local;
+        var github;
+        var view;
+        var editor;
+        var iframe;
+        
+        var ui          = {};
+        ui.mode         = 'vert';
+        ui.menu         = {};
 
-            github                        = $('.github');
-            var node                      = $('#github-menu');
-            $('#github').onclick          = menu.click(node,false,false,ui.menu.github);
 
-
-            
-            $('#horiz').onclick           = horiz;
-            $('#vert').onclick            = vert;
-            
-            view                          = $('#view');
-
-            
-            ui.editor();
-
-            
-            iframe                        = $('iframe');
-            iframe.glass                  = $('#iframe-glass');
-
-
-            ui.slider('#editor','#page-slider','#iframe-hldr');
-            
-            
-
-            ui.setup();
-
-            
-            var json    = await jsonblob.util.query();
-            if(json){
-                  editor.setValue(json.txt,-1);
-                  if(autorun.checked){
-                        run();
-                  }
-            }
-            
-            view.style.display    = 'flex';
-            
-            
-            log.initdom(document.body);
-            
-            editor.focus();
-            
-      }//initdom
+  //:
+  
+  
+        function init(){
+        
+              menu            = menumod();
+              jsonblob        = jsonblob();
+              
+              
+              initdom();
+  
+        
+        }//init
       
       
-      function filename(path){
-      
-            var fn;
-            var i   = path.lastIndexOf('/');
-            if(i==-1){
-                  fn    = path;
-            }else{
-                  fn    = path.slice(i+1);
-            }
-            document.title                = fn;
-            $('#filename').textContent    = fn;
-            return fn;
+  //:
+  
+  
+        async function initdom(){   //c
+        
+              keydown.initdom();
+              keydown.add(kd);
             
-      }//filename
+              $('#clear').onclick           = clear;
+              $('#new').onclick             = newwin;
+              $('#fork').onclick            = fork;
+              
+              $('#run').onclick             = run;
+              $('#save').onclick            = save;
+              $('#copy').onclick            = copy;
+              $('#paste').onclick           = paste;
+              
+              autosave                      = $('#autosave input');
+              autosave.checked              = false;
+              autorun                       = $('#autorun input');
+              autorun.checked               = false;
+              
+              
+              var node                      = $('#local-menu');
+              $('#local').onclick           = menu.click(node,false,false,ui.menu.local);
+              
+  
+              github                        = $('.github');
+              var node                      = $('#github-menu');
+              $('#github').onclick          = menu.click(node,false,false,ui.menu.github);
+  
+  
+              
+              $('#horiz').onclick           = horiz;
+              $('#vert').onclick            = vert;
+              
+              view                          = $('#view');
+  
+              
+              ui.editor();
+  
+              
+              iframe                        = $('iframe');
+              iframe.glass                  = $('#iframe-glass');
+  
+  
+              ui.slider('#editor','#page-slider','#iframe-hldr');
+              
+              
+  
+              ui.setup();
+  
+              
+              var json    = await jsonblob.util.query();
+              if(json){
+                    editor.setValue(json.txt,-1);
+                    if(autorun.checked){
+                          run();
+                    }
+              }
+              
+              view.style.display    = 'flex';
+              
+              
+              log.initdom(document.body);
+              
+              editor.focus();
+              
+        }//initdom
+      
+
+        function kd(e){
+        
+              if(e.key=='Enter' && e.ctrlKey){
+                    run();
+              }
+              
+              if(e.key==' ' && e.ctrlKey){
+                    menu.open();
+              }
+              
+              if(e.key=='s' && e.ctrlKey){
+                    e.preventDefault();
+                    if(!cur){
+                          log.orange('no file');
+                          return;
+                    }
+                    if(cur.type=='github'){
+                          ui.menu.github.save();
+                    }
+                    if(cur.type=='local'){
+                          ui.menu.local.save();
+                    }
+              }
+              
+              if(e.key=='Delete' && e.ctrlKey){
+                    jsonblob.util.delete()
+              }
+              
+        }//keydown
 
       
   //:
+
+
+        function filename(path){
+        
+              var fn;
+              var i   = path.lastIndexOf('/');
+              if(i==-1){
+                    fn    = path;
+              }else{
+                    fn    = path.slice(i+1);
+              }
+              document.title                = fn;
+              $('#filename').textContent    = fn;
+              return fn;
+              
+        }//filename
 
   
         ui.editor=function(){
@@ -553,39 +584,6 @@ HTML Editor
             }
             
       }//setup
-
-      
-      function kd(e){
-      
-            if(e.key=='Enter' && e.ctrlKey){
-                  run();
-            }
-            
-            if(e.ctrlKey && e.key==' '){
-                  menu.open();
-            }
-            
-            if(e.key=='s' && e.ctrlKey){
-                  e.preventDefault();
-                  if(!cur){
-                        log.orange('no file');
-                        return;
-                  }
-                  if(cur.type=='github'){
-                        ui.menu.github.save();
-                  }
-                  if(cur.type=='local'){
-                        ui.menu.local.save();
-                  }
-            }
-            
-            if(e.key=='Delete' && e.ctrlKey){
-                  jsonblob.util.delete()
-            }
-            
-      }//keydown
-
-
 
       
       ui.menu.local=function(type,opt){
