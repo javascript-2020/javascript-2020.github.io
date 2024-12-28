@@ -23,7 +23,7 @@
                   .github {position:relative}
                   #github-menu {right:0;position:absolute;top:50px;width:700px;flex-direction:column;}
 
-                  
+/*                  
                   .slider {position:relative;display:inline-flex;align-items:center;cursor:pointer;
                             border:1px solid gray;border-radius:3px;height:30px;box-sizing:border-box;padding:0 5px}
                   .slider input {opacity:0;width:0;height:0}
@@ -34,15 +34,91 @@
                   .slider input:checked + .hldr:before {transform:translateX(9px)}
                   .slider .hldr {border-radius:34px}
                   .slider .hldr:before {border-radius:50%}
-
+*/
 
                   
             </style>
             <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
 
+<slider-two-root>
+      <template id=slider-two-template>
+      
+            <style>
+            
+                  .slider {position:relative;display:inline-flex;align-items:center;cursor:pointer;
+                            border:1px solid gray;border-radius:3px;height:30px;box-sizing:border-box;padding:0 5px}
+                  .slider input {opacity:0;width:0;height:0}
+                  .slider .label {margin-left:30px}
+                  .slider .hldr {position:absolute;top:4px;left:5px;width:30px;height:20px;background-color:#ccc}
+                  .slider .hldr:before {position:absolute;content:"";height:17px;width:17px;left:2px;bottom:2px;background-color:white;transition:.2s}
+                  .slider input:checked + .hldr {background-color:#2196F3}
+                  .slider input:checked + .hldr:before {transform:translateX(9px)}
+                  .slider .hldr {border-radius:34px}
+                  .slider .hldr:before {border-radius:50%}
+            
+            </style>
+
+            
+            <label id=autosave class=slider>
+                  <span class=track></span>
+                  <input type=checkbox>
+                  <span class=hldr></span>
+                  <span class=label>
+                        <slot></slot>
+                  </span>
+            </label>
+            
+      </template>      
+      <script>
+
+          class SliderTwo extends HTMLElement {
+                constructor() {
+
+                      super();
+                      
+                      var root              = this;
+                      console.log(root);
+                      
+                      var template          = document.getElementById("slider-two-template");
+                      var templateContent   = template.content;
+                      var shadow            = root.attachShadow({mode:"open"});
+                      shadow.appendChild(templateContent.cloneNode(true));
+        
+          
+                      var chk         = shadow.querySelector('[type=checkbox]');
+                      chk.onchange    = e=>{
+                                                
+                                                root.checked    = chk.checked;
+                                                if(typeof root.onchange=='function'){
+                                                      root.onchange(e);
+                                                }
+                                                
+                                        };
+                      Object.defineProperty(root,'checked',{get:()=>chk.checked,set:v=>chk.checked=v});
+                      
+                      if(root.hasAttribute('checked')){
+                            root.checked   = true;
+                      }
+                      if('checked' in root){
+                            chk.checked   = root.checked;
+                      }
+                   
+                      if(root.innerHTML.trim()==''){
+                            root.innerHTML    = root.id;
+                      }
+                      
+                }//constructor
+          }//class          
+          customElements.define('slider-two',SliderTwo);
+      </script>      
+</slider-two-root>
+
+
+
+
             
 <script>
-                                                                                //console.clear();
+                                                                                console.clear();
         var ext;
         var $,datatype,jsonblob,menumod,keydown;
         
@@ -96,10 +172,9 @@
   //:
 
   
-        window.init   = init;
         init.stack    = [];
         function init(){
-        
+                                                                              console.log('init');
               menu            = menumod();
               jsonblob        = jsonblob();
               
@@ -134,10 +209,11 @@
               $('#copy').onclick            = copy;
               $('#paste').onclick           = paste;
               
-              autosave                      = $('#autosave input');
+              autosave                      = $('#autosave');
               autosave.checked              = false;
-              autorun                       = $('#autorun input');
+              autorun                       = $('#autorun');
               autorun.checked               = false;
+              
               
               
               var node                      = $('#local-menu');
@@ -546,7 +622,7 @@
       }//save
 
 
-      function clear(){
+      function clear(e){
       
             editor.setValue('',-1);
             
@@ -665,76 +741,6 @@
 </script>
             
       </head>
-
-
-<slider-two>
-      <template id=slider-two-template>
-      
-            <style>
-            
-                  .slider {position:relative;display:inline-flex;align-items:center;cursor:pointer;
-                            border:1px solid gray;border-radius:3px;height:30px;box-sizing:border-box;padding:0 5px}
-                  .slider input {opacity:0;width:0;height:0}
-                  .slider .label {margin-left:30px}
-                  .slider .hldr {position:absolute;top:4px;left:5px;width:30px;height:20px;background-color:#ccc}
-                  .slider .hldr:before {position:absolute;content:"";height:17px;width:17px;left:2px;bottom:2px;background-color:white;transition:.2s}
-                  .slider input:checked + .hldr {background-color:#2196F3}
-                  .slider input:checked + .hldr:before {transform:translateX(9px)}
-                  .slider .hldr {border-radius:34px}
-                  .slider .hldr:before {border-radius:50%}
-            
-            </style>
-
-            
-            <label id=autosave class=slider>
-                  <span class=track></span>
-                  <input type=checkbox>
-                  <span class=hldr></span>
-                  <span class=label>
-                        <slot></slot>
-                  </span>
-            </label>
-            
-      </template>      
-      <script>
-          class SliderTwo extends HTMLElement {
-                constructor() {
-                
-                      super();
-                      
-                      var template          = document.getElementById("slider-two-template");
-                      var templateContent   = template.content;
-                      var shadowRoot        = this.attachShadow({mode:"open"});
-                      shadowRoot.appendChild(templateContent.cloneNode(true));
-        
-                      window.init.stack.push(()=>{console.log('slidertwo');
-                      
-                            window.$.all('slider-two').forEach(root=>{
-                            
-                                  var shadow      = root.shadowRoot;
-                                  var chk         = shadow.querySelector('[type=checkbox]');
-                                  chk.onchange    = e=>{
-                                                            
-                                                            root.checked    = chk.checked;
-                                                            if(typeof root.onchange=='function'){
-                                                                  root.onchange(e);
-                                                            }
-                                                            
-                                                    };
-                                  root.checked    = chk.checked;        
-        
-                            });
-                            
-                      });
-                      
-                }//constructor
-          }//class          
-          customElements.define('slider-two',SliderTwo);
-      </script>      
-</slider-two>
-
-
-
       <body>
 
             <section style="box-sizing:border-box" id="hdr">
@@ -764,23 +770,9 @@ HTML Editor
                   <button id=save>save</button>
                   <button id=copy>copy</button>
                   <button id=paste>paste</button>
-                  
-                  <label id=autosave class=slider>
-                        <span class=track></span>
-                        <input type=checkbox>
-                        <span class=hldr></span>
-                        <span class=label>autosave</span>
-                  </label>
-                  <label id=autorun class=slider>
-                        <span class=track></span>
-                        <input type=checkbox>
-                        <span class=hldr></span>
-                        <span class=label>autorun</span>
-                  </label>
 
-                  <slider-two id=test>
-                        test
-                  </slider-two>
+                  <slider-two id=autosave></slider-two>
+                  <slider-two id=autorun></slider-two>
                   
                   <div class=spc></div>
                   
