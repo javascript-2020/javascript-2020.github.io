@@ -77,8 +77,6 @@
                       super();
                       
                       var root              = this;
-                      console.log(root);
-                      
                       var template          = document.getElementById("slider-two-template");
                       var templateContent   = template.content;
                       var shadow            = root.attachShadow({mode:"open"});
@@ -94,6 +92,7 @@
                                                 }
                                                 
                                         };
+                                        
                       Object.defineProperty(root,'checked',{get:()=>chk.checked,set:v=>chk.checked=v});
                       
                       if(root.hasAttribute('checked')){
@@ -103,9 +102,14 @@
                             chk.checked   = root.checked;
                       }
                    
-                      if(root.innerHTML.trim()==''){
-                            root.innerHTML    = root.id;
-                      }
+                      setTimeout(()=>{
+                      
+                            var str   = root.innerHTML.trim();
+                            if(str==''){
+                                  root.innerHTML    = root.id;
+                            }
+                            
+                      },50);
                       
                 }//constructor
           }//class          
