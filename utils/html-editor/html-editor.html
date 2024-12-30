@@ -6,6 +6,7 @@
 
             <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
 
+
 <!-- components -->
 
 <slider-two-root>
@@ -110,13 +111,11 @@
       
       
       <script>
-                                                                  //console.clear();
-      
+                                                                  //console.clear();      
             class Log extends HTMLElement {
                   constructor() {
                   
                         super();
-                        console.log('log');
                         
                         var $   = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
                         $.rem   = (root,sel)=>{
@@ -127,8 +126,8 @@
                                         
                                   }//rem
                                   
-                        var root      = this;
-                        var shadow    = root.shadowRoot;
+                        var root              = this;
+                        var shadow            = root.shadowRoot;
                                                 
                         window.log            = log;
                         
@@ -442,7 +441,7 @@ HTML Editor
 
   
         function init(){
-                                                                              //console.log('init');
+                                                                              console.log('init');
               menu            = menumod();
               jsonblob        = jsonblob();
               
@@ -498,7 +497,7 @@ HTML Editor
               view                          = $('#view');
   
               
-              ui.editor();
+              ui.editor(view);
   
               
               iframe                        = $('iframe');
@@ -578,9 +577,10 @@ HTML Editor
         }//filename
 
   
-        ui.editor=function(){
+        ui.editor=function(root){
         
-            editor    = ace.edit('editor');
+            var node    = $(root,'#editor');
+            editor      = ace.edit(node);
             editor.setShowInvisibles(false);
             editor.setShowPrintMargin(false);
             editor.setPrintMarginColumn(false);
