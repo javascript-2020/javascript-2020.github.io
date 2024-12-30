@@ -87,8 +87,11 @@ fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js
                     img.src         = image.copy;
                     node.append(img);
                     
-                    function click(){
-                    
+                    function click(e){
+                                                                        console.log('copied');
+                          var x     = e.pageX+'px';
+                          var y     = e.pageY+'px';
+                          var div   = $.create.div({txt:'copied',style:{position:'absolute',left:x,top:y});
                           var txt   = node.textContent.trim();
                           navigator.clipboard.writeText(txt);
                           
