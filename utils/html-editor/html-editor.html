@@ -269,7 +269,7 @@ home
 HTML Editor
                 </h3>
                 <div style="" class="hdr-date">
-28 Dec 2024
+30 Dec 2024
                 </div>
             </section>
 
@@ -283,6 +283,11 @@ HTML Editor
                         
                       <div id=new class=menu-opt>new</div>
                       <div id=fork class=menu-opt>fork</div>
+                      <div class=menu-sep></div>
+                      <div id=editor class=menu-opt>editor</div>
+                      <div id=js-console class=menu-opt>js console</div>
+                      <div class=menu-sep></div>
+                      <div id=trim class=menu-opt>trim</div>
                       
                   </div>
 
@@ -464,9 +469,6 @@ HTML Editor
               $('#clear').onclick           = clear;
               var node                      = $('#menu-one-menu');
               $('#menu-one-icon').onclick   = menu.click(node,false,false,ui.menu.one);
-              
-              $('#new').onclick             = newwin;
-              $('#fork').onclick            = fork;
               
               $('#run').onclick             = run;
               $('#save').onclick            = save;
@@ -722,20 +724,64 @@ HTML Editor
             
       }//setup
 
+
       
   //menu:
   
       ui.menu.one=function(type,opt){
       
             if(type=='opt'){
-                  console.log(opt.id);
-                  switch(opt.id){
-                    //case 'new'    : ui.menu.one.new();        break;
-                    //case 'fork'   : ui.menu.one.fork();       break;
-                  }//switch
+                  ui.menu.one[opt.id]();
             }
             
       }//one
+
+      ui.menu.one.new=function(){
+      
+            var url       = window.location.toString();
+            var search    = window.location.search;
+            if(search){
+                  url     = url.slice(0,-search.length);
+            }
+            
+            var win   = window.open(url);
+            return win;
+            
+      }//new
+      
+      ui.menu.one.fork=function(){
+      
+            var win   = newwin();
+            var txt   = editor.getValue();
+            win.postMessage({txt},'*');
+            
+      }//fork
+      
+      ui.menu.one.editor=function(){
+      
+            window.open('/utils/editor/editor.html');
+            
+      }//editor
+      
+      ui.menu.one['js-console']=function(){
+      
+            window.open('/util/js-console/js-console.html');
+            
+      }//js-console
+      
+      ui.menu.one.trim=function(){
+      
+            var pos     = editor.getCursorPosition();
+            var txt     = editor.getValue();
+            var lines   = txt.split('\n');
+            lines       = lines.map(line=>line.trimEnd());
+            txt         = lines.join('\n');
+            editor.setValue(txt,-1);
+            editor.gotoLine(pos.row,pos.column);
+            
+      }//trim
+
+
       
       ui.menu.local=function(type,opt){
       
@@ -905,29 +951,6 @@ HTML Editor
       }//clear
       
       
-      function newwin(){
-      
-            var url       = window.location.toString();
-            var search    = window.location.search;
-            if(search){
-                  url     = url.slice(0,-search.length);
-            }
-            
-            var win   = window.open(url);
-            return win;
-            
-      }//newwin
-
-      
-      function fork(){
-      
-            var win   = newwin();
-            var txt   = editor.getValue();
-            win.postMessage({txt},'*');
-            
-      }//fork
-      
-
       function save(){
       
             var json    = ui.read();
