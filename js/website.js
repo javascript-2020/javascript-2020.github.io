@@ -96,7 +96,12 @@ fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js
                           var x     = e.pageX+'px';
                           var y     = e.pageY+'px';
                           console.log(x,y);
-                          var div   = $.create.div({append:'body',text:'copied',style:{position:'absolute',left:x,top:y,zIndex:999999}});
+                          var style   = {
+                                position:'absolute',left:x,top:y,zIndex:999999,
+                                background:'white',border:'1px solid gray',
+                                padding:'5px 10px',
+                          };
+                          var div   = $.create.div({append:'body',text:'copied',style});
                           //setTimeout(()=>div.remove(),1000);
                           
                     }//click
