@@ -285,6 +285,36 @@ components
                       var templateContent   = template.content;
                       var shadowRoot        = this.attachShadow({mode:"open"});
                       shadowRoot.appendChild(templateContent.cloneNode(true));
+
+
+                      var chk         = shadow.querySelector('[type=checkbox]');
+                      chk.onchange    = e=>{
+                                                
+                                                root.checked    = chk.checked;
+                                                if(typeof root.onchange=='function'){
+                                                      root.onchange(e);
+                                                }
+                                                
+                                        };
+                                        
+                      Object.defineProperty(root,'checked',{get:()=>chk.checked,set:v=>chk.checked=v});
+                      
+                      if(root.hasAttribute('checked')){
+                            root.checked   = true;
+                      }
+                      if('checked' in root){
+                            chk.checked   = root.checked;
+                      }
+                   
+                      setTimeout(()=>{
+                      
+                            var str   = root.innerHTML.trim();
+                            if(str==''){
+                                  root.innerHTML    = root.id;
+                            }
+                            
+                      },50);
+
         
                 }//constructor
           }//class          
