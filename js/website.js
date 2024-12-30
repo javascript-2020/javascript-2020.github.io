@@ -102,7 +102,8 @@ fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js
                                 padding:'5px 10px',
                           };
                           var div   = $.create.div({append:'body',text:'copied',style});
-                          //setTimeout(()=>div.remove(),1000);
+                          console.log(div);
+                          setTimeout(()=>div.remove(),1000);
                           
                     }//click
                     
