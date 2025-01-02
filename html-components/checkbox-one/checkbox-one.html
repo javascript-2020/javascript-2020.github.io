@@ -2,21 +2,21 @@
 <html>
 
     <!-- select.html -->
-    
+
     <head style="display: block;">
-    
+
         <meta style="display: block;" name="viewport" content="width=device-width, initial-scale=1">
-        
+
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" style="display: block;">
         </link>
         <link style="display: block;" href="/css/website.css" id="website-css" rel="stylesheet">
         </link>
-        
+
         <style style="display: none;" id="page-css">
         </style>
         <script style="display: none;" id="page-js">
         </script>
-        
+
         </meta>
     </head>
     <body>
@@ -33,11 +33,11 @@ html<br>
 components
                 </div>
             </a>
-            
+
             <h3 class=hdr-title>
                   checkbox-one
             </h3>
-            
+
             <div style="" id="date" class="hdr-date">
 29 Dec 2024
             </div>
@@ -48,7 +48,7 @@ components
 
         <div id="scroll">
             <div id="center" style="">
-                
+
 <!-- page html -->
 
 
@@ -60,20 +60,20 @@ components
     <div class=sub-title>
     checkbox-one
     </div>
-          
+
     <div class=sub-section>
     checkbox slider type one
     </div>
-    
-    
-          
+
+
+
     <code class=code>
 &lt;checkbox-one-template&gt;
 
       &lt;template id=checkbox-one-template&gt;
-      
+
             &lt;style&gt;
-            
+
                   .slider {position:relative;display:inline-flex;align-items:center;cursor:pointer;
                             border:1px solid gray;border-radius:3px;height:30px;box-sizing:border-box;padding:0 5px}
                   .slider input {opacity:0;width:0;height:0}
@@ -84,9 +84,9 @@ components
                   .slider input:checked + .hldr:before {transform:translateX(9px)}
                   .slider .hldr {border-radius:34px}
                   .slider .hldr:before {border-radius:50%}
-            
+
             &lt;/style&gt;
-            
+
             &lt;label id=autosave class=slider&gt;
                   &lt;span class=track&gt;&lt;/span&gt;
                   &lt;input type=checkbox&gt;
@@ -95,80 +95,80 @@ components
                         &lt;slot&gt;&lt;/slot&gt;
                   &lt;/span&gt;
             &lt;/label&gt;
-            
+
       &lt;/template&gt;
-      
+
       &lt;script&gt;
-      
+
             (()=&gt;{
-            
+
                   class checkboxOne extends HTMLElement {
-                  
+
                         constructor() {
-        
+
                               super();
-                              
+
                               var root              = this;
                               var template          = document.getElementById("checkbox-one-template");
                               var templateContent   = template.content;
                               var shadow            = root.attachShadow({mode:"open"});
                               shadow.appendChild(templateContent.cloneNode(true));
-                
-                  
+
+
                               var chk         = shadow.querySelector('[type=checkbox]');
                               chk.onchange    = e=&gt;{
-                                                        
+
                                                         root.checked    = chk.checked;
                                                         if(typeof root.onchange=='function'){
                                                               root.onchange(e);
                                                         }
-                                                        
+
                                                 };
-                                                
+
                               Object.defineProperty(root,'checked',{get:()=&gt;chk.checked,set:v=&gt;chk.checked=v});
-                              
+
                               if(root.hasAttribute('checked')){
                                     root.checked   = true;
                               }
                               if('checked' in root){
                                     chk.checked   = root.checked;
                               }
-                           
+
                               setTimeout(()=&gt;{
-                              
+
                                     var str   = root.innerHTML.trim();
                                     if(str==''){
                                           root.innerHTML    = root.id;
                                     }
-                                    
+
                               },50);
-                              
+
                         }//constructor
-                        
-                  }//class          
-                  
+
+                  }//class
+
                   customElements.define('checkbox-one',checkboxOne);
-                  
+
             })();
-          
+
       &lt;/script&gt;
-      
+
 &lt;/checkbox-one-template&gt;
     </code>
-    
-    
-    
+
+
+
     <div class=sub-title style='margin-bottom:20px'>
     checkbox-one demo
     </div>
-    
-    
+
+
     <code class=code>
 &lt;checkbox-one-template&gt;
       &lt;script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/libs-html-loader.js'&gt;&lt;/script&gt;
 &lt;/checkbox-one-template&gt;
 
-        
+
 &lt;checkbox-one&gt;
   test
 &lt;/checkbox-one&gt;
@@ -177,8 +177,8 @@ components
 
   var chk         = document.querySelector('checkbox-one');
   chk.onchange    = ()=&gt;alert(chk.checked);
-  
-&lt;/script&gt;        
+
+&lt;/script&gt;
     </code>
 
 <checkbox-one-template>
@@ -196,8 +196,8 @@ components
 </script>
 
 
-            
-    
+
+
 </section>
 
 <!-- demo 1 -->
