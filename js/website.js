@@ -4,7 +4,7 @@
 var ext;
 var $,datatype;
 
-fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js')
+fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
   .then(res=>res.text().then(async txt=>{
   
       ext   = eval(txt);
