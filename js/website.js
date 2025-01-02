@@ -10,6 +10,7 @@ fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js
       ext   = eval(txt);
       [$,datatype]    = await ext.load.libs('js/dom/$.js','js/core/datatype.js');
       
+      console.log('initdom');
       initdom();
       
   }));
