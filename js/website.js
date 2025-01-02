@@ -33,13 +33,13 @@ fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js
         function initdom(){   //c
                                                                           //console.log(new Error().stack);
                                                                           //console.log('initdom');
-                
+              var doc                       = document.body;
               var winw                      = window.innerWidth;
               
-              hdr                           = $('#hdr');
+              hdr                           = $(doc,'#hdr');
               var h1                        = hdr.offsetHeight;
               
-              ftr                           = $('#ftr');
+              ftr                           = $(doc,'#ftr');
               var h2                        = ftr.offsetHeight;
               
               background                    = $('#background');
