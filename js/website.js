@@ -31,8 +31,8 @@ fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js
         
         
         function initdom(){   //c
-                                                                          console.log(new Error().stack);
-                                                                          console.log('initdom');
+                                                                          //console.log(new Error().stack);
+                                                                          //console.log('initdom');
                 
               var winw                      = window.innerWidth;
               
