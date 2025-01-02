@@ -8,7 +8,7 @@ fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js
   .then(res=>res.text().then(async txt=>{
   
       ext   = eval(txt);
-      [$,datatype]    = await ext.load.libs('js/dom/$','js/core/datatype');
+      [$,datatype]    = await ext.load.libs('js/dom/$.js','js/core/datatype.js');
       
       initdom();
       
