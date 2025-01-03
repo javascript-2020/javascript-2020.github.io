@@ -222,7 +222,7 @@ HTML Editor
         var iframe;
         
         var ui          = {};
-        ui.mode         = 'hroiz';
+        ui.mode         = 'vert';
         ui.menu         = {};
 
 
@@ -387,14 +387,15 @@ HTML Editor
         ui.slider=function(node1,slider_node,node2){
         
               if(typeof node1=='string'){
-                    node1   = $(node1);
+                    node1   = $(view,node1);
               }
               if(typeof slider_node=='string'){
-                    slider_node   = $(slider_node);
+                    slider_node   = $(view,slider_node);
               }
               if(typeof node2=='string'){
-                    node2   = $(node2);
+                    node2   = $(view,node2);
               }
+              console.log(node1,slider_node,node2);
               
               ui.slider.node    = slider_node;
               $.track(slider_node,slider);
@@ -439,7 +440,7 @@ HTML Editor
               }//vert
 
               
-              slider.horiz=function(oy){console.log('slider.horiz',oy);
+              slider.horiz=function(oy){
               
                     var h1    = node1.offsetHeight;
                     var h2    = node2.offsetHeight;
