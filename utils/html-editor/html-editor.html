@@ -77,7 +77,7 @@
                   var ext;
                   var $,datatype,jsonblob,menumod,keydown;
                   
-                  var setup   = (async()=>{
+                  var setup   = new Promise(resolve=>{
                   
                         fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
                           .then(res=>res.text().then(async txt=>{
@@ -95,10 +95,11 @@
                               window.datatype   = datatype;
                               
                               console.log('ready');
+                              resolve();
                               
                           }));
                           
-                  })();
+                  });
               
             
                   console.log(1);
