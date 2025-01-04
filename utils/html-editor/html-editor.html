@@ -10,6 +10,68 @@
 
 
             <script>
+
+            
+                  var menu;
+                  
+            
+                  init.stack      = [];
+                  init.stack.ct   = 0;
+                  
+                  init.stack.add=function(callback){
+                  
+                        init.stack.push(callback);
+                        return init.stack.complete;
+                        
+                  }//stack.add
+                  
+                  init.stack.complete=function(){
+                  
+                        init.stack.ct++;
+                        if(init.stack.ct===init.stack.length){
+                              init();
+                        }
+                        
+                  }//stack.complete
+                  
+                  async function init(){
+                                                                    console.log('init');
+                                                                    
+                        await setup;
+                        
+                        
+                        menu            = menumod();
+                        jsonblob        = jsonblob();
+          
+          
+          
+                        
+                        github.load.complete=function(txt){
+                        
+                              editor.setValue(txt,-1);
+                              cur   = {type:'github'};
+                              
+                        }//github.load.complete
+                        
+                        github.save.complete=function(){
+                        
+                              cur   = {type:'github'};
+                              
+                        }//github.save.complete
+          
+          
+          
+                        
+                        initdom();
+                        
+                        
+            
+                  
+                  }//init
+            
+            </script>
+            
+            <script>
                                                                                             console.clear();
                                                                                             
                   var ext;
@@ -165,8 +227,6 @@ HTML Editor
 <script>
                                         console.log('main');
         
-        var menu;
-  
         var cur;
         
         var autosave;
@@ -180,29 +240,6 @@ HTML Editor
         var ui          = {};
         ui.mode         = 'vert';
         ui.menu         = {};
-
-
-  //:
-
-        setTimeout(init,50);
-        
-        async function init(){
-                                                          console.log('init');
-                                                          
-              await setup;
-              
-              
-              menu            = menumod();
-              jsonblob        = jsonblob();
-              
-              
-              
-              initdom();
-              
-              
-  
-        
-        }//init
         
         
       
