@@ -9,6 +9,40 @@
             <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
 
 
+            <script>
+            
+                  var ext;
+                  var $,datatype,jsonblob,menumod,keydown;
+                        
+                  var setup   = (async()=>{
+                  
+                        fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
+                          .then(res=>res.text().then(async txt=>{
+                          
+                              ext   = eval(txt);
+                              
+                              var promise   = ext.load.libs(
+                                    'js/dom/$.js','js/core/datatype.js','js/io/jsonblob/jsonblob.js','js/dom/menumod/menumod.js',
+                                    'js/dom/keydown/keydown.js'
+                              );
+                              [$,datatype,jsonblob,menumod,keydown]   = await promise;
+                  
+                              
+                              window.$          = $;
+                              window.datatype   = datatype;
+                              
+                              console.log('ready');
+                              
+                          }));
+                          
+                  })();
+              
+            
+                  console.log(1);
+                  
+                  
+            </script>
+
 <!-- components -->
 
 
@@ -106,70 +140,11 @@ HTML Editor
                         </div>
                   </div>
                   
-                  <div class=github>
-                        <img id=github class=icon style='padding:2px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAZ9JREFUSEvNls8uBEEQxn9DXFgughNZ3sBNwk3iMYTH4GJPvIQEryFxI3HyBkLcEBf/DsKiNmbSad1d1TO7oW/T/fX31VddPdUF+WMKOAbaP1uvgTXgPoeqMIJfgNEMbEvDasLPwJhGEll/Te1NCX/WFPS3BTViwv0SLYP4peNPjABvfXLq0wj3eywS3+k5sFQzkBNg1dtbGXUdh9Lrrn8AQ4YgTJwlSAiF2FQYBvESEjIzDHRL4VgxaddNiyHK+6fCR8D6ANKcSve+OB5UmlPCxIQPgU3tAI3rB8BGqGpDjleAMyOxBlsGTq3C28Cexmhc3wJ2rcLSY+eNxBrsyundFfbfFZdE1vTnoVb1LHATyVdT8dhVndP+XE2cp3p6ERKWuQXg0smC9FHpp5YhWGkEqVEJC8iNMJWJpq+W3n6X5BaYdsKUtZ3v744zJ5mQ6xEai8CF4vQOmAmdX8i14KRfdw151t5qwRdIqPxzqzpZUG7gueelBWLudLnv6jrCWe/qMivjwKNXcKmjdh1PAE8xsObA3fcATCoFZsH0KL4ABKpK0CB/GK0AAAAASUVORK5CYII='>
-                        <div id="github-menu" class="menu" style='display:none'>
-                            <div class="menu-title">
-                                  github params
-                            </div>
-                            <div style="margin-bottom: 20px; border-bottom: 1px solid lightgray;">
-                                <div id="parse-url-label">
-                                      parse url
-                                </div>
-                                <div style="margin-bottom: 10px; display: flex;" id="parse-url-root" class="menu-opt">
-                                    <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="parse-url-paste" />
-                                    <input id="parse-url" style="flex: 1 1 0%; margin-right: 10px;">
-                                    </input>
-                                    <input style="height: 25px; cursor: pointer; font-size: 16px; box-sizing: border-box;" type="button" value="parse" id="parse" autocomplete='off'>
-                                    </input>
-                                </div>
-                            </div>
-                            <div id="token-label">
-                                  token
-                            </div>
-                            <div style="display: flex; margin-bottom: 10px;" id="token-root" class="menu-opt">
-                                <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="token-paste" />
-                                <input id="token" style="margin-bottom: 10px; flex: 1 1 0%;" autocomplete='off'>
-                                </input>
-                            </div>
-                            <div id="owner-label">
-                                  owner
-                            </div>
-                            <div style="display: flex;" id="owner-root" class="menu-opt">
-                                <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="owner-paste" />
-                                <input id="owner" style="margin-bottom: 10px; flex: 1 1 0%;" autocomplete='off'>
-                                </input>
-                            </div>
-                            <div id="repo-label">
-                                  repo
-                            </div>
-                            <div style="display: flex; margin-bottom: 10px;" id="repo-root" class="menu-opt">
-                                <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="repo-paste" />
-                                <input id="repo" style="flex: 1 1 0%;" autocomplete="off">
-                                </input>
-                            </div>
-                            <div id="branch-label">
-                                  branch
-                            </div>
-                            <div style="display: flex;" id="branch-root" class="menu-opt">
-                                <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="branch-paste" />
-                                <input id="branch" style="flex: 1 1 0%;" autocomplete='off'>
-                                </input>
-                            </div>
-                            <div id="path-label">
-                                  path
-                            </div>
-                            <div style="display: flex;" id="branch-root" class="menu-opt">
-                                <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="branch-paste" />
-                                <input id="path" style="flex: 1 1 0%;" autocomplete='off'>
-                                </input>
-                            </div>
-                            <div style='display:flex;justify-content:center;gap:25px'>
-                                  <button id=github-load class=menu-opt>load</button>
-                                  <button id=github-save class=menu-opt>save</button>
-                            </div>
-                        </div>
-                  </div>
+                                    
+                  <github>
+                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/libs-html-loader.js'></script>
+                  </github>
+                  
                   
                   <img id=horiz class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAPhJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwUNVehj9//jDcv3+f4dChQx8/fvy4qLa2No8R5FMhIaFp8fHx/NS2ED20QA5YuHDhx3fv3mUxdnZ2XnR3d9dTVVWlRqgSNOP27dsMO3fuvMTY2Nj4u6CggIXWvoW5COTrCRMm/AEF9f/S0lKCLqWmgu7uboZRi6kZojjNGg1qugQzyJLRoKZ/UNPNRiSLRksuuoT6aHaiSzCPllx0C2Z4UA9YY2/AmrcD1qAfsC7MQHXaANO37pOxy/mWAAAAAElFTkSuQmCC'>
                   <img id=vert class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAQxJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwEGdvd3c3Q2lpKUG3/fnzh+H+/fsMhw4d+vjx48dFtbW1eYwgnwoJCU2Lj4/nJ9ZCmE3EWgxTD3LAwoULP7579y6LsbOz86K7u7ueqqoqQZejKyDVYpD+27dvM+zcufMSY2Nj4++CggIWUn0LMoQci0G+njBhwh9QUP8nJp6wBQc5FsMcPGoxSQlsNKiJDS5QSI0mLmJDC6xuNHERG1yjiYvYkIKrG01cxAbZaOIiNqSGeOIasMbegDVvB6xBP2BdmIHqtAEA6MBFop3TQsgAAAAASUVORK5CYII='>
@@ -187,29 +162,7 @@ HTML Editor
       </body>
 
 <script>
-                                                                                console.clear();
-        var ext;
-        var $,datatype,jsonblob,menumod,keydown;
-        
-        fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
-          .then(res=>res.text().then(async txt=>{
-          
-              ext   = eval(txt);
-              
-              var promise   = ext.load.libs(
-                    'js/dom/$.js','js/core/datatype.js','js/io/jsonblob/jsonblob.js','js/dom/menumod/menumod.js',
-                    'js/dom/keydown/keydown.js'
-              );
-              [$,datatype,jsonblob,menumod,keydown]   = await promise;
-  
-              
-              window.$          = $;
-              window.datatype   = datatype;
-              
-              init();
-              
-          }));
-    
+                                        console.log('main');
         
         var menu;
   
@@ -230,9 +183,14 @@ HTML Editor
 
   //:
 
-  
-        function init(){
-                                                                              console.log('init');
+        setTimeout(init,50);
+        
+        async function init(){
+                                                          console.log('init');
+                                                          
+              await setup;
+              
+              
               menu            = menumod();
               jsonblob        = jsonblob();
               
@@ -274,11 +232,17 @@ HTML Editor
               
               var node                      = $('#local-menu');
               $('#local').onclick           = menu.click(node,false,false,ui.menu.local);
+
               
-  
+              github.initdom();
+
+              /*
+              
               github                        = $('.github');
               var node                      = $('#github-menu');
               $('#github').onclick          = menu.click(node,false,false,ui.menu.github);
+              
+              */
   
   
               
@@ -397,7 +361,7 @@ HTML Editor
               if(typeof node2=='string'){
                     node2   = $(view,node2);
               }
-              console.log(node1,slider_node,node2);
+
               
               ui.slider.node    = slider_node;
               $.track(slider_node,slider);
@@ -621,7 +585,7 @@ HTML Editor
 
 
       
-2
+
 
       function clear(e){
       
