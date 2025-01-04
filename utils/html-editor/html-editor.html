@@ -107,6 +107,7 @@
                   
             </script>
 
+
 <!-- components -->
 
 
@@ -120,7 +121,6 @@
 
 
 <!-- components -->
-
 
 
 <style>
@@ -275,15 +275,6 @@ HTML Editor
               
               github.initdom();
 
-              /*
-              
-              github                        = $('.github');
-              var node                      = $('#github-menu');
-              $('#github').onclick          = menu.click(node,false,false,ui.menu.github);
-              
-              */
-  
-  
               
               $('#horiz').onclick           = horiz;
               $('#vert').onclick            = vert;
@@ -332,13 +323,14 @@ HTML Editor
               }
               
               if(e.key=='s' && e.ctrlKey){
+                    var txt   = editor.getValue();
                     e.preventDefault();
                     if(!cur){
                           log.orange('no file');
                           return;
                     }
                     if(cur.type=='github'){
-                          ui.menu.github.save();
+                          github.save(txt);
                     }
                     if(cur.type=='local'){
                           ui.menu.local.save();
