@@ -15,24 +15,11 @@
                   var menu;
 
 
-                  init.stack      = [];
-                  init.stack.ct   = 0;
+                  init.stack            = [];
+                  init.stack.ct         = 0;
+                  init.stack.add        = callback=>init.stack.push(callback);
+                  init.stack.complete   = ()=>(init.stack.ct++,init.stack.ct==init.stack.length && init());
 
-                  init.stack.add=function(callback){
-
-                        init.stack.push(callback);
-                        return init.stack.complete;
-
-                  }//stack.add
-
-                  init.stack.complete=function(){
-
-                        init.stack.ct++;
-                        if(init.stack.ct===init.stack.length){
-                              init();
-                        }
-
-                  }//stack.complete
 
                   async function init(){
                                                                     console.log('init');
@@ -99,10 +86,6 @@
                           }));
 
                   });
-
-
-                  console.log(1);
-
 
             </script>
 
