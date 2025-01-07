@@ -38,12 +38,15 @@
 
                               editor.setValue(txt,-1);
                               cur   = {type:'github'};
+                              menu.close();
 
                         }//github.load.complete
 
                         github.save.complete=function(){
 
                               cur   = {type:'github'};
+                              $('#filename-save').style.display   = 'none';
+                              menu.close();
 
                         }//github.save.complete
 
@@ -113,8 +116,12 @@
       #horiz {border:none}
       #vert {border:none}
       
-      #filename-icon {width:20px;height:20px;margin-right:10px;
+      #filename-root {display:flex;align-content:center}
+      #filename-icon {width:20px;height:20px;margin-right:5px;
                       content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAP1BMVEVHcEwVFRUICAgkJCQMDAwLCwsNDQ1QUFAICAgrKysQEBAVFRUHBwcLCwsZGRkKCgoHBwfd3d0ICAgkJCQEBATHNF52AAAAFXRSTlMAQ9IblZl1BbQOXDbHiiWj1wG2H/ZbTuAhAAAA5klEQVQ4y72V2w6DIAxAKQjIRRT1/791gkg226mJc+elSE5qqYCMPQV0zY4uUF7grdwxc0cl5NNuxvjBO0oUuxnhbUPkxKLxYCQ2yYzMSPT2LMbCmpFbRphJtH0B0ozu/TJsZy+QCF1hTTKpNG4GOKlxK5XfEKNOsBIzkRTt2C5AVDkmRkuKTiUCA1Vx92q8LDqFcAeLeefLYt7actyeyzUKVwnM5ChIUQ2VJgJPUZGiCZXtwdyrURuEpvvoEXQfg0XQX0b/fFN84PIxgwuiTAfX/mXjTtdE4iJdaXk4u5rLBQ2P/Q1eGdEQZZzIbegAAAAASUVORK5CYII=)
+                    }
+      #filename-save {width:20px;height:20px;margin-right:5px;
+                      content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAKlBMVEX/pQD/////qhH/pAD/rhr/zHH/yGT/wlP//vz/8dn/tjD/+u//6MD/2ZUL9bZAAAAA30lEQVQoz2OQvuWihARUMgUFBRlamRkYlqXBQLoy10Sg4CUGBisgDQLSu3dLXGBeAxRczMBg3ggR3LZqaeMhBquDggzOCMFdxuZAQWYfQQYHuKDELgOQINA0JEFBqCDzSiwqGdiwqGRgYlDAVIksSIpKYyyC28E+ggoi/L5D8AJMkGFZKAyEKcAFjRGAAS6IBsCCzMbGKGpBgkwqLshAASzoOxMFHDEACjJXCKKANmyCYkNI0IEGgs7YBBdjCpowXGBejSq43YCVYSszV1ooEkgrMMhmkL6lhAIUlJZuBAAfSYTf2T2EkwAAAABJRU5ErkJggg==)
                     }
       #filename { margin:5px 0;}
 
@@ -198,6 +205,7 @@ HTML Editor
             
             <div id=filename-root>
                   <img id=filename-icon>
+                  <img id=filename-save style='display:none'>
                   <span id=filename>filename</span>
             </div>
             
@@ -353,18 +361,26 @@ HTML Editor
 
         ui.editor=function(root){
 
-            var node    = $(root,'#editor');
-            editor      = ace.edit(node);
-            editor.setShowInvisibles(false);
-            editor.setShowPrintMargin(false);
-            editor.setPrintMarginColumn(false);
-            editor.setBehavioursEnabled(false);
-            editor.setDisplayIndentGuides(false);
-            editor.setScrollSpeed(2);
-            editor.setFontSize(16);
-            editor.session.setOptions({tabSize:2,useSoftTabs:true});
-            //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
-            editor.focus();
+              var node    = $(root,'#editor');
+              editor      = ace.edit(node);
+              editor.setShowInvisibles(false);
+              editor.setShowPrintMargin(false);
+              editor.setPrintMarginColumn(false);
+              editor.setBehavioursEnabled(false);
+              editor.setDisplayIndentGuides(false);
+              editor.setScrollSpeed(2);
+              editor.setFontSize(16);
+              editor.session.setOptions({tabSize:2,useSoftTabs:true});
+              //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
+              editor.focus();
+              editor.session.on('change',onchange);
+              
+              
+              function onchange(e){
+                                                                            console.log('document changed');
+                    $('#filename-save').style.display   = '';
+                                      
+              }//onchange
 
         }//editor
 
