@@ -155,7 +155,7 @@
                     }
       #filename { margin:5px 0;flex:1;margin-right:10px}
 
-      #row,#col {width:50px}
+      #row,#col {width:40px}
       #row {margin-right:5px}
       #col {margin-right:10px}
       
@@ -296,9 +296,12 @@ home
         var autorun;
         var local;
         var github;
+        var hdr2;
+        
         var view;
         var editor;
         var iframe;
+
 
         var ui          = {};
         ui.mode         = 'vert';
@@ -341,6 +344,11 @@ home
 
               $('#horiz').onclick           = horiz;
               $('#vert').onclick            = vert;
+
+
+              hdr2                          = $('#hdr2');
+              $(hdr2,'#row').onkeydown      = kd.row;
+              $(hdr2,'#col').onkeydown      = kd.col;
 
               view                          = $('#view');
 
@@ -407,6 +415,30 @@ home
         }//keydown
 
 
+        kd.row=function(e){
+              
+              if(e.key=='Enter'){
+                    e.preventDefault();
+                    var pos   = editor.getCursorPosition();
+                    var row   = $(hdr2,'#row').value;
+                    var col   = pos.column;
+                    editor.gotoLine(row,col);
+              }
+              
+        }//row
+        
+        kd.col=function(e){
+              
+              if(e.key=='Enter'){
+                    e.preventDefault();
+                    var pos   = editor.getCursorPosition();
+                    var row   = pos.row;
+                    var col   = $(hdr2,'#col').value;
+                    editor.gotoLine(row,col);
+              }
+              
+        }//col
+                    
   //:
 
 
@@ -429,6 +461,8 @@ home
         ui.editor=function(root){
 
               var node    = $(root,'#editor');
+              node.addEventListener('mousedown',md);
+              
               editor      = ace.edit(node);
               editor.setShowInvisibles(false);
               editor.setShowPrintMargin(false);
@@ -446,9 +480,20 @@ home
               function onchange(e){
                                                                             console.log('document changed');
                     $('#filename-save').style.display   = '';
+                    var pos                 = editor.getCursorPosition();
+                    $(hdr2,'#row').value    = pos.row;
+                    $(hdr2,'#col').value    = pos.column;
                                       
               }//onchange
 
+              function md(e){
+              
+                    var pos                 = editor.getCursorPosition();
+                    $(hdr2,'#row').value    = pos.row;
+                    $(hdr2,'#col').value    = pos.column;
+                    
+              }//md
+              
         }//editor
 
 
