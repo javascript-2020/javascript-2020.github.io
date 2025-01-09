@@ -47,6 +47,21 @@
                               var root                      = document.querySelector('main-menu');
                               var shadow                    = root.shadowRoot;
                               
+                              var style                     = $('#page-inline');
+                              var rules                     = style.sheet.cssRules;
+                              var n                         = rules.length;
+                              for(var i=0;i<n;i++){
+                              
+                                    var rule    = rules[i];
+                                    if(rule.selectorText==='.icon'){
+                                          var css   = rule.cssText;
+                                          break;
+                                    }
+                                    
+                              }//for
+                              style   = $(shadow,'style');
+                              console.log(css);
+                              //style.insertRule('.icon'+
                               
                               menumod.add.style(shadow);
                               
