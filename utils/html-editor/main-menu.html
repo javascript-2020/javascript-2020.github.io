@@ -25,85 +25,98 @@
 
       <script>
         
+            (()=>{
             
-            initdom();
-
-            function initdom(){
+                  menu.main   = main();
             
-                  var root                      = document.querySelector('main-menu');
-                  var shadow                    = root.shadowRoot;
+                  function main(){
+      
+                    var obj   = {};
+                    
                   
-                  
-                  menumod.add.style(shadow);
-                  
-                  
-                  var node                      = $('.menu');
-                  $('#icon').onclick            = menumod.click(node,false,false,menu);
-
-
-            }//initdom
+                        obj.initdom=function(){
+                        
+                              var root                      = document.querySelector('main-menu');
+                              var shadow                    = root.shadowRoot;
+                              
+                              
+                              menumod.add.style(shadow);
+                              
+                              
+                              var node                      = $('.menu');
+                              $('#icon').onclick            = menumod.click(node,false,false,menu);
             
-
+            
+                        }//initdom
+                  
+      
   //:
-  
-  
-            function menu(type,opt){
+        
+        
+                        function menu(type,opt){
+                  
+                              if(type=='opt'){
+                                    menu[opt.id]();
+                              }
+                  
+                        }//one
+            
+                  
+                        menu.new=function(){
+                  
+                              var url       = window.location.toString();
+                              var search    = window.location.search;
+                              if(search){
+                                    url     = url.slice(0,-search.length);
+                              }
+                  
+                              var win   = window.open(url);
+                              return win;
+                  
+                        }//new
+            
+                  
+                        menu.fork=function(){
+                  
+                              var win   = newwin();
+                              var txt   = editor.getValue();
+                              win.postMessage({txt},'*');
+                  
+                        }//fork
+            
+                  
+                        menu.editor=function(){
+                  
+                              window.open('/utils/editor/editor.html');
+                  
+                        }//editor
+            
+                  
+                        menu['js-console']=function(){
+                  
+                              window.open('/utils/js-console/js-console.html');
+                  
+                        }//js-console
       
-                  if(type=='opt'){
-                        menu[opt.id]();
-                  }
-      
-            }//one
-
-      
-            menu.new=function(){
-      
-                  var url       = window.location.toString();
-                  var search    = window.location.search;
-                  if(search){
-                        url     = url.slice(0,-search.length);
-                  }
-      
-                  var win   = window.open(url);
-                  return win;
-      
-            }//new
-
-      
-            menu.fork=function(){
-      
-                  var win   = newwin();
-                  var txt   = editor.getValue();
-                  win.postMessage({txt},'*');
-      
-            }//fork
-
-      
-            menu.editor=function(){
-      
-                  window.open('/utils/editor/editor.html');
-      
-            }//editor
-
-      
-            menu['js-console']=function(){
-      
-                  window.open('/utils/js-console/js-console.html');
-      
-            }//js-console
-
-      
-            menu.trim=function(){
-      
-                  var pos     = editor.getCursorPosition();
-                  var txt     = editor.getValue();
-                  var lines   = txt.split('\n');
-                  lines       = lines.map(line=>line.trimEnd());
-                  txt         = lines.join('\n');
-                  editor.setValue(txt,-1);
-                  editor.gotoLine(pos.row,pos.column);
-      
-            }//trim
+            
+                        menu.trim=function(){
+                  
+                              var pos     = editor.getCursorPosition();
+                              var txt     = editor.getValue();
+                              var lines   = txt.split('\n');
+                              lines       = lines.map(line=>line.trimEnd());
+                              txt         = lines.join('\n');
+                              editor.setValue(txt,-1);
+                              editor.gotoLine(pos.row,pos.column);
+                  
+                        }//trim
+                        
+                        
+                    return obj;
+                    
+                  }//main
+                  
+            })();
 
         
       </script>
