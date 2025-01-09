@@ -1,0 +1,83 @@
+<localfile-menu style='position:relative'>
+
+      <template shadowrootmode=open>
+      
+      </template>
+      
+      <script>
+      
+            (()=>{
+            
+                  menu.localfile    = mod();
+                  
+                  function mod(){
+                  
+                    var obj   = {};
+
+
+                          obj.initdom=function(){
+                          
+                                var root      = $('localfile-menu');
+                                var shadow    = root.shadowRoot;
+                                
+                                menumod.add.style(shadow);
+
+                                
+                                var card                    = $(shadow,'.menu');
+                                $(shadow,'#icon').onclick   = menumod.click(card,false,false,menu);
+
+
+                          }//initdom
+                          
+                          
+                          function menu(type,opt){
+                          
+                                if(type=='opt'){
+                                      menu[opt]();
+                                }
+                                
+                          }//menu
+
+
+                          menu.load=function(){
+                    
+                                var input         = document.createElement('input');
+                                input.type        = 'file';
+                                input.click();
+                                input.onchange    = onchange;
+                                
+                                async function onchange(){
+                    
+                                      var file    = input.files[0];
+                                      filename(file.name);
+                                      var txt     = await file.text();
+                                      editor.setValue(txt,-1);
+                                      cur         = {type:'local'};
+
+                                }//onchange
+                    
+                          }//load
+
+                    
+                          menu.save=function(){
+                    
+                                var blob      = new Blob([editor.getValue()]);
+                                var url       = window.URL.createObjectURL(blob);
+                                var a         = document.createElement('a');
+                                a.href        = url;
+                                a.download    = 'file.txt';
+                                a.click();
+                                cur           = {type:'local'};
+                    
+                          }//save
+                          
+                          
+                    return obj;
+                    
+                  }//mode
+                  
+            })();
+            
+      </script>
+      
+</localfile-menu>
