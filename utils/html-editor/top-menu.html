@@ -15,6 +15,7 @@
             <div class=menu style='display:none;width:150px;'>
                   <div id=editor class=menu-opt>editor</div>
                   <div id=js-console class=menu-opt>js console</div>
+                  <div id=html-editor class=menu-opt>html-editor</div>
             </div>
       
       </template>
@@ -30,24 +31,60 @@
                     var obj   = {};
                     
                     
-                          obj.initdom=function(){
+                        obj.initdom=function(){
+                        
+                              var root      = $('top-menu');
+                              var shadow    = root.shadowRoot;
+    
+                              var css       = $.stylesheet.find('.hdr-icon');
+                              var style     = $(shadow,'style');
+                              style.sheet.insertRule(css);
+                              
+                              menumod.add.style(shadow);
+                              
+                              
+                              var card                    = $(shadow,'.menu');
+                              $(shadow,'#icon').onclick   = menumod.click(card,false,false,menu);
+    
+                              
+                        }//initdom
+                        
+                        
+                        function menu(type,opt){
+                        
+                            if(type=='opt'){
+                                  menu[opt.id]();
+                            }
+                        
+                        }//menu
                           
-                                var root      = $('top-menu');
-                                var shadow    = root.shadowRoot;
-      
-                                var css       = $.stylesheet.find('.hdr-icon');
-                                var style     = $(shadow,'style');
-                                style.sheet.insertRule(css);
-                                
-                                menumod.add.style(shadow);
-                                
-                                
-                                var card                    = $(shadow,'.menu');
-                                $(shadow,'#icon').onclick   = menumod.click(card,false,false,menu);
-      
-                                
-                          }//initdom
+                        
+                        menu.editor=function(){
+                  
+                              window.open('/utils/editor/editor.html');
+                  
+                        }//editor
+            
+                  
+                        menu['js-console']=function(){
+                  
+                              window.open('/utils/js-console/js-console.html');
+                  
+                        }//js-console
                           
+                        
+                        menu['html-editor']=function(){
+                        
+                              var url       = window.location.toString();
+                              var search    = window.location.search;
+                              if(search){
+                                    url     = url.slice(0,-search.length);
+                              }
+                  
+                              var win   = window.open(url);
+                        
+                        }//html-editor
+                        
                           
                     return obj;
                     
