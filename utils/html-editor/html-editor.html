@@ -215,13 +215,15 @@ home
                   </main-menu-local>
                   
                   <button id=clear>clear</button>
-                  <button id=run>run</button>
-                  <button id=jsonblob>jsonblob</button>
                   <button id=copy>copy</button>
                   <button id=paste>paste</button>
 
                   <checkbox-one id=autosave></checkbox-one>
                   <checkbox-one id=autorun></checkbox-one>
+                  <button id=jsonblob>jsonblob</button>
+
+                  <button id=run>run</button>
+
 
                   <div class=spc></div>
 
@@ -327,10 +329,6 @@ home
               autorun.checked               = false;
 
 
-              /*
-              var node                      = $('#local-menu');
-              $('#local').onclick           = menumod.click(node,false,false,ui.menu.local);
-              */
               localfile.initdom();
 
 
@@ -480,7 +478,6 @@ home
         }//kill
         
   //:
-
 
         function filename(path,icon){
 
@@ -714,60 +711,7 @@ home
       }//setup
 
 
-
-  //menu:
-
-
-/*
-      ui.menu.local=function(type,opt){
-
-            if(type=='opt'){
-                  if(opt.id=='load'){
-                        ui.menu.local.load();
-                  }
-                  if(opt.id=='save'){
-                        ui.menu.local.save();
-                  }
-            }
-
-      }//local
-
-      ui.menu.local.load=function(){
-
-            var input   = document.createElement('input');
-            input.type    = 'file';
-            input.click();
-            input.onchange    = async ()=>{
-
-                                      var file    = input.files[0];
-                                      filename(file.name);
-                                      var txt     = await file.text();
-                                      editor.setValue(txt,-1);
-                                      cur         = {type:'local'};
-
-                                }
-
-      }//load
-
-      ui.menu.local.save=function(){
-
-            var blob      = new Blob([editor.getValue()]);
-            var url       = window.URL.createObjectURL(blob);
-            var a         = document.createElement('a');
-            a.href        = url;
-            a.download    = 'file.txt';
-            a.click();
-            cur           = {type:'local'};
-
-      }//save
-
-*/
-
-
-
   //:
-
-
 
       function clear(e){
 
@@ -849,8 +793,7 @@ home
 
 
   //:
-
-
+  
       function run(){
 
             iframe.srcdoc   = editor.getValue();
