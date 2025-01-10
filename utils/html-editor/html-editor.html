@@ -523,6 +523,17 @@ home
             
         }//getname
         
+        
+        filename.save=function(status){
+
+              var display   = '';
+              if(!status){
+                    display   = 'none';
+              }
+              $('#filename-save').style.display   = display;
+
+        }//save
+        
 
         ui.editor=function(root){
 
@@ -653,7 +664,7 @@ home
         
               filename(path,icon);
               var name    = filename.getname(path);
-              $('#filename-save').style.display   = 'none';
+              filename.save(false);
               cur   = {type,name};
               menumod.close();
               editor.focus();
@@ -726,7 +737,8 @@ home
 
             editor.setValue('',-1);
             cur   = null;
-            filename();            
+            filename();
+            filename.save(false);
 
       }//clear
 
