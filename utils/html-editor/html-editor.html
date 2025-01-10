@@ -686,12 +686,12 @@ home
 
         function complete(type,path,icon){
         
-              editor.filename(path,icon);
-              var name    = editor.filename.getname(path);
+              var name    = editor.filename(path,icon);
               filename.save(false);
               cur   = {type,name};
               menumod.close();
               editor.focus();
+              return name;
               
         }//complete
         
@@ -704,7 +704,8 @@ home
         
         complete.save=function(type,path,icon){
 
-              complete(type,path,icon);
+              var name    = complete(type,path,icon);
+              log.green(name,'saved');
               
         }//save
 
