@@ -35,29 +35,11 @@
                         jsonblob        = jsonblob();
 
 
-
-
-                        github.load.complete=function(txt,path,icon){
-
-                              filename(path,icon);
-                              editor.setValue(txt,-1);
-                              $('#filename-save').style.display   = 'none';
-                              cur   = {type:'github'};
-                              menumod.close();
-                              editor.focus();
-
-                        }//github.load.complete
-
-                        github.save.complete=function(path,icon){
-
-                              filename(path,icon);                              
-                              cur   = {type:'github'};
-                              $('#filename-save').style.display   = 'none';
-                              menumod.close();
-                              editor.focus();
-
-                        }//github.save.complete
-
+                        localfile.load.complete   = (txt,path,icon)=>complete.load('localfile',txt,path,icon);
+                        localfile.save.complete   = (path,icon)=>complete.save('localfile',path,icon);
+                        
+                        github.load.complete      = (txt,path,icon)=>complete.load('github',txt,path,icon);
+                        github.save.complete      = (path,icon)=>complete.save('github',path,icon);
 
 
                         initdom();
@@ -228,9 +210,9 @@ home
             <div id=hdr>
             
             
-                  <main-menu-local-api>
+                  <main-menu-local>
                         <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
-                  </main-menu-local-api>
+                  </main-menu-local>
                   
                   <button id=clear>clear</button>
                   <button id=run>run</button>
@@ -243,19 +225,14 @@ home
 
                   <div class=spc></div>
 
-                  <div class=local>
-                        <img id=local class=icon style='padding:2px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAA1xJREFUSEvF1u9rU1cYwPHvOTdd7dq0ScxtG9fQaktXIdIOirjhRpNV3LvBKIJS595k6gZ74QtfKIjgq/4BdsM3G6MgG4jgi7HNTe0Lh06dGxvzF/U3NF21tiZt0iT33nEyGu5dG8ktd+yB+yL3njyfe855zrlH8D+FqOjuuT4CVuOq36vW/IQT/YVK/68Mv//LJNC6aljO1fFFPLcqWErR+mbfhlXZLWv9ZxHiydfDYtdKCV7YY03K1qHBXloaTCINpqsXeDCnMZURqdN7RKQq+PKXrJeS0W0Xzg2miyGfgvtfKRJrLrqCLz2q4eIjLfVDskr4yhinBLy3ffwsswUdBXeGDDoChiv4xrSPcxMy9duBKuDzn7PGX8M4sNkOb9QNukLu4Av3NMbvyqnbOblOHGXZPJXm+OeTRKXBN0BsqVt2uLe1SE/YHfzV7z4mUtN8FolMmhZDm3fzk33ISvC1MUYsOGh/YIejTSbRxurgbBGm0vDrpEY685eCVdrv+4fZvgy+OsanwL5K8BvRAn2R6oornQPDgtN/1vDH4ydL8KX+YV53DQfrLJrrV15OhgmzWZhZwDGRd2ckVn6qelgIrMZ6rJGbh+W86WdLrN1RzRZgmrBowEIeMnkw1c0Vol7M8UHTPvX8TijAoTUG5xsHeaqalubYPtRdUYymBjRXa+cFjTM5yOXLDR77YFMwzqwD9mmYvd1Ir1CVZ24eCra6lBbvrE3wnQP2v4zR3e5dbxX8NA2WfSosevQEtxxwcwgj2uIdrArvWcYxfvPhaZrEDgwH3B7BCAe8g/MFeJ51wJf1OFuWFVdPB0Z9nXfwwiKoqxyCE/oAe/8N733tVSwpvSuu5wuQt+07wuLjcIJRB1z7EslYp3e9VclnMv+s+aXQLLaGElx0wEE/yQ1t3sGqklVF24bZxEdA30rpbrm41ukkI2HvYLV21Rq2xYQep2vpdxnubCMZ8HsHZ/MwbzvqCTgVjjO0DI518WFtjXeFlclCzn64FRzRBzjmgK+fZLSvu/RZrHz4c7mPqo1DbSDlsHhXT3DGAU+c4XhbCx+5zF2x+WIB1GUPn0lH8G0eOOCH3zJaV8t+r+AV8twKD7BRfXIdcOpHdmqSt/4jOOOD48E49+35PZtTty/9N1FLRi7z3S3QAAAAAElFTkSuQmCC'>
-                        <div id=local-menu class=menu style='display:none;width:150px'>
-                              <div class=menu-title>local file</div>
-                              <div class=menu-opt>load</div>
-                              <div class=menu-opt>save</div>
-                        </div>
-                  </div>
 
-
-                  <github-api>
+                  <localfile>
                         <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
-                  </github-api>
+                  </localfile>
+
+                  <github>
+                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
+                  </github>
 
 
                   <img id=horiz class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAPhJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwUNVehj9//jDcv3+f4dChQx8/fvy4qLa2No8R5FMhIaFp8fHx/NS2ED20QA5YuHDhx3fv3mUxdnZ2XnR3d9dTVVWlRqgSNOP27dsMO3fuvMTY2Nj4u6CggIXWvoW5COTrCRMm/AEF9f/S0lKCLqWmgu7uboZRi6kZojjNGg1qugQzyJLRoKZ/UNPNRiSLRksuuoT6aHaiSzCPllx0C2Z4UA9YY2/AmrcD1qAfsC7MQHXaANO37pOxy/mWAAAAAElFTkSuQmCC'>
@@ -350,9 +327,11 @@ home
               autorun.checked               = false;
 
 
-
+              /*
               var node                      = $('#local-menu');
               $('#local').onclick           = menumod.click(node,false,false,ui.menu.local);
+              */
+              localfile.initdom();
 
 
               github.initdom();
@@ -526,6 +505,19 @@ home
         }//filename
 
 
+        filename.getname=function(path){
+        
+              var name;
+              var i   = path.lastIndexOf('/');
+              if(i==-1){
+                    name    = path;
+              }else{
+                    name    = path.slice(i+1);
+              }
+            
+        }//getname
+        
+
         ui.editor=function(root){
 
               var node    = $(root,'#editor');
@@ -651,7 +643,32 @@ home
 
   //:
 
+        function complete(type,path,icon){
+        
+              filename(path,icon);
+              var name    = filename.getname(path);
+              $('#filename-save').style.display   = 'none';
+              cur   = {type,name};
+              menumod.close();
+              editor.focus();
+              
+        }//complete
+        
+        complete.load=function(type,txt,path,icon){
+        
+              editor.setValue(txt,-1);
+              complete(type,path,icon);
+              
+        }//complete.load
+        
+        complete.save=function(type,path,icon){
 
+              complete(type,path,icon);
+              
+        }//save
+
+  //:
+  
       window.onmessage=function(e){
 
             var json    = JSON.parse(e.data);
@@ -700,6 +717,8 @@ home
 
   //menu:
 
+
+/*
       ui.menu.local=function(type,opt){
 
             if(type=='opt'){
@@ -741,6 +760,10 @@ home
             cur           = {type:'local'};
 
       }//save
+
+*/
+
+
 
   //:
 
