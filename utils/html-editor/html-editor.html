@@ -13,10 +13,14 @@
 
             <script>
                                                                     console.clear();
+                                                                    
+                  var github;
+                  var editor;
+                  var output;
+                  var log;
 
                                                                     
                   var menu    = {};
-
 
 
                   init.stack            = {};
@@ -148,8 +152,9 @@
       #view {display:none;flex:1}
 
       
-      #editor {width:50%}
       editor-root {width:50%}
+      
+      output-root{flex:1}
 
 /*      
       #iframe-hldr {flex:1;box-sizing:border-box;position:relative}
@@ -229,11 +234,12 @@ home
             
             <div id=hdr2>
 
-                  
+                  <!--                  
                   <div id=hdr2-iframe>
                         <div style='flex:1'></div>
                         <button id=kill style='margin-right:20px'>kill</button>
                   </div>
+                  -->
                   
             </div>
 
@@ -251,10 +257,16 @@ home
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
+                  <!--
                   <div id=iframe-hldr>
                         <iframe id=iframe></iframe>
                         <div id=iframe-glass style='display:none'></div>
                   </div>
+                  -->
+                  
+                  <output-local-api>
+                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
+                  </output-local-api>
                   
             </div>
 
@@ -272,7 +284,7 @@ home
         var hdr2;
         
         var view;
-        var editor;
+        
         var iframe;
 
 
@@ -326,34 +338,22 @@ home
 
               hdr2                          = $('#hdr2');
 
-/*              
-              deficon                       = $(hdr2,'#filename-icon').src;
-              
-              $(hdr2,'#row').onkeydown      = kd.row;
-              $(hdr2,'#row').onmousedown    = e=>e.target.select();
-              $(hdr2,'#col').onkeydown      = kd.col;
-              $(hdr2,'#col').onmousedown    = e=>e.target.select();
-              
-              $(hdr2,'#top').onclick        = btn.top;
-              $(hdr2,'#bottom').onclick     = btn.bottom;
-              
-*/              
-
-              $(hdr2,'#kill').onclick       = btn.kill;
+              //$(hdr2,'#kill').onclick       = btn.kill;
               
 
               view                          = $('#view');
 
 
               editor.initdom(view);
-              //ui.editor(view);
 
-
+              output.initdom(view);
+/*
               iframe                        = $('iframe');
               iframe.glass                  = $('#iframe-glass');
+*/              
 
 
-              ui.slider('editor-root','#page-slider','#iframe-hldr');
+              ui.slider('editor-root','#page-slider','output-root');
 
 
 
@@ -396,36 +396,7 @@ home
 
         }//keydown
 
-/*
-        kd.row=function(e){
-              
-              if(e.key=='Enter'){
-                    e.preventDefault();
-                    var pos   = editor.getCursorPosition();
-                    var row   = $(hdr2,'#row').value;
-                    var col   = pos.column;
-                    editor.gotoLine(row,col);
-                    editor.focus();
-              }
-              
-        }//row
 
-        
-        kd.col=function(e){
-              
-              if(e.key=='Enter'){
-                    e.preventDefault();
-                    var pos   = editor.getCursorPosition();
-                    var row   = pos.row;
-                    var col   = $(hdr2,'#col').value;
-                    editor.gotoLine(row,col);
-                    editor.focus();
-              }
-              
-        }//col
-*/        
-     
-     
         btn.save=function(e){
         
               e.preventDefault();
@@ -446,118 +417,17 @@ home
         
         }//save
         
-/*        
-        btn.top=function(){
-        
-              editor.gotoLine(0,0);
-              editor.focus();
-              
-        }//top
 
-        
-        btn.bottom=function(){
-        
-              editor.gotoLine(999999,0);
-              editor.focus();
-              
-        }//bottom
-*/        
-
-     
         btn.kill=function(){
         
               var niframe   = iframe.cloneNode(true);
               iframe.parentNode.replaceChild(niframe,iframe);
               
         }//kill
+
         
   //:
 
-/*
-        function filename(path,icon){
-
-              icon                      = icon||deficon;
-              $('#filename-icon').src   = icon;
-              
-              var fn    = '';
-              if(path){
-                    var i   = path.lastIndexOf('/');
-                    if(i==-1){
-                          fn    = path;
-                    }else{
-                          fn    = path.slice(i+1);
-                    }
-              }
-              
-              document.title                = fn||'html-editor';
-              $('#filename').textContent    = fn;
-              $('#filename').title          = path||'';
-              return fn;
-
-        }//filename
-
-
-        filename.getname=function(path){
-        
-              var name;
-              var i   = path.lastIndexOf('/');
-              if(i==-1){
-                    name    = path;
-              }else{
-                    name    = path.slice(i+1);
-              }
-            
-        }//getname
-        
-        
-        filename.save=function(status){
-
-              var display   = '';
-              if(!status){
-                    display   = 'none';
-              }
-              $('#filename-save').style.display   = display;
-
-        }//save
-        
-
-        ui.editor=function(root){
-
-              var node    = $(root,'#editor');
-              node.addEventListener('mousedown',update);
-              node.addEventListener('keydown',update);
-              
-              editor      = ace.edit(node);
-              editor.setShowInvisibles(false);
-              editor.setShowPrintMargin(false);
-              editor.setPrintMarginColumn(false);
-              editor.setBehavioursEnabled(false);
-              editor.setDisplayIndentGuides(false);
-              editor.setScrollSpeed(2);
-              editor.setFontSize(16);
-              editor.session.setOptions({tabSize:2,useSoftTabs:true});
-              //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
-              editor.focus();
-              editor.session.on('change',onchange);
-              
-              
-              function onchange(e){
-
-                    $('#filename-save').style.display   = '';
-                    update();
-                                      
-              }//onchange
-              
-              function update(){
-              
-                    var pos                 = editor.getCursorPosition();
-                    $(hdr2,'#row').value    = pos.row+1;
-                    $(hdr2,'#col').value    = pos.column;
-                    
-              }//update
-              
-        }//editor
-*/
 
         ui.slider=function(node1,slider_node,node2){
 
@@ -589,7 +459,7 @@ home
 
               slider.md=function(){
 
-                    glass();
+                    output.glass();
                     document.body.style.userSelect    = 'none';
 
               }//slider.md
@@ -597,7 +467,7 @@ home
 
               slider.mu=function(){
 
-                    glass(false);
+                    output.glass(false);
                     document.body.style.userSelect    = '';
 
               }//slider.mu
@@ -632,7 +502,7 @@ home
 
         }//ui.slider
 
-
+/*
         function glass(show=true){
 
               if(show){
@@ -642,6 +512,7 @@ home
               }
 
         }//glass
+*/
 
 
   //:
@@ -656,6 +527,7 @@ home
               return name;
               
         }//complete
+
         
         complete.load=function(type,txt,path,icon){
         
@@ -663,6 +535,7 @@ home
               complete(type,path,icon);
               
         }//complete.load
+
         
         complete.save=function(type,path,icon){
 
@@ -768,11 +641,13 @@ home
 
             view.style.flexDirection        = 'column';
 
-            editor.container.style.width    = '100%';
-            editor.container.style.height   = '50%';
+            editor.horiz();
 
+/*            
             iframe.style.width              = '100%';
             iframe.style.height             = '50%';
+*/
+            output.horiz();
 
             editor.focus();
 
@@ -790,11 +665,14 @@ home
 
             view.style.flexDirection        = 'row';
 
-            editor.container.style.width    = '50%';
-            editor.container.style.height   = '100%';
+            editor.vert();
 
+            output.vert();
+
+/*            
             iframe.style.width              = '50%';
             iframe.style.height             = '100%';
+*/            
 
             editor.focus();
 
@@ -805,7 +683,9 @@ home
   
       function run(){
 
-            iframe.srcdoc   = editor.getValue();
+            var html    = editor.getValue();
+            output.srcdoc(html);
+            
             if(autosave.checked){
                   console.log('save');
                   btn.save();
