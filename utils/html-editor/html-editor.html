@@ -143,25 +143,12 @@
       #vert {border:none}
 
 
-      #hdr2 {display:flex}
-
-      #hdr2-editor {display:flex;width:50%}
-      #hdr2-iframe {display:flex;flex:1}
-
-
       #view {display:none;flex:1}
 
       
       editor-root {width:50%}
       
-      output-root{flex:1}
-
-/*      
-      #iframe-hldr {flex:1;box-sizing:border-box;position:relative}
-      iframe {width:100%;height:100%}
-      #iframe-glass {width:100%;height:100%;position:absolute;left:0;top:0}
-*/      
-
+      output-root {flex:1}
 
 
       button {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
@@ -196,8 +183,7 @@ home
 
 
             <div id=hdr>
-            
-            
+                        
                   <main-menu-local>
                         <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
                   </main-menu-local>
@@ -230,39 +216,14 @@ home
                   <img id=vert class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAQxJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwEGdvd3c3Q2lpKUG3/fnzh+H+/fsMhw4d+vjx48dFtbW1eYwgnwoJCU2Lj4/nJ9ZCmE3EWgxTD3LAwoULP7579y6LsbOz86K7u7ueqqoqQZejKyDVYpD+27dvM+zcufMSY2Nj4++CggIWUn0LMoQci0G+njBhwh9QUP8nJp6wBQc5FsMcPGoxSQlsNKiJDS5QSI0mLmJDC6xuNHERG1yjiYvYkIKrG01cxAbZaOIiNqSGeOIasMbegDVvB6xBP2BdmIHqtAEA6MBFop3TQsgAAAAASUVORK5CYII='>
 
             </div>
-
-            
-            <div id=hdr2>
-
-                  <!--                  
-                  <div id=hdr2-iframe>
-                        <div style='flex:1'></div>
-                        <button id=kill style='margin-right:20px'>kill</button>
-                  </div>
-                  -->
-                  
-            </div>
-
             
             <div id=view>
-            
             
                   <editor-api>
                         <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
                   </editor-api>
                   
-                  <!--
-                  <div id=editor></div>
-                  -->
-                  
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
-                  
-                  <!--
-                  <div id=iframe-hldr>
-                        <iframe id=iframe></iframe>
-                        <div id=iframe-glass style='display:none'></div>
-                  </div>
-                  -->
                   
                   <output-local-api>
                         <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
@@ -327,31 +288,17 @@ home
 
 
               localfile.initdom();
-
-
               github.initdom();
 
 
               $('#horiz').onclick           = horiz;
               $('#vert').onclick            = vert;
-
-
-              hdr2                          = $('#hdr2');
-
-              //$(hdr2,'#kill').onclick       = btn.kill;
               
 
               view                          = $('#view');
 
-
               editor.initdom(view);
-
               output.initdom(view);
-/*
-              iframe                        = $('iframe');
-              iframe.glass                  = $('#iframe-glass');
-*/              
-
 
               ui.slider('editor-root','#page-slider','output-root');
 
@@ -502,19 +449,6 @@ home
 
         }//ui.slider
 
-/*
-        function glass(show=true){
-
-              if(show){
-                    iframe.glass.style.display    = '';
-              }else{
-                    iframe.glass.style.display    = 'none';
-              }
-
-        }//glass
-*/
-
-
   //:
 
         function complete(type,path,icon){
@@ -642,13 +576,7 @@ home
             view.style.flexDirection        = 'column';
 
             editor.horiz();
-
-/*            
-            iframe.style.width              = '100%';
-            iframe.style.height             = '50%';
-*/
             output.horiz();
-
             editor.focus();
 
       }//horiz
@@ -666,14 +594,7 @@ home
             view.style.flexDirection        = 'row';
 
             editor.vert();
-
             output.vert();
-
-/*            
-            iframe.style.width              = '50%';
-            iframe.style.height             = '100%';
-*/            
-
             editor.focus();
 
       }//vert
