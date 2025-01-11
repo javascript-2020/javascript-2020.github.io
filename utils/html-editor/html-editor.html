@@ -253,6 +253,7 @@ home
         var ui          = {};
         ui.mode         = 'vert';
         ui.menu         = {};
+        var slider      = {};
 
 
 
@@ -298,10 +299,11 @@ home
               view                          = $('#view');
 
               editor.initdom(view);
+              
+              slider.node                   = $('#page-slider');
+              $.slider('editor-root',slider.node,'output-root',slider);
+              
               output.initdom(view);
-
-              ui.slider('editor-root','#page-slider','output-root');
-
 
 
               ui.setup();
@@ -376,6 +378,24 @@ home
   //:
 
 
+        slider.md=function(){
+
+              output.glass();
+              document.body.style.userSelect    = 'none';
+
+        }//slider.md
+
+
+        slider.mu=function(){
+
+              output.glass(false);
+              document.body.style.userSelect    = '';
+
+        }//slider.mu
+
+
+/*
+
         ui.slider=function(node1,slider_node,node2){
 
               if(typeof node1=='string'){
@@ -448,6 +468,8 @@ home
               }//horiz
 
         }//ui.slider
+*/
+
 
   //:
 
@@ -568,12 +590,12 @@ home
 
             localStorage.setItem('orientation','horiz');
 
-            ui.mode                         = 'horiz';
-            ui.slider.node.style.cursor     = 'ns-resize';
-            ui.slider.node.style.width      = '100%';
-            ui.slider.node.style.height     = '10px';
+            ui.mode                     = 'horiz';
+            slider.node.style.cursor    = 'ns-resize';
+            slider.node.style.width     = '100%';
+            slider.node.style.height    = '10px';
 
-            view.style.flexDirection        = 'column';
+            view.style.flexDirection    = 'column';
 
             editor.horiz();
             output.horiz();
@@ -586,12 +608,12 @@ home
 
             localStorage.setItem('orientation','vert');
 
-            ui.mode                         = 'vert';
-            ui.slider.node.style.cursor     = 'ew-resize';
-            ui.slider.node.style.width      = '10px';
-            ui.slider.node.style.height     = '100%';
+            ui.mode                     = 'vert';
+            slider.node.style.cursor    = 'ew-resize';
+            slider.node.style.width     = '10px';
+            slider.node.style.height    = '100%';
 
-            view.style.flexDirection        = 'row';
+            view.style.flexDirection    = 'row';
 
             editor.vert();
             output.vert();
