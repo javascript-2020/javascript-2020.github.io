@@ -1,3 +1,5 @@
+
+
 <output-root>
 
       <template shadowrootmode=open>
@@ -33,14 +35,48 @@
               var obj   = {};
             
                   
+                  var iframe;
+                  
+                  
                   obj.initdom=function(){
                   
-                        root      = $('output-root');
-                        shadow    = root.shadowRoot;
+                        root            = $('output-root');
+                        shadow          = root.shadowRoot;
                         
+                        iframe          = $('iframe');
+                        iframe.glass    = $('#iframe-glass');
                         
                   }//initdom
                   
+              
+                  obj.glass=function(show){
+
+                        var display     = 'none';
+                        if(show){
+                              display   = '';
+                        }
+                        iframe.glass.style.display    = display;
+                  
+                  }//glass
+                  
+                  
+                  obj.horiz=function(){
+                  
+                        iframe.style.width     = '100%';
+                        iframe.style.height    = '50%';
+                        
+                  }//horiz
+                  
+
+                  obj.vert=function(){
+
+                        iframe.style.width    = '50%';
+                        iframe.style.height   = '100%';
+                      
+                  }//vert
+
+
+
                   
               return obj;
               
@@ -49,3 +85,4 @@
       </script>
       
 </output-root>
+
