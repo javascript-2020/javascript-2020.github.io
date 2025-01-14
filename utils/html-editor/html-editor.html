@@ -30,6 +30,8 @@
                         
                         
                         menumod                   = menumod();
+                        menumod.on.close          = ()=>editor.focus();
+                        
                         jsonblob                  = jsonblob();
 
 
@@ -71,7 +73,7 @@
                         var promise   = ext.load.libs(
                               'js/dom/$.js','js/core/datatype.js',
                               'js/io/jsonblob/jsonblob.js',
-                              'js/dom/menumod/menumod.js',
+                              'js/dom/menumod/menumod.js.api',
                               'js/dom/keydown/keydown.js.api'
                         );
                         [$,datatype,jsonblob,menumod,keydown]   = await promise;
@@ -80,7 +82,6 @@
                         window.$            = $;
                         window.datatype     = datatype;
 
-                        menumod.on.close    = ()=>editor.focus();
                                                                                 //console.log('ready');
                         init.stack.complete;
 
