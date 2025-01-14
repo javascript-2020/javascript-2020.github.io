@@ -36,9 +36,14 @@
                                                                                   true && console.log('output');
               var obj   = {};
             
-                  
+            
+                  var hldr;      
                   var iframe;
                   var glass;
+
+                  
+                  var btn   = {};
+
                   
                   obj.initdom=function(){
                   
@@ -46,15 +51,30 @@
                         shadow          = root.shadowRoot;
                         
                         var style       = $(shadow,'style');
-                        
                         $.stylesheet.insert(style,'button','.icon');
+
                         
+                        var hdr         = $(shadow,'#hdr');
+                        
+                        $(hdr,'#kill').onclick    = btn.kill;
+
+                        
+                        hldr            = $(shadow,'#hldr');
                         iframe          = $(shadow,'iframe');
                         glass           = $(shadow,'#glass');
                         
                         
                   }//initdom
+
                   
+                  btn.kill=function(){
+                  
+                        var niframe   = iframe.cloneNode(true);
+                        hldr.replaceChild(niframe,iframe);
+                        iframe        = niframe;
+                        
+                  }//kill
+
               
                   obj.glass=function(show=true){
 
