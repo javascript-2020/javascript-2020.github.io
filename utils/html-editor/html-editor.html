@@ -72,15 +72,16 @@
                               'js/dom/$.js','js/core/datatype.js',
                               'js/io/jsonblob/jsonblob.js',
                               'js/dom/menumod/menumod.js',
-                              'js/dom/keydown/keydown.js'
+                              'js/dom/keydown/keydown.js.api'
                         );
                         [$,datatype,jsonblob,menumod,keydown]   = await promise;
 
 
-                        window.$          = $;
-                        window.datatype   = datatype;
+                        window.$            = $;
+                        window.datatype     = datatype;
 
-                                                                          //console.log('ready');
+                        menumod.on.close    = ()=>editor.focus();
+                                                                                //console.log('ready');
                         init.stack.complete;
 
                     }));
