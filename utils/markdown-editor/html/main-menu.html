@@ -19,9 +19,7 @@
                   <div id=new class=menu-opt>new</div>
                   <div id=fork class=menu-opt>fork</div>
                   <div class=menu-sep></div>
-                  <div id=source class=menu-opt>html editor source code</div>
-                  <div class=menu-sep></div>
-                  <div id=create-html-icon class=menu-opt>create html icon</div>
+                  <div id=source class=menu-opt>markdown editor source code</div>
             </div>
             
       </template>
@@ -71,13 +69,7 @@
                   
                         menu.new=function(){
                   
-                              var url       = window.location.toString();
-                              var search    = window.location.search;
-                              if(search){
-                                    url     = url.slice(0,-search.length);
-                              }
-                  
-                              var win   = window.open(url);
+                              var win   = window.open('https://javascript-2020.github.io/utils/markdown-editor/markdown-editor.html');
                               return win;
                   
                         }//new
@@ -85,59 +77,16 @@
                   
                         menu.fork=function(){
                   
-                              var win   = newwin();
+                              var win   = menu.new();
                               var txt   = editor.getValue();
                               win.postMessage({txt},'*');
                   
                         }//fork
             
                   
-                        menu.trim=function(){
-                  
-                              var pos     = editor.getCursorPosition();
-                              var txt     = editor.getValue();
-                              var lines   = txt.split('\n');
-                              lines       = lines.map(line=>line.trimEnd());
-                              txt         = lines.join('\n');
-                              editor.setValue(txt,-1);
-                              editor.gotoLine(pos.row,pos.column);
-                  
-                        }//trim
-                        
-                        
-                        menu['create-html-icon']=async function(){
-                        
-                              var err;
-                              try{
-                              
-                                    var url   = 'https://raw.githubusercontent.com/javascript-2020/javascript-2020.github.io/main/utils/html-editor/mods/create-html-icon/create-html-icon.html';
-                                    var res   = await fetch(url);
-                                    
-                              }
-                              catch(err2){
-                              
-                                    err   = err2;
-                                    
-                              }
-                              if(err){
-                                    log.error(err);
-                                    return;
-                              }
-                              
-                              var txt   = await res.text();
-                              if(!res.ok){
-                                    log.red(txt);
-                                    return;
-                              }
-
-                              editor.set(txt);
-                              
-                        }//create-html-icon
-                        
-                        
                         menu.source=function(){
                         
-                              window.open('https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/html-editor');
+                              window.open('https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/markdown-editor');
                               
                         }//source
                         
