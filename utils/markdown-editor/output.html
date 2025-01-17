@@ -1,0 +1,78 @@
+
+
+<output-root>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+                  #output {height:100%}
+                  
+            </style>
+            
+            <div id=output>
+            </div>
+            
+      </template>
+      
+      <script>
+      
+            output    = output();
+            
+            function output(){
+            
+              var obj   = {};
+
+              
+                  var src             = 'https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js';
+                  var resolve,load    = new Promise(res=>resolve=res);
+                  
+                  var root;
+                  var shadow;
+                  
+                  var output;
+                  
+                  
+                  obj.initdom=function(){
+                  
+                        root                = $('output-root');
+                        shadow              = root.shadowRoot;
+                        
+                        output              = $(shadow,'#output');
+
+                        
+                        var script          = document.createElement('script');
+                        script.src          = src;
+                        script.onload       = onload;
+                        document.head.append(script);
+                        
+                        
+                  }//initdom
+                  
+                  
+                  function onload(){
+                  
+                        md    = markdownit();
+                        resolve();
+                        
+                  }//onload
+                  
+                  
+                  obj.show=function(txt){
+
+                        await load;
+                        
+                        var html            = md.render(txt);
+                        output.innerHTML    = html;
+                        
+                  }//show
+                  
+                  
+              return obj;
+              
+            }//output
+            
+      </script>
+      
+</output-root>
+
