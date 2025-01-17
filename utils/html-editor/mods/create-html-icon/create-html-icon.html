@@ -6,7 +6,7 @@
 
 <style>
 
-      .icon {
+      #icon {
             display         : inline-block;
             text-align      : center;
             background      : darkgray;
@@ -14,22 +14,24 @@
             border          : 1px solid lightgray;
             cursor          : pointer;
             margin-right    : 10px;
-            font-family:arial;
-            padding:10px 5px;
+            font-family     : arial;
+            padding         : 10px 5spx;
       }
 
-      .label {
+      #label {
             margin          : 2px 0 0;
-            font-weight:bold;
-            color:green;
-            font-size:22px;
+            font-weight     : bold;
+            color           : green;
+            font-size       : 22px;
       }
       
 </style>
 
 
-<div class="icon">
-    <div class="label">.md</div>
+<div id=icon>
+
+    <div id=label>.md</div>
+    
 </div>
 
 
@@ -37,20 +39,25 @@
 <style>      
 
       body {margin:25px}
-      #result {margin-top:30px;border-top:1px solid lightgray;padding-top:20px}
+      #result {margin-top:30px;border-top:1px solid lightgray;padding-top:20px;display:flex;flex-direction:column;gap:10px}
       #info {display:flex;gap:10px}
+      [value=save] {width:100px;padding: 10px 0;cursor:pointer}
       
 </style>
 
 
 <div id=result>
 
-      <img>
+      <div>
+            <img>
+      </div>
       <div id=info>
             <div id=w>0</div>
             <div id=h>0</div>
       </div>
-      
+      <div>
+            <input type=button value=save>
+      </div>
 </div>
 
 
@@ -77,12 +84,18 @@
                                   
                             }
       
-      return;
       
-      var a               = document.createElement('a');
-      a.href              = url;
-      a.download          = 'home.png';
-      a.click();
+      $('[value=save]').onclick   = save;
+      
+      
+      function save(){
+      
+            var a               = document.createElement('a');
+            a.href              = url;
+            a.download          = 'home.png';
+            a.click();
+            
+      }//save
       
 })();
 
