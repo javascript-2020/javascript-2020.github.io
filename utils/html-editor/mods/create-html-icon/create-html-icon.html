@@ -5,9 +5,9 @@
       #icon {
             display         : inline-block;
             text-align      : center;
-            background      : darkgray;
+            background      : dimgray;
             border-radius   : 5px;
-            border          : 1px solid lightgray;
+            border          : 1px solid black;
             cursor          : pointer;
             margin-right    : 10px;
             font-family     : arial;
@@ -17,7 +17,7 @@
       #label {
             margin          : 2px 0 0;
             font-weight     : bold;
-            color           : green;
+            color           : lightgreen;
             font-size       : 22px;
       }
       
@@ -81,12 +81,16 @@
       h3.textContent      = 'loading library';
       var first           = document.body.firstChild;
       document.body.insertBefore(h3,first);
+
       
       var {toBlob}        = await import('https://cdn.jsdelivr.net/npm/html-to-image/+esm');
       
       h3.remove();
+
       
       var node            = document.getElementsByTagName('div')[0];
+      var fn              = node.id||'icon';
+      
       var blob            = await toBlob(node);
       var url             = window.URL.createObjectURL(blob);
       
@@ -107,6 +111,7 @@
       
             var a               = document.createElement('a');
             a.href              = url;
+            var filename        = fn+'.png';
             a.download          = 'home.png';
             a.click();
             
