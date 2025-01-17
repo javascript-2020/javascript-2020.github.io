@@ -19,6 +19,7 @@
                   <div id=new class=menu-opt>new</div>
                   <div id=fork class=menu-opt>fork</div>
                   <div class=menu-sep></div>
+                  <div id=create-html-icon>create html icon</div>
             </div>
             
       </template>
@@ -101,6 +102,35 @@
                   
                         }//trim
                         
+                        
+                        menu['create-html-icon']=function(){
+                        
+                              var err;
+                              try{
+                              
+                                    var url   = 'https://raw.githubusercontent.com/javascript-2020/javascript-2020.github.io/main/utils/html-editor/mods/create-html-icon/create-html-icon.html';
+                                    var res   = await fetch(url);
+                                    
+                              }
+                              catch(err2){
+                              
+                                    err   = err2;
+                                    
+                              }
+                              if(err){
+                                    log.error(err);
+                                    return;
+                              }
+                              
+                              var txt   = await res.text();
+                              if(!res.ok){
+                                    log.red(txt);
+                                    return;
+                              }
+
+                              editor.set(txt);
+                              
+                        }//create-html-icon
                         
                     return obj;
                     
