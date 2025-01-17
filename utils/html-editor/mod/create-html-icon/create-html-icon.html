@@ -1,0 +1,94 @@
+
+
+
+<body></body>
+
+
+<style>
+
+      .icon {
+            display         : inline-block;
+            text-align      : center;
+            background      : darkgray;
+            border-radius   : 5px;
+            border          : 1px solid lightgray;
+            cursor          : pointer;
+            margin-right    : 10px;
+            font-family:arial;
+            padding:10px 5px;
+      }
+
+      .label {
+            margin          : 2px 0 0;
+            font-weight:bold;
+            color:green;
+            font-size:22px;
+      }
+      
+</style>
+
+
+<div class="icon">
+    <div class="label">.md</div>
+</div>
+
+
+
+<style>      
+
+      body {margin:25px}
+      #result {margin-top:30px;border-top:1px solid lightgray;padding-top:20px}
+      #info {display:flex;gap:10px}
+      
+</style>
+
+
+<div id=result>
+
+      <img>
+      <div id=info>
+            <div id=w>0</div>
+            <div id=h>0</div>
+      </div>
+      
+</div>
+
+
+
+<script>
+                                                      console.clear();
+
+(async()=>{
+
+      var $   = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+      
+
+      var {toBlob}        = await import('https://cdn.jsdelivr.net/npm/html-to-image/+esm');
+      var node            = $('.icon');
+      var blob            = await toBlob(node);
+      var url             = window.URL.createObjectURL(blob);
+      
+      var img             = document.querySelector('#result img');
+      img.src             = url;
+      img.onload          = ()=>{
+                                  
+                                  $('#w').textContent   = img.naturalWidth;
+                                  $('#h').textContent   = img.naturalHeight;
+                                  
+                            }
+      
+      return;
+      
+      var a               = document.createElement('a');
+      a.href              = url;
+      a.download          = 'home.png';
+      a.click();
+      
+})();
+
+
+
+
+</script>
+
+
