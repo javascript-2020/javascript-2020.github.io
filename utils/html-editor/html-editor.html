@@ -69,7 +69,7 @@
                                                                     console.log('init');
 
 
-                        window.onfocus            = ()=>editor.focus();
+                        window.onfocus            = ()=>editor && editor.focus();
                         
                         
                         menumod                   = menumod();
@@ -78,6 +78,9 @@
                         jsonblob                  = jsonblob();
 
 
+                        filemod.init();
+
+                        
                         initdom();
 
 
@@ -107,7 +110,8 @@
                         ext   = eval(txt);
 
                         var promise   = ext.load.libs(
-                              'js/dom/$.js','js/core/datatype.js',
+                              'js/dom/$.js.api',
+                              'js/core/datatype.js',
                               'js/io/jsonblob/jsonblob.js',
                               'js/dom/menumod/menumod.js',
                               'js/dom/keydown/keydown.js'
@@ -161,14 +165,14 @@ home
                         <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
                   </main-menu-local>
 
-<!--
+
                   <filemod-api>
-                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js.api'></script>
+                        <script src='https://html-loader-dblv8aserliq.runkit.sh/.api'></script>
                   </filemod-api>
--->                  
+                  
 
                   
-                  
+<!--                  
                   <localfile>
                         <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
                   </localfile>
@@ -176,6 +180,7 @@ home
                   <github>
                         <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
                   </github>
+-->                  
                   
 
 
@@ -268,9 +273,9 @@ home
               $('#run').onclick             = run;
 
 
-              //filemod.initdom();
-              localfile.initdom();
-              github.initdom();
+              filemod.initdom();
+              //localfile.initdom();
+              //github.initdom();
 
 
               $('#horiz').onclick           = horiz;
