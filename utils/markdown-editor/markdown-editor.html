@@ -1,3 +1,5 @@
+
+
 <html>
       <head>
 
@@ -5,32 +7,15 @@
 
             <base href='https://javascript-2020.github.io/utils/markdown-editor/markdown-editor.html'>
             
-            <link rel='icon' type='image/png' href='images/markdown-editor-favicon.png'>
+            <link rel=icon type='image/png' href='images/markdown-editor-favicon.png'>
             <link rel=stylesheet href='/utils/utils.css'>
             
             <style id=page-inline>
             
-                  #hdr {
-                        padding                     : 5px 5px;
-                        height                      : 30px;
-                        display                     : flex;
-                        align-items                 : center;
-                        gap                         : 10px
-                  }
+                  #hdr {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
                   
-                  .icon {
-                        border                      : 1px solid gray;
-                        border-radius               : 3px;
-                        box-sizing                  : border-box;
-                        width                       : 30px;
-                        height                      : 30px;
-                        cursor                      : pointer;
-                  }
-                  
-                  .spc {
-                        flex                        : 1;
-                        max-width                   : 200px
-                  }
+                  .icon {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}                  
+                  .spc {flex:1;max-width:200px}
             
                   #help {padding:2px}
                   
@@ -39,25 +24,18 @@
                   #horiz {margin-left:50px;border:none}
                   #vert {border:none}
             
-            
                   #view {display:none;flex:1}
             
                   editor-root {width:50%}
                   output-root {flex:1}
-            
             
                   button {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
             
             
             </style>
             
-            
-            <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
-
-
             <script>
-                                                                    console.clear();
-                                                                    
+                                                                                console.clear();
                   var github;
                   var editor;
                   var output;
@@ -68,10 +46,10 @@
 
 
                   async function init(){
-                                                                    console.log('init');
+                                                                                console.log('init');
 
 
-                        window.onfocus            = ()=>editor.focus();
+                        window.onfocus            = ()=>editor && editor.focus();
                         
                         
                         menumod                   = menumod();
@@ -80,12 +58,7 @@
                         jsonblob                  = jsonblob();
 
 
-                        localfile.load.complete   = (txt,path,icon)=>complete.load('localfile',txt,path,icon);
-                        localfile.save.complete   = (path,icon)=>complete.save('localfile',path,icon);
-                        
-                        github.load.complete      = (txt,path,icon)=>complete.load('github',txt,path,icon);
-                        github.save.complete      = (path,icon)=>complete.save('github',path,icon);
-
+                        filemod.init();
 
                         initdom();
 
@@ -116,7 +89,8 @@
                         ext   = eval(txt);
 
                         var promise   = ext.load.libs(
-                              'js/dom/$.js','js/core/datatype.js',
+                              'js/dom/$.js',
+                              'js/core/datatype.js',
                               'js/io/jsonblob/jsonblob.js',
                               'js/dom/menumod/menumod.js',
                               'js/dom/keydown/keydown.js'
@@ -142,24 +116,24 @@
 
             <section class=hdr>
 
-                <img id=help class=hdr-icon style='padding:2px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAABANJREFUSEvNl2tsVEUUx39n224pEVNsTcGqAYM1gYYP0mCUaILGLqVptzVGKZCArxIU2VYTYpQapU2Mj9jWR9H6wUesUdcGWoRSJIQYjUhETUkkRUVIoGztLqB9bOm2OzL7urtst3eXhsT77c495/+bOXPmzLlCEk9JydOZKsNi8ws2QYqAW4DskOsF4IRC/WRRdIvP393V9fZFM1mZyqC0dONsX8aMZ0SpjUCOmVjou0eJbM/wjb65e/f284l8YsCqbNN8JK0Ii5JeJXN2IXVjkJskMMbMCu4yVP1tolyBD4ohrNftF+dLY/o1AlbljsUIh4CsKwEl5aPoks7mlbFg++bnQF5JSmA6RlbLTHE2eo0V22teANUwHc2kfK2+WeJsGYqABysc9dcotiblPB2jaLDO3rXp1uOrrjCRUpmH02ed+9Ce112BFRdX1NavVmrrOlRQ4/nH4YN2GDgP826AiuXQ1AY1a2B+vsE5dBRO9UF+Hjj3GeMr7wbbncH3f4fB+Q30HA+8Voml4fOdjXWii4PfmnamCnIi4A+3wcvvwck+WFwAj1WC41Vo2gKdB+HYX0HRwWG4747gZJo+NcCPVEBWJuw4AIULYF0ZrK+D8QkeQDyjYxP5sqLcUa5EOqqApMAfdcCvvQbEvnxy8MQEfLILROCrN+CJbXDuHyoRRpWyS7Hd8a4gT8aB/zwNwyOQfS1kzzJWrEPr8sDX3wZXnAicZoEvu6HwVtjwIDz6Ikz4A+ARVIvY7DU/AkvjwB93wlk3LLgJiu8ywEd+g1Nn4fBRGB1LDL7n9mCOXBiE9v3QezIQJQ32wmENHgByr1qoL0v5ENitwT4gPWnwd7/AidNBuf5LIS9aBEsWws4DwTGXG2zLILzHk4PHJwfrLNbh0WGamwv3LoW2PbC2FG7MM6R6foczf0PJMmPs52Mw7AW/H37oiTvioRUHwPGhTqUipGgbHer45EpRLBXzSHKFj9MqYH24cqWilKJtRSCrVUukgBQCr6GwpCiUirkumpsRRBeQcMnUrc1CYFF0dxClOhtFpQmlD9hr9BYx1l7goK6y4LHokqm/6ktClDK9Eh0oShLA9ZmsRfjDZHJKpGGfviS0nb4Wx9MzdSSm7K8ygWYU8yYRb0HoNI+7O338YoFuAiONgM1euxpUm5nvzcBbKGZEGX4P1CcIcayerOnuaPxMj8V0mSvKa95XQrUZ/P5Le/Vs6AT0A08hDJk4iaJ1b2fThrBZDHhJdXVGTn/WF4KY5VFgrwtQtCOECmhCtELt8OR5Hz7S2qpTIfDENfQafr1r5jvJrNwsMgGAonVgzsimaOik4LBYaM+bzRJuCrgbxBHe08vt/h+/MIlmfzV+2v4DHQu0lKRbJa4AAAAASUVORK5CYII='>
-                    
-                <div class=hdr-item>
-                                
-                    <top-menu>
-                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
-                    </top-menu>
-                    
-                    <a id=home class=hdr-item-label href='https://javascript-2020.github.io/'>
+                  <img id=help class=hdr-icon style='padding:2px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAABANJREFUSEvNl2tsVEUUx39n224pEVNsTcGqAYM1gYYP0mCUaILGLqVptzVGKZCArxIU2VYTYpQapU2Mj9jWR9H6wUesUdcGWoRSJIQYjUhETUkkRUVIoGztLqB9bOm2OzL7urtst3eXhsT77c495/+bOXPmzLlCEk9JydOZKsNi8ws2QYqAW4DskOsF4IRC/WRRdIvP393V9fZFM1mZyqC0dONsX8aMZ0SpjUCOmVjou0eJbM/wjb65e/f284l8YsCqbNN8JK0Ii5JeJXN2IXVjkJskMMbMCu4yVP1tolyBD4ohrNftF+dLY/o1AlbljsUIh4CsKwEl5aPoks7mlbFg++bnQF5JSmA6RlbLTHE2eo0V22teANUwHc2kfK2+WeJsGYqABysc9dcotiblPB2jaLDO3rXp1uOrrjCRUpmH02ed+9Ce112BFRdX1NavVmrrOlRQ4/nH4YN2GDgP826AiuXQ1AY1a2B+vsE5dBRO9UF+Hjj3GeMr7wbbncH3f4fB+Q30HA+8Voml4fOdjXWii4PfmnamCnIi4A+3wcvvwck+WFwAj1WC41Vo2gKdB+HYX0HRwWG4747gZJo+NcCPVEBWJuw4AIULYF0ZrK+D8QkeQDyjYxP5sqLcUa5EOqqApMAfdcCvvQbEvnxy8MQEfLILROCrN+CJbXDuHyoRRpWyS7Hd8a4gT8aB/zwNwyOQfS1kzzJWrEPr8sDX3wZXnAicZoEvu6HwVtjwIDz6Ikz4A+ARVIvY7DU/AkvjwB93wlk3LLgJiu8ywEd+g1Nn4fBRGB1LDL7n9mCOXBiE9v3QezIQJQ32wmENHgByr1qoL0v5ENitwT4gPWnwd7/AidNBuf5LIS9aBEsWws4DwTGXG2zLILzHk4PHJwfrLNbh0WGamwv3LoW2PbC2FG7MM6R6foczf0PJMmPs52Mw7AW/H37oiTvioRUHwPGhTqUipGgbHer45EpRLBXzSHKFj9MqYH24cqWilKJtRSCrVUukgBQCr6GwpCiUirkumpsRRBeQcMnUrc1CYFF0dxClOhtFpQmlD9hr9BYx1l7goK6y4LHokqm/6ktClDK9Eh0oShLA9ZmsRfjDZHJKpGGfviS0nb4Wx9MzdSSm7K8ygWYU8yYRb0HoNI+7O338YoFuAiONgM1euxpUm5nvzcBbKGZEGX4P1CcIcayerOnuaPxMj8V0mSvKa95XQrUZ/P5Le/Vs6AT0A08hDJk4iaJ1b2fThrBZDHhJdXVGTn/WF4KY5VFgrwtQtCOECmhCtELt8OR5Hz7S2qpTIfDENfQafr1r5jvJrNwsMgGAonVgzsimaOik4LBYaM+bzRJuCrgbxBHe08vt/h+/MIlmfzV+2v4DHQu0lKRbJa4AAAAASUVORK5CYII='>
+                      
+                  <div class=hdr-item>
+                                  
+                      <top-menu>
+                          <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
+                      </top-menu>
+                      
+                      <a id=home class=hdr-item-label href='https://javascript-2020.github.io/'>
 home
-                    </a>
-                </div>
+                      </a>
+                  </div>
 
-                <img class=hdr-title src='images/markdown-editor.png' style='top:-5px;height:55px'>
+                  <img class=hdr-title src='images/markdown-editor.png' style='top:-5px;height:55px'>
                 
-                <div class=date>
-17 Jan 2025
-                </div>
+                  <div class=date>
+20 Jan 2025
+                  </div>
                 
             </section>
 
@@ -167,18 +141,12 @@ home
             <div id=hdr>
                         
                   <main-menu-local>
-                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
+                        <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
                   </main-menu-local>
-
                   
-                  <localfile>
-                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
-                  </localfile>
-
-                  <github>
-                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
-                  </github>
-
+                  <filemod>
+                        <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
+                  </filemod>
 
                   <button id=clear>clear</button>
                   <button id=copy>copy</button>
@@ -268,9 +236,7 @@ home
               
               $('#run').onclick             = run;
 
-
-              localfile.initdom();
-              github.initdom();
+              filemod.initdom();
 
 
               $('#horiz').onclick           = horiz;
@@ -563,10 +529,4 @@ home
 
 
 </html>
-
-
-
-
-
-
 
