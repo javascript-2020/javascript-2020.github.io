@@ -54,7 +54,8 @@
 
 
                         filemod.init();
-
+                        share.initmod({ui});
+                        
                         
                         initdom();
 
@@ -87,7 +88,7 @@
                         var promise   = ext.load.libs(
                               'js/dom/$.js.api',
                               'js/core/datatype.js',
-                              'js/dom/menumod/menumod.js.api',
+                              'js/dom/menumod/menumod.js',
                               'js/dom/keydown/keydown.js'
                         );
                         [$,datatype,menumod,keydown]   = await promise;
@@ -131,9 +132,9 @@
                   <checkbox-one id=autosave></checkbox-one>
                   <checkbox-one id=autorun></checkbox-one>
                   
-                  <share>
+                  <share-api>
                         <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
-                  </share>
+                  </share-api>
 
                   <button id=run>run</button>
 
@@ -208,7 +209,8 @@
               autosave.checked              = false;
               autorun                       = $('#autorun');
               autorun.checked               = false;
-              $('#jsonblob').onclick        = ext_save;
+              
+              share.initdom();
               
               $('#run').onclick             = run;
 
@@ -223,30 +225,14 @@
               view                          = $('#view');
 
               editor.initdom(view,'html');
-              
-              slider.node                   = $('#page-slider');
-              $.slider('editor-root',slider.node,'output-root',slider,ui);
-              
+              slider.node                   = $.slider('editor-root','#page-slider','output-root',slider,ui);
               output.initdom(view);
-
 
               ui.setup();
 
 
-              var json    = await jsonblob.util.query();
-              if(json){
-                    editor.setValue(json.txt,-1);
-                    if(autorun.checked){
-                          run();
-                    }
-              }
-
-              view.style.display    = 'flex';
-
-
-              
+              share.query();
               editor.focus();
-
 
         }//initdom
 
@@ -395,6 +381,7 @@
             if(o==='horiz'){
                   horiz();
             }
+            view.style.display    = 'flex';
 
       }//setup
 
@@ -410,14 +397,6 @@
             output.kill();
 
       }//clear
-
-
-      function ext_save(){
-
-            var json    = ui.read();
-            jsonblob.util.save(json);
-
-      }//save
 
 
       function copy(){
