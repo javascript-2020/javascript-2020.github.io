@@ -33,10 +33,12 @@
             <script>
                                                                                 console.clear();
                                                                                 console.json=v=>console.log(JSON.strinigify(v,null,4));
+                  var filemod;                                                                                
+                  var localfile;
                   var github;
+                  var publish;
                   var editor;
                   var output;
-                  var publish;
                   var log;
 
                   var menu    = {};
@@ -94,8 +96,7 @@
                   fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
                     .then(res=>res.text().then(async txt=>{
 
-                        ext   = eval(txt);
-
+                        ext           = eval(txt);
                         var promise   = ext.load.libs(
                               'js/dom/$.js.api',
                               'js/core/datatype.js',
@@ -104,16 +105,12 @@
                         );
                         [$,datatype,menumod,keydown]   = await promise;
 
-                        window.$            = $;
-                        window.datatype     = datatype;
-
                         init.stack.complete;
 
                     }));
 
             </script>
-
-
+            
       </head>
 
       
@@ -166,22 +163,13 @@
       </body>
 
 <script>
-                                                                                  console.log('main');
-
-        var autorun;
+                                                                                console.log('main');
+        var slider      = {};
         
-        var view;
-        
-
         var ui          = {};
         ui.mode         = 'vert';
-        var slider      = {};
-
-
-
 
   //:
-
 
         async function initdom(){   //c
                                                                                 console.log('initdom');
@@ -195,23 +183,19 @@
               
               menu.main.initdom();
 
+              filemod.initdom();
               
-              autorun                       = $('#autorun');
-              autorun.checked               = false;
               
               publish.initdom();
               
               $('#run').onclick             = run;
 
 
-              filemod.initdom();
-
-
               $('#horiz').onclick           = horiz;
               $('#vert').onclick            = vert;
               
 
-              view                          = $('#view');
+              var view                      = $('#view');
 
               editor.initdom(view,'html');
               slider.md                     = ()=>output.glass();
@@ -219,8 +203,8 @@
               slider.node                   = $.slider('editor-root','#page-slider','output-root',slider,ui);
               output.initdom(view);
 
-              ui.setup();
 
+              ui.setup(view);
 
               publish.query();
               editor.focus();
@@ -317,7 +301,7 @@
       }//read
 
 
-      ui.setup=function(){
+      ui.setup=function(view){
 
             var o   = localStorage.getItem('orientation');
             if(o==='horiz'){
