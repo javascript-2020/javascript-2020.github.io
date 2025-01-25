@@ -170,12 +170,7 @@
 <script>
                                                                                   console.log('main');
 
-        var cur;
-
-        var autosave;
         var autorun;
-        var local;
-        var hdr2;
         
         var view;
         
@@ -224,6 +219,8 @@
               view                          = $('#view');
 
               editor.initdom(view,'html');
+              slider.md                     = ()=>output.glass();
+              slider.mu                     = ()=>output.glass(false);
               slider.node                   = $.slider('editor-root','#page-slider','output-root',slider,ui);
               output.initdom(view);
 
@@ -238,59 +235,27 @@
 
         function kd(e){
 
-              var stop;
               if(e.key=='Enter' && e.ctrlKey){
-                    stop    = true;
+                    e.preventDefault();
                     run();
               }
 
               if(e.key==' ' && e.ctrlKey){
-                    stop    = true;
+                    e.preventdDefault();
                     menumod.open();
               }
 
               if(e.key=='s' && e.ctrlKey){
-                    stop    = true;
+                    e.preventDefault();
                     filemod.save();
               }
 
               if(e.key=='Delete' && e.ctrlKey){
-                    stop    = true;
+                    e.preventDefault();
                     jsonblob.util.delete()
               }
               
-              return {stop};
-
         }//keydown
-
-
-        
-
-        btn.kill=function(){
-        
-              var niframe   = iframe.cloneNode(true);
-              iframe.parentNode.replaceChild(niframe,iframe);
-              
-        }//kill
-
-        
-  //:
-
-
-        slider.md=function(){
-
-              output.glass();
-              document.body.style.userSelect    = 'none';
-
-        }//slider.md
-
-
-        slider.mu=function(){
-
-              output.glass(false);
-              document.body.style.userSelect    = '';
-
-        }//slider.mu
 
 
   //:
@@ -300,7 +265,7 @@
         
               var name    = editor.filename(path,icon);
               editor.filename.save(false);
-              cur   = {type,name};
+              filemod.cur   = {type,name};
               menumod.close();
               editor.focus();
               return name;
@@ -329,24 +294,18 @@
   
       window.onmessage=function(e){
 
+            
             var json    = JSON.parse(e.data);
 
-            var txt;
-            if(json.code){
-                  txt   = json.code;
+            var txt   = json.code||json.text||json.txt;
+            if(txt){
+                  editor.setValue(txt,-1);
             }
-            if(json.txt){
-                  txt   = json.txt;
-            }
-            if(json.text){
-                  txt   = json.text;
-            }
-
-            editor.setValue(txt,-1);
 
             if(json.run){
                   run();
             }
+
 
       }//onmessage
 
@@ -420,9 +379,9 @@
             var html    = editor.getValue();
             output.srcdoc(html);
             
-            if(autosave.checked){
+            if(filemod.autosave){
                                                                                 console.log('save');
-                  btn.save();
+                  filemod.save();
             }
 
       }//run
