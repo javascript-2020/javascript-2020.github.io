@@ -53,7 +53,9 @@
                         menumod.add.style();
                         menumod.on.close          = ()=>editor.focus();
 
+                        filemod.initmod({menumod});
                         filemod.init();
+                        
                         publish.initmod({ui});
                         
                         
@@ -134,8 +136,6 @@
                         <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
                   </filemod>
 
-                  <button id=save>save</button>
-                  <checkbox-one id=autosave></checkbox-one>
                   <checkbox-one id=autorun></checkbox-one>
                   
                   <publish-api>
@@ -206,9 +206,6 @@
               menu.main.initdom();
 
               
-              $('#save').onclick            = btn.save;
-              autosave                      = $('#autosave');
-              autosave.checked              = false;
               autorun                       = $('#autorun');
               autorun.checked               = false;
               
@@ -250,7 +247,7 @@
               }
 
               if(e.key=='s' && e.ctrlKey){
-                    btn.save(e);
+                    filemod.save(e);
               }
 
               if(e.key=='Delete' && e.ctrlKey){
@@ -260,25 +257,6 @@
         }//keydown
 
 
-        btn.save=function(e){
-        
-              e.preventDefault();
-              
-              if(!cur){
-                    log.orange('no file');
-                    return;
-              }
-              
-              var txt   = editor.getValue();
-              
-              if(cur.type=='github'){
-                    github.save(txt);
-              }
-              if(cur.type=='local'){
-                    ui.menu.local.save();
-              }
-        
-        }//save
         
 
         btn.kill=function(){
