@@ -13,7 +13,7 @@
                   #help         {padding:2px}
                   
                   #hdr          {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
-                  .icon         {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer;}
+                  .icon         {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
                   .spc          {flex:1}
                   
                   #run          {color:blue;font-weight:bold}
@@ -132,9 +132,9 @@
                         <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
                   </main-menu-local>
 
-                  <filemod>
+                  <filemod-api>
                         <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
-                  </filemod>
+                  </filemod-api>
 
                   <checkbox-one id=autorun></checkbox-one>
                   
@@ -238,21 +238,28 @@
 
         function kd(e){
 
+              var stop;
               if(e.key=='Enter' && e.ctrlKey){
+                    stop    = true;
                     run();
               }
 
               if(e.key==' ' && e.ctrlKey){
+                    stop    = true;
                     menumod.open();
               }
 
               if(e.key=='s' && e.ctrlKey){
-                    filemod.save(e);
+                    stop    = true;
+                    filemod.save();
               }
 
               if(e.key=='Delete' && e.ctrlKey){
+                    stop    = true;
                     jsonblob.util.delete()
               }
+              
+              return {stop};
 
         }//keydown
 
