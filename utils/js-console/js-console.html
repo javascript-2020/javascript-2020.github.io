@@ -1,1257 +1,383 @@
+
+
 <html>
-    <head>
-        <title>js console</title>
-        <link rel='icon' type='image/png' href='js-console.png'>
-        
-        <style>
-                  html {
-                        height                      : 100%;
-                  }
-                  
-                  body {
-                        font-family                 : arial;
-                        /*margin                      : 20px;*/
-                        height                      : calc(100% - 16px);
-                        display                     : flex;
-                        flex-direction              : column;
-                  }
-                  
-                  
-                  .hdr {
-                        position                    : relative;
-                        display:flex;
-                        /*padding-bottom              : 10px;*/
-                        /*border-bottom               : 1px solid lightblue;*/
-                        margin-top                  : 0;
-                        /*margin-bottom               : 20px;*/
-                        font-family                 : arial;
-                  }
-                  
-                  .hdr-icon {
-                        display                     : inline-block;
-                        text-align                  : center;
-                        background                  : whitesmoke;
-                        border-radius               : 5px;
-                        border                      : 1px solid lightgray;
-                        padding                     : 5px 3px 0px;
-                        cursor                      : pointer;
-                        margin-right                : 10px;
-                        min-width                   : 50px;
-                  }
-                  
-                  .hdr-icon-img {
-                  }
-                  
-                  .hdr-icon-label {
-                        margin                      : 2px 0 0;
-                  }
-                  
-                  .hdr-title {
-                        text-align                  : center;
-                        position                    : absolute;
-                        left                        : 0;
-                        right                       : 0;
-                        top                         : 0px;
-                        z-index                     : -1;
-                        margin                      : 0;
-                  }
-                  
-                  .hdr-date {
-                        float                       : right;
-                  }
-                  
-                  .ftr {
-                        background-color            : rgb(238, 232, 170);
-                        height                      : 50px;
-                        margin-top                  : 70px;
-                  }
-                  
-                  
-                  #center {
-                        width                       : 100%;
-                        max-width                   : 1000px;
-                        margin                      : auto;
-                        flex                        : 1;
-                  }
-                  
-                  
-                  .heading {
-                        border-left                 : 5px solid rgba(238,232,170,1);
-                        background                  : rgba(239,247,250,1);
-                        padding                     : 20px 20px;
-                  }
-                  
-                  
-                  a {
-                        color                       : blue;
-                  }
-                  a:visited {
-                        color                       : blue;
-                  }
-          
-                  #filename {flex:1;margin-left:20px;}
-                    
-        </style>
-        <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
-        
-    </head>
-    
-    <body>
+      <head>
 
-            <section style="box-sizing:border-box" class="hdr">
-                <a id="home" href='https://javascript-2020.github.io/'>
-                    <div class="hdr-icon-label">
-home
-                    </div>
-                </a>
-                
-                <div id=filename>filename</div>
-                
-                <h3 style="color: blue; font-weight: bold;" class="hdr-title">
-js console
-                </h3>
-                <div style="" class="hdr-date">
-20 Dec 2024
-                </div>
-            </section>
+            <title>js-console</title>
 
+            <link rel=icon type='image/png' href='images/js-console-favicon.png'>
+            <link rel=stylesheet href='/utils/css/utils.css'>
+            
+            <style id=page-inline>
+            
+                  #help         {padding:2px}
+                  
+                  #hdr          {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
+                  .icon         {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+                  .spc          {flex:1}
+                  
+                  #run          {color:blue;font-weight:bold}
+                  #horiz        {margin-left:50px;border:none}
+                  #vert         {border:none}
+            
+                  #view         {display:none;flex:1}
+            
+                  editor-root   {width:50%}
+                  output-root   {flex:1}
+                        
+                  button        {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}            
+            
+            </style>
+            
 
-        <div style="display: flex; flex-direction: column; height: 100%; font-family: arial;" id="js-console">
-            <div id="hdr" style="margin-bottom: 10px; display: flex; align-items: center;">
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; padding: 5px 10px; margin-right: 20px;" type="button" value="clear" id="clear">
-                </input>
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; padding: 5px 10px; margin-right: 10px;" type="button" value="new" id="new">
-                </input>
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; padding: 5px 10px; margin-right: 20px;" type="button" value="fork" id="fork">
-                </input>
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; padding: 5px 10px; margin-right: 10px;" type="button" value="jsonblob" id="jsonblob">
-                </input>
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; padding: 5px 10px; margin-right: 10px;" type="button" value="load" id="load">
-                </input>
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; padding: 5px 10px;" type="button" value="save" id="save">
-                </input>
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; padding: 5px 10px; margin-right: 20px;" type="button" value="as" id="save-as">
-                </input>
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; padding: 5px 10px; margin-right: 10px;" type="button" value="copy" id="copy">
-                </input>
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; padding: 5px 10px; margin-right: 20px;" type="button" value="paste" id="paste">
-                </input>
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; padding: 5px 10px; margin-right: 50px;" type="button" value="run" id="run">
-                </input>
-                <img id="vert" style="margin-right:10px;cursor:pointer" class="icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAQxJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwEGdvd3c3Q2lpKUG3/fnzh+H+/fsMhw4d+vjx48dFtbW1eYwgnwoJCU2Lj4/nJ9ZCmE3EWgxTD3LAwoULP7579y6LsbOz86K7u7ueqqoqQZejKyDVYpD+27dvM+zcufMSY2Nj4++CggIWUn0LMoQci0G+njBhwh9QUP8nJp6wBQc5FsMcPGoxSQlsNKiJDS5QSI0mLmJDC6xuNHERG1yjiYvYkIKrG01cxAbZaOIiNqSGeOIasMbegDVvB6xBP2BdmIHqtAEA6MBFop3TQsgAAAAASUVORK5CYII=" />
-                <img id="horiz" style="margin-right:20px;cursor:pointer" class="icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAPhJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwUNVehj9//jDcv3+f4dChQx8/fvy4qLa2No8R5FMhIaFp8fHx/NS2ED20QA5YuHDhx3fv3mUxdnZ2XnR3d9dTVVWlRqgSNOP27dsMO3fuvMTY2Nj4u6CggIXWvoW5COTrCRMm/AEF9f/S0lKCLqWmgu7uboZRi6kZojjNGg1qugQzyJLRoKZ/UNPNRiSLRksuuoT6aHaiSzCPllx0C2Z4UA9YY2/AmrcD1qAfsC7MQHXaANO37pOxy/mWAAAAAElFTkSuQmCC" />
-                <div class="github">
-                    <img id="github" class="icon" style="padding:2px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAZ9JREFUSEvNls8uBEEQxn9DXFgughNZ3sBNwk3iMYTH4GJPvIQEryFxI3HyBkLcEBf/DsKiNmbSad1d1TO7oW/T/fX31VddPdUF+WMKOAbaP1uvgTXgPoeqMIJfgNEMbEvDasLPwJhGEll/Te1NCX/WFPS3BTViwv0SLYP4peNPjABvfXLq0wj3eywS3+k5sFQzkBNg1dtbGXUdh9Lrrn8AQ4YgTJwlSAiF2FQYBvESEjIzDHRL4VgxaddNiyHK+6fCR8D6ANKcSve+OB5UmlPCxIQPgU3tAI3rB8BGqGpDjleAMyOxBlsGTq3C28Cexmhc3wJ2rcLSY+eNxBrsyundFfbfFZdE1vTnoVb1LHATyVdT8dhVndP+XE2cp3p6ERKWuQXg0smC9FHpp5YhWGkEqVEJC8iNMJWJpq+W3n6X5BaYdsKUtZ3v744zJ5mQ6xEai8CF4vQOmAmdX8i14KRfdw151t5qwRdIqPxzqzpZUG7gueelBWLudLnv6jrCWe/qMivjwKNXcKmjdh1PAE8xsObA3fcATCoFZsH0KL4ABKpK0CB/GK0AAAAASUVORK5CYII=" />
-                    <div id="github-menu" class="menu" style="display:none">
-                        <div class="menu-title">
-github params
-                        </div>
-                        <div style="margin-bottom: 20px; border-bottom: 1px solid lightgray;">
-                            <div id="parse-url-label">
-parse url
-                            </div>
-                            <div style="margin-bottom: 10px; display: flex;" id="parse-url-root" class="menu-opt">
-                                <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="parse-url-paste" />
-                                <input id="parse-url" style="flex: 1 1 0%; margin-right: 10px;">
-                                </input>
-                                <input style="height: 25px; cursor: pointer; font-size: 16px; box-sizing: border-box;" type="button" value="parse" id="parse" autocomplete="off">
-                                </input>
-                            </div>
-                        </div>
-                        <div id="token-label">
-token
-                        </div>
-                        <div style="display: flex; margin-bottom: 10px;" id="token-root" class="menu-opt">
-                            <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="token-paste" />
-                            <input id="token" style="margin-bottom: 10px; flex: 1 1 0%;" autocomplete="off">
-                            </input>
-                        </div>
-                        <div id="owner-label">
-owner
-                        </div>
-                        <div style="display: flex;" id="owner-root" class="menu-opt">
-                            <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="owner-paste" />
-                            <input id="owner" style="margin-bottom: 10px; flex: 1 1 0%;" autocomplete="off">
-                            </input>
-                        </div>
-                        <div id="repo-label">
-repo
-                        </div>
-                        <div style="display: flex; margin-bottom: 10px;" id="repo-root" class="menu-opt">
-                            <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="repo-paste" />
-                            <input id="repo" style="flex: 1 1 0%;" autocomplete="off">
-                            </input>
-                        </div>
-                        <div id="branch-label">
-branch
-                        </div>
-                        <div style="display: flex;" id="branch-root" class="menu-opt">
-                            <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="branch-paste" />
-                            <input id="branch" style="flex: 1 1 0%;" autocomplete="off">
-                            </input>
-                        </div>
-                        <div id="path-label">
-path
-                        </div>
-                        <div style="display: flex;" id="branch-root" class="menu-opt">
-                            <img style="height: 20px; width: 20px; border: 1px solid lightgray; box-sizing: border-box; cursor: pointer; margin-right: 3px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==" id="branch-paste" />
-                            <input id="path" style="flex: 1 1 0%;" autocomplete="off">
-                            </input>
-                        </div>
-                        <div style="display:flex;justify-content:center;gap:25px">
-                            <button id="github-load" class="menu-opt">
-load
-                            </button>
-                            <button id="github-save" class="menu-opt">
-save
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="local">
-                    <img id="local" class="icon" style="padding:2px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAA1xJREFUSEvF1u9rU1cYwPHvOTdd7dq0ScxtG9fQaktXIdIOirjhRpNV3LvBKIJS595k6gZ74QtfKIjgq/4BdsM3G6MgG4jgi7HNTe0Lh06dGxvzF/U3NF21tiZt0iT33nEyGu5dG8ktd+yB+yL3njyfe855zrlH8D+FqOjuuT4CVuOq36vW/IQT/YVK/68Mv//LJNC6aljO1fFFPLcqWErR+mbfhlXZLWv9ZxHiydfDYtdKCV7YY03K1qHBXloaTCINpqsXeDCnMZURqdN7RKQq+PKXrJeS0W0Xzg2miyGfgvtfKRJrLrqCLz2q4eIjLfVDskr4yhinBLy3ffwsswUdBXeGDDoChiv4xrSPcxMy9duBKuDzn7PGX8M4sNkOb9QNukLu4Av3NMbvyqnbOblOHGXZPJXm+OeTRKXBN0BsqVt2uLe1SE/YHfzV7z4mUtN8FolMmhZDm3fzk33ISvC1MUYsOGh/YIejTSbRxurgbBGm0vDrpEY685eCVdrv+4fZvgy+OsanwL5K8BvRAn2R6oornQPDgtN/1vDH4ydL8KX+YV53DQfrLJrrV15OhgmzWZhZwDGRd2ckVn6qelgIrMZ6rJGbh+W86WdLrN1RzRZgmrBowEIeMnkw1c0Vol7M8UHTPvX8TijAoTUG5xsHeaqalubYPtRdUYymBjRXa+cFjTM5yOXLDR77YFMwzqwD9mmYvd1Ir1CVZ24eCra6lBbvrE3wnQP2v4zR3e5dbxX8NA2WfSosevQEtxxwcwgj2uIdrArvWcYxfvPhaZrEDgwH3B7BCAe8g/MFeJ51wJf1OFuWFVdPB0Z9nXfwwiKoqxyCE/oAe/8N733tVSwpvSuu5wuQt+07wuLjcIJRB1z7EslYp3e9VclnMv+s+aXQLLaGElx0wEE/yQ1t3sGqklVF24bZxEdA30rpbrm41ukkI2HvYLV21Rq2xYQep2vpdxnubCMZ8HsHZ/MwbzvqCTgVjjO0DI518WFtjXeFlclCzn64FRzRBzjmgK+fZLSvu/RZrHz4c7mPqo1DbSDlsHhXT3DGAU+c4XhbCx+5zF2x+WIB1GUPn0lH8G0eOOCH3zJaV8t+r+AV8twKD7BRfXIdcOpHdmqSt/4jOOOD48E49+35PZtTty/9N1FLRi7z3S3QAAAAAElFTkSuQmCC" />
-                    <div id="local-menu" class="menu" style="display: none; width: 150px;">
-                        <div class="menu-title">
-local file
-                        </div>
-                        <div class="menu-opt">
-load
-                        </div>
-                        <div class="menu-opt">
-save
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="view" style="flex: 1 1 0%; display: flex;overflow:hidden;">
-                <div id="editor" style="width: 50%;">
-                </div>
-                <div id="slider" style="width: 10px; cursor: ew-resize;">
-                </div>
-                <pre id="output" style="flex: 1 1 0%; margin: 0px; padding: 10px; border: 1px solid lightgray; overflow: auto;box-sizing:border-box;min-height:0">
-                </pre>
-            </div>
-        </div>
-        <script>
-        
-(async()=>{
+            <script>
                                                                                 console.clear();
-              
-              
-        var url             = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/loader.js';
-        var ext             = await fetch(url).then(res=>res.text().then(eval));
+                                                                                console.json=v=>console.log(JSON.strinigify(v,null,4));
+                  var filemod;                                                                                
+                  var localfile;
+                  var github;
+                  var publish;
+                  var editor;
+                  var output;
+                  var log;
+
+                  var menu    = {};
+
+
+                  async function init(){
+                                                                                console.log('init');
+
+                        window.onfocus            = ()=>editor && editor.focus();
+
+                        keydown.add(kd);
+                        
+                        menumod                   = menumod();
+                        menumod.add.style();
+                        menumod.on.close          = ()=>editor.focus();
+
+                        filemod.initmod({menumod});
+                        filemod.init();
+                        
+                        publish.initmod({ui,menumod});
+                        
+                        
+                        initdom();
+
+
+                  }//init
+
+                  init.stack            = [];
+                  init.stack.ct         = 0;
+                  init.stack.total      = 1;
+                  init.stack.mode       = '';
+                  init.stack.complete   = false;
+                  Object.defineProperty(init.stack,'add',{get:()=>{
+                        init.stack.total++;
+                        init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+                  }});
+                  Object.defineProperty(init.stack,'complete',{get:()=>{
+                        init.stack.ct++;
+                        init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+                        init.stack.ct>=init.stack.total && init();
+                  }});
+                  
+                  //  (typeof init!='undefined' && init?.stack && init.stack.add)
+                  //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+                  
+            </script>
+
+            <script libs>
+
+                  init.stack.add;
+                  
+                  var ext;
+                  var $,datatype,menumod,keydown;
+                  
+                  fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
+                    .then(res=>res.text().then(async txt=>{
+
+                        ext           = eval(txt);
+                        var promise   = ext.load.libs(
+                              'js/dom/$.js.api',
+                              'js/core/datatype.js',
+                              'js/dom/menumod/menumod.js',
+                              'js/dom/keydown/keydown.js'
+                        );
+                        [$,datatype,menumod,keydown]   = await promise;
+
+                        init.stack.complete;
+
+                    }));
+
+            </script>
+            
+      </head>
+
+      
+      <body>
+
+            <hdr-utils>
+                  <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
+                  <img class=title src='images/js-console.png' style='top:-5px;height:55px'>
+                  <span slot=date>25 Jan 2025</span>
+            </hdr-utils>
+
+
+            <div id=hdr>
+                        
+                  <main-menu-local>
+                        <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
+                  </main-menu-local>
+
+                  <filemod-api>
+                        <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
+                  </filemod-api>
+
+                  <publish-api>
+                        <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
+                  </publish-api>
+
+                  <button id=run>run</button>
+
+                  <span class=spc></span>
+
+                  <img id=horiz class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAPhJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwUNVehj9//jDcv3+f4dChQx8/fvy4qLa2No8R5FMhIaFp8fHx/NS2ED20QA5YuHDhx3fv3mUxdnZ2XnR3d9dTVVWlRqgSNOP27dsMO3fuvMTY2Nj4u6CggIXWvoW5COTrCRMm/AEF9f/S0lKCLqWmgu7uboZRi6kZojjNGg1qugQzyJLRoKZ/UNPNRiSLRksuuoT6aHaiSzCPllx0C2Z4UA9YY2/AmrcD1qAfsC7MQHXaANO37pOxy/mWAAAAAElFTkSuQmCC'>
+                  <img id=vert class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAQxJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwEGdvd3c3Q2lpKUG3/fnzh+H+/fsMhw4d+vjx48dFtbW1eYwgnwoJCU2Lj4/nJ9ZCmE3EWgxTD3LAwoULP7579y6LsbOz86K7u7ueqqoqQZejKyDVYpD+27dvM+zcufMSY2Nj4++CggIWUn0LMoQci0G+njBhwh9QUP8nJp6wBQc5FsMcPGoxSQlsNKiJDS5QSI0mLmJDC6xuNHERG1yjiYvYkIKrG01cxAbZaOIiNqSGeOIasMbegDVvB6xBP2BdmIHqtAEA6MBFop3TQsgAAAAASUVORK5CYII='>
+
+            </div>
+            
+            <div id=view>
+            
+                  <editor-api>
+                        <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
+                  </editor-api>
+                  
+                  <div id=page-slider style='width:10px;cursor:ew-resize'></div>
+                  
+                  <output-local>
+                        <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
+                  </output-local>
+                  
+            </div>
+
+      </body>
+
+<script>
+                                                                                console.log('main');
+        var slider      = {};
         
-        var [$,datatype]    = await ext.load.libs('js/dom/$.js','js/core/datatype.js');
-        
-        jsonblob        = jsonblob();
-        
-        
-        var mode    = 'vert';
-        
-        
-        var btn     = {};
-              
-              
-        initdom();
-  
+        var ui          = {};
+        ui.mode         = 'vert';
+
+  //:
+
         async function initdom(){   //c
-        
-              var root                      = document.body;
+                                                                                console.log('initdom');
+              keydown.initdom();
+
+              menu.top.initdom();
+              menu.main.initdom();
+
+              filemod.initdom();
               
-              var hdr                       = $('#hdr',root);
+              publish.initdom();
               
-              $('#clear',hdr).onclick       = clear;
-              $('#new',hdr).onclick         = newbtn;
-              $('#fork',hdr).onclick        = fork;
+              $('#run').onclick             = run;
+
+              $('#horiz').onclick           = horiz;
+              $('#vert').onclick            = vert;
               
-              $('#jsonblob',hdr).onclick      = btn_jsonblob;
-              
-              //$('#load',hdr).onclick       = load;
-              //$('#save',hdr).onclick       = save;
-              //$('#save-as',hdr).onclick    = saveas;
-              
-              $('#copy',hdr).onclick        = copy;
-              $('#paste',hdr).onclick       = paste;
-              
-              $('#run',hdr).onclick         = run;
-              
-              $('#vert',hdr).onclick        = vert;
-              $('#horiz',hdr).onclick       = horiz;
-              
-              
-              var view                = $('#view',root);
-              view.onkeydown          = keydown;
-              
-              setup_editor(view);
-              
-              slider.node    = $('#slider',view);
-              track(slider.node,slider);
-              
-              output                  = $('#output',root);
-              
-              
-              var json    = await jsonblob.util.query();
-              if(json){
-                    editor.setValue(json.txt,-1);
-                    /*
-                    if(autorun.checked){
-                          run();
-                    }
-                    */
-              }
-              
+
+              var view                      = $('#view');
+
+              editor.initdom(view,'html');
+              slider.md                     = ()=>output.glass();
+              slider.mu                     = ()=>output.glass(false);
+              slider.node                   = $.slider('editor-root','#page-slider','output-root',slider,ui);
+              output.initdom(view);
+
+
+              ui.setup(view);
+
+              publish.query();
+              editor.focus();
+
         }//initdom
-              
-  //:
-  
-        function filename(path){
-        
-              var fn;
-              var i   = path.lastIndexOf('/');
-              if(i==-1){
-                    fn    = path;
-              }else{
-                    fn    = path.slice(i+1);
-              }
-              document.title              = fn;
-              $('#filename').textContent   = fn;
-              
-        }//filename
-              
-  //:
-  
-        function track(node,callback){
-        
-              node.addEventListener('mousedown',md);
-              
-              var mx;
-              var my;
-              
-              function md(e){
-              
-                    mx    = e.pageX;
-                    my    = e.pageY;
-                    document.addEventListener('mousemove',mm);
-                    document.addEventListener('mouseup',mu);
-                    
-              }//md
-              
-              function mm(e){
-              
-                    var ox    = e.pageX-mx;
-                    var oy    = e.pageY-my;
-                    mx        = e.pageX;
-                    my        = e.pageY;
-                    callback(ox,oy);
-                    
-              }//mm
-              
-              function mu(e){
-              
-                    document.removeEventListener('mousemove',mm);
-                    document.removeEventListener('mouseup',mu);
-                    
-              }//mu
-              
-        }//track
 
 
-        
-        function slider(ox,oy){
-        
-              if(mode=='vert'){
-                    slider.vert(ox);
-              }else{
-                    slider.horiz(oy);
-              }
-              
-        }//slider
-        
-        slider.vert=function(ox){
-        
-              var w1    = editor.container.offsetWidth;
-              var w2    = output.offsetWidth;
-              
-              if(w1+ox<25)return;
-              if(w2-ox<25)return;
-              
-              editor.container.style.width    = w1+ox+'px'
-              
-        }//vert
-        
-        slider.horiz=function(oy){
-        
-              var h1    = editor.container.offsetHeight;
-              var h2    = output.offsetHeight;
-              
-              if(h1+oy<40)return;
-              if(h2-oy<40)return;
-              
-              editor.container.style.height   = h1+oy+'px'
-              output.style.height             = h2-oy+'px';
-              
-        }//horiz
-        
-        
-        function horiz(){
-        
-              view.style.flexDirection          = 'column';
-              editor.container.style.width      = '100%';
-              editor.container.style.height     = '50%';
-              slider.node.style.height          = '10px';
-              slider.node.style.width           = '';
-              slider.node.style.cursor          = 'ns-resize';
-              output.style.width                = '100%';
-              editor.focus();
-              mode    = 'horiz';
-              
-        }//horiz
-        
-        
-        function vert(){
-        
-              view.style.flexDirection          = 'row';
-              editor.container.style.width      = '50%';
-              editor.container.style.height     = '100%';
-              slider.node.style.width           = '10px';
-              slider.node.style.height          = '';
-              slider.node.style.cursor          = 'ew-resize';
-              output.style.height               = '100%';
-              editor.focus();
-              mode    = 'vert';
-              
-        }//vert
-        
-        
-        function keydown(e){
-        
+        function kd(e){
+
               if(e.key=='Enter' && e.ctrlKey){
+                    e.preventDefault();
                     run();
+              }
+
+              if(e.key==' ' && e.ctrlKey){
+                    e.preventDefault();
+                    menumod.open();
+              }
+
+              if(e.key=='s' && e.ctrlKey){
+                    e.preventDefault();
+                    filemod.save();
+              }
+
+              if(e.key=='Delete' && e.ctrlKey){
+                    e.preventDefault();
+                    jsonblob.util.delete()
               }
               
         }//keydown
+
+
+  //:
+
+
+        function complete(type,path,icon){
         
-        
-        function setup_editor(view){
-        
-              editor                  = $('#editor',view);
-              editor.textContent      = '';
-              editor                  = ace.edit(editor);
-              editor.setShowInvisibles(false);
-              editor.setShowPrintMargin(false);
-              editor.setPrintMarginColumn(false);
-              editor.setBehavioursEnabled(false);
-              editor.setDisplayIndentGuides(false);
-              editor.setScrollSpeed(2);
-              editor.setFontSize(16);
-              editor.session.setOptions({tabSize:2,useSoftTabs:true});
+              var name    = editor.filename(path,icon);
+              editor.filename.save(false);
+              filemod.cur   = {type,name};
+              menumod.close();
               editor.focus();
+              return name;
               
-        }//setup_editor
-        
-  //:
-  
-        function clear(){
-        
-              editor.setValue('',-1);
-              
-        }//clear
-        
-        
-        function newbtn(){
-        
-              var url   = window.location.toString()
-              window.open(url);
-              
-        }//newbtn
-        
-        
-        function fork(){
-        
-              var url     = window.location.toString()
-              var win     = window.open(url);
-              
-              var code    = editor.getValue();
-              win.postMessage({code});
-              
-        }//fork
-        
-        
-        function btn_jsonblob(){
-        
-              var txt     = editor.getValue();
-              var json    = {txt}
-              jsonblob.util.save(json);
-              
-        }//jsonblob
-        
-        
-/*
-        function load(){
-        
-              filenav.show2('js console : load',file=>{
-              
-                    server.loadtext2(file,(result,txt,main)=>{
-                    
-                          if(res.is.ok(result)){
-                                editor.setValue(txt,-1);
-                                cur   = file;
-                          }
-                          
-                    });
-                    
-              });
-              
-        }//load
-        
-        
-        function save(){
-        
-              if(cur){
-                    save.save(cur);
-                    return;
-              }
-              filenav.show2('js console : save',save.save);
-              
-        }//save
-        
-        
-        save.save=function(file){
-        
-              server.savetext2(file,complete);
-              
-              function complete(result){
-              
-                    if(res.is.ok(result)){
-                          cur   = file;
-                    }
-                    
-              }//complete
-              
-        }//save
-        
-        
-        function saveas(){
-        
-              filenav.show2('js console : save',save.save);
-              
-        }//saveas
-*/
+        }//complete
 
-        function copy(){
         
-              var txt       = editor.getValue();
-              var promise   = navigator.clipboard.writeText(txt);
-              promise.catch(err=>{});
-              
-        }//copy
+        complete.load=function(type,txt,path,icon){
         
-        
-        function paste(){
-        
-              var promise   = navigator.clipboard.readText();
-              promise.then(txt=>editor.setValue(txt,-1));
-              promise.catch(err=>{});
-              
-        }//paste
-        
-        
-        async function run(){
-                                                                                console.log('run');
-              var log2      = console.log;
-              var js        = editor.getValue();
-              var sandbox   = await (async()=>{
-              
-                          console.log   = function(){
-                          
-                                                var str     = '';
-                                                var args    = [...arguments];
-                                                args        = args.map(v=>{
-                                                
-                                                      var type    = datatype(v);
-                                                      switch(type){
-                                                      
-                                                        case 'function'         :
-                                                        case 'asyncfunction'    : str   = v.toString();       break;
-                                                        case 'string'           : str   = v;                  break;
-                                                        default                 : str   = inspect(v);         break;
-                                                        
-                                                      }//switch
-                                                      return str;
-                                                      
-                                                });
-                                                
-                                                var txt     = args.join(' ');
-                                                var div     = document.createElement('div');
-                                                div.textContent   = txt;
-                                                output.append(div);
-                                                output.scrollTop    = 999999999;
-                                                
-                                          }//log
-                                          
-                          return async function(js){
-                          
-                                var result    = await eval(js);
-                                return result;
-                                
-                          }
-                          
-              })();
-              
-              var result    = await sandbox(js);
-              if(result){
-                    console.log(result);
-              }
-              
-              console.log   = log2;
-              
-        }//run
-        
-  //:
-  
-  /*
-        obj.import=function(txt){   //d
-        
+              editor.clear();
+              output.kill();
               editor.setValue(txt,-1);
+              complete(type,path,icon);
               
-        }//import
-        
-        
-        obj.export=function(){    //d
-        
-              var txt   = editor.getValue();
-              return txt;
-              
-        }//export
-*/
+        }//complete.load
 
-  //:
-  //:
-  
-function jsonblob(){
-//  https://jsonblob.com/api
-  var obj   = {};
-  
-        var url           = 'https://jsonblob.com/api/jsonBlob/';
-        var id;
-        var time          = 500;
-        var timer;
-        var headers       = {'content-type':'application/json'};
         
-        var util          = {};
-        util.query        = {};
-        obj.util          = {};
-  //:
-        obj.util.query=async function(){
-        
-              var tst     = window.location.search.slice(1);
-              if(!tst)return;
-              var json    = await read(tst);
-              if(!json)return;
-              id          = tst;
-              return json;
-              
-        }//query
-        
-        obj.util.query.set=function(){return util.query.set()}
-        util.query.set=function(){
-        
-              var url       = window.location.toString();
-              var search    = window.location.search;
-              if(search){
-                    url     = url.slice(0,-search.length);
-              }
-              if(id){
-                    url    += '?'+id;
-              }
-              window.history.replaceState(null,'',url);
-              
-        }//set
-        
-        obj.util.save=function(json,set=true){return util.save(json,set=true)}
-        util.save=async function(json,set=true){
-        
-              if(id){
-                    await update(id,json);
-              }else{
-                    await create(json);
-              }
-              if(set){
-                    util.query.set();
-              }
+        complete.save=function(type,path,icon){
+
+              var name    = complete(type,path,icon);
+              log.green(name,'saved');
               
         }//save
-        
-        obj.util.save.debounce=function(fn){
-        
-              clearTimeout(timer);
-              var json    = fn();
-              timer       = setTimeout(util.save,time,json);
-              
-        }//debounce
-        
-        obj.util.delete=async function(set=true){
-        
-              if(id){
-                    var result    = await del(id);
-                    if(result){
-                          id    = null;
-                    }
-              }
-              if(!set)return;
-              util.query.set();
-              
-        }//delete
-        
+
   //:
   
-        obj.create=function(json){return create(json)}
-        async function create(json){
-        
-              var body    = JSON.stringify(json);
-              var res     = await fetch(url,{method:'post',headers,body});
-              if(!res.ok)return;
-              var loc     = res.headers.get('location');
-              var i       = loc.lastIndexOf('/');
-              id          = loc.slice(i+1);
-              return id;
-              
-        }//create
-        
-        obj.read=function(id){return read(id)}
-        async function read(id){
-        
-              var res     = await fetch(url+id);
-              if(!res.ok)return;
-              var json    = await res.json();
-              return json;
-              
-        }//read
-        
-        obj.update=async function(id,json){return update(id,json)}
-        async function update(id,json){
-        
-              var body    = JSON.stringify(json);
-              var res     = await fetch(url+id,{method:'put',headers,body});
-              return res.ok;
-              
-        }//update
-        
-        obj.delete=function(id){return del(id)}
-        async function del(id){
-        
-              var res   = await fetch(url+id,{method:'delete'});
-              return res.ok;
-              
-        }//delete
-        
-  return obj;
-  
-}//jsonblob
+      window.onmessage=function(e){
+
+            
+            var json    = JSON.parse(e.data);
+
+            var txt   = json.code||json.text||json.txt;
+            if(txt){
+                  editor.setValue(txt,-1);
+            }
+
+            if(json.run){
+                  run();
+            }
+
+
+      }//onmessage
+
+
+  //:
+
+
+      ui.read=function(){
+
+            var txt     = editor.getValue();
+            var json    = {v:1,txt};
+            return json;
+
+      }//read
+
+
+      ui.setup=function(view){
+
+            var o   = localStorage.getItem('orientation');
+            if(o==='horiz'){
+                  horiz();
+            }
+            view.style.display    = 'flex';
+
+      }//setup
+
+
+  //:
+
+
+      function horiz(){
+
+            localStorage.setItem('orientation','horiz');
+
+            ui.mode                     = 'horiz';
+            slider.node.style.cursor    = 'ns-resize';
+            slider.node.style.width     = '100%';
+            slider.node.style.height    = '10px';
+
+            view.style.flexDirection    = 'column';
+
+            editor.horiz();
+            output.horiz();
+            editor.focus();
+
+      }//horiz
+
+
+      function vert(){
+
+            localStorage.setItem('orientation','vert');
+
+            ui.mode                     = 'vert';
+            slider.node.style.cursor    = 'ew-resize';
+            slider.node.style.width     = '10px';
+            slider.node.style.height    = '100%';
+
+            view.style.flexDirection    = 'row';
+
+            editor.vert();
+            output.vert();
+            editor.focus();
+
+      }//vert
 
 
   //:
   
-        function inspect(obj,opts){
-        
-                                                                                // http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-              inspect.colors    = {
-                    'bold'        : [1,22],
-                    'italic'      : [3,23],
-                    'underline'   : [4,24],
-                    'inverse'     : [7,27],
-                    'white'       : [37,39],
-                    'grey'        : [90,39],
-                    'black'       : [30,39],
-                    'blue'        : [34,39],
-                    'cyan'        : [36,39],
-                    'green'       : [32,39],
-                    'magenta'     : [35,39],
-                    'red'         : [31,39],
-                    'yellow'      : [33,39]
-              };
-                                                                                // Don't use 'blue' not visible on cmd.exe
-              inspect.styles    = {
-                    'special'     : 'cyan',
-                    'number'      : 'yellow',
-                    'boolean'     : 'yellow',
-                    'undefined'   : 'grey',
-                    'null'        : 'bold',
-                    'string'      : 'green',
-                    'date'        : 'magenta',
-                    // "name"     : intentionally not styling
-                    'regexp'      : 'red'
-              };
-              
-                                                                                // default options
-              var ctx   = {
-                    seen      : [],
-                    stylize   : stylizeNoColor
-              };
-                                                                                // legacy...
-              if(arguments.length>=3)ctx.depth    = arguments[2];
-              if(arguments.length>=4)ctx.colors   = arguments[3];
-              if(isBoolean(opts)){
-                                                                                // legacy...
-                    ctx.showHidden    = opts;
-              }else if(opts){
-                                                                                // got an "options" object
-                    _extend(ctx, opts);
-              }
-                                                                                // set default options
-              if(isUndefined(ctx.showHidden))ctx.showHidden   = false;
-              if(isUndefined(ctx.depth))ctx.depth   = 2;
-              if(isUndefined(ctx.colors))ctx.colors   = false;
-              if(isUndefined(ctx.customInspect))ctx.customInspect   = true;
-              if(ctx.colors)ctx.stylize   = stylizeWithColor;
-              return formatValue(ctx,obj,ctx.depth);
-              
-              
-              
-              function stylizeNoColor(str,styleType){
-              
-                    return str;
-                    
-              }//stylizeNoColor
-              
-              
-              function stylizeWithColor(str, styleType) {
-              
-                    var style   = inspect.styles[styleType];
-                    
-                    if(style){
-                          return '\u001b['+inspect.colors[style][0]+'m'+str+
-                                 '\u001b['+inspect.colors[style][1]+'m';
-                    }else{
-                          return str;
-                    }
-                    
-              }//stylizeWithColor
-              
-              
-              
-              function isBoolean(arg){
-              
-                    return typeof arg==='boolean';
-                    
-              }//iisBoolean
-              
-              
-              function isUndefined(arg) {
-              
-                    return arg===void 0;
-                    
-              }//isUndefined
-              
-              
-              function isFunction(arg) {
-              
-                    return typeof arg==='function';
-                    
-              }//isFunction
-              
-              
-              function isString(arg){
-              
-                    return typeof arg==='string';
-                    
-              }//isString
-              
-              
-              function isNumber(arg) {
-              
-                    return typeof arg==='number';
-                    
-              }//isNumber
-              
-              
-              function isNull(arg) {
-              
-                    return arg===null;
-                    
-              }//isNull
-              
-              
-              function hasOwn(obj,prop){
-              
-                    return Object.prototype.hasOwnProperty.call(obj,prop);
-                    
-              }//hasOwn
-              
-              
-              function isRegExp(re){
-              
-                    return isObject(re) && objectToString(re)==='[object RegExp]';
-                    
-              }//isRegExp
-              
-              
-              function isObject(arg) {
-              
-                    return typeof arg==='object' && arg!==null;
-                    
-              }//isObject
-              
-              
-              function isError(e) {
-              
-                    return isObject(e) && (objectToString(e)==='[object Error]' || e instanceof Error);
-                    
-              }//isError
-              
-              
-              function isDate(d) {
-              
-                    return isObject(d) && objectToString(d)==='[object Date]';
-                    
-              }//isDate
-              
-              
-              function objectToString(o) {
-              
-                    return Object.prototype.toString.call(o);
-                    
-              }//objectToString
-              
-              
-              function arrayToHash(array) {
-              
-                    var hash    = {};
-                    array.forEach(function(val,idx){
-                    
-                          hash[val]   = true;
-                          
-                    });
-                    return hash;
-                    
-              }//arrayToHash
-              
-              
-              function formatArray(ctx,value,recurseTimes,visibleKeys,keys){
-              
-                    var output    = [];
-                    for(var i=0,l=value.length;i<l;++i){
-                    
-                          if(hasOwn(value,String(i))){
-                                output.push(formatProperty(ctx,value,recurseTimes,visibleKeys,String(i),true));
-                          }else{
-                                output.push('');
-                          }
-                          
-                    }//for
-                    
-                    keys.forEach(function(key){
-                    
-                          if(!key.match(/^\d+$/)){
-                                output.push(formatProperty(ctx,value,recurseTimes,visibleKeys,key,true));
-                          }
-                          
-                    });
-                    return output;
-                    
-              }//formatArray
-              
-              
-              function formatError(value){
-              
-                    return '['+Error.prototype.toString.call(value)+']';
-                    
-              }//formatError
-              
-              
-              function formatValue(ctx,value,recurseTimes){
-              
-                                                                                // Provide a hook for user-specified inspect functions.
-                                                                                // Check that value is an object with an inspect function on it
-                    if( ctx.customInspect &&
-                        value &&
-                        isFunction(value.inspect) &&
-                                                                                // Filter out the util module, it's inspect function is special
-                        value.inspect!==inspect &&
-                                                                                // Also filter out any prototype objects using the circular check.
-                        !(value.constructor && value.constructor.prototype===value)){
-                        
-                              var ret   = value.inspect(recurseTimes,ctx);
-                              if(!isString(ret)){
-                                    ret   = formatValue(ctx,ret,recurseTimes);
-                              }
-                              return ret;
-                              
-                    }
-                    
-                                                                                // Primitive types cannot have properties
-                    var primitive   = formatPrimitive(ctx,value);
-                    if(primitive){
-                          return primitive;
-                    }
-                    
-                                                                                // Look up the keys of the object.
-                    var keys          = Object.keys(value);
-                    var visibleKeys   = arrayToHash(keys);
-                    
-                    try{
-                    
-                          if(ctx.showHidden && Object.getOwnPropertyNames){
-                                keys    = Object.getOwnPropertyNames(value);
-                          }
-                          
-                    }//try
-                    
-                    catch (e) {
-                      // ignore
-                    }
-                    
-                                                                                // IE doesn't make error fields non-enumerable
-                                                                                // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
-                    if(isError(value) && (keys.indexOf('message')>=0 || keys.indexOf('description')>=0)){
-                          return formatError(value);
-                    }
-                    
-                                                                                // Some type of object without properties can be shortcutted.
-                    if(keys.length===0){
-                          if(isFunction(value)){
-                                var name    = value.name ? ': '+value.name : '';
-                                return ctx.stylize('[Function'+name+']','special');
-                          }
-                          if(isRegExp(value)){
-                                return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-                          }
-                          if(isDate(value)){
-                                return ctx.stylize(Date.prototype.toString.call(value), 'date');
-                          }
-                          if(isError(value)){
-                                return formatError(value);
-                          }
-                    }
-                    
-                    var base      = '';
-                    var array     = false;
-                    var braces    = ['{', '}'];
-                    
-                                                                                // Make Array say that they are Array
-                    if(Array.isArray(value)){
-                          array     = true;
-                          braces    = ['[',']'];
-                    }
-                    
-                                                                                // Make functions say that they are functions
-                    if(isFunction(value)){
-                          var n   = value.name ? ': '+value.name : '';
-                          base    = ' [Function'+n+']';
-                    }
-                    
-                                                                                // Make RegExps say that they are RegExps
-                    if(isRegExp(value)){
-                          base    = ' '+RegExp.prototype.toString.call(value);
-                    }
-                    
-                                                                                // Make dates with properties first say the date
-                    if(isDate(value)){
-                          base    = ' '+Date.prototype.toUTCString.call(value);
-                    }
-                    
-                                                                                // Make error with message first say the error
-                    if(isError(value)){
-                          base    = ' '+formatError(value);
-                    }
-                    
-                    if(keys.length===0 && (!array || value.length==0)){
-                          return braces[0] + base + braces[1];
-                    }
-                    
-                    if(recurseTimes<0){
-                          if(isRegExp(value)){
-                                return ctx.stylize(RegExp.prototype.toString.call(value),'regexp');
-                          } else {
-                                return ctx.stylize('[Object]','special');
-                          }
-                    }
-                    
-                    ctx.seen.push(value);
-                    
-                    var output;
-                    if(array){
-                          output    = formatArray(ctx,value,recurseTimes,visibleKeys,keys);
-                    }else{
-                          output    = keys.map(function(key) {
-                          
-                                return formatProperty(ctx,value,recurseTimes,visibleKeys,key,array);
-                                
-                          });
-                    }
-                    
-                    ctx.seen.pop();
-                    
-                    return reduceToSingleString(output,base,braces);
-                    
-              }//formatValue
-              
-              
-              function formatProperty(ctx,value,recurseTimes,visibleKeys,key,array){
-              
-                    var name;
-                    var str;
-                    var desc;
-                    
-                    desc    = {value:void 0};
-                    try{
-                                                                                // ie6 > navigator.toString
-                                                                                // throws Error: Object doesn't support this property or method
-                          desc.value    = value[key];
-                          
-                    }//try
-                    
-                    catch(e){
-                    
-                          // ignore
-                          
-                    }//catch
-                    
-                    try{
-                                                                                // ie10 > Object.getOwnPropertyDescriptor(window.location, 'hash')
-                                                                                // throws TypeError: Object doesn't support this action
-                          if(Object.getOwnPropertyDescriptor){
-                                desc    = Object.getOwnPropertyDescriptor(value,key) || desc;
-                          }
-                          
-                    }//try
-                    
-                    catch(e){
-                    
-                          // ignore
-                          
-                    }//catch
-                    
-                    if(desc.get){
-                          if(desc.set){
-                                str   = ctx.stylize('[Getter/Setter]','special');
-                          }else{
-                                str   = ctx.stylize('[Getter]','special');
-                          }
-                    }else{
-                          if(desc.set){
-                                str   = ctx.stylize('[Setter]','special');
-                          }
-                    }
-                    if(!hasOwn(visibleKeys,key)){
-                          name    = '['+key+']';
-                    }
-                    if(!str){
-                          if(ctx.seen.indexOf(desc.value)<0){
-                                if(isNull(recurseTimes)){
-                                      str   = formatValue(ctx,desc.value,null);
-                                } else {
-                                      str   = formatValue(ctx,desc.value,recurseTimes-1);
-                                }
-                                if(str.indexOf('\n')>-1){
-                                      if(array){
-                                            str   = str.split('\n').map(function(line){
-                                            
-                                                  return '  '+line;
-                                                  
-                                            }).join('\n').substr(2);
-                                      }else{
-                                            str   = '\n'+str.split('\n').map(function(line){
-                                            
-                                                  return '   '+line;
-                                                  
-                                            }).join('\n');
-                                      }
-                                }
-                          }else{
-                                str   = ctx.stylize('[Circular]','special');
-                          }
-                    }
-                    
-                    if(isUndefined(name)){
-                          if(array && key.match(/^\d+$/)){
-                                return str;
-                          }
-                          name    = JSON.stringify('' + key);
-                          if(name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)){
-                                name    = name.substr(1,name.length-2);
-                                name    = ctx.stylize(name,'name');
-                          }else{
-                                name    = name.replace(/'/g,"\'")
-                                              .replace(/\\"/g,'"')
-                                              .replace(/(^"|"$)/g,"'");
-                                name    = ctx.stylize(name,'string');
-                          }
-                    }
-                    
-                    return name+': '+str;
-                    
-              }//formatProperty
-              
-              
-              function formatPrimitive(ctx, value) {
-              
-                    if(isUndefined(value))
-                          return ctx.stylize('undefined','undefined');
-                          
-                    if(isString(value)){
-                          var simple    = '\''+JSON.stringify(value).replace(/^"|"$/g,'')
-                                                                    .replace(/'/g,"\\'")
-                                                                    .replace(/\\"/g,'"')+'\'';
-                          return ctx.stylize(simple,'string');
-                    }
-                    
-                    if(isNumber(value))
-                          return ctx.stylize(''+value,'number');
-                          
-                    if(isBoolean(value))
-                          return ctx.stylize(''+value,'boolean');
-                                                                                // For some reason typeof null is "object", so special case here.
-                    if(isNull(value))
-                          return ctx.stylize('null','null');
-                          
-              }//formatPrimitive
-              
-              
-              function reduceToSingleString(output,base,braces){
-              
-                    var numLinesEst   = 0;
-                    var length    = output.reduce(function(prev,cur){
-                    
-                          numLinesEst++;
-                          if(cur.indexOf('\n')>=0)numLinesEst++;
-                          return prev+cur.replace(/\u001b\[\d\d?m/g,'').length+1;
-                          
-                    },0);
-                    
-                    if(length>60){
-                          return braces[0]                        +
-                                 (base==='' ? '' : base+'\n ')    +
-                                 ' '                              +
-                                 output.join(',\n  ')             +
-                                 ' '                              +
-                                 braces[1];
-                    }
-                    
-                    return braces[0]+base+' '+output.join(', ')+' '+braces[1];
-                    
-              }//reduceToSingleString
-              
-              
-              function _extend(origin,add){
-                                                                                // Don't do anything if add isn't an object
-                    if(!add || !isObject(add))return origin;
-                    
-                    var keys    = Object.keys(add);
-                    var i       = keys.length;
-                    while(i--){
-                    
-                          origin[keys[i]]   = add[keys[i]];
-                          
-                    }//while
-                    return origin;
-                    
-              }//_extend
-              
-              
-        }//inspect
-        
-})();
-        </script>
-    </body>
+      function run(){
+
+            var js    = editor.getValue();
+            output.run(js);
+            
+            if(filemod.autosave){
+                                                                                console.log('save');
+                  filemod.save();
+            }
+
+      }//run
+
+
+
+      init.stack.complete;
+
+      
+</script>
+
+
+<!-- components -->
+
+<checkbox-one-template>
+      <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
+</checkbox-one-template>
+
+<log>
+      <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
+</log>
+
+<!-- components -->
+
+
 </html>
+
