@@ -1,0 +1,97 @@
+
+
+<html>
+
+      <head>
+      
+      
+            <script>
+
+            
+                  function init(){
+                                                                                console.log('init');
+
+                        window.onfocus            = ()=>editor && editor.focus();
+
+                        keydown.add(kd);
+                        
+                        menumod                   = menumod();
+                        menumod.add.style();
+                        menumod.on.close          = ()=>editor.focus();
+
+                        filemod.initmod({menumod});
+                        filemod.init();
+                        
+                        publish.initmod({ui,menumod});
+                        
+                        
+                        initdom();
+
+
+                  }//init
+
+                  init.stack            = [];
+                  init.stack.ct         = 0;
+                  init.stack.total      = 1;
+                  init.stack.mode       = '';
+                  init.stack.complete   = false;
+                  Object.defineProperty(init.stack,'add',{get:()=>{
+                        init.stack.total++;
+                        init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+                  }});
+                  Object.defineProperty(init.stack,'complete',{get:()=>{
+                        init.stack.ct++;
+                        init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+                        init.stack.ct>=init.stack.total && init();
+                  }});
+                  
+                  //  (typeof init!='undefined' && init?.stack && init.stack.add)
+                  //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+                  
+            </script>
+            
+            <script libs>
+
+                  init.stack.add;
+                  
+                  var ext;
+                  var $,datatype,menumod,keydown;
+                  
+                  fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
+                    .then(res=>res.text().then(async txt=>{
+
+                        ext           = eval(txt);
+                        var promise   = ext.load.libs(
+                              'js/dom/$.js.api',
+                              'js/core/datatype.js',
+                              'js/dom/menumod/menumod.js',
+                              'js/dom/keydown/keydown.js'
+                        );
+                        [$,datatype,menumod,keydown]   = await promise;
+
+                        init.stack.complete;
+
+                    }));
+
+            </script>
+      
+      </head>
+      
+      
+      <body>
+            
+            <output-local>
+                  <script src='https://html-loader-dblv8aserliq.runkit.sh/'></script>
+            </output-local>
+            
+      </body>
+      
+      <script>
+      
+            init.stack.complete;
+            
+      </script>
+      
+</html>
+
+
