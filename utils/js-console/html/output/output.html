@@ -1,0 +1,106 @@
+
+
+<output-root>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+                  #output {height:100%;border:2px solid lightgray;box-sizing:border-box;padding:10px}
+                  
+            </style>
+            
+            <pre id=output>
+            </pre>
+            
+      </template>
+      
+      <script>
+      
+            output    = output();
+            
+            function output(){
+                                                                                console.log('output');
+              var obj   = {};
+
+              
+                  var log2      = console.log;
+                  
+                  var root;
+                  var shadow;
+                  
+                  var output;
+                  
+                  
+                  obj.initdom=function(){
+                  
+                        root                = $('output-root');
+                        shadow              = root.shadowRoot;
+                        
+                        output              = $(shadow,'#output');
+
+                        
+                        
+                  }//initdom
+                  
+                  
+                  
+                  obj.run=function(js){
+                    
+                        var sandbox   = await (async()=>{
+                        
+                                    console.log   = function(){
+                                    
+                                                          var str     = '';
+                                                          var args    = [...arguments];
+                                                          args        = args.map(v=>{
+                                                          
+                                                                var type    = datatype(v);
+                                                                switch(type){
+                                                                
+                                                                  case 'function'         :
+                                                                  case 'asyncfunction'    : str   = v.toString();       break;
+                                                                  case 'string'           : str   = v;                  break;
+                                                                  default                 : str   = inspect(v);         break;
+                                                                  
+                                                                }//switch
+                                                                return str;
+                                                                
+                                                          });
+                                                          
+                                                          var txt     = args.join(' ');
+                                                          var div     = document.createElement('div');
+                                                          div.textContent   = txt;
+                                                          output.append(div);
+                                                          output.scrollTop    = 999999999;
+                                                          
+                                                    }//log
+                                                    
+                                    return async function(js){
+                                    
+                                          var result    = await eval(js);
+                                          return result;
+                                          
+                                    }
+                                    
+                        })();
+                        
+                        var result    = await sandbox(js);
+                        if(result){
+                              console.log(result);
+                        }
+                        
+                        console.log   = log2;
+                        
+                    
+                  }//run
+                  
+                  
+              return obj;
+              
+            }//output
+            
+      </script>
+      
+</output-root>
+
