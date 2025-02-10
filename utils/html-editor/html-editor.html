@@ -33,33 +33,53 @@
             <script>
                                                                                 console.clear();
                                                                                 console.json=v=>console.log(JSON.strinigify(v,null,4));
+                  var mod     = {};
+                  mod.menu    = {};
+                  mod.utils   = {};
+                  
                   var filemod;                                                                                
-                  var localfile;
-                  var github;
                   var publish;
                   var editor;
                   var output;
                   var log;
 
+              
                   var menu    = {};
 
 
                   async function init(){
                                                                                 console.log('init');
 
-                        window.onfocus            = ()=>editor && editor.focus();
+                        //keydown                   = keydown();
+                        menumod                   = menumod();
+                        mod.utils.hdr             = mod.utils.hdr();
+                        mod.menu.main             = mod.menu.main();
+                        filemod                   = filemod();
+                        publish                   = publish();
+                        editor                    = editor();
+                        output                    = output();
+                        log                       = log();
+                        
+                        mod.utils.hdr.initmod({menu});
+                        mod.menu.main.initmod({});
+                        filemod.initmod({menumod});
+                        publish.initmod({ui,menumod});
+                        editor.initmod({});
+                        output.initmod({});
+                        log.initmod({});
+                        
+                        mod.menu.main.init();
+                        mod.utils.init();
+                        filemod.init();
+                        publish.init();
+                        editor.init();
+                        output.init();
+                        log.init();
+
 
                         keydown.add(kd);
-                        
-                        menumod                   = menumod();
-                        menumod.add.style();
                         menumod.on.close          = ()=>editor.focus();
 
-                        filemod.initmod({menumod});
-                        filemod.init();
-                        
-                        publish.initmod({ui,menumod});
-                        
                         
                         initdom();
 
@@ -173,9 +193,15 @@
 
         async function initdom(){   //c
                                                                                 console.log('initdom');
+              var root                          = document.body;
+              
               keydown.initdom();
-
-              menu.top.initdom();
+              
+              menumod.add.style();
+              
+              var node                          = $('utils-hdr');
+              mod.utils.hdr.initdom(node);
+              
               menu.main.initdom();
 
               filemod.initdom();
