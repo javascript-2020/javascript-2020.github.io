@@ -43,10 +43,15 @@
                   var output;
                   var log;
 
+
+                  var menu        = {};
+                  var slider      = {};
+                  
+                  var ui          = {};
+                  ui.mode         = 'vert';
+
+              //:
               
-                  var menu    = {};
-
-
                   async function init(){
                                                                                 console.log('init');
 
@@ -76,12 +81,14 @@
                         output.init();
                         log.init();
 
-
+                    //:
+                    
+                        window.onfocus            = ()=>editor && editor.focus();
                         keydown.add(kd);
                         menumod.on.close          = ()=>editor.focus();
 
                         
-                        initdom();
+                        initdom(document.body);
 
 
                   }//init
@@ -184,23 +191,16 @@
 
 <script>
                                                                                 console.log('main');
-        var slider      = {};
-        
-        var ui          = {};
-        ui.mode         = 'vert';
-
-  //:
-
-        async function initdom(){   //c
+        async function initdom(rootnode){   //c
                                                                                 console.log('initdom');
-              var root                          = document.body;
+              var root                      = rootnode;
               
               keydown.initdom();
-              
               menumod.add.style();
+
               
-              var node                          = $('utils-hdr');
-              mod.utils.hdr.initdom(node);
+              mod.utils.hdr.initdom();
+
               
               mod.menu.main.initdom();
 
@@ -217,13 +217,11 @@
               var view                      = $('#view');
 
               await editor.initdom(view,'html');
-              slider.md                     = ()=>output.glass();
-              slider.mu                     = ()=>output.glass(false);
-              slider.node                   = $.slider('editor-root','#page-slider','output-root',slider,ui);
-              output.initdom(view);
+              slider.node                   = $.slider.glass('editor-root','#page-slider','output-root',slider,ui,output);
+              output.initdom();
 
-              var node    = $('log-root');
-              log.initdom(node);
+
+              log.initdom();
 
               
               ui.setup(view);
