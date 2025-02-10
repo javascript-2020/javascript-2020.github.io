@@ -30,123 +30,130 @@
 
       <script>
         
-            (()=>{
-            
-                  menu.main   = mod();
-            
-                  function mod(){
+            mod.menu.main=function(){
       
-                    var obj   = {};
-                    
-                  
-                        obj.initdom=function(){
-                        
-                              var root                      = $('main-menu');
-                              var shadow                    = root.shadowRoot;
-
-                              var style                     = $(shadow,'style');
-                              $.stylesheet.copyrule('#page-inline','.icon',style);
-                              
-                              menumod.add.style(shadow);
-                              
-                              
-                              var card                      = $(shadow,'.menu');
-                              $(shadow,'#icon').onclick     = menumod.click(card,false,false,menu);
-            
-            
-                        }//initdom
-                  
+              var obj   = {};
       
-  //:
-        
-        
-                        function menu(type,opt){
+                  var editor,menumod
+                  ;
                   
-                              if(type=='opt'){
-                                    menu[opt.id]();
-                              }
-                  
-                        }//menu
-            
-                  
-                        menu.new=function(){
-                  
-                              var url       = window.location.toString();
-                              var search    = window.location.search;
-                              if(search){
-                                    url     = url.slice(0,-search.length);
-                              }
-                  
-                              var win   = window.open(url);
-                              return win;
-                  
-                        }//new
-            
-                  
-                        menu.fork=function(){
-                  
-                              var win   = newwin();
-                              var txt   = editor.getValue();
-                              win.postMessage({txt},'*');
-                  
-                        }//fork
-            
-                  
-                        menu.trim=function(){
-                  
-                              var pos     = editor.getCursorPosition();
-                              var txt     = editor.getValue();
-                              var lines   = txt.split('\n');
-                              lines       = lines.map(line=>line.trimEnd());
-                              txt         = lines.join('\n');
-                              editor.setValue(txt,-1);
-                              editor.gotoLine(pos.row,pos.column);
-                  
-                        }//trim
-                        
-                        
-                        menu['create-html-icon']=async function(){
-                        
-                              var err;
-                              try{
-                              
-                                    var url   = 'https://raw.githubusercontent.com/javascript-2020/javascript-2020.github.io/main/utils/html-editor/mods/create-html-icon/create-html-icon.html';
-                                    var res   = await fetch(url);
-                                    
-                              }
-                              catch(err2){
-                              
-                                    err   = err2;
-                                    
-                              }
-                              if(err){
-                                    log.error(err);
-                                    return;
-                              }
-                              
-                              var txt   = await res.text();
-                              if(!res.ok){
-                                    log.red(txt);
-                                    return;
-                              }
-
-                              editor.set(txt);
-                              
-                        }//create-html-icon
-                        
-                        
-                        menu.source=function(){
-                        
-                              window.open('https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/html-editor');
-                              
-                        }//source
-                        
-                    return obj;
+                  obj.initmod=function(params){
                     
-                  }//main
-                  
-            })();
+                        editor    = params.editor;
+                        menumod   = params.menumod;
+                        
+                  }//initomd
 
+                  
+              //:                  
+
+            
+                  obj.initdom=function(rootnode){
+                  
+                        var root                      = rootnode||$.full('main-menu');
+                        var shadow                    = root.shadowRoot;
+      
+                        var style                     = $(shadow,'style');
+                        $.stylesheet.copyrule('#page-inline','.icon',style);
+                        
+                        menumod.add.style(shadow);
+                        
+                        
+                        var card                      = $(shadow,'.menu');
+                        $(shadow,'#icon').onclick     = menumod.click(card,false,false,menu);
+      
+      
+                  }//initdom
+            
+      
+      //:
+      
+      
+                  function menu(type,opt){
+            
+                        if(type=='opt'){
+                              menu[opt.id]();
+                        }
+            
+                  }//menu
+      
+            
+                  menu.new=function(){
+            
+                        var url       = window.location.toString();
+                        var search    = window.location.search;
+                        if(search){
+                              url     = url.slice(0,-search.length);
+                        }
+            
+                        var win   = window.open(url);
+                        return win;
+            
+                  }//new
+      
+            
+                  menu.fork=function(){
+            
+                        var win   = newwin();
+                        var txt   = editor.getValue();
+                        win.postMessage({txt},'*');
+            
+                  }//fork
+      
+            
+                  menu.trim=function(){
+            
+                        var pos     = editor.getCursorPosition();
+                        var txt     = editor.getValue();
+                        var lines   = txt.split('\n');
+                        lines       = lines.map(line=>line.trimEnd());
+                        txt         = lines.join('\n');
+                        editor.setValue(txt,-1);
+                        editor.gotoLine(pos.row,pos.column);
+            
+                  }//trim
+                  
+                  
+                  menu['create-html-icon']=async function(){
+                  
+                        var err;
+                        try{
+                        
+                              var url   = 'https://raw.githubusercontent.com/javascript-2020/javascript-2020.github.io/main/utils/html-editor/mods/create-html-icon/create-html-icon.html';
+                              var res   = await fetch(url);
+                              
+                        }
+                        catch(err2){
+                        
+                              err   = err2;
+                              
+                        }
+                        if(err){
+                              log.error(err);
+                              return;
+                        }
+                        
+                        var txt   = await res.text();
+                        if(!res.ok){
+                              log.red(txt);
+                              return;
+                        }
+      
+                        editor.set(txt);
+                        
+                  }//create-html-icon
+                  
+                  
+                  menu.source=function(){
+                  
+                        window.open('https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/html-editor');
+                        
+                  }//source
+                  
+              return obj;
+              
+            }//main
+                  
         
       </script>
 
