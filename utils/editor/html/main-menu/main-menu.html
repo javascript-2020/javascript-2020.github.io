@@ -28,79 +28,87 @@
 
       <script>
         
-            (()=>{
-            
-                  menu.main   = mod();
-            
-                  function mod(){
-      
-                    var obj   = {};
-                    
-                  
-                        obj.initdom=function(){
-                        
-                              var root                      = $('main-menu');
-                              var shadow                    = root.shadowRoot;
+            function mod(){
 
-                              var style                     = $(shadow,'style');
-                              $.stylesheet.copyrule('#page-inline','.icon',style);
-                              
-                              menumod.add.style(shadow);
-                              
-                              
-                              var card                      = $(shadow,'.menu');
-                              $(shadow,'#icon').onclick     = menumod.click(card,false,false,menu);
-            
-            
-                        }//initdom
+              var obj   = {};
+              
+                  var menumod,editor
+                  ;
                   
-      
-  //:
-        
-        
-                        function menu(type,opt){
-                  
-                              if(type=='opt'){
-                                    menu[opt.id]();
-                              }
-                  
-                        }//menu
-            
-                  
-                        menu.new=function(){
-                  
-                              var win   = window.open('https://javascript-2020.github.io/utils/editor/editor.html');
-                              return win;
-                  
-                        }//new
-            
-                  
-                        menu.fork=function(){
-                  
-                              var win   = menu.new();
-                              var txt   = editor.getValue();
-                              win.postMessage({txt},'*');
-                  
-                        }//fork
-            
-                  
-                        menu.source=function(){
-                        
-                              window.open('https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/editor');
-                              
-                        }//source
-                        
-                    return obj;
+                  obj.initmod=function(params){
                     
-                  }//main
+                        menumod   = params.menumod;
+                        editor    = params.editor;
+                        
+                  }//initmod
                   
-            })();
+              //vars:-
+              
+              //:
+              
+                  obj.init=function(){
+                  }//init
+                  
+              //:
+              
+                  obj.initdom=function(rootnode){
+                  
+                        var root                      = $.$(rootnode,'main-menu');
+                        var shadow                    = root.shadowRoot;
 
-        
+                        var style                     = $(shadow,'style');
+                        $.stylesheet.copyrule('#page-inline','.icon',style);
+                        
+                        menumod.add.style(shadow);
+                        
+                        
+                        var card                      = $(shadow,'.menu');
+                        $(shadow,'#icon').onclick     = menumod.click(card,false,false,menu);
+      
+      
+                  }//initdom
+            
+
+//:
+  
+  
+                  function menu(type,opt){
+            
+                        if(type=='opt'){
+                              menu[opt.id]();
+                        }
+            
+                  }//menu
+      
+            
+                  menu.new=function(){
+            
+                        var win   = window.open('https://javascript-2020.github.io/utils/editor/editor.html');
+                        return win;
+            
+                  }//new
+      
+            
+                  menu.fork=function(){
+            
+                        var win   = menu.new();
+                        var txt   = editor.getValue();
+                        win.postMessage({txt},'*');
+            
+                  }//fork
+      
+            
+                  menu.source=function(){
+                  
+                        window.open('https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/editor');
+                        
+                  }//source
+                  
+              return obj;
+              
+            }//main
+                  
       </script>
 
-
 </main-menu>
-        
-        
         
