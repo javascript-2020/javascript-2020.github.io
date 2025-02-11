@@ -22,9 +22,7 @@
                   #horiz {margin-left:50px;border:none}
                   #vert {border:none}
             
-                  #view {display:none;flex:1}
-            
-                  /*editor-root {width:50%}*/
+                  #view {flex:1}
             
                   button {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
                         
@@ -194,65 +192,62 @@
             await editor.initdom(view,'html');
 
 
-              //view.style.display    = 'block';
-              
+            publish.query();
+            editor.focus();
 
-              publish.query();
-              editor.focus();
-
-        }//initdom
+      }//initdom
 
 
-        function kd(e){
+      function kd(e){
 
-              if(e.key==' ' && e.ctrlKey){
-                    e.preventDefault();
-                    menumod.open();
-              }
+            if(e.key==' ' && e.ctrlKey){
+                  e.preventDefault();
+                  menumod.open();
+            }
 
-              if(e.key=='s' && e.ctrlKey){
-                    e.preventDefault();
-                    filemod.save();
-              }
+            if(e.key=='s' && e.ctrlKey){
+                  e.preventDefault();
+                  filemod.save();
+            }
 
-              if(e.key=='Delete' && e.ctrlKey){
-                    e.preventDefault();
-                    jsonblob.util.delete()
-              }
-              
-        }//keydown
+            if(e.key=='Delete' && e.ctrlKey){
+                  e.preventDefault();
+                  jsonblob.util.delete()
+            }
+            
+      }//keydown
 
 
   //:
 
 
-        function complete(type,path,icon){
-        
-              var name    = editor.filename(path,icon);
-              editor.filename.save(false);
-              filemod.cur   = {type,name};
-              menumod.close();
-              editor.focus();
-              return name;
-              
-        }//complete
+      function complete(type,path,icon){
+      
+            var name    = editor.filename(path,icon);
+            editor.filename.save(false);
+            filemod.cur   = {type,name};
+            menumod.close();
+            editor.focus();
+            return name;
+            
+      }//complete
 
         
-        complete.load=function(type,txt,path,icon){
-        
-              editor.clear();
-              editor.setValue(txt,-1);
-              complete(type,path,icon);
-              
-        }//complete.load
+      complete.load=function(type,txt,path,icon){
+      
+            editor.clear();
+            editor.setValue(txt,-1);
+            complete(type,path,icon);
+            
+      }//complete.load
 
         
-        complete.save=function(type,path,icon){
+      complete.save=function(type,path,icon){
 
-              var name    = complete(type,path,icon);
-              log.green(name,'saved');
-              
-        }//save
+            var name    = complete(type,path,icon);
+            log.green(name,'saved');
+            
+      }//save
 
   //:
   
