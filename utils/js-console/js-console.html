@@ -34,35 +34,61 @@
             <script>
                                                                                 console.clear();
                                                                                 console.json=v=>console.log(JSON.strinigify(v,null,4));
+                  var mod     = {};
+                  mod.menu    = {};
+                  mod.utils   = {};
+                  
                   var filemod;                                                                                
-                  var localfile;
-                  var github;
                   var publish;
                   var editor;
                   var output;
                   var log;
 
-                  var menu    = {};
 
+                  var menu        = {};
+                  var slider      = {};
+                  
+                  var ui          = {};
+                  ui.mode         = 'vert';
 
+              //:
+              
                   async function init(){
                                                                                 console.log('init');
-
-                        window.onfocus            = ()=>editor && editor.focus();
-
-                        keydown.add(kd);
-                        
+                        //keydown                   = keydown();
                         menumod                   = menumod();
-                        menumod.add.style();
+                        mod.utils.hdr             = mod.utils.hdr();
+                        mod.menu.main             = mod.menu.main();
+                        filemod                   = filemod();
+                        publish                   = publish();
+                        editor                    = editor();
+                        output                    = output();
+                        log                       = log();
+                        
+                        mod.utils.hdr.initmod({menu,menumod});
+                        mod.menu.main.initmod({menumod,editor});
+                        filemod.initmod({menumod,complete});
+                        publish.initmod({ui,menumod});
+                        editor.initmod({});
+                        output.initmod({});
+                        log.initmod({});
+                        
+                        mod.menu.main.init();
+                        mod.utils.hdr.init();
+                        filemod.init();
+                        publish.init();
+                        editor.init();
+                        output.init();
+                        log.init();
+
+                    //:
+                    
+                        window.onfocus            = ()=>editor && editor.focus();
+                        keydown.add(kd);
                         menumod.on.close          = ()=>editor.focus();
 
-                        filemod.initmod({menumod});
-                        filemod.init();
                         
-                        publish.initmod({ui,menumod});
-                        
-                        
-                        initdom();
+                        initdom(document.body);
 
 
                   }//init
@@ -164,44 +190,47 @@
       </body>
 
 <script>
-                                                                                console.log('main');
-        var slider      = {};
-        
-        var ui          = {};
-        ui.mode         = 'vert';
 
-  //:
-
-        async function initdom(){   //c
+      async function initdom(rootnode){   //c
                                                                                 console.log('initdom');
-              keydown.initdom();
-
-              menu.top.initdom();
-              menu.main.initdom();
-
-              filemod.initdom();
-              
-              publish.initdom();
-              
-              $('#run').onclick             = run;
-
-              $('#horiz').onclick           = horiz;
-              $('#vert').onclick            = vert;
-              
-
-              var view                      = $('#view');
-
-              editor.initdom(view,'html');
-              slider.node                   = $.slider('editor-root','#page-slider','output-root',slider,ui);
-              output.initdom(view);
+            var root                      = rootnode;
+            
+            keydown.initdom();
+            menumod.add.style();
 
 
-              ui.setup(view);
+            mod.utils.hdr.initdom();
 
-              publish.query();
-              editor.focus();
+            
+            mod.menu.main.initdom();
 
-        }//initdom
+            filemod.initdom();
+            
+            publish.initdom();
+            
+            $('#run').onclick             = run;
+
+            $('#horiz').onclick           = horiz;
+            $('#vert').onclick            = vert;
+            
+
+            var view                      = $('#view');
+
+            await editor.initdom(view,'html');
+            slider.node                   = $.slider.glass('editor-root','#page-slider','output-root',slider,ui,output);
+            output.initdom();
+
+
+            log.initdom();
+
+
+
+            ui.setup(view);
+
+            publish.query();
+            editor.focus();
+
+      }//initdom
 
 
         function kd(e){
