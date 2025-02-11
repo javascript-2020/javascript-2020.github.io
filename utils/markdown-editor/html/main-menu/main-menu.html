@@ -19,6 +19,8 @@
                   <div id=new class=menu-opt>new</div>
                   <div id=fork class=menu-opt>fork</div>
                   <div class=menu-sep></div>
+                  <div id=ex-1 class=menu-opt>example 1</div>
+                  <div class=menu-sep></div>
                   <div id=source class=menu-opt>markdown editor source code</div>
             </div>
             
@@ -32,12 +34,13 @@
 
               var obj   = {};
               
-                  var menumod
+                  var menumod,editor
                   ;
                   
                   obj.initmod=function(params){
                     
                         menumod   = params.menumod;
+                        editor    = params.editor;
                         
                   }//initmod
                   
@@ -102,6 +105,30 @@
                         window.open('https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/markdown-editor');
                         
                   }//source
+                  
+                  
+                  menu['ex-1']=async function(){
+                    
+                        var err;
+                        try{
+                              var res   = await fetch('https://raw.githubusercontent.com/javascript-2020/javascript-2020.github.io/utils/markdown-editor/examples/example-1.md');
+                        }
+                        catch(err2){
+                              err   = err2;
+                        }
+                        if(err){
+                              console.error(err);
+                              return;
+                        }
+                        if(!res.ok){
+                              console.log('failed to load example 1',res.status);
+                              return;
+                        }
+                        var txt   = await res.text();
+                        editor.setvalue(txt);
+                        
+                  }//ex-1
+                  
                   
               return obj;
               
