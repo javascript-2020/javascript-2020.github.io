@@ -33,35 +33,58 @@
             <script>
                                                                                 console.clear();
                                                                                 console.json=v=>console.log(JSON.strinigify(v,null,4));
+                  var mod     = {};
+                  mod.menu    = {};
+                  mod.utils   = {};
+                  
                   var filemod;                                                                                
-                  var localfile;
-                  var github;
                   var publish;
                   var editor;
                   var output;
                   var log;
 
-                  var menu    = {};
 
+                  var menu        = {};
+                  var slider      = {};
+                  
+                  var ui          = {};
+                  ui.mode         = 'vert';
 
+              //:
+              
                   async function init(){
                                                                                 console.log('init');
-
-                        window.onfocus            = ()=>editor && editor.focus();
-
-                        keydown.add(kd);
-                        
+                        //keydown                   = keydown();
                         menumod                   = menumod();
-                        menumod.add.style();
+                        mod.utils.hdr             = mod.utils.hdr();
+                        mod.menu.main             = mod.menu.main();
+                        filemod                   = filemod();
+                        publish                   = publish();
+                        editor                    = editor();
+                        log                       = log();
+                        
+                        mod.utils.hdr.initmod({menu,menumod});
+                        mod.menu.main.initmod({menumod,editor});
+                        filemod.initmod({menumod,complete});
+                        publish.initmod({ui,menumod});
+                        editor.initmod({});
+                        log.initmod({});
+                        
+                        mod.menu.main.init();
+                        mod.utils.hdr.init();
+                        filemod.init();
+                        publish.init();
+                        editor.init();
+                        log.init();
+
+                    //:
+                    
+                        window.onfocus            = ()=>editor && editor.focus();
+                        keydown.add(kd);
                         menumod.on.close          = ()=>editor.focus();
 
-                        filemod.initmod({menumod});
-                        filemod.init();
                         
-                        publish.initmod({ui,menumod});
-                        
-                        
-                        initdom();
+                        initdom(document.body);
 
 
                   }//init
@@ -163,25 +186,30 @@
   //:
 
 
-        async function initdom(){   //c
+      async function initdom(){   //c
                                                                                 console.log('initdom');
-              keydown.initdom();
+            var root                      = rootnode;
+            
+            keydown.initdom();
+            menumod.add.style();
 
-              menu.top.initdom();
-              
-              menu.main.initdom();
 
-              filemod.initdom();
-              
-              publish.initdom();
-              
-              
+            mod.utils.hdr.initdom();
 
-              var view                      = $('#view');
+            
+            mod.menu.main.initdom();
 
-              editor.initdom(view,'html');
+            filemod.initdom();
+            
+            publish.initdom();
 
-              view.style.display    = 'block';
+
+            var view                      = $('#view');
+
+            await editor.initdom(view,'html');
+
+
+              //view.style.display    = 'block';
               
 
               publish.query();
