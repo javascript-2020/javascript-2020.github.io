@@ -215,7 +215,38 @@
             
       }//initdom
             
+  //:
 
+        function complete(type,path,icon){
+        
+              var name    = editor.filename(path,icon);
+              editor.filename.save(false);
+              filemod.cur   = {type,name};
+              menumod.close();
+              editor.focus();
+              return name;
+              
+        }//complete
+
+        
+        complete.load=function(type,txt,path,icon){
+        
+              editor.clear();
+              output.kill();
+              editor.setValue(txt,-1);
+              complete(type,path,icon);
+              
+        }//complete.load
+
+        
+        complete.save=function(type,path,icon){
+
+              var name    = complete(type,path,icon);
+              log.green(name,'saved');
+              
+        }//save
+  
+  //:
 
       function check(){
       
