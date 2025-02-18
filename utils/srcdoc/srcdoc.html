@@ -1,0 +1,78 @@
+<html>
+
+      <head>
+      
+            <style>
+            
+                  html {height:100%}
+                  body {height:calc(100% - 16px);display:flex;flex-direction:column}
+                  
+                  #url-root {display:flex;}
+                  #url {flex:1;padding:5px 10px;font-size:16px}
+                  
+                  iframe {flex:1;border:none}
+                  
+            </style>
+            
+      </head>
+      
+      
+      <body>
+      
+            <div id=url-root>
+                  <input id=url autocomplete=off spellcheck=false>
+                  <input type=button value=go>
+            </div>
+            
+            <iframe></iframe>
+      
+            <script>
+            
+                  
+                  var $   = sel=>document.querySelector(sel);
+                  
+                  
+                  var input;
+                  
+                  
+                  var btn   = {};
+                  
+                  
+                  function initdom(){
+                    
+                        input   = document.querySelector('input');
+                        
+                        $('[value=go]').onclick   = btn.go;      
+                        
+                  }//initdom
+                  
+                  
+                  btn.go=async function(){
+                    
+                        var url   = input.value;
+                        var err;
+                        try{
+                              var res   = await fetch(url);
+                        }
+                        catch(err2){
+                              err   = err2;
+                        }
+                        if(err){
+                              alert(err.toString());
+                              return;
+                        }
+                        
+                        var json    = await res.json();
+                        var b64     = json.content;
+                        var html    = window.atob(b64);
+                        
+                        $(iframe).srcdoc    = html;
+                        
+                  }//go
+                  
+                  
+                  
+            </script>
+      </body>
+      
+</html>
