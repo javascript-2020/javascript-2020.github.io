@@ -94,7 +94,11 @@
                         initdom(document.body);
 
 
+                        init.complete();
+
+                        
                   }//init
+
 
                   init.stack            = [];
                   init.stack.ct         = 0;
@@ -113,6 +117,17 @@
                   
                   //  (typeof init!='undefined' && init?.stack && init.stack.add)
                   //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+                  
+                  init.complete   = function(){
+                    
+                        init.complete.stack.forEach(fn=>fn());
+                        
+                  }//complete
+                  
+                  init.complete.stack   = [];
+                  init.complete.add     = fn=>init.complete.stack.push(fn);
+
                   
             </script>
 
