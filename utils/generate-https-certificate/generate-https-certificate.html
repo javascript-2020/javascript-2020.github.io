@@ -42,7 +42,9 @@
     .sub {height:25px;margin:20px auto 10px;background-color:whitesmoke;padding:5px 10px;}
     .sub input{margin-left:20px;}
     
-    #cacert {border:1px solid lightgray;padding:1px 5px;display:inline-flex;align-items:center;gap:10px;cursor:pointer;}
+    .opt  {border:1px solid lightgray;padding:1px 5px;display:inline-flex;align-items:center;gap:10px;cursor:pointer}
+    
+    #cacert {}
     #rdns {display:grid;grid-template-columns:auto 1fr;gap:5px 20px;}
     #rdns div:nth-of-type(odd) {white-space:nowrap;overflow:hidden;max-width:200px;}
     #rdns input {width:100%;box-sizing:border-box;}
@@ -111,9 +113,23 @@
               
                   <div id=config-btns><input type=button value=clear><input type=button value=localhost><input type=button value='generate certificate'></div>
                   
+                  <div id=signing-key>
+                        <div class=sub>signing key</div>
+                        <span id=self class=opt>
+                              <span>self-signed</span>
+                              <input type=checkbox checked>
+                        </span>
+                        <span id=private-key class=opt>
+                              <span>private key</span>
+                              <input type=checkbox>
+                        </span>
+                  </div>
+                  
+                  </div signing-key>
+                  
                   <div id=constraints>
                         <div class=sub>constraints</div>
-                        <span id=cacert>
+                        <span id=cacert class=opt>
                               <span>ca cert</span>
                               <input type=checkbox>
                         </span>
@@ -170,13 +186,11 @@
 
 
 
-<script type="module">
+<script>
                                                                                 console.clear();
                                                                                 console.log('generate-https-certificate');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        import nodeForge from 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
-        var pki   = nodeForge.pki;
 
 
         
@@ -261,12 +275,10 @@
         }//generatecertificate
 
 
-        
-</script>
 
 
 
-<script>
+
 
         var enabled   = false;
         if(enabled){
@@ -489,6 +501,16 @@
 
         
         </script>
+
+
+
+        <script type="module">
+
+        import nodeForge from 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
+        window.pki   = nodeForge.pki;
+        
+        </script>        
+
 
 
     </body>
