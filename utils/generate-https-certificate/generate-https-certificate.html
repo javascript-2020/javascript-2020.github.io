@@ -192,9 +192,35 @@
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
 
+        var pki;
+        
+        
+  //:
+  
+  
+        window.onload   = init;
+        
+        function init(){
+          
+              await load();
+              
+        }//init
+
+
+  //:
+  
+  
+        async function load(){
+          
+              var nodeForge   = await import('https://cdn.jsdelivr.net/npm/node-forge/+esm');
+              pki             = nodeForge.pki;
+              
+        }//load
+          
+
 
         
-        window.generateCertificate    = function(config){
+        function certificate(config){
           
               var keys                  = pki.rsa.generateKeyPair(2048);
               var cert                  = pki.createCertificate();
@@ -270,9 +296,45 @@
               var cert          = pki.certificateToPem(cert);
               var forge_cert    = pki.certificateFromPem(cert);
 
-              return {key,cert,forge_cert};
+
+
+              certificate.complete(key,cert,forge_cert);
               
-        }//generatecertificate
+              
+        }//certificate
+
+        
+        certificate.complete    = function(key,cert,forge_cert){
+          
+              
+              show('cert');
+              
+              $('#key-copy').onclick          = e=>copy(key,$('#key'));
+              $('#key-download').href         = window.URL.createObjectURL(new Blob([key]));
+              $('#key-download').download     = 'private-key.pem';
+              $('#key-download').onclick      = e=>{
+                                                    if(e.button==2)return;
+                                                    e.preventDefault();
+                                                    download('private-key.pem',key);
+                                              };
+              
+              $('#x509-copy').onclick         = e=>copy(cert,$('#x509'));
+              $('#x509-download').href        = window.URL.createObjectURL(new Blob([cert]));
+              $('#x509-download').download    ='server-cert.pem';
+              $('#x509-download').onclick     = e=>{
+                                                  if(e.button==2)return;
+                                                  e.preventDefault();
+                                                  download('server-cert.pem',cert);
+                                              };
+              
+              $('#key').value                 = key
+              $('#x509').value                = cert;
+                            
+        }//generate_certificate
+
+
+
+
 
 
 
@@ -315,30 +377,44 @@
               
         }//enabled
 
-        
-        $('#tab-config').onclick                                    = e=>show('config');
-        $('#tab-cert').onclick                                      = e=>show('cert');
-        
-        $('#config-btns [value="generate certificate"]').onclick    = read;
-        $('#config-btns [value=clear]').onclick                     = clear;
-        $('#config-btns [value=localhost]').onclick                 = localhost;
-        var ca                                                      = chkbox('#cacert');
-        var rdns                                                    = ['cn','o','ou','l','st','c'];
-        var list                                                    = {};
-        list.dns                                                    = $('#dns-list');
-        list.ip                                                     = $('#ip-list');
-        var item                                                    = {};
-        item.dns                                                    = $(list.dns,'.item');
-        item.ip                                                     = $(list.ip,'.item');
-        
-        $('#dns-root [value=add]').onclick                          = e=>create('dns');
-        $('#ip-root [value=add]').onclick                           = e=>create('ip');
-            
-        $('#from').value                                            = date();
-        $('#to').value                                              = date(true);
 
 
-        localhost();
+
+        function initdom(){
+          
+        
+              $('#tab-config').onclick                                    = e=>show('config');
+              $('#tab-cert').onclick                                      = e=>show('cert');
+              
+              $('#config-btns [value="generate certificate"]').onclick    = read;
+              $('#config-btns [value=clear]').onclick                     = clear;
+              $('#config-btns [value=localhost]').onclick                 = localhost;
+              var ca                                                      = chkbox('#cacert');
+              var rdns                                                    = ['cn','o','ou','l','st','c'];
+              var list                                                    = {};
+              list.dns                                                    = $('#dns-list');
+              list.ip                                                     = $('#ip-list');
+              var item                                                    = {};
+              item.dns                                                    = $(list.dns,'.item');
+              item.ip                                                     = $(list.ip,'.item');
+              
+              $('#dns-root [value=add]').onclick                          = e=>create('dns');
+              $('#ip-root [value=add]').onclick                           = e=>create('ip');
+                  
+              $('#from').value                                            = date();
+              $('#to').value                                              = date(true);
+      
+      
+              localhost();
+              
+              
+        }//initdom
+
+
+
+
+
+
 
 
         function localhost(){
@@ -412,35 +488,9 @@
               
         }//read
 
-        
-        function generate_certificate(config){
-          
-              var {key,cert,forge_cert}       = generateCertificate(config);
-              
-              show('cert');
-              
-              $('#key-copy').onclick          = e=>copy(key,$('#key'));
-              $('#key-download').href         = window.URL.createObjectURL(new Blob([key]));
-              $('#key-download').download     = 'private-key.pem';
-              $('#key-download').onclick      = e=>{
-                                                    if(e.button==2)return;
-                                                    e.preventDefault();
-                                                    download('private-key.pem',key);
-                                              };
-              
-              $('#x509-copy').onclick         = e=>copy(cert,$('#x509'));
-              $('#x509-download').href        = window.URL.createObjectURL(new Blob([cert]));
-              $('#x509-download').download    ='server-cert.pem';
-              $('#x509-download').onclick     = e=>{
-                                                  if(e.button==2)return;
-                                                  e.preventDefault();
-                                                  download('server-cert.pem',cert);
-                                              };
-              
-              $('#key').value                 = key
-              $('#x509').value                = cert;
-                            
-        }//generate_certificate
+
+
+
 
         
         function show(name){
@@ -502,14 +552,6 @@
         
         </script>
 
-
-
-        <script type="module">
-
-        import nodeForge from 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
-        window.pki   = nodeForge.pki;
-        
-        </script>        
 
 
 
