@@ -20,7 +20,7 @@
     .hdr-icon           {display:inline-block;text-align:center;background:whitesmoke;border-radius:5px;
                           border:1px solid lightgray;padding:5px 3px 0px;cursor:pointer;margin-right:10px;
                           min-width:50px}
-    .hdr-icon-img       {}
+    .hdr-icon-img       {width:25px;height:25px}
     .hdr-icon-label     {margin:2px 0 0}
     .hdr-title          {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
     .hdr-date           {float:right}
@@ -36,9 +36,8 @@
     .active {background:lightyellow;border:1px solid lightblue}
     .inactive {background:lightgray;border:1px solid dimgray}
     
-    #config {position:absolute;inset:0 0 0 0}
+    #config {}
     #config-btns input {margin-right:20px}
-    #config-body {overflow:auto;position:absolute;inset:30px 0 0 0;padding:10px;}
     
     .sub {height:25px;margin:20px auto 10px;background-color:whitesmoke;padding:5px 10px;}
     .sub input{margin-left:20px;}
@@ -81,7 +80,7 @@
    
    
         <div class=hdr>
-            <a href='https://javascript-2020.github.io/' class=hdr-icon>
+            <a class=hdr-icon href='https://javascript-2020.github.io/'>
                 <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAh1BMVEVHcExNe3s6l4Qiopk3sps1r5sMm58PoKMZo6ApppkprJ0tr54PoqQToqEWnJ0mn5UPoaQNnKErrp4jpp0pqpwhqqAwsJ0trZ0gqqEpq5wXpKEqrJ4vqJgMoKQQoqQUoKEfpJ43spswsJwpqJsmqZ4cqaIUoaEvrZs0sp4Tp6Q7r5kmrqELpKfAawTsAAAALXRSTlMAAQIJgycqflkVW4uNXhIGgiN8Gj+Vmk6DVm1tEYeWRzqKZTEhpFBFc64Lt8fBwKN4AAAA6UlEQVQoz9XSbW+DIBAAYECdAiJIAS2+v7bd+v9/X7VJW501WfZl2X26y5Nc7g4A+CfBCeFvASIIQJSmMs3fKBb0jHptlcp0v+W4rI0aWKA1Iabbssi/LqP1o1xmiVEbLtilEnaai7fyZJLvfC2rcIT3PKEn2q4WcPxiDOtH1dFEnj9fGgnLwvhZot4lmYufWgRMRMtuuSTH5uFRB8XHehbPhR1+3czfMFqe9EfsxJ7XO7tcDWk6JLscMACOZJ+D33FR4cMB27l5NmeqWTJgZThFOZ291pTSxrSrPZEzB5+eDPJ7iv7+498ApbgPOd9dC8oAAAAASUVORK5CYII=' />
                 <div class=icon-label>
                     home
@@ -111,43 +110,46 @@
             <div id=config>
               
                   <div id=config-btns><input type=button value=clear><input type=button value=localhost><input type=button value='generate certificate'></div>
-                  <div id=config-body>
-                        <div id=constraints>
-                              <div class=sub>constraints</div>
-                              <span id=cacert>
-                                    <span>ca cert</span>
-                                    <input type=checkbox>
-                              </span>
+                  
+                  <div id=constraints>
+                        <div class=sub>constraints</div>
+                        <span id=cacert>
+                              <span>ca cert</span>
+                              <input type=checkbox>
+                        </span>
+                  </div>
+                  
+                  <div id=rdns-root>
+                        <div class=sub>Relative Distinguished Names</div>
+                        <div id=rdns>
+                              <div>CommonName (CN) </div><div><input id=cn></div>
+                              <div>Organization (O) </div><div><input id=o></div>
+                              <div>OrganizationalUnit (OU) </div><div><input id=ou></div>
+                              <div>Locality (L) </div><div><input id=l></div>
+                              <div>StateOrProvince (ST) </div><div><input id=st></div>
+                              <div>CountryName (C) </div><div><input id=c></div>
                         </div>
-                        <div id=rdns-root>
-                              <div class=sub>Relative Distinguished Names</div>
-                              <div id=rdns>
-                                    <div>CommonName (CN) </div><div><input id=cn></div>
-                                    <div>Organization (O) </div><div><input id=o></div>
-                                    <div>OrganizationalUnit (OU) </div><div><input id=ou></div>
-                                    <div>Locality (L) </div><div><input id=l></div>
-                                    <div>StateOrProvince (ST) </div><div><input id=st></div>
-                                    <div>CountryName (C) </div><div><input id=c></div>
-                              </div>
+                  </div>
+                  
+                  <div id=dns-root>
+                        <div class=sub>dns names (example.com) <input type=button value=add></div>
+                        <div id=dns-list>
+                              <div class=item><input type=button value=x class=rem><div><input id=dns class=value></div></div>
                         </div>
-                        <div id=dns-root>
-                              <div class=sub>dns names (example.com) <input type=button value=add></div>
-                              <div id=dns-list>
-                                    <div class=item><input type=button value=x class=rem><div><input id=dns class=value></div></div>
-                              </div>
+                  </div>
+                  
+                  <div id=ip-root>
+                        <div class=sub>ips (127.0.0.1) <input type=button value=add></div>
+                        <div id=ip-list>
+                              <div class=item><input type=button value=x class=rem><div><input id=ip class=value></div></div>
                         </div>
-                        <div id=ip-root>
-                              <div class=sub>ips (127.0.0.1) <input type=button value=add></div>
-                              <div id=ip-list>
-                                    <div class=item><input type=button value=x class=rem><div><input id=ip class=value></div></div>
-                              </div>
-                        </div>
-                        <div id=dates-root>
-                              <div class=sub>dates</div>
-                              <div id=dates>
-                                    <div>from</div><input id=from type=datetime-local>
-                                    <div>to</div><input id=to type=datetime-local>
-                              </div>
+                  </div>
+                  
+                  <div id=dates-root>
+                        <div class=sub>dates</div>
+                        <div id=dates>
+                              <div>from</div><input id=from type=datetime-local>
+                              <div>to</div><input id=to type=datetime-local>
                         </div>
                   </div>
                   
