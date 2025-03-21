@@ -12,39 +12,48 @@
 
         <style>
         
-    html {height:100%}
-    body {height:calc(100% - 42px);margin:20px}
-
-    .hdr                  {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
+    html
+                          {height:100%}
+    body
+                          {height:calc(100% - 42px);margin:20px}
+    .hdr                  
+                          {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
                             padding-bottom:10px;border-bottom:3px solid lightblue}
-    .hdr-icon             {display:inline-block;text-align:center;background:whitesmoke;border-radius:5px;
+    .hdr-icon             
+                          {display:inline-block;text-align:center;background:whitesmoke;border-radius:5px;
                             border:1px solid lightgray;padding:5px 3px 0px;cursor:pointer;margin-right:10px;
                             min-width:50px}
-    .hdr-icon-img         {width:25px;height:25px}
-    .hdr-icon-label       {margin:2px 0 0}
-    .hdr-title            {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
-    .hdr-date             {float:right}
-
+    .hdr-icon-img         
+                          {width:25px;height:25px}
+    .hdr-icon-label       
+                          {margin:2px 0 0}
+    .hdr-title            
+                          {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
+    .hdr-date
+                          {float:right}
+    section               
+                          {font-family:arial;width:100%;height:calc(100% - 20px);position:relative}
+    input                 
+                          {box-sizing:border-box;font-size:16px;font-weight:bold;padding:5px 10px}
+    input[type=button]    
+                          {cursor: pointer}
     
-    section               {font-family:arial;width:100%;height:calc(100% - 20px);position:relative}
-    
-    input                 {box-sizing:border-box;font-size:16px;font-weight:bold;padding:5px 10px}
-    input[type=button]    {cursor: pointer;}
-    
-    #tabs                 {display:flex;cursor:pointer;margin-bottom:10px;text-align:center}
-    .tab                  {padding:5px 0;flex:1}
-    .active               {background:lightyellow;border:1px solid lightblue}
-    .inactive             {background:lightgray;border:1px solid dimgray}
-    
+    #tabs                 
+                          {display:flex;cursor:pointer;margin-bottom:10px;text-align:center}
+    .tab                  
+                          {padding:5px 0;flex:1}
+    .active               
+                          {background:lightyellow;border:1px solid lightblue}
+    .inactive             
+                          {background:lightgray;border:1px solid dimgray}    
     #config               
                           {}
     #config-btns input    
-                          {margin-right:20px}
-    
+                          {margin-right:20px}    
     .sub                  
-                          {height:25px;margin:20px auto 10px;background-color:whitesmoke;padding:5px 10px;}
+                          {height:25px;margin:20px auto 10px;background-color:whitesmoke;padding:5px 10px}
     .sub input            
-                          {margin-left:20px;}
+                          {margin-left:20px}
     .opt-root             
                           {display:grid;grid-template-columns:1fr 1fr;gap:5px 20px}
     .opt                  
@@ -56,41 +65,37 @@
     .ext
                           {}
     #rdns                 
-                          {display:grid;grid-template-columns:auto 1fr;gap:5px 20px;}
+                          {display:grid;grid-template-columns:auto 1fr;gap:5px 20px}
     #rdns div:nth-of-type(odd) 
-                          {white-space:nowrap;overflow:hidden;max-width:200px;}
+                          {white-space:nowrap;overflow:hidden;max-width:200px}
     #rdns input           
-                          {width:100%;box-sizing:border-box;}
+                          {width:100%;box-sizing:border-box}
       
     .item                 
-                          {display:flex;align-items:center;}
+                          {display:flex;align-items:center}
     .rem                  
-                          {margin-right:10px;color:red;}
+                          {margin-right:10px;color:red}
     .item div:nth-of-type(2)
-                          {flex:1;}
+                          {flex:1}
     .value                
                           {width:100%}
-    
     #dates                
-                          {display:grid;grid-template-columns:100px auto;gap:5px 20px;}
+                          {display:grid;grid-template-columns:100px auto;gap:5px 20px}
+    #cert
+                          {padding:0px 10px}
+    #cert > div 
+                          {margin-bottom:10px}
+    #cert input 
+                          {margin:auto 10px}
+    #cert-body 
+                          {}
+    #cert-body
+                          {display:flex}
+    textarea
+                          {flex:1}
     
-    #cert {padding:0px 10px;}
-    
-    #cert > div {margin-bottom:10px;}
-    
-    #cert input {margin:auto 10px;}
-    
-    #cert-body {position:absolute;inset:80px 10px 0 10px;overflow:auto;}
-    
-    #cert-body {display:flex;}
-    textarea {flex:1;}
-    
-    a {border-width:2px;border-style:inset;border-color:dimgray;background:buttonface;font-weight:bold;font-size:12px;
-        border-radius:3px;padding:5px 10px;}          
-
-
-
-
+    a                     {border-width:2px;border-style:inset;border-color:dimgray;background:buttonface;font-weight:bold;font-size:12px;
+                            border-radius:3px;padding:5px 10px}
 
         </style>
         
@@ -280,7 +285,7 @@
         async function load(){
           
               var nodeForge   = await import('https://cdn.jsdelivr.net/npm/node-forge/+esm');
-              pki             = nodeForge.pki;
+              pki             = nodeForge.default.pki;
               
         }//load
           
