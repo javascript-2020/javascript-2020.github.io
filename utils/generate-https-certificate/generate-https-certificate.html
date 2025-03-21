@@ -247,6 +247,8 @@
 
         var pki;
         
+        var ca;
+        
         var rdns          = ['cn','o','ou','l','st','c'];
         
         var ui            = {};
@@ -336,7 +338,7 @@
               $('#config-btns [value=clear]').onclick                     = clear;
               $('#config-btns [value=localhost]').onclick                 = localhost;
               
-              var ca                                                      = $.checkbox('#cacert');
+              ca                                                          = $.checkbox('#cacert');
 
               var node    = {};
               node.root   = $('#ext-root');
@@ -424,9 +426,9 @@
         
         $.is    = {};
         
-        $.is.node   = function(){
+        $.is.node   = function(v){
           
-              if(!v){
+              if(Object(v)!==v){
                     return false;
               }
               if('nodeType' in v){
