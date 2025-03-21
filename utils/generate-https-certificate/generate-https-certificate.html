@@ -303,7 +303,33 @@
                     
                     config.ca       = false;
                     config.pathlen  = 0;  
-                
+
+                    config.keyUsage   = {
+                          dataEncipherment    : true,
+                          digitalSignature    : true,
+                          keyCertSign         : true,
+                          keyEncipherment     : true,
+                          nonRepudiation      : true
+                    };
+                      
+                    config.extKeyUsage    = {
+                          clientAuth          : true,
+                          codeSigning         : true,
+                          emailProtection     : true,
+                          serverAuth          : true,
+                          timeStamping        : true
+                    };
+                    
+                    config.nsCertType   = {
+                          client              : true,
+                          email               : true,
+                          emailCA             : true,
+                          objCA               : true,
+                          objSign             : true,
+                          server              : true,
+                          sslCA               : true
+                    };
+    
                     config.from     = today;
                     config.to       = one_year;
                     
@@ -318,6 +344,7 @@
                     config.rdn.l    = 'Blacksburg';
                     config.rdn.st   = 'Virginia';
                     config.rdn.c    = 'US';
+
                     
                     generate_certificate(config);
                     
@@ -396,20 +423,10 @@
 
 
   //:
-  
         
 
-        function localhost(){
-          
-              clear(true);
-              
-              $('#cn').value    = 'localhost test certificate';
-              ['localhost'].forEach(value=>create('dns',value));
-              ['127.0.0.1','127.0.0.2'].forEach(value=>create('ip',value))
-              
-        }//localhost
+        $.is    = {};
         
-
         function $(root,sel){
           
               if(!sel){
@@ -424,7 +441,6 @@
               
         }//$
         
-        $.is    = {};
         
         $.is.node   = function(v){
           
@@ -457,6 +473,18 @@
           
         }//checkbox
         
+
+
+        function localhost(){
+          
+              clear(true);
+              
+              $('#cn').value    = 'localhost test certificate';
+              ['localhost'].forEach(value=>create('dns',value));
+              ['127.0.0.1','127.0.0.2'].forEach(value=>create('ip',value))
+              
+        }//localhost
+
         
         function create(type,value){
           
@@ -512,11 +540,11 @@
               config.from   = new Date($('#from').value);
               config.to     = new Date($('#to').value);
 
-              
+
               for(var key in ext){
                 
                     config[key]   = {};
-                    for(var name in ext[key]){
+                    for(var name of ext[key]){
                       
                           config[key][name]   = ui[key][name].checked;
                           
@@ -530,14 +558,6 @@
               
               certificate(config);
               
-              
-              function ext(name,names){
-                
-                    config[name]    = {};
-                    var root        = $(`#${name}`);
-                    names.forEach(name=>config.keyusage[name]=$(root,`#${name}`).checked);
-                    
-              }//ext
               
         }//read
 
@@ -589,7 +609,7 @@
   
   
         function certificate(config){
-          
+                                                                                console.json(config);
               var keys                  = pki.rsa.generateKeyPair(2048);
               var cert                  = pki.createCertificate();
               
@@ -613,12 +633,50 @@
               cert.setSubject(attrs);
               cert.setIssuer(attrs);
               
-              var ext   = [
+              var ext2    = [
+                
                     {
                           name                : 'basicConstraints',
                           cA                  : config.ca,
                           pathLen             : config.pathlen,
                     },
+                    {
+                          name                : 'subjectAltName',
+                          altNames            : [config.dns.map(dns=>{return {type:2,value:dns}}),config.ip.map(ip=>{return {type:7,ip}})].flat()
+                    },
+                    {
+                          name                : 'subjectKeyIdentifier'
+                    }
+                    
+              ];
+              
+              if(config.ca){
+                    ext2[0].pathLenConstraint  = config.pathlen;
+              }
+              
+              
+              for(var key in ext){
+                
+                    var o     = {};
+                    o.name    = key;
+                    
+                    for(var name of ext[key]){
+                      
+                          o[name]   = config[key][name];
+                          
+                    }//for
+                    
+                    ext2.push(o);
+                    
+              }//for
+
+
+              cert.setExtensions(ext2);
+                      
+
+
+/*                                
+              
                     {
                           name                : 'keyUsage',
                           keyCertSign         : true,
@@ -644,21 +702,12 @@
                           sslCA               : true,
                           emailCA             : true,
                           objCA               : true
-                    },
-                    {
-                          name                : 'subjectAltName',
-                          altNames            : [config.dns.map(dns=>{return {type:2,value:dns}}),config.ip.map(ip=>{return {type:7,ip}})].flat()
-                    },
-                    {
-                          name                : 'subjectKeyIdentifier'
                     }
               ];
+*/
+
               
-              if(config.ca){
-                    ext[0].pathLenConstraint  = config.pathlen;
-              }
               
-              cert.setExtensions(ext);
               cert.sign(keys.privateKey);
               
               var key           = pki.privateKeyToPem(keys.privateKey);
