@@ -58,17 +58,22 @@
     #spinner
                           {width:30px;height:30px}
     .sub                  
-                          {height:25px;margin:20px auto 10px;background-color:whitesmoke;padding:5px 10px}
+                          {margin:20px auto 10px;background-color:whitesmoke;padding:10px 10px 5px}
     .sub input            
                           {margin-left:20px}
     .opt-root             
                           {display:grid;grid-template-columns:1fr 1fr;gap:5px 20px}
     .opt                  
-                          {border:1px solid lightgray;padding:1px 5px;display:inline-flex;align-items:center;gap:10px;cursor:pointer}
+                          {border:1px solid lightgray;padding:1px 5px;display:inline-flex;align-items:center;gap:10px;
+                            cursor:pointer;padding:5px}
     .opt .spc             
                           {flex:1}                          
+    #bits 
+                          {width:80px;text-align:center}
     #cacert               
                           {}
+    #pathlen
+                          {width:50px;text-align:center}
     .ext
                           {}
     #rdns                 
@@ -161,6 +166,19 @@
                   
                   </div signing-key>
                   
+                  <div bits>
+                  
+                        <div class=sub>bits</div>
+                        <div class=opt-root>
+                              <span id=bits-root class=opt>
+                                    <span>bits</span>
+                                    <span class=spc></span>
+                                    <input id=bits value=2048>
+                              </span>
+                        </div>
+                        
+                  </div>
+                  
                   <div id=constraints>
                   
                         <div class=sub>constraints</div>
@@ -169,6 +187,11 @@
                                     <span>ca cert</span>
                                     <span class=spc></span>
                                     <input type=checkbox>
+                              </span>
+                              <span id=pathlen-root class=opt>
+                                    <span>pathlen</span>
+                                    <span class=spc></span>
+                                    <input id=pathlen value=0>
                               </span>
                         </div>
                         
@@ -385,7 +408,10 @@
               $('#config-btns [value=clear]').onclick                     = clear;
               $('#config-btns [value=localhost]').onclick                 = localhost;
               
-              ca                                                          = $.checkbox('#cacert');
+              ui.bits                         = $('#bits');
+              
+              ca                              = $.checkbox('#cacert');
+              ui.pathlen                      = $('#pathlen');
 
               var node    = {};
               node.root   = $('#ext-root');
@@ -543,22 +569,35 @@
         
         function read(){
           
-              var config    = {};
+              var config          = {};
               
-              config.ca     = ca.checked;
-              config.pathlen  = 0;
+              var bits            = Number(ui.bits.value);
+              if(isNaN(bits)){
+                    alert('invalid bits');
+                    return;
+              }
+              config.bits         = bits;
               
-              config.rdn    = {};
+              config.ca           = ca.checked;
+              
+              var pathlen         = Number(ui.pathlen.value);
+              if(isNaN(pathlen)){
+                    alert('invalid pathlen');
+                    return;
+              }
+              config.pathlen      = pathlen;
+              
+              config.rdn          = {};
               rdns.forEach(name=>config.rdn[name]=$('#'+name).value);
               
-              var arr       = type=>[...list[type].querySelectorAll('.item')].map(node=>$(node,'.value').value).filter(v=>v);
+              var arr             = type=>[...list[type].querySelectorAll('.item')].map(node=>$(node,'.value').value).filter(v=>v);
               
-              config.dns    = arr('dns');
+              config.dns          = arr('dns');
               
-              config.ip     = arr('ip');
+              config.ip           = arr('ip');
               
-              config.from   = new Date($('#from').value);
-              config.to     = new Date($('#to').value);
+              config.from         = new Date($('#from').value);
+              config.to           = new Date($('#to').value);
 
 
               for(var key in ext){
@@ -571,6 +610,7 @@
                     }//for
                     
               }//for
+
               
               $('#spinner').style.display   = ''; 
               certificate(config);
