@@ -158,7 +158,7 @@
                                     <span class=spc></span>
                                     <input type=checkbox checked>
                               </span>
-                              <span id=private-key class=opt>
+                              <span id=key class=opt>
                                     <span>private key</span>
                                     <span class=spc></span>
                                     <input type=checkbox>
@@ -331,74 +331,7 @@
 
   //:
   
-  
-
-
-        var enabled   = false;
-        if(enabled){
-          
-              window.onload   = e=>{
-                
-                    var today       = new Date();
-                    var one_year    = new Date();
-                    one_year.setFullYear(one_year.getFullYear()+1);
-                    
-                    var config      = {};
-                    
-                    config.ca       = false;
-                    config.pathlen  = 0;  
-
-                    config.keyUsage   = {
-                          dataEncipherment    : true,
-                          digitalSignature    : true,
-                          keyCertSign         : true,
-                          keyEncipherment     : true,
-                          nonRepudiation      : true
-                    };
-                      
-                    config.extKeyUsage    = {
-                          clientAuth          : true,
-                          codeSigning         : true,
-                          emailProtection     : true,
-                          serverAuth          : true,
-                          timeStamping        : true
-                    };
-                    
-                    config.nsCertType   = {
-                          client              : true,
-                          email               : true,
-                          emailCA             : true,
-                          objCA               : true,
-                          objSign             : true,
-                          server              : true,
-                          sslCA               : true
-                    };
-    
-                    config.from     = today;
-                    config.to       = one_year;
-                    
-                    config.dns      = ['localhost'];
-                    config.ip       = ['127.0.0.1','127.0.0.2'];
-                    
-                    config.rdn      = {};
-                    
-                    config.rdn.cn   = 'localhost test certificate';
-                    config.rdn.o    = 'Test';
-                    config.rdn.ou   = 'test';
-                    config.rdn.l    = 'Blacksburg';
-                    config.rdn.st   = 'Virginia';
-                    config.rdn.c    = 'US';
-
-                    
-                    generate_certificate(config);
-                    
-              }//win.onload
-              
-        }//enabled
-
-
-
-
+        
         function initdom(){
           
         
@@ -409,9 +342,12 @@
               $('#config-btns [value=clear]').onclick                     = clear;
               $('#config-btns [value=localhost]').onclick                 = localhost;
               
+              var root                        = $('#signing-key .opt-root');
+              ui.key                          = $.chkbox.group(root,'#self','#key');
+              
               ui.bits                         = $('#bits');
               
-              ca                              = $.checkbox('#cacert');
+              ca                              = $.chkbox('#cacert');
               ui.pathlen                      = $('#pathlen');
 
               var node    = {};
@@ -434,13 +370,14 @@
                     ext[key].forEach(name=>{
                       
                           var nopt                      = node.opt.cloneNode(true);
+                          nopt.id                       = name;
                           $(nopt,'.name').textContent   = name;
                           var chk                       = $(nopt,'[type=checkbox]')
                           chk.id                        = name;
                           chk.checked                   = true;
                           root.append(nopt);
                           
-                          ui[key][name]                 = $.checkbox(nopt);
+                          ui[key][name]                 = $.chkbox(root,`#${name}`,null);
                           
                     });
                     
@@ -470,10 +407,75 @@
 
 
   //:
+  
+  
+        preset.enabled    = false;
+        
+        function preset(){
+
+              if(!preset.enabled){
+                    return;
+              }
+                
+              var today       = new Date();
+              var one_year    = new Date();
+              one_year.setFullYear(one_year.getFullYear()+1);
+              
+              var config      = {};
+              
+              config.ca       = false;
+              config.pathlen  = 0;  
+
+              config.keyUsage   = {
+                    dataEncipherment    : true,
+                    digitalSignature    : true,
+                    keyCertSign         : true,
+                    keyEncipherment     : true,
+                    nonRepudiation      : true
+              };
+                
+              config.extKeyUsage    = {
+                    clientAuth          : true,
+                    codeSigning         : true,
+                    emailProtection     : true,
+                    serverAuth          : true,
+                    timeStamping        : true
+              };
+              
+              config.nsCertType   = {
+                    client              : true,
+                    email               : true,
+                    emailCA             : true,
+                    objCA               : true,
+                    objSign             : true,
+                    server              : true,
+                    sslCA               : true
+              };
+
+              config.from     = today;
+              config.to       = one_year;
+              
+              config.dns      = ['localhost'];
+              config.ip       = ['127.0.0.1','127.0.0.2'];
+              
+              config.rdn      = {};
+              
+              config.rdn.cn   = 'localhost test certificate';
+              config.rdn.o    = 'Test';
+              config.rdn.ou   = 'test';
+              config.rdn.l    = 'Blacksburg';
+              config.rdn.st   = 'Virginia';
+              config.rdn.c    = 'US';
+
+                    
+              generate_certificate(config);
+                    
+        }//preset
+
+  
+  //:
         
 
-        $.is    = {};
-        
         function $(root,sel){
           
               if(!sel){
@@ -487,8 +489,84 @@
               return node;
               
         }//$
+
+
+        $.is    = {};
         
         
+        $.chkbox=function(root,sel,callback){
+        
+              if(callback===undefined){
+                    callback    = sel;
+                    sel         = root;
+                    root        = document;
+              }
+              
+              var node        = $(root,sel);
+              var chkbox      = $(node,'[type=checkbox]');
+              node.onclick    = click;
+              var checked     = chkbox.checked;
+              
+              var chk   = {read,set,id:node.id,checked};
+              return chk;
+              
+              
+              function click(e){
+              
+                    if(e.target!==chkbox){
+                          chkbox.checked    = !chkbox.checked;
+                    }
+                    chk.checked   = chkbox.checked;
+                    
+                    if(typeof callback=='function'){
+                          callback(chk);
+                    }
+                    
+              }//click
+              
+              function read(){return chkbox.checked}
+              function set(v=true){chkbox.checked=v}
+              
+        }//chkbox
+        
+        
+        $.chkbox.group=function(root,sel0){
+        
+              var list    = [];
+              var n       = arguments.length;
+              for(var i=1;i<n;i++){
+              
+                    var sel     = arguments[i];
+                    var chk     = $.chkbox(root,sel,chk=>set(chk.id));
+                    list.push(chk);
+                    
+              }//for
+              
+              
+              function read(){
+              
+                    var n   = list.length;
+                    for(var i=0;i<n;i++){
+                    
+                          var chk   = list[i];
+                          if(chk.read()){
+                                return chk;
+                          }
+                          
+                    }//for
+                    
+              }//read
+              
+              function set(id){list.forEach(chk=>chk.id==id ? chk.set() : chk.set(false))}
+              set.index=function(index){set(list[index].id)}
+              
+              
+              var group   = {read,set};
+              return group;
+              
+        }//group
+        
+                
         $.is.node   = function(v){
           
               if(Object(v)!==v){
@@ -499,27 +577,6 @@
               }
               
         }//is.node
-
-
-        $.checkbox    = function(root,id){
-              
-              root            = $.apply(null,arguments);
-              var chk         = $(root,'[type=checkbox]');
-              root.onclick    = click;
-              return chk;
-
-              
-              function click(e){
-                
-                    if(e.target===chk){
-                          return;
-                    }
-                    chk.checked   = !chk.checked;
-                    
-              }//onclick
-          
-        }//checkbox
-        
 
 
         function localhost(){
@@ -568,9 +625,53 @@
         }//date
 
         
+        function show(name){
+          
+              if(name==='config'){
+                    $('#tab-config').classList.remove('inactive');
+                    $('#tab-config').classList.add('active');
+                    $('#config').style.display    = '';
+                    $('#tab-cert').classList.remove('active');
+                    $('#tab-cert').classList.add('inactive');
+                    $('#cert').style.display      = 'none';
+              }else{
+                    $('#tab-config').classList.remove('active');
+                    $('#tab-config').classList.add('inactive');
+                    $('#config').style.display    = 'none';
+                    $('#tab-cert').classList.remove('inactive');
+                    $('#tab-cert').classList.add('active');
+                    $('#cert').style.display      = '';
+              }
+              
+        }//show
+
+        
+        function download(filename,txt){
+          
+              var blob      = new Blob([txt]);
+              var a         = document.createElement('a');
+              a.download    = filename;
+              a.href        = window.URL.createObjectURL(blob);
+              a.click();
+              
+        }//download
+
+
+        function copy(text,textarea){
+          
+              navigator.clipboard.writeText(text);
+          
+        }//copy
+
+
+  //:
+
+
         function read(){
           
               var config          = {};
+              
+              config.key          = ui.key.read().id;
               
               var bits            = Number(ui.bits.value);
               if(isNaN(bits)){
@@ -614,61 +715,15 @@
 
               
               $('#spinner').style.display   = ''; 
-              console.json(config);
-              return;
+                                                                                console.json(config);
+                                                                                //return;
               certificate(config);
               
         }//read
 
-
-
-
-
-        
-        function show(name){
-          
-              if(name==='config'){
-                    $('#tab-config').classList.remove('inactive');
-                    $('#tab-config').classList.add('active');
-                    $('#config').style.display    = '';
-                    $('#tab-cert').classList.remove('active');
-                    $('#tab-cert').classList.add('inactive');
-                    $('#cert').style.display      = 'none';
-              }else{
-                    $('#tab-config').classList.remove('active');
-                    $('#tab-config').classList.add('inactive');
-                    $('#config').style.display    = 'none';
-                    $('#tab-cert').classList.remove('inactive');
-                    $('#tab-cert').classList.add('active');
-                    $('#cert').style.display      = '';
-              }
-              
-        }//show
-
-        
-        function download(filename,txt){
-          
-              var blob      = new Blob([txt]);
-              var a         = document.createElement('a');
-              a.download    = filename;
-              a.href        = window.URL.createObjectURL(blob);
-              a.click();
-              
-        }//download
-
-
-        function copy(text,textarea){
-          
-              navigator.clipboard.writeText(text);
-          
-        }//copy
-
-
-  //:
-  
   
         function certificate(config){
-                                                                                console.json(config);
+                                                                                //console.json(config);
               var keys                  = pki.rsa.generateKeyPair(2048);
               var cert                  = pki.createCertificate();
               
