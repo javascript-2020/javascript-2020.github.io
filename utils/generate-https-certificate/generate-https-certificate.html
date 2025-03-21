@@ -322,9 +322,21 @@
   
   
         async function load(){
-          
-              var nodeForge   = await import('https://cdn.jsdelivr.net/npm/node-forge/+esm');
-              pki             = nodeForge.default.pki;
+
+              //var nodeForge   = await import('https://cdn.jsdelivr.net/npm/node-forge/+esm');
+
+              
+              var txt         = localStorage['node-forge'];
+              if(!txt){
+                    var res   = await fetch('https://cdn.jsdelivr.net/npm/node-forge/+esm');
+                    txt       = await res.text();
+                    localStorage['node-forge']    = txt;
+              }
+              
+              var blob        = new Blob([txt],{type:'text/javascript'});
+              var url         = window.URL.createObjectURL(blob);
+              var nodeforge   = await import(url);
+              pki             = nodeforge.default.pki;
               
         }//load
           
@@ -847,8 +859,8 @@
               $('#x509-copy').onclick         = e=>copy(cert,$('#x509'));
               $('#x509-download').onclick     = e=>download('cert.pem',cert);
               
-              $('#key').textContent           = key
-              $('#x509').textContent          = cert;
+              $('#cert #key').textContent     = key
+              $('#cert #x509').textContent    = cert;
                             
         }//generate_certificate
 
