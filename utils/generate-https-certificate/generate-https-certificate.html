@@ -15,46 +15,64 @@
     html {height:100%}
     body {height:calc(100% - 42px);margin:20px}
 
-    .hdr                {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
-                          padding-bottom:10px;border-bottom:3px solid lightblue}
-    .hdr-icon           {display:inline-block;text-align:center;background:whitesmoke;border-radius:5px;
-                          border:1px solid lightgray;padding:5px 3px 0px;cursor:pointer;margin-right:10px;
-                          min-width:50px}
-    .hdr-icon-img       {width:25px;height:25px}
-    .hdr-icon-label     {margin:2px 0 0}
-    .hdr-title          {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
-    .hdr-date           {float:right}
+    .hdr                  {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
+                            padding-bottom:10px;border-bottom:3px solid lightblue}
+    .hdr-icon             {display:inline-block;text-align:center;background:whitesmoke;border-radius:5px;
+                            border:1px solid lightgray;padding:5px 3px 0px;cursor:pointer;margin-right:10px;
+                            min-width:50px}
+    .hdr-icon-img         {width:25px;height:25px}
+    .hdr-icon-label       {margin:2px 0 0}
+    .hdr-title            {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
+    .hdr-date             {float:right}
 
     
-    section {font-family:arial;width:100%;height:calc(100% - 20px);position:relative}
+    section               {font-family:arial;width:100%;height:calc(100% - 20px);position:relative}
     
-    input {box-sizing:border-box;font-size:16px;font-weight:bold;padding:5px 10px}
-    input[type=button] {cursor: pointer;}
+    input                 {box-sizing:border-box;font-size:16px;font-weight:bold;padding:5px 10px}
+    input[type=button]    {cursor: pointer;}
     
-    #tabs {display:flex;cursor:pointer;margin-bottom:10px;text-align:center}
-    .tab {padding:5px 0;flex:1}
-    .active {background:lightyellow;border:1px solid lightblue}
-    .inactive {background:lightgray;border:1px solid dimgray}
+    #tabs                 {display:flex;cursor:pointer;margin-bottom:10px;text-align:center}
+    .tab                  {padding:5px 0;flex:1}
+    .active               {background:lightyellow;border:1px solid lightblue}
+    .inactive             {background:lightgray;border:1px solid dimgray}
     
-    #config {}
-    #config-btns input {margin-right:20px}
+    #config               
+                          {}
+    #config-btns input    
+                          {margin-right:20px}
     
-    .sub {height:25px;margin:20px auto 10px;background-color:whitesmoke;padding:5px 10px;}
-    .sub input{margin-left:20px;}
-    
-    .opt  {border:1px solid lightgray;padding:1px 5px;display:inline-flex;align-items:center;gap:10px;cursor:pointer}
-    
-    #cacert {}
-    #rdns {display:grid;grid-template-columns:auto 1fr;gap:5px 20px;}
-    #rdns div:nth-of-type(odd) {white-space:nowrap;overflow:hidden;max-width:200px;}
-    #rdns input {width:100%;box-sizing:border-box;}
+    .sub                  
+                          {height:25px;margin:20px auto 10px;background-color:whitesmoke;padding:5px 10px;}
+    .sub input            
+                          {margin-left:20px;}
+    .opt-root             
+                          {display:grid;grid-template-columns:1fr 1fr;gap:5px 20px}
+    .opt                  
+                          {border:1px solid lightgray;padding:1px 5px;display:inline-flex;align-items:center;gap:10px;cursor:pointer}
+    .opt .spc             
+                          {flex:1}                          
+    #cacert               
+                          {}
+    .ext
+                          {}
+    #rdns                 
+                          {display:grid;grid-template-columns:auto 1fr;gap:5px 20px;}
+    #rdns div:nth-of-type(odd) 
+                          {white-space:nowrap;overflow:hidden;max-width:200px;}
+    #rdns input           
+                          {width:100%;box-sizing:border-box;}
       
-    .item {display:flex;align-items:center;}
-    .rem {margin-right:10px;color:red;}
-    .item div:nth-of-type(2) {flex:1;}
-    .value {width:100%}
+    .item                 
+                          {display:flex;align-items:center;}
+    .rem                  
+                          {margin-right:10px;color:red;}
+    .item div:nth-of-type(2)
+                          {flex:1;}
+    .value                
+                          {width:100%}
     
-    #dates {display:grid;grid-template-columns:100px auto;gap:5px 20px;}
+    #dates                
+                          {display:grid;grid-template-columns:100px auto;gap:5px 20px;}
     
     #cert {padding:0px 10px;}
     
@@ -118,10 +136,12 @@
                         <div class=sub>signing key</div>
                         <span id=self class=opt>
                               <span>self-signed</span>
+                              <span class=spc></span>
                               <input type=checkbox checked>
                         </span>
                         <span id=private-key class=opt>
                               <span>private key</span>
+                              <span class=spc></span>
                               <input type=checkbox>
                         </span>
                   
@@ -132,6 +152,7 @@
                         <div class=sub>constraints</div>
                         <span id=cacert class=opt>
                               <span>ca cert</span>
+                              <span class=spc></span>
                               <input type=checkbox>
                         </span>
                         
@@ -142,10 +163,13 @@
                         <div class=ext>
                         
                               <div class=sub>name</div>
-                              <span class=opt>
-                                    <span class=name></span>
-                                    <input type=checkbox>
-                              </span>
+                              <div class=opt-root>
+                                    <span class=opt>
+                                          <span class=name></span>
+                                          <span class=spc></span>
+                                          <input type=checkbox>
+                                    </span>
+                              </div>
                               
                         </div>
                         
@@ -223,6 +247,9 @@
         
         var ext         = {};
         ext.keyUsage    = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
+        
+        var list;
+        var item;
         
         
   //:
@@ -316,7 +343,8 @@
                     var next                      = node.ext.cloneNode(true);
                     next.id                       = key;
                     $(next,'.sub').textContent    = key;
-                    
+                    var root                      = $(next,'.opt-root');
+                    ext[key].sort();
                     ext[key].forEach(name=>{
                       
                           var nopt                      = node.opt.cloneNode(true);
@@ -324,7 +352,7 @@
                           var chk                       = $(nopt,'[type=checkbox]')
                           chk.id                        = name;
                           chk.checked                   = true;
-                          next.append(nopt);
+                          root.append(nopt);
                           
                     });
                     
@@ -333,10 +361,10 @@
               }//for
               
               
-              var list                                                    = {};
+              list                                                        = {};
               list.dns                                                    = $('#dns-list');
               list.ip                                                     = $('#ip-list');
-              var item                                                    = {};
+              item                                                    = {};
               item.dns                                                    = $(list.dns,'.item');
               item.ip                                                     = $(list.ip,'.item');
               
