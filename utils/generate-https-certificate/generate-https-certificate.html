@@ -114,6 +114,7 @@
                   <div id=config-btns><input type=button value=clear><input type=button value=localhost><input type=button value='generate certificate'></div>
                   
                   <div id=signing-key>
+                  
                         <div class=sub>signing key</div>
                         <span id=self class=opt>
                               <span>self-signed</span>
@@ -123,19 +124,35 @@
                               <span>private key</span>
                               <input type=checkbox>
                         </span>
-                  </div>
                   
                   </div signing-key>
                   
                   <div id=constraints>
+                  
                         <div class=sub>constraints</div>
                         <span id=cacert class=opt>
                               <span>ca cert</span>
                               <input type=checkbox>
                         </span>
+                        
+                  </div>
+                  
+                  <div id=ext-root>
+                  
+                        <div id=ext>
+                        
+                              <div class=sub>name</div>
+                              <span class=opt>
+                                    <span class=name></span>
+                                    <input type=checkbox>
+                              </span>
+                              
+                        </div>
+                        
                   </div>
                   
                   <div id=rdns-root>
+                  
                         <div class=sub>Relative Distinguished Names</div>
                         <div id=rdns>
                               <div>CommonName (CN) </div><div><input id=cn></div>
@@ -145,31 +162,39 @@
                               <div>StateOrProvince (ST) </div><div><input id=st></div>
                               <div>CountryName (C) </div><div><input id=c></div>
                         </div>
-                  </div>
+                        
+                  </div rdns-root>
                   
                   <div id=dns-root>
+                  
                         <div class=sub>dns names (example.com) <input type=button value=add></div>
                         <div id=dns-list>
                               <div class=item><input type=button value=x class=rem><div><input id=dns class=value></div></div>
                         </div>
-                  </div>
+                        
+                  </div dns-root>
                   
                   <div id=ip-root>
+                  
                         <div class=sub>ips (127.0.0.1) <input type=button value=add></div>
                         <div id=ip-list>
                               <div class=item><input type=button value=x class=rem><div><input id=ip class=value></div></div>
                         </div>
-                  </div>
+                        
+                  </div ip-root>
                   
                   <div id=dates-root>
+                  
                         <div class=sub>dates</div>
                         <div id=dates>
                               <div>from</div><input id=from type=datetime-local>
                               <div>to</div><input id=to type=datetime-local>
                         </div>
-                  </div>
+                        
+                  </div dates-root>
                   
             </div config>
+
               
             <div id=cert style='display:none'>
             
@@ -195,14 +220,19 @@
         var pki;
         
         
+        var ext         = {};
+        ext.keyUsage    = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
+        
+        
   //:
   
   
         window.onload   = init;
         
-        function init(){
+        async function init(){
           
               await load();
+              initdom();
               
         }//init
 
@@ -218,128 +248,9 @@
         }//load
           
 
-
-        
-        function certificate(config){
-          
-              var keys                  = pki.rsa.generateKeyPair(2048);
-              var cert                  = pki.createCertificate();
-              
-              cert.publicKey            = keys.publicKey;
-              
-              cert.serialNumber         = '01';
-              cert.validity.notBefore   = config.from;
-              cert.validity.notAfter    = config.to;
-              
-              var attrs   = [];
-              rdns.forEach(name=>{
-                
-                    if(config.rdn[name]){
-                          var shortName   = name.toUpperCase();
-                          var value       = config.rdn[name];
-                          attrs.push({shortName,value});
-                    }
-                          
-              });
-
-              cert.setSubject(attrs);
-              cert.setIssuer(attrs);
-              var ext   = [
-                    {
-                          name                : 'basicConstraints',
-                          cA                  : config.ca,
-                          pathLen             : config.pathlen,
-                    },
-                    {
-                          name                : 'keyUsage',
-                          keyCertSign         : true,
-                          digitalSignature    : true,
-                          nonRepudiation      : true,
-                          keyEncipherment     : true,
-                          dataEncipherment    : true
-                    },
-                    {
-                          name                : 'extKeyUsage',
-                          serverAuth          : true,
-                          clientAuth          : true,
-                          codeSigning         : true,
-                          emailProtection     : true,
-                          timeStamping        : true
-                    },
-                    {
-                          name                : 'nsCertType',
-                          client              : true,
-                          server              : true,
-                          email               : true,
-                          objsign             : true,
-                          sslCA               : true,
-                          emailCA             : true,
-                          objCA               : true
-                    },
-                    {
-                          name                : 'subjectAltName',
-                          altNames            : [config.dns.map(dns=>{return {type:2,value:dns}}),config.ip.map(ip=>{return {type:7,ip}})].flat()
-                    },
-                    {
-                          name                : 'subjectKeyIdentifier'
-                    }
-              ];
-              
-              if(config.ca){
-                    ext[0].pathLenConstraint  = config.pathlen;
-              }
-              
-              cert.setExtensions(ext);
-              cert.sign(keys.privateKey);
-              
-              var key           = pki.privateKeyToPem(keys.privateKey);
-              var cert          = pki.certificateToPem(cert);
-              var forge_cert    = pki.certificateFromPem(cert);
-
-
-
-              certificate.complete(key,cert,forge_cert);
-              
-              
-        }//certificate
-
-        
-        certificate.complete    = function(key,cert,forge_cert){
-          
-              
-              show('cert');
-              
-              $('#key-copy').onclick          = e=>copy(key,$('#key'));
-              $('#key-download').href         = window.URL.createObjectURL(new Blob([key]));
-              $('#key-download').download     = 'private-key.pem';
-              $('#key-download').onclick      = e=>{
-                                                    if(e.button==2)return;
-                                                    e.preventDefault();
-                                                    download('private-key.pem',key);
-                                              };
-              
-              $('#x509-copy').onclick         = e=>copy(cert,$('#x509'));
-              $('#x509-download').href        = window.URL.createObjectURL(new Blob([cert]));
-              $('#x509-download').download    ='server-cert.pem';
-              $('#x509-download').onclick     = e=>{
-                                                  if(e.button==2)return;
-                                                  e.preventDefault();
-                                                  download('server-cert.pem',cert);
-                                              };
-              
-              $('#key').value                 = key
-              $('#x509').value                = cert;
-                            
-        }//generate_certificate
-
-
-
-
-
-
-
-
-
+  //:
+  
+  
 
 
         var enabled   = false;
@@ -389,8 +300,39 @@
               $('#config-btns [value="generate certificate"]').onclick    = read;
               $('#config-btns [value=clear]').onclick                     = clear;
               $('#config-btns [value=localhost]').onclick                 = localhost;
+              
               var ca                                                      = chkbox('#cacert');
+
+              var node    = {};
+              node.root   = $('#ext-root');
+              node.ext    = $('.ext');
+              node.ext.remove();
+              node.opt    = $(node.ext,'.opt');
+              node.opt.remove();
+              
+              for(var key in ext){
+                
+                    var next                      = node.ext.cloneNode(true);
+                    next.id                       = key;
+                    $(next,'.sub').textContent    = key;
+                    
+                    ext[name].forEach(name=>{
+                      
+                          var nopt                      = node.opt.cloneNode(true);
+                          $(nopt,'.name').textContent   = name;
+                          var chk                       = $(nopt,'[type=checkbox]')
+                          chk.id                        = name;
+                          chk.checked                   = true;
+                          next.append(nopt);
+                          
+                    });
+                    
+                    node.root.append(next);
+                    
+              }//for
+              
               var rdns                                                    = ['cn','o','ou','l','st','c'];
+              
               var list                                                    = {};
               list.dns                                                    = $('#dns-list');
               list.ip                                                     = $('#ip-list');
@@ -411,11 +353,9 @@
         }//initdom
 
 
-
-
-
-
-
+  //:
+  
+        
 
         function localhost(){
           
@@ -474,17 +414,40 @@
         function read(){
           
               var config    = {};
+              
               config.ca     = ca.checked;
               config.pathlen  = 0;
+              
               config.rdn    = {};
               rdns.forEach(name=>config.rdn[name]=$('#'+name).value);
+              
               var arr       = type=>[...list[type].querySelectorAll('.item')].map(node=>$(node,'.value').value).filter(v=>v);
+              
               config.dns    = arr('dns');
+              
               config.ip     = arr('ip');
+              
               config.from   = new Date($('#from').value);
               config.to     = new Date($('#to').value);
+
               
-              generate_certificate(config);
+              for(var key in ext){
+                
+                    rd(key);
+                    
+              }//for
+              
+              
+              certificate(config);
+              
+              
+              function ext(name,names){
+                
+                    config[name]    = {};
+                    var root        = $(`#${name}`);
+                    names.forEach(name=>config.keyusage[name]=$(root,`#${name}`).checked);
+                    
+              }//ext
               
         }//read
 
@@ -548,7 +511,124 @@
           
         }//chkbox
 
+  //:
+  
+  
+        function certificate(config){
+          
+              var keys                  = pki.rsa.generateKeyPair(2048);
+              var cert                  = pki.createCertificate();
+              
+              cert.publicKey            = keys.publicKey;
+              
+              cert.serialNumber         = '01';
+              cert.validity.notBefore   = config.from;
+              cert.validity.notAfter    = config.to;
+              
+              var attrs   = [];
+              rdns.forEach(name=>{
+                
+                    if(config.rdn[name]){
+                          var shortName   = name.toUpperCase();
+                          var value       = config.rdn[name];
+                          attrs.push({shortName,value});
+                    }
+                          
+              });
 
+              cert.setSubject(attrs);
+              cert.setIssuer(attrs);
+              
+              var ext   = [
+                    {
+                          name                : 'basicConstraints',
+                          cA                  : config.ca,
+                          pathLen             : config.pathlen,
+                    },
+                    {
+                          name                : 'keyUsage',
+                          keyCertSign         : true,
+                          digitalSignature    : true,
+                          nonRepudiation      : true,
+                          keyEncipherment     : true,
+                          dataEncipherment    : true
+                    },
+                    {
+                          name                : 'extKeyUsage',
+                          serverAuth          : true,
+                          clientAuth          : true,
+                          codeSigning         : true,
+                          emailProtection     : true,
+                          timeStamping        : true
+                    },
+                    {
+                          name                : 'nsCertType',
+                          client              : true,
+                          server              : true,
+                          email               : true,
+                          objsign             : true,
+                          sslCA               : true,
+                          emailCA             : true,
+                          objCA               : true
+                    },
+                    {
+                          name                : 'subjectAltName',
+                          altNames            : [config.dns.map(dns=>{return {type:2,value:dns}}),config.ip.map(ip=>{return {type:7,ip}})].flat()
+                    },
+                    {
+                          name                : 'subjectKeyIdentifier'
+                    }
+              ];
+              
+              if(config.ca){
+                    ext[0].pathLenConstraint  = config.pathlen;
+              }
+              
+              cert.setExtensions(ext);
+              cert.sign(keys.privateKey);
+              
+              var key           = pki.privateKeyToPem(keys.privateKey);
+              var cert          = pki.certificateToPem(cert);
+              var forge_cert    = pki.certificateFromPem(cert);
+
+
+
+              certificate.complete(key,cert,forge_cert);
+              
+              
+        }//certificate
+
+        
+        certificate.complete    = function(key,cert,forge_cert){
+                        
+              show('cert');
+              
+              $('#key-copy').onclick          = e=>copy(key,$('#key'));
+              $('#key-download').href         = window.URL.createObjectURL(new Blob([key]));
+              $('#key-download').download     = 'private-key.pem';
+              $('#key-download').onclick      = e=>{
+                                                    if(e.button==2)return;
+                                                    e.preventDefault();
+                                                    download('private-key.pem',key);
+                                              };
+              
+              $('#x509-copy').onclick         = e=>copy(cert,$('#x509'));
+              $('#x509-download').href        = window.URL.createObjectURL(new Blob([cert]));
+              $('#x509-download').download    ='server-cert.pem';
+              $('#x509-download').onclick     = e=>{
+                                                  if(e.button==2)return;
+                                                  e.preventDefault();
+                                                  download('server-cert.pem',cert);
+                                              };
+              
+              $('#key').value                 = key
+              $('#x509').value                = cert;
+                            
+        }//generate_certificate
+
+
+
+  
         
         </script>
 
