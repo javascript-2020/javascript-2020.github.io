@@ -90,17 +90,8 @@
                           {}
     #cert .label
                           {width:200px;display:inline-block;text-align:right;margin-right:20px}
-    #cert input 
-                          {}
-    #cert-body 
-                          {}
-    #cert-body
-                          {}
     pre
-                          {padding:10px;border:1px solid lightgray}
-    
-    a                     {border-width:2px;border-style:inset;border-color:dimgray;background:buttonface;font-weight:bold;font-size:12px;
-                            border-radius:3px;padding:5px 10px}
+                          {padding:10px;border:1px solid lightgray;display:inline-block}
 
         </style>
         
@@ -242,20 +233,18 @@
             
                   <div>
                         <span class=label>private key (pem)</span>
-                        <input id=key-copy type=button value='copy to clipboard'>
-                        <a id=key-download>download, right-click : save link as</a>
+                        <input id=key-copy type=button value=copy>
+                        <input id=key-download type=button value=download>
                   </div>
                   
                   <div>
                         <span class=label>x509 cert (pem)</span>
-                        <input id=x509-copy type=button value='copy to clipboard'>
-                        <a id=x509-download>download, right-click : save link as</a>
+                        <input id=x509-copy type=button value=copy>
+                        <input id=x509-download type=button value=download>
                   </div>
                   
-                  <div id=cert-body>
-                        <pre id=key></pre>
-                        <pre id=x509></pre>
-                  </div>
+                  <pre id=key></pre>
+                  <pre id=x509></pre>
                   
             </div cert>
                     
@@ -610,7 +599,7 @@
         function download(filename,txt){
           
               var blob      = new Blob([txt]);
-              var a         = $('a');
+              var a         = document.createElement('a');
               a.download    = filename;
               a.href        = window.URL.createObjectURL(blob);
               a.click();
@@ -747,22 +736,10 @@
               show('cert');
               
               $('#key-copy').onclick          = e=>copy(key,$('#key'));
-              $('#key-download').href         = window.URL.createObjectURL(new Blob([key]));
-              $('#key-download').download     = 'private-key.pem';
-              $('#key-download').onclick      = e=>{
-                                                    if(e.button==2)return;
-                                                    e.preventDefault();
-                                                    download('private-key.pem',key);
-                                              };
+              $('#key-download').onclick      = e=>download('private-key.pem',key);
               
               $('#x509-copy').onclick         = e=>copy(cert,$('#x509'));
-              $('#x509-download').href        = window.URL.createObjectURL(new Blob([cert]));
-              $('#x509-download').download    ='server-cert.pem';
-              $('#x509-download').onclick     = e=>{
-                                                  if(e.button==2)return;
-                                                  e.preventDefault();
-                                                  download('server-cert.pem',cert);
-                                              };
+              $('#x509-download').onclick     = e=>download('server-cert.pem',cert);
               
               $('#key').textContent           = key
               $('#x509').textContent          = cert;
