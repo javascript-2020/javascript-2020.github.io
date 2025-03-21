@@ -31,12 +31,15 @@
                           {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
     .hdr-date
                           {float:right}
+                          
+                          
     section               
                           {font-family:arial;width:100%;height:calc(100% - 20px);position:relative}
     input                 
                           {box-sizing:border-box;font-size:16px;font-weight:bold;padding:5px 10px}
     input[type=button]    
                           {cursor: pointer}
+                          
     
     #tabs                 
                           {display:flex;cursor:pointer;margin-bottom:10px;text-align:center}
@@ -81,18 +84,20 @@
                           {width:100%}
     #dates                
                           {display:grid;grid-template-columns:100px auto;gap:5px 20px}
+    
+    
     #cert
-                          {padding:0px 10px}
-    #cert > div 
-                          {margin-bottom:10px}
+                          {}
+    #cert .label
+                          {width:200px;display:inline-block;text-align:right;margin-right:20px}
     #cert input 
-                          {margin:auto 10px}
+                          {}
     #cert-body 
                           {}
     #cert-body
-                          {display:flex}
-    textarea
-                          {flex:1}
+                          {}
+    pre
+                          {padding:10px;border:1px solid lightgray}
     
     a                     {border-width:2px;border-style:inset;border-color:dimgray;background:buttonface;font-weight:bold;font-size:12px;
                             border-radius:3px;padding:5px 10px}
@@ -134,7 +139,11 @@
               
             <div id=config>
               
-                  <div id=config-btns><input type=button value=clear><input type=button value=localhost><input type=button value='generate certificate'></div>
+                  <div id=config-btns>
+                        <input type=button value=clear>
+                        <input type=button value=localhost>
+                        <input type=button value='generate certificate'>
+                  </div>
                   
                   <div id=signing-key>
                   
@@ -231,11 +240,21 @@
               
             <div id=cert style='display:none'>
             
-                  <div>private key (pem) <input id=key-copy type=button value='copy to clipboard'><a id=key-download>download, right-click : save link as</a></div>
-                  <div>x509 cert (pem) <input id=x509-copy type=button value='copy to clipboard'><a id=x509-download>download, right-click : save link as</a></div>
+                  <div>
+                        <span class=label>private key (pem)</span>
+                        <input id=key-copy type=button value='copy to clipboard'>
+                        <a id=key-download>download, right-click : save link as</a>
+                  </div>
+                  
+                  <div>
+                        <span class=label>x509 cert (pem)</span>
+                        <input id=x509-copy type=button value='copy to clipboard'>
+                        <a id=x509-download>download, right-click : save link as</a>
+                  </div>
+                  
                   <div id=cert-body>
-                        <textarea id=key></textarea>
-                        <textarea id=x509></textarea>
+                        <pre id=key></pre>
+                        <pre id=x509></pre>
                   </div>
                   
             </div cert>
@@ -745,8 +764,8 @@
                                                   download('server-cert.pem',cert);
                                               };
               
-              $('#key').value                 = key
-              $('#x509').value                = cert;
+              $('#key').textContent           = key
+              $('#x509').textContent          = cert;
                             
         }//generate_certificate
 
