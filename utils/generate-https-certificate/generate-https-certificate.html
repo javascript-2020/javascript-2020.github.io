@@ -139,7 +139,7 @@
                   
                   <div id=ext-root>
                   
-                        <div id=ext>
+                        <div class=ext>
                         
                               <div class=sub>name</div>
                               <span class=opt>
@@ -219,6 +219,7 @@
 
         var pki;
         
+        var rdns        = ['cn','o','ou','l','st','c'];
         
         var ext         = {};
         ext.keyUsage    = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
@@ -316,7 +317,7 @@
                     next.id                       = key;
                     $(next,'.sub').textContent    = key;
                     
-                    ext[name].forEach(name=>{
+                    ext[key].forEach(name=>{
                       
                           var nopt                      = node.opt.cloneNode(true);
                           $(nopt,'.name').textContent   = name;
@@ -331,7 +332,6 @@
                     
               }//for
               
-              var rdns                                                    = ['cn','o','ou','l','st','c'];
               
               var list                                                    = {};
               list.dns                                                    = $('#dns-list');
