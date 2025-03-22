@@ -302,6 +302,8 @@
         var ui            = {};
         ui.node           = {};
         
+        var private_key;
+        
         var ext           = {};
         ext.keyUsage      = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
         ext.extKeyUsage   = ['serverAuth','clientAuth','codeSigning','emailProtection','timeStamping'];
@@ -449,7 +451,7 @@
                     
                     ui.node.keyfile.textContent   = file.name;
                     
-                    var private_key   = txt;
+                    private_key   = txt;
                 
               }//onchange
               
@@ -775,10 +777,16 @@
         function certificate(config){
                                                                                 //console.json(config);
               var keys                  = pki.rsa.generateKeyPair(2048);
+              
               var cert                  = pki.createCertificate();
               
               cert.publicKey            = keys.publicKey;
-              var signing_key           = key.privateKey;
+              
+              var signing_key           = keys.privateKey;
+              if(config.key=='key'){
+                    signing_key   = pki.privateKeyFromPem(private_key);
+              }
+
               
               cert.serialNumber         = '01';
               cert.validity.notBefore   = config.from;
