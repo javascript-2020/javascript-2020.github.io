@@ -158,10 +158,14 @@
                                     <span class=spc></span>
                                     <input type=checkbox checked>
                               </span>
-                              <span id=key class=opt>
-                                    <span>private key</span>
-                                    <span class=spc></span>
-                                    <input type=checkbox>
+                              <span id=key class=opt style='display:inline'>
+                                    <div style='display:flex'>
+                                          <span>private key</span>
+                                          <span class=spc></span>
+                                          <input type=checkbox>
+                                    </div>
+                                    <div id=key-file>
+                                    </div>
                               </span>
                         </div>
                   
@@ -296,6 +300,8 @@
         var rdns          = ['cn','o','ou','l','st','c'];
         
         var ui            = {};
+        ui.node           = {};
+        
         var ext           = {};
         ext.keyUsage      = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
         ext.extKeyUsage   = ['serverAuth','clientAuth','codeSigning','emailProtection','timeStamping'];
@@ -303,6 +309,10 @@
         
         var list;
         var item;
+        
+        
+        
+        var btn   = {};
         
         
   //:
@@ -338,7 +348,7 @@
               var url         = window.URL.createObjectURL(blob);
               var nodeforge   = await import(url);
               pki             = nodeforge.default.pki;
-              
+                                                                                console.log(pki);
         }//load
           
 
@@ -357,7 +367,9 @@
               
               var root                        = $('#signing-key .opt-root');
               ui.key                          = $.chkbox.group(root,'#self','#key');
-              
+              ui.node.keyfile                 = $(root,'#key-file');
+              $(root,'#key').onclick          = btn.key;
+                                                
               ui.bits                         = $('#bits');
               
               ca                              = $.chkbox('#cacert');
@@ -419,6 +431,31 @@
         }//initdom
 
 
+  //:
+  
+  
+        btn.key   = function(){
+                                                
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              
+              function onchange(){
+                
+                    var file    = input.files[0];
+                    var txt     = await file.text();
+                    
+                    ui.node.keyfile.textContent   = file.name;
+                    
+                    var private_key   = txt;
+                
+              }//onchange
+              
+        }//key
+
+        
   //:
   
   
@@ -741,6 +778,7 @@
               var cert                  = pki.createCertificate();
               
               cert.publicKey            = keys.publicKey;
+              var signing_key           = key.privateKey;
               
               cert.serialNumber         = '01';
               cert.validity.notBefore   = config.from;
@@ -799,46 +837,13 @@
 
 
               cert.setExtensions(ext2);
-                      
-
-
-/*                                
-              
-                    {
-                          name                : 'keyUsage',
-                          keyCertSign         : true,
-                          digitalSignature    : true,
-                          nonRepudiation      : true,
-                          keyEncipherment     : true,
-                          dataEncipherment    : true
-                    },
-                    {
-                          name                : 'extKeyUsage',
-                          serverAuth          : true,
-                          clientAuth          : true,
-                          codeSigning         : true,
-                          emailProtection     : true,
-                          timeStamping        : true
-                    },
-                    {
-                          name                : 'nsCertType',
-                          client              : true,
-                          server              : true,
-                          email               : true,
-                          objsign             : true,
-                          sslCA               : true,
-                          emailCA             : true,
-                          objCA               : true
-                    }
-              ];
-*/
 
               
-              
-              cert.sign(keys.privateKey);
+              cert.sign(signing_key);
               
               var key           = pki.privateKeyToPem(keys.privateKey);
               var cert          = pki.certificateToPem(cert);
+              
               var forge_cert    = pki.certificateFromPem(cert);
 
 
