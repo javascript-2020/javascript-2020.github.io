@@ -15,7 +15,7 @@
     html
                           {height:100%}
     body
-                          {height:calc(100% - 42px);margin:20px}
+                          {height:calc(100% - 42px);margin:20px;display:flex;flex-direction:column}
     .hdr                  
                           {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
                             padding-bottom:10px;border-bottom:3px solid lightblue}
@@ -31,7 +31,12 @@
                           {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
     .hdr-date
                           {float:right}
+
+    input
+                          {padding:5px 10px;font-size:16px}
                           
+    #editor
+                          {flex:1}
                           
         </style>
         
@@ -56,14 +61,139 @@
             <!--
             <img class=hdr-title src='images/generate-https-certificate.png' style='height:80px;top:-15px'>
             -->
-            <h3>generate certificate chain</h3>
+            <h3 style=display:inline>generate certificate chain</h3>
             <div class=hdr-date>
                   25 Mar 2025
             </div>
         </div hdr>
 
    
-   
+        <div id=chain>
+              <input id=clear value=clear type=button>
+              <input id=add value=add type=button>
+        </div>
+        
+        <div id=editor>
+        </div>
+
+<script>
+                                                                                console.clear();
+                                                                                console.log('generate-certificate-chain');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var ace;
+        var editor;
+        
+        var chain;
+        
+        
+        window.onload   = init;
+        
+        async function init(){
+          
+                await load();
+                initdom();
+                
+        }//init
+        
+        
+        async function load(){
+
+              var res   = await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
+              var txt   = await res.text();
+              var ext   = eval(txt);
+              var [$,datatype,menumod,keydown]   = await ext.load.libs(
+                    'js/dom/$.js',
+                    'js/core/datatype.js',
+                    'js/dom/menumod/menumod.js',
+                    'js/dom/keydown/keydown.js'
+              );
+          
+              var txt   = localStorage['ace-editor'];
+              if(!txt){
+                
+                    var res   = await fetch('https://cdn.jsdelivr.net/npm/ace-builds/+esm');
+                    var txt   = await res.text();
+                    
+                    localStorage['ace-editor']    = txt;
+              }
+              var blob    = new Blob([txt],{type:'text/javascript'});
+              var url     = window.URL.createObjectURL(blob);
+
+              ace         = await import(url);
+              ace         = ace.default;
+                                                                                //console.log(ace);
+              
+        }//load
+        
+        
+        function initdom(){
+
+
+              var hdr                         = $('#chain');
+              
+              $(hdr,'#clear').onclick         = btn.clear;
+              $(hdr,'#add').onclick           = btn.add;
+
+              
+              $('#editor').replaceChildren();
+              editor    = ace.edit('editor');
+
+
+              
+        }//initdom
+        
+                
+        btn.clear   = function(){
+          
+              chain   = '';
+              editor.setValue('');
+              
+        }//clear
+        
+        
+        btn.add   = async function(){
+          
+              var txt   = await load.file();
+              
+              chain    += txt;
+              editor.setValue(chain,1);
+              
+        }//add
+        
+        
+        
+        load.file   = function(){
+          
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              return promise;
+              
+              
+              async function onchange(){
+                
+                    var txt   = await input.files[0].text();
+                    resolve(txt);
+                    
+              }//onchange
+              
+        }//load.file
+        
+        
+
+
+
+        
+        
+        
+        
+</script>
+
 
     </body>
     
