@@ -81,12 +81,21 @@
                                                                                 console.log('generate-certificate-chain');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+        var ext;
+        var $,datatype,menumod,keydown;
+                                                                                
         var ace;
         var editor;
         
         var chain;
         
         
+        var btn   = {};
+        
+
+  //
+  
+  
         window.onload   = init;
         
         async function init(){
@@ -101,8 +110,8 @@
 
               var res   = await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
               var txt   = await res.text();
-              var ext   = eval(txt);
-              var [$,datatype,menumod,keydown]   = await ext.load.libs(
+              ext   = eval(txt);
+              [$,datatype,menumod,keydown]   = await ext.load.libs(
                     'js/dom/$.js',
                     'js/core/datatype.js',
                     'js/dom/menumod/menumod.js',
