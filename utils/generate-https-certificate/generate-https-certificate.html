@@ -70,7 +70,7 @@
     .opt .spc             
                           {flex:1}                          
     #key-file
-                          {background:lightyellow;padding:5px}
+                          {background:lightyellow;padding:5px;display:none}
     #bits 
                           {width:80px;text-align:center}
     #cacert               
@@ -441,7 +441,8 @@
   
         btn.self    = function(){
           
-                ui.node.keyfile.textContent   = '';
+              ui.node.style.display         = '';
+              ui.node.keyfile.textContent   = '';
                 
         }//self
         
@@ -459,6 +460,7 @@
                     var file    = input.files[0];
                     var txt     = await file.text();
                     
+                    ui.node.style.display         = 'block';
                     ui.node.keyfile.textContent   = file.name;
                     
                     private_key   = txt;
