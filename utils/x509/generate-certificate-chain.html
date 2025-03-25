@@ -75,7 +75,7 @@
               <input id=save value=save type=button>
         </div>
         
-        <div id=editor>
+        <div id=view>
         </div>
 
 <script>
@@ -86,8 +86,7 @@
         var ext;
         var $,datatype,menumod,keydown;
                                                                                 
-        var ace;
-        var editor;
+        var view
         
         var chain   = '';
         
@@ -120,21 +119,6 @@
                     'js/dom/keydown/keydown.js'
               );
           
-              var txt   = localStorage['ace-editor'];
-              if(!txt){
-                
-                    var res   = await fetch('https://cdn.jsdelivr.net/npm/ace-builds/+esm');
-                    var txt   = await res.text();
-                    
-                    localStorage['ace-editor']    = txt;
-              }
-              var blob    = new Blob([txt],{type:'text/javascript'});
-              var url     = window.URL.createObjectURL(blob);
-
-              ace         = await import(url);
-              ace         = ace.default;
-                                                                                //console.log(ace);
-              
         }//load
         
         
@@ -148,28 +132,26 @@
               $(hdr,'#save').onclick          = btn.save;
 
               
-              $('#editor').replaceChildren();
-              editor    = ace.edit('editor');
-
-
+              view                            = $('#view')
+              view.replaceChildren();
+              
               
         }//initdom
         
                 
         btn.clear   = function(){
           
-              chain   = '';
-              editor.setValue('');
+              chain               = '';
+              view.textContent    = chain;
               
         }//clear
         
         
         btn.add   = async function(){
           
-              var txt   = await load.file();
-              
-              chain    += txt;
-              editor.setValue(chain,1);
+              var txt             = await load.file();
+              chain              += txt;
+              view.textContent    = chain;
               
         }//add
         
@@ -209,7 +191,6 @@
         }//load.file
         
         
-
 
 
         
