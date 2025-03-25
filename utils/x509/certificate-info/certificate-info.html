@@ -76,9 +76,16 @@
                                                                                 console.log('certificate-info');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+        var ext;
+        var $,datatype,menumod,keydown;
+
+
         var btn   = {};
         
-        
+
+  //
+  
+  
         window.onload   = init;
         
         async function init(){
@@ -96,9 +103,9 @@
         function initdom(){
           
           
-              var btns                    = $('#btns');
+              var btns                              = $('#btns');
               
-              $(btns,'#load').onclick     = btn.load;
+              $(btns,'[value=load]').onclick        = btn.load;
               
               
               
@@ -134,12 +141,12 @@
 
         async function load(){
 
-              await Promise.all(load.ext(),load.nodeforge());
+              await Promise.all([load.ext(),load.nodeforge()]);
               
         }//load
         
         
-        load.ext    = function(){
+        load.ext    = async function(){
           
               var res   = await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
               var txt   = await res.text();
@@ -154,7 +161,7 @@
         }//ext
         
         
-        load.nodeforge    = function(){
+        load.nodeforge    = async function(){
           
               var txt         = localStorage['node-forge'];
               if(!txt){
@@ -164,6 +171,7 @@
                     txt       = await res.text();
                     localStorage['node-forge']    = txt;
               }
+              
               var blob        = new Blob([txt],{type:'text/javascript'});
               var url         = window.URL.createObjectURL(blob);
               var nodeforge   = await import(url);
