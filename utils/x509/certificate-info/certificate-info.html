@@ -81,11 +81,14 @@
         
         window.onload   = init;
         
-        function init(){
+        async function init(){
           
-              await nodeforge();
+              await load();
+              
+              
               initdom();              
               
+
               
         }//init
 
@@ -102,9 +105,9 @@
         }//initdom
 
 
-        btn.load    = function(){
+        btn.load    = async function(){
           
-              var cert    = await load();
+              var cert    = await load.cert();
               display(cert);
               
         }//load
@@ -129,8 +132,29 @@
 
 
 
+        async function load(){
+
+              await Promise.all(load.ext(),load.nodeforge());
+              
+        }//load
         
-        async function nodeforge(){
+        
+        load.ext    = function(){
+          
+              var res   = await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
+              var txt   = await res.text();
+              ext   = eval(txt);
+              [$,datatype,menumod,keydown]   = await ext.load.libs(
+                    'js/dom/$.js',
+                    'js/core/datatype.js',
+                    'js/dom/menumod/menumod.js',
+                    'js/dom/keydown/keydown.js'
+              );
+              
+        }//ext
+        
+        
+        load.nodeforge    = function(){
           
               var txt         = localStorage['node-forge'];
               if(!txt){
@@ -142,14 +166,13 @@
               }
               var blob        = new Blob([txt],{type:'text/javascript'});
               var url         = window.URL.createObjectURL(blob);
-              nodeforge       = await import(url);
-              nodeforge       = nodeforge.default;
-              pki             = nodeforge.pki;
+              var nodeforge   = await import(url);
+              pki             = nodeforge.default.pki;
               
         }//nodeforge
-        
-        
-        function load(){
+
+                
+        load.cert   = function(import_cert){
         
               var resolve,promise=new Promise(res=>resolve=res);
               
@@ -163,12 +186,15 @@
               
               async function onchange(){
               
-                    var txt   = await input.files[0].text();
-                    resolve(txt);
+                    var cert    = await input.files[0].text();
+                    if(import_cert){
+                          cert    = nodeforge.pki.certificateFromPem(cert);
+                    }
+                    resolve(cert);
                     
               }//onchange
               
-        }//load
+        }//cert
         
 
         
