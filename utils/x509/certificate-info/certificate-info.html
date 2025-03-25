@@ -67,6 +67,87 @@
         </div>
         
         <div id=view>
+        
+              <div>
+                    <span>version</span>
+                    <span id=version></span>
+              </div>
+              
+              <div>
+                    <span>serialNumber</span>
+                    <span id=serialnumber></span>
+              </div>
+              
+              <div id=subject>
+              
+                    <div>
+                          <span>commonName</span>
+                          <span id=cn></span>
+                    </div>
+                    
+                    <div>
+                          <span>OrganizationalUnit</span>
+                          <span id=ou></span>
+                    </div>
+
+                    <div>
+                          <span>Organization</span>
+                          <span id=o></span>
+                    </div>
+
+                    <div>
+                          <span>Locality</span>
+                          <span id=l></span>
+                    </div>
+
+                    <div>
+                          <span>StateOrProvinceName</span>
+                          <span id=s></span>
+                    </div>
+
+                    <div>
+                          <span>CountryName</span>
+                          <span id=c></span>
+                    </div>
+                    
+              </div subject>
+              
+
+              <div id=issuer>
+
+                    <div>
+                          <span>commonName</span>
+                          <span id=cn></span>
+                    </div>
+                    
+                    <div>
+                          <span>OrganizationalUnit</span>
+                          <span id=ou></span>
+                    </div>
+
+                    <div>
+                          <span>Organization</span>
+                          <span id=o></span>
+                    </div>
+
+                    <div>
+                          <span>Locality</span>
+                          <span id=l></span>
+                    </div>
+
+                    <div>
+                          <span>StateOrProvinceName</span>
+                          <span id=s></span>
+                    </div>
+
+                    <div>
+                          <span>CountryName</span>
+                          <span id=c></span>
+                    </div>
+
+              </div>
+                    
+              
         </div>
         
     </body>
@@ -127,8 +208,6 @@
         
         function display(cert){
           
-              cert    = nodeforge.pki.certificateFromPem(cert);
-
 
               
               console.log(nodeforge.pki);
@@ -136,6 +215,14 @@
               console.json(cert);
               
           
+          
+              $(view,'#version').textContent    = cert.version;
+              $(view,'#serialNumber').textCotent    = cert.serialNumber;
+              
+              $(view,'#validity-notbefore').textContent   = cert.validity.notBefore;
+              $(view,'#validity-notafter').textContent    = cert.validity.notAfter;
+              
+              
         }//display
 
 
@@ -200,6 +287,7 @@
               async function onchange(){
               
                     var cert    = await input.files[0].text();
+                    console.log(cert);
                     if(import_cert){
                           cert    = nodeforge.pki.certificateFromPem(cert);
                     }
