@@ -59,17 +59,19 @@
                       github
                 </div>
             </a>
-            <img class=hdr-title src='images/generate-certificate-chain.png' style='height:80px;top:-15px'>
+            <img class=hdr-title src='images/generate-certificate-chain.png' style='height:60px;top:-15px'>
             <div class=hdr-date>
                   25 Mar 2025
             </div>
         </div hdr>
 
-   
-        <div id=chain>
+        <div id=btns>
               <input id=clear value=clear type=button>
               <input id=add value=add type=button>
               <input id=save value=save type=button>
+        </div>
+        
+        <div id=chain>
         </div>
         
         <pre id=view>
@@ -85,7 +87,7 @@
                                                                                 
         var view
         
-        var chain   = '';
+        var cert   = '';
         
         
         var btn   = {};
@@ -122,11 +124,11 @@
         function initdom(){
 
 
-              var hdr                         = $('#chain');
+              var btns                         = $('#btns');
               
-              $(hdr,'#clear').onclick         = btn.clear;
-              $(hdr,'#add').onclick           = btn.add;
-              $(hdr,'#save').onclick          = btn.save;
+              $(btns,'#clear').onclick         = btn.clear;
+              $(btns,'#add').onclick           = btn.add;
+              $(btns,'#save').onclick          = btn.save;
 
               
               view                            = $('#view')
@@ -138,8 +140,8 @@
                 
         btn.clear   = function(){
           
-              chain               = '';
-              view.textContent    = chain;
+              cert                = '';
+              view.textContent    = cert;
               
         }//clear
         
@@ -147,8 +149,8 @@
         btn.add   = async function(){
           
               var txt             = await load.file();
-              chain              += txt;
-              view.textContent    = chain;
+              cert               += txt;
+              view.textContent    = cert;
               
         }//add
         
