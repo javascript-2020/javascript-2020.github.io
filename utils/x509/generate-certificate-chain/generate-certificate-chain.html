@@ -85,9 +85,10 @@
         var ext;
         var $,datatype,menumod,keydown;
                                                                                 
+        var chain;
         var view
+        var list    = [];
         
-        var cert   = '';
         
         
         var btn   = {};
@@ -117,21 +118,42 @@
                     'js/dom/menumod/menumod.js',
                     'js/dom/keydown/keydown.js'
               );
-          
+              
         }//load
+        
+        
+        load.nodeforge    = function(){
+          
+              var txt         = localStorage['node-forge'];
+              if(!txt){
+                    var url   = 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
+                                                                                //console.log(url);
+                    var res   = await fetch(url);
+                    txt       = await res.text();
+                    localStorage['node-forge']    = txt;
+              }
+              var blob        = new Blob([txt],{type:'text/javascript'});
+              var url         = window.URL.createObjectURL(blob);
+              var nodeforge   = await import(url);
+              pki             = nodeforge.default.pki;
+              
+        }//nodeforge
         
         
         function initdom(){
 
 
-              var btns                         = $('#btns');
+              var btns                          = $('#btns');
               
-              $(btns,'#clear').onclick         = btn.clear;
-              $(btns,'#add').onclick           = btn.add;
-              $(btns,'#save').onclick          = btn.save;
+              $(btns,'#clear').onclick          = btn.clear;
+              $(btns,'#add').onclick            = btn.add;
+              $(btns,'#save').onclick           = btn.save;
+
+
+              chain                             = $('#chain');
 
               
-              view                            = $('#view')
+              view                              = $('#view')
               view.replaceChildren();
               
               
@@ -140,8 +162,8 @@
                 
         btn.clear   = function(){
           
-              cert                = '';
-              view.textContent    = cert;
+              list                = [];
+              view.textContent    = list.join('\n');
               
         }//clear
         
@@ -149,15 +171,17 @@
         btn.add   = async function(){
           
               var txt             = await load.file();
-              cert               += txt;
-              view.textContent    = cert;
+              list.push(txt);
+              
+              view.textContent    = list.join('\n');
               
         }//add
         
         
         btn.save    = function(){
           
-              var blob      = new Blob([chain]);
+              var cert      = list.join('\n');
+              var blob      = new Blob([cert]);
               var url       = window.URL.createObjectURL(blob);
               var a         = document.createElement('a');
               a.download    = 'cert.chain.pem';
@@ -188,6 +212,10 @@
               }//onchange
               
         }//load.file
+        
+        
+        function display(){
+        }//display
         
         
 
