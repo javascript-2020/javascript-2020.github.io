@@ -70,7 +70,7 @@
     .opt .spc             
                           {flex:1}                          
     #key-file
-                          {background:lightblue}
+                          {background:lightyellow;padding:5px}
     #bits 
                           {width:80px;text-align:center}
     #cacert               
@@ -372,7 +372,8 @@
               var root                        = $('#signing-key .opt-root');
               ui.key                          = $.chkbox.group(root,'#self','#key');
               ui.node.keyfile                 = $(root,'#key-file');
-              $(root,'#key').onclick          = btn.key;
+              $(root,'#self').addEventListener('click',btn.self);
+              $(root,'#key').addEventListener('click',btn.key);
                                                 
               ui.bits                         = $('#bits');
               
@@ -438,6 +439,13 @@
   //:
   
   
+        btn.self    = function(){
+          
+                ui.node.keyfile.textContent   = '';
+                
+        }//self
+        
+        
         btn.key   = function(){
                                                 
               var input         = document.createElement('input');
