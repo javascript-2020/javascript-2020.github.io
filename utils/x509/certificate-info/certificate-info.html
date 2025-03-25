@@ -76,8 +76,11 @@
                                                                                 console.log('certificate-info');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+                                                                                
         var ext;
         var $,datatype,menumod,keydown;
+        
+        var nodeforge;
 
 
         var btn   = {};
@@ -86,7 +89,8 @@
   //
   
   
-        window.onload   = init;
+        //window.onload   = init;
+        setTimeout(init,50);
         
         async function init(){
           
@@ -114,7 +118,7 @@
 
         btn.load    = async function(){
           
-              var cert    = await load.cert();
+              var cert    = await load.cert(true);
               display(cert);
               
         }//load
@@ -174,8 +178,9 @@
               
               var blob        = new Blob([txt],{type:'text/javascript'});
               var url         = window.URL.createObjectURL(blob);
-              var nodeforge   = await import(url);
-              pki             = nodeforge.default.pki;
+              nodeforge       = await import(url);
+              nodeforge       = nodeforge.default;
+              //pki             = nodeforge.pki;
               
         }//nodeforge
 
