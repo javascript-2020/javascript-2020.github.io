@@ -34,7 +34,8 @@
 
     input
                           {padding:5px 10px;font-size:16px}
-                          
+    #chain
+                          {margin-bottom:10px}
     #editor
                           {flex:1}
                           
@@ -71,6 +72,7 @@
         <div id=chain>
               <input id=clear value=clear type=button>
               <input id=add value=add type=button>
+              <input id=save value=save type=button>
         </div>
         
         <div id=editor>
@@ -143,6 +145,7 @@
               
               $(hdr,'#clear').onclick         = btn.clear;
               $(hdr,'#add').onclick           = btn.add;
+              $(hdr,'#save').onclick          = btn.save;
 
               
               $('#editor').replaceChildren();
@@ -169,6 +172,18 @@
               editor.setValue(chain,1);
               
         }//add
+        
+        
+        btn.save    = function(){
+          
+              var blob      = new Blob([chain]);
+              var url       = window.URL.createObjectURL(blob);
+              var a         = document.createElement('a');
+              a.download    = 'cert.chain.pem';
+              a.href        = url;
+              a.click();
+              
+        }//save
         
         
         
