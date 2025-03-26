@@ -69,7 +69,7 @@
         <div id=btns>
               <input value=clear type=button>
               <input value=root type=button>
-              <input value=add cert type=button>
+              <input value='add cert' type=button>
               <input value=verify type=button>
               <span id=result></span>
         </div>
@@ -87,7 +87,7 @@
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         
         
-        var $;
+        var $,datatype;
         
         
         var view;
@@ -143,6 +143,7 @@
         btn.root    = function(){
           
               root    = load.cert('pem');
+              display();
               
         }//root
         
@@ -151,6 +152,7 @@
           
               var cert    = load.cert('import');
               chain.push(cert);
+              display();
               
         }//add
 
@@ -170,6 +172,24 @@
         }//verify
         
         
+        function display(){
+          
+              view.replaceChildren();
+              var str   = '';
+              if(!root){
+                    return;
+              }
+              str  += root;
+              
+              chain.forEach(cert=>{
+                
+                    cert    = nodeforge.pki.certificateToPem(cert);
+                    str    += cert;
+                    
+              });
+              view.textContent    = str;
+              
+        }//display
   //:
   
   
@@ -190,7 +210,7 @@
 
         async function load(){
           
-              await Promise.all([load.ext,load.nodeforge]);
+              await Promise.all([load.ext(),load.nodeforge()]);
               
         }//load
 
@@ -200,7 +220,7 @@
               var res   = await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
               var txt   = await res.text();
               ext       = eval(txt);
-              [$]       = await ext.load.libs('js/dom/$.js');
+              [$,datatype]    = await ext.load.libs('js/dom/$.js','js/core/datatype.js');
               
         }//ext
 
