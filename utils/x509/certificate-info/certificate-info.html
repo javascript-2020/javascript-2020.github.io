@@ -173,7 +173,6 @@
         btn.load    = async function(){
           
               cert    = await load.cert(true);
-              localStorage['cert']    = cert;
               display(cert);
               
         }//load
@@ -390,6 +389,7 @@
               async function onchange(){
               
                     var cert    = await input.files[0].text();
+                    localStorage['cert']    = cert;
                     console.log(cert);
                     if(import_cert){
                           cert    = nodeforge.pki.certificateFromPem(cert);
