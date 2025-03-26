@@ -143,8 +143,8 @@
         props.ext.nsCertType    = ['client','server','email','objSign','sslCA','emailCA','objCA'];
 
 
-
-        var btn   = {};
+        var history   = {};
+        var btn       = {};
         
 
   //
@@ -156,7 +156,7 @@
         async function init(){
           
           
-              delete localStorage['verify-certificate'];
+              //history.delete();
               
               
               await load();
@@ -185,16 +185,11 @@
               field                                 = $('.field');
               field.remove();
               
-                          
-              var txt           = localStorage['verify-certificate'];
-              if(txt){
-                    ({pem,file}       = JSON.parse(txt));
-                    cert              = nodeforge.pki.certificateFromPem(pem);
-                    if(cert){
-                          display();
-                    }
+              
+              if(history.load()){
+                    display();
               }
-
+                          
               
         }//initdom
 
@@ -435,9 +430,7 @@
                     file    = input.files[0].name;
                     pem     = await input.files[0].text();
                     cert    = nodeforge.pki.certificateFromPem(pem);
-                    
-                    localStorage['cert']    = JSON.stringify({file,pem});
-                                                                                console.log(cert);
+                    history.save();
                     resolve();
                     
               }//onchange
@@ -445,7 +438,36 @@
         }//cert
         
 
+  //:
+  
+  
+        history.delete    = function(){
+          
+              delete localStorage['verify-certificate'];
+              
+        }//delete
         
+        
+        history.load    = function(){
+          
+              var txt   = localStorage['verify-certificate'];
+              if(!txt){
+                    return;
+              }
+              var json      = JSON.parse(txt);
+              ({file,pem}   = json;
+              cert          = nodeforge.pki.certificateFromPem(pem);
+              return true;
+              
+        }//load
+        
+        
+        history.save    = function(){
+          
+              var txt   = JSON.stringify({file,pem});
+              localStorage['verify-certificate']    = txt;
+              
+        }//save
         
 
 </script>
