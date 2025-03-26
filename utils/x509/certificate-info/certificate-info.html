@@ -48,6 +48,8 @@
     .field-value
                           {flex:1}
     
+    #pem-root
+                          {display:none}
     #pem
                           {border:1px solid lightgray;padding:10px}
                           
@@ -99,9 +101,12 @@
               
         </div>
         
-        <div id=btns2>
-              <input value=copy type=button>
-        <pre id=pem></pre>
+        <div id=pem-root>
+              <div id=btns2>
+                    <input value=copy type=button>
+              </div>
+              <pre id=pem></pre>
+        </div>
         
     </body>
     
@@ -357,7 +362,9 @@
               view.append(nfield);              
               
               */
+
               
+              $('#pem-root').style.display    = 'block';
               
               pem   = nodeforge.pki.certificateToPem(cert);
               $('#pem').textContent    = pem;
