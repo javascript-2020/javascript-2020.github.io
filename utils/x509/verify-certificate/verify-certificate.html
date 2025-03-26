@@ -90,8 +90,9 @@
         var $,datatype;
         
         
-        var view;
-
+        var root;
+        var chain;
+        
         
         var btn   = {};
         
@@ -140,17 +141,17 @@
         }//clear
         
 
-        btn.root    = function(){
+        btn.root    = async function(){
           
-              root    = load.cert('pem');
+              root    = await load.cert('pem');
               display();
               
         }//root
         
 
-        btn.add   = function(){
+        btn.add   = async function(){
           
-              var cert    = load.cert('import');
+              var cert    = await load.cert('import');
               chain.push(cert);
               display();
               
@@ -174,7 +175,7 @@
         
         function display(){
           
-              view.replaceChildren();
+              $('#view').replaceChildren();
               var str   = '';
               if(!root){
                     return;
@@ -187,7 +188,7 @@
                     str    += cert;
                     
               });
-              view.textContent    = str;
+              $('#view').textContent    = str;
               
         }//display
   //:
