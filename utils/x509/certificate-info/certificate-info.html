@@ -44,7 +44,9 @@
     .field-value
                           {flex:1}
     
-
+    #pem
+                          {border:1px solid lightgray;padding:10px}
+                          
         </style>
         
     </head>
@@ -90,6 +92,8 @@
               </div>
               
         </div>
+        
+        <pre id=pem></pre>
         
     </body>
     
@@ -325,6 +329,9 @@
               */
               
               
+              var pem   = nodeforge.pki.certificateToPem(cert);
+              $('#pem').textContent    = pem;
+              
         }//display
 
 
@@ -390,7 +397,7 @@
               
                     var cert    = await input.files[0].text();
                     localStorage['cert']    = cert;
-                    console.log(cert);
+                                                                                console.log(cert);
                     if(import_cert){
                           cert    = nodeforge.pki.certificateFromPem(cert);
                     }
