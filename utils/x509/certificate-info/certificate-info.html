@@ -38,9 +38,11 @@
     .category
                           {margin-top:20px}
     .field
-                          {}
+                          {display:flex;margin-top:10px}
     .field-name
                           {display:inline-block;width:200px}
+    .field-value
+                          {flex:1}
     
 
         </style>
@@ -77,15 +79,13 @@
         <div id=view>
         
               <div class=category>
-              
                     <div class=label></div>
-                    
-                    <div class=field>
-                          <span class=field-name>commonName</span>
-                          <span class=field-value></span>
-                    </div>
-                    
               </div category>
+              
+              <div class=field>
+                    <span class=field-name>commonName</span>
+                    <span class=field-value></span>
+              </div>
               
         </div>
         
@@ -153,7 +153,8 @@
               
               category                              = $('.category');
               category.remove();
-              field                                 = $(category,'.field');
+              
+              field                                 = $('.field');
               field.remove();
               
               cert    = localStorage['cert'];
@@ -182,6 +183,8 @@
               console.log(nodeforge.pki);
               
               console.json(cert);
+
+
               
               var extensions    = cert.extensions;
 
@@ -200,12 +203,14 @@
               
               var ca    = extensions.find(ext=>('cA' in ext));
               var nfield    = field.cloneNode(true);
+              nfield.style.cssText    = 'margin-top:20px';
               $(nfield,'.field-name').textContent   = 'CA';
               $(nfield,'.field-value').textContent    = ca.cA;
               view.append(nfield);
               
               
               var nfield    = field.cloneNode(true);
+              nfield.style.cssText    = 'margin-top:20px';
               $(nfield,'.field-name').textContent   = 'not before';
               $(nfield,'.field-value').textContent    = cert.validity.notBefore;
               view.append(nfield);
@@ -229,6 +234,7 @@
                     
                     var nfield    = field.cloneNode(true);
                     $(nfield,'.field-name').textContent   = name;
+                    $(nfield,'.field-name').style.cssText    = 'padding-left:20px;box-sizing:border-box';
                     $(nfield,'.field-value').textContent    = attr.value;
                     ncategory.append(nfield);
                     
@@ -247,6 +253,7 @@
                     
                     var nfield    = field.cloneNode(true);
                     $(nfield,'.field-name').textContent   = name;
+                    $(nfield,'.field-name').style.cssText    = 'padding-left:20px;box-sizing:border-box';
                     $(nfield,'.field-value').textContent    = attr.value;
                     ncategory.append(nfield);
                     
@@ -255,6 +262,7 @@
               
               
               var nfield    = field.cloneNode(true);
+              nfield.style.cssText    = 'margin-top:20px';
               $(nfield,'.field-name').textContent   = 'subjectAltName';
               var attr    = extensions.find(attr=>attr.name==='subjectAltName');
               var str     = []
@@ -278,6 +286,7 @@
                     var attr    = extensions.find(attr=>attr.name===key);
                     
                     var nfield    = field.cloneNode(true);
+                    nfield.style.cssText    = 'margin-top:20px';
                     $(nfield,'.field-name').textContent   = key;
                     
                     var str   = [];
@@ -291,13 +300,24 @@
                           
                     });
                     
-                    str   = str.join(',');
+                    str   = str.join(', ');
                     $(nfield,'.field-value').textContent    = str;
                     
                     view.append(nfield);
                     
               }//for
                     
+
+              /*
+              
+              var b64   = window.btoa(cert.signature);
+              var nfield    = field.cloneNode(true);
+              $(nfield,'.field-name').textContent   = 'signature';
+              $(nfield,'.field-value').textContent    = b64;
+              $(nfield,'.field-value').style.flexWrap   = 'wrap';
+              view.append(nfield);              
+              
+              */
               
               
         }//display
