@@ -182,10 +182,12 @@
               
                           
               var txt           = localStorage['verify-certificate'];
-              ({pem,file}       = JSON.parse(txt));
-              cert              = nodeforge.pki.certificateFromPem(pem);
-              if(cert){
-                    display();
+              if(txt){
+                    ({pem,file}       = JSON.parse(txt));
+                    cert              = nodeforge.pki.certificateFromPem(pem);
+                    if(cert){
+                          display();
+                    }
               }
 
               
