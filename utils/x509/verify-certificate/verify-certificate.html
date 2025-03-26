@@ -35,6 +35,14 @@
                           {padding:5px 10px;font-size:16px}
     input[type=button]
                           {cursor:pointer}
+                          
+    #result
+                          {display:none}
+    .ok
+                          {color:green;border:1px solid green}
+    .error
+                          {color:red;border:1px solid red}
+
 
         </style>
         
@@ -138,6 +146,7 @@
               root    = null;
               chain   = [];
               $('#view').replaceChildren();
+              $('#result').style.display    = '';
               
         }//clear
         
@@ -199,9 +208,24 @@
       
               var store   = nodeforge.pki.createCaStore([root]);
               
-              var result    = nodeforge.pki.verifyCertificateChain(store,chain);
-              console.json(result);
+              $('#result').style.display    = 'inline';
 
+              try{
+                
+                    var result    = nodeforge.pki.verifyCertificateChain(store,chain);
+                    console.json(result);
+                    
+                    $('#result').textContent    = 'verification ok';
+                    $('#result').className      = 'ok';
+                    
+              }
+              catch(err){
+                    
+                    $('#result').textContent    = 'verification failed';
+                    $('#result').className      = 'error';
+                    
+              }
+              
         }//verify      
       
 
