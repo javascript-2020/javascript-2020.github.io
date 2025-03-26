@@ -15,7 +15,7 @@
     html
                           {height:100%}
     body
-                          {height:calc(100% - 42px);margin:20px;display:flex;flex-direction:column}
+                          {height:calc(100% - 42px);margin:20px;display:flex;flex-direction:column;font-family:arial}
     .hdr                  
                           {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
                             padding-bottom:10px;border-bottom:3px solid lightblue}
@@ -35,6 +35,8 @@
     input
                           {padding:5px 10px;font-size:16px}
              
+    #filename
+                          {margin-bottom:20px}
     #view
                           {margin-bottom:20px}
     .category
@@ -82,6 +84,8 @@
               <input value=load type=button>
         </div>
         
+        <div id=filename></div>
+        
         <div id=view>
         
               <div class=category>
@@ -112,6 +116,7 @@
         
         var nodeforge;
 
+        var file;
         var cert;
         var pem;
 
@@ -145,6 +150,10 @@
         
         async function init(){
           
+          
+              delete localStorage['verify-certificate'];
+              
+              
               await load();
               
               
@@ -172,10 +181,11 @@
               field.remove();
               
                           
-              cert    = localStorage['cert'];
-              cert    = nodeforge.pki.certificateFromPem(cert);
+              var txt           = localStorage['verify-certificate'];
+              ({pem,file})      = JSON.parse(txt);
+              cert              = nodeforge.pki.certificateFromPem(pem);
               if(cert){
-                    display(cert);
+                    display();
               }
 
               
@@ -202,9 +212,13 @@
 
               
               //console.log(nodeforge.pki);
-              
               //console.json(cert);
+              
+              
+              
+              $('#filename').textContent    = file;
 
+              
 
               view.replaceChildren();
               
@@ -409,13 +423,13 @@
               
               async function onchange(){
               
-                    var cert    = await input.files[0].text();
-                    localStorage['cert']    = cert;
+                    file    = input.files[0].name;
+                    pem     = await input.files[0].text();
+                    cert    = nodeforge.pki.certificateFromPem(pem);
+                    
+                    localStorage['cert']    = JSON.stringify({file,pem});
                                                                                 console.log(cert);
-                    if(import_cert){
-                          cert    = nodeforge.pki.certificateFromPem(cert);
-                    }
-                    resolve(cert);
+                    resolve();
                     
               }//onchange
               
