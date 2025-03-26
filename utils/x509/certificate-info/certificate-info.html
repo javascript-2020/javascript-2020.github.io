@@ -77,76 +77,32 @@
                     <span>serialNumber</span>
                     <span id=serialnumber></span>
               </div>
-              
-              <div id=subject>
-              
-                    <div>
-                          <span>commonName</span>
-                          <span id=cn></span>
-                    </div>
-                    
-                    <div>
-                          <span>OrganizationalUnit</span>
-                          <span id=ou></span>
-                    </div>
 
-                    <div>
-                          <span>Organization</span>
-                          <span id=o></span>
-                    </div>
-
-                    <div>
-                          <span>Locality</span>
-                          <span id=l></span>
-                    </div>
-
-                    <div>
-                          <span>StateOrProvinceName</span>
-                          <span id=s></span>
-                    </div>
-
-                    <div>
-                          <span>CountryName</span>
-                          <span id=c></span>
-                    </div>
-                    
-              </div subject>
-              
-
-              <div id=issuer>
-
-                    <div>
-                          <span>commonName</span>
-                          <span id=cn></span>
-                    </div>
-                    
-                    <div>
-                          <span>OrganizationalUnit</span>
-                          <span id=ou></span>
-                    </div>
-
-                    <div>
-                          <span>Organization</span>
-                          <span id=o></span>
-                    </div>
-
-                    <div>
-                          <span>Locality</span>
-                          <span id=l></span>
-                    </div>
-
-                    <div>
-                          <span>StateOrProvinceName</span>
-                          <span id=s></span>
-                    </div>
-
-                    <div>
-                          <span>CountryName</span>
-                          <span id=c></span>
-                    </div>
-
+              <div>
+                    <span>not before</span>
+                    <span id=notbefore></span>
               </div>
+              
+              <div>
+                    <span>not after</span>
+                    <span id=notafter></span>
+              </div>
+              
+              <div>
+                    <span>CA</span>
+                    <span id=ca></span>
+              </div>
+              
+              <div class=category>
+              
+                    <div class=label></div>
                     
+                    <div class=field>
+                          <span class=field-name>commonName</span>
+                          <span class=field-value></span>
+                    </div>
+                    
+              </div category>
               
         </div>
         
@@ -162,6 +118,24 @@
         var $,datatype,menumod,keydown;
         
         var nodeforge;
+
+
+        var view;
+        
+        
+        var props         = {};
+        props.issuer      = [ 'commonName','OrganizationalUnit','Organization','Locality',
+                              'StateOrProvinceName','CountryName'
+                            ];
+        props.subject     = [ 'commonName','OrganizationalUnit','Organization','Locality',
+                              'StateOrProvinceName','CountryName'
+                            ];
+                          
+        var ext           = {};
+        ext.keyUsage      = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
+        ext.extKeyUsage   = ['serverAuth','clientAuth','codeSigning','emailProtection','timeStamping'];
+        ext.nsCertType    = ['client','server','email','objSign','sslCA','emailCA','objCA'];
+
 
 
         var btn   = {};
@@ -192,14 +166,26 @@
               
               $(btns,'[value=load]').onclick        = btn.load;
               
+              view                                  = $('#view');
               
+              category                              = $('.category');
+              category.remove();
+              field                                 = $(category,'.field');
+              field.remove();
+              
+              cert    = localStorage['cert'];
+              cert    = nodeforge.pki.certificateFromPem(cert);
+              if(cert){
+                    display(cert);
+              }
               
         }//initdom
 
 
         btn.load    = async function(){
           
-              var cert    = await load.cert(true);
+              cert    = await load.cert(true);
+              localStorage['cert']    = cert;
               display(cert);
               
         }//load
@@ -216,11 +202,82 @@
               
           
           
-              $(view,'#version').textContent    = cert.version;
-              $(view,'#serialNumber').textCotent    = cert.serialNumber;
+              $(view,'#version').textContent          = cert.version;
+              $(view,'#serialnumber').textContent     = cert.serialNumber;
               
-              $(view,'#validity-notbefore').textContent   = cert.validity.notBefore;
-              $(view,'#validity-notafter').textContent    = cert.validity.notAfter;
+              $(view,'#notbefore').textContent        = cert.validity.notBefore;
+              $(view,'#notafter').textContent         = cert.validity.notAfter;
+
+              
+              var extensions    = cert.extensions;
+
+              
+              var ca    = extensions.find(ext=>('cA' in ext));
+              $('#ca').textContent    = ca.cA;
+
+              
+              var ncategory   = category.cloneNode(true);
+              $(ncategory,'.label').textContent   = 'Subject';
+              
+              props.subject.forEach(name=>{
+                
+                    var nfield    = field.cloneNode(true);
+                    $(nfield,'.field-name').textContent   = name;
+                    var attr    = cert.subject.attributes.find(attr=>attr.name===name);
+                    $(nfield,'.field-value').textContent    = attr.value;
+                    ncategory.append(nfield);
+                    
+              });
+              view.append(ncategory);
+              
+              
+              var ncategory   = category.cloneNode(true);
+              $(ncategory,'.label').textContent   = 'Issuer';
+              props.issuer.forEach(name=>{
+                
+                    var nfield    = field.cloneNode(true);
+                    $(nfield,'.field-name').textContent   = name;
+                    var attr    = cert.isser.attributes.find(attr=>attr.name===name);
+                    $(nfield,'.field-value').textContent    = attr.value;
+                    
+              });
+              view.append(ncategory);
+              
+              
+              var ncategory   = category.cloneNode(true);
+              $(ncategory,'.label').textContent   = 'subjectAltName';
+              var attr    = extensions.find(attr=>attr.name==='subjectAltName');
+              attr.altNames.forEach(name=>{
+                
+                    var nfield    = field.cloneNode(true);
+                    $(nfield,'.field-name').textContent   = name;
+                    $(nfield,'.field-value').remove();
+                    
+              });
+              view.append(ncategory);
+              
+              
+              for(var key in ext){
+                
+                    var attr    = extensions.find(attr=>attr.name===key);
+                    
+                    var ncategory   = category.cloneNode(true);
+                    $(ncategory,'.label').textContent   = key;
+                    
+                    var list    = ext[key];
+                    list.forEach(name=>{
+
+                          if(attr.name){                      
+                                var nfield    = field.cloneNode(true);
+                                $(nfield,'.field-value').textContent    = name;
+                                ncategory.append(nfield);
+                          }
+                          
+                    });
+                    view.append(ncategory);
+                    
+              }//for
+                    
               
               
         }//display
