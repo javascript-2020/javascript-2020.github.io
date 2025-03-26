@@ -34,6 +34,14 @@
 
     input
                           {padding:5px 10px;font-size:16px}
+                          
+    .category
+                          {margin-top:20px}
+    .field
+                          {border:1px solid lightgray;padding:5px}
+    .field-name
+                          {display:inline-block;width:200px}
+    
 
         </style>
         
@@ -130,11 +138,11 @@
         props.subject     = [ 'commonName','OrganizationalUnit','Organization','Locality',
                               'StateOrProvinceName','CountryName'
                             ];
-                          
-        var ext           = {};
-        ext.keyUsage      = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
-        ext.extKeyUsage   = ['serverAuth','clientAuth','codeSigning','emailProtection','timeStamping'];
-        ext.nsCertType    = ['client','server','email','objSign','sslCA','emailCA','objCA'];
+        
+        props.ext         = {};                  
+        props.ext.keyUsage      = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
+        props.ext.extKeyUsage   = ['serverAuth','clientAuth','codeSigning','emailProtection','timeStamping'];
+        props.ext.nsCertType    = ['client','server','email','objSign','sslCA','emailCA','objCA'];
 
 
 
@@ -221,9 +229,13 @@
               
               props.subject.forEach(name=>{
                 
+                    var attr    = cert.subject.attributes.find(attr=>attr.name===name);
+                    if(!attr){
+                          return;
+                    }
+                    
                     var nfield    = field.cloneNode(true);
                     $(nfield,'.field-name').textContent   = name;
-                    var attr    = cert.subject.attributes.find(attr=>attr.name===name);
                     $(nfield,'.field-value').textContent    = attr.value;
                     ncategory.append(nfield);
                     
@@ -235,10 +247,15 @@
               $(ncategory,'.label').textContent   = 'Issuer';
               props.issuer.forEach(name=>{
                 
+                    var attr    = cert.issuer.attributes.find(attr=>attr.name===name);
+                    if(!attr){
+                          return;
+                    }
+                    
                     var nfield    = field.cloneNode(true);
                     $(nfield,'.field-name').textContent   = name;
-                    var attr    = cert.isser.attributes.find(attr=>attr.name===name);
                     $(nfield,'.field-value').textContent    = attr.value;
+                    ncategory.append(nfield);
                     
               });
               view.append(ncategory);
@@ -256,7 +273,7 @@
               });
               view.append(ncategory);
               
-              
+              var ext   = props.ext;
               for(var key in ext){
                 
                     var attr    = extensions.find(attr=>attr.name===key);
@@ -267,8 +284,9 @@
                     var list    = ext[key];
                     list.forEach(name=>{
 
-                          if(attr.name){                      
+                          if(attr[name]){                      
                                 var nfield    = field.cloneNode(true);
+                                $(nfield,'.field-name').remove();
                                 $(nfield,'.field-value').textContent    = name;
                                 ncategory.append(nfield);
                           }
