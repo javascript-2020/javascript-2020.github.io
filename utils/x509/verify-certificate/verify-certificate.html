@@ -88,7 +88,7 @@
         
         
         var $,datatype;
-        
+        var nodeforge;
         
         var root;
         var chain   = [];
@@ -197,14 +197,9 @@
   
         async function verify(){
       
-              await nodeforge();
-              
-              var root    = await load();
               var store   = nodeforge.pki.createCaStore([root]);
-              var cert    = await load();
-              cert        = nodeforge.pki.certificateFromPem(cert);
               
-              var result    = nodeforge.pki.verifyCertificateChain(store,[cert]);
+              var result    = nodeforge.pki.verifyCertificateChain(store,chain);
               console.json(result);
 
         }//verify      
@@ -241,7 +236,7 @@
               var url         = window.URL.createObjectURL(blob);
               nodeforge       = await import(url);
               nodeforge       = nodeforge.default;
-              pki             = nodeforge.pki;
+              //console.log(nodeforge);
               
         }//nodeforge
 
