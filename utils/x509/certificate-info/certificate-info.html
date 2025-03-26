@@ -93,6 +93,8 @@
               
         </div>
         
+        <div id=btns2>
+              <input value=copy type=button>
         <pre id=pem></pre>
         
     </body>
@@ -108,8 +110,11 @@
         
         var nodeforge;
 
+        var cert;
+        var pem;
 
         var view;
+        
         
         
         var props         = {};
@@ -153,7 +158,8 @@
           
               var btns                              = $('#btns');
               
-              $(btns,'[value=load]').onclick        = btn.load;
+              $('[value=load]').onclick             = btn.load;
+              $('[value=copy]').onclick             = btn.copy;
               
               view                                  = $('#view');
               
@@ -181,6 +187,12 @@
               
         }//load
         
+        
+        btn.copy    = async function(){
+          
+              await navigator.clipboard.writeText(pem);
+              
+        }//copy
         
         
         function display(cert){
@@ -329,7 +341,7 @@
               */
               
               
-              var pem   = nodeforge.pki.certificateToPem(cert);
+              pem   = nodeforge.pki.certificateToPem(cert);
               $('#pem').textContent    = pem;
               
         }//display
