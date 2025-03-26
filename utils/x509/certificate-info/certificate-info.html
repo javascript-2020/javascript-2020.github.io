@@ -38,7 +38,7 @@
     .category
                           {margin-top:20px}
     .field
-                          {border:1px solid lightgray;padding:5px}
+                          {}
     .field-name
                           {display:inline-block;width:200px}
     
@@ -76,31 +76,6 @@
         
         <div id=view>
         
-              <div>
-                    <span>version</span>
-                    <span id=version></span>
-              </div>
-              
-              <div>
-                    <span>serialNumber</span>
-                    <span id=serialnumber></span>
-              </div>
-
-              <div>
-                    <span>not before</span>
-                    <span id=notbefore></span>
-              </div>
-              
-              <div>
-                    <span>not after</span>
-                    <span id=notafter></span>
-              </div>
-              
-              <div>
-                    <span>CA</span>
-                    <span id=ca></span>
-              </div>
-              
               <div class=category>
               
                     <div class=label></div>
@@ -208,22 +183,40 @@
               
               console.json(cert);
               
+              var extensions    = cert.extensions;
+
           
-          
-              $(view,'#version').textContent          = cert.version;
-              $(view,'#serialnumber').textContent     = cert.serialNumber;
-              
-              $(view,'#notbefore').textContent        = cert.validity.notBefore;
-              $(view,'#notafter').textContent         = cert.validity.notAfter;
+              var nfield    = field.cloneNode(true);
+              $(nfield,'.field-name').textContent   = 'version';
+              $(nfield,'.field-value').textContent    = cert.version;
+              view.append(nfield);
 
               
-              var extensions    = cert.extensions;
+              var nfield    = field.cloneNode(true);
+              $(nfield,'.field-name').textContent   = 'serialNumber';
+              $(nfield,'.field-value').textContent    = cert.serialNumber;
+              view.append(nfield);
 
               
               var ca    = extensions.find(ext=>('cA' in ext));
-              $('#ca').textContent    = ca.cA;
+              var nfield    = field.cloneNode(true);
+              $(nfield,'.field-name').textContent   = 'CA';
+              $(nfield,'.field-value').textContent    = ca.cA;
+              view.append(nfield);
+              
+              
+              var nfield    = field.cloneNode(true);
+              $(nfield,'.field-name').textContent   = 'not before';
+              $(nfield,'.field-value').textContent    = cert.validity.notBefore;
+              view.append(nfield);
 
               
+              var nfield    = field.cloneNode(true);
+              $(nfield,'.field-name').textContent   = 'not after';
+              $(nfield,'.field-value').textContent    = cert.validity.notAfter;
+              view.append(nfield);
+              
+
               var ncategory   = category.cloneNode(true);
               $(ncategory,'.label').textContent   = 'Subject';
               
@@ -261,38 +254,47 @@
               view.append(ncategory);
               
               
-              var ncategory   = category.cloneNode(true);
-              $(ncategory,'.label').textContent   = 'subjectAltName';
+              var nfield    = field.cloneNode(true);
+              $(nfield,'.field-name').textContent   = 'subjectAltName';
               var attr    = extensions.find(attr=>attr.name==='subjectAltName');
-              attr.altNames.forEach(name=>{
+              var str     = []
+              attr.altNames.forEach(attr=>{
                 
-                    var nfield    = field.cloneNode(true);
-                    $(nfield,'.field-name').textContent   = name;
-                    $(nfield,'.field-value').remove();
+                    switch(attr.type){
+                      
+                      case 2    : str.push(attr.value);       break;
+                      case 7    : str.push(attr.ip);          break;
+                        
+                    }//switch
                     
               });
-              view.append(ncategory);
+              str   = str.join(',');
+              $(nfield,'.field-value').textContent    = str;
+              view.append(nfield);
               
               var ext   = props.ext;
               for(var key in ext){
                 
                     var attr    = extensions.find(attr=>attr.name===key);
                     
-                    var ncategory   = category.cloneNode(true);
-                    $(ncategory,'.label').textContent   = key;
+                    var nfield    = field.cloneNode(true);
+                    $(nfield,'.field-name').textContent   = key;
                     
+                    var str   = [];
                     var list    = ext[key];
                     list.forEach(name=>{
 
                           if(attr[name]){                      
-                                var nfield    = field.cloneNode(true);
-                                $(nfield,'.field-name').remove();
-                                $(nfield,'.field-value').textContent    = name;
-                                ncategory.append(nfield);
+                                str.push(name);
+                                
                           }
                           
                     });
-                    view.append(ncategory);
+                    
+                    str   = str.join(',');
+                    $(nfield,'.field-value').textContent    = str;
+                    
+                    view.append(nfield);
                     
               }//for
                     
