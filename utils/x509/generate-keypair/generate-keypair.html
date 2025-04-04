@@ -122,14 +122,16 @@
         async function generate(){
           
         
-              var params          = {name:'RSA-OAEP',modulusLength:1024,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'};
-              var keys            = await window.crypto.subtle.generateKey(params,true,['encrypt','decrypt']);
+              var params                  = {name:'RSA-OAEP',modulusLength:1024,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'};
+              var keys                    = await window.crypto.subtle.generateKey(params,true,['encrypt','decrypt']);
               
-              var pem   = fn.export.private(keys.privateKey);
+              var pem                     = await fn.export.private(keys.privateKey);
               $('#private').textContent   = pem;
               
-              var pem   = fn.export.public(keys.publicKey);
+              var pem                     = await fn.export.public(keys.publicKey);
               $('#public').textContent    = pem;
+
+
               
         }//generate
 
