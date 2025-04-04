@@ -98,8 +98,9 @@
         var $   = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
 
 
-        var fn    = {};
-        
+        var fn        = {};
+        var pretty    = {};
+
         
   //:
   
@@ -149,6 +150,35 @@
         fn.export.public         = public=>fn.export('public',public);
         fn.export.private        = private=>fn.export('private',private);
 
+        var hdr   = (type='public')=>`-----BEGIN ${type.toUpperCase()} KEY-----`;
+        var ftr   = (type='public')=>`-----END ${type.toUpperCase()} KEY-----`;
+
+        function buf_b64(buf){
+        
+              var bytes           = new Uint8Array(buf);
+              var bin             = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64             = btoa(bin);
+              return b64;
+              
+        }//buf_b64
+
+        pretty.out=function(pem){
+        
+              var {hdr,b64,ftr}   = extract(pem);
+              var txt             = hdr+'\n';
+              var n               = hdr.length;
+              var i               = 0;
+              while(i<b64.length){
+              
+                    var str       = b64.slice(i,i+n);
+                    txt          += str.padEnd(n)+'\n';
+                    i            += n;
+                    
+              }//while
+              txt                += ftr;
+              return txt;
+              
+        }//pretty.out
 
 
 
