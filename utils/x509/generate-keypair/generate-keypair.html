@@ -40,12 +40,16 @@
           {margin-bottom:20px}
     #view
           {display:flex;flex:1;gap:20px}
+    #private-root
+          {flex:1;display:flex;flex-direction:column}
     #private
-          {}
+          {flex:1}
+    #public-root
+          {flex:1;display:flex;flex-direction:column}
     #public
-          {}
+          {flex:1}
     pre
-          {border:1px solid lightgray;padding:10px;font-family:monospace;flex:1}
+          {border:1px solid lightgray;padding:10px;font-family:monospace}
                           
         </style>
         
@@ -84,9 +88,23 @@
         
         <div id=view>
         
-              <pre id=private></pre>
+              <div id=private-root>
+                    <div>private key</div>
+                    <div>
+                          <input value=copy type=button>
+                          <input value=save type=button>
+                    </div>
+                    <pre id=private></pre>
+              </div>
               
-              <pre id=public></pre>
+              <div id=public-root>
+                    <div>public key</div>
+                    <div>
+                          <input value=copy type=button>
+                          <input value=save type=button>
+                    </div>
+                    <pre id=public></pre>
+              </div>
               
         </div>
 
@@ -96,8 +114,30 @@
 
 
         var $   = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+        $.mousetext   = function(e,text){
+        
+              var left            = e.pageX+'px';
+              var top             = e.pageY+'px';
+              var style           = {position:'absolute',left,top,padding:'10px',border:'1px solid dimgray',borderRadius:'3px',zIndex:999999,background:'white'};
+              var append          = document.body;
+              var div             = $.create.div({style,text,append});
+              var rem             = ()=>div.remove();
+              div.onmouseleave    = rem;
+              div.onclick         = rem;
+              var time            = 700;
+              setTimeout(rem,time);
+              
+        }//mousetext
 
 
+        var keys;
+        var pem       = {};
+        
+        
+        
+        var btn       = {};
+        btn.private   = {};
+        btn.public    = {};
         var fn        = {};
         var pretty    = {};
 
@@ -110,26 +150,35 @@
 
         function initdom(){
         
-              var root                            = document.body;  
+              var root                                  = document.body;  
               
-              $('[value=generate]').onclick       = generate;
+              $('[value=generate]').onclick             = btn.generate;
               
-
+              
+              var priv_root                             = $('#private-root');
+              $(priv_root,'[value=copy]').onclick       = btn.private.copy;
+              $(priv_root,'[value=save]').onclick       = btn.private.save;
+              
+              var pub_root                              = $('#public-root');
+              $(pub_root,'[value=copy]').onclick        = btn.public.copy;
+              $(pub_root,'[value=save]').onclick        = btn.public.save;
               
         }//initdom
 
 
+  //:
+  
 
-        async function generate(){
+        btn.generate    = async function(){
           
         
               var params                  = {name:'RSA-OAEP',modulusLength:1024,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'};
-              var keys                    = await window.crypto.subtle.generateKey(params,true,['encrypt','decrypt']);
+              keys                        = await window.crypto.subtle.generateKey(params,true,['encrypt','decrypt']);
               
-              var pem                     = await fn.export.private(keys.privateKey);
+              pem.private                 = await fn.export.private(keys.privateKey);
               $('#private').textContent   = pem;
               
-              var pem                     = await fn.export.public(keys.publicKey);
+              pem.public                  = await fn.export.public(keys.publicKey);
               $('#public').textContent    = pem;
 
 
@@ -137,6 +186,43 @@
         }//generate
 
 
+        btn.private.copy    = function(e){
+          
+              var result    = await navigator.clipboard.writeText(pem.private);
+              if(result){
+                    $.mousetext(e,'copied');
+              }
+              
+        }//copy
+        
+        
+        btn.private.save    = function(){
+          
+              save('private.key.pem',pem.private);
+          
+        }//save
+        
+        
+        btn.public.copy   = function(){
+          
+              var result    = await navigator.clipboard.writeText(pem.public);
+              if(result){
+                    $.mousetext(e,'copied');
+              }
+              
+        }//copy
+        
+        
+        btn.public.save   = function(){
+          
+              save('public.key.pem',pem.public);
+              
+        }//save
+        
+        
+  //:
+  
+  
         fn.export=async function(type,key){
         
               var format          = type=='public' ? 'spki' : 'pkcs8';
@@ -181,9 +267,32 @@
         }//pretty.out
 
 
+        function extract(pem){
+        
+              var i1              = pem.indexOf('KEY')+8;
+              var i2              = pem.lastIndexOf('END')-5;
+              var hdr             = pem.slice(0,i1);
+              var b64             = pem.substring(i1,i2);
+              var ftr             = pem.slice(i2);
+              return {hdr,b64,ftr};
+              
+        }//extract
 
 
-
+  //:
+  
+  
+        function save(filename,txt){
+          
+              var blob      = new Blob([txt]);
+              var url       = window.URL.createObjectURL(blob);
+              
+              var a         = document.createElement('a');
+              a.download    = filename;
+              a.href        = url;
+              a.click();
+              
+        }//save
 
 
 
