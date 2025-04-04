@@ -188,10 +188,21 @@
 
         btn.private.copy    = function(e){
           
-              var result    = await navigator.clipboard.writeText(pem.private);
-              if(result){
-                    $.mousetext(e,'copied');
+              var err;
+              try{
+                
+                    await navigator.clipboard.writeText(pem.private);
+                    
               }
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }
+              if(err){
+                     return;
+              }
+              $.mousetext(e,'copied');
               
         }//copy
         
@@ -204,11 +215,22 @@
         
         
         btn.public.copy   = function(){
-          
-              var result    = await navigator.clipboard.writeText(pem.public);
-              if(result){
-                    $.mousetext(e,'copied');
+
+              var err;  
+              try{  
+                
+                    await navigator.clipboard.writeText(pem.public);
+                    
               }
+              catch(err2){
+                
+                    err   = err;
+                    
+              }
+              if(err){
+                    return;
+              }
+              $.mousetext(e,'copied');
               
         }//copy
         
