@@ -118,6 +118,153 @@
 <script>
 
 
+        var $   = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+        $.mousetext   = function(e,text){
+        
+              var left            = e.pageX+'px';
+              var top             = e.pageY+'px';
+              var style           = {position:'absolute',left,top,padding:'10px',border:'1px solid dimgray',borderRadius:'3px',zIndex:999999,background:'white'};
+              var append          = document.body;
+              var div             = $.create.div({style,text,append});
+              var rem             = ()=>div.remove();
+              div.onmouseleave    = rem;
+              div.onclick         = rem;
+              var time            = 700;
+              setTimeout(rem,time);
+              
+        }//mousetext
+
+        
+        var cert;
+        var key;
+
+        
+        var btn     = {};
+        btn.cert    = {};
+        btn.key     = {};
+
+
+        setTimeout(init,50);
+        
+        function init(){
+          
+              initdom();
+              
+        }//init
+        
+        
+        function initdom(){
+          
+              var rootnode                              = document.body;
+              
+              var root                                  = {};
+
+              
+              root.cert                                 = $(rootnode,'#cert-root');
+              
+              $(root.cert,'[value=paste]').onclick      = btn.cert.paste;
+              $(root.cert,'[value=load]').onclick       = btn.cert.load;
+              $(root.cert,'[value=extract]').onclick    = btn.cert.extract;
+              
+              cert                                      = $(root.cert,'#cert');
+              
+              
+              root.key                                  = $(rootnode,'#key-root');
+              
+              $(root.key,'[value=copy]').onclick        = btn.key.copy;
+              $(root.key,'[value=save]').onclick        = btn.key.save;
+              
+              key                                       = $(root.key,'#key');
+
+              
+        }//initdom
+
+
+  //:
+  
+  
+        btn.cert.paste    = async function(e){
+          
+              var txt             = await navigator.clipboard.readText();
+              cert.textContent    = txt;
+              
+        }//paste
+        
+        
+        btn.cert.load   = function(e){
+          
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+
+              
+              async function onchange(){
+                
+                    var file            = input.files[0];
+                    var txt             = await file.text();
+                    cert.textContent    = txt;
+                    
+              }//onchange
+              
+        }//load
+        
+        
+        btn.cert.extract    = async function(e){
+          
+              var pem     = cert.textContent.trim();
+              var cert    = await extract(pem);
+              console.log(cert);
+              
+        }//extract
+        
+        
+        btn.key.copy    = function(e){
+          
+              var txt   = key.textContent.trim();
+              await navigator.clipboard.writeText(txt);
+              
+        }//copy
+        
+        
+        btn.key.save    = function(e){
+          
+              var txt       = key.textContent.trim();
+              var blob      = new Blob([txt]);
+              var url       = window.URL.createObjectURL(blob);
+              
+              var a         = document.createElement('a');
+              a.download    = 'public-key.pem';
+              a.href        = url;
+              a.click();
+              
+        }//save
+        
+        
+        
+        function pem_bin(pem){
+          
+              var b64     = pem.replace(/-----BEGIN CERTIFICATE-----/,'')
+                              .replace(/-----END CERTIFICATE-----/,'')
+                              .replace(/\s/g,'');
+              var bin     = atob(b64);
+              var uint8   = Uint8Array.from(bin,c=>c.charCodeAt(0));
+              return uint8;
+              
+        }//pem_bin
+
+        
+        async function extract(pem){
+          
+              var bin         = pem_bin(pem);
+              var algorithm   = {name:'RSA-OAEP',hash:'SHA-256'};
+              var cert        = await crypto.subtle.importKey('spki',bin,algorithm,true,['encrypt']);
+              return cert;
+              
+        }//extract
+        
+        
+
 
 
 </script>
