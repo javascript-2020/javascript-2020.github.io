@@ -112,7 +112,7 @@
     
 <script>
                                                                                 console.clear();
-                                                                                console.log('generate-key-par');
+                                                                                console.log('generate-key-pair');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
 
@@ -149,10 +149,10 @@
   //:
   
   
-        initdom();
+        setTimeout(initdom,50);
         
 
-        function initdom(){
+        function initdom(){console.log('initdom');
         
               var root                                  = document.body;  
               
@@ -174,16 +174,16 @@
   
 
         btn.generate    = async function(){
-          
+        console.log('generate');
         
               var params                  = {name:'RSA-OAEP',modulusLength:1024,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'};
               keys                        = await window.crypto.subtle.generateKey(params,true,['encrypt','decrypt']);
               
               pem.private                 = await fn.export.private(keys.privateKey);
-              $('#private').textContent   = pem;
+              $('#private').textContent   = pem.private
               
               pem.public                  = await fn.export.public(keys.publicKey);
-              $('#public').textContent    = pem;
+              $('#public').textContent    = pem.public;
 
 
               
