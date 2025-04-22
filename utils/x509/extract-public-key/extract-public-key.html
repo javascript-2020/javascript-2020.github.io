@@ -37,7 +37,7 @@
                           {cursor:pointer}
 
     #view
-                          {flex:1;display:flex}
+                          {flex:1;display:flex;gap:10px}
     #cert-root
                           {flex:1;display:flex;flex-direction:column}
     #cert
@@ -136,6 +136,8 @@
               
         }//mousetext
 
+
+        var pki;
         
         var cert;
         var key;
@@ -150,10 +152,35 @@
         
         function init(){
           
+              await load();
+              
               initdom();
               
         }//init
-        
+
+  //:
+  
+        async function load(){
+
+              //var nodeForge   = await import('https://cdn.jsdelivr.net/npm/node-forge/+esm');              
+              var txt         = localStorage['node-forge'];
+                            
+              if(!txt){
+                    var url   = 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
+                                                                                console.log(url);
+                    var res   = await fetch(url);
+                    txt       = await res.text();
+                    localStorage['node-forge']    = txt;
+              }
+              
+              var blob        = new Blob([txt],{type:'text/javascript'});
+              var url         = window.URL.createObjectURL(blob);
+              var nodeforge   = await import(url);
+              pki             = nodeforge.default.pki;
+                                                                                console.log(pki);
+        }//load
+
+  //:  
         
         function initdom(){
           
@@ -214,14 +241,14 @@
         
         btn.cert.extract    = async function(e){
           
-              var pem     = cert.textContent.trim();
-              var cert    = await extract(pem);
-              console.log(cert);
+              var pem   = cert.textContent.trim();
+              var key   = await extract(pem);
+              console.log(key);
               
         }//extract
         
         
-        btn.key.copy    = function(e){
+        btn.key.copy    = async function(e){
           
               var txt   = key.textContent.trim();
               await navigator.clipboard.writeText(txt);
@@ -251,6 +278,7 @@
                               .replace(/\s/g,'');
               var bin     = atob(b64);
               var uint8   = Uint8Array.from(bin,c=>c.charCodeAt(0));
+              console.log(uint8);
               return uint8;
               
         }//pem_bin
@@ -258,11 +286,10 @@
         
         async function extract(pem){
           
-              var bin         = pem_bin(pem);
-              var algorithm   = {name:'RSA-OAEP',hash:'SHA-256'};
-              var cert        = await crypto.subtle.importKey('spki',bin,algorithm,true,['encrypt']);
-              return cert;
-              
+              var cert    = pki.certificateFromPem(pem);
+              var key     = cert.publicKey;
+              console.log(key);
+
         }//extract
         
         
