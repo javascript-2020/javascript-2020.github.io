@@ -37,7 +37,7 @@
     #btns
                           {margin-bottom:20px}
     #filename
-                          {margin-bottom:20px;background-color:lightgray;padding:5px 10px}
+                          {background-color:lightgray;padding:5px 10px}
     #view
                           {margin-bottom:20px}
     .category
@@ -76,17 +76,22 @@
             <img class=hdr-title src='images/certificate-info.png' style='height:60px;top:-15px'>
             
             <div class=hdr-date>
-                  26 Mar 2025
+                  22 Apr 2025
             </div>
         </div hdr>
 
 
         <div id=btns>
               <input value=load type=button>
-              <input value='copy pem' type=button>
+              <input value=paste type=button>
+              <input value=copy type=button>
         </div>
         
         <div id=filename></div>
+        
+        <div>
+              <pre id=pem></pre>
+        </div>
         
         <div id=view>
         
@@ -101,8 +106,6 @@
               
         </div>
         
-        <pre id=pem></pre>
-        
     </body>
     
 <script>
@@ -116,6 +119,8 @@
         
         var nodeforge;
 
+        var store   = 'certificate-info';
+        
         var file;
         var cert;
         var pem;
@@ -170,7 +175,9 @@
               var btns                              = $('#btns');
               
               $('[value=load]').onclick             = btn.load;
-              $('[value="copy pem"]').onclick       = btn.copy;
+              $('[value=paste]').onclick            = btn.paste;
+              $('[value=copy]').onclick             = btn.copy;
+
               
               view                                  = $('#view');
               
@@ -197,13 +204,25 @@
         }//load
         
         
+        btn.paste   = async function(){
+          
+              pem     = await navigator.clipboard.readText();
+              cert    = nodeforge.pki.certificateFromPem(pem);
+              history.save();
+              
+        }//paste
+        
+        
         btn.copy    = async function(){
           
               await navigator.clipboard.writeText(pem);
                                                                                 console.log('copied');
         }//copy
+
         
-        
+  //:
+  
+  
         function display(){
           
 
@@ -355,7 +374,7 @@
 
 
               
-              $('#pem').style.display   = 'block';
+              $('#pem').style.display   = 'inline-block';
               $('#pem').textContent     = pem;
 
               
@@ -377,7 +396,7 @@
           
               var res   = await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
               var txt   = await res.text();
-              ext   = eval(txt);
+              ext       = eval(txt);
               [$,datatype,menumod,keydown]   = await ext.load.libs(
                     'js/dom/$.js',
                     'js/core/datatype.js',
@@ -438,14 +457,14 @@
   
         history.delete    = function(){
           
-              delete localStorage['verify-certificate'];
+              delete localStorage[store];
               
         }//delete
         
         
         history.load    = function(){
           
-              var txt   = localStorage['verify-certificate'];
+              var txt   = localStorage[store];
               if(!txt){
                     return;
               }
@@ -459,8 +478,8 @@
         
         history.save    = function(){
           
-              var txt   = JSON.stringify({file,pem});
-              localStorage['verify-certificate']    = txt;
+              var txt               = JSON.stringify({file,pem});
+              localStorage[store]   = txt;
               
         }//save
         
