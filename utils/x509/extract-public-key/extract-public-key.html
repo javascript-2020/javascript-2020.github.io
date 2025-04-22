@@ -241,9 +241,9 @@
         
         btn.cert.extract    = async function(e){
           
-              var pem   = cert.textContent.trim();
-              var key   = await extract(pem);
-              console.log(key);
+              var pem           = cert.textContent.trim();
+              var pem           = await extract(pem);
+              key.textContent   = pem;
               
         }//extract
         
@@ -271,25 +271,12 @@
         
         
         
-        function pem_bin(pem){
-          
-              var b64     = pem.replace(/-----BEGIN CERTIFICATE-----/,'')
-                              .replace(/-----END CERTIFICATE-----/,'')
-                              .replace(/\s/g,'');
-              var bin     = atob(b64);
-              var uint8   = Uint8Array.from(bin,c=>c.charCodeAt(0));
-              console.log(uint8);
-              return uint8;
-              
-        }//pem_bin
-
-        
         async function extract(pem){
           
               var cert    = pki.certificateFromPem(pem);
               var key     = cert.publicKey;
               var pem     = pki.publicKeyToPem(key);
-              console.log(pem);
+              return pem;
 
         }//extract
         
