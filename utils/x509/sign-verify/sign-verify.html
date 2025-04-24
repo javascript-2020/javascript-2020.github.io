@@ -244,18 +244,13 @@
   
         btn.sign    = function(){
           
-              var message   = ui.file.node.textContent.trim();
-              message       = new TextEncoder().encode(message);
+              var txt           = ui.file.node.textContent.trim();
+              txt               = new TextEncoder().encode(txt);
               
               var private_key   = ui.private.node.textContent.trim();
-              var key   = import_key(private_key);
+              var key           = import_key(private_key);
               
-              let signature = await window.crypto.subtle.sign(
-                "RSASSA-PKCS1-v1_5",
-                privateKey,
-                message
-              );
-              
+              var signature     = await window.crypto.subtle.sign('RSASSA-PKCS1-v1_5',key,message);
               console.log(signature);
           
         }//sign
