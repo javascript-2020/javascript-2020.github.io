@@ -284,7 +284,16 @@
         btn.sign    = async function(){
           
               var txt         = ui.file.node.textContent.trim();
+              if(!txt){
+                    alert('no file');
+                    return;
+              }
+              
               var pem         = ui.private.node.textContent.trim();
+              if(!pem){
+                    alert('no private key');
+                    return;
+              }
               
               var key         = nodeforge.pki.privateKeyFromPem(pem);
               var md          = nodeforge.md.sha1.create();
@@ -292,8 +301,7 @@
               
               var signature   = key.sign(md);
               var b64         = window.btoa(signature);
-              console.log(b64);
-
+              
               ui.signature.node.textContent   = b64;
 
         }//sign
@@ -302,13 +310,25 @@
         btn.verify    = function(){
           
               var txt         = ui.file.node.textContent.trim();
+              if(!txt){
+                    alert('no file');
+                    return;
+              }
               
               var pem       = ui.public.node.textContent.trim();
+              if(!pem){
+                    alert('no public key');
+                    return;
+              }
               if(is.public.cert(pem)){
                     pem   = extract.key(pem);
               }
               
               var signature   = ui.signature.node.textContent.trim();
+              if(!signature){
+                    alert('no signature');
+                    return;
+              }
               signature       = window.atob(signature);
               
               var md          = nodeforge.md.sha1.create();
@@ -316,10 +336,25 @@
               var bytes       = md.digest().bytes();
               
               var public      = nodeforge.pki.publicKeyFromPem(pem);
-              var verified    = public.verify(bytes,signature);
               
-              console.log('verified',verified);
-              display.result(verified);
+              var err;
+              try{
+                
+                    var verified    = public.verify(bytes,signature);
+                    
+              }
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }
+              
+              if(err){
+                    display.result(false,'invalid key');
+              }else{
+                    console.log('verified',verified);
+                    display.result(verified,'signature error');
+              }
               
         }//verify
         
@@ -409,14 +444,14 @@
   //:
 
   
-        display.result    = function(result){
+        display.result    = function(result,msg){
           
               if(result){
                     $.style(ui.result,style.ok);
                     ui.result.textContent   = 'ok';
               }else{
                     $.style(ui.result,style.error);
-                    ui.result.textContent   = 'error';
+                    ui.result.textContent   = 'error : '+msg;
               }
               ui.result.style.display    = 'block';
               
