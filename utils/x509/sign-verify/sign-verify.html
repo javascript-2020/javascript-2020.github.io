@@ -91,6 +91,7 @@
         <div id=btns>
               <input value=sign type=button>
               <input value=verify type=button>
+              <div id=result style='display:none'></div>
         </div>
         
         <div id=keys-root>
@@ -158,10 +159,27 @@
                                                                                 console.log('sign/verify.html');
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
 
-        var $   = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+        var $               = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+        $.style             = (node,style)=>{
+          
+                                    for(var key in style){
+                                      
+                                          node.style[key]   = style[key];
+                                          
+                                    }//for
+                                    
+                              }//style
 
-
-
+        var style           = {};
+        style.ok            = {
+              borderColor   : 'green';
+              color         : 'green'
+        };
+        style.error         = {
+              borderColor   : 'red',
+              color         : 'red'
+        };
+        
         var ui              = {};
         ui.private          = {};
         ui.public           = {};
@@ -171,13 +189,14 @@
         
         var extract         = {};
         var is              = {};
+        is.public           = {};
         var load            = {};
         var btn             = {};
         btn.private         = {};
         btn.public          = {};
         btn.signature       = {};
         btn.file            = {};
-        
+        var display         = {};
         
 
   //
@@ -190,6 +209,7 @@
               await load.nodeforge();
               
               initdom();
+
               
         }//init
         
@@ -205,7 +225,7 @@
               
               $(root.btns,'[value=sign]').onclick             = btn.sign;
               $(root.btns,'[value=verify]').onclick           = btn.verify;
-              
+              ui.result                                       = $(root.btns,'#result');
               
               root.keys                                       = $(rootnode,'#keys-root');
               
@@ -270,7 +290,12 @@
 
               ui.signature.node.textContent   = b64;
 
-              
+        }//sign
+        
+        
+        btn.verify    = function(){
+          
+              var txt         = ui.file.node.textContent.trim();
               var pem       = ui.public.node.textContent.trim();
               if(is.public.cert(pem)){
                     pem   = extract.key(pem);
@@ -279,11 +304,8 @@
               var public    = nodeforge.pki.publicKeyFromPem(pem);
               var verified = public.verify(md.digest().bytes(),signature);
               console.log('verified',verified);
-
-        }//sign
-        
-        
-        btn.verify    = function(){
+              display.result(verified);
+              
         }//verify
         
         
@@ -293,6 +315,7 @@
               ui.private.file.textContent       = file.name;
               ui.private.node.textContent       = txt;
               localStorage['private']=txt;
+              
         }//load
         
         
@@ -366,6 +389,22 @@
               ui.file.node.textContent          = txt;
               
         }//paste
+
+        
+  //:
+
+  
+        display.result    = function(result){
+          
+              if(result){
+                    $(ui.result,style.ok);
+                    ui.result.textContent   = 'ok';
+              }else{
+                    $(ui.result,style.error);
+                    ui.result.textContent   = 'error';
+              }
+              
+        }//result
         
         
   //:
