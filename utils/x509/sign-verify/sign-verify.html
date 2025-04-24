@@ -9,7 +9,7 @@
     
         <title>sign/verify file</title>
         
-        <base href='https://javascript-2020.github.io/utils/x509/utils/x509/sign-verify/sign-verify.html'>
+        <base href='https://javascript-2020.github.io/utils/x509/sign-verify/sign-verify.html'>
         <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico'>
 
 <style>
@@ -150,6 +150,10 @@
                                                                                 console.log('sign/verify.html');
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
 
+        var $   = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+
+
+
         var ui              = {};
         ui.private          = {};
         ui.public           = {};
@@ -178,53 +182,53 @@
         
         function initdom(){
 
-              var rootnode                              = document.body;
+              var rootnode                                    = document.body;
               
-              var root                                  = {};
+              var root                                        = {};
 
               
-              root.btns                                 = $(rootnode,'#btns');
+              root.btns                                       = $(rootnode,'#btns');
               
-              $(root.btns,'#sign').onclick              = btn.sign;
-              $(root.btns,'#verify').onclick            = btn.verify;
-              
-              
-              root.keys                                 = $(root,'#keys-root');
-              
-              root.private                              = $(root.keys,'#private-key-root');
-              
-              $(root.private,'#load').onclick           = btn.private.load;
-              $(root.private,'#paste').onclick          = btn.private.paste;
-              
-              ui.private.file                           = $(root.private,'#private-key-file');
-              ui.private.node                           = $(root.private,'#private-key');
+              $(root.btns,'[value=sign]').onclick             = btn.sign;
+              $(root.btns,'[value=verify]').onclick           = btn.verify;
               
               
-              root.public                               = $(root.keys,'#public-key-root');
+              root.keys                                       = $(rootnode,'#keys-root');
               
-              $(root.public,'#load').onclick            = btn.public.load;
-              $(root.public,'#paste').onclick           = btn.public.paste;
+              root.private                                    = $(root.keys,'#private-key-root');
               
-              ui.public.file                            = $(root.public,'#public-key-file');
-              ui.public.node                            = $(root.public,'#public-key');
+              $(root.private,'[value=load]').onclick          = btn.private.load;
+              $(root.private,'[value=paste]').onclick         = btn.private.paste;
               
-              
-              root.signature                            = $(rootnode,'#signature-root');
-              
-              $(root.signature,'#load').onclick         = btn.signature.load;
-              $(root.signature,'#paste').onclick        = btn.signature.paste;
-              
-              ui.signature.file                         = $(root.signature,'#signature-file');
-              ui.signature.node                         = $(root.signature,'#signature');
+              ui.private.file                                 = $(root.private,'#private-key-file');
+              ui.private.node                                 = $(root.private,'#private-key');
               
               
-              root.file                                 = $(rootnode,'#file-root');
+              root.public                                     = $(root.keys,'#public-key-root');
               
-              $(root.file,'#load').onclick              = btn.file.load;
-              $(root.file,'#paste').onclick             = btn.file.paste;
+              $(root.public,'[value=load]').onclick           = btn.public.load;
+              $(root.public,'[value=paste]').onclick          = btn.public.paste;
               
-              ui.file.file                              = $(root.file,'#file-file');
-              ui.file.node                              = $(root.file,'#file');
+              ui.public.file                                  = $(root.public,'#public-key-file');
+              ui.public.node                                  = $(root.public,'#public-key');
+              
+              
+              root.signature                                  = $(rootnode,'#signature-root');
+              
+              $(root.signature,'[value=load]').onclick        = btn.signature.load;
+              $(root.signature,'[value=paste]').onclick       = btn.signature.paste;
+              
+              ui.signature.file                               = $(root.signature,'#signature-file');
+              ui.signature.node                               = $(root.signature,'#signature');
+              
+              
+              root.file                                       = $(rootnode,'#file-root');
+              
+              $(root.file,'[value=load]').onclick             = btn.file.load;
+              $(root.file,'[value=paste]').onclick            = btn.file.paste;
+              
+              ui.file.file                                    = $(root.file,'#file-file');
+              ui.file.node                                    = $(root.file,'#file');
               
               
         }//initdom
@@ -368,7 +372,7 @@
 
 */        
         
-})();
+
 
 
 </script>
