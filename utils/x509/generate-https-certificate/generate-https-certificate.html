@@ -178,7 +178,7 @@
                                     
                                     <div id=signing-cert>
                                           <div style='cursor:pointer'>cert</div>
-                                          <div id=cert-file style='font-size:12px;padding:5px'>
+                                          <div id=signing-cert-file style='font-size:12px;padding:5px'>
                                                 none
                                           </div>
                                     </div>
@@ -319,8 +319,9 @@
         var ui            = {};
         ui.node           = {};
         
-        var private_key;
-        var signing_cert;
+        var signing       = {};
+        signing.key       = null;
+        signing.cert      = null;
         
         var ext           = {};
         ext.keyUsage      = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
@@ -391,7 +392,7 @@
               $(root,'#self').addEventListener('click',btn.self);
               $(root,'#key').addEventListener('click',btn.key);
               $(root,'#signing-cert').onclick                             = btn.cert;
-              ui.node.cert                                                = $(root,'#signing-cert');
+              ui.node.cert                                                = $(root,'#signing-cert-file');
                                                 
               ui.bits                                                     = $('#bits');
               
@@ -479,7 +480,7 @@
                     ui.node.keyfile.style.display   = 'block';
                     ui.node.keyfile.textContent     = file.name;
                     
-                    private_key   = txt;
+                    signing.key   = txt;
                 
               }//onchange
               
@@ -493,13 +494,13 @@
               input.onchange    = onchange;
               input.click();
               
-              function onchange(){
+              async function onchange(){
                 
                       var file    = input.files[0];
                       var txt     = await file.text();
                       
                       ui.node.cert.textContent    = file.name;
-                      signing_cert                = txt;
+                      signing.cert                = txt;
                       
               }//onchange
               
@@ -832,9 +833,11 @@
               cert.publicKey            = keys.publicKey;
               
               var signing_key           = keys.privateKey;
+              var signing_cert;
               if(config.key=='key'){
                                               
-                    signing_key   = pki.privateKeyFromPem(private_key);
+                    signing_key     = pki.privateKeyFromPem(signing.key);
+                    signing_cert    = pki.certificateFromPem(signing.cert);
               }
 
               
@@ -855,6 +858,9 @@
 
               cert.setSubject(attrs);
               cert.setIssuer(attrs);
+              if(signing_cert){
+                    cert.setIssuer(signing_cert.subject.attributes);
+              }
               
               var ext2    = [
                 
