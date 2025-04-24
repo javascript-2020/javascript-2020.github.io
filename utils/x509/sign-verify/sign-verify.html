@@ -169,6 +169,8 @@
         ui.file             = {};
         
         
+        var extract         = {};
+        var is              = {};
         var load            = {};
         var btn             = {};
         btn.private         = {};
@@ -270,6 +272,10 @@
 
               
               var pem       = ui.public.node.textContent.trim();
+              if(is.public.cert(pem)){
+                    pem   = extract.key(pem);
+              }
+              
               var public    = nodeforge.pki.publicKeyFromPem(pem);
               var verified = public.verify(md.digest().bytes(),signature);
               console.log('verified',verified);
@@ -415,7 +421,26 @@
 
 
 
-
+        is.public.key   = function(pem){
+          
+              if(pem.indexOf('BEGIN PUBLIC KEY')!==-1){
+                    return true;
+              }
+              return false;
+              
+        }//key
+        
+        
+        is.public.cert    = function(pem){
+          
+              if(pem.indexOf('BEGIN CERTIFICATE')!==-1){
+                    return true;
+              }
+              return false;
+              
+        }//cert
+        
+        
 
         
         async function import_key(pem){
@@ -441,4 +466,15 @@
         }//import_key
 
 
+        extract.key   = function(pem){
+          
+              var cert    = nodeforge.pki.certificateFromPem(pem);
+              var key     = cert.publicKey;
+              var pem     = nodeforge.pki.publicKeyToPem(key);
+              return pem;
+              
+        }//key
+        
+        
+        
 </script>
