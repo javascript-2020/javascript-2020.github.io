@@ -166,11 +166,13 @@
         ui.file             = {};
         
         
+        var load            = {};
         var btn             = {};
         btn.private         = {};
         btn.public          = {};
         btn.signature       = {};
         btn.file            = {};
+        
         
 
   //
@@ -178,8 +180,10 @@
   
         setTimeout(init,50);
         
-        function init(){
+        async function init(){
           
+              await load.nodeforge();
+              
               initdom();
               
         }//init
@@ -237,7 +241,7 @@
               
               ui.file.file                                    = $(root.file,'#file-file');
               ui.file.node                                    = $(root.file,'#file');
-              localStorage['file'] && (ui.file.node.textContent=localStorage['node']);
+              localStorage['file'] && (ui.file.node.textContent=localStorage['file']);
               
         }//initdom
         
@@ -247,15 +251,27 @@
   
         btn.sign    = async function(){
           
-              var txt           = ui.file.node.textContent.trim();
+              var txt         = ui.file.node.textContent.trim();
+              var pem         = ui.private.node.textContent.trim();
+              
+              var key         = nodeforge.pki.privateKeyFromPem(pem);
+              var md          = nodeforge.md.sha1.create();
+              md.update('sign this', 'utf8');
+              
+              var signature   = privateKey.sign(md);
+              console.log(signature);
+
+
+/*
               txt               = new TextEncoder().encode(txt);
               
-              var private_key   = ui.private.node.textContent.trim();
-              var key           = import_key(private_key);
+              var key           = await import_key(private_key);
               
               var signature     = await window.crypto.subtle.sign('RSASSA-PKCS1-v1_5',key,message);
               console.log(signature);
-          
+*/
+
+
         }//sign
         
         
@@ -338,13 +354,31 @@
         
   //:
   
+        load.nodeforge    = async function(){
+          
+              var txt         = localStorage['node-forge'];
+              if(!txt){
+                    var url   = 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
+                                                                                //console.log(url);
+                    var res   = await fetch(url);
+                    txt       = await res.text();
+                    localStorage['node-forge']    = txt;
+              }
+              var blob        = new Blob([txt],{type:'text/javascript'});
+              var url         = window.URL.createObjectURL(blob);
+              nodeforge       = await import(url);
+              nodeforge       = nodeforge.default;
+              console.log(nodeforge);
+              
+        }//nodeforge
+
   
-        function load(){
+        load.file   = function(){
           
               var resolve,promise=new Promise(res=>resolve=res);
               
-              var input   = document.createElement('input');
-              input.type    = 'file';
+              var input         = document.createElement('input');
+              input.type        = 'file';
               input.onchange    = onchange;
               input.click();
               
@@ -368,17 +402,19 @@
               
         }//paste
               
+
+
+
+
+
         
-        function import_key(pem){
+        async function import_key(pem){
           
-              console.log('['+pem+']');
-              var hdr         = '-----BEGIN PRIVATE KEY-----';
-              var ftr         = '-----END PRIVATE KEY-----';
-              
-              var i1          = hdr.length;
-              var i2          = -ftr.length;
-              var b64         = pem.slice(i1,i2);
-              console.log('['+b64+']');
+              //console.log('['+pem+']');
+              var i1          = pem.indexOf('\n');
+              var i2          = pem.lastIndexOf('\n');
+              var b64         = pem.slice(i1+1,i2);
+              //console.log('['+b64+']');
               
               var bin         = window.atob(b64);
               var bytes       = [...bin].map(c=>c.charCodeAt(0));
@@ -388,7 +424,7 @@
               var algorithm   = {name:'RSA-PSS',hash:'SHA-256'};
               var extract     = true;
               var use         = ['sign'];
-              var key         = window.crypto.subtle.importKey('pkcs8',buf,algorithm,extract,use);
+              var key         = await window.crypto.subtle.importKey('pkcs8',buf,algorithm,extract,use);
               console.log(key);
               return key;
             
