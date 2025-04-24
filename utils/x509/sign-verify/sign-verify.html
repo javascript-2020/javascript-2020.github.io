@@ -39,17 +39,22 @@
         input[type=button]
               {cursor:pointer}
         pre
-              {border:1px solid lightgray;padding:10px;font-family:monospace}
+              {border:1px solid lightgray;padding:10px;font-family:monospace;margin:0}
               
         #btns
               {}
         #keys-root
-              {display:flex;height:100px}
+              {display:flex;height:200px;gap:20px}
               
         #private-key-root
-              {flex:1}
+              {flex:1;display:flex;flex-direction:column}
+        #private-key
+              {flex:1;overflow:auto}
         #public-key-root
-              {flex:1}
+              {flex:1;overflow:auto;display:flex;flex-direction:column}
+        #public-key
+              {flex:1;overflow:auto}
+
               
         .filename
               {font-size:12px;padding:5px}
@@ -238,6 +243,21 @@
   
   
         btn.sign    = function(){
+          
+              var message   = ui.file.node.textContent.trim();
+              message       = new TextEncoder().encode(message);
+              
+              var private_key   = ui.private.node.textContent.trim();
+              var key   = import_key(private_key);
+              
+              let signature = await window.crypto.subtle.sign(
+                "RSASSA-PKCS1-v1_5",
+                privateKey,
+                message
+              );
+              
+              console.log(signature);
+          
         }//sign
         
         
@@ -329,6 +349,8 @@
               input.onchange    = onchange;
               input.click();
               
+              return promise;
+              
               async function onchange(){
                 
                     var file    = input.files[0];
@@ -341,38 +363,35 @@
         
         
         async function paste(){
-          
-              var resolve,promise=new Promise(res=>resolve=res);
               
               var txt   = await navigator.clipboard.readText();
-              
-              resolve(txt);
+              return txt;
               
         }//paste
               
-
-
-
         
-        
-/*
-
-        var message   = '';
-        message       = new TextEncoder().encode(message);
-        
-        
-        
-        let signature = await window.crypto.subtle.sign(
-          "RSASSA-PKCS1-v1_5",
-          privateKey,
-          message
-        );
-        
-        console.log(signature);
-
-*/        
-        
-
+        function import_key(pem){
+          
+              var hdr         = '-----BEGIN PRIVATE KEY-----';
+              var ftr         = '-----END PRIVATE KEY-----';
+              
+              var i1          = hdr.length;
+              var i2          = key.length-ftr.length-1;
+              var b64         = pem.substring(i1,i2);
+              
+              var bin         = window.atob(b64);
+              var bytes       = [...bin].map(c=>c.charCodeAt(0));
+              var uint8       = new Uint8Array(bytes);                  
+              var buf         = uint8.buffer;
+              
+              var algorithm   = {name:'RSA-PSS',hash:'SHA-256'};
+              var extract     = true;
+              var use         = ['sign'];
+              var key         = window.crypto.subtle.importKey('pkcs8',buf,algorithm,extract,use);
+              console.log(key);
+              return key;
+            
+        }//import_key
 
 
 </script>
