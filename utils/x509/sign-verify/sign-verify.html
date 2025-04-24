@@ -256,22 +256,14 @@
               
               var key         = nodeforge.pki.privateKeyFromPem(pem);
               var md          = nodeforge.md.sha1.create();
-              md.update('sign this', 'utf8');
+              md.update(txt,'utf8');
               
-              var signature   = privateKey.sign(md);
-              console.log(signature);
+              var signature   = key.sign(md);
+              var b64         = window.btoa(signature);
+              console.log(b64);
 
-
-/*
-              txt               = new TextEncoder().encode(txt);
+              ui.signature.node.textContent   = b64;
               
-              var key           = await import_key(private_key);
-              
-              var signature     = await window.crypto.subtle.sign('RSASSA-PKCS1-v1_5',key,message);
-              console.log(signature);
-*/
-
-
         }//sign
         
         
@@ -281,7 +273,7 @@
         
         btn.private.load    = async function(){
           
-              var {file,txt}                    = await load();
+              var {file,txt}                    = await load.file();
               ui.private.file.textContent       = file.name;
               ui.private.node.textContent       = txt;
               localStorage['private']=txt;
@@ -299,7 +291,7 @@
         
         btn.public.load   = async function(){
           
-              var {file,txt}                    = await load();
+              var {file,txt}                    = await load.file();
               ui.public.file.textContent        = file.name;
               ui.public.node.textContent        = txt;
               
@@ -317,7 +309,7 @@
         
         btn.signature.load    = async function(){
           
-              var {file,txt}                    = await load();
+              var {file,txt}                    = await load.file();
               ui.signature.file.textContent     = file.name;
               ui.signature.node                 = txt;
           
@@ -335,7 +327,7 @@
         
         btn.file.load   = async function(){
           
-              var {file,txt}                    = await load();
+              var {file,txt}                    = await load.file();
               ui.file.file.textContent          = file.name;
               ui.file.node.textContent          = txt;
               localStorage['file']=txt;
