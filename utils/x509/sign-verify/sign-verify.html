@@ -217,6 +217,14 @@
               initdom();
 
               
+              
+              
+              //test();
+              //test2();
+
+
+
+              
         }//init
         
         
@@ -532,6 +540,18 @@
         
         
 
+        extract.key   = function(pem){
+          
+              var cert    = nodeforge.pki.certificateFromPem(pem);
+              var key     = cert.publicKey;
+              var pem     = nodeforge.pki.publicKeyToPem(key);
+              return pem;
+              
+        }//key
+
+
+  //:
+  
         
         async function import_key(pem){
           
@@ -556,14 +576,138 @@
         }//import_key
 
 
-        extract.key   = function(pem){
+
+
+        async function test(){
           
-              var cert    = nodeforge.pki.certificateFromPem(pem);
-              var key     = cert.publicKey;
-              var pem     = nodeforge.pki.publicKeyToPem(key);
-              return pem;
-              
-        }//key
+          
+// Generate RSA key pair
+const keypair = nodeforge.pki.rsa.generateKeyPair({ bits: 2048 });
+const privateKeyPem = nodeforge.pki.privateKeyToPem(keypair.privateKey);
+const publicKeyPem = nodeforge.pki.publicKeyToPem(keypair.publicKey);
+
+//console.log("Private Key PEM:", privateKeyPem);
+//console.log("Public Key PEM:", publicKeyPem);
+
+
+
+function pemToArrayBuffer(pem) {
+    const b64 = pem
+        .replace(/-----[^-]+-----/g, '') // Remove PEM headers and footers
+        .replace(/\s+/g, ''); // Remove whitespace
+    console.log(b64);
+    const binary = atob(b64); // Decode Base64
+    const buffer = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+        buffer[i] = binary.charCodeAt(i);
+    }
+    return buffer.buffer; // Return ArrayBuffer
+}
+
+
+async function importRSAPublicKey(pemKey) {
+    const arrayBuffer = pemToArrayBuffer(pemKey);
+    return await crypto.subtle.importKey(
+        "spki", // Format for public key
+        arrayBuffer,
+        {
+            name: "RSA-OAEP",
+            hash: { name: "SHA-256" }
+        },
+        true, // Key is extractable
+        ["encrypt"] // Key usage
+    );
+}
+
+
+async function importRSAPrivateKey(pemKey) {
+    const arrayBuffer = pemToArrayBuffer(pemKey);
+    return await crypto.subtle.importKey(
+        "pkcs8", // Format for private key
+        arrayBuffer,
+        {
+            name: "RSA-OAEP",
+            hash: { name: "SHA-256" }
+        },
+        true, // Key is extractable
+        ["decrypt"] // Key usage
+    );
+}
+
+
+// Example usage
+const publicKey = await importRSAPublicKey(publicKeyPem);
+console.log("Imported WebCrypto Key:", publicKey);
+
+try{
+var privateKey    = await importRSAPrivateKey(privateKeyPem);
+}
+catch(err){
+      console.error(err);
+      return;
+}
+console.log("Imported WebCrypto Key:", privateKey);
+
+
+
+
+        }//test
+        
+        
+        
+        async function test2(){
+          
+const keypair = nodeforge.pki.rsa.generateKeyPair({ bits: 2048 });
+var privateKeyPem = nodeforge.pki.privateKeyToPem(keypair.privateKey);
+
+
+
+function pemToArrayBuffer(pem) {
+    const b64 = pem
+        .replace(/-----[^-]+-----/g, '') // Remove PEM headers and footers
+        .replace(/\s+/g, ''); // Remove whitespace
+    console.log(b64);
+    
+    const binary = atob(b64); // Decode Base64
+    const buffer = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+        buffer[i] = binary.charCodeAt(i);
+    }
+    return buffer.buffer; // Return ArrayBuffer
+}
+
+
+async function importRSAPrivateKey(pemKey) {
+    const arrayBuffer = pemToArrayBuffer(pemKey);
+    console.log(arrayBuffer);
+    return await crypto.subtle.importKey(
+        "pkcs8", // Specify PKCS#8 format for private keys
+        arrayBuffer,
+        {
+            name: "RSA-OAEP",
+            hash: { name: "SHA-256" } // Choose the hash algorithm
+        },
+        true, // Key is extractable
+        ["decrypt"] // Specify key usage
+    );
+}
+
+// Example usage
+privateKeyPem=privateKeyPem.replaceAll('RSA ','');
+console.log("Private Key PEM:", privateKeyPem);
+
+
+const privateKey = await importRSAPrivateKey(privateKeyPem);
+console.log("Imported WebCrypto Key:", privateKey);
+
+
+
+
+
+        }//test2
+        
+        
+        
         
         
         
