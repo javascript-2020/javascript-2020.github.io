@@ -70,7 +70,7 @@
     .opt .spc             
                           {flex:1}                          
     #key-file
-                          {background:lightyellow;padding:5px;display:none}
+                          {padding:5px;}
     #bits 
                           {width:80px;text-align:center}
     #cacert               
@@ -154,21 +154,36 @@
                   <div id=signing-key>
                   
                         <div class=sub>signing key</div>
-                        <div class=opt-root>
-                              <span id=self class=opt>
+                        
+                        <div style='display:flex;align-items:flex-start;gap:20px'>
+                        
+                              <div id=self class=opt style='flex:1;'>
                                     <span>self-signed</span>
                                     <span class=spc></span>
                                     <input type=checkbox checked>
-                              </span>
-                              <span id=key class=opt style='display:inline'>
-                                    <div style='display:flex'>
-                                          <span>private key</span>
-                                          <span class=spc></span>
-                                          <input type=checkbox>
+                              </div>
+                              
+                              <div id=cert-root style='flex:1;display:flex;flex-direction:column;border:1px solid lightgray;padding:5px 10px'>
+                              
+                                    <div id=key>
+                                          <div style='display:flex;width:100%;cursor:pointer'>
+                                                <span>private key</span>
+                                                <span style='flex:1'></span>
+                                                <input type=checkbox>
+                                          </div>
+                                          <div id=key-file style='font-size:12px'>
+                                                none
+                                          </div>
                                     </div>
-                                    <div id=key-file>
+                                    
+                                    <div id=signing-cert>
+                                          <div style='cursor:pointer'>cert</div>
+                                          <div id=cert-file style='font-size:12px;padding:5px'>
+                                                none
+                                          </div>
                                     </div>
-                              </span>
+                                    
+                              </div cert-root>
                         </div>
                   
                   </div signing-key>
@@ -305,6 +320,7 @@
         ui.node           = {};
         
         var private_key;
+        var signing_cert;
         
         var ext           = {};
         ext.keyUsage      = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
@@ -369,45 +385,47 @@
               $('#config-btns [value=clear]').onclick                     = clear;
               $('#config-btns [value=localhost]').onclick                 = localhost;
               
-              var root                        = $('#signing-key .opt-root');
-              ui.key                          = $.chkbox.group(root,'#self','#key');
-              ui.node.keyfile                 = $(root,'#key-file');
+              var root                                                    = $('#signing-key');
+              ui.key                                                      = $.chkbox.group(root,'#self','#key');
+              ui.node.keyfile                                             = $(root,'#key-file');
               $(root,'#self').addEventListener('click',btn.self);
               $(root,'#key').addEventListener('click',btn.key);
+              $(root,'#signing-cert').onclick                             = btn.cert;
+              ui.node.cert                                                = $(root,'#signing-cert');
                                                 
-              ui.bits                         = $('#bits');
+              ui.bits                                                     = $('#bits');
               
-              ca                              = $.chkbox('#cacert');
-              ui.pathlen                      = $('#pathlen');
+              ca                                                          = $.chkbox('#cacert');
+              ui.pathlen                                                  = $('#pathlen');
 
-              var node    = {};
-              node.root   = $('#ext-root');
-              node.ext    = $('.ext');
+              var node                                                    = {};
+              node.root                                                   = $('#ext-root');
+              node.ext                                                    = $('.ext');
               node.ext.remove();
-              node.opt    = $(node.ext,'.opt');
+              node.opt                                                    = $(node.ext,'.opt');
               node.opt.remove();
               
               for(var key in ext){
                 
-                    var next                      = node.ext.cloneNode(true);
-                    next.id                       = key;
-                    $(next,'.sub').textContent    = key;
-                    var root                      = $(next,'.opt-root');
+                    var next                                              = node.ext.cloneNode(true);
+                    next.id                                               = key;
+                    $(next,'.sub').textContent                            = key;
+                    var root                                              = $(next,'.opt-root');
                     
                     ui[key]   = {};
                     
                     ext[key].sort();
                     ext[key].forEach(name=>{
                       
-                          var nopt                      = node.opt.cloneNode(true);
-                          nopt.id                       = name;
-                          $(nopt,'.name').textContent   = name;
-                          var chk                       = $(nopt,'[type=checkbox]')
-                          chk.id                        = name;
-                          chk.checked                   = true;
+                          var nopt                                        = node.opt.cloneNode(true);
+                          nopt.id                                         = name;
+                          $(nopt,'.name').textContent                     = name;
+                          var chk                                         = $(nopt,'[type=checkbox]')
+                          chk.id                                          = name;
+                          chk.checked                                     = true;
                           root.append(nopt);
                           
-                          ui[key][name]                 = $.chkbox(root,`#${name}`,null);
+                          ui[key][name]                                   = $.chkbox(root,`#${name}`,null);
                           
                     });
                     
@@ -416,22 +434,24 @@
               }//for
               
               
-              list                                    = {};
-              list.dns                                = $('#dns-list');
-              list.ip                                 = $('#ip-list');
-              item                                    = {};
-              item.dns                                = $(list.dns,'.item');
-              item.ip                                 = $(list.ip,'.item');
+              list                                                        = {};
+              list.dns                                                    = $('#dns-list');
+              list.ip                                                     = $('#ip-list');
+              item                                                        = {};
+              item.dns                                                    = $(list.dns,'.item');
+              item.ip                                                     = $(list.ip,'.item');
                     
-              $('#dns-root [value=add]').onclick      = e=>create('dns');
-              $('#ip-root [value=add]').onclick       = e=>create('ip');
+              $('#dns-root [value=add]').onclick                          = e=>create('dns');
+              $('#ip-root [value=add]').onclick                           = e=>create('ip');
                         
-              $('#from').value                        = date();
-              $('#to').value                          = date(true);
+              $('#from').value                                            = date();
+              $('#to').value                                              = date(true);
       
+
       
               localhost();
               
+
               
         }//initdom
 
@@ -440,10 +460,6 @@
   
   
         btn.self    = function(){
-          
-              ui.node.keyfile.style.display   = '';
-              ui.node.keyfile.textContent     = '';
-                
         }//self
         
         
@@ -468,6 +484,26 @@
               }//onchange
               
         }//key
+        
+        
+        btn.cert    = function(){
+          
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              function onchange(){
+                
+                      var file    = input.files[0];
+                      var txt     = await file.text();
+                      
+                      ui.node.cert.textContent    = file.name;
+                      signing_cert                = txt;
+                      
+              }//onchange
+              
+        }//cert
 
         
   //:
@@ -533,6 +569,7 @@
 
                     
               generate_certificate(config);
+              
                     
         }//preset
 
