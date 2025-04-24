@@ -50,6 +50,9 @@
               {flex:1}
         #public-key-root
               {flex:1}
+              
+        .filename
+              {font-size:12px;padding:5px}
 
 </style>
 
@@ -74,11 +77,10 @@
             <img class=hdr-title src='images/generate-key-pair.png' style='height:60px;top:-15px'>
             
             <div class=hdr-date>
-                  26 Mar 2025
+                  24 Apr 2025
             </div>
         </div hdr>
         
-
         <div id=btns>
               <input value=sign type=button>
               <input value=verify type=button>
@@ -93,6 +95,9 @@
                           <input value=load type=button>
                           <input value=paste type=button>
                     </div>
+                    <div id=private-key-file class=filename>
+                          none
+                    </div>
                     <pre id=private-key></pre>
               </div>
               <div id=public-key-root>
@@ -102,6 +107,9 @@
                     <div>
                           <input value=load type=button>
                           <input value=paste type=button>
+                    </div>
+                    <div id=public-key-file class=filename>
+                          none
                     </div>
                     <pre id=public-key></pre>
               </div>
@@ -115,6 +123,9 @@
                     <input value=load type=button>
                     <input value=paste type=button>
               </div>
+              <div id=signature-file class=filename>
+                    none
+              </div>
               <pre id=signature></pre>
         </div>
         
@@ -126,22 +137,222 @@
                     <input value=load type=button>
                     <input value=paste type=button>
               </div>
+              <div id=file-file class=filename>
+                    none
+              </div>
               <pre id=file></pre>
         </div>
 
 
 
 <script>
+                                                                                console.clear();
+                                                                                console.log('sign/verify.html');
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
 
+        var ui              = {};
+        ui.private          = {};
+        ui.public           = {};
+        ui.signature        = {};
+        ui.file             = {};
+        
+        
+        var btn             = {};
+        btn.private         = {};
+        btn.public          = {};
+        btn.signature       = {};
+        btn.file            = {};
+        
 
+  //
+  
+  
+        setTimeout(init,50);
+        
+        function init(){
+          
+              initdom();
+              
+        }//init
+        
+        
+        function initdom(){
 
-(async()=>{
+              var rootnode                              = document.body;
+              
+              var root                                  = {};
 
-console.clear();
+              
+              root.btns                                 = $(rootnode,'#btns');
+              
+              $(root.btns,'#sign').onclick              = btn.sign;
+              $(root.btns,'#verify').onclick            = btn.verify;
+              
+              
+              root.keys                                 = $(root,'#keys-root');
+              
+              root.private                              = $(root.keys,'#private-key-root');
+              
+              $(root.private,'#load').onclick           = btn.private.load;
+              $(root.private,'#paste').onclick          = btn.private.paste;
+              
+              ui.private.file                           = $(root.private,'#private-key-file');
+              ui.private.node                           = $(root.private,'#private-key');
+              
+              
+              root.public                               = $(root.keys,'#public-key-root');
+              
+              $(root.public,'#load').onclick            = btn.public.load;
+              $(root.public,'#paste').onclick           = btn.public.paste;
+              
+              ui.public.file                            = $(root.public,'#public-key-file');
+              ui.public.node                            = $(root.public,'#public-key');
+              
+              
+              root.signature                            = $(rootnode,'#signature-root');
+              
+              $(root.signature,'#load').onclick         = btn.signature.load;
+              $(root.signature,'#paste').onclick        = btn.signature.paste;
+              
+              ui.signature.file                         = $(root.signature,'#signature-file');
+              ui.signature.node                         = $(root.signature,'#signature');
+              
+              
+              root.file                                 = $(rootnode,'#file-root');
+              
+              $(root.file,'#load').onclick              = btn.file.load;
+              $(root.file,'#paste').onclick             = btn.file.paste;
+              
+              ui.file.file                              = $(root.file,'#file-file');
+              ui.file.node                              = $(root.file,'#file');
+              
+              
+        }//initdom
+        
+
+  //:
+  
+  
+        btn.sign    = function(){
+        }//sign
+        
+        
+        btn.verify    = function(){
+        }//verify
+        
+        
+        btn.private.load    = async function(){
+          
+              var {file,txt}                    = await load();
+              ui.private.file.textContent       = file.name;
+              ui.private.node.textContent       = txt;
+              
+        }//load
+        
+        
+        btn.private.paste   = async function(){
+          
+              var txt                           = await paste();
+              ui.private.file.textContent       = 'none';
+              ui.private.node.textContent       = txt;
+              
+        }//paste
+        
+        
+        btn.public.load   = async function(){
+          
+              var {file,txt}                    = await load();
+              ui.public.file.textContent        = file.name;
+              ui.public.node.textContent        = txt;
+              
+        }//load
+        
+        
+        btn.public.paste    = function(){
+          
+              var txt                           = await paste();
+              ui.public.file.textContent        = 'none';
+              ui.public.node.textContent        = txt;
+              
+        }//paste
+        
+        
+        btn.signature.load    = function(){
+          
+              var {file,txt}                    = await load();
+              ui.signature.file.textContent     = file.name;
+              ui.signature.node                 = txt;
+          
+        }//load
+        
+        
+        btn.signature.paste   = function(){
+          
+              var txt                           = await paste();
+              ui.signature.file.textContent     = 'none';
+              ui.signature.node.textContent     = txt;
+              
+        }//paste
+        
+        
+        btn.file.load   = function(){
+          
+              var {file,txt}                    = await load();
+              ui.file.file.textContent          = file.name;
+              ui.file.node.textContent          = txt;
+              
+        }//load
+        
+        
+        btn.file.paste    = function(){
+          
+              var txt                           = await paste();
+              ui.file.file.textContent          = 'none';
+              ui.file.node.textContent          = txt;
+              
+        }//paste
+        
+        
+  //:
+  
+  
+        function load(){
+          
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var input   = document.createElement('input');
+              input.type    = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              async function onchange(){
+                
+                    var file    = input.files[0];
+                    var txt     = await file.text();
+                    resolve({file,txt});
+                    
+              }//onchange
+              
+        }//load
+        
+        
+        async function paste(){
+          
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var txt   = await navigator.clipboard.readText();
+              
+              resolve(txt);
+              
+        }//paste
+              
 
 
 
         
+        
+/*
+
         var message   = '';
         message       = new TextEncoder().encode(message);
         
@@ -154,7 +365,8 @@ console.clear();
         );
         
         console.log(signature);
-        
+
+*/        
         
 })();
 
