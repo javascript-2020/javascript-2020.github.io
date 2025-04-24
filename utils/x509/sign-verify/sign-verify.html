@@ -42,7 +42,11 @@
               {border:1px solid lightgray;padding:10px;font-family:monospace;margin:0}
               
         #btns
-              {}
+              {display:flex}
+              
+        #result
+              {border:1px solid green;padding:5px 10px}
+              
         #keys-root
               {display:flex;height:200px;gap:20px}
               
@@ -89,8 +93,8 @@
         </div hdr>
         
         <div id=btns>
-              <input value=sign type=button>
-              <input value=verify type=button>
+              <input value=sign type=button style='margin-right:20px'>
+              <input value=verify type=button style='margin-right:10px'>
               <div id=result style='display:none'></div>
         </div>
         
@@ -170,6 +174,7 @@
                                     
                               }//style
 
+
         var style           = {};
         style.ok            = {
               borderColor   : 'green',
@@ -180,6 +185,7 @@
               color         : 'red'
         };
         
+
         var ui              = {};
         ui.private          = {};
         ui.public           = {};
@@ -296,13 +302,22 @@
         btn.verify    = function(){
           
               var txt         = ui.file.node.textContent.trim();
+              
               var pem       = ui.public.node.textContent.trim();
               if(is.public.cert(pem)){
                     pem   = extract.key(pem);
               }
               
-              var public    = nodeforge.pki.publicKeyFromPem(pem);
-              var verified = public.verify(md.digest().bytes(),signature);
+              var signature   = ui.signature.node.textContent.trim();
+              signature       = window.atob(signature);
+              
+              var md          = nodeforge.md.sha1.create();
+              md.update(txt,'utf8');
+              var bytes       = md.digest().bytes();
+              
+              var public      = nodeforge.pki.publicKeyFromPem(pem);
+              var verified    = public.verify(bytes,signature);
+              
               console.log('verified',verified);
               display.result(verified);
               
@@ -397,12 +412,13 @@
         display.result    = function(result){
           
               if(result){
-                    $(ui.result,style.ok);
+                    $.style(ui.result,style.ok);
                     ui.result.textContent   = 'ok';
               }else{
-                    $(ui.result,style.error);
+                    $.style(ui.result,style.error);
                     ui.result.textContent   = 'error';
               }
+              ui.result.style.display    = 'block';
               
         }//result
         
