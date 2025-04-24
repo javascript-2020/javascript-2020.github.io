@@ -207,6 +207,7 @@
               
               ui.private.file                                 = $(root.private,'#private-key-file');
               ui.private.node                                 = $(root.private,'#private-key');
+              localStorage['private'] && (ui.private.node.textContent=localStorage['private']);
               
               
               root.public                                     = $(root.keys,'#public-key-root');
@@ -216,6 +217,7 @@
               
               ui.public.file                                  = $(root.public,'#public-key-file');
               ui.public.node                                  = $(root.public,'#public-key');
+              localStorage['public'] && (ui.public.node.textContent=localStorage['public']);
               
               
               root.signature                                  = $(rootnode,'#signature-root');
@@ -225,6 +227,7 @@
               
               ui.signature.file                               = $(root.signature,'#signature-file');
               ui.signature.node                               = $(root.signature,'#signature');
+              localStorage['signature'] && (ui.signature.node.textContent=localStorage['signature']);
               
               
               root.file                                       = $(rootnode,'#file-root');
@@ -234,7 +237,7 @@
               
               ui.file.file                                    = $(root.file,'#file-file');
               ui.file.node                                    = $(root.file,'#file');
-              
+              localStorage['file'] && (ui.file.node.textContent=localStorage['node']);
               
         }//initdom
         
@@ -242,7 +245,7 @@
   //:
   
   
-        btn.sign    = function(){
+        btn.sign    = async function(){
           
               var txt           = ui.file.node.textContent.trim();
               txt               = new TextEncoder().encode(txt);
@@ -265,7 +268,7 @@
               var {file,txt}                    = await load();
               ui.private.file.textContent       = file.name;
               ui.private.node.textContent       = txt;
-              
+              localStorage['private']=txt;
         }//load
         
         
@@ -319,6 +322,7 @@
               var {file,txt}                    = await load();
               ui.file.file.textContent          = file.name;
               ui.file.node.textContent          = txt;
+              localStorage['file']=txt;
               
         }//load
         
@@ -367,12 +371,14 @@
         
         function import_key(pem){
           
+              console.log('['+pem+']');
               var hdr         = '-----BEGIN PRIVATE KEY-----';
               var ftr         = '-----END PRIVATE KEY-----';
               
               var i1          = hdr.length;
-              var i2          = key.length-ftr.length-1;
-              var b64         = pem.substring(i1,i2);
+              var i2          = -ftr.length;
+              var b64         = pem.slice(i1,i2);
+              console.log('['+b64+']');
               
               var bin         = window.atob(b64);
               var bytes       = [...bin].map(c=>c.charCodeAt(0));
