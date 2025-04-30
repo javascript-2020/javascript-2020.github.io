@@ -1,0 +1,423 @@
+
+
+<html>
+      <head>
+
+            <title>html-editor</title>
+
+            <base href='https://javascript-2020.github.io/utils/html-editor/html-editor.html'>
+            
+            <link rel=icon type='image/png' href='images/html-editor-favicon.png'>
+            <link rel=stylesheet href='/utils/css/utils.css'>
+            
+            <style id=page-inline>
+            
+                  #help         {padding:2px}
+                  
+                  #hdr          {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
+                  .icon         {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+                  .spc          {flex:1}
+                  
+                  #run          {color:blue;font-weight:bold}
+                  #horiz        {margin-left:50px;border:none}
+                  #vert         {border:none}
+            
+                  #view         {display:none;flex:1}
+            
+                  publish-root  {z-index:1;position:relative}
+                  editor-root   {width:50%}
+                  output-root   {flex:1}
+                        
+                  button        {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}            
+            
+            </style>
+            
+
+            <script>
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+                  var mod     = {};
+                  mod.menu    = {};
+                  mod.utils   = {};
+                  
+                  var filemod;                                                                                
+                  var publish;
+                  var editor;
+                  var output;
+                  var log;
+
+
+                  var menu        = {};
+                  var slider      = {};
+                  
+                  var ui          = {};
+                  ui.mode         = 'vert';
+
+              //:
+              
+                  async function init(){
+                                                                                console.log('init');
+
+                        //keydown                   = keydown();
+                        menumod                   = menumod();
+                        mod.utils.hdr             = mod.utils.hdr();
+                        mod.menu.main             = mod.menu.main();
+                        filemod                   = filemod();
+                        publish                   = publish();
+                        editor                    = editor();
+                        output                    = output();
+                        log                       = log();
+                        
+                        mod.utils.hdr.initmod({menu,menumod});
+                        mod.menu.main.initmod({menumod,editor});
+                        filemod.initmod({menumod,complete,editor});
+                        publish.initmod({menumod,run});
+                        editor.initmod({});
+                        output.initmod({});
+                        log.initmod({});
+                        
+                        mod.menu.main.init();
+                        mod.utils.hdr.init();
+                        filemod.init();
+                        publish.init();
+                        editor.init();
+                        output.init();
+                        log.init();
+
+                    //:
+                    
+                        window.onfocus            = ()=>editor && editor.focus();
+                        keydown.add(kd);
+                        menumod.on.close          = ()=>editor.focus();
+
+                        
+                        await initdom(document.body);
+
+
+                        init.complete();
+
+                        
+                  }//init
+
+
+                  init.stack            = [];
+                  init.stack.ct         = 0;
+                  init.stack.total      = 1;
+                  init.stack.mode       = '';
+                  init.stack.complete   = false;
+                  Object.defineProperty(init.stack,'add',{get:()=>{
+                        init.stack.total++;
+                        init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+                  }});
+                  Object.defineProperty(init.stack,'complete',{get:()=>{
+                        init.stack.ct++;
+                        init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+                        init.stack.ct>=init.stack.total && init();
+                  }});
+                  
+                  //  (typeof init!='undefined' && init?.stack && init.stack.add)
+                  //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+                  
+                  init.complete   = function(){
+                    
+                        init.complete.stack.forEach(fn=>fn());
+                        
+                  }//complete
+                  
+                  init.complete.stack   = [];
+                  init.complete.add     = fn=>init.complete.stack.push(fn);
+
+                  
+            </script>
+
+            <script libs>
+
+                  init.stack.add;
+                  
+                  var ext;
+                  var $,datatype,menumod,keydown;
+                  
+                  fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
+                    .then(res=>res.text().then(async txt=>{
+
+                        ext           = eval(txt);
+                        var promise   = ext.load.libs(
+                              'js/dom/$.js',
+                              'js/core/datatype.js',
+                              'js/dom/menumod/menumod.js',
+                              'js/dom/keydown/keydown.js'
+                        );
+                        [$,datatype,menumod,keydown]   = await promise;
+
+                        init.stack.complete;
+
+                    }));
+
+            </script>
+            
+      </head>
+
+      
+      <body>
+
+            <hdr-utils>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  <img class=title src='images/html-editor.png' style='top:-5px;height:55px'>
+                  <span slot=date>18 Mar 2025</span>
+            </hdr-utils>
+
+
+            <div id=hdr>
+                        
+                  <main-menu-local>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </main-menu-local>
+
+                  <filemod-api>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </filemod-api>
+
+                  <publish>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </publish>
+
+                  <button id=run>run</button>
+
+                  <span class=spc></span>
+
+                  <img id=horiz class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAPhJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwUNVehj9//jDcv3+f4dChQx8/fvy4qLa2No8R5FMhIaFp8fHx/NS2ED20QA5YuHDhx3fv3mUxdnZ2XnR3d9dTVVWlRqgSNOP27dsMO3fuvMTY2Nj4u6CggIXWvoW5COTrCRMm/AEF9f/S0lKCLqWmgu7uboZRi6kZojjNGg1qugQzyJLRoKZ/UNPNRiSLRksuuoT6aHaiSzCPllx0C2Z4UA9YY2/AmrcD1qAfsC7MQHXaANO37pOxy/mWAAAAAElFTkSuQmCC'>
+                  <img id=vert class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAQxJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwEGdvd3c3Q2lpKUG3/fnzh+H+/fsMhw4d+vjx48dFtbW1eYwgnwoJCU2Lj4/nJ9ZCmE3EWgxTD3LAwoULP7579y6LsbOz86K7u7ueqqoqQZejKyDVYpD+27dvM+zcufMSY2Nj4++CggIWUn0LMoQci0G+njBhwh9QUP8nJp6wBQc5FsMcPGoxSQlsNKiJDS5QSI0mLmJDC6xuNHERG1yjiYvYkIKrG01cxAbZaOIiNqSGeOIasMbegDVvB6xBP2BdmIHqtAEA6MBFop3TQsgAAAAASUVORK5CYII='>
+
+            </div>
+            
+            <div id=view>
+            
+                  <editor-api>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </editor-api>
+                  
+                  <div id=page-slider style='width:10px;cursor:ew-resize'></div>
+                  
+                  <output-local>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </output-local>
+                  
+            </div>
+
+      </body>
+
+<script>
+                                                                                console.log('main');
+        async function initdom(rootnode){   //c
+                                                                                console.log('[html-editor ]','initdom');
+              var root                      = rootnode;
+              
+              keydown.initdom();
+              menumod.add.style();
+
+              
+              mod.utils.hdr.initdom();
+
+              
+              mod.menu.main.initdom();
+
+              filemod.initdom();
+              
+              publish.initdom();
+              
+              $('#run').onclick             = run;
+
+              $('#horiz').onclick           = horiz;
+              $('#vert').onclick            = vert;
+              
+
+              var view                      = $('#view');
+
+              await editor.initdom(view,'html');
+              slider.node                   = $.slider.glass('editor-root','#page-slider','output-root',slider,ui,output);
+              output.initdom();
+
+
+              log.initdom();
+
+              
+              ui.setup(view);
+
+
+              editor.focus();
+
+        }//initdom
+
+
+        function kd(e){
+
+              if(e.key=='Enter' && e.ctrlKey){
+                    e.preventDefault();
+                    run();
+              }
+
+              if(e.key==' ' && e.ctrlKey){
+                    e.preventDefault();
+                    menumod.open();
+              }
+
+              if(e.key=='s' && e.ctrlKey){
+                    e.preventDefault();
+                    filemod.save();
+              }
+
+              if(e.key=='Delete' && e.ctrlKey){
+                    e.preventDefault();
+                    jsonblob.util.delete()
+              }
+              
+        }//keydown
+
+
+  //:
+
+
+        function complete(file){
+        
+              editor.filename(file);
+              editor.filename.save.hide();
+              filemod.cur   = file;
+              menumod.close();
+              editor.focus();
+              
+        }//complete
+
+        
+        complete.load=function(file,txt){
+        
+              editor.clear();
+              output.kill();
+              editor.setValue(txt,-1);
+              complete(file);
+              
+        }//complete.load
+
+        
+        complete.save=function(file,confirm=true){
+
+              complete(file);
+              
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
+        }//save
+
+        
+  //:
+
+  
+      window.onmessage=function(e){
+
+            
+            var json    = JSON.parse(e.data);
+
+            var txt   = json.code||json.text||json.txt;
+            if(txt){
+                  editor.setValue(txt,-1);
+            }
+
+            if(json.autorun){
+                  run();
+            }
+
+
+      }//onmessage
+
+
+  //:
+
+
+      ui.setup=function(view){
+
+            var o   = localStorage.getItem('orientation');
+            if(o==='horiz'){
+                  horiz();
+            }
+            view.style.display    = 'flex';
+
+      }//setup
+
+
+  //:
+
+
+      function horiz(){
+
+            localStorage.setItem('orientation','horiz');
+
+            ui.mode                     = 'horiz';
+            slider.node.style.cursor    = 'ns-resize';
+            slider.node.style.width     = '100%';
+            slider.node.style.height    = '10px';
+
+            view.style.flexDirection    = 'column';
+
+            editor.horiz();
+            output.horiz();
+            editor.focus();
+
+      }//horiz
+
+
+      function vert(){
+
+            localStorage.setItem('orientation','vert');
+
+            ui.mode                     = 'vert';
+            slider.node.style.cursor    = 'ew-resize';
+            slider.node.style.width     = '10px';
+            slider.node.style.height    = '100%';
+
+            view.style.flexDirection    = 'row';
+
+            editor.vert();
+            output.vert();
+            editor.focus();
+
+      }//vert
+
+
+  //:
+  
+      function run(){
+
+            var html    = editor.getValue();
+            output.srcdoc(html);
+            
+            if(filemod.autosave){
+                                                                                console.log('save');
+                  filemod.save();
+            }
+
+      }//run
+
+
+
+      init.stack.complete;
+
+      
+</script>
+
+
+<!-- components -->
+
+<checkbox-one-template>
+      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+</checkbox-one-template>
+
+<log-api>
+      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+</log-api>
+
+<!-- components -->
+
+
+</html>
+

@@ -1,0 +1,871 @@
+<html>
+      <head>
+
+            <title>html-editor</title>
+
+            <link rel='icon' type='image/png' href='html-editor-favicon.png'>
+            <link rel=stylesheet href='/utils/utils.css'>
+
+
+            <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
+
+
+
+            <script>
+                                                                    console.clear();
+
+                                                                    
+                  var menu    = {};
+
+
+
+                  init.stack            = {};
+                  init.stack.ct         = 0;
+                  init.stack.total      = 1;
+                  Object.defineProperty(init.stack,'add',{get:()=>init.stack.total++});
+                  Object.defineProperty(init.stack,'complete',{get:()=>(init.stack.ct++,init.stack.ct==init.stack.total && init())});
+
+
+                  async function init(){
+                                                                    console.log('init');
+
+
+                        window.onfocus    = ()=>editor.focus();
+                        
+                        
+                        menumod         = menumod();
+                        jsonblob        = jsonblob();
+
+
+                        localfile.load.complete   = (txt,path,icon)=>complete.load('localfile',txt,path,icon);
+                        localfile.save.complete   = (path,icon)=>complete.save('localfile',path,icon);
+                        
+                        github.load.complete      = (txt,path,icon)=>complete.load('github',txt,path,icon);
+                        github.save.complete      = (path,icon)=>complete.save('github',path,icon);
+
+
+                        initdom();
+
+
+                  }//init
+
+            </script>
+
+            <script>
+
+                  init.stack.add;
+                  
+                  var ext;
+                  var $,datatype,jsonblob,menumod,keydown;
+                  
+                  fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
+                    .then(res=>res.text().then(async txt=>{
+
+                        ext   = eval(txt);
+
+                        var promise   = ext.load.libs(
+                              'js/dom/$.js','js/core/datatype.js',
+                              'js/io/jsonblob/jsonblob.js',
+                              'js/dom/menumod/menumod.js',
+                              'js/dom/keydown/keydown.js'
+                        );
+                        [$,datatype,jsonblob,menumod,keydown]   = await promise;
+
+
+                        window.$          = $;
+                        window.datatype   = datatype;
+
+                                                                          //console.log('ready');
+                        init.stack.complete;
+
+                    }));
+
+            </script>
+
+
+<!-- components -->
+
+
+<checkbox-one-template>
+      <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
+</checkbox-one-template>
+
+<log>
+      <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
+</log>
+
+
+<!-- components -->
+
+
+<style id=page-inline>
+
+      #hdr {
+            padding                     : 5px 5px;
+            height                      : 30px;
+            display                     : flex;
+            align-items                 : center;
+            gap                         : 10px
+      }
+      
+      .icon {
+            border                      : 1px solid gray;
+            border-radius               : 3px;
+            box-sizing                  : border-box;
+            width                       : 30px;
+            height                      : 30px;
+            cursor                      : pointer;
+      }
+      
+      .spc {
+            flex                        : 1;
+            max-width                   : 200px
+      }
+
+      #help {
+            padding                     : 2px;
+            width                       : 38px;
+            height                      : 38px;
+            box-sizing                  : border-box
+      }
+      
+      #home {
+            padding                     :5px 7px;
+      }
+      
+      
+
+      #horiz {border:none}
+      #vert {border:none}
+
+
+      #hdr2 {display:flex}
+
+      #hdr2-editor {display:flex;width:50%}
+      #hdr2-iframe {display:flex;flex:1}
+
+
+/*
+
+      #filename-root {flex:1;display:flex;align-content:center}
+      #filename-icon {width:20px;height:20px;margin-right:5px;
+                      content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAP1BMVEVHcEwVFRUICAgkJCQMDAwLCwsNDQ1QUFAICAgrKysQEBAVFRUHBwcLCwsZGRkKCgoHBwfd3d0ICAgkJCQEBATHNF52AAAAFXRSTlMAQ9IblZl1BbQOXDbHiiWj1wG2H/ZbTuAhAAAA5klEQVQ4y72V2w6DIAxAKQjIRRT1/791gkg226mJc+elSE5qqYCMPQV0zY4uUF7grdwxc0cl5NNuxvjBO0oUuxnhbUPkxKLxYCQ2yYzMSPT2LMbCmpFbRphJtH0B0ozu/TJsZy+QCF1hTTKpNG4GOKlxK5XfEKNOsBIzkRTt2C5AVDkmRkuKTiUCA1Vx92q8LDqFcAeLeefLYt7actyeyzUKVwnM5ChIUQ2VJgJPUZGiCZXtwdyrURuEpvvoEXQfg0XQX0b/fFN84PIxgwuiTAfX/mXjTtdE4iJdaXk4u5rLBQ2P/Q1eGdEQZZzIbegAAAAASUVORK5CYII=)
+                    }
+      #filename-save {width:20px;height:20px;margin-right:5px;padding:2px;
+                      content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAKlBMVEX/pQD/////qhH/pAD/rhr/zHH/yGT/wlP//vz/8dn/tjD/+u//6MD/2ZUL9bZAAAAA30lEQVQoz2OQvuWihARUMgUFBRlamRkYlqXBQLoy10Sg4CUGBisgDQLSu3dLXGBeAxRczMBg3ggR3LZqaeMhBquDggzOCMFdxuZAQWYfQQYHuKDELgOQINA0JEFBqCDzSiwqGdiwqGRgYlDAVIksSIpKYyyC28E+ggoi/L5D8AJMkGFZKAyEKcAFjRGAAS6IBsCCzMbGKGpBgkwqLshAASzoOxMFHDEACjJXCKKANmyCYkNI0IEGgs7YBBdjCpowXGBejSq43YCVYSszV1ooEkgrMMhmkL6lhAIUlJZuBAAfSYTf2T2EkwAAAABJRU5ErkJggg==)
+                    }
+      #filename { margin:5px 0;flex:1;margin-right:10px}
+
+
+      #row,#col {width:40px;text-align:center}
+      #row {margin-right:5px}
+      #col {margin-right:10px}
+      
+      #top,#bottom {width:20px;height:20px;border:1px solid dimgray;padding:2px;border-radius:3px;cursor:pointer;}
+      #top {  margin-right:5px;
+              content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAdCAMAAADvl95BAAAAS1BMVEVHcEwPDikfO2MkR3MQES0OCyMnTnsPDyoODCYiQWwGAQgdNVsdNFsOCiIpVYUNCiFLsv5LtP9FouhHpu1EnuJCmdxAlNY/kNBJrve1TSxXAAAAEHRSTlMAV+PvbkDxYkzsAdXeMvYjWjmjswAAANtJREFUOMul1O0WRCAQBuBI2wehEPd/pVvZmCjbnvVP53Gapncg9MczDGWOtC0pc+vaFUjSGaUKJKmNGsfvknnnJXt2i3dWmid5OidrVuKeZMWhs3Kpq7SbI5eTd+ckv8kKn27b8pJiHZya+n46XmZOs+7VNBkp6CtyQkQSU/FxDXDaOrcEpMaNyDi/yVVad/84JSmGC6Ecd0C4ke0SCIwtO2rtIZVxwxHktWWn3F0Iq3WJ69I+7mHYXPxTbr9Y6yQYlIUnI8XwDJwbvXT0XF3QISRlLvZy+PE/8wZTOhuNMbwXWAAAAABJRU5ErkJggg==)
+          }
+      #bottom {  transform:rotate(180deg);
+              content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAdCAMAAADvl95BAAAAS1BMVEVHcEwPDikfO2MkR3MQES0OCyMnTnsPDyoODCYiQWwGAQgdNVsdNFsOCiIpVYUNCiFLsv5LtP9FouhHpu1EnuJCmdxAlNY/kNBJrve1TSxXAAAAEHRSTlMAV+PvbkDxYkzsAdXeMvYjWjmjswAAANtJREFUOMul1O0WRCAQBuBI2wehEPd/pVvZmCjbnvVP53Gapncg9MczDGWOtC0pc+vaFUjSGaUKJKmNGsfvknnnJXt2i3dWmid5OidrVuKeZMWhs3Kpq7SbI5eTd+ckv8kKn27b8pJiHZya+n46XmZOs+7VNBkp6CtyQkQSU/FxDXDaOrcEpMaNyDi/yVVad/84JSmGC6Ecd0C4ke0SCIwtO2rtIZVxwxHktWWn3F0Iq3WJ69I+7mHYXPxTbr9Y6yQYlIUnI8XwDJwbvXT0XF3QISRlLvZy+PE/8wZTOhuNMbwXWAAAAABJRU5ErkJggg==)
+          }
+*/
+
+
+
+      #view {display:none;flex:1}
+
+      
+      #editor {width:50%}
+      editor-root {width:50%}
+
+      
+      #iframe-hldr {flex:1;box-sizing:border-box;position:relative}
+      iframe {width:100%;height:100%}
+      #iframe-glass {width:100%;height:100%;position:absolute;left:0;top:0}
+
+
+
+      button {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
+
+
+</style>
+
+      </head>
+      <body>
+
+            <section class=hdr>
+
+                <img id=help class=icon style='padding:2px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAABANJREFUSEvNl2tsVEUUx39n224pEVNsTcGqAYM1gYYP0mCUaILGLqVptzVGKZCArxIU2VYTYpQapU2Mj9jWR9H6wUesUdcGWoRSJIQYjUhETUkkRUVIoGztLqB9bOm2OzL7urtst3eXhsT77c495/+bOXPmzLlCEk9JydOZKsNi8ws2QYqAW4DskOsF4IRC/WRRdIvP393V9fZFM1mZyqC0dONsX8aMZ0SpjUCOmVjou0eJbM/wjb65e/f284l8YsCqbNN8JK0Ii5JeJXN2IXVjkJskMMbMCu4yVP1tolyBD4ohrNftF+dLY/o1AlbljsUIh4CsKwEl5aPoks7mlbFg++bnQF5JSmA6RlbLTHE2eo0V22teANUwHc2kfK2+WeJsGYqABysc9dcotiblPB2jaLDO3rXp1uOrrjCRUpmH02ed+9Ce112BFRdX1NavVmrrOlRQ4/nH4YN2GDgP826AiuXQ1AY1a2B+vsE5dBRO9UF+Hjj3GeMr7wbbncH3f4fB+Q30HA+8Voml4fOdjXWii4PfmnamCnIi4A+3wcvvwck+WFwAj1WC41Vo2gKdB+HYX0HRwWG4747gZJo+NcCPVEBWJuw4AIULYF0ZrK+D8QkeQDyjYxP5sqLcUa5EOqqApMAfdcCvvQbEvnxy8MQEfLILROCrN+CJbXDuHyoRRpWyS7Hd8a4gT8aB/zwNwyOQfS1kzzJWrEPr8sDX3wZXnAicZoEvu6HwVtjwIDz6Ikz4A+ARVIvY7DU/AkvjwB93wlk3LLgJiu8ywEd+g1Nn4fBRGB1LDL7n9mCOXBiE9v3QezIQJQ32wmENHgByr1qoL0v5ENitwT4gPWnwd7/AidNBuf5LIS9aBEsWws4DwTGXG2zLILzHk4PHJwfrLNbh0WGamwv3LoW2PbC2FG7MM6R6foczf0PJMmPs52Mw7AW/H37oiTvioRUHwPGhTqUipGgbHer45EpRLBXzSHKFj9MqYH24cqWilKJtRSCrVUukgBQCr6GwpCiUirkumpsRRBeQcMnUrc1CYFF0dxClOhtFpQmlD9hr9BYx1l7goK6y4LHokqm/6ktClDK9Eh0oShLA9ZmsRfjDZHJKpGGfviS0nb4Wx9MzdSSm7K8ygWYU8yYRb0HoNI+7O338YoFuAiONgM1euxpUm5nvzcBbKGZEGX4P1CcIcayerOnuaPxMj8V0mSvKa95XQrUZ/P5Le/Vs6AT0A08hDJk4iaJ1b2fThrBZDHhJdXVGTn/WF4KY5VFgrwtQtCOECmhCtELt8OR5Hz7S2qpTIfDENfQafr1r5jvJrNwsMgGAonVgzsimaOik4LBYaM+bzRJuCrgbxBHe08vt/h+/MIlmfzV+2v4DHQu0lKRbJa4AAAAASUVORK5CYII='>
+                    
+                <div class=hdr-item>
+                    <top-menu-local>
+                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
+                    </top-menu-local>
+                    
+                    <a id=home class=hdr-item-label href='https://javascript-2020.github.io/'>
+home
+                    </a>
+                </div>
+
+                <img class=hdr-title src='html-editor.png' style='top:-10px;height:55px'>
+                
+                <div class=hdr-date>
+10 Jan 2024
+                </div>
+                
+            </section>
+
+
+            <div id=hdr>
+            
+            
+                  <main-menu-local>
+                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
+                  </main-menu-local>
+                  
+                  <button id=clear>clear</button>
+                  <button id=copy>copy</button>
+                  <button id=paste style='margin-right:20px'>paste</button>
+
+                  <button id=save>save</button>
+                  <checkbox-one id=autosave></checkbox-one>
+                  <checkbox-one id=autorun></checkbox-one>
+                  <button id=jsonblob style='margin-right:20px'>jsonblob</button>
+
+                  <button id=run>run</button>
+
+
+                  <div class=spc></div>
+
+
+                  <localfile-api>
+                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
+                  </localfile-api>
+
+                  <github>
+                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
+                  </github>
+
+
+                  <img id=horiz class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAPhJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwUNVehj9//jDcv3+f4dChQx8/fvy4qLa2No8R5FMhIaFp8fHx/NS2ED20QA5YuHDhx3fv3mUxdnZ2XnR3d9dTVVWlRqgSNOP27dsMO3fuvMTY2Nj4u6CggIXWvoW5COTrCRMm/AEF9f/S0lKCLqWmgu7uboZRi6kZojjNGg1qugQzyJLRoKZ/UNPNRiSLRksuuoT6aHaiSzCPllx0C2Z4UA9YY2/AmrcD1qAfsC7MQHXaANO37pOxy/mWAAAAAElFTkSuQmCC'>
+                  <img id=vert class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAQxJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwEGdvd3c3Q2lpKUG3/fnzh+H+/fsMhw4d+vjx48dFtbW1eYwgnwoJCU2Lj4/nJ9ZCmE3EWgxTD3LAwoULP7579y6LsbOz86K7u7ueqqoqQZejKyDVYpD+27dvM+zcufMSY2Nj4++CggIWUn0LMoQci0G+njBhwh9QUP8nJp6wBQc5FsMcPGoxSQlsNKiJDS5QSI0mLmJDC6xuNHERG1yjiYvYkIKrG01cxAbZaOIiNqSGeOIasMbegDVvB6xBP2BdmIHqtAEA6MBFop3TQsgAAAAASUVORK5CYII='>
+
+            </div>
+
+            
+            <div id=hdr2>
+
+<!--            
+                  <div id=hdr2-editor>
+                        <div id=filename-root>
+                              <img id=filename-icon>
+                              <img id=filename-save style='display:none'>
+                              <span id=filename>filename</span>
+                        </div>
+                        <input id=row value=0>
+                        <input id=col value=0>
+                        <img id=top>
+                        <img id=bottom>
+                  </div>
+-->                  
+                  
+                  <div id=hdr2-slider></div>
+                  
+                  <div id=hdr2-iframe>
+                        <div style='flex:1'></div>
+                        <button id=kill style='margin-right:20px'>kill</button>
+                  </div>
+                  
+            </div>
+
+            
+            <div id=view>
+            
+            
+                  <editor-api>
+                        <script src='https://script-tag-q0dit4tshpll.runkit.sh/libs/html/html-loader.js'></script>
+                  </editor-api>
+                  
+                  <!--
+                  <div id=editor></div>
+                  -->
+                  
+                  <div id=page-slider style='width:10px;cursor:ew-resize'></div>
+                  
+                  <div id=iframe-hldr>
+                        <iframe id=iframe></iframe>
+                        <div id=iframe-glass style='display:none'></div>
+                  </div>
+                  
+            </div>
+
+      </body>
+
+<script>
+                                        console.log('main');
+
+        var cur;
+
+        var deficon;
+        var autosave;
+        var autorun;
+        var local;
+        var hdr2;
+        
+        var view;
+        var editor;
+        var iframe;
+
+
+        var btn         = {};
+        var ui          = {};
+        ui.mode         = 'vert';
+        ui.menu         = {};
+
+
+
+
+  //:
+
+
+        async function initdom(){   //c
+
+              keydown.initdom();
+              keydown.add(kd);
+
+
+              $('#help').title              = 'ctrl-enter - run & autosave&#013;ctrl-s - save&#013;ctrl-del - delete';
+
+              menu.top.initdom();
+
+              
+              menu.main.initdom();
+              
+              $('#clear').onclick           = clear;
+              $('#copy').onclick            = copy;
+              $('#paste').onclick           = paste;
+
+              $('#save').onclick            = btn.save;
+              autosave                      = $('#autosave');
+              autosave.checked              = false;
+              autorun                       = $('#autorun');
+              autorun.checked               = false;
+              $('#jsonblob').onclick        = ext_save;
+              
+              $('#run').onclick             = run;
+
+
+              localfile.initdom();
+
+
+              github.initdom();
+
+
+              $('#horiz').onclick           = horiz;
+              $('#vert').onclick            = vert;
+
+
+              hdr2                          = $('#hdr2');
+
+/*              
+              deficon                       = $(hdr2,'#filename-icon').src;
+              
+              $(hdr2,'#row').onkeydown      = kd.row;
+              $(hdr2,'#row').onmousedown    = e=>e.target.select();
+              $(hdr2,'#col').onkeydown      = kd.col;
+              $(hdr2,'#col').onmousedown    = e=>e.target.select();
+              
+              $(hdr2,'#top').onclick        = btn.top;
+              $(hdr2,'#bottom').onclick     = btn.bottom;
+              
+*/              
+
+              $(hdr2,'#kill').onclick       = btn.kill;
+              
+
+              view                          = $('#view');
+
+
+              editor.initdom(view);
+              //ui.editor(view);
+
+
+              iframe                        = $('iframe');
+              iframe.glass                  = $('#iframe-glass');
+
+
+              ui.slider('editor-root','#page-slider','#iframe-hldr');
+
+
+
+              ui.setup();
+
+
+              var json    = await jsonblob.util.query();
+              if(json){
+                    editor.setValue(json.txt,-1);
+                    if(autorun.checked){
+                          run();
+                    }
+              }
+
+              view.style.display    = 'flex';
+
+
+              editor.focus();
+
+        }//initdom
+
+
+        function kd(e){
+
+              if(e.key=='Enter' && e.ctrlKey){
+                    run();
+              }
+
+              if(e.key==' ' && e.ctrlKey){
+                    menumod.open();
+              }
+
+              if(e.key=='s' && e.ctrlKey){
+                    btn.save(e);
+              }
+
+              if(e.key=='Delete' && e.ctrlKey){
+                    jsonblob.util.delete()
+              }
+
+        }//keydown
+
+/*
+        kd.row=function(e){
+              
+              if(e.key=='Enter'){
+                    e.preventDefault();
+                    var pos   = editor.getCursorPosition();
+                    var row   = $(hdr2,'#row').value;
+                    var col   = pos.column;
+                    editor.gotoLine(row,col);
+                    editor.focus();
+              }
+              
+        }//row
+
+        
+        kd.col=function(e){
+              
+              if(e.key=='Enter'){
+                    e.preventDefault();
+                    var pos   = editor.getCursorPosition();
+                    var row   = pos.row;
+                    var col   = $(hdr2,'#col').value;
+                    editor.gotoLine(row,col);
+                    editor.focus();
+              }
+              
+        }//col
+*/        
+     
+     
+        btn.save=function(e){
+        
+              e.preventDefault();
+              
+              if(!cur){
+                    log.orange('no file');
+                    return;
+              }
+              
+              var txt   = editor.getValue();
+              
+              if(cur.type=='github'){
+                    github.save(txt);
+              }
+              if(cur.type=='local'){
+                    ui.menu.local.save();
+              }
+        
+        }//save
+        
+/*        
+        btn.top=function(){
+        
+              editor.gotoLine(0,0);
+              editor.focus();
+              
+        }//top
+
+        
+        btn.bottom=function(){
+        
+              editor.gotoLine(999999,0);
+              editor.focus();
+              
+        }//bottom
+*/        
+
+     
+        btn.kill=function(){
+        
+              var niframe   = iframe.cloneNode(true);
+              iframe.parentNode.replaceChild(niframe,iframe);
+              
+        }//kill
+        
+  //:
+
+/*
+        function filename(path,icon){
+
+              icon                      = icon||deficon;
+              $('#filename-icon').src   = icon;
+              
+              var fn    = '';
+              if(path){
+                    var i   = path.lastIndexOf('/');
+                    if(i==-1){
+                          fn    = path;
+                    }else{
+                          fn    = path.slice(i+1);
+                    }
+              }
+              
+              document.title                = fn||'html-editor';
+              $('#filename').textContent    = fn;
+              $('#filename').title          = path||'';
+              return fn;
+
+        }//filename
+
+
+        filename.getname=function(path){
+        
+              var name;
+              var i   = path.lastIndexOf('/');
+              if(i==-1){
+                    name    = path;
+              }else{
+                    name    = path.slice(i+1);
+              }
+            
+        }//getname
+        
+        
+        filename.save=function(status){
+
+              var display   = '';
+              if(!status){
+                    display   = 'none';
+              }
+              $('#filename-save').style.display   = display;
+
+        }//save
+        
+
+        ui.editor=function(root){
+
+              var node    = $(root,'#editor');
+              node.addEventListener('mousedown',update);
+              node.addEventListener('keydown',update);
+              
+              editor      = ace.edit(node);
+              editor.setShowInvisibles(false);
+              editor.setShowPrintMargin(false);
+              editor.setPrintMarginColumn(false);
+              editor.setBehavioursEnabled(false);
+              editor.setDisplayIndentGuides(false);
+              editor.setScrollSpeed(2);
+              editor.setFontSize(16);
+              editor.session.setOptions({tabSize:2,useSoftTabs:true});
+              //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
+              editor.focus();
+              editor.session.on('change',onchange);
+              
+              
+              function onchange(e){
+
+                    $('#filename-save').style.display   = '';
+                    update();
+                                      
+              }//onchange
+              
+              function update(){
+              
+                    var pos                 = editor.getCursorPosition();
+                    $(hdr2,'#row').value    = pos.row+1;
+                    $(hdr2,'#col').value    = pos.column;
+                    
+              }//update
+              
+        }//editor
+*/
+
+        ui.slider=function(node1,slider_node,node2){
+
+              if(typeof node1=='string'){
+                    node1   = $(view,node1);
+              }
+              if(typeof slider_node=='string'){
+                    slider_node   = $(view,slider_node);
+              }
+              if(typeof node2=='string'){
+                    node2   = $(view,node2);
+              }
+
+
+              ui.slider.node    = slider_node;
+              $.track(slider_node,slider);
+
+
+              function slider(ox,oy){
+
+                    if(ui.mode=='vert'){
+                          slider.vert(ox);
+                    }else{
+                          slider.horiz(oy);
+                    }
+
+              }//slider
+
+
+              slider.md=function(){
+
+                    glass();
+                    document.body.style.userSelect    = 'none';
+
+              }//slider.md
+
+
+              slider.mu=function(){
+
+                    glass(false);
+                    document.body.style.userSelect    = '';
+
+              }//slider.mu
+
+
+              slider.vert=function(ox){
+
+                    var w1    = node1.offsetWidth;
+                    var w2    = node2.offsetWidth;
+
+                    if(w1+ox<25)return;
+                    if(w2-ox<25)return;
+
+                    node1.style.width   = w1+ox+'px';
+                    node2.style.width   = w2-ox+'px';
+
+              }//vert
+
+
+              slider.horiz=function(oy){
+
+                    var h1    = node1.offsetHeight;
+                    var h2    = node2.offsetHeight;
+
+                    if(h1+oy<40)return;
+                    if(h2-oy<40)return;
+
+                    node1.style.height    = h1+oy+'px'
+                    node2.style.height    = h2-oy+'px';
+
+              }//horiz
+
+        }//ui.slider
+
+
+        function glass(show=true){
+
+              if(show){
+                    iframe.glass.style.display    = '';
+              }else{
+                    iframe.glass.style.display    = 'none';
+              }
+
+        }//glass
+
+
+  //:
+
+        function complete(type,path,icon){
+        
+              var name    = editor.filename(path,icon);
+              editor.filename.save(false);
+              cur   = {type,name};
+              menumod.close();
+              editor.focus();
+              return name;
+              
+        }//complete
+        
+        complete.load=function(type,txt,path,icon){
+        
+              editor.setValue(txt,-1);
+              complete(type,path,icon);
+              
+        }//complete.load
+        
+        complete.save=function(type,path,icon){
+
+              var name    = complete(type,path,icon);
+              log.green(name,'saved');
+              
+        }//save
+
+  //:
+  
+      window.onmessage=function(e){
+
+            var json    = JSON.parse(e.data);
+
+            var txt;
+            if(json.code){
+                  txt   = json.code;
+            }
+            if(json.txt){
+                  txt   = json.txt;
+            }
+            if(json.text){
+                  txt   = json.text;
+            }
+
+            editor.setValue(txt,-1);
+
+            if(json.run){
+                  run();
+            }
+
+      }//onmessage
+
+
+  //:
+
+
+      ui.read=function(){
+
+            var txt     = editor.getValue();
+            var json    = {v:1,txt};
+            return json;
+
+      }//read
+
+
+      ui.setup=function(){
+
+            var o   = localStorage.getItem('orientation');
+            if(o==='horiz'){
+                  horiz();
+            }
+
+      }//setup
+
+
+  //:
+
+      function clear(e){
+
+            editor.setValue('',-1);
+            cur   = null;
+            editor.filename();
+            editor.filename.save(false);
+
+      }//clear
+
+
+      function ext_save(){
+
+            var json    = ui.read();
+            jsonblob.util.save(json);
+
+      }//save
+
+
+      function copy(){
+
+            var txt       = editor.getValue();
+            navigator.clipboard.writeText(txt)
+              .catch(err=>log.error(err));
+
+      }//copy
+
+
+      function paste(){
+
+            navigator.clipboard.readText()
+              .then(txt=>editor.setValue(txt,-1))
+              .catch(err=>log.error(err));
+
+      }//paste
+
+
+      function horiz(){
+
+            localStorage.setItem('orientation','horiz');
+
+            ui.mode                         = 'horiz';
+            ui.slider.node.style.cursor     = 'ns-resize';
+            ui.slider.node.style.width      = '100%';
+            ui.slider.node.style.height     = '10px';
+
+            view.style.flexDirection        = 'column';
+
+            editor.container.style.width    = '100%';
+            editor.container.style.height   = '50%';
+
+            iframe.style.width              = '100%';
+            iframe.style.height             = '50%';
+
+            editor.focus();
+
+      }//horiz
+
+
+      function vert(){
+
+            localStorage.setItem('orientation','vert');
+
+            ui.mode                         = 'vert';
+            ui.slider.node.style.cursor     = 'ew-resize';
+            ui.slider.node.style.width      = '10px';
+            ui.slider.node.style.height     = '100%';
+
+            view.style.flexDirection        = 'row';
+
+            editor.container.style.width    = '50%';
+            editor.container.style.height   = '100%';
+
+            iframe.style.width              = '50%';
+            iframe.style.height             = '100%';
+
+            editor.focus();
+
+      }//vert
+
+
+  //:
+  
+      function run(){
+
+            iframe.srcdoc   = editor.getValue();
+            if(autosave.checked){
+                  console.log('save');
+                  btn.save();
+            }
+
+      }//run
+
+
+
+      init.stack.complete;
+
+      
+</script>
+
+
+</html>
+
+
+
+
+
+
