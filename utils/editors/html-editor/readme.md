@@ -1,4 +1,4 @@
-https://javascript-2020.github.io/utils/html-editor/html-editor.html
+https://javascript-2020.github.io/utils/editors/html-editor/html-editor.html
 
 
 # Welcome to **HTML Editor**
