@@ -53,57 +53,41 @@
                 
         })();
         
-        window.addEventListener('load',function(){
         
-                var params      = new URLSearchParams(window.location.search);
-                var values      = {};
+            </script>
+            
+            
+            
+            <script>
+        
+        
+        
+        function initdom(){
+          
                 
-                if(values.owner    = params.get('owner')){
-                      $('.owner').value   = values.owner;
-                }
-                
-                if(values.repo   = params.get('repo')){
-                      $('.repo').value    = values.repo;
-                }
-                
-                if(values.branch   = params.get('branch')){
-                      $('.branch').value    = values.branch;
-                }
-                
-                if(values.path   = params.get('path')){
-                      $('.path').value    = values.path;
-                }
-                
-                if(params.has('download')){
-                      if(values.owner && values.repo && values.branch && values.path){
-                            download();
-                      }
-                }
-                
-                
-                $('#url-paste').onclick       = async e=>{
-                
-                      var url           = await navigator.clipboard.readText();
-                      $('#url').value   = url;
-                      
-                };//paste
-                
-                $('[value=parse]').onclick   = e=>{
-                
-                      var url               = $('#url').value;
-                      url                   = parse(url);
-                      
-                      $('.owner').value     = url.owner;
-                      $('.repo').value      = url.repo;
-                      $('.branch').value    = url.branch;
-                      $('.path').value      = url.path;
-                      
-                };
+              $('#url-paste').onclick       = async e=>{
+              
+                    var url           = await navigator.clipboard.readText();
+                    $('#url').value   = url;
+                    
+              };//paste
+              
+              $('[value=parse]').onclick   = e=>{
+              
+                    var url               = $('#url').value;
+                    url                   = parse(url);
+                    
+                    $('.owner').value     = url.owner;
+                    $('.repo').value      = url.repo;
+                    $('.branch').value    = url.branch;
+                    $('.path').value      = url.path;
+                    
+              };
+              
+        }//initdom
                 
                 
                 
-                
-        });//onload
 
 
         
@@ -171,7 +155,8 @@
                       </div>
                   </a>
             
-                  <img id=title style='height: 65px; top: 0px' class='hdr-title' src='download-a-directory-from-a-github-repository.png'>
+                  <img style='height: 40px; top: 0px' class='hdr-title' src='images/download-a-directory-from-a-github-repository.png'>
+                  
                   <div id=date class=hdr-date>
                         01 May 2025
                   </div>
@@ -179,213 +164,77 @@
         
             <div id=background style='position: fixed; z-index: -1'>
             </div>
+
+
         
-        <div id=scroll>
-        
-            <div id=center>
+            <div id=scroll>
             
-                <h3 class=heading style='margin-bottom: 40px'>
-                      download a directory from a github repository
-                </h3>
-
-                
-                <section>
-                
-                    <div id=parse style='margin-bottom: 40px'>
-                        <div style='margin-bottom: 10px'>
-                            parse url
-                            <span style='margin-left: 20px'>
-                                  ex :
-                            </span>
-                            <span style='margin-left: 10px'>
-                                  https:&#x2F;&#x2F;github.com &#x2F; owner &#x2F; repo &#x2F; tree &#x2F; branch &#x2F; path
-                            </span>
-                        </div>
-                        <div style='display: flex; align-items: center'>
-                            <img id=url-paste style='width: 30px; height: 30px; cursor: pointer; margin-right: 10px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAYxJREFUOE/NlLFKw1AUhs9thDSSNhYEC1LIdWj2bl07OPcJxMUXMFsHjUsXrdBdB3HwARxLwIIQXJxcUooHbCOEutRKh9AYucXGtknTGhw8Y3Lud89//stP4I+LRPEopdb3/31EbKxydyhQluVjQoiaTCZTPM9Dv98Hz/M0nufPTdMcRIF9oKIoKcdx3ifNHMeBJEkgiiJYlgWu605zsohoh4F9IJsqs+5pp+UeHNxsgSAIQMiPgOFwCGflHjTbAtw+ia+IuL0UmE1/asbhyxgYVuyyq4c01JuZ3wGjdlS/2/hnQNcDePvg/KEvDQkuDMkejUYF9rHT6TBzfMdmTJnscFry3nUW7p+FqC00EHF30rAUuHNCoVqtQrFYDEANw4BKpQKI6HNWBtZqtQBQVdX4QNM0A0BFUeIDmbT5YquILXmRK7GBsSZcSxBtU5wJAbAH3NjlfD4fGLLVai2WzLpZQMyfIoQclUqlRC6XCwC73S7ouh7+bBbtiFLKkuIx4mUXpqMsMrFXSej5ni+XXuAVg6oGswAAAABJRU5ErkJggg=='>
-                            <input id=url style='flex: 1 1 0%'>
-                            <input id='parse' style='cursor: pointer; font-size: 16px; box-sizing: border-box; min-width: 60px; margin-left: 10px' type=button value=parse>
-                        </div>
-                    </div>
-                    
-                    <div id=values>
-                    
-                        <div>
-                              owner
-                        </div>
-                        <input class=owner>
-                        </input>
-                        <div>
-                              repo
-                        </div>
-                        <input class=repo>
-                        </input>
-                        <div>
-                              branch
-                        </div>
-                        <input class=branch>
-                        </input>
-                        <div>
-                              path
-                        </div>
-                        <input class=path>
-                        </input>
-                    </div>
-                    
-                    <button style='margin-top: 20px' onclick='download()'>
-                          download
-                    </button>
-                    
-                </section>
-
-                
-                <section style='margin-top: 30px'>
-                
-                    <div>
-                    
-                        <div style='margin-bottom: 20px'>
-                              this url can be visited with the following query parameters
-                        </div>
-                        
-                        <div style="margin-top: 10px; font-family: monospace;">
-                              https:&#x2F;&#x2F;javascript-2020.github.io&#x2F;utils&#x2F;download-a-directory-from-a-github-repository&#x2F;download-a-directory-from-a-github-repository.html?
-                        </div>
-                        
-                        <div style='margin-top: 10px; font-family: monospace'>
-                              owner={owner}
-                        </div>
-                        
-                        <div style='font-family: monospace'>
-                              repo={repo}
-                        </div>
-                        
-                        <div style='font-family: monospace'>
-                              branch={branch}
-                        </div>
-                        
-                        <div style='font-family: monospace'>
-                              path={path}
-                        </div>
-                        
-                        <div style='margin-top: 10px'>
-                              if the parameter download is present, the download will be started automatically
-                        </div>
-                        
-                        <div style='margin-top: 30px'>
-                              example
-                        </div>
-                        
-                        <a style='display: block; margin-top: 10px; font-weight: bold; font-family: monospace' href='https://javascript-2020.github.io/utils/download-a-directory-from-a-github-repository/download-a-directory-from-a-github-repository.html?owner=javascript-2020&repo=code-projects&branch=main&path=http-file-upload'>
-                            <span style='color: blue'>
-                                  https:&#x2F;&#x2F;javascript-2020.github.io&#x2F;utils&#x2F;download-a-directory-from-a-github-repository&#x2F;download-a-directory-from-a-github-repository.html
-                            </span>
-                            <span style="color: green;">
-                                  ?owner=javascript-2020&amp;repo=code-projects&amp;branch=main&amp;path=http-file-upload
-                            </span>
-                        </a>
-                        
-                        <a style='display: block; margin-top: 10px; font-weight: bold; font-family: monospace' href='https://javascript-2020.github.io/utils/download-a-directory-from-a-github-repository/download-a-directory-from-a-github-repository.html?owner=javascript-2020&repo=code-projects&branch=main&path=http-file-upload&download'>
-                            <span style='color: blue'>
-                                  https:&#x2F;&#x2F;javascript-2020.github.io&#x2F;utils&#x2F;download-a-directory-from-a-github-repository&#x2F;download-a-directory-from-a-github-repository.html
-                            </span>
-                            <span style='color: green'>
-                                  ?owner=javascript-2020&amp;repo=code-projects&amp;branch=main&amp;path=http-file-upload&amp;download
-                            </span>
-                        </a>
-                    </div>
-                </section>
-                
-                
-                <section style='margin-top: 30px'>
-                
-                    <div>
-                          browser code
-                    </div>
-                    
-                    <code id=browser class=code>
-                    
-        &lt;script type=module&gt;
-
-        import jszip from &#39;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;jszip&#x2F;+esm&#39;;
-        var zip     = new jszip();
-
-        var owner   = &#39;javascript-2020&#39;;
-        var repo    = &#39;javascript-2020.github.io&#39;;
-        var branch  = &#39;main&#39;;
-        var path    = &#39;code-projects&#39;;
+                  <div id=center>
+                  
+                        <h3 class=heading style='margin-bottom: 40px'>
+                              download a directory from a github repository
+                        </h3>
         
-        if(path.slice(-1)!=&#39;&#x2F;&#39;)path+=&#39;&#x2F;&#39;;
-        var file    = `${path.split(&#39;&#x2F;&#39;).filter(Boolean).at(-1)||repo}.zip`;
-
-        var url     = `https:&#x2F;&#x2F;api.github.com&#x2F;repos&#x2F;${owner}&#x2F;${repo}&#x2F;git&#x2F;trees&#x2F;${branch}?recursive=true`;
-        var json    = await fetch(url).then(res=&gt;res.json());
-        
-        await Promise.all(json.tree.map(async item=&gt;{
-        
-              if(!item.path.startsWith(path))return;
-              
-              var fn    = item.path.slice(path.length);
-              if(item.type==&#39;tree&#39;){
-                    zip.folder(fn);
-              }else{
-                    var blob    = await fetch(item.url).then(res=&gt;res.blob());
-                    zip.file(fn,blob);
-              }
-              
-        }));
-
-        var blob      = await zip.generateAsync({type:&#39;blob&#39;});
-        var url       = window.URL.createObjectURL(blob);
-        var a         = document.createElement(&#39;a&#39;);
-        a.href        = url;
-        a.download    = file;
-        a.click();
-
-&lt;&#x2F;script&gt;
-                    </code>
-                </section>
+                        
+                        <section>
+                        
+                              <div id=parse style='margin-bottom: 40px'>
+                                  <div style='margin-bottom: 10px'>
+                                      parse url
+                                      <span style='margin-left: 20px'>
+                                            ex :
+                                      </span>
+                                      <span style='margin-left: 10px'>
+                                            https:&#x2F;&#x2F;github.com &#x2F; owner &#x2F; repo &#x2F; tree &#x2F; branch &#x2F; path
+                                      </span>
+                                  </div>
+                                  
+                                  <div style='display: flex; align-items: center'>
+                                      <img id=url-paste style='width: 30px; height: 30px; cursor: pointer; margin-right: 10px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAYxJREFUOE/NlLFKw1AUhs9thDSSNhYEC1LIdWj2bl07OPcJxMUXMFsHjUsXrdBdB3HwARxLwIIQXJxcUooHbCOEutRKh9AYucXGtknTGhw8Y3Lud89//stP4I+LRPEopdb3/31EbKxydyhQluVjQoiaTCZTPM9Dv98Hz/M0nufPTdMcRIF9oKIoKcdx3ifNHMeBJEkgiiJYlgWu605zsohoh4F9IJsqs+5pp+UeHNxsgSAIQMiPgOFwCGflHjTbAtw+ia+IuL0UmE1/asbhyxgYVuyyq4c01JuZ3wGjdlS/2/hnQNcDePvg/KEvDQkuDMkejUYF9rHT6TBzfMdmTJnscFry3nUW7p+FqC00EHF30rAUuHNCoVqtQrFYDEANw4BKpQKI6HNWBtZqtQBQVdX4QNM0A0BFUeIDmbT5YquILXmRK7GBsSZcSxBtU5wJAbAH3NjlfD4fGLLVai2WzLpZQMyfIoQclUqlRC6XCwC73S7ouh7+bBbtiFLKkuIx4mUXpqMsMrFXSej5ni+XXuAVg6oGswAAAABJRU5ErkJggg=='>
+                                      <input id=url style='flex: 1 1 0%'>
+                                      <input id='parse' style='cursor: pointer; font-size: 16px; box-sizing: border-box; min-width: 60px; margin-left: 10px' type=button value=parse>
+                                  </div>
+                                  
+                              </div>
+                            
+                            <div id=values>
+                            
+                                <div>
+                                      owner
+                                </div>
+                                <input class=owner>
+                                </input>
+                                <div>
+                                      repo
+                                </div>
+                                <input class=repo>
+                                </input>
+                                <div>
+                                      branch
+                                </div>
+                                <input class=branch>
+                                </input>
+                                <div>
+                                      path
+                                </div>
+                                <input class=path>
+                                </input>
+                            </div>
+                            
+                            <button style='margin-top: 20px' onclick='download()'>
+                                  download
+                            </button>
+                            
+                        </section>
+      
+                      
+                  </div center>
                 
                 
-                <section style='margin-top: 30px'>
-                    <div style="">
-node.js code
-                    </div>
-                    <code id="node-js" style="" class="code">
-&#x2F;&#x2F;download-repo-dir.mjs
-
-    import fs from &#39;fs&#39;;
-
-    var owner   = &#39;javascript-2020&#39;;
-    var repo    = &#39;javascript-2020.github.io&#39;;
-    var branch  = &#39;main&#39;;
-    var path    = &#39;code-projects&#39;;
-
-    if(path.slice(-1)!=&#39;&#x2F;&#39;)path+=&#39;&#x2F;&#39;;
-    var file    = `${path.split(&#39;&#x2F;&#39;).filter(Boolean).at(-1)||repo}&#x2F;`;
-    fs.mkdirSync(file);
-
-    var url     = `https:&#x2F;&#x2F;api.github.com&#x2F;repos&#x2F;${owner}&#x2F;${repo}&#x2F;git&#x2F;trees&#x2F;${branch}?recursive=true`;
-    var json    = await fetch(url).then(res=&gt;res.json());
-
-    await Promise.all(json.tree.map(async item=&gt;{
-
-          if(!item.path.startsWith(path))return;
-
-          var fn    = item.path.slice(path.length);
-          if(item.type==&#39;tree&#39;){
-                fs.mkdirSync(file+fn);
-          }else{
-                var res     = await fetch(item.url);
-                var txt     = await res.text();
-                fs.writeFileSync(file+fn,txt);
-          }
-
-    }));
-                    </code>
-                </section>
-            </div>
-        </div>
-        <div id="ftr">
-        </div>
+                
+            </div scroll>
+        
+        
+        
     </body>
 </html>
