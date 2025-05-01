@@ -79,7 +79,7 @@
   //:
           
               window.onfocus            = ()=>editor && editor.focus();
-              keydown.add(kd);
+              //keydown.add(kd);
               menumod.on.close          = ()=>editor.focus();
         
               
@@ -95,16 +95,13 @@
         init.stack            = [];
         init.stack.ct         = 0;
         init.stack.total      = 1;
-        init.stack.mode       = '';
+        init.stack.mode       = 'log';
         init.stack.complete   = false;
-        init.stack.df         = true;
         Object.defineProperty(init.stack,'add',{get:()=>{
-                                                                                init.stack.df && console.log('init.stack.add');
               init.stack.total++;
               init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
         }});
         Object.defineProperty(init.stack,'complete',{get:()=>{
-                                                                                init.stack.df && console.log('init.stack.complete');
               init.stack.ct++;
               init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
               init.stack.ct>=init.stack.total && init();
@@ -336,6 +333,10 @@
         }//download
 
 
+
+
+        init.stack.complete;
+        
         
             </script>
         
