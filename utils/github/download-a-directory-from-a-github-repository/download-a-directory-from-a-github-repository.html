@@ -1,98 +1,108 @@
-<!doctype html>
+
+
+
+
 <html>
-    <head style="display: block;">
-        <base style="display: block;" href="https://javascript-2020.github.io/utils/github/download-a-directory-from-a-github-repository/">
-        </base>
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" style="display: block;">
-        </link>
-        <link rel="stylesheet" href="/css/page.css" style="display: block;" id="page">
-        </link>
-        <script style="display: none;" id="page" src="/js/page.js">
-        </script>
+
+    <head>
+    
+        <base href='https://javascript-2020.github.io/utils/github/download-a-directory-from-a-github-repository/'>
+        <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico'>
+        
+        <title>download github directory</title>
+        
+        
+        <link rel=stylesheet href='/css/page.css' id="page">
+        <script id='page' src='/js/page.js'></script>
+        
         <style style="display: none;">
-h3 {
-        margin                          : 0;
-      }
+        h3 {
+              margin                          : 0;
+        }
       
-      #values {
-            display                     : grid;
-            grid-template-columns       : auto 1fr;
-            gap                         : 10px;
-            align-items                 : center;
-      }
-      
-      input {
-            font-size                   : 16px;
-            padding                     : 5px;
-      }
-      
-      button {
-            cursor                      : pointer;
-            width                       : 300px;
-            font-size                   : 16px;
-            padding                     : 5px 10px;
-      }
+        #values {
+              display                     : grid;
+              grid-template-columns       : auto 1fr;
+              gap                         : 10px;
+              align-items                 : center;
+        }
+        
+        input {
+              font-size                   : 16px;
+              padding                     : 5px;
+        }
+        
+        button {
+              cursor                      : pointer;
+              width                       : 300px;
+              font-size                   : 16px;
+              padding                     : 5px 10px;
+        }
         </style>
-        <script style="display: none;">
-var JSZip;
+        
+        
+        <script>
+        
+        var JSZip;
+        
+        (async()=>{
+        
+                JSZip   = (await import('https://cdn.jsdelivr.net/npm/jszip/+esm')).default;
+                
+        })();
+        
+        window.addEventListener('load',function(){
+        
+                var params      = new URLSearchParams(window.location.search);
+                var values      = {};
+                
+                if(values.owner    = params.get('owner')){
+                      $('.owner').value   = values.owner;
+                }
+                
+                if(values.repo   = params.get('repo')){
+                      $('.repo').value    = values.repo;
+                }
+                
+                if(values.branch   = params.get('branch')){
+                      $('.branch').value    = values.branch;
+                }
+                
+                if(values.path   = params.get('path')){
+                      $('.path').value    = values.path;
+                }
+                
+                if(params.has('download')){
+                      if(values.owner && values.repo && values.branch && values.path){
+                            download();
+                      }
+                }
+                
+                
+                $('#url-paste').onclick       = async e=>{
+                
+                      var url           = await navigator.clipboard.readText();
+                      $('#url').value   = url;
+                      
+                };//paste
+                
+                $('[value=parse]').onclick   = e=>{
+                
+                      var url               = $('#url').value;
+                      url                   = parse(url);
+                      
+                      $('.owner').value     = url.owner;
+                      $('.repo').value      = url.repo;
+                      $('.branch').value    = url.branch;
+                      $('.path').value      = url.path;
+                      
+                };
+                
+                
+                
+                
+        });//onload
 
-(async()=>{
-
-        JSZip   = (await import('https://cdn.jsdelivr.net/npm/jszip/+esm')).default;
-        
-})();
-
-window.addEventListener('load',function(){
-
-        var params      = new URLSearchParams(window.location.search);
-        var values      = {};
-        
-        if(values.owner    = params.get('owner')){
-              $('.owner').value   = values.owner;
-        }
-        
-        if(values.repo   = params.get('repo')){
-              $('.repo').value    = values.repo;
-        }
-        
-        if(values.branch   = params.get('branch')){
-              $('.branch').value    = values.branch;
-        }
-        
-        if(values.path   = params.get('path')){
-              $('.path').value    = values.path;
-        }
-        
-        if(params.has('download')){
-              if(values.owner && values.repo && values.branch && values.path){
-                    download();
-              }
-        }
-        
-        
-        $('#url-paste').onclick       = async e=>{
-        
-              var url           = await navigator.clipboard.readText();
-              $('#url').value   = url;
-              
-        };//paste
-        
-        $('[value=parse]').onclick   = e=>{
-        
-              var url               = $('#url').value;
-              url                   = parse(url);
-              
-              $('.owner').value     = url.owner;
-              $('.repo').value      = url.repo;
-              $('.branch').value    = url.branch;
-              $('.path').value      = url.path;
-              
-        };
-        
-        
-        
-        
-});//onload
 
 //https://github.com/javascript-2020/javascript-2020.github.io
 //https://github.com/${owner}/${repo}/tree/${branch}/${path}
@@ -125,6 +135,7 @@ window.addEventListener('load',function(){
               }//count
               
         }//parse
+
         
         parse.find=function(url,n,end){
         
@@ -146,6 +157,7 @@ window.addEventListener('load',function(){
               
         }//find
         
+
         parse.repo=function(url){
         
               var owner     = parse.find(url,3);
@@ -157,6 +169,7 @@ window.addEventListener('load',function(){
               
         }//parse.repo
         
+
         parse.dir=function(url){
         
               var owner       = parse.find(url,3);
@@ -216,129 +229,163 @@ window.addEventListener('load',function(){
               });
               
         }//download
+        
         </script>
+        
     </head>
+    
     <body>
-        <div id="hdr" style="">
-            <a id="home" class="hdr-icon" href="https://javascript-2020.github.io/">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAABA5JREFUOE+lkVtsVEUYx//fnDnn7KW73XZ7peVSWtvSC5duGrXGkBLFUH1AfdD0DWNMn3zwwURJZA2++CKJvtCoSBMkaoLEBDEYpBQCldRSUnq11La4lF7YstfuntuM2cIjKLGTTDLJN//f9/1mCE+womdP+Ae+u1V/99Ls8IHZ49l/i9AT8JA+czx06du5nxam459t8fg/b78Yth+X+09gODyqdW3ua5mfSLQOXkrEa3Tt5PqA3yx3FmXvvMiFzRY8G/vDB0qPrkv542NLB+Pp1GEpBAV8viOH3ip9b13Aj75cOBhLxg8LIagoUHAk/HbZ/wNeGZNvKhyha8MxNRhQ3yUiWloxjz2zI3BXEmbanqKvHzXpYz/l6qT8ghG6LEcmGENh7qJty5imMo8ATrXVUucjgVJKdusW1EgEjs8HcrtBo6NwCqozrddGFrozhrMdkA+zBE1lU60NJV2puby+xkYomQxkMglZWQmlpgYWXR6XtZyjUzgYAUMeAUVk48K5y3cnLMJpAHsXlhfhOAIVZWUgQr8lsvv2P7+1WnLskcA9CKSYgibbxknqH5MtNomfpZRuAIyIDEHijd6+5d+hKaelkHvHpqYghIOG2joojPVnLHVfx25fiEn2vZRSByCIKMMle5l6zieCI5ORU5msuTvn5dKVyYYtJR2BAk9qas74wTDFbkA8VGY55cHKDZ79mWRCnZxd/iVrOXW5otul9TXVVb5O73TPewoc+0eAXsoVfB7FeHpn8Sd5bt5sOeLVmb9X1fISV04VkYUsqio9tsbpt9Ws82v/jXuHU6u250E3ee6+wl+j8ImonyznrBDiOSEEdE2Bx21mGZMKAFVKrMHWIgIgljvAEZLM1YzmNkwHjLHcviJVpYM+6IkEdaGdvxeN7lyJx1BfXY2Az4KSCxIgpIRh2CAiqJzl3nAN7gggnlQxPj2NwvwAioLBGwYzX6APu2fLdc17wTSNesu2EfDnobU5kFNHxrQw8ucSlu+n4XVpcOkcVRsLUFLoRTLtYOBmDLFECirn0DR9wjDTe+hQz8omJuxeIcRWKSU0jSPUmA+vm2E2ch9/jM5DVRn8XhdSqybKi33YUV8G0wIGR+MwzQfTM8b+Eoy3U/irpRri1Dtze64ylkhge/02tDYXQkoLt+djWFpJQ1EYvG4NGcOCW+fYUOKHz+vFwM0VDE+MI+D3o2rT5oi0ZTuFj841kO4+MzQyUhxLxvHsrhBam0ugKBZiySySaRMKI+g6X5uGc2UN6nZ5MTC8hP6hQQR8+djV1LQsjcwr9P6nEz5P0L9rcGKcx2NxtIVa0NJQilQ2jTuLMUSjaXDOkefVkU0b4C4FwXwXKipKcX14EVcHryM/kI9Q/TZ7NZoY+gdEZNOa/2ZSPwAAAABJRU5ErkJggg==" class="hdr-icon-img" />
-                <div class="hdr-icon-label">
-home
+    
+        <div id=hdr >
+        
+            <a id=home class=hdr-icon href='https://javascript-2020.github.io/'>
+                <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAABA5JREFUOE+lkVtsVEUYx//fnDnn7KW73XZ7peVSWtvSC5duGrXGkBLFUH1AfdD0DWNMn3zwwURJZA2++CKJvtCoSBMkaoLEBDEYpBQCldRSUnq11La4lF7YstfuntuM2cIjKLGTTDLJN//f9/1mCE+womdP+Ae+u1V/99Ls8IHZ49l/i9AT8JA+czx06du5nxam459t8fg/b78Yth+X+09gODyqdW3ua5mfSLQOXkrEa3Tt5PqA3yx3FmXvvMiFzRY8G/vDB0qPrkv542NLB+Pp1GEpBAV8viOH3ip9b13Aj75cOBhLxg8LIagoUHAk/HbZ/wNeGZNvKhyha8MxNRhQ3yUiWloxjz2zI3BXEmbanqKvHzXpYz/l6qT8ghG6LEcmGENh7qJty5imMo8ATrXVUucjgVJKdusW1EgEjs8HcrtBo6NwCqozrddGFrozhrMdkA+zBE1lU60NJV2puby+xkYomQxkMglZWQmlpgYWXR6XtZyjUzgYAUMeAUVk48K5y3cnLMJpAHsXlhfhOAIVZWUgQr8lsvv2P7+1WnLskcA9CKSYgibbxknqH5MtNomfpZRuAIyIDEHijd6+5d+hKaelkHvHpqYghIOG2joojPVnLHVfx25fiEn2vZRSByCIKMMle5l6zieCI5ORU5msuTvn5dKVyYYtJR2BAk9qas74wTDFbkA8VGY55cHKDZ79mWRCnZxd/iVrOXW5otul9TXVVb5O73TPewoc+0eAXsoVfB7FeHpn8Sd5bt5sOeLVmb9X1fISV04VkYUsqio9tsbpt9Ws82v/jXuHU6u250E3ee6+wl+j8ImonyznrBDiOSEEdE2Bx21mGZMKAFVKrMHWIgIgljvAEZLM1YzmNkwHjLHcviJVpYM+6IkEdaGdvxeN7lyJx1BfXY2Az4KSCxIgpIRh2CAiqJzl3nAN7gggnlQxPj2NwvwAioLBGwYzX6APu2fLdc17wTSNesu2EfDnobU5kFNHxrQw8ucSlu+n4XVpcOkcVRsLUFLoRTLtYOBmDLFECirn0DR9wjDTe+hQz8omJuxeIcRWKSU0jSPUmA+vm2E2ch9/jM5DVRn8XhdSqybKi33YUV8G0wIGR+MwzQfTM8b+Eoy3U/irpRri1Dtze64ylkhge/02tDYXQkoLt+djWFpJQ1EYvG4NGcOCW+fYUOKHz+vFwM0VDE+MI+D3o2rT5oi0ZTuFj841kO4+MzQyUhxLxvHsrhBam0ugKBZiySySaRMKI+g6X5uGc2UN6nZ5MTC8hP6hQQR8+djV1LQsjcwr9P6nEz5P0L9rcGKcx2NxtIVa0NJQilQ2jTuLMUSjaXDOkefVkU0b4C4FwXwXKipKcX14EVcHryM/kI9Q/TZ7NZoY+gdEZNOa/2ZSPwAAAABJRU5ErkJggg=='>
+                <div class=hdr-icon-label>
+                      home
                 </div>
             </a>
-            <a id="github" class="hdr-icon" href="https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/github/download-a-directory-from-a-github-repository">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAbFJREFUOE/l1E2IT2EUx/HPIFI2lJfGwmYsxFZKEUWjKWM3pZSpKcqeBcpLZsNeUeNlZWdBSVFmkAXbmRWbWRCRjYW8jv+pc/V4utff3q3bvfc5z/k+557zO2dA97UHy7ERx3LbZbzEZzxscx3o4L3GWizusP/AO6yv7TXwAo5g9V8iL03vcRWnm8USeBHH/xFUb7uEE7HYAOMZeVmGm7iN61jVccBHjOMQxvAl870QoIDMZ87CfxR3E7QDTyroTjzOtf24k++R0w0BHMY9LEpDCeyXgRL4EyMBjEKcSs+o3r4uSbTQQ1r3CzVMBnCh2PimTQp9wgyJDZZV/g+Bz7E1c/AdezHdr7xp34UHvcIuye8XUZSy9A1nDT5UBSvPCL9oz9BeeY2GYR3msBIHsi834WlPTt9yrXQKIUdEIfoVhSG6Z3PTejdwGG+xDc9SPud7UZ6popjEyZaURMuOl8NhKvtzpKf4yGvMwk95l/5xwNkKeA0T5XCI96EcRbsLh5mWAtXARznyXtXA5tD4/YNYmuBzVTQN8Ctu5V/93tI1sbdjS463KxXwaFZ/NnP9h/kXPcNYElddRc0AAAAASUVORK5CYII=" class="hdr-icon-img" />
-                <div class="hdr-icon-label">
-github
+            
+            <a id=github class=hdr-icon href='https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/github/download-a-directory-from-a-github-repository'>
+                <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAbFJREFUOE/l1E2IT2EUx/HPIFI2lJfGwmYsxFZKEUWjKWM3pZSpKcqeBcpLZsNeUeNlZWdBSVFmkAXbmRWbWRCRjYW8jv+pc/V4utff3q3bvfc5z/k+557zO2dA97UHy7ERx3LbZbzEZzxscx3o4L3GWizusP/AO6yv7TXwAo5g9V8iL03vcRWnm8USeBHH/xFUb7uEE7HYAOMZeVmGm7iN61jVccBHjOMQxvAl870QoIDMZ87CfxR3E7QDTyroTjzOtf24k++R0w0BHMY9LEpDCeyXgRL4EyMBjEKcSs+o3r4uSbTQQ1r3CzVMBnCh2PimTQp9wgyJDZZV/g+Bz7E1c/AdezHdr7xp34UHvcIuye8XUZSy9A1nDT5UBSvPCL9oz9BeeY2GYR3msBIHsi834WlPTt9yrXQKIUdEIfoVhSG6Z3PTejdwGG+xDc9SPud7UZ6popjEyZaURMuOl8NhKvtzpKf4yGvMwk95l/5xwNkKeA0T5XCI96EcRbsLh5mWAtXARznyXtXA5tD4/YNYmuBzVTQN8Ctu5V/93tI1sbdjS463KxXwaFZ/NnP9h/kXPcNYElddRc0AAAAASUVORK5CYII='>
+                <div class=hdr-icon-label>
+                      github
                 </div>
             </a>
-            <img id="title" src="download-a-directory-from-a-github-repository.png" style="height: 65px; top: 0px;" class="hdr-title" />
-            <div style="" id="date" class="hdr-date">
-02 Jun 2024
+            
+            <img id=title style='height: 65px; top: 0px' class='hdr-title' src='download-a-directory-from-a-github-repository.png'>
+            <div id=date class=hdr-date>
+                  01 May 2025
             </div>
         </div>
-        <div id="background" style="position: fixed; z-index: -1;">
+        
+        <div id=background style='position: fixed; z-index: -1'>
         </div>
-        <div id="scroll">
-            <div id="center" style="">
-                <h3 class="heading" style="margin-bottom: 40px;">
-download a directory from a github repository
+        
+        <div id=scroll>
+        
+            <div id=center>
+            
+                <h3 class=heading style='margin-bottom: 40px'>
+                      download a directory from a github repository
                 </h3>
+
+                
                 <section>
-                    <div id="parse" style="margin-bottom: 40px;">
-                        <div style="margin-bottom: 10px;">
-parse url
-                            <span style="margin-left: 20px;">
-ex :
+                
+                    <div id=parse style='margin-bottom: 40px'>
+                        <div style='margin-bottom: 10px'>
+                            parse url
+                            <span style='margin-left: 20px'>
+                                  ex :
                             </span>
-                            <span style="margin-left: 10px;">
-https:&#x2F;&#x2F;github.com &#x2F; owner &#x2F; repo &#x2F; tree &#x2F; branch &#x2F; path
+                            <span style='margin-left: 10px'>
+                                  https:&#x2F;&#x2F;github.com &#x2F; owner &#x2F; repo &#x2F; tree &#x2F; branch &#x2F; path
                             </span>
                         </div>
-                        <div style="display: flex; align-items: center;">
-                            <img id="url-paste" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAYxJREFUOE/NlLFKw1AUhs9thDSSNhYEC1LIdWj2bl07OPcJxMUXMFsHjUsXrdBdB3HwARxLwIIQXJxcUooHbCOEutRKh9AYucXGtknTGhw8Y3Lud89//stP4I+LRPEopdb3/31EbKxydyhQluVjQoiaTCZTPM9Dv98Hz/M0nufPTdMcRIF9oKIoKcdx3ifNHMeBJEkgiiJYlgWu605zsohoh4F9IJsqs+5pp+UeHNxsgSAIQMiPgOFwCGflHjTbAtw+ia+IuL0UmE1/asbhyxgYVuyyq4c01JuZ3wGjdlS/2/hnQNcDePvg/KEvDQkuDMkejUYF9rHT6TBzfMdmTJnscFry3nUW7p+FqC00EHF30rAUuHNCoVqtQrFYDEANw4BKpQKI6HNWBtZqtQBQVdX4QNM0A0BFUeIDmbT5YquILXmRK7GBsSZcSxBtU5wJAbAH3NjlfD4fGLLVai2WzLpZQMyfIoQclUqlRC6XCwC73S7ouh7+bBbtiFLKkuIx4mUXpqMsMrFXSej5ni+XXuAVg6oGswAAAABJRU5ErkJggg==" style="width: 30px; height: 30px; cursor: pointer; margin-right: 10px;" />
-                            <input id="url" style="flex: 1 1 0%;">
-                            </input>
-                            <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; min-width: 60px; margin-left: 10px;" type="button" value="parse" id="parse">
-                            </input>
+                        <div style='display: flex; align-items: center'>
+                            <img id=url-paste style='width: 30px; height: 30px; cursor: pointer; margin-right: 10px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAYxJREFUOE/NlLFKw1AUhs9thDSSNhYEC1LIdWj2bl07OPcJxMUXMFsHjUsXrdBdB3HwARxLwIIQXJxcUooHbCOEutRKh9AYucXGtknTGhw8Y3Lud89//stP4I+LRPEopdb3/31EbKxydyhQluVjQoiaTCZTPM9Dv98Hz/M0nufPTdMcRIF9oKIoKcdx3ifNHMeBJEkgiiJYlgWu605zsohoh4F9IJsqs+5pp+UeHNxsgSAIQMiPgOFwCGflHjTbAtw+ia+IuL0UmE1/asbhyxgYVuyyq4c01JuZ3wGjdlS/2/hnQNcDePvg/KEvDQkuDMkejUYF9rHT6TBzfMdmTJnscFry3nUW7p+FqC00EHF30rAUuHNCoVqtQrFYDEANw4BKpQKI6HNWBtZqtQBQVdX4QNM0A0BFUeIDmbT5YquILXmRK7GBsSZcSxBtU5wJAbAH3NjlfD4fGLLVai2WzLpZQMyfIoQclUqlRC6XCwC73S7ouh7+bBbtiFLKkuIx4mUXpqMsMrFXSej5ni+XXuAVg6oGswAAAABJRU5ErkJggg=='>
+                            <input id=url style='flex: 1 1 0%'>
+                            <input id='parse' style='cursor: pointer; font-size: 16px; box-sizing: border-box; min-width: 60px; margin-left: 10px' type=button value=parse>
                         </div>
                     </div>
-                    <div id="values">
+                    
+                    <div id=values>
+                    
                         <div>
-owner
+                              owner
                         </div>
-                        <input class="owner">
+                        <input class=owner>
                         </input>
                         <div>
-repo
+                              repo
                         </div>
-                        <input class="repo">
+                        <input class=repo>
                         </input>
                         <div>
-branch
+                              branch
                         </div>
-                        <input class="branch">
+                        <input class=branch>
                         </input>
                         <div>
-path
+                              path
                         </div>
-                        <input class="path">
+                        <input class=path>
                         </input>
                     </div>
-                    <button style="margin-top: 20px;" onclick="download()">
-download
+                    
+                    <button style='margin-top: 20px' onclick='download()'>
+                          download
                     </button>
+                    
                 </section>
-                <section style="margin-top: 30px;">
-                    <div style="">
-                        <div style="margin-bottom: 20px;">
-this url can be visited with the following query parameters
+
+                
+                <section style='margin-top: 30px'>
+                
+                    <div>
+                    
+                        <div style='margin-bottom: 20px'>
+                              this url can be visited with the following query parameters
                         </div>
+                        
                         <div style="margin-top: 10px; font-family: monospace;">
-https:&#x2F;&#x2F;javascript-2020.github.io&#x2F;utils&#x2F;download-a-directory-from-a-github-repository&#x2F;download-a-directory-from-a-github-repository.html?
+                              https:&#x2F;&#x2F;javascript-2020.github.io&#x2F;utils&#x2F;download-a-directory-from-a-github-repository&#x2F;download-a-directory-from-a-github-repository.html?
                         </div>
-                        <div style="margin-top: 10px; font-family: monospace;">
-owner={owner}
+                        
+                        <div style='margin-top: 10px; font-family: monospace'>
+                              owner={owner}
                         </div>
-                        <div style="font-family: monospace;">
-repo={repo}
+                        
+                        <div style='font-family: monospace'>
+                              repo={repo}
                         </div>
-                        <div style="font-family: monospace;">
-branch={branch}
+                        
+                        <div style='font-family: monospace'>
+                              branch={branch}
                         </div>
-                        <div style="font-family: monospace;">
-path={path}
+                        
+                        <div style='font-family: monospace'>
+                              path={path}
                         </div>
-                        <div style="margin-top: 10px;">
-if the parameter download is present, the download will be started automatically
+                        
+                        <div style='margin-top: 10px'>
+                              if the parameter download is present, the download will be started automatically
                         </div>
-                        <div style="margin-top: 30px;">
-example
+                        
+                        <div style='margin-top: 30px'>
+                              example
                         </div>
-                        <a href="https://javascript-2020.github.io/utils/download-a-directory-from-a-github-repository/download-a-directory-from-a-github-repository.html?owner=javascript-2020&repo=code-projects&branch=main&path=http-file-upload" style="display: block; margin-top: 10px; font-weight: bold; font-family: monospace;">
-                            <span style="color: blue;">
-https:&#x2F;&#x2F;javascript-2020.github.io&#x2F;utils&#x2F;download-a-directory-from-a-github-repository&#x2F;download-a-directory-from-a-github-repository.html
+                        
+                        <a style='display: block; margin-top: 10px; font-weight: bold; font-family: monospace' href='https://javascript-2020.github.io/utils/download-a-directory-from-a-github-repository/download-a-directory-from-a-github-repository.html?owner=javascript-2020&repo=code-projects&branch=main&path=http-file-upload'>
+                            <span style='color: blue'>
+                                  https:&#x2F;&#x2F;javascript-2020.github.io&#x2F;utils&#x2F;download-a-directory-from-a-github-repository&#x2F;download-a-directory-from-a-github-repository.html
                             </span>
                             <span style="color: green;">
-?owner=javascript-2020&amp;repo=code-projects&amp;branch=main&amp;path=http-file-upload
+                                  ?owner=javascript-2020&amp;repo=code-projects&amp;branch=main&amp;path=http-file-upload
                             </span>
                         </a>
-                        <a href="https://javascript-2020.github.io/utils/download-a-directory-from-a-github-repository/download-a-directory-from-a-github-repository.html?owner=javascript-2020&repo=code-projects&branch=main&path=http-file-upload&download" style="display: block; margin-top: 10px; font-weight: bold; font-family: monospace;">
-                            <span style="color: blue;">
-https:&#x2F;&#x2F;javascript-2020.github.io&#x2F;utils&#x2F;download-a-directory-from-a-github-repository&#x2F;download-a-directory-from-a-github-repository.html
+                        
+                        <a style='display: block; margin-top: 10px; font-weight: bold; font-family: monospace' href='https://javascript-2020.github.io/utils/download-a-directory-from-a-github-repository/download-a-directory-from-a-github-repository.html?owner=javascript-2020&repo=code-projects&branch=main&path=http-file-upload&download'>
+                            <span style='color: blue'>
+                                  https:&#x2F;&#x2F;javascript-2020.github.io&#x2F;utils&#x2F;download-a-directory-from-a-github-repository&#x2F;download-a-directory-from-a-github-repository.html
                             </span>
-                            <span style="color: green;">
-?owner=javascript-2020&amp;repo=code-projects&amp;branch=main&amp;path=http-file-upload&amp;download
+                            <span style='color: green'>
+                                  ?owner=javascript-2020&amp;repo=code-projects&amp;branch=main&amp;path=http-file-upload&amp;download
                             </span>
                         </a>
                     </div>
                 </section>
-                <section style="margin-top: 30px;">
-                    <div style="">
-browser code
+                
+                
+                <section style='margin-top: 30px'>
+                
+                    <div>
+                          browser code
                     </div>
-                    <code id="browser" style="" class="code">
-&lt;script type=module&gt;
+                    
+                    <code id=browser class=code>
+                    
+        &lt;script type=module&gt;
 
         import jszip from &#39;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;jszip&#x2F;+esm&#39;;
         var zip     = new jszip();
