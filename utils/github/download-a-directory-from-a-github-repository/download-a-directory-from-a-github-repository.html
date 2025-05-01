@@ -4,18 +4,19 @@
 
 <html>
 
-    <head>
+      <head>
     
-        <base href='https://javascript-2020.github.io/utils/github/download-a-directory-from-a-github-repository/'>
-        <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico'>
+            <base href='https://javascript-2020.github.io/utils/github/download-a-directory-from-a-github-repository/'>
+            <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico'>
+            
+            <title>download github directory</title>
+            
+            
+            <link rel=stylesheet href='/css/page.css' id=page>
+            <script id='page' src='/js/page.js'></script>
+            
+            <style>
         
-        <title>download github directory</title>
-        
-        
-        <link rel=stylesheet href='/css/page.css' id="page">
-        <script id='page' src='/js/page.js'></script>
-        
-        <style style="display: none;">
         h3 {
               margin                          : 0;
         }
@@ -38,10 +39,11 @@
               font-size                   : 16px;
               padding                     : 5px 10px;
         }
-        </style>
+        
+            </style>
         
         
-        <script>
+            <script>
         
         var JSZip;
         
@@ -104,89 +106,6 @@
         });//onload
 
 
-//https://github.com/javascript-2020/javascript-2020.github.io
-//https://github.com/${owner}/${repo}/tree/${branch}/${path}
-
-        function parse(url){
-        
-              var n   = count(url,'/');
-              if(n==4)return parse.repo(url);
-              return parse.dir(url);
-              
-              function count(haystack,needle){
-              
-                    var n   = needle.length;
-                    if(n==0){
-                          return undefined;
-                    }
-                    
-                    var c   = 0;
-                    var i   = haystack.indexOf(needle);
-                    
-                    while(i>-1){
-                    
-                          c++;
-                          i   = haystack.indexOf(needle,i+n);
-                          
-                    }//while
-                    
-                    return c;
-                    
-              }//count
-              
-        }//parse
-
-        
-        parse.find=function(url,n,end){
-        
-              var i1   = 0;
-              for(var i=0;i<n;i++){
-              
-                    i1   = url.indexOf('/',i1)+1;
-                    
-              }//for
-              
-              if(end){
-                    var s   = url.slice(i1);
-                    return s;
-              }
-              
-              var i2    = url.indexOf('/',i1);
-              var s     = url.slice(i1,i2);
-              return s;
-              
-        }//find
-        
-
-        parse.repo=function(url){
-        
-              var owner     = parse.find(url,3);
-              var repo      = parse.find(url,4);
-              var branch    = 'main';
-              var path      = '';
-              
-              return {owner,repo,branch,path};
-              
-        }//parse.repo
-        
-
-        parse.dir=function(url){
-        
-              var owner       = parse.find(url,3);
-              var repo        = parse.find(url,4);
-              var branch      = parse.find(url,6);
-              var path        = parse.find(url,7,true);
-              
-              var i           = path.lastIndexOf('/');
-              var filename    = path.slice(i+1);
-              
-              var i           = path.lastIndexOf('.');
-              var ext         = path.slice(i+1);
-              
-              return {owner,repo,branch,path,filename,ext};
-              
-        }//dir
-        
         
         async function download(){
         
@@ -230,36 +149,36 @@
               
         }//download
         
-        </script>
+            </script>
         
-    </head>
+      </head>
     
-    <body>
+      <body>
     
-        <div id=hdr >
+            <div id=hdr >
         
-            <a id=home class=hdr-icon href='https://javascript-2020.github.io/'>
-                <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAABA5JREFUOE+lkVtsVEUYx//fnDnn7KW73XZ7peVSWtvSC5duGrXGkBLFUH1AfdD0DWNMn3zwwURJZA2++CKJvtCoSBMkaoLEBDEYpBQCldRSUnq11La4lF7YstfuntuM2cIjKLGTTDLJN//f9/1mCE+womdP+Ae+u1V/99Ls8IHZ49l/i9AT8JA+czx06du5nxam459t8fg/b78Yth+X+09gODyqdW3ua5mfSLQOXkrEa3Tt5PqA3yx3FmXvvMiFzRY8G/vDB0qPrkv542NLB+Pp1GEpBAV8viOH3ip9b13Aj75cOBhLxg8LIagoUHAk/HbZ/wNeGZNvKhyha8MxNRhQ3yUiWloxjz2zI3BXEmbanqKvHzXpYz/l6qT8ghG6LEcmGENh7qJty5imMo8ATrXVUucjgVJKdusW1EgEjs8HcrtBo6NwCqozrddGFrozhrMdkA+zBE1lU60NJV2puby+xkYomQxkMglZWQmlpgYWXR6XtZyjUzgYAUMeAUVk48K5y3cnLMJpAHsXlhfhOAIVZWUgQr8lsvv2P7+1WnLskcA9CKSYgibbxknqH5MtNomfpZRuAIyIDEHijd6+5d+hKaelkHvHpqYghIOG2joojPVnLHVfx25fiEn2vZRSByCIKMMle5l6zieCI5ORU5msuTvn5dKVyYYtJR2BAk9qas74wTDFbkA8VGY55cHKDZ79mWRCnZxd/iVrOXW5otul9TXVVb5O73TPewoc+0eAXsoVfB7FeHpn8Sd5bt5sOeLVmb9X1fISV04VkYUsqio9tsbpt9Ws82v/jXuHU6u250E3ee6+wl+j8ImonyznrBDiOSEEdE2Bx21mGZMKAFVKrMHWIgIgljvAEZLM1YzmNkwHjLHcviJVpYM+6IkEdaGdvxeN7lyJx1BfXY2Az4KSCxIgpIRh2CAiqJzl3nAN7gggnlQxPj2NwvwAioLBGwYzX6APu2fLdc17wTSNesu2EfDnobU5kFNHxrQw8ucSlu+n4XVpcOkcVRsLUFLoRTLtYOBmDLFECirn0DR9wjDTe+hQz8omJuxeIcRWKSU0jSPUmA+vm2E2ch9/jM5DVRn8XhdSqybKi33YUV8G0wIGR+MwzQfTM8b+Eoy3U/irpRri1Dtze64ylkhge/02tDYXQkoLt+djWFpJQ1EYvG4NGcOCW+fYUOKHz+vFwM0VDE+MI+D3o2rT5oi0ZTuFj841kO4+MzQyUhxLxvHsrhBam0ugKBZiySySaRMKI+g6X5uGc2UN6nZ5MTC8hP6hQQR8+djV1LQsjcwr9P6nEz5P0L9rcGKcx2NxtIVa0NJQilQ2jTuLMUSjaXDOkefVkU0b4C4FwXwXKipKcX14EVcHryM/kI9Q/TZ7NZoY+gdEZNOa/2ZSPwAAAABJRU5ErkJggg=='>
-                <div class=hdr-icon-label>
-                      home
-                </div>
-            </a>
+                  <a id=home class=hdr-icon href='https://javascript-2020.github.io/'>
+                      <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAABA5JREFUOE+lkVtsVEUYx//fnDnn7KW73XZ7peVSWtvSC5duGrXGkBLFUH1AfdD0DWNMn3zwwURJZA2++CKJvtCoSBMkaoLEBDEYpBQCldRSUnq11La4lF7YstfuntuM2cIjKLGTTDLJN//f9/1mCE+womdP+Ae+u1V/99Ls8IHZ49l/i9AT8JA+czx06du5nxam459t8fg/b78Yth+X+09gODyqdW3ua5mfSLQOXkrEa3Tt5PqA3yx3FmXvvMiFzRY8G/vDB0qPrkv542NLB+Pp1GEpBAV8viOH3ip9b13Aj75cOBhLxg8LIagoUHAk/HbZ/wNeGZNvKhyha8MxNRhQ3yUiWloxjz2zI3BXEmbanqKvHzXpYz/l6qT8ghG6LEcmGENh7qJty5imMo8ATrXVUucjgVJKdusW1EgEjs8HcrtBo6NwCqozrddGFrozhrMdkA+zBE1lU60NJV2puby+xkYomQxkMglZWQmlpgYWXR6XtZyjUzgYAUMeAUVk48K5y3cnLMJpAHsXlhfhOAIVZWUgQr8lsvv2P7+1WnLskcA9CKSYgibbxknqH5MtNomfpZRuAIyIDEHijd6+5d+hKaelkHvHpqYghIOG2joojPVnLHVfx25fiEn2vZRSByCIKMMle5l6zieCI5ORU5msuTvn5dKVyYYtJR2BAk9qas74wTDFbkA8VGY55cHKDZ79mWRCnZxd/iVrOXW5otul9TXVVb5O73TPewoc+0eAXsoVfB7FeHpn8Sd5bt5sOeLVmb9X1fISV04VkYUsqio9tsbpt9Ws82v/jXuHU6u250E3ee6+wl+j8ImonyznrBDiOSEEdE2Bx21mGZMKAFVKrMHWIgIgljvAEZLM1YzmNkwHjLHcviJVpYM+6IkEdaGdvxeN7lyJx1BfXY2Az4KSCxIgpIRh2CAiqJzl3nAN7gggnlQxPj2NwvwAioLBGwYzX6APu2fLdc17wTSNesu2EfDnobU5kFNHxrQw8ucSlu+n4XVpcOkcVRsLUFLoRTLtYOBmDLFECirn0DR9wjDTe+hQz8omJuxeIcRWKSU0jSPUmA+vm2E2ch9/jM5DVRn8XhdSqybKi33YUV8G0wIGR+MwzQfTM8b+Eoy3U/irpRri1Dtze64ylkhge/02tDYXQkoLt+djWFpJQ1EYvG4NGcOCW+fYUOKHz+vFwM0VDE+MI+D3o2rT5oi0ZTuFj841kO4+MzQyUhxLxvHsrhBam0ugKBZiySySaRMKI+g6X5uGc2UN6nZ5MTC8hP6hQQR8+djV1LQsjcwr9P6nEz5P0L9rcGKcx2NxtIVa0NJQilQ2jTuLMUSjaXDOkefVkU0b4C4FwXwXKipKcX14EVcHryM/kI9Q/TZ7NZoY+gdEZNOa/2ZSPwAAAABJRU5ErkJggg=='>
+                      <div class=hdr-icon-label>
+                            home
+                      </div>
+                  </a>
             
-            <a id=github class=hdr-icon href='https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/github/download-a-directory-from-a-github-repository'>
-                <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAbFJREFUOE/l1E2IT2EUx/HPIFI2lJfGwmYsxFZKEUWjKWM3pZSpKcqeBcpLZsNeUeNlZWdBSVFmkAXbmRWbWRCRjYW8jv+pc/V4utff3q3bvfc5z/k+557zO2dA97UHy7ERx3LbZbzEZzxscx3o4L3GWizusP/AO6yv7TXwAo5g9V8iL03vcRWnm8USeBHH/xFUb7uEE7HYAOMZeVmGm7iN61jVccBHjOMQxvAl870QoIDMZ87CfxR3E7QDTyroTjzOtf24k++R0w0BHMY9LEpDCeyXgRL4EyMBjEKcSs+o3r4uSbTQQ1r3CzVMBnCh2PimTQp9wgyJDZZV/g+Bz7E1c/AdezHdr7xp34UHvcIuye8XUZSy9A1nDT5UBSvPCL9oz9BeeY2GYR3msBIHsi834WlPTt9yrXQKIUdEIfoVhSG6Z3PTejdwGG+xDc9SPud7UZ6popjEyZaURMuOl8NhKvtzpKf4yGvMwk95l/5xwNkKeA0T5XCI96EcRbsLh5mWAtXARznyXtXA5tD4/YNYmuBzVTQN8Ctu5V/93tI1sbdjS463KxXwaFZ/NnP9h/kXPcNYElddRc0AAAAASUVORK5CYII='>
-                <div class=hdr-icon-label>
-                      github
-                </div>
-            </a>
+                  <a id=github class=hdr-icon href='https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/github/download-a-directory-from-a-github-repository'>
+                      <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAbFJREFUOE/l1E2IT2EUx/HPIFI2lJfGwmYsxFZKEUWjKWM3pZSpKcqeBcpLZsNeUeNlZWdBSVFmkAXbmRWbWRCRjYW8jv+pc/V4utff3q3bvfc5z/k+557zO2dA97UHy7ERx3LbZbzEZzxscx3o4L3GWizusP/AO6yv7TXwAo5g9V8iL03vcRWnm8USeBHH/xFUb7uEE7HYAOMZeVmGm7iN61jVccBHjOMQxvAl870QoIDMZ87CfxR3E7QDTyroTjzOtf24k++R0w0BHMY9LEpDCeyXgRL4EyMBjEKcSs+o3r4uSbTQQ1r3CzVMBnCh2PimTQp9wgyJDZZV/g+Bz7E1c/AdezHdr7xp34UHvcIuye8XUZSy9A1nDT5UBSvPCL9oz9BeeY2GYR3msBIHsi834WlPTt9yrXQKIUdEIfoVhSG6Z3PTejdwGG+xDc9SPud7UZ6popjEyZaURMuOl8NhKvtzpKf4yGvMwk95l/5xwNkKeA0T5XCI96EcRbsLh5mWAtXARznyXtXA5tD4/YNYmuBzVTQN8Ctu5V/93tI1sbdjS463KxXwaFZ/NnP9h/kXPcNYElddRc0AAAAASUVORK5CYII='>
+                      <div class=hdr-icon-label>
+                            github
+                      </div>
+                  </a>
             
-            <img id=title style='height: 65px; top: 0px' class='hdr-title' src='download-a-directory-from-a-github-repository.png'>
-            <div id=date class=hdr-date>
-                  01 May 2025
+                  <img id=title style='height: 65px; top: 0px' class='hdr-title' src='download-a-directory-from-a-github-repository.png'>
+                  <div id=date class=hdr-date>
+                        01 May 2025
+                  </div>
             </div>
-        </div>
         
-        <div id=background style='position: fixed; z-index: -1'>
-        </div>
+            <div id=background style='position: fixed; z-index: -1'>
+            </div>
         
         <div id=scroll>
         
@@ -425,7 +344,9 @@
 &lt;&#x2F;script&gt;
                     </code>
                 </section>
-                <section style="margin-top: 30px;">
+                
+                
+                <section style='margin-top: 30px'>
                     <div style="">
 node.js code
                     </div>
