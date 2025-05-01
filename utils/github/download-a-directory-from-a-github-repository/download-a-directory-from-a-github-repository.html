@@ -18,6 +18,9 @@
         body
               {height:calc(100% - 16px)}
 
+
+        #scroll
+              {margin-top:50px}
               
         #values 
               {display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
@@ -94,11 +97,14 @@
         init.stack.total      = 1;
         init.stack.mode       = '';
         init.stack.complete   = false;
+        init.stack.df         = true;
         Object.defineProperty(init.stack,'add',{get:()=>{
+                                                                                init.stack.df && console.log('init.stack.add');
               init.stack.total++;
               init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
         }});
         Object.defineProperty(init.stack,'complete',{get:()=>{
+                                                                                init.stack.df && console.log('init.stack.complete');
               init.stack.ct++;
               init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
               init.stack.ct>=init.stack.total && init();
