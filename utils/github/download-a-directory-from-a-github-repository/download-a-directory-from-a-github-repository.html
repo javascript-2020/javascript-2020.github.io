@@ -11,16 +11,8 @@
             
             <title>download github directory</title>
             
-            
-            <link rel=stylesheet href='/css/page.css' id=page>
-            <script id='page' src='/js/page.js'></script>
-            
             <style>
         
-        h3 {
-              margin                          : 0;
-        }
-      
         #values {
               display                     : grid;
               grid-template-columns       : auto 1fr;
@@ -42,6 +34,112 @@
         
             </style>
         
+        
+            <script>
+                                                                                console.clear();
+                                                                                console.log('html-editor');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var mod     = {};
+        mod.menu    = {};
+        mod.utils   = {};
+        
+        var $,datatype,menumod,keydown
+        ;
+        
+        var log;
+        
+        
+        var menu        = {};
+
+        
+  //:
+        
+        async function init(){
+                                                                      console.log('init');
+        
+              menumod                   = menumod();
+              mod.utils.hdr             = mod.utils.hdr();
+              log                       = log();
+              
+              mod.utils.hdr.initmod({menu,menumod});
+              log.initmod({});
+              
+              mod.utils.hdr.init();
+              log.init();
+        
+  //:
+          
+              window.onfocus            = ()=>editor && editor.focus();
+              keydown.add(kd);
+              menumod.on.close          = ()=>editor.focus();
+        
+              
+              await initdom(document.body);
+        
+        
+              init.complete();
+        
+              
+        }//init
+        
+        
+        init.stack            = [];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+              init.stack.ct>=init.stack.total && init();
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+        
+        
+        init.complete   = function(){
+          
+              init.complete.stack.forEach(fn=>fn());
+              
+        }//complete
+        
+        init.complete.stack   = [];
+        init.complete.add     = fn=>init.complete.stack.push(fn);
+
+                  
+            </script>
+
+            <script libs>
+
+        init.stack.add;
+        
+        var ext;
+        
+        fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
+          .then(res=>res.text().then(async txt=>{
+        
+              ext           = eval(txt);
+              var promise   = ext.load.libs(
+                    'js/dom/$.js',
+                    'js/core/datatype.js',
+                    'js/dom/menumod/menumod.js',
+                    'js/dom/keydown/keydown.js',
+                    'github/github.js'
+              );
+              [$,datatype,menumod,keydown,github]   = await promise;
+        
+              init.stack.complete;
+        
+          }));
+
+            </script>
+
         
             <script>
         
@@ -146,20 +244,10 @@
             </hdr-grp-api>
 
         
-            <div id=background style='position: fixed; z-index: -1'>
-            </div>
-
-
-        
             <div id=scroll>
             
                   <div id=center>
                   
-                        <h3 class=heading style='margin-bottom: 40px'>
-                              download a directory from a github repository
-                        </h3>
-        
-                        
                         <section>
                         
                               <div id=parse style='margin-bottom: 40px'>
@@ -217,8 +305,16 @@
                 
                 
             </div scroll>
+
+
+<!-- components -->
+
+<log-api>
+      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+</log-api>
         
-        
-        
+<!-- components -->
+
+
     </body>
 </html>
