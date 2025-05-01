@@ -13,6 +13,12 @@
             
             <style>
         
+        html
+              {font-family:arial}
+        body
+              {height:calc(100% - 16px)}
+
+              
         #values {
               display                     : grid;
               grid-template-columns       : auto 1fr;
@@ -43,15 +49,20 @@
         var mod     = {};
         mod.menu    = {};
         mod.utils   = {};
+
+        
+        var JSZip
+        ;
         
         var $,datatype,menumod,keydown
         ;
         
+
         var log;
         
         
         var menu        = {};
-
+        var btn         = {};
         
   //:
         
@@ -117,6 +128,9 @@
 
             <script libs>
 
+(async()=>{
+  
+
         init.stack.add;
         
         var ext;
@@ -138,101 +152,16 @@
         
           }));
 
+          JSZip   = (await import('https://cdn.jsdelivr.net/npm/jszip/+esm')).default;
+
+})();
+
             </script>
 
-        
-            <script>
-        
-        var JSZip;
-        
-        (async()=>{
-        
-                JSZip   = (await import('https://cdn.jsdelivr.net/npm/jszip/+esm')).default;
-                
-        })();
-        
-        
-            </script>
-            
-            
-            
-            <script>
-        
-        
-        
-        function initdom(){
-          
-                
-              $('#url-paste').onclick       = async e=>{
-              
-                    var url           = await navigator.clipboard.readText();
-                    $('#url').value   = url;
-                    
-              };//paste
-              
-              $('[value=parse]').onclick   = e=>{
-              
-                    var url               = $('#url').value;
-                    url                   = parse(url);
-                    
-                    $('.owner').value     = url.owner;
-                    $('.repo').value      = url.repo;
-                    $('.branch').value    = url.branch;
-                    $('.path').value      = url.path;
-                    
-              };
-              
-        }//initdom
-                
-                
-                
 
 
-        
-        async function download(){
-        
-              var $         = sel=>document.querySelector(`.${sel}`).value;
-              var owner     = $('.owner');
-              var repo      = $('.repo');
-              var branch    = $('.branch');
-              var path      = $('.path');
-              
-              if(path.slice(-1)!='/')path+='/';
-              var file    = `${path.split('/').filter(Boolean).at(-1)||repo}.zip`;
-              var zip     = new JSZip();
-              
-              var url     = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=true`;
-              var json    = await fetch(url).then(res=>res.json());
-              
-              await Promise.all(json.tree.map(async item=>{
-              
-                    if(!item.path.startsWith(path))return;
-                    
-                    var fn    = item.path.slice(path.length);
-                    if(item.type=='tree'){
-                          zip.folder(fn);
-                    }else{
-                          var res     = await fetch(item.url);
-                          var blob    = await res.blob();
-                          zip.file(fn,blob);
-                    }
-                    
-              }));
-              
-              zip.generateAsync({type:'blob'}).then(blob=>{
-              
-                    var url         = window.URL.createObjectURL(blob);
-                    var a           = document.createElement('a');
-                    a.href          = url;
-                    a.download      = file;
-                    a.click();
-                    
-              });
-              
-        }//download
-        
-            </script>
-        
+
+
       </head>
     
       <body>
@@ -275,27 +204,24 @@
                                       owner
                                 </div>
                                 <input class=owner>
-                                </input>
+                                
                                 <div>
                                       repo
                                 </div>
                                 <input class=repo>
-                                </input>
+                                
                                 <div>
                                       branch
                                 </div>
                                 <input class=branch>
-                                </input>
+                                
                                 <div>
                                       path
                                 </div>
                                 <input class=path>
-                                </input>
                             </div>
                             
-                            <button style='margin-top: 20px' onclick='download()'>
-                                  download
-                            </button>
+                            <input value=download type=button>
                             
                         </section>
       
@@ -306,6 +232,115 @@
                 
             </div scroll>
 
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            <script>
+        
+        
+        
+        function initdom(){
+                                                                                console.log('initdom');
+                
+              $('#url-paste').onclick           = btn.paste;
+              
+              $('[value=parse]').onclick        = btn.parse;
+              
+              $('[value=download]').onclick     = btn.download;
+
+
+              
+        }//initdom
+                
+                
+  //:
+  
+  
+        btn.paste   = async function(){
+              
+              var url           = await navigator.clipboard.readText();
+              $('#url').value   = url;
+              
+        }//paste          
+
+
+        btn.parse   = function(){
+              
+              var url               = $('#url').value;
+              url                   = parse(url);
+              
+              $('.owner').value     = url.owner;
+              $('.repo').value      = url.repo;
+              $('.branch').value    = url.branch;
+              $('.path').value      = url.path;
+                    
+        }//parse
+
+
+        btn.download    = function(){
+          
+              var owner     = $('.owner');
+              var repo      = $('.repo');
+              var branch    = $('.branch');
+              var path      = $('.path');
+          
+        }//download
+        
+        
+  //:
+  
+  
+        async function download(owner,repo,branch,path){
+        
+              
+              if(path.slice(-1)!='/')path+='/';
+              
+              var file    = `${path.split('/').filter(Boolean).at(-1)||repo}.zip`;
+              
+              var zip     = new JSZip();
+              
+              var url     = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=true`;
+              var json    = await fetch(url).then(res=>res.json());
+              
+              await Promise.all(json.tree.map(async item=>{
+              
+                    if(!item.path.startsWith(path))return;
+                    
+                    var fn    = item.path.slice(path.length);
+                    if(item.type=='tree'){
+                          zip.folder(fn);
+                    }else{
+                          var res     = await fetch(item.url);
+                          var blob    = await res.blob();
+                          zip.file(fn,blob);
+                    }
+                    
+              }));
+              
+              zip.generateAsync({type:'blob'}).then(blob=>{
+              
+                    var url         = window.URL.createObjectURL(blob);
+                    var a           = document.createElement('a');
+                    a.href          = url;
+                    a.download      = file;
+                    a.click();
+                    
+              });
+              
+        }//download
+        
+            </script>
+        
 
 <!-- components -->
 
