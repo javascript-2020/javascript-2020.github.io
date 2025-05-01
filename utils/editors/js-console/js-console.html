@@ -262,32 +262,34 @@
   //:
 
 
-        function complete(type,path,icon){
+        function complete(file){
         
-              var name    = editor.filename(path,icon);
-              editor.filename.save(false);
-              filemod.cur   = {type,name};
+              editor.filename(file);
+              editor.filename.save.hide();
+              filemod.cur   = file;
               menumod.close();
               editor.focus();
-              return name;
               
         }//complete
 
         
-        complete.load=function(type,txt,path,icon){
+        complete.load=function(file,txt){
         
               editor.clear();
               output.kill();
               editor.setValue(txt,-1);
-              complete(type,path,icon);
+              complete(file);
               
         }//complete.load
 
         
-        complete.save=function(type,path,icon){
+        complete.save=function(file,confirm=true){
 
-              var name    = complete(type,path,icon);
-              log.green(name,'saved');
+              complete(file);
+              
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
               
         }//save
 
