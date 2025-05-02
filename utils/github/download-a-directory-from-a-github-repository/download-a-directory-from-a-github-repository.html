@@ -54,7 +54,14 @@
         #track
               {background:lightblue;width:0;height:100%}
               
-              
+        
+        #results
+              {}
+        .result
+              {display:flex;align-items:center}
+        .result .filename
+              {}
+
               
         .icon
               {cursor:pointer;border:1px solid gray;border-radius:3px;box-sizing:border-box}
@@ -81,10 +88,13 @@
         var JSZip
         ;
         
-        var $,datatype,menumod,keydown,github
+        var $,datatype,menumod,keydown,github,hs
         ;
         
 
+        var results;
+        var result;
+        
         var log;
         
         
@@ -94,7 +104,7 @@
   //:
         
         async function init(){
-                                                                      console.log('init');
+                                                                                console.log('init');
         
               menumod                   = menumod();
               mod.utils.hdr             = mod.utils.hdr();
@@ -171,9 +181,10 @@
                     'js/core/datatype.js',
                     'js/dom/menumod/menumod.js',
                     'js/dom/keydown/keydown.js',
-                    'github/github.js'
+                    'github/github.js',
+                    'js/string/hs.js',
               );
-              [$,datatype,menumod,keydown,github]   = await promise;
+              [$,datatype,menumod,keydown,github,hs]   = await promise;
         
               init.stack.complete;
         
@@ -259,6 +270,14 @@
                             
                             </div>
                             
+                            <div id=results>
+                            
+                                  <a class=result style='display:none'>
+                                        <div class=filename></div>
+                                  </a>
+                                  
+                            </div>
+                            
                         </section>
       
                       
@@ -277,7 +296,7 @@
         
         function initdom(){
 
-                                                                                console.log('*** initdom');
+                                                                                console.log('initdom');
               mod.utils.hdr.initdom();
 
                 
@@ -287,6 +306,11 @@
               
               $('[value=download]').onclick     = btn.download;
 
+
+              results                           = $('#results');
+              result                            = $('#result');
+              result.style.display              = '';
+              result.remove();
 
               
         }//initdom
@@ -333,53 +357,8 @@
   
   
         async function download(owner,repo,branch,path){
-                                                                                console.log('download',owner,repo,branch,path);
-              if(path.slice(-1)!='/')path+='/';
-              
-              var file    = `${path.split('/').filter(Boolean).at(-1)||repo}.zip`;
-              
-              var zip     = new JSZip();
-              
-              var url     = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=true`;
-              var json    = await fetch(url).then(res=>res.json());
-              
-              var ct      = 0;
-              var total   = 1;
-              update();
-                            
-              await Promise.all(json.tree.map(async item=>{
-              
-                    if(!item.path.startsWith(path))return;
-                    
-                    total++;
-                    update();
-                    
-                    var fn    = item.path.slice(path.length);
-                    if(item.type=='tree'){
-                          zip.folder(fn);
-                    }else{
-                          var res     = await fetch(item.url);
-                          var blob    = await res.blob();
-                          zip.file(fn,blob);
-                    }
-                    
-                    ct++;
-                    update();
-                    
-              }));
-              
-              ct++;
-              update();
-              
-              zip.generateAsync({type:'blob'}).then(blob=>{
-              
-                    var url         = window.URL.createObjectURL(blob);
-                    var a           = document.createElement('a');
-                    a.href          = url;
-                    a.download      = file;
-                    a.click();
-                    
-              });
+
+              github.download(owner,repo,branch,path,update,complete);
               
         }//download
         
@@ -391,6 +370,35 @@
               $('#track').style.width    = w;
               
         }//update
+        
+        
+        function complete(file,blob){
+          
+              var size                              = hs(blob.size);
+              var str                               = file+' '+size;
+              
+              var nresult                           = result.cloneNode(true);
+              $(nresult,'#filename').textContent    = str;
+              nresult.onclick                       = download;
+              results.append(nitem);
+              
+              
+              function download(e){
+                
+                    if(e.button!=0){
+                          return;
+                    }
+                
+                    var url       = window.URL.createObjectURL(blob);
+                    
+                    var a         = document.createElement('a');
+                    a.download    = file;
+                    a.href        = url;
+                    a.click();
+                    
+              }//download
+          
+        }//complete
 
 
 
