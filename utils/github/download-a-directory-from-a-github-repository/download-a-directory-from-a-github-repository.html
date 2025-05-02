@@ -61,7 +61,7 @@
                 content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAiZJREFUOE9jZKAAMML0Xuro0P34+jWbbW/vOQYGhv+4zOwUYeDV0bMz3Ljv0Bmw5mdrV9aI8XE3MTy+x/j6zMn9B/cdz4i4ce8WsgFr5eUlVczNa77wcFuefvKos2DX3rVgzfsqS63VhXgni319Y/jv9mWGT9evfzx5/320z/ufWxsYGJgcxMTS+ZUUmq/8+zcv/9SZlncMDJ9A+uDOZmBgYN1lrhmh8etTK8v7j7KfP//8dfnrvxyJf4wBjJycNruZmVIb3n1cw8DA8A/mImTNYLEEBgaBGD7mVpHfDBn/fv9j+viP4e0apv9BU/8wHEYPCwzNIAO2MDOEivxnXMT0/z/HP2bGb0cYWexKfv8+ix6IGJp3MjFkCvxnmPKdkfHjQUamQi9upmZmdqYvDa9/mm9iYPiMbACK5q0MDCmijAyzGJgZ/23+/z+m+S/DinY+dpUoCZZ9D37+W2n/8HsZstPhmtcyMFjIMjEeYmdlZL3IyDgr7sffLAYGhr8gm+aIsho68bHvXvvyl0Ppl19XMALsmCDvCf7f383fMjPeTfv42/wGA8NbZCfuFOVI4mFm9rB+8TUcZjvY5lZubvFoV5sXrLcvMZx7/67X99nPEiwpjOmYMOeGSW+/Z6xgYHgGj+ckBgbe9pbKl3xPb3Ku33M4L+r268nYkucCdnblt//+8RX//n0eJZFsTY0JY/322Tpj6ca6ewwMH4nJL1jjmRiNIDUADZXPhFJZPA0AAAAASUVORK5CYII=');
               }
         #results
-              {}
+              {margin-top:10px}
         .result
               {display:flex;align-items:center;margin-bottom:10px}
         .result .filename
@@ -283,7 +283,7 @@
                             </div>
                             
                             <div results-root>
-                                  <img id=clear>
+                                  <img id=results-clear class=icon>
                                   <div id=results>
                                         <a class=result style='display:none' href='#'>
                                               <div class=filename></div>
@@ -356,6 +356,11 @@
               var url               = $('#url').value;
               var result            = github.parse(url);
                                                                                 console.json(result);
+              if(result.error){
+                    alert(result.error);
+                    return;
+              }
+                
               $('.owner').value     = result.owner;
               $('.repo').value      = result.repo;
               $('.branch').value    = result.branch;
