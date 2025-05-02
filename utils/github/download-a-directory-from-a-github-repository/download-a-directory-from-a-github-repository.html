@@ -24,6 +24,17 @@
               
         #values 
               {display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
+              
+        #download-root
+              {display:flex;gap:20px}
+              
+        #progress
+              {padding:3px}
+              
+        #track
+              {background:lightblue;width:50%}
+              
+              
         [value=download]
               {margin-top:20px;width:150px}
               
@@ -223,7 +234,16 @@
                                 
                             </div values>
                             
-                            <input value=download type=button>
+                            <div id=download-root>
+                            
+                                  <input value=download type=button>
+                                  
+                                  <div id=progress>
+                                        <div id=track>
+                                        </div>
+                                  </div>
+                            
+                            </div>
                             
                         </section>
       
@@ -311,9 +331,15 @@
               var url     = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=true`;
               var json    = await fetch(url).then(res=>res.json());
               
+              var ct      = 0;
+              var total   = 1;
+              
               await Promise.all(json.tree.map(async item=>{
               
                     if(!item.path.startsWith(path))return;
+                    
+                    total++;
+                    update();
                     
                     var fn    = item.path.slice(path.length);
                     if(item.type=='tree'){
@@ -324,7 +350,13 @@
                           zip.file(fn,blob);
                     }
                     
+                    ct++;
+                    update();
+                    
               }));
+              
+              ct++;
+              update();
               
               zip.generateAsync({type:'blob'}).then(blob=>{
               
@@ -337,6 +369,15 @@
               });
               
         }//download
+        
+        
+        function update(){
+          
+              var p   = (ct/total)*100;
+              var w   = p+'%';
+              $('#track).style.width    = w;
+              
+        }//update
 
 
 
