@@ -62,7 +62,8 @@
               {display:flex;align-items:center;margin-bottom:10px}
         .result .filename
               {}
-
+        .error
+              {display:flex;align-items:center;margin-bottom:10px;margin-left:20px}
               
         .icon-root
               {display:flex;align-items:center;gap:5px}
@@ -116,8 +117,11 @@
         btn.repo        = {};
         btn.branch      = {};
         btn.path        = {};
+        var display     = {};
+        
         
   //:
+
         
         async function init(){
                                                                                 console.log('init');
@@ -304,6 +308,13 @@
                                         <a class=result style='display:none' href='#'>
                                               <div class=filename></div>
                                         </a>
+                                        <div class=error style='display:none'>
+                                              <div style='color:red'>
+                                                    error
+                                              </div>
+                                              <div class=message>
+                                              </div>
+                                        </div>
                                         
                                   </div>
                             </div>
@@ -348,7 +359,9 @@
               result                            = $('.result');
               result.style.display              = '';
               result.remove();
-
+              error                             = $('.error');
+              error.style.display               = '';
+              error.remove();
               
         }//initdom
                 
@@ -449,19 +462,16 @@
         async function download(owner,repo,branch,path){
 
               var {error,file,blob}   = await github.download(owner,repo,branch,path,update);
-              debugger;
+              
               if(error){
-                    alert(error);
+                    display.error(error);
                     return;
               }
               
               var size                              = hs(blob.size);
               var str                               = file+' '+size;
               
-              var nresult                           = result.cloneNode(true);
-              $(nresult,'.filename').textContent    = str;
-              nresult.onclick                       = download;
-              results.append(nresult);
+              display.result(str,download);
               
               
               function download(e){
@@ -493,6 +503,23 @@
         }//update
         
         
+        display.result    = function(str,download){
+          
+              var nresult                           = result.cloneNode(true);
+              $(nresult,'.filename').textContent    = str;
+              nresult.onclick                       = download;
+              results.append(nresult);
+          
+        }//result
+        
+        
+        display.error   = function(err){
+          
+              var nerror                          = error.cloneNode(true);
+              $(nerror,'.message').textContent    = err;
+              results.append(nerror);
+              
+        }//error
 
 
 
