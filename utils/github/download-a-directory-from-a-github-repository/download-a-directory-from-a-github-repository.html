@@ -242,8 +242,8 @@
                                         <img id=url-copy class=icon title=copy>
                                         <img id=url-paste class=icon title=paste>
                                   </div>
-                                  <input id=url>
                                   <input id=parse value=parse type=button>
+                                  <input id=url>
                                   
                               </div>
                             
@@ -252,21 +252,25 @@
                                 <div>
                                       owner
                                 </div>
+                                <img id=owner-paste class=icon title=paste>
                                 <input class=owner>
                                 
                                 <div>
                                       repo
                                 </div>
+                                <img id=repo-paste class=icon title=paste>
                                 <input class=repo>
                                 
                                 <div>
                                       branch
                                 </div>
+                                <img id=branch-paste class=icon title=paste>
                                 <input class=branch>
                                 
                                 <div>
                                       path
                                 </div>
+                                <img id=path-paste class=icon title=paste>
                                 <input class=path>
                                 
                             </div values>
@@ -314,10 +318,15 @@
               mod.utils.hdr.initdom();
 
                 
-              $('#url-paste').onclick           = btn.paste;
-              $('#url-copy').onclick            = btn.copy;
+              $('#url-paste').onclick           = btn.url.paste;
+              $('#url-copy').onclick            = btn.url.copy;
               
               $('[value=parse]').onclick        = btn.parse;
+              
+              $('#owner-paste').onclick         = btn.owner.paste;
+              $('#repo-paste').onclick          = btn.repo.paste;
+              $('#branch-paste').onclick        = btn.branch.paste;
+              $('#owner-path').onclick          = btn.path.paste;
               
               $('[value=download]').onclick     = btn.download;
 
@@ -335,7 +344,7 @@
   //:
   
   
-        btn.paste   = async function(){
+        btn.url.paste   = async function(){
               
               var url           = await navigator.clipboard.readText();
               $('#url').value   = url;
@@ -343,7 +352,7 @@
         }//paste          
         
         
-        btn.copy    = async function(){
+        btn.url.copy    = async function(){
           
               var url   = $('#url').value;
               await navigator.clipboard.writeText(url);
@@ -369,6 +378,38 @@
         }//parse
 
 
+        btn.owner.paste   = function(){
+          
+              var txt               = await navigator.clipboard.readText();
+              $('.owner').value     = txt;
+              
+        }//paste
+        
+        
+        btn.repo.paste   = function(){
+          
+              var txt               = await navigator.clipboard.readText();
+              $('.repo').value      = txt;
+              
+        }//paste
+        
+        
+        btn.branch.paste   = function(){
+          
+              var txt               = await navigator.clipboard.readText();
+              $('.branch').value    = txt;
+              
+        }//paste
+        
+        
+        btn.path.paste   = function(){
+          
+              var txt               = await navigator.clipboard.readText();
+              $('.path').value      = txt;
+              
+        }//paste
+        
+                
         btn.download    = function(){
           
               var owner     = $('.owner').value;
