@@ -447,22 +447,13 @@
   
         async function download(owner,repo,branch,path){
 
-              github.download(owner,repo,branch,path,update,complete);
+              var {error,file,blob}   = github.download(owner,repo,branch,path,update);
+                
+              if(error){
+                    alert(error);
+                    return;
+              }
               
-        }//download
-        
-        
-        function update(ct,total){
-                                                                                console.log('update',ct,total);
-              var p   = (ct/total)*100;
-              var w   = p+'%';
-              $('#track').style.width    = w;
-              
-        }//update
-        
-        
-        function complete(file,blob){
-          
               var size                              = hs(blob.size);
               var str                               = file+' '+size;
               
@@ -488,8 +479,19 @@
                     a.click();
                     
               }//download
-          
-        }//complete
+              
+        }//download
+        
+        
+        function update(ct,total){
+                                                                                console.log('update',ct,total);
+              var p   = (ct/total)*100;
+              var w   = p+'%';
+              $('#track').style.width    = w;
+              
+        }//update
+        
+        
 
 
 
