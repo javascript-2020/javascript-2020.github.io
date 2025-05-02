@@ -364,15 +364,16 @@
         }//paste          
         
         
-        btn.url.copy    = async function(){
+        btn.url.copy    = async function(e){
           
+              $.mousetext(e,'copied');
               var url   = $('#url').value;
               await navigator.clipboard.writeText(url);
               
         }//copy
 
 
-        btn.parse   = function(){
+        btn.parse   = function(e){
               
               var url               = $('#url').value;
               var result            = github.parse(url);
@@ -390,7 +391,7 @@
         }//parse
 
 
-        btn.owner.paste   = async function(){
+        btn.owner.paste   = async function(e){
           
               var txt               = await navigator.clipboard.readText();
               $('.owner').value     = txt;
@@ -398,7 +399,7 @@
         }//paste
         
         
-        btn.repo.paste   = async function(){
+        btn.repo.paste   = async function(e){
           
               var txt               = await navigator.clipboard.readText();
               $('.repo').value      = txt;
@@ -406,7 +407,7 @@
         }//paste
         
         
-        btn.branch.paste   = async function(){
+        btn.branch.paste   = async function(e){
           
               var txt               = await navigator.clipboard.readText();
               $('.branch').value    = txt;
@@ -414,7 +415,7 @@
         }//paste
         
         
-        btn.path.paste   = async function(){
+        btn.path.paste   = async function(e){
           
               var txt               = await navigator.clipboard.readText();
               $('.path').value      = txt;
@@ -422,7 +423,7 @@
         }//paste
         
                 
-        btn.download    = function(){
+        btn.download    = function(e){
           
               var owner     = $('.owner').value;
               var repo      = $('.repo').value;
