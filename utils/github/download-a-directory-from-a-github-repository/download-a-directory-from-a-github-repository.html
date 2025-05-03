@@ -32,9 +32,9 @@
         #url
               {width:100%}
         #url-examples
-              {margin-left:25px;font-size:12px;font-family:monospace;position:absolute;margin-top:10px;top:-90px}
+              {margin-left:25px;font-size:12px;font-family:monospace;position:absolute;top:-90px}
         #url-examples>a
-              {margin-top:3px;display:block;white-space:nowrap}
+              {margin-top:5px;display:block;white-space:nowrap}
 
               
         #values 
@@ -89,7 +89,9 @@
         label
               {width:60px;text-align:right;margin-right:20px}
         
-        
+        a,a:visited
+              {color:dimgray}
+              
             </style>
         
         
@@ -367,12 +369,7 @@
                     var a           = document.createElement('a');
                     a.href          = url;
                     a.textContent   = url;
-                    a.onclick       = e=>{
-                      
-                                            e.preventDefault();
-                                            $('#url').value   = url;
-                                            
-                                      }//click
+                    a.onclick       = e=>($('#url').value=url) && e.preventDefault();
                     $('#url-examples').append(a);
                     
               });
