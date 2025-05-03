@@ -18,22 +18,20 @@
         body
               {height:calc(100% - 16px)}
 
-
         #scroll
               {}
         #center
               {width:100%;max-width:1200px;position:absolute;margin:auto;left:0;right:0}
               
-        #parse-root
-              {padding-bottom:20px;margin:120px 0 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid lightgray}
-        #url-root
-              {flex:1;align-items:start;position:relative}
-        #url
-              {width:100%}
         #url-examples
-              {margin-left:25px;font-size:12px;font-family:monospace;position:absolute;top:-90px}
+              {font-size:12px;font-family:monospace;text-align:center}
         #url-examples>a
               {margin-top:5px;display:block;white-space:nowrap}
+              
+        #parse-root
+              {padding-bottom:20px;margin:20px 0;display:flex;align-items:center;gap:10px;border-bottom:1px solid lightgray}
+        #url
+              {flex:1}
 
               
         #values 
@@ -110,12 +108,7 @@
         var $,datatype,menumod,keydown,github,hs
         ;
         
-        var example_urls    = [
-                                    'https://javascript-2020.github.io/html-components/log/log.html',
-                                    'https://github.com/javascript-2020/libs',
-                                    'https://github.com/javascript-2020/libs/blob/main/docker/nodejs-min.dockerfile',
-                                    'https://github.com/javascript-2020/libs/tree/main/docker',
-                              ];
+                              
         var results;
         var result;
         
@@ -256,6 +249,12 @@
                   <div id=center>
                   
                         <section>
+                              <div id=url-examples>
+                                    <a href='https://javascript-2020.github.io/html-components/log/log.html'>https://javascript-2020.github.io/html-components/log/log.html</a>
+                                    <a href='https://github.com/javascript-2020/libs'>https://github.com/javascript-2020/libs</a>
+                                    <a href='https://github.com/javascript-2020/libs/blob/main/docker/nodejs-min.dockerfile'>https://github.com/javascript-2020/libs/blob/main/docker/nodejs-min.dockerfile</a>
+                                    <a href='https://github.com/javascript-2020/libs/tree/main/docker'>https://github.com/javascript-2020/libs/tree/main/docker</a>
+                              </div>
                         
                               <div id=parse-root>
                               
@@ -267,12 +266,7 @@
                                         <img id=url-paste class='paste icon' title=paste>
                                   </div>
                                   <input id=parse value=parse type=button>
-                                  <div id=url-root>
-                                        <div id=url-examples>
-                                        </div>
-                                        <input id=url>
-                                  </div>
-                                        
+                                  <input id=url>
                                   
                               </div>
                               
@@ -363,17 +357,6 @@
               mod.utils.hdr.initdom();
 
 
-              example_urls.forEach(url=>{
-                
-                    var a           = document.createElement('a');
-                    a.href          = url;
-                    a.textContent   = url;
-                    a.onclick       = e=>($('#url').value=url) && e.preventDefault();
-                    $('#url-examples').append(a);
-                    
-              });
-
-              
               $('#url-paste').onclick           = btn.url.paste;
               $('#url-copy').onclick            = btn.url.copy;
               
