@@ -16,83 +16,124 @@
             <div class=menu style='display:none'>
                   <div id=editor class=menu-opt>editor</div>
                   <div id=js-console class=menu-opt>js console</div>
-                  <div id=html-editor class=menu-opt>html-editor</div>
+                  <div id=html-editor class=menu-opt>html editor</div>
+                  <div id=markdown-editor class=menu-opt>markdown editor</div>
+                  <div id=srcdoc class=menu-opt>srcdoc</div>
+                  <div id=text-diff class=menu-opt>text diff</div>
+                  <div id=stackblitz class=menu-opt>stackblitz</div>
             </div>
       
       </template>
       
       <script>
       
-            mod.menu.top=function(){
+mod.menu.top=function(){
                                                                                 true && console.log('top-menu');      
-              var obj   = {};
+  var obj   = {};
               
-                  var menumod
-                  ;
+        var menumod
+        ;
                   
-                  obj.initmod=function(params){
-                    
-                        menumod   = params.menumod;
-                        
-                  }//initmod
-                  
-              //:
+        obj.initmod=function(params){
+          
+              menumod   = params.menumod;
               
-              //vars:-
-              
-                  obj.init=function(){
-                  }//init
+        }//initmod
                   
-              //:
               
-                  obj.initdom=function(rootnode){
-                  
-                        var root                        = $.$(rootnode,'top-menu');
-                        var shadow                      = root.shadowRoot;
+  //vars:-
 
-                        menumod.add.style(shadow);
-                        
-                        
-                        var card                        = $(shadow,'.menu');
-                        $(shadow,'#icon').onclick       = menumod.click(card,false,false,menu);
 
-                        
-                  }//initdom
+  //
+  
+  
+        obj.init=function(){
+        }//init
+
                   
-                  
-                  function menu(type,opt){
-                  
-                      if(type=='opt'){
-                            menu[opt.id]();
-                      }
-                  
-                  }//menu
-                    
-                  
-                  menu.editor=function(){
-            
-                        window.open('/utils/editors/editor/editor.html');
-            
-                  }//editor
-      
-            
-                  menu['js-console']=function(){
-            
-                        window.open('/utils/editors/js-console/js-console.html');
-            
-                  }//js-console
-                    
-                  
-                  menu['html-editor']=function(){
-                  
-                        window.open('/utils/editors/html-editor/html-editor.html');
-                  
-                  }//html-editor
-                  
-                    
-              return obj;
+  //:
+
               
-            }//mod
+        obj.initdom=function(rootnode){
+        
+              var root                        = $.$(rootnode,'top-menu');
+              var shadow                      = root.shadowRoot;
+
+              menumod.add.style(shadow);
+              
+              
+              var card                        = $(shadow,'.menu');
+              $(shadow,'#icon').onclick       = menumod.click(card,false,false,menu);
+
+              
+        }//initdom
+        
+        
+        function menu(type,opt){
+        
+            if(type=='opt'){
+                  menu[opt.id]();
+            }
+        
+        }//menu
+                    
+
+  //:
+  
+  
+        menu.editor=function(){
+  
+              window.open('/utils/editors/editor/editor.html');
+  
+        }//editor
+  
+  
+        menu['js-console']=function(){
+  
+              window.open('/utils/editors/js-console/js-console.html');
+  
+        }//js-console
+          
+        
+        menu['html-editor']=function(){
+        
+              window.open('/utils/editors/html-editor/html-editor.html');
+        
+        }//html-editor
+        
+          
+        menu['markdown-editor']=function(){
+        
+              window.open('/utils/editors/markdown-editor/markdown-editor.html');
+        
+        }//html-editor
+  
+  
+        menu.srcdoc=function(){
+        
+              window.open('/utils/editors/srcdoc/srcdoc.html');
+        
+        }//html-editor
+  
+  
+        menu['text-diff']=function(){
+        
+              window.open('/utils/editors/text-diff/text-diff.html');
+        
+        }//html-editor
+  
+  
+        menu.stackblitz=function(){
+        
+              window.open('/utils/editors/stackblitz/stackblitz.html');
+        
+        }//html-editor
+
+
+
+  return obj;
+  
+}//mod
                   
       </script>
       
