@@ -27,8 +27,14 @@
 
         #parse-root
               {padding-bottom:20px;margin-bottom:20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid lightgray}
+        #url-root
+              {flex:1;align-items:start;position:relative}
         #url
-              {flex:1}
+              {width:100%}
+        #url-examples
+              {font-size:12px;font-family:monospace;position:absolute;margin-top:10px;top:-40px}
+        #url-examples>a
+              {margin-top:3px;display:block}
 
               
         #values 
@@ -103,7 +109,12 @@
         var $,datatype,menumod,keydown,github,hs
         ;
         
-
+        var example_urls    = [
+                                    'https://javascript-2020.github.io/html-components/log/log.html',
+                                    'https://github.com/javascript-2020/libs',
+                                    'https://github.com/javascript-2020/libs/blob/main/docker/nodejs-min.dockerfile',
+                                    'https://github.com/javascript-2020/libs/tree/main/docker',
+                              ];
         var results;
         var result;
         
@@ -234,7 +245,7 @@
     
             <hdr-grp-api>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  <img style='top:5px;height:50px' class=title src='images/download-a-directory-from-a-github-repository.png'>
+                  <img style='top:0px;height:50px' class=title src='images/download-a-directory-from-a-github-repository.png'>
                   <span slot=date>03 May 2025</span>
             </hdr-grp-api>
 
@@ -255,9 +266,15 @@
                                         <img id=url-paste class='paste icon' title=paste>
                                   </div>
                                   <input id=parse value=parse type=button>
-                                  <input id=url>
+                                  <div id=url-root>
+                                        <div id=url-examples>
+                                        </div>
+                                        <input id=url>
+                                  </div>
+                                        
                                   
                               </div>
+                              
                             
                             <div id=values>
                             
@@ -344,7 +361,23 @@
                                                                                 console.log('initdom');
               mod.utils.hdr.initdom();
 
+
+              example_urls.forEach(url=>{
                 
+                    var a           = document.createElement('a');
+                    a.href          = url;
+                    a.textContent   = url;
+                    a.click         = e=>{
+                      
+                                            e.preventDefault();
+                                            $('#url').value   = url;
+                                            
+                                      }//click
+                    $('#url-examples').append(a);
+                    
+              });
+
+              
               $('#url-paste').onclick           = btn.url.paste;
               $('#url-copy').onclick            = btn.url.copy;
               
