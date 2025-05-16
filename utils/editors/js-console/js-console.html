@@ -12,22 +12,33 @@
             
             <style id=page-inline>
             
-                  #help         {padding:2px}
+                  #help
+                        {padding:2px}
                   
-                  #hdr          {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
-                  .icon         {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
-                  .spc          {flex:1}
+                  #hdr  
+                        {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
+                  .icon 
+                        {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+                  .spc  
+                        {flex:1}
                   
-                  #run          {color:blue;font-weight:bold}
-                  #horiz        {margin-left:50px;border:none}
-                  #vert         {border:none}
+                  #run  
+                        {color:blue;font-weight:bold}
+                  #horiz
+                        {margin-left:50px;border:none}
+                  #vert 
+                        {border:none}
             
-                  #view         {display:none;flex:1}
+                  #view 
+                        {display:none;flex:1}
             
-                  editor-root   {width:50%}
-                  output-root   {flex:1}
+                  editor-root
+                        {width:50%}
+                  output-root
+                        {flex:1}
                         
-                  button        {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}            
+                  button
+                        {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}            
             
             </style>
             
@@ -273,7 +284,7 @@
         }//complete
 
         
-        complete.load=function(file,txt){
+        complete.load   = function(file,txt){
         
               editor.clear();
               output.kill();
@@ -283,7 +294,7 @@
         }//complete.load
 
         
-        complete.save=function(file,confirm=true){
+        complete.save   = function(file,confirm=true){
 
               complete(file);
               
@@ -293,108 +304,111 @@
               
         }//save
 
+
   //:
+
   
-      window.onmessage=function(e){
-
-            
-            var json    = JSON.parse(e.data);
-
-            var txt   = json.code||json.text||json.txt;
-            if(txt){
-                  editor.setValue(txt,-1);
-            }
-
-            if(json.run){
-                  run();
-            }
-
-
-      }//onmessage
-
-
-  //:
-
-
-      ui.read=function(){
-
-            var txt     = editor.getValue();
-            var json    = {v:1,txt};
-            return json;
-
-      }//read
-
-
-      ui.setup=function(view){
-
-            var o   = localStorage.getItem('orientation');
-            if(o==='horiz'){
-                  horiz();
-            }
-            view.style.display    = 'flex';
-
-      }//setup
-
-
-  //:
-
-
-      function horiz(){
-
-            localStorage.setItem('orientation','horiz');
-
-            ui.mode                     = 'horiz';
-            slider.node.style.cursor    = 'ns-resize';
-            slider.node.style.width     = '100%';
-            slider.node.style.height    = '10px';
-
-            view.style.flexDirection    = 'column';
-
-            editor.horiz();
-            output.horiz();
-            editor.focus();
-
-      }//horiz
-
-
-      function vert(){
-
-            localStorage.setItem('orientation','vert');
-
-            ui.mode                     = 'vert';
-            slider.node.style.cursor    = 'ew-resize';
-            slider.node.style.width     = '10px';
-            slider.node.style.height    = '100%';
-
-            view.style.flexDirection    = 'row';
-
-            editor.vert();
-            output.vert();
-            editor.focus();
-
-      }//vert
-
-
-  //:
+        window.onmessage    = function(e){
   
-      function run(){
+              
+              var json    = JSON.parse(e.data);
+  
+              var txt   = json.code||json.text||json.txt;
+              if(txt){
+                    editor.setValue(txt,-1);
+              }
+  
+              if(json.run){
+                    run();
+              }
+  
+  
+        }//onmessage
 
-            var js    = editor.getValue();
-            output.run(js);
-            
-            if(filemod.autosave){
+
+  //:
+
+
+        ui.read   = function(){
+  
+              var txt     = editor.getValue();
+              var json    = {v:1,txt};
+              return json;
+  
+        }//read
+  
+  
+        ui.setup    = function(view){
+  
+              var o   = localStorage.getItem('orientation');
+              if(o==='horiz'){
+                    horiz();
+              }
+              view.style.display    = 'flex';
+  
+        }//setup
+
+
+  //:
+
+
+        function horiz(){
+  
+              localStorage.setItem('orientation','horiz');
+  
+              ui.mode                     = 'horiz';
+              slider.node.style.cursor    = 'ns-resize';
+              slider.node.style.width     = '100%';
+              slider.node.style.height    = '10px';
+  
+              view.style.flexDirection    = 'column';
+  
+              editor.horiz();
+              output.horiz();
+              editor.focus();
+  
+        }//horiz
+
+
+        function vert(){
+  
+              localStorage.setItem('orientation','vert');
+  
+              ui.mode                     = 'vert';
+              slider.node.style.cursor    = 'ew-resize';
+              slider.node.style.width     = '10px';
+              slider.node.style.height    = '100%';
+  
+              view.style.flexDirection    = 'row';
+  
+              editor.vert();
+              output.vert();
+              editor.focus();
+  
+        }//vert
+
+
+  //:
+
+  
+        function run(){
+  
+              var js    = editor.getValue();
+              output.run(js);
+              
+              if(filemod.autosave){
                                                                                 console.log('save');
-                  filemod.save();
-            }
+                    filemod.save();
+              }
+  
+        }//run
 
-      }//run
 
 
-
-      init.stack.complete;
+        init.stack.complete;
 
       
-</script>
+      </script>
 
 
 <!-- components -->
