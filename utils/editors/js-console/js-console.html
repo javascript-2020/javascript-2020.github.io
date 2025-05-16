@@ -46,107 +46,111 @@
             <script init>
                                                                                 console.clear();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-                  var mod     = {};
-                  mod.menu    = {};
-                  mod.utils   = {};
-                  
-                  var filemod;                                                                                
-                  var publish;
-                  var editor;
-                  var output;
-                  var log;
+        var mod     = {};
+        mod.menu    = {};
+        mod.utils   = {};
+        
+        var filemod;                                                                                
+        var publish;
+        var editor;
+        var output;
+        var log;
+  
+  
+        var menu        = {};
+        var slider      = {};
+        
+        var ui          = {};
+        ui.mode         = 'vert';
 
 
-                  var menu        = {};
-                  var slider      = {};
-                  
-                  var ui          = {};
-                  ui.mode         = 'vert';
+  //:
 
-              //:
+  
+        async function init(){
+                                                                                console.log('init');
+              //keydown                   = keydown();
+              menumod                   = menumod();
+              mod.utils.hdr             = mod.utils.hdr();
+              mod.menu.main             = mod.menu.main();
+              filemod                   = filemod();
+              publish                   = publish();
+              editor                    = editor();
+              output                    = output();
+              log                       = log();
               
-                  async function init(){
-                                                                                console.log('init-2');
-                        //keydown                   = keydown();
-                        menumod                   = menumod();
-                        mod.utils.hdr             = mod.utils.hdr();
-                        mod.menu.main             = mod.menu.main();
-                        filemod                   = filemod();
-                        publish                   = publish();
-                        editor                    = editor();
-                        output                    = output();
-                        log                       = log();
-                        
-                        mod.utils.hdr.initmod({menu,menumod});
-                        mod.menu.main.initmod({menumod,editor});
-                        filemod.initmod({menumod,complete,editor,ext});
-                        publish.initmod({ui,menumod});
-                        editor.initmod({});
-                        output.initmod({});
-                        log.initmod({});
-                        
-                        mod.menu.main.init();
-                        mod.utils.hdr.init();
-                        filemod.init();
-                        publish.init();
-                        editor.init();
-                        output.init();
-                        log.init();
+              mod.utils.hdr.initmod({menu,menumod});
+              mod.menu.main.initmod({menumod,editor});
+              filemod.initmod({menumod,complete,editor,ext});
+              publish.initmod({ui,menumod});
+              editor.initmod({});
+              output.initmod({});
+              log.initmod({});
+              
+              mod.menu.main.init();
+              mod.utils.hdr.init();
+              filemod.init();
+              publish.init();
+              editor.init();
+              output.init();
+              log.init();
 
-                    //:
-                    
-                        window.onfocus            = ()=>editor && editor.focus();
-                        keydown.add(kd);
-                        menumod.on.close          = ()=>editor.focus();
+  
+  //:
 
-                        
-                        initdom(document.body);
-
-
-                  }//init
-
-                  init.stack            = [];
-                  init.stack.ct         = 0;
-                  init.stack.total      = 1;
-                  init.stack.mode       = '';
-                  init.stack.complete   = false;
-                  Object.defineProperty(init.stack,'add',{get:()=>{
-                        init.stack.total++;
-                        init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
-                  }});
-                  Object.defineProperty(init.stack,'complete',{get:()=>{
-                        init.stack.ct++;
-                        init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
-                        init.stack.ct>=init.stack.total && init();
-                  }});
-                  
-                  //  (typeof init!='undefined' && init?.stack && init.stack.add)
-                  //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+          
+              window.onfocus            = ()=>editor && editor.focus();
+              keydown.add(kd);
+              menumod.on.close          = ()=>editor.focus();
+  
+              
+              initdom(document.body);
+  
+  
+        }//init
+  
+        init.stack            = [];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+              init.stack.ct>=init.stack.total && init();
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
                   
             </script init>
 
             <script libs>
 
-                  init.stack.add;
-                  
-                  var ext;
-                  var $,datatype,menumod,keydown;
-                  
-                  fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
-                    .then(res=>res.text().then(async txt=>{
-
-                        ext           = eval(txt);
-                        var promise   = ext.load.libs(
-                              'js/dom/$.js',
-                              'js/core/datatype.js',
-                              'js/dom/menumod/menumod.js',
-                              'js/dom/keydown/keydown.js'
-                        );
-                        [$,datatype,menumod,keydown]   = await promise;
-
-                        init.stack.complete;
-
-                    }));
+        init.stack.add;
+        
+        var ext;
+        var $,datatype,menumod,keydown;
+        
+        fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
+          .then(res=>res.text().then(async txt=>{
+        
+              ext           = eval(txt);
+              var promise   = ext.load.libs(
+                    'js/dom/$.js',
+                    'js/core/datatype.js',
+                    'js/dom/menumod/menumod.js',
+                    'js/dom/keydown/keydown.js'
+              );
+              [$,datatype,menumod,keydown]   = await promise;
+        
+              init.stack.complete;
+        
+          }));
 
             </script libs>
             
@@ -158,7 +162,7 @@
             <hdr-grp>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   <img class=title src='images/js-console.png' style='top:5px;height:35px'>
-                  <span slot=date>12 Feb 2025</span>
+                  <span slot=date>16 May 2025</span>
             </hdr-grp>
 
 
@@ -201,48 +205,48 @@
 
       </body>
 
-<script>
+      <script>
 
-      async function initdom(rootnode){   //c
+        async function initdom(rootnode){   //c
                                                                                 console.log('initdom');
-            var root                      = rootnode;
-            
-            keydown.initdom();
-            menumod.add.style();
-
-
-            mod.utils.hdr.initdom();
-
-            
-            mod.menu.main.initdom();
-
-            filemod.initdom();
-            
-            publish.initdom();
-            
-            $('#run').onclick             = run;
-
-            $('#horiz').onclick           = horiz;
-            $('#vert').onclick            = vert;
-            
-
-            var view                      = $('#view');
-
-            await editor.initdom(view,'html');
-            slider.node                   = $.slider('editor-root','#page-slider','output-root',slider,ui);
-            output.initdom();
-
-
-            log.initdom();
-
-
-
-            ui.setup(view);
-
-            publish.query();
-            editor.focus();
-
-      }//initdom
+              var root                      = rootnode;
+              
+              keydown.initdom();
+              menumod.add.style();
+  
+  
+              mod.utils.hdr.initdom();
+  
+              
+              mod.menu.main.initdom();
+  
+              filemod.initdom();
+              
+              publish.initdom();
+              
+              $('#run').onclick             = run;
+  
+              $('#horiz').onclick           = horiz;
+              $('#vert').onclick            = vert;
+              
+  
+              var view                      = $('#view');
+  
+              await editor.initdom(view,'html');
+              slider.node                   = $.slider('editor-root','#page-slider','output-root',slider,ui);
+              output.initdom();
+  
+  
+              log.initdom();
+  
+  
+  
+              ui.setup(view);
+  
+              publish.query();
+              editor.focus();
+  
+        }//initdom
 
 
         function kd(e){
