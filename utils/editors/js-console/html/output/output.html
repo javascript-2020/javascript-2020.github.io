@@ -6,24 +6,32 @@
       
             <style>
                   
-                  :host {font-family:arial}
-                  
-                  #hdr {display:flex;align-items:center;margin:0}
-                  
-                  #spc {flex:1}
-                  
-                  #console-log {border:1px solid lightgray;padding:2px 5px;cursor:pointer;display:flex;align-items:center;margin-right:10px}
-                  #console-log [type=checkbox] {margin:0;margin-left:5px;cursor:pointer}
-                  
-                  button {font-size:16px}
-                  
-                  #output {height:100%;border:2px solid lightgray;box-sizing:border-box;padding:10px}
+    :host
+          {font-family:arial}
+    
+    #hdr
+          {display:flex;align-items:center;margin:0}
+    
+    #spc
+          {flex:1}
+    
+    .ext-button
+          {border:1px solid lightgray;padding:2px 5px;cursor:pointer;display:flex;align-items:center;margin-right:10px}
+    .ext-button [type=checkbox]
+          {margin:0;margin-left:5px;cursor:pointer}
+    
+    button
+          {font-size:16px}
+    
+    #output
+          {height:100%;border:2px solid lightgray;box-sizing:border-box;padding:10px}
                   
             </style>
             
             <div id=hdr>
                   <span id=spc></span>
-                  <div id=console-log>console.log<input type=checkbox></div>
+                  <div id=console-persist class=ext-button>console.persist<input type=checkbox></div>
+                  <div id=console-log class=ext-button>console.log<input type=checkbox></div>
                   <button id=clear>clear</button>
                   <button id=kill>kill</button>
             </div>
@@ -59,7 +67,10 @@
                                     
               //vars:-
               
-                  var console2    = console;
+                  var con             = {};
+                  con.log             = console.log;
+                  con.clear           = console.clear;
+                  
                   
                   var root;
                   var shadow;
@@ -86,7 +97,9 @@
                         root                      = $.$(rootnode,'output-root');
                         shadow                    = root.shadowRoot;
                         
+                        chk.persist               = $.chkbox(shadow,'#console-persist',false);
                         chk.log                   = $.chkbox(shadow,'#console-log',false);
+                        
                         $('#clear').onclick       = btn.clear;
                         $('#kill').onclick        = btn.kill;
                         
@@ -104,28 +117,25 @@
                   
                   btn.clear   = function(){
                     
-                        output.replaceChildren();
+                        clear();
                         
                   }//clear
                   
                   
                   obj.run   = async function(js){
                     
-                        var sandbox   = await (async()=>{
+                        var sandbox   = (()=>{
                         
-                              console.log   = function(){
-                              
-                                    if(chk.log.checked){
-                                          window.console.log.apply(window.console,arguments);
-                                    }
-                                    
-                                    display.apply(null,arguments);
-                                    
-                              }//log
+                              console.log     = log;
+                              console.clear   = clear;
 
-                                              
+                              
                               async function run(js){
                               
+                                    if(!chk.persist){
+                                          clear();
+                                    }
+                                    
                                     var result    = await eval(js);
                                     return result;
                                     
@@ -146,8 +156,8 @@
                               console.log(result);
                         }
                         
-                        console.log   = log2;
-                        
+                        console.log     = con.log;
+                        console.clear   = con.clear;
                     
                   }//run
                   
@@ -158,7 +168,22 @@
                   }//kill
                   
                   
-                  function display(){
+                  function clear(){
+                    
+                        if(chk.log.checked){
+                              con.clear.call(window.console);
+                        }
+                        
+                        output.replaceChildren();
+                        
+                  }//clear
+                  
+                  
+                  function log(){
+
+                        if(chk.log.checked){
+                              con.log.apply(window.console,arguments);
+                        }
 
                         var str     = '';
                         var args    = [...arguments];
@@ -183,7 +208,7 @@
                         output.append(div);
                         output.scrollTop    = 999999999;
                     
-                  }//display
+                  }//log
 
 
 
