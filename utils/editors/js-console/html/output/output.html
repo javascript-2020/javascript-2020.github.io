@@ -9,6 +9,8 @@
     :host
           {font-family:arial}
     
+    #root
+          {display:flex;flex-direction:column}
     #hdr
           {display:flex;align-items:center;margin:0}
     
@@ -24,20 +26,24 @@
           {font-size:16px;margin-right:10px}
     
     #output
-          {height:100%;border:2px solid lightgray;box-sizing:border-box;padding:10px;margin:0;box-sizing:border-box}
+          {flex:1;min-height:0;overflow:auto;
+            border:2px solid lightgray;box-sizing:border-box;padding:10px;margin:0;box-sizing:border-box
+          }
                   
             </style>
             
-            <div id=hdr>
-                  <span id=spc></span>
-                  <div id=console-persist class=ext-button>console.persist<input type=checkbox></div>
-                  <div id=console-log class=ext-button>console.log<input type=checkbox checked></div>
-                  <button id=clear>clear</button>
-                  <button id=kill>kill</button>
+            <div id=root>
+                  <div id=hdr>
+                        <span id=spc></span>
+                        <div id=console-persist class=ext-button>console.persist<input type=checkbox></div>
+                        <div id=console-log class=ext-button>console.log<input type=checkbox checked></div>
+                        <button id=clear>clear</button>
+                        <button id=kill>kill</button>
+                  </div>
+                  
+                  <pre id=output>
+                  </pre>
             </div>
-            
-            <pre id=output>
-            </pre>
             
       </template>
       
