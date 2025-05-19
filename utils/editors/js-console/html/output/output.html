@@ -21,7 +21,7 @@
           {margin:0;margin-left:5px;cursor:pointer}
     
     button
-          {font-size:16px}
+          {font-size:16px;margin-right:10px}
     
     #output
           {height:100%;border:2px solid lightgray;box-sizing:border-box;padding:10px}
@@ -47,9 +47,10 @@
                                                                                 console.log('output');
               var obj   = {};
 
-                  var inspect;
+                  var inspect
+                  ;
                   
-                  obj.initmod=function(params){
+                  obj.initmod   = function(params){
                     
                         ext   = params.ext;
                         
@@ -85,7 +86,7 @@
               //:
 
               
-                  obj.init=function(){
+                  obj.init    = function(){
                   }//init
 
                   
@@ -106,7 +107,9 @@
                         
                         output                          = $(shadow,'#output');
 
-                        
+
+                        clear();
+
                         
                   }//initdom
                   
@@ -162,11 +165,13 @@
                   }//run
                   
                   
-                  obj.kill=function(){
+                  obj.kill    = function(){
                     
                         
                   }//kill
                   
+                  
+                  obj.clear   = function(){return clear()}
                   
                   function clear(){
                     
@@ -178,6 +183,8 @@
                         
                   }//clear
                   
+                  
+                  obj.log   = function(){return log.apply(log,arguments)};
                   
                   function log(){
 
