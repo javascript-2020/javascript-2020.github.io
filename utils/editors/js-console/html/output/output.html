@@ -35,6 +35,7 @@
                         <span id=spc></span>
                         <div id=console-persist class=ext-button>console.persist<input type=checkbox></div>
                         <div id=console-log class=ext-button>console.log<input type=checkbox checked></div>
+                        <div id=word-wrap class=ext-button>wrap<input type=checkbox checked></div>
                         <button id=clear>clear</button>
                         <button id=kill>kill</button>
                   </div>
@@ -104,6 +105,7 @@
                         
                         chk.persist                     = $.chkbox(shadow,'#console-persist',false);
                         chk.log                         = $.chkbox(shadow,'#console-log',false);
+                        chk.wrap                        = $.chkbox(shadow,'#word-wrap',wrap);
                         
                         $(shadow,'#clear').onclick      = btn.clear;
                         $(shadow,'#kill').onclick       = btn.kill;
@@ -112,6 +114,9 @@
                         output                          = $(shadow,'#output');
 
 
+                        wrap(chk.wrap.checked);
+
+                        
                   }//initdom
                   
                   
@@ -125,6 +130,16 @@
                         
                   }//clear
                   
+                  
+                  function wrap(v){
+                    
+                        if(v){
+                              output.style.whiteSpace   = 'pre-wrap';
+                        }else{
+                              output.style.whiteSpace   = '';
+                        }
+                        
+                  }//wrap
                   
                   obj.run   = async function(js){
                                                                                 console.log('run');
