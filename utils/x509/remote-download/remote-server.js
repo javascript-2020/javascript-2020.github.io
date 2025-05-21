@@ -171,7 +171,7 @@
                         var auth              = $('#auth').value;
                         var host              = $('#host').value;
                         
-                        var url               = 'https://cert-test-1024713184986.us-central1.run.app/cert';
+                        var url               = '/cert';
                         var headers           = {auth,cert:host};
                         var res               = await fetch(url,{headers});
                         var html              = await res.text();
