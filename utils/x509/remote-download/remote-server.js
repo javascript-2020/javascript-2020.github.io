@@ -197,7 +197,7 @@
             <style>
       
     #hdr
-          {display:flex;gap:20px}
+          {display:flex;gap:20px;align-items:center}
           
     pre
           {font-family:monospace;border:1px solid lightgray;padding:10px}
@@ -210,6 +210,7 @@
       <body>
       
             <div id=hdr>
+                  <input value=copy type=button>
                   <input value=download type=button>
                   <div>/*host*/</div>
             </div>
@@ -222,9 +223,18 @@
         
         window.onload   = function(){
           
+              $('[value=copy]').onclick       = copy;
               $('[value=download]').onclick   = download;
               
         }//onload
+        
+        
+        async function copy(){
+          
+              var pem   = $('pre').textContent.trim();
+              await navigator.clipboard.writeText(pem);
+              
+        }//copy
         
         
         function download(){
