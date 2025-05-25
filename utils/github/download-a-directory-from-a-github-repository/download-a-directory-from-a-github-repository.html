@@ -151,6 +151,10 @@
         
         
               init.complete();
+
+              
+              urlparams();
+              
         
               
         }//init
@@ -477,7 +481,7 @@
   //:
   
   
-        async function download(owner,repo,branch,path){
+        async function download(owner,repo,branch,path,auto){
 
               var {error,file,blob}   = await github.download(owner,repo,branch,path,update);
               
@@ -490,10 +494,14 @@
               var size                              = hs(blob.size);
               var str                               = file+' '+size;
               
-              display.result(str,download);
+              display.result(str,click);
+
+              if(auto){
+                    download();
+              }
+
               
-              
-              function download(e){
+              function click(e){
                 
                     if(e.button!=0){
                           return;
@@ -501,6 +509,13 @@
                     
                     e.preventDefault();
                     
+                    download();
+                    
+              }//click
+              
+              
+              function download(){
+                
                     var url       = window.URL.createObjectURL(blob);
                     
                     var a         = document.createElement('a');
@@ -515,9 +530,9 @@
         
         function update(ct,total){
                                                                                 //console.log('update',ct,total);
-              var p   = (ct/total)*100;
-              var w   = p+'%';
-              $('#track').style.width    = w;
+              var p                     = (ct/total)*100;
+              var w                     = p+'%';
+              $('#track').style.width   = w;
               
         }//update
         
@@ -541,6 +556,26 @@
         }//error
 
 
+  //:
+  
+        
+        function urlparams(){
+          
+              var query     = window.location.search;
+              var params    = new URLSearchParams(query);
+              
+              var owner     = params.get('owner');
+              var repo      = params.get('repo');
+              var branch    = params.get('branch')||'main';
+              var path      = params.get('path')||'';
+              var auto      = params.get('auto');
+              
+              if(owner && repo){
+                    download(owner,repo,branch,path,auto);
+              }
+              
+        }//urlparams
+        
 
 
         init.stack.complete;
