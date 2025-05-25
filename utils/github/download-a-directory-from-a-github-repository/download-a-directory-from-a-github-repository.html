@@ -562,18 +562,22 @@
         function urlparams(){
           
                                                                                 console.log('urlparams');
-              var query     = window.location.search;
+              var query             = window.location.search;
                                                                                 console.log(query);
-              var params    = new URLSearchParams(query);
+              var params            = new URLSearchParams(query);
               
-              var owner     = params.get('owner');
-              var repo      = params.get('repo');
-              var branch    = params.get('branch')||'main';
-              var path      = params.get('path')||'';
-              var auto      = params.get('auto');
+              var owner             = params.get('owner');
+              var repo              = params.get('repo');
+              var branch            = params.get('branch')||'main';
+              var path              = params.get('path')||'';
+              var auto              = params.get('auto');
                                                                                 console.log(owner,repo,branch,path,auto);
+              $('.owner').value     = owner;
+              $('.repo').value      = repo;
+              $('.branch').value    = branch;
+              $('.path').value      = path;
+                                                                                
               if(owner && repo){
-                    return;
                     download(owner,repo,branch,path,auto);
               }
               
