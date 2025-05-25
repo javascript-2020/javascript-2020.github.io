@@ -33,6 +33,8 @@
         #url
               {flex:1}
 
+        #token-root
+              {padding-bottom:20px;border-bottom:1px solid lightgray}
               
         #values 
               {padding-bottom:20px;margin:bottom:20px;border-bottom:1px solid lightgray}
@@ -120,6 +122,7 @@
         var menu        = {};
         var btn         = {};
         btn.url         = {};
+        btn.token       = {};
         btn.owner       = {};
         btn.repo        = {};
         btn.branch      = {};
@@ -279,23 +282,32 @@
                               </div>
                               
                             
-                            <div id=values>
+                              <div id=token-root class=value>
+                                    <label>
+                                          token
+                                    </label>
+                                    <img id=token-paste class='paste icon'>
+                                    <input class=token>
+                              </div>
+
+                              
+                              <div id=values>
                             
-                                <div id=owner-root class=value>
-                                      <label>
-                                            owner
-                                      </label>
-                                      <img id=owner-paste class='paste icon' title=paste>
-                                      <input class=owner>
-                                </div>
+                                    <div id=owner-root class=value>
+                                          <label>
+                                                owner
+                                          </label>
+                                          <img id=owner-paste class='paste icon' title=paste>
+                                          <input class=owner>
+                                    </div>
                                 
-                                <div id=repo-root class=value>
-                                      <label>
-                                            repo
-                                      </label>
-                                      <img id=repo-paste class='paste icon' title=paste>
-                                      <input class=repo>
-                                </div>
+                                    <div id=repo-root class=value>
+                                          <label>
+                                                repo
+                                          </label>
+                                          <img id=repo-paste class='paste icon' title=paste>
+                                          <input class=repo>
+                                    </div>
                                 
                                 <div id=branch-root class=value>
                                       <label>
@@ -324,6 +336,11 @@
                                         </div>
                                   </div>
                             
+                                  <label for=api>
+                                        api
+                                  </label>
+                                  <input id=api type=checkbox>
+                                  
                             </div>
                             
                             <div results-root>
@@ -370,6 +387,7 @@
               
               $('[value=parse]').onclick        = btn.parse;
               
+              $('#token-paste').onclick         = btn.token.paste;
               $('#owner-paste').onclick         = btn.owner.paste;
               $('#repo-paste').onclick          = btn.repo.paste;
               $('#branch-paste').onclick        = btn.branch.paste;
@@ -428,6 +446,14 @@
         }//parse
 
 
+        btn.token.paste   = async function(e){
+          
+              var txt               = await navigator.clipboard.readText();
+              $(.token').value      = txt;
+              
+        }//paste
+        
+        
         btn.owner.paste   = async function(e){
           
               var txt               = await navigator.clipboard.readText();
@@ -466,8 +492,11 @@
               var repo      = $('.repo').value;
               var branch    = $('.branch').value;
               var path      = $('.path').value;
-          
-              download(owner,repo,branch,path);
+              var auto      = e.shiftKey;
+              var token     = $(.token').value;
+              var api       = $('#api').checked;
+              
+              download(owner,repo,branch,path,auto,token,api);
               
               
         }//download
@@ -483,9 +512,9 @@
   //:
   
   
-        async function download(owner,repo,branch,path,auto){
+        async function download(owner,repo,branch,path,auto,token,api){
 
-              var {error,file,blob}   = await github.download.dir(owner,repo,branch,path,update);
+              var {error,file,blob}   = await github.download.dir(owner,repo,branch,path,update,token,api);
               
               if(error){
                     display.error(error);
