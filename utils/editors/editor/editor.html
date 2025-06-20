@@ -248,8 +248,15 @@
         }//complete
 
         
-        complete.load   = function(file,txt){
+        complete.load   = async function(file,blob){
         
+              var txt;
+              if(typeof blob=='string'){
+                    txt   = blob;
+              }else{
+                    txt   = await blob.text();
+              }
+              
               editor.clear();
               editor.setValue(txt,-1);
               complete(file);
