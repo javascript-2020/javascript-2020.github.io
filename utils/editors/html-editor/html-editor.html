@@ -307,8 +307,15 @@
         }//complete
 
         
-        complete.load=function(file,txt){
+        complete.load=function(file,blob){
         
+              var txt;
+              if(typeof blob=='string'){
+                    txt   = blob;
+              }else{
+                    txt   = await blob.text();
+              }
+              
               editor.clear();
               output.kill();
               editor.setValue(txt,-1);
