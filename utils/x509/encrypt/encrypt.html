@@ -43,7 +43,15 @@
         var log;
         
         
+        var password;
+
         
+        var btn   = {};
+        
+        
+  //:
+  
+  
         async function init(){
 
               menumod                   = menumod();
@@ -126,6 +134,14 @@
             
             <div id=hdr>
             
+                  <div id=encrypt-root>
+                  
+                        <input id=password>
+                        
+                        <input id=encrypt value=encrypt>
+                        
+                  </div>
+                  
                   <filemod-api>
                         <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </filemod-api>
@@ -151,7 +167,9 @@
           
               var root                  = rootnode;
 
-
+              $('#encrypt').onclick     = btn.encrypt;
+              
+              
               filemod.initdom(root);
               
               
@@ -169,9 +187,53 @@
         }//initdom
         
         
+  //:
+  
+  
+        btn.encrypt   = function(){
+        }//encrypt
         
-        function complete(){
+        
+  //:
+  
+  
+        function complete(file){
+          
+              editor.filename(file);
+              editor.filename.save.hide();
+              filemod.cur   = file;
+              menumod.close();
+              editor.focus();
+              
         }//complete
+
+
+        complete.load   = async function(file,blob){
+        
+              var txt;
+              if(typeof blob=='string'){
+                    txt   = blob;
+              }else{
+                    txt   = await blob.text();
+              }
+              
+              editor.clear();
+              output.kill();
+              editor.setValue(txt,-1);
+              complete(file);
+              
+        }//complete.load
+
+        
+        complete.save   = function(file,confirm=true){
+
+              complete(file);
+              
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
+        }//save
         
         
         init.stack.complete;
