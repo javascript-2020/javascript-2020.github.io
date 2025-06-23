@@ -25,11 +25,38 @@
         var ext,$,datatype,menumod,keydown
         ;
 
+        var filemod;
+        var editor;
+        var log;
         
-        function init(){
+        
+        
+        async function init(){
           
+              filemod                   = filemod();
+              editor                    = editor();
+              log                       = log();
+
+
+              filemod.initmod({menumod,complete,editor,init,ext});
+              editor.initmod({});
+              log.initmod({});
+
+
+              filemod.init();
+              editor.init();
+              log.init();
+
+
           
+              await initdom(document.body);
+
+
+              init.complete();
+
+              
         }//init
+
       
         init.stack            = [];
         init.stack.ct         = 0;
@@ -84,18 +111,11 @@
             </div>
             
             <div id=hdr>
-                  <div id=file-root>
-                        <label for=file-chk>
-                              file
-                        </label>
-                        <input id=file-chk type=checkbox>
-                  </div>
-                  <div id=text-root>
-                        <label for=text-chk>
-                              text
-                        </label>
-                        <input id=text-chk type=checkbox>
-                  </div>
+            
+                  <filemod-api>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </filemod-api>
+                  
             </div>
             
             <div id=view>
@@ -105,8 +125,35 @@
                   </editor-api>
             
             </div>
+
+<log-api>
+      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+</log-api>
             
             
+            <script>
+            
+        function initdom(rootnode){
+          
+
+              filemod.initdom(root);
+              
+              
+              view                      = $('#view');
+              
+
+              await editor.initdom(view,'text');
+
+              log.initdom();
+
+
+              editor.focus();
+              
+          
+        }//initdom
+        
+        
+            </script>
             
       </body>
       
