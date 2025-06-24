@@ -333,16 +333,16 @@
         }//aes-ctr
         
         
-        decrypt.crypto['aes-ctr']   = async function(cipher,password){
+        decrypt.crypto['aes-ctr']   = async function(full,password){
                                                                                 console.log('decrypt :');
 
-              var type    = datatype(cipher);
-              var buf     = cipher;
+              var type    = datatype(full);
+              var buf     = full;
               switch(type){
                 
-                case 'string'       : buf   = encoder.encode(cipher);           break;
-                case 'uint8array'   : buf   = cipher.buffer;                    break;
-                case 'blob'         : buf   = await cipher.arrayBuffer();       break;
+                case 'string'       : buf   = encoder.encode(full);           break;
+                case 'uint8array'   : buf   = full.buffer;                    break;
+                case 'blob'         : buf   = await full.arrayBuffer();       break;
                 
               }//switch
                                                                                 
