@@ -284,7 +284,7 @@
   //:
   
   
-        encrypt.crypto['aes-ctr']   = function(text,password){
+        encrypt.crypto['aes-ctr']   = async function(text,password){
                                                                                 console.log('encrypt :');
                                                                                 output_str('text',text);
               var type    = datatype(text);
@@ -333,7 +333,7 @@
         }//aes-ctr
         
         
-        decrypt.crypto['aes-ctr']   = function(cipher,password){
+        decrypt.crypto['aes-ctr']   = async function(cipher,password){
                                                                                 console.log('decrypt :');
 
               var type    = datatype(cipher);
@@ -455,7 +455,31 @@
               
         }//b64_blob
 
-  
+
+      
+      
+      function b64_blob(b64,type='text/plain'){
+      
+            var bin     = atob(b64);
+            var bytes   = [...bin].map(c=>c.charCodeAt(0));
+            var buf     = new Uint8Array(bytes);
+            var blob    = new Blob([buf],{type});
+            return blob;
+            
+      }//b64_blob
+
+
+      async function blob_b64(blob){
+      
+            var buf     = await blob.arrayBuffer();
+            var bytes   = new Uint8Array(buf);
+            var bin     = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+            var b64     = btoa(bin);
+            return b64;
+      
+      }//blob_b64
+
+
   //:
   
   
