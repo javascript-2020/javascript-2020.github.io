@@ -35,7 +35,7 @@
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var mod   = {};
 
-        var ext,$,datatype,menumod,keydown
+        var ext,$,datatype,menumod,keydown,aes
         ;
 
         var filemod;
@@ -46,7 +46,9 @@
         var password;
 
         
-        var btn   = {};
+        var btn       = {};
+        var encrypt   = {};
+        var decrypt   = {};
         
         
   //:
@@ -114,9 +116,10 @@
                     'js/dom/$.js.api',
                     'js/core/datatype.js',
                     'js/dom/menumod/menumod.js',
-                    'js/dom/keydown/keydown.js'
+                    'js/dom/keydown/keydown.js',
+                    'js/crypto/aes/aes.js'
               );
-              [$,datatype,menumod,keydown]   = await promise;
+              [$,datatype,menumod,keydown,aes]   = await promise;
 
               init.stack.complete;
 
@@ -138,7 +141,7 @@
                   
                         <input id=password>
                         
-                        <input id=encrypt value=encrypt>
+                        <input id=encrypt value=encrypt type=button>
                         
                   </div>
                   
@@ -156,9 +159,9 @@
             
             </div>
 
-<log-api>
-      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-</log-api>
+            <log-api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            </log-api>
             
             
             <script>
@@ -191,7 +194,25 @@
   
   
         btn.encrypt   = function(){
+          
+              var password    = $('#password').value;
+              var txt         = editor.getValue();
+              var mode        = ['simple'];
+              var cipher      = encrypt(txt,password);
+              
         }//encrypt
+        
+        
+        btn.decrypt   = function(){
+          
+              var password    = $('#password').value;
+              var txt         = editor.getValue();
+              var mode        = ['simple'];
+              var text        = decrypt(txt,password,'text');
+              console.log(text);
+              
+              
+        }//decrypt
         
         
   //:
@@ -218,7 +239,6 @@
               }
               
               editor.clear();
-              output.kill();
               editor.setValue(txt,-1);
               complete(file);
               
@@ -234,8 +254,211 @@
               }
               
         }//save
+
+        
+  //:
+
+  
+        function encrypt(text,password){
+          
+              var fn        = encrypt;
+              mode.forEach(name=>fn=fn[name]);
+              
+              var cipher    = fn(text,password);
+              return cipher;
+              
+        }//encrypt
         
         
+        function decrypt(cipher,password){
+          
+              var fn    = decrypt;
+              mode.forEach(name=>fn   = fn[name]);
+              
+              var text    = fn(cipher,password);
+              return text;
+              
+        }//decrypt
+        
+
+  //:
+  
+  
+        encrypt.crypto['aes-ctr']   = function(text,password){
+                                                                                console.log('encrypt :');
+                                                                                output_str('text',text);
+              var type    = datatype(text);
+              var buf     = text;
+              switch(type){
+              
+                case 'string'       : buf   = encoder.encode(text);           break;
+                case 'uint8array'   : buf   = text.buffer;                    break;
+                case 'blob'         : buf   = await text.arrayBuffer();       break;
+                
+              }//switch
+              
+              
+              var buf           = encoder.encode(text);
+              password          = encoder.encode(password);
+
+              
+              var alg           = {name:'PBKDF2'};
+              var usage         = ['deriveBits','deriveKey'];
+              var imported      = await window.crypto.subtle.importKey('raw',password,alg,false,usage);
+              
+              var salt          = window.crypto.getRandomValues(new Uint8Array(16));
+                                                                                output('salt',salt);
+              var iv            = window.crypto.getRandomValues(new Uint8Array(12));
+                                                                                output('iv',iv);
+              var iterations    = 100000;
+              
+              var alg           = {name:'PBKDF2',salt,iterations,hash:'SHA-256'};
+              var derived       = {name:'AES-GCM',length:256};
+              var usage         = ['encrypt','decrypt'];
+              var key           = await window.crypto.subtle.deriveKey(alg,imported,derived,true,usage);
+      
+              
+              var cipher        = await window.crypto.subtle.encrypt({name:'AES-GCM',iv},key,buf);
+              cipher            = new Uint8Array(cipher);
+                                                                                output('cipher',cipher);
+              
+              var len           = salt.length+iv.length+cipher.length;
+              var full          = new Uint8Array(len);
+              full.set(salt,0);
+              full.set(iv,salt.length);
+              full.set(cipher,salt.length+iv.length);
+                                                                                output('full',full);              
+              return full;
+
+        }//aes-ctr
+        
+        
+        decrypt.crypto['aes-ctr']   = function(cipher,password){
+                                                                                console.log('decrypt :');
+
+              var type    = datatype(cipher);
+              var buf     = cipher;
+              switch(type){
+                
+                case 'string'       : buf   = encoder.encode(cipher);           break;
+                case 'uint8array'   : buf   = cipher.buffer;                    break;
+                case 'blob'         : buf   = await cipher.arrayBuffer();       break;
+                
+              }//switch
+                                                                                
+              password          = encoder.encode(password);
+              buf               = new Uint8Array(buf);
+              
+              var salt          = new Uint8Array(16);
+              salt.set(full.slice(0,16));
+                                                                                output('salt',salt);
+              var iv            = new Uint8Array(12);
+              iv.set(full.slice(16,28));
+                                                                                output('iv',iv);
+              var cipher        = new Uint8Array(full.length-28);
+              cipher.set(full.slice(28));
+                                                                                output('cipher',cipher);
+              cipher            = cipher.buffer;
+              
+              var alg           = {name:'PBKDF2'};
+              var usage         = ['deriveBits','deriveKey'];
+              var imported      = await window.crypto.subtle.importKey('raw',password,alg,false,usage);
+              
+              var iterations    = 100000;
+              
+              var alg           = {name:'PBKDF2',salt,iterations,hash:'SHA-256'};
+              var derived       = {name:'AES-GCM',length:256};
+              var usage         = ['encrypt','decrypt'];
+              var key           = await window.crypto.subtle.deriveKey(alg,imported,derived,true,usage);
+              
+              
+              var decrypted     = await window.crypto.subtle.decrypt({name:'AES-GCM',iv},key,cipher);
+                                                                                output_str('text',decrypted);
+              return decrypted;
+              
+          
+        }//aes-ctr
+        
+
+  //:
+  
+  
+        encrypt.simple    = function(text,password){
+          
+              aes.encrypt();
+              
+        }//simple
+
+
+        decrypt.simple    = function(cipher,password){
+          
+              aes.decrypt();
+              
+        }//simple
+
+        
+  //:
+  
+  
+  
+  //:
+  
+  
+        function output(name,buf){
+        
+              var b64   = buf_b64(buf);
+              var pad   = name.padStart(10);
+              console.log(pad,':',b64);
+              
+        }//output
+        
+        
+        function output_str(name,buf){
+
+              var str;        
+              if(typeof buf=='string'){
+                    str   = buf;
+              }else{
+                    str   = buf_str(buf);
+              }
+              var pad   = name.padStart(10);
+              console.log(pad,':',str);
+              
+        }//output_str
+
+
+        function buf_str(buf){
+        
+              var txt   = decoder.decode(buf);
+              return txt;
+              
+        }//buf_str
+        
+        
+        function buf_b64(buf){
+        
+              var bytes   = new Uint8Array(buf);
+              var bin     = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64     = btoa(bin);
+              return b64;
+        
+        }//blob_b64
+            
+  
+        function b64_buf(b64,type='text/plain'){
+        
+              var bin     = atob(b64);
+              var bytes   = [...bin].map(c=>c.charCodeAt(0));
+              var uint8   = new Uint8Array(bytes);
+              var buf     = uint8.buffer;
+              return buf;
+              
+        }//b64_blob
+
+  
+  //:
+  
+  
         init.stack.complete;
         
             </script>
