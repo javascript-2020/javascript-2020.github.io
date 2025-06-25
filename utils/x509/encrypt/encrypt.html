@@ -46,7 +46,7 @@
         var password;
 
         var encoder   = new TextEncoder();
-        var decode    = new TextDecoder();
+        var decoder   = new TextDecoder();
         
         var btn       = {};
         var encrypt   = {};
@@ -208,6 +208,8 @@
               mode        = ['crypto','aes-ctr'];
               var cipher      = encrypt(blob,password);
               console.log(cipher);
+              var b64   = blob_b64(cipher);
+              editor.setValue(b64,-1);
               
         }//encrypt
         
@@ -219,9 +221,10 @@
               var txt         = editor.getValue();
               var blob        = new Blob([txt]);
               mode        = ['crypto','aes-ctr'];
-              var text        = decrypt(blob,password,'text');
-              console.log(text);
-              
+              var blob        = decrypt(blob,password,'text');
+              var text        = await blob.text();
+                                                                                console.log(text);
+              editor.setValue(text,-1);
               
         }//decrypt
         
