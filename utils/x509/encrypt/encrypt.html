@@ -117,7 +117,7 @@
                     'js/core/datatype.js',
                     'js/dom/menumod/menumod.js',
                     'js/dom/keydown/keydown.js',
-                    'js/crypto/aes/aes.js'
+                    'js/crypto/aes/aes.js.api'
               );
               [$,datatype,menumod,keydown,aes]   = await promise;
 
@@ -182,6 +182,8 @@
               
 
               await editor.initdom(view,'text');
+              
+              
 
               log.initdom();
 
@@ -199,8 +201,9 @@
           
               var password    = $('#password').value;
               var txt         = editor.getValue();
-              var mode        = ['simple'];
+              var mode        = ['crypto','aes-ctr'];
               var cipher      = encrypt(txt,password);
+              console.log(cipher);
               
         }//encrypt
         
@@ -209,7 +212,7 @@
           
               var password    = $('#password').value;
               var txt         = editor.getValue();
-              var mode        = ['simple'];
+              var mode        = ['crypto','aes-ctr'];
               var text        = decrypt(txt,password,'text');
               console.log(text);
               
@@ -285,22 +288,12 @@
 
   //:
   
-  
-        encrypt.crypto['aes-ctr']   = async function(text,password){
+        encrypt.crypto    = {};        
+        
+        encrypt.crypto['aes-ctr']   = async function(blob,password){
                                                                                 console.log('encrypt :');
-                                                                                output_str('text',text);
-              var type    = datatype(text);
-              var buf     = text;
-              switch(type){
-              
-                case 'string'       : buf   = encoder.encode(text);           break;
-                case 'uint8array'   : buf   = text.buffer;                    break;
-                case 'blob'         : buf   = await text.arrayBuffer();       break;
-                
-              }//switch
-              
-              
-              var buf           = encoder.encode(text);
+              var buf           = await blob.arrayBuffer();
+                                                                                output_str('text',buf);              
               password          = encoder.encode(password);
 
               
@@ -318,7 +311,7 @@
               var derived       = {name:'AES-GCM',length:256};
               var usage         = ['encrypt','decrypt'];
               var key           = await window.crypto.subtle.deriveKey(alg,imported,derived,true,usage);
-      
+              console.log(key);
               
               var cipher        = await window.crypto.subtle.encrypt({name:'AES-GCM',iv},key,buf);
               cipher            = new Uint8Array(cipher);
@@ -330,35 +323,29 @@
               full.set(iv,salt.length);
               full.set(cipher,salt.length+iv.length);
                                                                                 output('full',full);              
-              return full;
+              var blob2         = new Blob([full]);
+              return blob2;
 
         }//aes-ctr
         
         
-        decrypt.crypto['aes-ctr']   = async function(full,password){
+        decrypt.crypto    = {};
+        
+        decrypt.crypto['aes-ctr']   = async function(blob,password){
                                                                                 console.log('decrypt :');
-
-              var type    = datatype(full);
-              var buf     = full;
-              switch(type){
-                
-                case 'string'       : buf   = encoder.encode(full);           break;
-                case 'uint8array'   : buf   = full.buffer;                    break;
-                case 'blob'         : buf   = await full.arrayBuffer();       break;
-                
-              }//switch
-                                                                                
-              password          = encoder.encode(password);
+              buf               = await blob.arrayBuffer();
               buf               = new Uint8Array(buf);
               
+              password          = encoder.encode(password);
+              
               var salt          = new Uint8Array(16);
-              salt.set(full.slice(0,16));
+              salt.set(buf.slice(0,16));
                                                                                 output('salt',salt);
               var iv            = new Uint8Array(12);
-              iv.set(full.slice(16,28));
+              iv.set(buf.slice(16,28));
                                                                                 output('iv',iv);
-              var cipher        = new Uint8Array(full.length-28);
-              cipher.set(full.slice(28));
+              var cipher        = new Uint8Array(buf.length-28);
+              cipher.set(buf.slice(28));
                                                                                 output('cipher',cipher);
               cipher            = cipher.buffer;
               
@@ -376,7 +363,8 @@
               
               var decrypted     = await window.crypto.subtle.decrypt({name:'AES-GCM',iv},key,cipher);
                                                                                 output_str('text',decrypted);
-              return decrypted;
+              var blob2         = new Blob(decrypted);
+              return blob2;
               
           
         }//aes-ctr
@@ -404,6 +392,21 @@
   
   
   //:
+
+        async function convert(){
+          
+              var type    = datatype(text);
+              var buf     = text;
+              switch(type){
+              
+                case 'string'       : buf   = encoder.encode(text);           break;
+                case 'uint8array'   : buf   = text.buffer;                    break;
+                case 'blob'         : buf   = await text.arrayBuffer();       break;
+                
+              }//switch
+              
+        }//convert
+
   
   
         function output(name,buf){
