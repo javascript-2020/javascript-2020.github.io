@@ -173,6 +173,8 @@
           
               var root                  = rootnode;
 
+              $('#password').value      = 'abc';
+              
               $('#encrypt').onclick     = btn.encrypt;
               $('#decrypt').onclick     = btn.decrypt;
               
@@ -189,7 +191,8 @@
 
               log.initdom();
 
-
+              
+              editor.setValue('helloworld');
               editor.focus();
               
           
@@ -222,6 +225,7 @@
               var blob        = b64_blob(b64);
               mode            = ['crypto','aes-ctr'];
               var blob        = await decrypt(blob,password,'text');
+              console.log(blob);
               var text        = await blob.text();
                                                                                 console.log(text);
               editor.setValue(text,-1);
@@ -372,8 +376,8 @@
               
               var decrypted     = await window.crypto.subtle.decrypt({name:'AES-GCM',iv},key,cipher);
                                                                                 output_str('text',decrypted);
-              var blob2         = new Blob(decrypted);
-              return blob2;
+              var blob          = buf_blob(decrypted);
+              return blob;
               
           
         }//aes-ctr
@@ -470,28 +474,43 @@
         }//b64_blob
 
 
+        function buf_blob(buf){
+          
+              var uint8   = new Uint8Array(buf);
+              var blob    = new Blob([uint8]);
+              return blob;
+              
+        }//buf_blob
+        
+        
+        async function blob_buf(blob){
+          
+              var buf   = await blob.arrayBuffer();
+              return buf;
+          
+        }//blob_buf
+        
       
-      
-      function b64_blob(b64,type='text/plain'){
-      
-            var bin     = atob(b64);
-            var bytes   = [...bin].map(c=>c.charCodeAt(0));
-            var buf     = new Uint8Array(bytes);
-            var blob    = new Blob([buf],{type});
-            return blob;
-            
-      }//b64_blob
-
-
-      async function blob_b64(blob){
-      
-            var buf     = await blob.arrayBuffer();
-            var bytes   = new Uint8Array(buf);
-            var bin     = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
-            var b64     = btoa(bin);
-            return b64;
-      
-      }//blob_b64
+        function b64_blob(b64,type='text/plain'){
+        
+              var bin       = atob(b64);
+              var bytes     = [...bin].map(c=>c.charCodeAt(0));
+              var uint8     = new Uint8Array(bytes);
+              var blob      = new Blob([uint8],{type});
+              return blob;
+              
+        }//b64_blob
+  
+  
+        async function blob_b64(blob){
+        
+              var buf       = await blob.arrayBuffer();
+              var bytes     = new Uint8Array(buf);
+              var bin       = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64       = btoa(bin);
+              return b64;
+        
+        }//blob_b64
 
 
   //:
