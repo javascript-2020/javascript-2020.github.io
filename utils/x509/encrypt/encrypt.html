@@ -199,28 +199,28 @@
   //:
   
   
-        btn.encrypt   = function(){
+        btn.encrypt   = async function(){
         console.clear();
           
               var password    = $('#password').value;
               var txt         = editor.getValue();
               var blob        = new Blob([txt]);
-              mode        = ['crypto','aes-ctr'];
+              mode            = ['crypto','aes-ctr'];
               var cipher      = encrypt(blob,password);
-              console.log(cipher);
-              var b64   = blob_b64(cipher);
+                                                                                console.log(cipher);
+              var b64         = blob_b64(cipher);
               editor.setValue(b64,-1);
               
         }//encrypt
         
         
-        btn.decrypt   = function(){
+        btn.decrypt   = async function(){
         console.clear();
         
               var password    = $('#password').value;
               var txt         = editor.getValue();
               var blob        = new Blob([txt]);
-              mode        = ['crypto','aes-ctr'];
+              mode            = ['crypto','aes-ctr'];
               var blob        = decrypt(blob,password,'text');
               var text        = await blob.text();
                                                                                 console.log(text);
