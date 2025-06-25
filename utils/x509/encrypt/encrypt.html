@@ -206,7 +206,7 @@
               var txt         = editor.getValue();
               var blob        = new Blob([txt]);
               mode            = ['crypto','aes-ctr'];
-              var cipher      = encrypt(blob,password);
+              var cipher      = await encrypt(blob,password);
                                                                                 console.log(cipher);
               var b64         = blob_b64(cipher);
               editor.setValue(b64,-1);
@@ -221,7 +221,7 @@
               var txt         = editor.getValue();
               var blob        = new Blob([txt]);
               mode            = ['crypto','aes-ctr'];
-              var blob        = decrypt(blob,password,'text');
+              var blob        = await decrypt(blob,password,'text');
               var text        = await blob.text();
                                                                                 console.log(text);
               editor.setValue(text,-1);
@@ -278,7 +278,7 @@
               var fn        = encrypt;
               mode.forEach(name=>fn=fn[name]);
               
-              var cipher    = fn(text,password);
+              var cipher    = await fn(text,password);
               return cipher;
               
         }//encrypt
@@ -289,7 +289,7 @@
               var fn    = decrypt;
               mode.forEach(name=>fn   = fn[name]);
               
-              var text    = fn(cipher,password);
+              var text    = await fn(cipher,password);
               return text;
               
         }//decrypt
