@@ -203,32 +203,34 @@
   
   
         btn.encrypt   = async function(){
-        console.clear();
-          
+                                                                                console.clear();
+              mode            = ['crypto','aes-ctr'];
+              
               var password    = $('#password').value;
               var txt         = editor.getValue();
-              var blob        = new Blob([txt]);
-              mode            = ['crypto','aes-ctr'];
-              var cipher      = await encrypt(blob,password);
-                                                                                console.log(cipher);
-              var b64         = await blob_b64(cipher);
+              
+              var buf         = encrypt.str_buf(txt);
+              var cipher      = await encrypt.encrypt(buf,password);
+              var b64         = encrypt.buf_b64(cipher);
               editor.setValue(b64,-1);
+                                                                                console.log(cipher);
               
         }//encrypt
         
         
         btn.decrypt   = async function(){
-        console.clear();
-        
+                                                                                console.clear();
+              mode            = ['crypto','aes-ctr'];
+              
               var password    = $('#password').value;
               var b64         = editor.getValue();
-              var blob        = b64_blob(b64);
-              mode            = ['crypto','aes-ctr'];
-              var blob        = await decrypt(blob,password,'text');
-              console.log(blob);
-              var text        = await blob.text();
-                                                                                console.log(text);
-              editor.setValue(text,-1);
+              
+              var buf         = encrypt.b64_buf(b64);
+              var buf         = await encrypt.decrypt(buf,password);
+                                                                                console.log(buf);
+              var txt         = encrypt.buf_str(buf);
+                                                                                console.log(txt);
+              editor.setValue(txt,-1);
               
         }//decrypt
         
