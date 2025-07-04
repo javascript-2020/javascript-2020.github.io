@@ -110,6 +110,8 @@
 
             <script ext>
 
+(async()=>{
+  
         init.stack.add;
         
         var token   = localStorage['github-token'];
@@ -117,15 +119,16 @@
         var headers;
         if(token){
               url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
-              headers   = {accept:'application/vnd.github.raw+json',authorization:`bearer ${token}`};
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
         }else{
               url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
         }
         
-        fetch(url,headers).then(res=>res.text().then(ext));
+        //fetch(url,headers).then(res=>res.text()).then(ext);
+        await fetch(url,{headers}).then(res=>res.text()).then(complete);
 
             
-        async function ext(txt){
+        async function complete(txt){
 
               ext           = eval(txt);
               var promise   = ext.load.libs(
@@ -139,8 +142,9 @@
 
               init.stack.complete;
 
-        }//ext
+        }//ext_fn
 
+})();
             </script ext>
             
       </head>
