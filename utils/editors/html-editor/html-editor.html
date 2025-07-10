@@ -86,7 +86,7 @@
               
               mod.utils.hdr.initmod({menu,menumod});
               mod.menu.main.initmod({menumod,editor,filemod});
-              filemod.initmod({menumod,complete,editor,init,ext});
+              filemod.initmod({menumod,complete,editor,init,ext,source});
               publish.initmod({menumod,run});
               editor.initmod({});
               output.initmod({});
@@ -296,6 +296,15 @@
   //:
 
 
+        function source(){
+          
+              var txt     = editor.getvalue();
+              var blob    = new Blob([txt]);
+              return blob;
+              
+        }//source
+        
+        
         function complete(file){
         
               editor.filename(file);
