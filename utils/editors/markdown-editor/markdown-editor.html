@@ -45,16 +45,20 @@
         var editor;
         var output;
         var log;
+  
         
-        //:
+  //:
+
         
         var menu      = {};
         var slider    = {};
         
         var ui        = {};
         ui.mode       = 'vert';
+
         
-        //:
+  //:
+
         
         async function init(){
                                                                       console.log('init');
@@ -68,13 +72,13 @@
               output                    = output();
               log                       = log();
               
-              mod.utils.hdr.initmod({menu,menumod});
-              mod.menu.main.initmod({menumod,editor});
+              mod.utils.hdr.initmod({ext,$,menumod,menu});
+              mod.menu.main.initmod({ext,$,menumod,editor});
               filemod.initmod({ext,$,menumod,complete,focus,source,editor});
-              publish.initmod({ui,menumod});
-              editor.initmod({});
-              output.initmod({editor});
-              log.initmod({});
+              publish.initmod({ext,$,ui,menumod});
+              editor.initmod({ext,$,menumod});
+              output.initmod({ext,$,editor});
+              log.initmod({ext,$});
               
               mod.menu.main.init();
               mod.utils.hdr.init();
@@ -83,8 +87,10 @@
               editor.init();
               output.init();
               log.init();
+
         
-          //:
+  //:
+
         
               window.onfocus            = ()=>editor && editor.focus();
               keydown.add(kd);
