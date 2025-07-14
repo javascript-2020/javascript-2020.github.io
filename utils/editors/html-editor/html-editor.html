@@ -150,10 +150,24 @@
 
                   
 
+(async()=>{
+  
         init.stack.add;
         
-        fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
-          .then(res=>res.text().then(async txt=>{
+        var token   = localStorage['github-token'];
+        var url;
+        var headers;
+        if(token){
+              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
+        }else{
+              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
+        }
+        
+        await fetch(url,{headers}).then(res=>res.text()).then(complete);
+
+            
+        async function complete(txt){
 
               ext           = eval(txt);
               var promise   = ext.load.libs(
@@ -162,11 +176,14 @@
                     'js/dom/menumod/menumod.js',
                     'js/dom/keydown/keydown.js'
               );
-              [$,datatype,menumod,keydown]   = await promise;
+              [$,datatype,menumod,keydown,encrypt]   = await promise;
 
               init.stack.complete;
 
-          }));
+        }//ext_fn
+
+})();
+
 
             </script init>
             
