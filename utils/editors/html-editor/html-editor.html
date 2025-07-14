@@ -47,13 +47,18 @@
             
 
             <script init>
+
+
+        var version       = 'v1.0';
+            
+        var df            = true;
                                                                                 console.clear();
-                                                                                console.log('html-editor');
+                                                                                debug(version);
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var mod     = {};
-        mod.menu    = {};
-        mod.utils   = {};
+        var mod           = {};
+        mod.menu          = {};
+        mod.utils         = {};
         
         var filemod;                                                                                
         var publish;
@@ -61,22 +66,25 @@
         var output;
         var log;
         
-        var ext,$,datatype,menumod,keydown
-        ;
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
 
         
-        var menu        = {};
-        var slider      = {};
+        var menu          = {};
+        var slider        = {};
         
-        var ui          = {};
-        ui.mode         = 'vert';
+        var ui            = {};
+        ui.mode           = 'vert';
 
 
   //:
 
               
         async function init(){
-                                                                                console.log('init');
+                                                                                debug('init');
 
               //keydown                   = keydown();
               menumod                   = menumod();
@@ -239,9 +247,10 @@
       </body>
 
       <script>
-                                                                                console.log('main');
+
+      
         async function initdom(rootnode){   //c
-                                                                                console.log('[html-editor ]','initdom');
+                                                                                debug('initdom');
               var root                      = rootnode;
               
               keydown.initdom();
@@ -308,15 +317,15 @@
         }//keydown
 
 
-  //:
-
-        
         function focus(){
           
               editor.focus();
               
         }//focus
         
+        
+  //:
+
         
         function source(){
           
@@ -456,7 +465,19 @@
         }//run
   
   
+  //:
   
+  
+        function debug(){
+          
+          if(!df)return;
+          var str   = [...arguments].join(' ');
+          console.log('[ html-editor ]',str);
+          
+        }//debug
+        
+
+        
         init.stack.complete;
 
       
