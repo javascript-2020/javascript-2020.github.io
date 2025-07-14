@@ -6,28 +6,6 @@
             
             <base href='https://javascript-2020.github.io/utils/x509/encrypt/encrypt.html'>
             
-            <style>
-           
-  html
-    {height:100%}
-  body
-    {height:calc(100% - 40px);margin:20px;display:flex;flex-direction:column}
-  
-  #view
-    {flex:1}
-      
-  input
-    {font-size:16px;padding:5px 10px}
-  input[type=button]
-    {cursor:pointer}
-      
-  .icon
-    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
-  .spc
-    {flex:1}
-            
-            </style>
-            
             <script>            
                                                                                 console.clear();
                                                                                 console.log('html-editor');
@@ -37,10 +15,12 @@
 
         var ext,$,datatype,menumod,keydown,encrypt
         ;
-
+        
         var filemod;
         var editor;
         var log;
+
+        var ui    = {};
         
         var password;
 
@@ -147,6 +127,52 @@
       </head>
       
       <body>
+
+            <style>
+           
+  html
+    {height:100%}
+  body
+    {height:calc(100% - 40px);margin:20px;display:flex;flex-direction:column}
+  
+  #hdr
+    {}
+
+  #encrypt-root
+    {margin-bottom:10px;display:flex}
+    
+  #password-root
+    {display:flex;align-items:center;gap:10px;border:1px solid lightgray;padding:5px 10px;border-radius:5px}
+    
+  #keys-root
+    {display:flex;align-items:center;gap:10px;border:1px solid lightgray;padding:5px 10px;border-radius:5px}
+    
+  #private-root
+    {display:inline-flex}
+    
+  #public-root
+    {display:inline-flex}
+    
+  #btns
+    {margin:10px 0}
+    
+  #view
+    {flex:1}
+      
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+  input[type=checkbox]
+    {cursor:pointer;width:18px;height:18px;margin:0}
+      
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+  .spc
+    {flex:1}
+            
+            </style>
+
       
             <div>
                   <h3>encrypt</h3>
@@ -156,9 +182,46 @@
             
                   <div id=encrypt-root>
                   
-                        <input id=password>
-                        <input id=encrypt value=encrypt type=button>
-                        <input id=decrypt value=decrypt type=button>
+                        <div id=password-root>
+                        
+                              <input id=password-chk type=checkbox checked>
+                              <label for=password-chk>
+                                    password
+                              </label>
+                              <input id=password>
+                              
+                        </div password-root>
+
+                        <div id=keys-root>
+                        
+                              <input id=keys-chk type=checkbox>
+                              
+                              <div style='flex:1'>
+                              
+                                    <div id=private-root>
+                                    
+                                          <input value='private key' type=button>
+                                          <span id=private-fn>
+                                          </span>
+                                    
+                                    </div>
+      
+                                    <div id=public-root>
+                                    
+                                          <input value='public key' type=button>
+                                          <span id=public-fn>
+                                          </span>
+                                    
+                                    </div>
+                                    
+                              </div>
+                              
+                        </div>
+                        
+                        <div id=btns>
+                              <input id=encrypt value=encrypt type=button>
+                              <input id=decrypt value=decrypt type=button>
+                        </div>
                         
                   </div>
                   
@@ -219,6 +282,7 @@
               editor.focus();
               
         }//focus
+
         
   //:
   
