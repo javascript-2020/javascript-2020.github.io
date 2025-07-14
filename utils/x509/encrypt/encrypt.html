@@ -282,8 +282,8 @@
               ui.password.root                = $(root,'#password-root');
               ui.password.chk                 = $(root,'#password-chk');
               ui.password.chk.onchange        = chk.password;
-              ui.password                     = $(root,'#password');
-              ui.password.value               = 'abc';
+              ui.password.input               = $(root,'#password');
+              ui.password.input.value         = 'abc';
               
               ui.private.root                 = $(root.'#private-root');
               ui.private.chk                  = $(root,'#private-chk');
@@ -458,32 +458,97 @@
         
         btn.encrypt   = async function(){
                                                                                 console.clear();
+
+              var txt   = editor.getValue();
               
-              var password    = $('#password').value;
-              var txt         = editor.getValue();
-              
-              var buf         = encrypt.str_buf(txt);
-              var cipher      = await encrypt.encrypt(buf,password);
-              var b64         = encrypt.buf_b64(cipher);
-              editor.setValue(b64,-1);
-                                                                                console.log(cipher);
+              var type    = rd.type();
+              switch(type){
+                
+                case 'password'   : 
+                                    var password    = ui.password.input.value;
+                                    fn.encrypt.password(password,txt);
+                                                                                      break;
+                                    
+                case 'key'        : 
+                                    fn.encrypt.key(public,txt);
+                                                                                      break;
+              }//switch
               
         }//encrypt
         
         
         btn.decrypt   = async function(){
                                                                                 console.clear();
-              var password    = $('#password').value;
-              var b64         = editor.getValue();
+              var txt   = editor.getValue();
               
-              var buf         = encrypt.b64_buf(b64);
-              var buf         = await encrypt.decrypt(buf,password);
-                                                                                console.log(buf);
-              var txt         = encrypt.buf_str(buf);
-                                                                                console.log(txt);
+              var type    = rd.type();
+              switch(type){
+                  
+                case 'password' :
+                                  var password    = ui.password.input.value;
+                                  fn.decrypt.password(password,txt);
+                                                                                    break;
+                case 'key'      :
+                                  fn.decrypt.key(private,txt);
+                                                                                    break;
+              }//switch
+              
+        }//decrypt
+
+
+
+
+        var fn    = {};
+        
+        fn.encrypt    = function(key,txt){
+          
+              txt             = encrypt.str_buf(txt);
+              
+              var cipher      = await encrypt.encrypt(key,txt);
+              var b64         = encrypt.buf_b64(cipher);
+              editor.setValue(b64,-1);
+          
+        }//encrypt
+        
+        
+        fn.encrypt.password   = function(password,txt){
+
+              txt           = encrypt.str_buf(txt);          
+              password      = encrypt.str_buf(password);
+          
+              var cipher    = await encrypt.encrypt.password(password,txt);
+              var b64       = encrypt.buf_b64(cipher);
+              editor.setValue(b64,-1);
+              
+        }//password
+        
+        
+        
+        fn.decrypt    = function(key,txt){
+          
+              txt             = encrypt.str_buf(txt);
+              
+              var decrypted   = await encrypt.decrypt(key,buf);
+              var txt         = encrypt.buf_str(decrypted);
               editor.setValue(txt,-1);
               
         }//decrypt
+        
+        
+        fn.decrypt.password   = function(password,txt){
+          
+              password        = encrypt.str_buf(password);
+              txt             = encrypt.str_buf(txt);
+              
+              var decrypted   = await encrypt.decrypt.password(password,buf);
+              var txt         = encrypt.buf_str(decrypted);
+              editor.setValue(txt,-1);
+              
+        }//password
+
+
+
+
 
         
   //:
@@ -503,6 +568,14 @@
               
         }//convert
 
+  
+
+
+
+
+  
+  //:
+  
   
   
         function output(name,buf){
