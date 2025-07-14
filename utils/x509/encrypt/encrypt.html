@@ -8,26 +8,40 @@
             
             <script>            
                                                                                 console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
                                                                                 console.log('html-editor');
                                                                                 console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var mod   = {};
-
-        var ext,$,datatype,menumod,keydown,encrypt
-        ;
+        var version       = 'v1.0';
         
+        var df            = true;
+                                                                                debug(version);
+                                                                                
+        var mod           = {};
+
         var filemod;
         var editor;
         var log;
-
-        var ui    = {};
         
-        var password;
-
-        var encoder   = new TextEncoder();
-        var decoder   = new TextDecoder();
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var encrypt;
         
-        var btn       = {};
+
+
+        var ui            = {};
+        ui.password       = {};
+        ui.private        = {};
+        ui.public         = {};
+
+        
+
+        
+        var chk           = {};
+        var btn           = {};
+        var rd            = {};
         
         
   //:
@@ -139,19 +153,31 @@
     {}
 
   #encrypt-root
-    {margin-bottom:10px;display:flex}
+    {margin-bottom:10px;display:flex;gap:10px}
     
   #password-root
-    {display:flex;align-items:center;gap:10px;border:1px solid lightgray;padding:5px 10px;border-radius:5px}
+    {display:flex;align-items:center;gap:10px;
+      border:1px solid lightgray;padding:5px 10px;border-radius:5px
+    }
     
   #keys-root
-    {display:flex;align-items:center;gap:10px;border:1px solid lightgray;padding:5px 10px;border-radius:5px}
+    {flex:1;
+      display:grid;gap:10px;grid-template-columns:30px 120px 1fr;
+      border:1px solid lightgray;padding:5px 10px;border-radius:5px
+    }
     
   #private-root
-    {display:inline-flex}
-    
+    {display:flex}
+  #private-root [type=button]
+    {width:120px}
+  #private-root span
+    {flex:1}
   #public-root
-    {display:inline-flex}
+    {display:flex}
+  #public-root [type=button]
+    {width:120px}
+  #public-root span
+    {flex:1}
     
   #btns
     {margin:10px 0}
@@ -182,40 +208,37 @@
             
                   <div id=encrypt-root>
                   
-                        <div id=password-root>
+                        <div>
                         
-                              <input id=password-chk type=checkbox checked>
-                              <label for=password-chk>
-                                    password
-                              </label>
-                              <input id=password>
+                              <div id=password-root>
                               
-                        </div password-root>
+                                    <input id=password-chk type=checkbox checked>
+                                    <label for=password-chk>
+                                          password
+                                    </label>
+                                    <input id=password>
+                                    
+                              </div password-root>
+                              
+                        </div>
 
                         <div id=keys-root>
                         
-                              <input id=keys-chk type=checkbox>
-                              
-                              <div style='flex:1'>
-                              
-                                    <div id=private-root>
-                                    
-                                          <input value='private key' type=button>
-                                          <span id=private-fn>
-                                          </span>
-                                    
-                                    </div>
-      
-                                    <div id=public-root>
-                                    
-                                          <input value='public key' type=button>
-                                          <span id=public-fn>
-                                          </span>
-                                    
-                                    </div>
-                                    
+                              <div style='display:flex;align-items:center;justify-content:center'>
+                                    <input id=keys-chk type=checkbox>
                               </div>
                               
+                              <input value='private key' type=button>
+                              
+                              <span id=private-fn>
+                              </span>
+                        
+                              <div></div>
+                              
+                              <input value='public key' type=button>
+                              <span id=public-fn>
+                              </span>
+                                    
                         </div>
                         
                   </div>
@@ -251,12 +274,31 @@
             
         async function initdom(rootnode){
           
-              var root                  = rootnode;
+              var root                        = rootnode;
 
-              $('#password').value      = 'abc';
+              var hdr                         = $(root,'#hdr');
               
-              $('#encrypt').onclick     = btn.encrypt;
-              $('#decrypt').onclick     = btn.decrypt;
+              
+              ui.password.root                = $(root,'#password-root');
+              ui.password.chk                 = $(root,'#password-chk');
+              ui.password.chk.onchange        = chk.password;
+              ui.password                     = $(root,'#password');
+              ui.password.value               = 'abc';
+              
+              ui.private.root                 = $(root.'#private-root');
+              ui.private.chk                  = $(root,'#private-chk');
+              var node                        = $(private.root,'[value="private key"]');
+              node.onclick                    = btn.private;
+              ui.private.fn                   = $(root,'#private-fn');
+              
+              ui.public.root                  = $(root,'#public-root');
+              ui.public.chk                   = $(root,'#public-chk');
+              var node                        = $(public.root,'[value="public key"]');
+              node.onclick                    = btn.public;
+              ui.public.fn                    = $(root,'#public-fn');
+              
+              $('#encrypt').onclick           = btn.encrypt;
+              $('#decrypt').onclick           = btn.decrypt;
               
               
               filemod.initdom(root);
@@ -286,10 +328,43 @@
         }//focus
 
         
+        rd.type   = function(){
+          
+              if(ui.password.chk.checked){
+                    return 'password';
+              }
+              if(ui.key.chk.checked){
+                    return 'key';
+              }
+              
+        }//type
+        
+        
+        set.password    = function(){
+          
+              ui.password.chk.checked   = true;
+              ui.key.chk.checked        = false;
+              
+        }//password
+        
+        
+        set.key   = function(){
+          
+              ui.password.chk.checked   = false;
+              ui.key.chk.checked        = true;
+              
+        }//key
+        
+        
   //:
   
   
         function source(){
+          
+              var txt     = editor.getValue();
+              var blob    = new Blob([txt]);
+              return blob;
+              
         }//source
         
 
@@ -334,6 +409,53 @@
   //:
   
   
+        chk.password    = function(){
+          
+              set.password();
+              
+        }//password
+        
+        
+        btn.private   = function(){
+          
+              var input   = document.createElement('input');
+              input.type    = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              
+              function onchange(){
+                
+                    var file                    = input.files[0];
+                    private                     = file;
+                    ui.private.fn.textContent   = file.name;
+                    set.key();
+                    
+              }//onchange
+              
+        }//private
+        
+        
+        btn.public    = function(){
+          
+              var input   = document.createElement('input');
+              input.type    = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              
+              function onchange(){
+                
+                    var file                    = input.files[0];
+                    public                      = file;
+                    ui.public.fn.textContent    = file.name;
+                    set.key();
+                    
+              }//onchange
+              
+        }//public
+        
+        
         btn.encrypt   = async function(){
                                                                                 console.clear();
               
@@ -366,139 +488,6 @@
         
   //:
 
-
-
-/*
-
-
-        async function encrypt(text,password){
-          
-              var fn        = encrypt;
-              mode.forEach(name=>fn=fn[name]);
-              
-              var cipher    = await fn(text,password);
-              return cipher;
-              
-        }//encrypt
-        
-        
-        async function decrypt(cipher,password){
-          
-              var fn    = decrypt;
-              mode.forEach(name=>fn   = fn[name]);
-              
-              var text    = await fn(cipher,password);
-              return text;
-              
-        }//decrypt
-        
-
-  //:
-  
-        encrypt.crypto    = {};        
-        
-        encrypt.crypto['aes-ctr']   = async function(blob,password){
-                                                                                console.log('encrypt :');
-              var buf           = await blob.arrayBuffer();
-                                                                                output_str('text',buf);              
-              password          = encoder.encode(password);
-
-              
-              var alg           = {name:'PBKDF2'};
-              var usage         = ['deriveBits','deriveKey'];
-              var imported      = await window.crypto.subtle.importKey('raw',password,alg,false,usage);
-              
-              var salt          = window.crypto.getRandomValues(new Uint8Array(16));
-                                                                                output('salt',salt);
-              var iv            = window.crypto.getRandomValues(new Uint8Array(12));
-                                                                                output('iv',iv);
-              var iterations    = 100000;
-              
-              var alg           = {name:'PBKDF2',salt,iterations,hash:'SHA-256'};
-              var derived       = {name:'AES-GCM',length:256};
-              var usage         = ['encrypt','decrypt'];
-              var key           = await window.crypto.subtle.deriveKey(alg,imported,derived,true,usage);
-              console.log(key);
-              
-              var cipher        = await window.crypto.subtle.encrypt({name:'AES-GCM',iv},key,buf);
-              cipher            = new Uint8Array(cipher);
-                                                                                output('cipher',cipher);
-              
-              var len           = salt.length+iv.length+cipher.length;
-              var full          = new Uint8Array(len);
-              full.set(salt,0);
-              full.set(iv,salt.length);
-              full.set(cipher,salt.length+iv.length);
-                                                                                output('full',full);              
-              var blob2         = new Blob([full]);
-              return blob2;
-
-        }//aes-ctr
-        
-        
-        decrypt.crypto    = {};
-        
-        decrypt.crypto['aes-ctr']   = async function(blob,password){
-                                                                                console.log('decrypt :');
-              buf               = await blob.arrayBuffer();
-              buf               = new Uint8Array(buf);
-              
-              password          = encoder.encode(password);
-              
-              var salt          = new Uint8Array(16);
-              salt.set(buf.slice(0,16));
-                                                                                output('salt',salt);
-              var iv            = new Uint8Array(12);
-              iv.set(buf.slice(16,28));
-                                                                                output('iv',iv);
-              var cipher        = new Uint8Array(buf.length-28);
-              cipher.set(buf.slice(28));
-                                                                                output('cipher',cipher);
-              cipher            = cipher.buffer;
-              
-              var alg           = {name:'PBKDF2'};
-              var usage         = ['deriveBits','deriveKey'];
-              var imported      = await window.crypto.subtle.importKey('raw',password,alg,false,usage);
-              
-              var iterations    = 100000;
-              
-              var alg           = {name:'PBKDF2',salt,iterations,hash:'SHA-256'};
-              var derived       = {name:'AES-GCM',length:256};
-              var usage         = ['encrypt','decrypt'];
-              var key           = await window.crypto.subtle.deriveKey(alg,imported,derived,true,usage);
-              
-              
-              var decrypted     = await window.crypto.subtle.decrypt({name:'AES-GCM',iv},key,cipher);
-                                                                                output_str('text',decrypted);
-              var blob          = buf_blob(decrypted);
-              return blob;
-              
-          
-        }//aes-ctr
-        
-
-  //:
-  
-  
-        encrypt.simple    = function(text,password){
-          
-              aes.encrypt();
-              
-        }//simple
-
-
-        decrypt.simple    = function(cipher,password){
-          
-              aes.decrypt();
-              
-        }//simple
-
-
-*/
-
-
-        
-  //:
 
         async function convert(){
           
@@ -610,7 +599,18 @@
   //:
   
   
-        init.stack.complete;
+  
+        function debug(){
+          
+              if(!df)return;
+              var str   = [...arguments].join(' ');
+              console.log('[ encrypt-main ]',str);
+              
+        }//debug
+        
+        
+        
+  init.stack.complete;
 
         
             </script>
