@@ -506,7 +506,7 @@
           
               txt             = encrypt.str_buf(txt);
               
-              var cipher      = await encrypt.encrypt(key,txt);
+              var cipher      = await encrypt.encrypt.crypto['aes-gcm'](key,txt);
               var b64         = encrypt.buf_b64(cipher);
               editor.setValue(b64,-1);
           
@@ -518,7 +518,7 @@
               txt           = encrypt.str_buf(txt);          
               password      = encrypt.str_buf(password);
           
-              var cipher    = await encrypt.encrypt.password(password,txt);
+              var cipher    = await encrypt.encrypt.crypto['aes-gcm'].password(password,txt);
               var b64       = encrypt.buf_b64(cipher);
               editor.setValue(b64,-1);
               
@@ -530,7 +530,7 @@
           
               txt             = encrypt.str_buf(txt);
               
-              var decrypted   = await encrypt.decrypt(key,buf);
+              var decrypted   = await encrypt.decrypt.crypto['aes-gcm'](key,buf);
               var txt         = encrypt.buf_str(decrypted);
               editor.setValue(txt,-1);
               
@@ -542,7 +542,7 @@
               password        = encrypt.str_buf(password);
               txt             = encrypt.str_buf(txt);
               
-              var decrypted   = await encrypt.decrypt.password(password,buf);
+              var decrypted   = await encrypt.decrypt.crypto['aes-gcm']password(password,buf);
               var txt         = encrypt.buf_str(decrypted);
               editor.setValue(txt,-1);
               
