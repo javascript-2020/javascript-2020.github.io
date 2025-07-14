@@ -65,9 +65,9 @@
               encrypt                   = encrypt();
 
 
-              filemod.initmod({menumod,complete,editor,init,ext});
-              editor.initmod({});
-              log.initmod({});
+              filemod.initmod({ext,$,menumod,complete,editor});
+              editor.initmod({ext,$});
+              log.initmod({ext,$});
               encrypt.initmod({ext});
 
 
@@ -106,9 +106,7 @@
         //  (typeof init!='undefined' && init?.stack && init.stack.add)
         //  (typeof init!='undefined' && init?.stack && init.stack.complete)
       
-            </script>
 
-            <script ext>
 
 (async()=>{
   
@@ -144,7 +142,9 @@
         }//ext_fn
 
 })();
-            </script ext>
+
+
+            </script init>
             
       </head>
       
@@ -184,6 +184,7 @@
             
             
             <script>
+
             
         async function initdom(rootnode){
           
@@ -218,39 +219,10 @@
   //:
   
   
-        btn.encrypt   = async function(){
-                                                                                console.clear();
-              
-              var password    = $('#password').value;
-              var txt         = editor.getValue();
-              
-              var buf         = encrypt.str_buf(txt);
-              var cipher      = await encrypt.encrypt(buf,password);
-              var b64         = encrypt.buf_b64(cipher);
-              editor.setValue(b64,-1);
-                                                                                console.log(cipher);
-              
-        }//encrypt
+        function source(){
+        }//source
         
-        
-        btn.decrypt   = async function(){
-                                                                                console.clear();
-              var password    = $('#password').value;
-              var b64         = editor.getValue();
-              
-              var buf         = encrypt.b64_buf(b64);
-              var buf         = await encrypt.decrypt(buf,password);
-                                                                                console.log(buf);
-              var txt         = encrypt.buf_str(buf);
-                                                                                console.log(txt);
-              editor.setValue(txt,-1);
-              
-        }//decrypt
-        
-        
-  //:
-  
-  
+
         function complete(file){
           
               editor.filename(file);
@@ -287,6 +259,39 @@
               }
               
         }//save
+
+        
+  //:
+  
+  
+        btn.encrypt   = async function(){
+                                                                                console.clear();
+              
+              var password    = $('#password').value;
+              var txt         = editor.getValue();
+              
+              var buf         = encrypt.str_buf(txt);
+              var cipher      = await encrypt.encrypt(buf,password);
+              var b64         = encrypt.buf_b64(cipher);
+              editor.setValue(b64,-1);
+                                                                                console.log(cipher);
+              
+        }//encrypt
+        
+        
+        btn.decrypt   = async function(){
+                                                                                console.clear();
+              var password    = $('#password').value;
+              var b64         = editor.getValue();
+              
+              var buf         = encrypt.b64_buf(b64);
+              var buf         = await encrypt.decrypt(buf,password);
+                                                                                console.log(buf);
+              var txt         = encrypt.buf_str(buf);
+                                                                                console.log(txt);
+              editor.setValue(txt,-1);
+              
+        }//decrypt
 
         
   //:
