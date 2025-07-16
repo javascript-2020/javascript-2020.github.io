@@ -171,7 +171,22 @@
             
             <div id=view>
 
+                  <div id=server-root>
+                  
+                        <label>
+                              server
+                        </label>
+                        <input id=server>
+                  
+                        <input value=connect type=button>
+                        
+                  </div>
+                  
+                  
+                  
+                  
             </div>
+            
 
             <log api>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
@@ -185,6 +200,9 @@
 
       <script>
 
+        
+        var btn   = {};
+        
       
         async function initdom(rootnode){   //c
                                                                                 debug('initdom');
@@ -193,6 +211,10 @@
               keydown.initdom();
               menumod.add.style();
 
+
+
+              $(root,'[value=connect]').onclick   = btn.connect;
+              
 
 
               filemod.initdom(root);
@@ -208,6 +230,66 @@
   //:
   
 
+        btn.connect   = function(){
+          
+              var url   = $(root,'#server').value;
+              create_ws(url);
+              
+        }//connect
+        
+        
+  //:
+  
+  
+        function create_ws(url){
+          
+              ws              = new WebSocket(url);
+              ws.onopen       = e=>console.log('open');
+              ws.onclose      = e=>console.log('close');
+              ws.onerror      = e=>console.log('error');
+              ws.onmessage    = onmessage;
+              
+              function onmessage({data}){
+                
+                    switch(data.type){
+                      
+                      case 'init'       : onmessage.init(data);         break;
+                      case 'offer'      : onmessage.offer(data);        break;
+                      case 'answer'     : onmessage.answer(data);       break;
+                      case 'sdp'        : onmessage.sdp(data);          break;
+                      case 'ice'        : onmessage.ice(data);          break;
+                                            
+                    }//switch
+                    
+              }//onmessage
+              
+              
+              onmessage.init    = function(data){
+              }//init
+              
+              
+              onmessage.offer   = function(data){
+              }//offer
+              
+              
+              onmessage.answer    = function(data){
+              }//answer
+              
+              
+              onmessage.sdp   = function(data){
+              }//sdp
+              
+              
+              onmessage.ice   = function(data){
+              }//ice
+
+              
+        }//create_ws
+        
+        
+  //:
+  
+  
         function complete(){
         }//complete
 
@@ -219,7 +301,7 @@
           
           if(!df)return;
           var str   = [...arguments].join(' ');
-          console.log('[ html-editor ]',str);
+          console.log('[ file-transfer ]',str);
           
         }//debug
         
