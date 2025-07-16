@@ -1,0 +1,221 @@
+
+
+<html>
+
+      <head>
+
+            <title>html-editor</title>
+
+            <base href='https://javascript-2020.github.io/utils/editors/html-editor/html-editor.html'>
+            
+            <link rel=icon type='image/png' href='images/html-editor-favicon.png'>
+            <link rel=stylesheet href='/utils/css/utils.css'>
+
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var version       = 'v1.0';
+            
+        var df            = true;
+
+
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+
+        
+        var mod           = {};
+      
+        var filemod;                                                                                
+
+
+        async function init(){
+                                                                                debug('init',version);
+
+              //keydown                   = keydown();
+              menumod                   = menumod();
+
+
+              filemod.initmod({ext,$,menumod,complete,source,focus,editor});
+
+
+              log.initmod({ext,$});
+
+
+
+              filemod.init();
+
+
+              log.init();
+
+          //:
+          
+
+
+
+              init.complete();
+
+
+        }//init
+
+
+        init.stack            = [];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+              init.stack.ct>=init.stack.total && init();
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+        
+        init.complete   = function(){
+          
+              init.complete.stack.forEach(fn=>fn());
+              
+        }//complete
+        
+        init.complete.stack   = [];
+        init.complete.add     = fn=>init.complete.stack.push(fn);
+
+                  
+
+(async()=>{
+  
+        init.stack.add;
+        
+        var token   = localStorage['github-token'];
+        var url;
+        var headers;
+        if(token){
+              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
+        }else{
+              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
+        }
+        
+        await fetch(url,{headers}).then(res=>res.text()).then(complete);
+
+            
+        async function complete(txt){
+
+              ext           = eval(txt);
+              var promise   = ext.load.libs(
+                    'js/dom/$.js.api',
+                    'js/core/datatype.js',
+                    'js/dom/menumod/menumod.js',
+                    'js/dom/keydown/keydown.js'
+              );
+              [$,datatype,menumod,keydown,encrypt]   = await promise;
+
+              init.stack.complete;
+
+        }//ext_fn
+
+})();
+
+
+            </script init>
+
+
+      
+
+      </head>
+      
+      
+      <body>
+
+            <style id=page-inline>
+
+            </style>
+            
+            
+            </style>
+            
+<!--
+            <hdr-grp-api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  <img class=title src='images/html-editor.png' style='top:-5px;height:55px'>
+                  <span slot=date>11 Jun 2025</span>
+            </hdr-grp-api>
+-->            
+
+
+            <filemod-api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            </filemod-api>
+
+
+            </div>
+
+            
+            <div id=view>
+
+            </div>
+
+            <log api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            </log>
+
+            
+      
+      </body>
+
+
+
+      <script>
+
+      
+        async function initdom(rootnode){   //c
+                                                                                debug('initdom');
+              var root                      = rootnode;
+              
+              keydown.initdom();
+              menumod.add.style();
+
+
+
+              filemod.initdom(root);
+
+
+
+              log.initdom();
+
+
+        }//initdom
+
+
+
+        function debug(){
+          
+          if(!df)return;
+          var str   = [...arguments].join(' ');
+          console.log('[ html-editor ]',str);
+          
+        }//debug
+        
+
+        
+        init.stack.complete;
+
+      
+      </script>
+      
+      
+      
+      
+</html>
+
+
