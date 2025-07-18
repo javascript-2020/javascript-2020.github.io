@@ -15,11 +15,6 @@
             <script init>
                                                                                 console.clear();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var version       = 'v1.0';
-            
-        var df            = true;
-
-
         var ext;
         var $;
         var datatype;
@@ -205,6 +200,11 @@
 
       <script>
 
+        var version                         = 'v1.0';
+            
+        var df                              = true;
+
+
         var url                             = 'https://localhost:3001';
         
         var mode;
@@ -305,7 +305,8 @@
         
         
         ws.on.message   = function({data}){
-          
+                                                                                debug('ws.on.message');
+                                                                                debug.log(data);
               switch(data.type){
                 
                 case 'init'       : ws.on.message.init(data);         break;
