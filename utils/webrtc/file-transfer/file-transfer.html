@@ -201,20 +201,37 @@
       <script>
 
         var mode;
+        var makingOffer                     = false;
+        var ignoreOffer                     = false;
+        var isSettingRemoteAnswerPending    = false;
         
-        var btn   = {};
         
-      
+        var ws              = {};
+        ws.on               = {};
+        var pc              = {};
+        pc.on               = {};
+        var dc              = {};
+        dc.on               = {};
+        var btn             = {};
+        var create          = {};
+        var send            = {};
+
+
+  //:
+  
+  
         async function initdom(rootnode){   //c
                                                                                 debug('initdom');
-              var root                      = rootnode;
+
+                                                                                
+              var root                                = rootnode;
               
               keydown.initdom();
               menumod.add.style();
 
 
 
-              $(root,'[value=connect]').onclick   = btn.connect;
+              $(root,'[value=connect]').onclick       = btn.connect;
               
 
 
@@ -223,6 +240,8 @@
 
 
               log.initdom();
+
+
 
 
         }//initdom
@@ -234,7 +253,8 @@
         btn.connect   = function(){
           
               var url   = $(root,'#server').value;
-              create_ws(url);
+              await ws.create(url);
+              await pc.create();
               
         }//connect
         
@@ -242,54 +262,248 @@
   //:
   
   
-        function create_ws(url){
+        ws.create   = function(url){
+                                                                                debug('ws.create');
+              var promise           = new Promise(res=>ws.create.resolve=res);
+              
+              ws.con                = new WebSocket(url);
+              ws.con.onopen         = ws.on.open;
+              ws.con.onclose        = ws.on.close;
+              ws.con.onerror        = ws.on.error;
+              ws.con.onmessage      = ws.on.message;
+              
+              return promise;
+              
+        }//create.ws
+
+
+        ws.on.open    = function(){
+                                                                                debug('ws.on.open');
+        }//on.open
+        
+        
+        ws.on.close    = function(){
+                                                                                debug('ws.on.close');
+        }//close
+        
+        
+        ws.on.error   = function(){
+                                                                                debug('ws.on.error');          
+        }//error
+        
+        
+        ws.on.message   = function({data}){
           
-              ws              = new WebSocket(url);
-              ws.onopen       = e=>console.log('open');
-              ws.onclose      = e=>console.log('close');
-              ws.onerror      = e=>console.log('error');
-              ws.onmessage    = onmessage;
-              
-              function onmessage({data}){
+              switch(data.type){
                 
-                    switch(data.type){
-                      
-                      case 'init'       : onmessage.init(data);         break;
-                      case 'offer'      : onmessage.offer(data);        break;
-                      case 'answer'     : onmessage.answer(data);       break;
-                      case 'sdp'        : onmessage.sdp(data);          break;
-                      case 'ice'        : onmessage.ice(data);          break;
-                                            
-                    }//switch
-                    
-              }//onmessage
+                case 'init'       : ws.on.message.init(data);         break;
+                case 'remote'     : ws.on.message.remote(data);       break;
+                case 'offer'      : ws.on.message.offer(data);        break;
+                case 'answer'     : ws.on.message.answer(data);       break;
+                case 'sdp'        : ws.on.message.sdp(data);          break;
+                case 'ice'        : ws.on.message.ice(data);          break;
+                                      
+              }//switch
               
+        }//message
+        
+        
+        ws.on.message.init    = function(data){
+          
+              mode    = data.mode;
               
-              onmessage.init    = function(data){
-                
-                    mode    = data.mode;
-                    
-              }//init
-              
-              
-              onmessage.offer   = function(data){
-              }//offer
-              
-              
-              onmessage.answer    = function(data){
-              }//answer
-              
-              
-              onmessage.sdp   = function(data){
-              }//sdp
-              
-              
-              onmessage.ice   = function(data){
-              }//ice
+              ws.create.resolve();
 
               
-        }//create_ws
+        }//init
         
+        
+        ws.on.message.remote    = function(){
+        }//remotee
+        
+          
+        ws.on.message.offer   = function({offer}){
+          
+              await pc.con.setRemoteDescription(offer);
+              pc.create.answer();
+              
+        }//offer
+        
+        
+        ws.on.message.answer    = function({answer}){
+          
+              await pc.con.setRemoteDescription(answer);
+              
+        }//answer
+        
+        
+        ws.on.message.sdp   = function(data){
+        }//sdp
+        
+        
+        ws.on.message.ice   = function(data){
+        }//ice
+        
+
+  //:
+  
+  
+        ws.send.json    = function(json){
+          
+              var str   = JSON.stringify(json);
+              ws.con.send(str);
+              
+        }//json
+        
+        
+        ws.send.offer   = function(offer){
+                                                                                debug('ws.send.offer');
+                                                                                debug.log(offer);
+              ws.send.json({type:'offer',offer});
+              
+        }//offer
+
+
+        ws.send.answer    = function(answer){
+                                                                                debug('ws.send.answer');
+                                                                                debug.log(answer);
+              ws.send.json({type:'answer',answer);
+              
+        }//answer
+
+
+        ws.send.ice    = function(){
+        }//ice
+        
+        
+        ws.send.candidate    = function(){
+        }//condidate
+
+
+
+        
+        
+  //:
+  
+        
+        pc.create   = function(){
+                                                                                debug('pc.create');
+              var promise   = new Promise(res=>pc.create.resolve=res);
+              
+              var config    = {
+                
+                    //iceServers: [{ urls: "stun:stun.my-stun-server.tld" }],
+                    
+              };
+
+              pc.con                        = new RTCPeerConnection(config);
+              pc.con.onnegotiationneeded    = pc.on.negotiationneeded;
+              pc.con.onicecandidate         = pc.on.icecandidate;
+              pc.con.ondatachannel          = pc.on.datachannel;
+              
+              pc.con.ontack                 = pc.on.track;
+              
+              if(mode==='polite'){
+                    pc.create.offer();
+              }
+              
+              return promise;
+              
+        }//create
+        
+        
+        pc.create.offer   = async function(){
+                                                                                debug('pc.create.offer');
+              var offer   = await pc.createOffer();
+              await pc.setLocalDescription(offer);
+              ws.send.offer(offer);
+                            
+        }//offer
+        
+        
+        pc.create.answer    = async function(){
+                                                                                debug('pc.create.answer');  
+              var answer    = await pc.con.createAnswer();
+              pc.con.setLocalDescription(answer);
+              ws.send.answer(answer);
+              
+        }//answer
+        
+        
+        pc.on.negotiationneeded   = async function(){
+                                                                                debug('pc.on.negotiationneeded');
+              makingOffer = true;
+              await pc.setLocalDescription();
+    
+        }//onnegotiationneeded
+        
+        
+        pc.on.ice   = function({candidate}){
+                                                                                debug('pc.on.ice');
+              //send.json(candidate);
+              
+              try{
+                
+                    await pc.addIceCandidate(candidate);
+                
+              }//try
+              
+              catch(err){
+                
+                    if(!ignoreOffer){
+                      throw err;
+                    }
+                    
+              }//catch
+      
+    
+              
+        }//onice
+        
+        
+        function onsdp({description}){
+                                                                                debug('onsdp');
+              var readyForOffer     = !makingOffer && (pc.signalingState==='stable' || isSettingRemoteAnswerPending);
+              var offerCollision    = description.type === 'offer' && !readyForOffer;
+          
+              ignoreOffer           = !polite && offerCollision;
+              if(ignoreOffer){
+                    return;
+              }
+              
+              isSettingRemoteAnswerPending    = description.type==='answer';
+              
+              await pc.setRemoteDescription(description);
+              
+              isSettingRemoteAnswerPending    = false;
+              
+              if(description.type==='offer'){
+                    await pc.setLocalDescription();
+                    send.sdp(pc.localDescription);
+                    
+              }
+      
+        }//sdp
+
+
+        pc.on.datachannel   = function(){
+                                                                                debug('pc.on.datachannel');
+        }//ondatachannel
+
+
+
+
+        pc.on.track   = function({track,streams}){
+                                                                                debug('pc.on.track');
+                                                                                
+        }//ontrack
+        
+        
+
+
+
+        
+
         
   //:
   
@@ -309,7 +523,14 @@
           
         }//debug
         
-
+        
+        debug.log   = function(){
+        
+              if(!df)return;  
+              console.log.apply(console,arguments);
+              
+        }//log
+        
         
         init.stack.complete;
 
