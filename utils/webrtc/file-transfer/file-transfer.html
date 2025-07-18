@@ -327,7 +327,7 @@
         
         ws.on.message.init    = function(data){
                                                                                 debug('ws.on.message.init');
-                                                                                debug.log(data);
+                                                                                //debug.log(data);
               mode    = data.mode;
               
               ws.create.resolve();
@@ -341,7 +341,7 @@
         
           
         ws.on.message.offer   = async function({offer}){
-          
+                                                                                debug('ws.on.message.offer');
               await pc.con.setRemoteDescription(offer);
               pc.create.answer();
               
@@ -349,7 +349,7 @@
         
         
         ws.on.message.answer    = async function({answer}){
-          
+                                                                                debug('ws.on.message.answer');
               await pc.con.setRemoteDescription(answer);
               
         }//answer
@@ -376,7 +376,7 @@
         
         ws.send.offer   = function(offer){
                                                                                 debug('ws.send.offer');
-                                                                                debug.log(offer);
+                                                                                //debug.log(offer);
               ws.send.json({type:'offer',offer});
               
         }//offer
@@ -384,7 +384,7 @@
 
         ws.send.answer    = function(answer){
                                                                                 debug('ws.send.answer');
-                                                                                debug.log(answer);
+                                                                                //debug.log(answer);
               ws.send.json({type:'answer',answer});
               
         }//answer
