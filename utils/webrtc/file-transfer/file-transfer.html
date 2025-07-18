@@ -308,7 +308,7 @@
                                                                                 debug('ws.on.message');
                                                                                 debug.log(data);
               data    = JSON.parse(data);
-              debugger;
+              
               switch(data.type){
                 
                 case 'init'       : ws.on.message.init(data);         break;
@@ -432,8 +432,8 @@
         
         pc.create.offer   = async function(){
                                                                                 debug('pc.create.offer');
-              var offer   = await pc.createOffer();
-              await pc.setLocalDescription(offer);
+              var offer   = await pc.con.createOffer();
+              await pc.con.setLocalDescription(offer);
               ws.send.offer(offer);
                             
         }//offer
