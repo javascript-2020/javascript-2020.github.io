@@ -322,7 +322,7 @@
         }//remotee
         
           
-        ws.on.message.offer   = function({offer}){
+        ws.on.message.offer   = async function({offer}){
           
               await pc.con.setRemoteDescription(offer);
               pc.create.answer();
@@ -330,7 +330,7 @@
         }//offer
         
         
-        ws.on.message.answer    = function({answer}){
+        ws.on.message.answer    = async function({answer}){
           
               await pc.con.setRemoteDescription(answer);
               
@@ -461,7 +461,7 @@
         }//onice
         
         
-        function onsdp({description}){
+        async function onsdp({description}){
                                                                                 debug('onsdp');
               var readyForOffer     = !makingOffer && (pc.signalingState==='stable' || isSettingRemoteAnswerPending);
               var offerCollision    = description.type === 'offer' && !readyForOffer;
@@ -531,7 +531,10 @@
               
         }//log
         
-        
+
+  //:
+  
+  
         init.stack.complete;
 
       
