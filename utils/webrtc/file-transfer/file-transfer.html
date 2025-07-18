@@ -443,16 +443,19 @@
                                                                                 debug('pc.create.offer');
               var offer   = await pc.con.createOffer();
               await pc.con.setLocalDescription(offer);
-              ws.send.offer(offer);
-                            
+              //ws.send.offer(offer);
+              ws.send.offer(pc.con.localDescription);
+              
+              
         }//offer
         
         
         pc.create.answer    = async function(){
                                                                                 debug('pc.create.answer');  
               var answer    = await pc.con.createAnswer();
-              pc.con.setLocalDescription(answer);
-              ws.send.answer(answer);
+              await pc.con.setLocalDescription(answer);
+              //ws.send.answer(answer);
+              ws.send.answer(pc.con.localDescription);
               
         }//answer
         
