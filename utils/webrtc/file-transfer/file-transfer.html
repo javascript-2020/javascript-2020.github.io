@@ -179,6 +179,7 @@
                         <input id=server>
                   
                         <input value=connect type=button>
+                        <input value=data type=button>
                         
                   </div>
                   
@@ -244,6 +245,7 @@
 
               $(root,'#server').value                 = url;
               $(root,'[value=connect]').onclick       = btn.connect;
+              $(root,'[value=data]').onclick          = btn.data;
               
 
 
@@ -269,6 +271,13 @@
               await pc.create();
               
         }//connect
+        
+        
+        btn.data    = async function(){
+          
+              await dc.create();
+              
+        }//data
         
         
   //:
@@ -520,7 +529,26 @@
         }//ontrack
         
         
+  //:
+  
+  
+        dc.create   = function(){
+          
+              dc.con            = pc.con.createDataChannel('data');
+              dc.con.onopen     = dc.on.open;
+              dc.con.onclose    = dc.on.close;
 
+        }//create
+        
+        
+        dc.on.open    = function(){
+                                                                                debug('dc.on.open');
+        }//open
+        
+        
+        dc.on.close   = function(){
+                                                                                debug('dc.on.close');
+        }//close
 
 
         
