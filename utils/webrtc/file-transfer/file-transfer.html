@@ -143,15 +143,46 @@
       <body>
 
             <style id=page-inline>
-
+  html
+    {height:100%}
+    
+  body
+    {height:calc(100% - 40px);display:flex;gap:10px}
+    
   input
     {font-size:16px;padding:5px 10px}
+
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+    
+    
+  #view
+    {display:flex;flex:1}
+    
+  #message
+    {flex:1;gap:10px;border:1px solid lightgray;border-radius:5px;padding:10px}
+    
+  .local
+    {border:1px solid lightblue;border-radius:5px;padding:5px 10px}
+    
+  .remote
+    {border:1px solid lightblue;border-radius:5px;text-align:right;padding:5px 10px}
+    
+  #transfer
+    {flex:1;border:1px solid lightgray;border-radius:5px;padding:10px}
+    
+  .item
+    {padding:5px 10px;cursor:pointer;background:whitesmoke;border-radius:5px;display:flex;justify-content:space-between}
+  
+  .item .name
+    {}
+    
+  .item .size
+    {}
     
     
             </style>
             
-            
-            </style>
             
 <!--
             <hdr-grp-api>
@@ -161,32 +192,45 @@
             </hdr-grp-api>
 -->            
 
+            <div id=server-root>
+            
+                  <label>
+                        server
+                  </label>
+                  
+                  <input id=server>
+            
+                  <input value=connect type=button>
+                  
+            </div>
+
 
             <filemod-api>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
             </filemod-api>
 
 
-            </div>
-
-            
             <div id=view>
 
-                  <div id=server-root>
+                  <div id=message>
                   
-                        <label>
-                              server
-                        </label>
+                        <div id=local>
+                        </div>
                         
-                        <input id=server>
-                  
-                        <input value=connect type=button>
-                        <input value=data type=button>
+                        
+                        <div id=remote>
+                        </div>
                         
                   </div>
                   
+                  <div id=transfer>
                   
-                  
+                        <div class=item>
+                              <div class=name></div>
+                              <div class=size></div>
+                        </div>
+                        
+                  </div>
                   
             </div>
             
@@ -259,7 +303,6 @@
 
               $(root,'#server').value                 = url;
               $(root,'[value=connect]').onclick       = btn.connect;
-              $(root,'[value=data]').onclick          = btn.data;
               
 
 
@@ -285,13 +328,6 @@
               await pc.create();
               
         }//connect
-        
-        
-        btn.data    = async function(){
-          
-              await dc.create();
-              
-        }//data
         
         
   //:
@@ -511,14 +547,6 @@
         }//error
         
   
-        pc.on.negotiationneeded   = async function(){
-                                                                                debug('pc.on.negotiationneeded');
-              makingOffer = true;
-              pc.create.offer();
-    
-        }//onnegotiationneeded
-        
-        
         pc.on.ice   = async function({candidate}){
                                                                                 debug('pc.on.ice');
               console.log(candidate);
@@ -543,6 +571,16 @@
               
         }//onice
         
+
+
+
+        pc.on.negotiationneeded   = async function(){
+                                                                                debug('pc.on.negotiationneeded');
+              makingOffer = true;
+              pc.create.offer();
+    
+        }//onnegotiationneeded
+
         
         async function onsdp({description}){
                                                                                 debug('onsdp');
@@ -567,6 +605,8 @@
               }
       
         }//sdp
+
+
 
 
         pc.on.datachannel   = function(e){
