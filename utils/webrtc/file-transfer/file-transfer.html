@@ -307,6 +307,7 @@
         var create          = {};
         var send            = {};
         var server          = {};
+        var kd              = {};
 
 
   //:
@@ -340,7 +341,8 @@
 
 
               //message                                 = $(root,'#message');
-              
+              txt                                     = $(root,'#txt');
+              txt.onkeydown                           = kd.txt;
               
               view                                    = $(root,'#view');
               
@@ -376,6 +378,31 @@
               await pc.create();
               
         }//connect
+        
+        
+  //:
+  
+  
+        kd.txt    = function(e){
+          
+              if(e.ctrlKey){
+                    if(e.key=='Enter'){
+                          var str   = txt.value;
+                          
+                          var nlocal            = local.cloneNode(true);
+                          nlocal.textContent    = str;
+                          view.append(nlocal);
+                          
+                          dc.send.txt(str);
+                          
+                          txt.value   = '';
+                          
+                          e.preventDefault();
+                          return false;
+                    }
+              }
+              
+        }//txt
         
         
   //:
@@ -749,7 +776,9 @@
         
         dc.msg.txt    = function({txt}){
           
-              var nremote   = remote.cloneNode(true);
+              var nremote           = remote.cloneNode(true);
+              nremote.textContent   = txt;
+              view.append(nremote);
               
         }//txt
         
@@ -763,6 +792,13 @@
               dc.con.send(str);
               
         }//json
+        
+        
+        dc.send.txt   = function(txt){
+          
+              dc.send.json({type:'msg',txt});
+              
+        }//txt
 
         
   //:
