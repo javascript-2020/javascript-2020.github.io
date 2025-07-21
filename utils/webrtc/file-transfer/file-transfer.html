@@ -601,6 +601,8 @@
         
         dc.on.open    = function(){
                                                                                 debug('dc.on.open');
+              dc.send.json({hello:'world'});
+              
         }//open
         
         
@@ -616,10 +618,23 @@
         }//dc.on.error
           
         
-        dc.on.message   = function(){
+        dc.on.message   = function(e){
                                                                                 debug('dc.on.message');
+              console.log(e);
+              
         }//dc.on.message
 
+        
+  //:
+  
+  
+        dc.send.json    = function(json){
+          
+              var str   = JSON.stringify(json);
+              dc.con.send(str);
+              
+        }//json
+        
         
   //:
   
