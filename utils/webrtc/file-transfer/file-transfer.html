@@ -424,11 +424,16 @@
               };
 
               pc.con                        = new RTCPeerConnection(config);
+              pc.con.onerror                = pc.on.error;
               pc.con.onnegotiationneeded    = pc.on.negotiationneeded;
               pc.con.onicecandidate         = pc.on.icecandidate;
               pc.con.ondatachannel          = pc.on.datachannel;
               
               pc.con.ontack                 = pc.on.track;
+              
+              
+              dc.create();
+              
               
               if(mode==='polite'){
                     pc.create.offer();
@@ -462,6 +467,13 @@
 
   //:
   
+  
+        pc.on.error   = function(){
+          
+              console.log('pc.on.error');
+              
+        }//error
+        
   
         pc.on.negotiationneeded   = async function(){
                                                                                 debug('pc.on.negotiationneeded');
@@ -540,6 +552,7 @@
               dc.con            = pc.con.createDataChannel('data');
               dc.con.onopen     = dc.on.open;
               dc.con.onclose    = dc.on.close;
+              dc.con.onerror    = dc.on.error;
 
         }//create
         
@@ -554,6 +567,12 @@
         }//close
 
 
+        dc.on.error   = function(){
+          
+          console.log('dc.on.error');
+          
+        }//dc.on.error
+          
         
 
         
