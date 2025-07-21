@@ -368,7 +368,25 @@
         }//sdp
         
         
-        ws.on.message.ice   = function(data){
+        ws.on.message.ice   = function({candidate}){
+          
+              var err;
+              try{
+                
+                    await pc.addIceCandidate(candidate);
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.log('ice candidate error');
+                                                                                console.log(error);
+                    return;
+              }
+              
         }//ice
         
 
@@ -399,7 +417,10 @@
         }//answer
 
 
-        ws.send.ice    = function(){
+        ws.send.ice    = function(candidate){
+          
+              ws.send.json({type:'ice',candidate});
+              
         }//ice
         
         
