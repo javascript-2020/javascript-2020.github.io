@@ -719,7 +719,10 @@
           
               $(root,'#status').src   = img.connected;
               sys.msg('hello received from remote');
-              dc.send.json({type:'hello'});
+              
+              if(mode==='master'){
+                    dc.send.json({type:'hello'});
+              }
               
         }//hello
         
