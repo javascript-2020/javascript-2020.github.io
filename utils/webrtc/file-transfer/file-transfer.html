@@ -163,10 +163,16 @@
     }
     
   #message
-    {}
+    {display:flex;flex-direction:column;gap:10px}
+    
+  #txt
+    {display:block;width:100%}
+    
+  [value=send]
+    {display:block}
     
   #view
-    {flex:1;display:flex;gap:10px;border:1px solid lightgray;border-radius:5px;padding:10px}
+    {flex:1;display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;border-radius:5px;padding:10px}
     
   .sys
     {border-radius:5px;padding:5px 10px;background:whitesmoke}
@@ -220,6 +226,12 @@
 
             <div id=message>
             
+                  <textarea id=txt></textarea>
+                  
+                  <div>
+                        <input value=send type=button>
+                  </div>
+                  
             </div>
 
             <div id=view>
@@ -273,6 +285,14 @@
         
         var root;
         
+        var txt;
+        
+        var view;
+        var sys   = {};
+        var local;
+        var remote;
+        var transfer;
+        
         
         
         var ws              = {};
@@ -287,7 +307,6 @@
         var create          = {};
         var send            = {};
         var server          = {};
-        var sys             = {};
 
 
   //:
@@ -320,20 +339,22 @@
               filemod.initdom(root);
 
 
-              message                                 = $(root,'#message');
+              //message                                 = $(root,'#message');
               
-              sys.item                                = $(message,'.sys');
+              
+              view                                    = $(root,'#view');
+              
+              sys.item                                = $(view,'.sys');
               sys.item.remove();
               
-              local                                   = $(message,'.local');
+              local                                   = $(view,'.local');
               local.remove();
               
-              remote                                  = $(message,'.remote');
+              remote                                  = $(view,'.remote');
               remote.remove();
               
-              transfer                                = $(root,'#transfer');
-              item                                    = $(transfer,'.item');
-              item.remove();
+              transfer                                = $(view,'.transfer');
+              transfer.remove();
               
               
 
@@ -502,11 +523,6 @@
         }//ice
         
         
-        ws.send.candidate    = function(){
-        }//condidate
-
-
-
         
         
   //:
@@ -531,13 +547,12 @@
               pc.con.ontack                 = pc.on.track;
               
               
-              
-              
               if(mode==='polite'){
                     dc.create();
                     pc.create.offer();
               }
               
+
               return promise;
               
         }//create
@@ -548,7 +563,6 @@
               var offer   = await pc.con.createOffer();
               await pc.con.setLocalDescription(offer);
               ws.send.offer(offer);
-              //ws.send.offer(pc.con.localDescription);
               
               
         }//offer
@@ -559,7 +573,6 @@
               var answer    = await pc.con.createAnswer();
               await pc.con.setLocalDescription(answer);
               ws.send.answer(answer);
-              //ws.send.answer(pc.con.localDescription);
               
         }//answer
         
@@ -568,15 +581,14 @@
   
   
         pc.on.error   = function(){
-          
-              console.log('pc.on.error');
+                                                                                console.log('pc.on.error');
               
         }//error
         
   
         pc.on.ice   = async function({candidate}){
                                                                                 debug('pc.on.ice');
-              console.log(candidate);
+                                                                                //console.log(candidate);
               
               try{
                 
@@ -682,8 +694,7 @@
 
 
         dc.on.error   = function(){
-          
-          console.log('dc.on.error');
+                                                                                console.log('dc.on.error');
           
         }//dc.on.error
           
@@ -761,7 +772,7 @@
           
               var node    = sys.item.cloneNode(true);
               node.textContent    = str;
-              message.append(node);
+              view.append(node);
               
         }//msg
         
