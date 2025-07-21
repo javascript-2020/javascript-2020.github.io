@@ -640,10 +640,11 @@
 
         pc.on.datachannel   = function(e){
                                                                                 debug('pc.on.datachannel');
-              dc.con              = e.channel;
-              dc.con.onmessage    = dc.on.message;
-              dc.con.onopen       = dc.on.open;
-              dc.con.onclose      = dc.on.close;
+              dc.con                = e.channel;
+              dc.con.onmessage      = dc.on.message;
+              dc.con.onopen         = dc.on.open;
+              dc.con.onclose        = dc.on.close;
+              dc.con.onerror        = dc.on.error;
                                                                                 
         }//ondatachannel
 
@@ -661,10 +662,11 @@
   
         dc.create   = function(){
                                                                                 debug('dc.create');
-              dc.con            = pc.con.createDataChannel('data');
-              dc.con.onopen     = dc.on.open;
-              dc.con.onclose    = dc.on.close;
-              dc.con.onerror    = dc.on.error;
+              dc.con                = pc.con.createDataChannel('data');
+              dc.con.onopen         = dc.on.open;
+              dc.con.onclose        = dc.on.close;
+              dc.con.onerror        = dc.on.error;
+              dc.con.onmessage      = dc.on.message;
 
         }//create
         
@@ -722,10 +724,6 @@
           
               $(root,'#status').src   = img.connected;
               sys.msg('hello received from remote');
-              
-              if(mode==='master'){
-                    dc.send.json({type:'hello'});
-              }
               
         }//hello
         
