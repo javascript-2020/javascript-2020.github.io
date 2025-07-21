@@ -58,9 +58,11 @@
   //:
   
   
-              initdom(document.body);
+              await initdom(document.body);
+
               
-              
+              ready();
+
 
         }//init
 
@@ -228,8 +230,19 @@
         var btn             = {};
         var create          = {};
         var send            = {};
+        var server          = {};
 
 
+  //:
+  
+
+        function ready(){
+          
+              server.init();
+              
+        }//ready
+        
+        
   //:
   
   
@@ -613,6 +626,21 @@
         function complete(){
         }//complete
 
+        
+  //:
+  
+  
+        server.init   = function(){
+          
+              var url       = $(root,'#server').value;
+              
+              var headers   = {mode:'init'};
+              var res       = await fetch(url,{headers});
+              var txt       = await res.text();
+              console.log(txt);
+          
+        }//init
+        
         
   //:
   
