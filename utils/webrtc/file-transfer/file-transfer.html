@@ -448,8 +448,8 @@
                                                                                 debug('pc.create.offer');
               var offer   = await pc.con.createOffer();
               await pc.con.setLocalDescription(offer);
-              //ws.send.offer(offer);
-              ws.send.offer(pc.con.localDescription);
+              ws.send.offer(offer);
+              //ws.send.offer(pc.con.localDescription);
               
               
         }//offer
@@ -459,8 +459,8 @@
                                                                                 debug('pc.create.answer');  
               var answer    = await pc.con.createAnswer();
               await pc.con.setLocalDescription(answer);
-              //ws.send.answer(answer);
-              ws.send.answer(pc.con.localDescription);
+              ws.send.answer(answer);
+              //ws.send.answer(pc.con.localDescription);
               
         }//answer
         
@@ -533,6 +533,11 @@
 
         pc.on.datachannel   = function(){
                                                                                 debug('pc.on.datachannel');
+              dc.con              = event.channel;
+              dc.con.onmessage    = dc.on.message;
+              dc.con.onopen       = dc.on.open;
+              dc.con.onclose      = dc.on.close;
+                                                                                
         }//ondatachannel
 
 
@@ -574,6 +579,9 @@
         }//dc.on.error
           
         
+        dc.on.message   = function(){
+                                                                                debug('dc.on.message');
+        }//dc.on.message
 
         
   //:
