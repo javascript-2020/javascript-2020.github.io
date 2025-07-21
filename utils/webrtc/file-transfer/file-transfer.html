@@ -155,9 +155,15 @@
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
     
+  #server-root
+    {display:flex;align-items:center}
+    
+  #status
+    {
+    }
     
   #view
-    {display:flex;flex:1}
+    {display:flex;flex:1;gap:10px}
     
   #message
     {flex:1;gap:10px;border:1px solid lightgray;border-radius:5px;padding:10px}
@@ -194,6 +200,8 @@
 
             <div id=server-root>
             
+                  <img id=status class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAPFBMVEVHcEzmSD/vQTbsQjjvQTbvQTbqRDruQjftQzjsRDnuQjftQjftQzjuQTbjSD7rRDnqRTvuQjftQzjvQTaizp94AAAAE3RSTlMAD/lh5fEg1p5Pp5GC2AY7J8ZuteK7EAAAAQdJREFUKM+Fk1mShSAMRcMYGRRb9r/XDkgivNdd3g/L4kC4GQBgeRPR1eowGg+f8hl1HdKY1w2H2eui3RwPVUnXD+mkhG71D22DH2ledc1fV7rjmzmyMypzfNM97/ch2uSIAlzir/m/N2eVaiyRaLASKtNh7H9RKaoGuSkPrejl5mF0pu32uCZy/rR/e+XuPwLWb24DqL4NYWSpNyucKIS+7oDzLUF4eewz1gWET8lx8Jaj8IP9OrGG58Q5PZTEbAHh0uDIZXGGLyUetJRlFLXh0w/Op6mooyXEy45XOVOrz12UZnc0lLjtn5ZJvKw0dB2HtSHfw/RoDNPLKL4N8tszeHtE/z7BX1bhJ1cDwoQWAAAAAElFTkSuQmCC'>
+                  
                   <label>
                         server
                   </label>
@@ -214,11 +222,14 @@
 
                   <div id=message>
                   
-                        <div id=local>
+                        <div class=sys>
+                        </div>
+                        
+                        <div class=local>
                         </div>
                         
                         
-                        <div id=remote>
+                        <div class=remote>
                         </div>
                         
                   </div>
@@ -251,7 +262,8 @@
             
         var df                              = true;
 
-
+        var img                             = {};
+        
         var url                             = 'https://localhost:3001';
         
         var mode;
@@ -300,15 +312,28 @@
               keydown.initdom();
               menumod.add.style();
 
-
+              img.disconnected                        = $(root,'#status').src;
               $(root,'#server').value                 = url;
               $(root,'[value=connect]').onclick       = btn.connect;
               
 
-
               filemod.initdom(root);
 
 
+              message                                 = $(root,'#messaage');
+              sys                                     = $(message,'.sys');
+              sys.remove();
+              local                                   = $(message,'.local');
+              local.remove();
+              remote                                  = $(message,'.remote');
+              remote.remove();
+              
+              
+              transfer                                = $(root,'#transfer');
+              item                                    = $(transfer,'.item');
+              item.remove();
+              
+              
 
               log.initdom();
 
@@ -642,10 +667,7 @@
         
         dc.on.open    = function(){
                                                                                 debug('dc.on.open');
-              dc.send.json({hello:'world'});
-              
-              var blob    = new Blob(['helloworld']);
-              dc.con.send(blob);
+              dc.send.json({type:'hello'});
               
         }//open
         
@@ -664,10 +686,58 @@
         
         dc.on.message   = function({data}){
                                                                                 debug('dc.on.message');
-              console.log(typeof data);
+              var type    = datatype(data);
+              switch(type){
+                
+                case 'string'   : dc.on.message.string(data);       break;
+                case 'blob'     : dc.on.message.blob(data);         break;
+                
+              }//switch
               
         }//dc.on.message
+        
+        
+        dc.on.message.string    = function(data){
+          
+              data    = JSON.parse(data);
+              switch(data.type){
+                
+                case 'hello'    : dc.msg.hello(data);       break;
+                case 'msg'      : dc.msg.msg(data);         break;
+                
+              }//switch
+              
+        }//string
+        
+        
+        dc.on.message.blob    = function(data){
+        }//blob
 
+        
+        dc.hello    = function(){
+          
+              $(root,'#status').src   = img.connected;
+              sys.msg('hello');
+              
+        }//hello
+        
+        
+        dc.msg    = function(data){
+          
+              if(txt in data){
+                    dc.msg.txt(data);
+              }
+              
+              
+        }//msg
+        
+        
+        dc.msg.txt    = function({txt}){
+          
+              var nremote   = remote.cloneNode(true);
+              
+        }//txt
+        
         
   //:
   
@@ -678,6 +748,18 @@
               dc.con.send(str);
               
         }//json
+
+        
+  //:
+
+
+        sys.msg   = function(str){
+          
+              var node    = sys.item.cloneNode(true);
+              node.textContent    = str;
+              message.append(node);
+              
+        }//msg
         
         
   //:
@@ -701,6 +783,12 @@
           
         }//init
         
+        
+  //:
+  
+  
+        img.connected       = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAARVBMVEVHcEwBpDcJoTwMoD4BpDcFojkCpDgEozkRnUIEozkCpDgCpDgEozkEpDgHozsHojsCpDgDpDgLoD0FozkDozgLoj4BpDfMtSLJAAAAFnRSTlMA+SEQ/mHWpAeT8dyCsVVC6Lsad8gwX3sn2gAAAQNJREFUKM+FU1myhCAMZAmrbDoO9z/qQzaDNa/Ml9Ik6U4HQkYwoaQFsFIJRp7BnKS5B5VuvaCFzEtIoW+UG5ofQQ2fqMo/QnVcmzVvfJhWX+DKoKIf90TljFlBaRlg8Lv4u5uuSwU99nngcPIWybegHsljd2cbrlYYvboPUfCpPGOqP/tZCSgyap9dZkiV4FHPJbFLcsOLYrbVhqSroHGOODhOWKMPA7Zx8a+Lg1lcYAMHXzup7RzhoSfJKYzi6iF118ZYkL83WsbSh7qV8evmIP9Y5EmzBPzBlflqzaMHZMn0xJdpp92fFjvyXIfVkB/LlB/L9LKKb4v89gzeHtG/T/APK5Aru0Zgf4kAAAAASUVORK5CYII=';
+        img.disconnected    = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAPFBMVEVHcEzmSD/vQTbsQjjvQTbvQTbqRDruQjftQzjsRDnuQjftQjftQzjuQTbjSD7rRDnqRTvuQjftQzjvQTaizp94AAAAE3RSTlMAD/lh5fEg1p5Pp5GC2AY7J8ZuteK7EAAAAQdJREFUKM+Fk1mShSAMRcMYGRRb9r/XDkgivNdd3g/L4kC4GQBgeRPR1eowGg+f8hl1HdKY1w2H2eui3RwPVUnXD+mkhG71D22DH2ledc1fV7rjmzmyMypzfNM97/ch2uSIAlzir/m/N2eVaiyRaLASKtNh7H9RKaoGuSkPrejl5mF0pu32uCZy/rR/e+XuPwLWb24DqL4NYWSpNyucKIS+7oDzLUF4eewz1gWET8lx8Jaj8IP9OrGG58Q5PZTEbAHh0uDIZXGGLyUetJRlFLXh0w/Op6mooyXEy45XOVOrz12UZnc0lLjtn5ZJvKw0dB2HtSHfw/RoDNPLKL4N8tszeHtE/z7BX1bhJ1cDwoQWAAAAAElFTkSuQmCC';
         
   //:
   
