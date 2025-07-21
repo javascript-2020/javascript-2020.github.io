@@ -604,6 +604,9 @@
                                                                                 debug('dc.on.open');
               dc.send.json({hello:'world'});
               
+              var blob    = new Blob(['helloworld']);
+              dc.con.send(blob);
+              
         }//open
         
         
@@ -619,9 +622,9 @@
         }//dc.on.error
           
         
-        dc.on.message   = function(e){
+        dc.on.message   = function({data}){
                                                                                 debug('dc.on.message');
-              console.log(e);
+              console.log(typeof data);
               
         }//dc.on.message
 
