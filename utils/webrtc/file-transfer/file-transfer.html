@@ -162,11 +162,8 @@
     {
     }
     
-  #view
-    {display:flex;flex:1;gap:10px}
-    
   #message
-    {flex:1;gap:10px;border:1px solid lightgray;border-radius:5px;padding:10px}
+    {flex:1;display:flex;gap:10px;border:1px solid lightgray;border-radius:5px;padding:10px}
     
   .sys
     {border-radius:5px;padding:5px 10px;background:whitesmoke}
@@ -221,32 +218,27 @@
             </filemod-api>
 
 
-            <div id=view>
-
-                  <div id=message>
-                  
-                        <div class=sys>
-                        </div>
-                        
-                        <div class=local>
-                        </div>
-                        
-                        
-                        <div class=remote>
-                        </div>
-                        
+            <div id=message>
+            
+                  <div class=sys>
                   </div>
                   
-                  <div id=transfer>
+                  <div class=local>
+                  </div>
                   
-                        <div class=item>
-                              <div class=name></div>
-                              <div class=size></div>
-                        </div>
+                  
+                  <div class=remote>
+                  </div>
+
+                  <div class=transfer>
+                  
+                        <div class=name></div>
+                        <div class=size></div>
                         
                   </div>
                   
             </div>
+                  
             
 
             <log api>
@@ -325,13 +317,15 @@
 
 
               message                                 = $(root,'#message');
+              
               sys.item                                = $(message,'.sys');
               sys.item.remove();
+              
               local                                   = $(message,'.local');
               local.remove();
+              
               remote                                  = $(message,'.remote');
               remote.remove();
-              
               
               transfer                                = $(root,'#transfer');
               item                                    = $(transfer,'.item');
