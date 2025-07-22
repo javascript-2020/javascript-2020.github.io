@@ -13,24 +13,49 @@
             
             <style id=page-inline>
             
-                  #hdr {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
-                  
-                  .icon {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}                  
-                  .spc {flex:1;max-width:200px}
-            
-                  #help {padding:2px}
-                  
-                  #clear {margin-left:20px}
-                  #run {color:blue;font-weight:bold}
-                  #horiz {margin-left:50px;border:none}
-                  #vert {border:none}
-            
-                  #view {display:none;flex:1}
-            
-                  editor-root {width:50%}
-                  output-root {flex:1}
-            
-                  button {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
+  #hdr
+    {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
+  
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}                  
+    
+  .spc
+    {flex:1;max-width:200px}
+
+
+  #save-root
+    {margin-left:5px;display:flex}
+  
+  #save-menu
+    {position:absolute;left:0;top:30px}
+
+
+  #help
+    {padding:2px}
+  
+  #clear
+    {margin-left:20px}
+    
+  #run
+    {color:blue;font-weight:bold}
+    
+  #horiz
+    {margin-left:50px;border:none}
+    
+  #vert
+    {border:none}
+
+  #view
+    {display:none;flex:1}
+
+  editor-root
+    {width:50%}
+    
+  output-root
+    {flex:1}
+
+  button
+    {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
                         
             </style>
             
@@ -47,18 +72,24 @@
         var output;
         var log;
   
-        var ext,$,datatype,menumod,keydown
-        ;
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
 
+
+        var root;
+        var autosave;
         
   //:
 
         
         var menu      = {};
         var slider    = {};
-        
         var ui        = {};
         ui.mode       = 'vert';
+        var btn       = {};
 
         
   //:
@@ -168,6 +199,16 @@
                         <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </filemod>
 
+                  <div id=save-root>
+                        <button id=save>save</button>
+                        <div id=save-menu-root class=menu-root>
+                              <img id=save-menu-icon class=menu-icon>
+                              <div id=save-menu class=menu style='display:none'>
+                                    <checkbox-one id=autosave></checkbox-one>
+                              </div>
+                        </div>
+                  </div>
+
                   <publish>
                         <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </publish>
@@ -214,6 +255,16 @@
               mod.menu.main.initdom();
 
               filemod.initdom();
+
+
+              $(root,'#save').onclick               = btn.save;
+
+              var card                              = $(root,'#save-root .menu');
+              $(root,'.menu-icon').onclick          = menumod.click(card,false,false,menu.save);
+
+              autosave                              = $(root,'#autosave');
+              autosave.checked                      = false;
+
               
               publish.initdom();
               
@@ -240,6 +291,16 @@
         }//initdom
 
 
+        function focus(){
+          
+              editor && editor.focus();
+              
+        }//focus
+        
+
+  //:
+  
+  
         function kd(e){
 
               if(e.key=='Enter' && e.ctrlKey){
@@ -263,6 +324,16 @@
               }
               
         }//keydown
+
+
+  //:
+  
+  
+        btn.save    = function(){
+          
+              filemod.save();
+              
+        }//save
 
 
   //:
@@ -311,7 +382,7 @@
   //:
 
   
-      window.onmessage=function(e){
+      window.onmessage    = function(e){
 
             
             var json    = JSON.parse(e.data);
@@ -332,7 +403,7 @@
   //:
 
 
-      ui.read=function(){
+      ui.read   = function(){
 
             var txt     = editor.getValue();
             var json    = {v:1,txt};
@@ -341,7 +412,7 @@
       }//read
 
 
-      ui.setup=function(view){
+      ui.setup    = function(view){
 
             var o   = localStorage.getItem('orientation');
             if(o==='horiz'){
@@ -394,6 +465,7 @@
 
 
   //:
+
   
       function run(){
 
@@ -401,7 +473,7 @@
             output.display(txt);
 
             
-            if(filemod.autosave){
+            if(autosave.checked){
                                                                                 console.log('save');
                   filemod.save();
             }
