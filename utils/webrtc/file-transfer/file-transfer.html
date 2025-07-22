@@ -118,10 +118,10 @@
 
               ext           = eval(txt);
               var promise   = ext.load.libs(
-                    'js/dom/$.js.api',
+                    'js/dom/$.js',
                     'js/core/datatype.js',
                     'js/dom/menumod/menumod.js',
-                    'js/dom/keydown/keydown.js'
+                    'js/dom/keydown/keydown.js',
               );
               [$,datatype,menumod,keydown,encrypt]   = await promise;
 
@@ -727,14 +727,13 @@
         dc.on.message   = function(e){
                                                                                 debug('dc.on.message');
                                                                                 console.log(e);
+              if(dc.on.message.callback){
+                    dc.on.message.callback(e);
+                    return;
+              }
+              
               var data    = e.data;
-              var type    = datatype(data);
-              switch(type){
-                
-                case 'string'   : dc.on.message.string(data);       break;
-                case 'blob'     : dc.on.message.blob(data);         break;
-                
-              }//switch
+              dc.on.message.string(data);
               
         }//dc.on.message
         
@@ -744,27 +743,17 @@
               data    = JSON.parse(data);
               switch(data.type){
                 
-                case 'hello'    : dc.hello(data);       break;
-                case 'msg'      : dc.msg(data);         break;
+                case 'hello'          : dc.hello(data);           break;
+                case 'msg'            : dc.msg(data);             break;
+                case 'transfer'       : dc.transfer(data);        break;
                 
               }//switch
               
         }//string
-        
-        
-        dc.on.message.blob    = function(blob){
 
-              console.log(blob);
-              console.log(blob.name);
-              console.log(blob.size);
-              
-              var ntransfer   = transfer.cloneNode(true);
-              $(ntransfer,'.name').textContent    = blob.name;
-              $(ntransfer,'.size').textContent    = hs(blob.size);
-              view.append(ntransfer);
-              
-        }//blob
 
+  //:
+  
         
         dc.hello    = function(){
           
@@ -791,6 +780,40 @@
               view.append(nremote);
               
         }//txt
+        
+        
+        dc.transfer   = function(data){
+          
+              var name                  = data.name;
+              
+              dc.on.message.callback    = callback;
+              
+              
+              function callback(e){
+                
+                    dc.on.message.callback    = null;
+                    
+                    var buf     = e.data;
+                    var blob    = buf_blob(buf);
+                    complete(blob);
+
+              }//callback
+
+
+              function complete(blob){
+                
+                    console.log(blob);
+                    console.log(name);
+                    console.log(blob.size);
+                    
+                    var ntransfer                       = transfer.cloneNode(true);
+                    $(ntransfer,'.name').textContent    = blob.name;
+                    $(ntransfer,'.size').textContent    = hs(blob.size);
+                    view.append(ntransfer);
+                    
+              }//complete
+              
+        }//transfer
         
         
   //:
@@ -858,12 +881,44 @@
           
         }//init
         
+
+  //:
+  
+  
+        function buf_blob(buf){
+          
+              var uint8   = new Uint8Array(buf);
+              var blob    = new Blob([uint8]);
+              return blob;
+              
+        }//buf_blob
+
+
+        function hs(size){
+
+              size        = Number(size);
+              
+              var i       = 0;
+              if(size!=0){
+                    var t   = Math.log(size)/Math.log(1000);
+                    i       = Math.floor(t);
+              }
+              
+              var unit    = ['B','kB','MB','GB','TB'][i];
+              var n       = (size/Math.pow(1000,i)).toFixed(2);
+              
+              var str     = n+' '+unit;
+              return str;
+              
+        }//hs
+
         
   //:
   
   
         img.connected       = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAARVBMVEVHcEwBpDcJoTwMoD4BpDcFojkCpDgEozkRnUIEozkCpDgCpDgEozkEpDgHozsHojsCpDgDpDgLoD0FozkDozgLoj4BpDfMtSLJAAAAFnRSTlMA+SEQ/mHWpAeT8dyCsVVC6Lsad8gwX3sn2gAAAQNJREFUKM+FU1myhCAMZAmrbDoO9z/qQzaDNa/Ml9Ik6U4HQkYwoaQFsFIJRp7BnKS5B5VuvaCFzEtIoW+UG5ofQQ2fqMo/QnVcmzVvfJhWX+DKoKIf90TljFlBaRlg8Lv4u5uuSwU99nngcPIWybegHsljd2cbrlYYvboPUfCpPGOqP/tZCSgyap9dZkiV4FHPJbFLcsOLYrbVhqSroHGOODhOWKMPA7Zx8a+Lg1lcYAMHXzup7RzhoSfJKYzi6iF118ZYkL83WsbSh7qV8evmIP9Y5EmzBPzBlflqzaMHZMn0xJdpp92fFjvyXIfVkB/LlB/L9LKKb4v89gzeHtG/T/APK5Aru0Zgf4kAAAAASUVORK5CYII=';
         img.disconnected    = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAPFBMVEVHcEzmSD/vQTbsQjjvQTbvQTbqRDruQjftQzjsRDnuQjftQjftQzjuQTbjSD7rRDnqRTvuQjftQzjvQTaizp94AAAAE3RSTlMAD/lh5fEg1p5Pp5GC2AY7J8ZuteK7EAAAAQdJREFUKM+Fk1mShSAMRcMYGRRb9r/XDkgivNdd3g/L4kC4GQBgeRPR1eowGg+f8hl1HdKY1w2H2eui3RwPVUnXD+mkhG71D22DH2ledc1fV7rjmzmyMypzfNM97/ch2uSIAlzir/m/N2eVaiyRaLASKtNh7H9RKaoGuSkPrejl5mF0pu32uCZy/rR/e+XuPwLWb24DqL4NYWSpNyucKIS+7oDzLUF4eewz1gWET8lx8Jaj8IP9OrGG58Q5PZTEbAHh0uDIZXGGLyUetJRlFLXh0w/Op6mooyXEy45XOVOrz12UZnc0lLjtn5ZJvKw0dB2HtSHfw/RoDNPLKL4N8tszeHtE/z7BX1bhJ1cDwoQWAAAAAElFTkSuQmCC';
+
         
   //:
   
