@@ -438,13 +438,28 @@
         
         ui.view.sys   = function(str){
           
-              var node            = sys.item.cloneNode(true);
+              var nsys    = sys.cloneNode(true);
               
-              node.textContent    = str;
+              nsys.textContent    = str;
               
-              view.append(node);
+              ui.view.add(nsys);
               
         }//sys
+        
+        
+        ui.view.local   = function(){
+        }//local
+        
+        
+        ui.view.remote    = function(txt){
+          
+              var nremote           = remote.cloneNode(true);
+              
+              nremote.textContent   = txt;
+              
+              ui.view.add(nremote);
+          
+        }//remote
         
         
         ui.view.transfer    = function(name,blob){
@@ -823,7 +838,7 @@
         dc.hello    = function(){
           
               $(root,'#status').src   = img.connected;
-              sys.msg('remote connected');
+              ui.view.sys('remote connected');
               
         }//hello
         
@@ -831,20 +846,12 @@
         dc.msg    = function(data){
           
               if('txt' in data){
-                    dc.msg.txt(data);
+                    var txt   = data.txt;
+                    ui.view.remote(txt);
               }
               
               
         }//msg
-        
-        
-        dc.msg.txt    = function({txt}){
-          
-              var nremote           = remote.cloneNode(true);
-              nremote.textContent   = txt;
-              view.append(nremote);
-              
-        }//txt
         
         
         dc.transfer   = function(data){
