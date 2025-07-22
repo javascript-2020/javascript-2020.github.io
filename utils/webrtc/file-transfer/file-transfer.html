@@ -299,7 +299,7 @@
         var txt;
         
         var view;
-        var sys                             = {};
+        var sys;
         var local;
         var remote;
         var transfer;
@@ -357,8 +357,8 @@
               
               view                                    = $(root,'#view');
               
-              sys.item                                = $(view,'.sys');
-              sys.item.remove();
+              sys                                     = $(view,'.sys');
+              sys.remove();
               
               local                                   = $(view,'.local');
               local.remove();
@@ -427,12 +427,24 @@
           
               var node    = $(node,'.rem');
               if(node){
-                    node.onclick    = rem;
+                    node.onclick    = e=>node.remove();
               }
               view.append(node);
               view.scrollTop    = inf;
               
+              
         }//add
+        
+        
+        ui.view.sys   = function(str){
+          
+              var node            = sys.item.cloneNode(true);
+              
+              node.textContent    = str;
+              
+              view.append(node);
+              
+        }//sys
         
         
         ui.view.transfer    = function(name,blob){
@@ -872,18 +884,6 @@
               
         }//txt
 
-        
-  //:
-
-
-        sys.msg   = function(str){
-          
-              var node    = sys.item.cloneNode(true);
-              node.textContent    = str;
-              view.append(node);
-              
-        }//msg
-        
         
   //:
   
