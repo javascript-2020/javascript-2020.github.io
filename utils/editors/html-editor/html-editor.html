@@ -36,6 +36,8 @@
         var log;
         
 
+        var autosave;
+
         
         var menu          = {};
         var slider        = {};
@@ -76,7 +78,7 @@
               output.init();
               log.init();
 
-          //:
+//:
           
               window.onfocus            = ()=>editor && editor.focus();
               keydown.add(kd);
@@ -216,6 +218,16 @@
                         <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </filemod-api>
 
+                  <div id=save-root>
+                        <button id=save>save</button>
+                        <div class=menu-root>
+                              <img class=menu-icon>
+                              <div class=menu style='display:none'>
+                                    <checkbox-one id=autosave></checkbox-one>
+                              </div>
+                        </div>
+                  </div>
+
                   <publish>
                         <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </publish>
@@ -262,21 +274,31 @@
               mod.menu.main.initdom();
 
               filemod.initdom(root);
+
+              
+              $(shadow,'#save').onclick             = btn.save;
+
+              var card                              = $(shadow,'.menu');
+              $(shadow,'.menu-icon').onclick        = menumod.click(card,false,false,menu);
+
+              autosave                              = $(shadow,'#autosave');
+              autosave.checked                      = false;
+
               
               publish.initdom();
               
-              $('#run').onclick             = run;
+              $('#run').onclick                     = run;
 
-              $('#horiz').onclick           = horiz;
-              $('#vert').onclick            = vert;
+              $('#horiz').onclick                   = horiz;
+              $('#vert').onclick                    = vert;
               
 
-              var view                      = $('#view');
-              ui.root                       = view;
+              var view                              = $('#view');
+              ui.root                               = view;
               
               await editor.initdom(view,'html');
               
-              slider.node                   = $.slider.glass('editor-root','#page-slider','output-root',slider,ui,output);
+              slider.node                           = $.slider.glass('editor-root','#page-slider','output-root',slider,ui,output);
               output.initdom();
 
 
@@ -291,7 +313,13 @@
         }//initdom
 
 
-        function kd(e){
+  //:
+
+  
+        btn.save    = function(e){filemod.save()}
+  
+
+        function kd(e){debugger;
 
               if(e.key=='Enter' && e.ctrlKey){
                     e.preventDefault();
@@ -398,7 +426,7 @@
   //:
 
 
-        ui.setup=function(view){
+        ui.setup    = function(view){
   
               var o   = localStorage.getItem('orientation');
               if(o==='horiz'){
@@ -451,12 +479,12 @@
   //:
 
   
-        function run(){
+        function run(){debugger;
   
               var html    = editor.getValue();
               output.srcdoc(html);
               
-              if(filemod.autosave){
+              if(autosave){
                                                                                 console.log('save');
                     filemod.save();
               }
