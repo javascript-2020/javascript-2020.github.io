@@ -403,12 +403,8 @@
           
               if(e.ctrlKey){
                     if(e.key=='Enter'){
-                          var str   = txt.value;
-                          ui.view.local(str);
-                          dc.send.txt(str);
-                          txt.value   = '';
+                          btn.send();
                           e.preventDefault();
-                          focus();
                           return false;
                     }
               }
@@ -427,6 +423,17 @@
               focus();
               
         }//connect
+        
+        
+        btn.send    = function(){
+          
+              var str   = txt.value;
+              ui.view.local(str);
+              dc.send.txt(str);
+              txt.value   = '';
+              focus();
+          
+        }//send
   
   
   //:
