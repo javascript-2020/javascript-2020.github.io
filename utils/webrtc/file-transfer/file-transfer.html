@@ -391,15 +391,9 @@
               if(e.ctrlKey){
                     if(e.key=='Enter'){
                           var str   = txt.value;
-                          
-                          var nlocal            = local.cloneNode(true);
-                          nlocal.textContent    = str;
-                          view.append(nlocal);
-                          
+                          ui.view.local(str);
                           dc.send.txt(str);
-                          
                           txt.value   = '';
-                          
                           e.preventDefault();
                           return false;
                     }
@@ -447,7 +441,14 @@
         }//sys
         
         
-        ui.view.local   = function(){
+        ui.view.local   = function(txt){
+          
+              var nlocal            = local.cloneNode(true);
+              
+              nlocal.textContent    = str;
+              
+              ui.view.add(nlocal);
+          
         }//local
         
         
