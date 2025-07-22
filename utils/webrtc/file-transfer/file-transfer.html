@@ -192,6 +192,9 @@
   .transfer .size
     {}
     
+  .rem
+    {content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAS1BMVEX9QF3+P1z+P1z3Ql76QV7/P1zzQ2D8P1z8QV39QFz7QF3+P1zrQl7+P1z8QFz5QV38QFz9P1z6QV38QF37P139P1z8QFz9QFz/P1xS9pPTAAAAGHRSTlOR4+0aLvkOfW66ZPoD9rs7Y7dHnGLXmdfqOSKwAAAAtElEQVQoz52TWQ7DIAxEbcy+ZmvD/U9aUqmVkiZY6YgPNA8sjG2IJad6qpRLhPKol1oL5NpRhtTDCWpXt7BAFFdYuUESycWpM4xeSwtgpfb4i3EieAcWQBMesfI0fryRvDpgp6E+obkK5graHfAiRXNNCKadE3LYYyFtu2i0aauFsFLsMNK2CSZGEzaX8A5mgjNPeyc2XyfGfAvzqVxJvgUdzgvKtcM/vcY0MjMGZe0OUX8EX8BZRcLWsjTuAAAAAElFTkSuQmCC);
+    }
     
             </style>
             
@@ -237,17 +240,20 @@
             <div id=view>
             
                   <div class=sys>
+                        <img class=rem>
                   </div>
                   
                   <div class=local>
+                        <img class=rem>
                   </div>
                   
                   
                   <div class=remote>
+                        <img class=rem>
                   </div>
 
                   <div class=transfer>
-                  
+                        <img class=rem>
                         <div class=name></div>
                         <div class=size></div>
                         
@@ -269,7 +275,7 @@
 
       <script>
 
-        var version                         = 'v1.0';
+        var version                         = 'v1.0.0';
             
         var df                              = true;
 
@@ -282,13 +288,16 @@
         var ignoreOffer                     = false;
         var isSettingRemoteAnswerPending    = false;
         
+
+        var inf                             = Number.MAX_SAFE_INTEGER;
         
+        var ui                              = {};
+        ui.view                             = {};
         var root;
-        
         var txt;
         
         var view;
-        var sys   = {};
+        var sys                             = {};
         var local;
         var remote;
         var transfer;
@@ -408,6 +417,48 @@
               
         }//connect
   
+  
+  //:
+  
+  
+        ui.view.add   = function(node){
+          
+              var node    = $(node,'.rem');
+              if(node){
+                    node.onclick    = rem;
+              }
+              view.append(node);
+              view.scrollTop    = inf;
+              
+        }//add
+        
+        
+        ui.view.transfer    = function(name,blob){
+          
+              var size    = hs(blob.size);
+              
+              var ntransfer                       = transfer.cloneNode(true);
+              ntransfer.onclick                   = click;
+              
+              $(ntransfer,'.name').textContent    = name;
+              $(ntransfer,'.size').textContent    = size;
+              
+              ui.view.add(ntransfer);
+
+              
+              function click(e){
+                
+                    var href      = window.URL.createObjectURL(blob);
+                    
+                    var a         = document.createElement('a');
+                    a.href        = href;
+                    a.download    = name;
+                    a.click();
+                    
+              }//click
+              
+        }//transfer
+        
   
   //:
 
@@ -795,24 +846,10 @@
                     
                     var buf     = e.data;
                     var blob    = buf_blob(buf);
-                    complete(blob);
+                    ui.view.transfer(name,blob);
 
               }//callback
 
-
-              function complete(blob){
-                
-                    console.log(blob);
-                    console.log(name);
-                    console.log(blob.size);
-                    
-                    var ntransfer                       = transfer.cloneNode(true);
-                    $(ntransfer,'.name').textContent    = blob.name;
-                    $(ntransfer,'.size').textContent    = hs(blob.size);
-                    view.append(ntransfer);
-                    
-              }//complete
-              
         }//transfer
         
         
