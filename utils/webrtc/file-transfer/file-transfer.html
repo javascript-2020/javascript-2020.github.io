@@ -855,10 +855,12 @@
 
         complete.load   = function(file,blob){
           
-              blob.name   = file.filename;
+              var name   = file.filename;
+              
+              dc.send.json({type:'transfer',name});
               dc.con.send(blob);
               
-              sys.msg(blob.name+' sent');
+              sys.msg(name+' sent');
               
         }//load
         
