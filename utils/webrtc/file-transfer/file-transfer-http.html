@@ -1,0 +1,1038 @@
+
+
+<html>
+
+      <head>
+
+            <title>file-transfer</title>
+            <base href='https://javascript-2020.github.io/utils/webrtc/file-transfer/file-transfer.html'>
+            <link rel=icon type='image/png' href='image/file-transfer-30.png'>
+
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var mod           = {};
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+
+        var filemod;                                                                                
+        var log;
+
+
+        async function init(){
+                                                                                debug('init',version);
+
+              //keydown                   = keydown();
+              menumod                   = menumod();
+              filemod                   = mod.filemod();
+              log                       = mod.log();
+
+              filemod.initmod({ext,$,menumod,complete});
+
+
+              log.initmod({ext,$});
+
+
+
+              filemod.init();
+
+
+              log.init();
+
+
+  //:
+          
+
+
+              init.complete();
+
+
+  //:
+  
+  
+              await initdom(document.body);
+
+              focus();
+              ready();
+
+              
+
+
+        }//init
+
+
+        init.stack            = [];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+              init.stack.ct>=init.stack.total && init();
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+        
+        init.complete   = function(){
+          
+              init.complete.stack.forEach(fn=>fn());
+              
+        }//complete
+        
+        init.complete.stack   = [];
+        init.complete.add     = fn=>init.complete.stack.push(fn);
+
+                  
+
+(async()=>{
+  
+        init.stack.add;
+        
+        var token   = localStorage['github-token'];
+        var url;
+        var headers;
+        if(token){
+              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
+        }else{
+              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
+        }
+        
+        await fetch(url,{headers}).then(res=>res.text()).then(complete);
+
+            
+        async function complete(txt){
+
+              ext           = eval(txt);
+              var promise   = ext.load.libs(
+                    'js/dom/$.js',
+                    'js/core/datatype.js',
+                    'js/dom/menumod/menumod.js',
+                    'js/dom/keydown/keydown.js',
+              );
+              [$,datatype,menumod,keydown,encrypt]   = await promise;
+
+              init.stack.complete;
+
+        }//ext_fn
+
+})();
+
+
+            </script init>
+
+
+      
+
+      </head>
+      
+      
+      <body>
+
+            <style id=page-inline>
+  html
+    {height:100%}
+    
+  body
+    {height:calc(100% - 40px);margin:20px;display:flex;flex-direction:column;gap:10px}
+    
+  input
+    {font-size:16px;padding:5px 10px}
+
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+    
+  .spc
+    {flex:1}
+    
+  #server-root
+    {display:flex;align-items:center;gap:10px}
+    
+  #status
+    {padding:2px}
+    
+  #message
+    {display:flex;flex-direction:column;gap:10px}
+    
+  #txt
+    {display:block;width:100%;padding:10px;box-sizing:border-box;resize:vertical}
+    
+  [value=send]
+    {display:block}
+    
+  #view
+    {flex:1;display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;border-radius:5px;padding:10px;
+    }
+    
+  #view>div
+    {display:flex;gap:10px;border-radius:5px;padding:5px 10px;white-space:pre;align-items:center;
+      }
+    
+  .sys
+    {background:whitesmoke;font-family:monospace;border:1px solid gray}
+    
+  .local
+    {border:1px solid lightblue}
+    
+  .remote
+    {border:1px solid lightgreen}
+    
+  .transfer
+    {border:1px solid lightgreen}
+    
+  .transfer .name
+    {}
+    
+  .transfer .size
+    {}
+    
+  .rem
+    {width:20px;height:20px;box-sizing:border-box;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAS1BMVEX9QF3+P1z+P1z3Ql76QV7/P1zzQ2D8P1z8QV39QFz7QF3+P1zrQl7+P1z8QFz5QV38QFz9P1z6QV38QF37P139P1z8QFz9QFz/P1xS9pPTAAAAGHRSTlOR4+0aLvkOfW66ZPoD9rs7Y7dHnGLXmdfqOSKwAAAAtElEQVQoz52TWQ7DIAxEbcy+ZmvD/U9aUqmVkiZY6YgPNA8sjG2IJad6qpRLhPKol1oL5NpRhtTDCWpXt7BAFFdYuUESycWpM4xeSwtgpfb4i3EieAcWQBMesfI0fryRvDpgp6E+obkK5graHfAiRXNNCKadE3LYYyFtu2i0aauFsFLsMNK2CSZGEzaX8A5mgjNPeyc2XyfGfAvzqVxJvgUdzgvKtcM/vcY0MjMGZe0OUX8EX8BZRcLWsjTuAAAAAElFTkSuQmCC);
+    }
+  .down
+    {width:20px;height:20px;box-sizing:border-box;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAb1BMVEUBcu1HcEwJdekHdOoCcu0NdugVeOMQduYOduYDc+wMdecFc+sIdOkEc+sfedsGc+oKdOldi7kAcu4Ace4AcO4cge42j+8TfO7S5vr///4LeO7y+P0jhe/n8vyv0vfg7vuZxvXC3vja6/pNnO/4/P2x2eepAAAAEnRSTlP4AFiR7VAYLzjdRsJ8zQqufQLMZvMcAAABDUlEQVQoz62T2XqDIBCFicElVlvrIJtKUfP+z1gWl2mbxJuem/ngh4GBM+TileVlmiClZZF9ekA8bGpKfonernnE+Vv7ULfU4+wJdbxwuPkxBXjw8U6yGk9ogUe0IDnF1E4d2k8SUiIMQvacoeUNSckLfD3DyX9hWDE8xFqwgFHtCLuaucfCHLXj3UbJRfaLC38xtNAZNY93qSSH7e037M9jjjtJf/f1/BVrawREHmhrpwF2DN3cD8xHMwWqp3uI8VFjvQDAtA7BLUfYJVOGD4esmkRMHj4UuFT9eEiNS7h6Fe0AjNv5a9dsllh3spkJ2g5Js81Ml2r/kEOHFc+MfNIGromqmtKnTfSqBb8Bqo85bt4CVEwAAAAASUVORK5CYII=);
+    }
+            </style>
+            
+            
+<!--
+            <hdr-grp-api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  <img class=title src='images/html-editor.png' style='top:-5px;height:55px'>
+                  <span slot=date>11 Jun 2025</span>
+            </hdr-grp-api>
+-->            
+
+            <div id=server-root>
+            
+                  <label>
+                        server
+                  </label>
+                  
+                  <input id=server>
+            
+                  <input value=connect type=button>
+
+                  <img id=status class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAPFBMVEVHcEzmSD/vQTbsQjjvQTbvQTbqRDruQjftQzjsRDnuQjftQjftQzjuQTbjSD7rRDnqRTvuQjftQzjvQTaizp94AAAAE3RSTlMAD/lh5fEg1p5Pp5GC2AY7J8ZuteK7EAAAAQdJREFUKM+Fk1mShSAMRcMYGRRb9r/XDkgivNdd3g/L4kC4GQBgeRPR1eowGg+f8hl1HdKY1w2H2eui3RwPVUnXD+mkhG71D22DH2ledc1fV7rjmzmyMypzfNM97/ch2uSIAlzir/m/N2eVaiyRaLASKtNh7H9RKaoGuSkPrejl5mF0pu32uCZy/rR/e+XuPwLWb24DqL4NYWSpNyucKIS+7oDzLUF4eewz1gWET8lx8Jaj8IP9OrGG58Q5PZTEbAHh0uDIZXGGLyUetJRlFLXh0w/Op6mooyXEy45XOVOrz12UZnc0lLjtn5ZJvKw0dB2HtSHfw/RoDNPLKL4N8tszeHtE/z7BX1bhJ1cDwoQWAAAAAElFTkSuQmCC'>
+                  
+            </div>
+
+
+            <filemod-api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            </filemod-api>
+
+
+            <div id=message>
+            
+                  <textarea id=txt></textarea>
+                  
+                  <div>
+                        <input value=send type=button>
+                  </div>
+                  
+            </div>
+
+            <div id=view style='display:none'>
+            
+                  <div class=sys>
+                        <div class=txt></div>
+                        <div class=spc></div>
+                        <img class=rem>
+                  </div>
+                  
+                  <div class=local>
+                        <div class=txt></div>
+                        <div class=spc></div>
+                        <img class=rem>
+                  </div>
+                  
+                  
+                  <div class=remote>
+                        <div class=spc></div>
+                        <div class=txt></div>
+                        <img class=rem>
+                  </div>
+
+                  <div class=transfer>
+                        <img class=down>
+                        <div class=size></div>
+                        <div class=name></div>
+                        <div class=spc></div>
+                        <img class=rem>
+                  </div>
+                  
+            </div>
+                  
+            
+
+            <log api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            </log>
+
+            
+      
+      </body>
+
+
+
+      <script>
+
+        var version                         = 'v1.0.0';
+            
+        var df                              = true;
+
+        var img                             = {};
+        
+        var url                             = 'https://localhost:3001';
+        
+        var mode;
+        var makingOffer                     = false;
+        var ignoreOffer                     = false;
+        var isSettingRemoteAnswerPending    = false;
+        
+
+        var inf                             = Number.MAX_SAFE_INTEGER;
+        
+        var ui                              = {};
+        ui.view                             = {};
+        var root;
+        var txt;
+        
+        var view;
+        var sys;
+        var local;
+        var remote;
+        var transfer;
+        
+        
+        
+        var ws              = {};
+        ws.on               = {};
+        ws.send             = {};
+        var pc              = {};
+        pc.on               = {};
+        var dc              = {};
+        dc.on               = {};
+        dc.send             = {};
+        var btn             = {};
+        var create          = {};
+        var send            = {};
+        var server          = {};
+        var kd              = {};
+
+
+  //:
+  
+
+        function ready(){
+          
+              server.init();
+              
+        }//ready
+        
+        
+  //:
+  
+  
+        async function initdom(rootnode){   //c
+                                                                                debug('initdom');
+
+                                                                                
+              root                                    = rootnode;
+              
+              keydown.initdom();
+              menumod.add.style();
+
+              img.disconnected                        = $(root,'#status').src;
+              $(root,'#server').value                 = url;
+              $(root,'[value=connect]').onclick       = btn.connect;
+              
+
+              filemod.initdom(root);
+
+
+              //message                                 = $(root,'#message');
+              txt                                     = $(root,'#txt');
+              txt.onkeydown                           = kd.txt;
+              
+              view                                    = $(root,'#view');
+              
+              sys                                     = $(view,'.sys');
+              sys.remove();
+              
+              local                                   = $(view,'.local');
+              local.remove();
+              
+              remote                                  = $(view,'.remote');
+              remote.remove();
+              
+              transfer                                = $(view,'.transfer');
+              transfer.remove();
+              
+              
+
+              log.initdom();
+
+
+              view.style.display    = '';
+              
+
+        }//initdom
+
+
+        function focus(){
+          
+              txt.focus();
+              
+        }//focus
+        
+
+  //:
+  
+  
+        kd.txt    = function(e){
+          
+              if(e.ctrlKey){
+                    if(e.key=='Enter'){
+                          btn.send();
+                          e.preventDefault();
+                          return false;
+                    }
+              }
+              
+        }//txt
+        
+        
+  //:
+  
+
+        btn.connect   = async function(){
+                                                                                console.clear();
+              var url   = $(root,'#server').value;
+              await ws.create(url);
+              await pc.create();
+              focus();
+              
+        }//connect
+        
+        
+        btn.send    = function(){
+          
+              var str   = txt.value;
+              ui.view.local(str);
+              dc.send.txt(str);
+              txt.value   = '';
+              focus();
+          
+        }//send
+  
+  
+  //:
+  
+  
+        ui.view.add   = function(node){
+          
+              var img    = $(node,'.rem');
+              if(img){
+                    img.onclick    = e=>node.remove();
+              }
+              
+              view.append(node);
+              
+              view.scrollTop    = inf;
+              
+              
+        }//add
+        
+        
+        ui.view.sys   = function(str){
+          
+              var nsys    = sys.cloneNode(true);
+              
+              $(nsys,'.txt').textContent    = str;
+              
+              ui.view.add(nsys);
+              
+        }//sys
+        
+        
+        ui.view.local   = function(txt){
+          
+              var nlocal            = local.cloneNode(true);
+              
+              $(nlocal,'.txt').textContent    = txt;
+              
+              ui.view.add(nlocal);
+          
+        }//local
+        
+        
+        ui.view.remote    = function(txt){
+          
+              var nremote           = remote.cloneNode(true);
+              
+              $(nremote,'.txt').textContent   = txt;
+              
+              ui.view.add(nremote);
+          
+        }//remote
+        
+        
+        ui.view.transfer    = function(name,blob){
+          
+              var size    = hs(blob.size);
+              
+              var ntransfer                       = transfer.cloneNode(true);
+              ntransfer.onclick                   = click;
+              
+              $(ntransfer,'.name').textContent    = name;
+              $(ntransfer,'.size').textContent    = size;
+              
+              ui.view.add(ntransfer);
+
+              
+              function click(e){
+                
+                    var href      = window.URL.createObjectURL(blob);
+                    
+                    var a         = document.createElement('a');
+                    a.href        = href;
+                    a.download    = name;
+                    a.click();
+                    
+              }//click
+              
+        }//transfer
+        
+  
+  //:
+
+  
+        ws.create   = function(url){
+                                                                                debug('ws.create');
+              var promise           = new Promise(res=>ws.create.resolve=res);
+              
+              ws.con                = new WebSocket(url);
+              ws.con.onopen         = ws.on.open;
+              ws.con.onclose        = ws.on.close;
+              ws.con.onerror        = ws.on.error;
+              ws.con.onmessage      = ws.on.message;
+              
+              return promise;
+              
+        }//create.ws
+
+
+        ws.on.open    = function(){
+                                                                                debug('ws.on.open');
+        }//on.open
+        
+        
+        ws.on.close    = function(){
+                                                                                debug('ws.on.close');
+        }//close
+        
+        
+        ws.on.error   = function(){
+                                                                                debug('ws.on.error');          
+        }//error
+        
+        
+        ws.on.message   = function({data}){
+                                                                                debug('ws.on.message');
+                                                                                //debug.log(data);
+              data    = JSON.parse(data);
+              
+              switch(data.type){
+                
+                case 'init'       : ws.on.message.init(data);         break;
+                case 'remote'     : ws.on.message.remote(data);       break;
+                case 'offer'      : ws.on.message.offer(data);        break;
+                case 'answer'     : ws.on.message.answer(data);       break;
+                case 'sdp'        : ws.on.message.sdp(data);          break;
+                case 'ice'        : ws.on.message.ice(data);          break;
+                                      
+                default           :
+                                                                                debug('ws.on.message unknown');
+              }//switch
+              
+        }//message
+        
+        
+        ws.on.message.init    = function(data){
+                                                                                debug('ws.on.message.init');
+                                                                                //debug.log(data);
+              mode    = data.mode;
+              
+              ws.create.resolve();
+
+              
+        }//init
+        
+        
+        ws.on.message.remote    = function(){
+        }//remotee
+        
+          
+        ws.on.message.offer   = async function({offer}){
+                                                                                debug('ws.on.message.offer');
+              await pc.con.setRemoteDescription(offer);
+              pc.create.answer();
+              
+        }//offer
+        
+        
+        ws.on.message.answer    = async function({answer}){
+                                                                                debug('ws.on.message.answer');
+              await pc.con.setRemoteDescription(answer);
+              
+        }//answer
+        
+        
+        ws.on.message.sdp   = function(data){
+        }//sdp
+        
+        
+        ws.on.message.ice   = async function({candidate}){
+                                                                                debug('ws.on.message.ice');
+                                                                                console.log(candidate);
+              var err;
+              try{
+                
+                    await pc.con.addIceCandidate(candidate);
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.log('ice candidate error');
+                                                                                console.log(err);
+                    return;
+              }
+              
+        }//ice
+        
+
+  //:
+  
+  
+        ws.send.json    = function(json){
+          
+              var str   = JSON.stringify(json);
+              ws.con.send(str);
+              
+        }//json
+        
+        
+        ws.send.offer   = function(offer){
+                                                                                debug('ws.send.offer');
+                                                                                //debug.log(offer);
+              ws.send.json({type:'offer',offer});
+              
+        }//offer
+
+
+        ws.send.answer    = function(answer){
+                                                                                debug('ws.send.answer');
+                                                                                //debug.log(answer);
+              ws.send.json({type:'answer',answer});
+              
+        }//answer
+
+
+        ws.send.ice    = function(candidate){
+          
+              ws.send.json({type:'ice',candidate});
+              
+        }//ice
+        
+        
+  //:
+  
+        
+        pc.create   = function(){
+                                                                                debug('pc.create',mode);
+              var promise   = new Promise(res=>pc.create.resolve=res);
+              
+              var config    = {
+                
+                    //iceServers: [{ urls: "stun:stun.my-stun-server.tld" }],
+                    
+              };
+
+              pc.con                        = new RTCPeerConnection(config);
+              pc.con.onerror                = pc.on.error;
+              //pc.con.onnegotiationneeded    = pc.on.negotiationneeded;
+              pc.con.onicecandidate         = pc.on.ice;
+              pc.con.ondatachannel          = pc.on.datachannel;
+              
+              pc.con.ontack                 = pc.on.track;
+              
+              
+              if(mode==='polite'){
+                    dc.create();
+                    pc.create.offer();
+              }
+              
+
+              return promise;
+              
+        }//create
+        
+        
+        pc.create.offer   = async function(){
+                                                                                debug('pc.create.offer');
+              var offer   = await pc.con.createOffer();
+              await pc.con.setLocalDescription(offer);
+              ws.send.offer(offer);
+              
+              
+        }//offer
+        
+        
+        pc.create.answer    = async function(){
+                                                                                debug('pc.create.answer');  
+              var answer    = await pc.con.createAnswer();
+              await pc.con.setLocalDescription(answer);
+              ws.send.answer(answer);
+              
+        }//answer
+        
+
+  //:
+  
+  
+        pc.on.error   = function(){
+                                                                                console.log('pc.on.error');
+              
+        }//error
+        
+  
+        pc.on.ice   = async function({candidate}){
+                                                                                debug('pc.on.ice');
+                                                                                //console.log(candidate);
+              
+              try{
+                
+                    await pc.con.addIceCandidate(candidate);
+                
+              }//try
+              
+              catch(err){
+                
+                    if(!ignoreOffer){
+                      throw err;
+                    }
+                    
+              }//catch
+
+      
+              ws.send.ice(candidate);
+    
+              
+        }//onice
+        
+
+        pc.on.negotiationneeded   = async function(){
+                                                                                debug('pc.on.negotiationneeded');
+              makingOffer = true;
+              pc.create.offer();
+    
+        }//onnegotiationneeded
+
+        
+        async function onsdp({description}){
+                                                                                debug('onsdp');
+              var readyForOffer     = !makingOffer && (pc.signalingState==='stable' || isSettingRemoteAnswerPending);
+              var offerCollision    = description.type === 'offer' && !readyForOffer;
+          
+              ignoreOffer           = !polite && offerCollision;
+              if(ignoreOffer){
+                    return;
+              }
+              
+              isSettingRemoteAnswerPending    = description.type==='answer';
+              
+              await pc.setRemoteDescription(description);
+              
+              isSettingRemoteAnswerPending    = false;
+              
+              if(description.type==='offer'){
+                    await pc.setLocalDescription();
+                    send.sdp(pc.localDescription);
+                    
+              }
+      
+        }//sdp
+
+
+
+
+        pc.on.datachannel   = function(e){
+                                                                                debug('pc.on.datachannel');
+              dc.con                = e.channel;
+              dc.con.onmessage      = dc.on.message;
+              dc.con.onopen         = dc.on.open;
+              dc.con.onclose        = dc.on.close;
+              dc.con.onerror        = dc.on.error;
+                                                                                
+        }//ondatachannel
+
+
+        pc.on.track   = function({track,streams}){
+                                                                                debug('pc.on.track');
+                                                                                
+        }//ontrack
+        
+        
+  //:
+  
+  
+        dc.create   = function(){
+                                                                                debug('dc.create');
+              dc.con                = pc.con.createDataChannel('data');
+              dc.con.onopen         = dc.on.open;
+              dc.con.onclose        = dc.on.close;
+              dc.con.onerror        = dc.on.error;
+              dc.con.onmessage      = dc.on.message;
+
+        }//create
+        
+        
+        dc.on.open    = function(){
+                                                                                debug('dc.on.open');
+              dc.send.json({type:'hello'});
+              
+        }//open
+        
+        
+        dc.on.close   = function(){
+                                                                                debug('dc.on.close');
+        }//close
+
+
+        dc.on.error   = function(){
+                                                                                console.log('dc.on.error');
+          
+        }//dc.on.error
+          
+        
+        dc.on.message   = function(e){
+                                                                                debug('dc.on.message');
+                                                                                console.log(e);
+              if(dc.on.message.callback){
+                    dc.on.message.callback(e);
+                    return;
+              }
+              
+              var data    = e.data;
+              dc.on.message.string(data);
+              
+        }//dc.on.message
+        
+        
+        dc.on.message.string    = function(data){
+          
+              data    = JSON.parse(data);
+              switch(data.type){
+                
+                case 'hello'          : dc.hello(data);           break;
+                case 'msg'            : dc.msg(data);             break;
+                case 'transfer'       : dc.transfer(data);        break;
+                
+              }//switch
+              
+        }//string
+
+
+  //:
+  
+        
+        dc.hello    = function(){
+          
+              $(root,'#status').src   = img.connected;
+              ui.view.sys('remote connected');
+              
+        }//hello
+        
+        
+        dc.msg    = function(data){
+          
+              if('txt' in data){
+                    var txt   = data.txt;
+                    ui.view.remote(txt);
+              }
+              
+              
+        }//msg
+        
+        
+        dc.transfer   = function(data){
+          
+              var name                  = data.name;
+              
+              dc.on.message.callback    = callback;
+              
+              
+              function callback(e){
+                
+                    dc.on.message.callback    = null;
+                    
+                    var buf     = e.data;
+                    var blob    = buf_blob(buf);
+                    ui.view.transfer(name,blob);
+
+              }//callback
+
+        }//transfer
+        
+        
+  //:
+  
+  
+        dc.send.json    = function(json){
+          
+              var str   = JSON.stringify(json);
+              dc.con.send(str);
+              
+        }//json
+        
+        
+        dc.send.txt   = function(txt){
+          
+              dc.send.json({type:'msg',txt});
+              
+        }//txt
+
+        
+  //:
+  
+  
+        function complete(){
+        }//complete
+
+
+        complete.load   = function(file,blob){
+          
+              var name    = file.filename;
+              var size    = hs(blob.size);
+              
+              dc.send.json({type:'transfer',name});
+              dc.con.send(blob);
+              
+              var str   = `${name} ${size} sent`;
+              ui.view.sys(str);
+              
+        }//load
+        
+        
+        complete.save   = function(file,confirm){
+        }//save
+        
+        
+  //:
+  
+  
+        server.init   = async function(){
+          
+              var url       = $(root,'#server').value;
+              
+              var headers   = {mode:'init'};
+              var res       = await fetch(url,{headers});
+              var txt       = await res.text();
+              console.log(txt);
+          
+        }//init
+        
+
+  //:
+  
+  
+        function buf_blob(buf){
+          
+              var uint8   = new Uint8Array(buf);
+              var blob    = new Blob([uint8]);
+              return blob;
+              
+        }//buf_blob
+
+
+        function hs(size){
+
+              size        = Number(size);
+              
+              var i       = 0;
+              if(size!=0){
+                    var t   = Math.log(size)/Math.log(1000);
+                    i       = Math.floor(t);
+              }
+              
+              var unit    = ['B','kB','MB','GB','TB'][i];
+              var n       = (size/Math.pow(1000,i)).toFixed(2);
+              
+              var str     = n+' '+unit;
+              return str;
+              
+        }//hs
+
+        
+  //:
+  
+  
+        img.connected       = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAARVBMVEVHcEwBpDcJoTwMoD4BpDcFojkCpDgEozkRnUIEozkCpDgCpDgEozkEpDgHozsHojsCpDgDpDgLoD0FozkDozgLoj4BpDfMtSLJAAAAFnRSTlMA+SEQ/mHWpAeT8dyCsVVC6Lsad8gwX3sn2gAAAQNJREFUKM+FU1myhCAMZAmrbDoO9z/qQzaDNa/Ml9Ik6U4HQkYwoaQFsFIJRp7BnKS5B5VuvaCFzEtIoW+UG5ofQQ2fqMo/QnVcmzVvfJhWX+DKoKIf90TljFlBaRlg8Lv4u5uuSwU99nngcPIWybegHsljd2cbrlYYvboPUfCpPGOqP/tZCSgyap9dZkiV4FHPJbFLcsOLYrbVhqSroHGOODhOWKMPA7Zx8a+Lg1lcYAMHXzup7RzhoSfJKYzi6iF118ZYkL83WsbSh7qV8evmIP9Y5EmzBPzBlflqzaMHZMn0xJdpp92fFjvyXIfVkB/LlB/L9LKKb4v89gzeHtG/T/APK5Aru0Zgf4kAAAAASUVORK5CYII=';
+        img.disconnected    = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAPFBMVEVHcEzmSD/vQTbsQjjvQTbvQTbqRDruQjftQzjsRDnuQjftQjftQzjuQTbjSD7rRDnqRTvuQjftQzjvQTaizp94AAAAE3RSTlMAD/lh5fEg1p5Pp5GC2AY7J8ZuteK7EAAAAQdJREFUKM+Fk1mShSAMRcMYGRRb9r/XDkgivNdd3g/L4kC4GQBgeRPR1eowGg+f8hl1HdKY1w2H2eui3RwPVUnXD+mkhG71D22DH2ledc1fV7rjmzmyMypzfNM97/ch2uSIAlzir/m/N2eVaiyRaLASKtNh7H9RKaoGuSkPrejl5mF0pu32uCZy/rR/e+XuPwLWb24DqL4NYWSpNyucKIS+7oDzLUF4eewz1gWET8lx8Jaj8IP9OrGG58Q5PZTEbAHh0uDIZXGGLyUetJRlFLXh0w/Op6mooyXEy45XOVOrz12UZnc0lLjtn5ZJvKw0dB2HtSHfw/RoDNPLKL4N8tszeHtE/z7BX1bhJ1cDwoQWAAAAAElFTkSuQmCC';
+
+        
+  //:
+  
+  
+        function debug(){
+          
+          if(!df)return;
+          var str   = [...arguments].join(' ');
+          console.log('[ file-transfer ]',str);
+          
+        }//debug
+        
+        
+        debug.log   = function(){
+        
+              if(!df)return;  
+              console.log.apply(console,arguments);
+              console.trace();
+              
+        }//log
+        
+
+  //:
+  
+  
+        init.stack.complete;
+
+      
+      </script>
+      
+      
+      
+      
+</html>
+
+
