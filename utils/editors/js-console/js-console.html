@@ -21,6 +21,15 @@
           {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
     .spc  
           {flex:1}
+
+
+  #save-root
+    {margin-left:5px;display:flex}
+  
+  #save-menu
+    {position:absolute;left:0;top:30px}
+
+
     
     #run  
           {color:blue;font-weight:bold}
@@ -56,8 +65,14 @@
         var output;
         var log;
   
-        var ext,$,datatype,menumod,keydown
-        ;
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        
+        
+        var autosave;
         
   
         var menu        = {};
@@ -65,6 +80,8 @@
         
         var ui          = {};
         ui.mode         = 'vert';
+        
+        var btn         = {};
 
 
   //:
@@ -174,6 +191,16 @@
                         <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </filemod-api>
 
+                  <div id=save-root>
+                        <button id=save>save</button>
+                        <div id=save-menu-root class=menu-root>
+                              <img id=save-menu-icon class=menu-icon>
+                              <div id=save-menu class=menu style='display:none'>
+                                    <checkbox-one id=autosave></checkbox-one>
+                              </div>
+                        </div>
+                  </div>
+
                   <publish>
                         <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </publish>
@@ -219,6 +246,16 @@
               mod.menu.main.initdom();
   
               filemod.initdom();
+
+
+              $(root,'#save').onclick               = btn.save;
+
+              var card                              = $(root,'#save-root .menu');
+              $(root,'.menu-icon').onclick          = menumod.click(card,false,false,menu.save);
+
+              autosave                              = $(root,'#autosave');
+              autosave.checked                      = false;
+
               
               publish.initdom();
               
@@ -253,6 +290,13 @@
               editor.focus();
               
         }//focus
+
+
+  //:
+
+  
+        btn.save    = function(e){filemod.save()}
+  
         
 
         function kd(e){
@@ -280,6 +324,13 @@
         }//keydown
 
 
+  //:
+
+
+        menu.save   = function(){
+        }//save
+        
+        
   //:
 
 
@@ -422,7 +473,7 @@
               var js    = editor.getValue();
               output.run(js);
               
-              if(filemod.autosave){
+              if(autosave.checked){
                                                                                 console.log('save');
                     filemod.save();
               }
