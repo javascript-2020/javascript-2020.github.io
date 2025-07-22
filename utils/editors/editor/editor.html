@@ -18,6 +18,14 @@
   .spc
     {flex:1;max-width:200px}
 
+
+  #save-root
+    {margin-left:5px;display:flex}
+  
+  #save-menu
+    {position:absolute;left:0;top:30px}
+
+
   #help
     {padding:2px}
   
@@ -51,11 +59,19 @@
         var output;
         var log;
   
-        var ext,$,datatype,menumod,keydown
-        ;
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+
+
+        var autosave;
+
   
         var menu        = {};
         var ui          = {};
+        var btn         = {};
 
 
   //:
@@ -161,6 +177,16 @@
                         <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </filemod>
 
+                  <div id=save-root>
+                        <button id=save>save</button>
+                        <div id=save-menu-root class=menu-root>
+                              <img id=save-menu-icon class=menu-icon>
+                              <div id=save-menu class=menu style='display:none'>
+                                    <checkbox-one id=autosave></checkbox-one>
+                              </div>
+                        </div>
+                  </div>
+
                   <publish>
                         <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </publish>
@@ -179,9 +205,10 @@
 
       <script>
 
+
         async function initdom(rootnode){   //c
                                                                                 console.log('initdom');
-              var root                      = rootnode;
+              var root                              = rootnode;
               
               keydown.initdom();
               menumod.add.style();
@@ -193,11 +220,22 @@
               mod.menu.main.initdom();
   
               filemod.initdom();
+
+
+              $(root,'#save').onclick               = btn.save;
+
+              var card                              = $(root,'#save-root .menu');
+              $(root,'.menu-icon').onclick          = menumod.click(card,false,false,menu.save);
+
+              autosave                              = $(root,'#autosave');
+              autosave.checked                      = false;
+
+
               
               publish.initdom();
   
   
-              var view                      = $('#view');
+              var view                              = $('#view');
   
               await editor.initdom(view,'html');
   
@@ -216,6 +254,12 @@
               editor.focus();
               
         }//focus
+
+
+  //:
+  
+        
+        btn.save    = function(){filemod.save()}
         
         
         function kd(e){
@@ -237,6 +281,12 @@
               
         }//keydown
 
+
+  //:
+  
+  
+        menu.save   = function(){}
+          
 
   //:
 
