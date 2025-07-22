@@ -368,18 +368,10 @@
         }//initdom
 
 
-  //:
-  
+        function focus(){
+        }//focus
+        
 
-        btn.connect   = async function(){
-                                                                                console.clear();
-              var url   = $(root,'#server').value;
-              await ws.create(url);
-              await pc.create();
-              
-        }//connect
-        
-        
   //:
   
   
@@ -407,6 +399,18 @@
         
   //:
   
+
+        btn.connect   = async function(){
+                                                                                console.clear();
+              var url   = $(root,'#server').value;
+              await ws.create(url);
+              await pc.create();
+              
+        }//connect
+  
+  
+  //:
+
   
         ws.create   = function(url){
                                                                                 debug('ws.create');
@@ -550,8 +554,6 @@
         }//ice
         
         
-        
-        
   //:
   
         
@@ -638,8 +640,6 @@
         }//onice
         
 
-
-
         pc.on.negotiationneeded   = async function(){
                                                                                 debug('pc.on.negotiationneeded');
               makingOffer = true;
@@ -684,8 +684,6 @@
               dc.con.onerror        = dc.on.error;
                                                                                 
         }//ondatachannel
-
-
 
 
         pc.on.track   = function({track,streams}){
@@ -754,7 +752,17 @@
         }//string
         
         
-        dc.on.message.blob    = function(data){
+        dc.on.message.blob    = function(blob){
+
+              console.log(blob);
+              console.log(blob.name);
+              console.log(blob.size);
+              
+              var ntransfer   = transfer.cloneNode(true);
+              $(ntransfer,'.name').textContent    = blob.name;
+              $(ntransfer,'.size').textContent    = hs(blob.size);
+              view.append(ntransfer);
+              
         }//blob
 
         
@@ -821,6 +829,18 @@
         function complete(){
         }//complete
 
+
+        complete.load   = function(file,blob){
+          
+              blob.name   = file.filename;
+              dc.con.send(blob);
+              
+        }//load
+        
+        
+        complete.save   = function(file,confirm){
+        }//save
+        
         
   //:
   
