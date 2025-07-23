@@ -346,9 +346,14 @@
         
         
         
+        var http            = {};
+
+/*        
         var ws              = {};
         ws.on               = {};
         ws.send             = {};
+*/
+
         var pc              = {};
         pc.on               = {};
         var dc              = {};
@@ -695,8 +700,11 @@
               
               var res       = await fetch(url,{headers});
               var txt       = await res.text();
+              
+              
               var parts     = txt.split('\n\n');
               console.log(parts);
+
               
         }//read
   
@@ -704,7 +712,11 @@
   
   //:
 
-  
+
+
+/*
+
+
         ws.create   = function(url){
                                                                                 debug('ws.create');
               var promise           = new Promise(res=>ws.create.resolve=res);
@@ -863,7 +875,9 @@
               
         }//ice
         
-        
+*/
+
+
   //:
   
         
@@ -903,7 +917,9 @@
               
               var offer   = await pc.con.createOffer();
               await pc.con.setLocalDescription(offer);
-              ws.send.offer(offer);
+              
+              http.send.sdp(offer);
+              //ws.send.offer(offer);
               
               
         }//offer
@@ -915,7 +931,9 @@
               
               var answer    = await pc.con.createAnswer();
               await pc.con.setLocalDescription(answer);
-              ws.send.answer(answer);
+              
+              http.send.sdp(answer);
+              //ws.send.answer(answer);
               
         }//answer
         
@@ -974,7 +992,8 @@
               }//catch
 
       
-              ws.send.ice(candidate);
+              http.send.ice(candidate);
+              //ws.send.ice(candidate);
     
               
         }//onice
