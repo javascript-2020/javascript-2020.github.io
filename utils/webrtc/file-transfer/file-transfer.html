@@ -689,7 +689,7 @@
         
         ws.on.message.ice   = async function({candidate}){
                                                                                 debug('ws.on.message.ice');
-                                                                                console.log(candidate);
+                                                                                console.log(candidate);              
               ui.view.sys('ice received');
               
               var err;
@@ -813,7 +813,10 @@
   
         pc.on.ice   = async function({candidate}){
                                                                                 debug('pc.on.ice');
-                                                                                //console.log(candidate);
+                                                                                console.log(candidate);
+              if(!candidate){
+                    return;
+              }
               ui.view.sys('ice candidate');
               
               try{
