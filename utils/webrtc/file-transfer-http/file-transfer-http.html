@@ -693,7 +693,7 @@
               var url       = $(root,'#server').value;
               url          += '/sdp';
               var headers   = {mode};
-              var body      = sdp;
+              var body      = JSON.stringify(sdp);
               
               var res       = await fetch(url,{headers,method:'post',body});
               var txt       = await res.text();
@@ -707,7 +707,7 @@
               var url       = $(root,'#server').value;
               url          += '/ice';
               var headers   = {mode};
-              var body      = ice;
+              var body      = JSON.stringify(ice);
               
               var res       = await fetch(url,{headers,method:'post',body});
               var txt       = await res.text();
