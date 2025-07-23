@@ -978,7 +978,24 @@
               var url       = $(root,'#server').value;
               
               var headers   = {mode:'init'};
-              var res       = await fetch(url,{headers});
+              
+              var err;
+              try{
+                
+                    var res       = await fetch(url,{headers});
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    ui.view.sys('server.init error');
+                    ui.view.sys(err.toString());
+                    return;
+              }
+              
               var txt       = await res.text();
               console.log(txt);
           
