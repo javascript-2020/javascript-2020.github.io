@@ -451,10 +451,8 @@
         btn.connect   = async function(){
                                                                                 console.clear();
               focus();
-              var url   = $(root,'#server').value;
-              ui.view.sys(`connect ${url}`);
               
-              await ws.create(url);
+              await http.create(url);
               await pc.create();
               
         }//connect
@@ -463,32 +461,8 @@
         btn['server-init']    = async function(){
           
               focus();
-              
-              var url       = $(root,'#server').value;
-              ui.view.sys(`server init ${url}`);
-              
-              var headers   = {mode:'init'};
-              
-              var err;
-              try{
-                
-                    var res       = await fetch(url,{headers});
-                    
-              }//try
-              catch(err2){
-                
-                    err   = err2;
-                    
-              }//catch
-              if(err){
-                    ui.view.sys('server.init error');
-                    ui.view.sys(err.toString());
-                    return;
-              }
-              
-              var txt       = await res.text();
-              ui.view.sys(txt);
-                                                                                console.log(txt);
+              await http.send.init();
+
         }//server-init
         
         
@@ -608,6 +582,125 @@
               
         }//transfer
         
+  
+  
+  
+  //:
+  
+  
+        http.create   = function(url){
+          
+              var url   = $(root,'#server').value;
+              url      += '/setup';
+
+              ui.view.sys(`connect ${url}`);
+              
+              var err;
+              try{
+                
+                    var res   = await fetch(url,{headers});
+                    
+              }
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }
+              if(err){
+                                                                                console.log('http.create error');
+                                                                                console.error(err);
+                    ui.view.sys.red('http.create error');
+                    ui.view.sys.red(err.toString());
+                    return;
+              }
+
+              var txt   = await res.text();
+              mode      = txt;
+              
+              ui.view.sys(`mode : ${mode}`);
+              
+              if(mode=='master'){
+                    ui.view.sys('waiting for remote ...');
+              }
+              
+        }//create
+  
+  
+  //:
+  
+  
+        http.send.init    = async function(){
+          
+              var url       = $(root,'#erver').value;
+              url          += '/init';
+
+              ui.view.sys(`server init ${url}`);
+              
+              var err;
+              try{
+                
+                    var res       = await fetch(url);
+                    
+              }//err
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.log('http.send.init error');
+                                                                                console.error(err);
+                    ui.view.sys.red('http.send.init error');
+                    ui.view.sys.red(err.toString());
+                    return;
+              }
+              
+              var txt       = await res.text();
+              ui.view.sys(txt);
+                                                                                console.log(txt);
+        }//init
+        
+        
+        http.send.sdp   = async function(sdp){
+          
+              var url       = $(root,'#server').value;
+              url          += '/sdp';
+              var headers   = {mode};
+              
+              var res       = await fetch(url,{headers});
+              var txt       = await res.text();
+              console.log(txt);
+              
+        }//sdp
+        
+        
+        http.send.ice   = async function(ice){
+          
+              var url       = $(root,'#server').value;
+              url          += '/ice';
+              var headers   = {mode};
+              
+              var res       = await fetch(url,{headers});
+              var txt       = await res.text();
+              console.log(txt);
+              
+        }//ice
+        
+        
+        http.send.read    = async function(){
+          
+              var url       = $(root,'#server').value;
+              url          += '/read';
+              var headers   = {mode};
+              
+              var res       = await fetch(url,{headers});
+              var txt       = await res.text();
+              var parts     = txt.split('\n\n');
+              console.log(parts);
+              
+        }//read
+  
+  
   
   //:
 
