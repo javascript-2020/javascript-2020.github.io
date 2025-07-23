@@ -763,13 +763,13 @@
                     
               };
 
-              pc.con                        = new RTCPeerConnection(config);
-              pc.con.onerror                = pc.on.error;
-              pc.con.onnegotiationneeded    = pc.on.negotiationneeded;
-              pc.con.onicecandidate         = pc.on.ice;
-              pc.con.ondatachannel          = pc.on.datachannel;
+              pc.con                            = new RTCPeerConnection(config);
+              pc.con.onnegotiationneeded        = pc.on.negotiationneeded;
+              pc.con.onicecandidate             = pc.on.ice;
+              pc.con.ondatachannel              = pc.on.datachannel;
+              pc.onconnectionstatechange        = pc.on.connectionstatechange
               
-              pc.con.ontack                 = pc.on.track;
+              pc.con.ontack                     = pc.on.track;
               
               
               if(mode==='polite'){
@@ -808,13 +808,28 @@
 
   //:
   
-  
-        pc.on.error   = function(){
-                                                                                console.log('pc.on.error');
+
+        pc.on.connectionstatechange   = function(e){
+    
+    
+              var state   = peerConnection.connectionState;
               
-        }//error
-        
-  
+              switch(state){
+                
+                case 'new'              : ui.view.sys('pc new');                      break;
+                case 'connecting'       : ui.view.sys('pc connecting ...');           break;
+                case 'connected'        : ui.view.sys('pc connected');                break;
+                case 'disconnected'     : ui.view.sys('pc disconnecting ...');        break;
+                case 'closed'           : ui.view.sys('pc closed');                   break;
+                case 'failed'           : ui.view.sys('pc failed');                   break;
+                  
+                default                 : ui.view.sys('pc unknown');                  break;
+                  
+              }//switch
+              
+        }//connectionstatechange
+
+
         pc.on.ice   = async function(e){
                                                                                 debug('pc.on.ice');
                                                                                 console.log(e);
