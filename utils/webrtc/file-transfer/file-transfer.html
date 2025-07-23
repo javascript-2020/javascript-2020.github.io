@@ -691,6 +691,7 @@
               ui.view.sys('offer received');
               
               await pc.con.setRemoteDescription(offer);
+              
               pc.create.answer();
               
         }//offer
@@ -728,8 +729,8 @@
               if(err){
                                                                                 console.log('ice candidate error');
                                                                                 console.error(err);
-                    ui.view.sys('ice cadidate received error');
-                    ui.view.sys(err.toString());
+                    ui.view.sys.red('ice cadidate received error');
+                    ui.view.sys.red(err.toString());
                     return;
               }
               
@@ -868,8 +869,8 @@
               
               catch(err){
                 
-                    ui.view.sys('add ice error');
-                    ui.view.sys(err.toString());
+                    ui.view.sys.red('add ice error');
+                    ui.view.sys.red(err.toString());
                     
                     
                     if(!ignoreOffer){
@@ -1010,7 +1011,7 @@
         
         dc.hello    = function(){
           
-              ui.view.sys('remote connected');
+              ui.view.sys.green('remote connected');
               
               $(root,'#status').src   = img.connected;
               
