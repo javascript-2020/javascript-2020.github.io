@@ -693,13 +693,18 @@
               var url       = $(root,'#server').value;
               url          += '/sdp';
               //var str       = Object.prototype.toString.call(sdp);
-              var str       = JSON.stringify(sdp);
-              var b64       = btoa(body);
-              var body      = b64;
               
               console.clear();
-              console.log(typeof body);
-              console.log(body);
+              console.log(sdp);
+              
+              var str       = JSON.stringify(sdp);
+              cosnole.log(str);
+              
+              var b64       = btoa(body);
+              console.log(b64);
+              
+              var body      = b64;
+              
               
               var res       = await fetch(url,{headers,method:'post',body});
               var txt       = await res.text();
@@ -1236,7 +1241,17 @@
         
   //:
   
-  
+
+        function sdp_str(sdp){
+          
+              var o   = {
+                    sdp     : btoa(sdp.sdp),
+                    type    : sdp.type
+              };
+              
+        }//sdp_str
+        
+        
         function buf_blob(buf){
           
               var uint8   = new Uint8Array(buf);
