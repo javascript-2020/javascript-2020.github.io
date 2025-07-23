@@ -142,6 +142,7 @@
       <body>
 
             <style id=page-inline>
+            
   html
     {height:100%}
     
@@ -206,6 +207,7 @@
     {width:20px;height:20px;box-sizing:border-box;
       content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAb1BMVEUBcu1HcEwJdekHdOoCcu0NdugVeOMQduYOduYDc+wMdecFc+sIdOkEc+sfedsGc+oKdOldi7kAcu4Ace4AcO4cge42j+8TfO7S5vr///4LeO7y+P0jhe/n8vyv0vfg7vuZxvXC3vja6/pNnO/4/P2x2eepAAAAEnRSTlP4AFiR7VAYLzjdRsJ8zQqufQLMZvMcAAABDUlEQVQoz62T2XqDIBCFicElVlvrIJtKUfP+z1gWl2mbxJuem/ngh4GBM+TileVlmiClZZF9ekA8bGpKfonernnE+Vv7ULfU4+wJdbxwuPkxBXjw8U6yGk9ogUe0IDnF1E4d2k8SUiIMQvacoeUNSckLfD3DyX9hWDE8xFqwgFHtCLuaucfCHLXj3UbJRfaLC38xtNAZNY93qSSH7e037M9jjjtJf/f1/BVrawREHmhrpwF2DN3cD8xHMwWqp3uI8VFjvQDAtA7BLUfYJVOGD4esmkRMHj4UuFT9eEiNS7h6Fe0AjNv5a9dsllh3spkJ2g5Js81Ml2r/kEOHFc+MfNIGromqmtKnTfSqBb8Bqo85bt4CVEwAAAAASUVORK5CYII=);
     }
+    
             </style>
             
             
@@ -540,11 +542,14 @@
 
         ws.on.open    = function(){
                                                                                 debug('ws.on.open');
+              ui.view.sys('signalling open');
+              
         }//on.open
         
         
         ws.on.close    = function(){
                                                                                 debug('ws.on.close');
+              ui.view.sys('signalling closed');
         }//close
         
         
@@ -591,6 +596,8 @@
           
         ws.on.message.offer   = async function({offer}){
                                                                                 debug('ws.on.message.offer');
+              ui.view.sys('offer received');
+              
               await pc.con.setRemoteDescription(offer);
               pc.create.answer();
               
@@ -599,6 +606,8 @@
         
         ws.on.message.answer    = async function({answer}){
                                                                                 debug('ws.on.message.answer');
+              ui.view.sys('answer received');
+              
               await pc.con.setRemoteDescription(answer);
               
         }//answer
@@ -611,6 +620,8 @@
         ws.on.message.ice   = async function({candidate}){
                                                                                 debug('ws.on.message.ice');
                                                                                 console.log(candidate);
+              ui.view.sys('ice received');
+              
               var err;
               try{
                 
@@ -700,6 +711,8 @@
         
         pc.create.offer   = async function(){
                                                                                 debug('pc.create.offer');
+              ui.view.sys('offer created');
+              
               var offer   = await pc.con.createOffer();
               await pc.con.setLocalDescription(offer);
               ws.send.offer(offer);
@@ -710,6 +723,8 @@
         
         pc.create.answer    = async function(){
                                                                                 debug('pc.create.answer');  
+              ui.view.sys('answer created');
+              
               var answer    = await pc.con.createAnswer();
               await pc.con.setLocalDescription(answer);
               ws.send.answer(answer);
@@ -729,6 +744,7 @@
         pc.on.ice   = async function({candidate}){
                                                                                 debug('pc.on.ice');
                                                                                 //console.log(candidate);
+              ui.view.sys('ice candidate');
               
               try{
                 
@@ -819,6 +835,8 @@
         
         dc.on.open    = function(){
                                                                                 debug('dc.on.open');
+              ui.view.sys('data channel open');
+              
               dc.send.json({type:'hello'});
               
         }//open
@@ -826,12 +844,15 @@
         
         dc.on.close   = function(){
                                                                                 debug('dc.on.close');
+              ui.view.sys('data channel closed');
+              
         }//close
 
 
         dc.on.error   = function(){
                                                                                 console.log('dc.on.error');
-          
+              ui.view.sys('data channel error');
+              
         }//dc.on.error
           
         
@@ -868,8 +889,9 @@
         
         dc.hello    = function(){
           
-              $(root,'#status').src   = img.connected;
               ui.view.sys('remote connected');
+              
+              $(root,'#status').src   = img.connected;
               
         }//hello
         
@@ -938,8 +960,8 @@
               dc.send.json({type:'transfer',name});
               dc.con.send(blob);
               
-              var str   = `${name} ${size} sent`;
-              ui.view.sys(str);
+              //var str   = `${name} ${size} sent`;
+              ui.view.transfer(name,blob);
               
         }//load
         
