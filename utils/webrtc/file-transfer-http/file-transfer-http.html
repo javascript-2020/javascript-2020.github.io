@@ -712,7 +712,8 @@
               var url       = $(root,'#server').value;
               url          += '/ice';
               var headers   = {mode};
-              var body      = JSON.stringify(ice);
+              var str       = JSON.stringify(ice);
+              var body      = str;
               
               var res       = await fetch(url,{headers,method:'post',body});
               var txt       = await res.text();
@@ -768,6 +769,32 @@
         
         
         http.read.ice   = async function(ice){
+          
+              var str   = ice;
+              var ice   = JSON.parse(str);
+
+
+              ui.view.sys('ice candidate received');
+              
+              var err;
+              try{
+                
+                    await pc.con.addIceCandidate(candidate);
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.log('ice candidate error');
+                                                                                console.error(err);
+                    ui.view.sys.red('ice cadidate received error');
+                    ui.view.sys.red(err.toString());
+                    return;
+              }
+          
         }//ice
         
         
