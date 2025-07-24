@@ -406,6 +406,7 @@
               $(root,'#server-init').onclick          = btn['server-init'];
 
               $(root,'[value=read]').onclick          = btn.read;
+              $(root,'[value=process]').onclick       = btn.process;
 
               
               filemod.initdom(root);
@@ -512,6 +513,13 @@
               
         }//read
 
+
+        btn.process   = function(){
+          
+              pc.process();
+              
+        }//process
+        
   
   //:
   
@@ -748,7 +756,7 @@
                     
               }//for
 
-              pc.process();
+              //pc.process();
               
         }//read
   
@@ -1081,7 +1089,7 @@
                     return;
               }
 
-              pc.process();    
+              //pc.process();    
               
         }//onice
         
@@ -1145,6 +1153,8 @@
               var buf2    = buf;
               buf         = [];
               
+              console.log('process',buf2.length);
+              
               buf2.forEach(async candidate=>{
                     
                     ui.view.sys('add ice');
@@ -1173,7 +1183,7 @@
             
               });
 
-              buf.length    = 0;
+              //buf.length    = 0;
               
         }//process
         
