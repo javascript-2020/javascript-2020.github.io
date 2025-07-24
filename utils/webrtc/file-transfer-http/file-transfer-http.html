@@ -688,23 +688,16 @@
         }//init
         
         
-        http.send.sdp   = async function(sdp){debugger;
+        http.send.sdp   = async function(sdp){
           
               var url       = $(root,'#server').value;
               url          += '/sdp';
-              //var str       = Object.prototype.toString.call(sdp);
               
-              console.clear();
-              console.log(sdp);
+              var headers   = {mode};
               
               var str       = JSON.stringify(sdp);
-              console.log(str);
-              
-              var b64       = btoa(body);
-              console.log(b64);
-              
+              var b64       = btoa(str);
               var body      = b64;
-              
               
               var res       = await fetch(url,{headers,method:'post',body});
               var txt       = await res.text();
