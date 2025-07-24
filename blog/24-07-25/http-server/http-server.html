@@ -1,0 +1,217 @@
+
+
+
+<html>
+
+
+      <head>
+
+      
+            <title>nodejs http server</title>
+
+            <base href='https://javascript-2020.github.io/blob/24-07-25/nodejs-http-server/nodejs-http-server.html'>
+            
+            <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            
+            <link rel=stylesheet href='/blog/css/blog.css'>
+
+            
+      </head>
+      
+      
+      <body>
+
+
+      
+            <h3>
+                  nodejs http server
+            </h3>
+
+
+            <div id=desc>
+
+http server
+            
+            </div>
+
+
+            <code>
+            
+        
+        var fs    = require('fs');
+
+        
+        var img   = {};
+        
+        
+        var server    = require('http').createServer(request).listen({host,port});
+        console.log(`http://localhost:${port}`);
+        
+        
+        function request(req,res){
+        
+              if(cors(req,res)){
+                    return;
+              }
+              
+              
+              var abs   = resolve(req.url);
+              if(!abs){
+                    badrequest(req,res);
+                    return;
+              }
+
+              
+              var f   = true;
+              
+              switch(req.url){
+              
+                case '/favicon.ico'   : favicon(req,res);
+                
+                default               : f   = false;
+                
+              }//switch
+              
+              if(f){
+                    return;
+              }
+              
+              
+              if(!fs.existsSync(abs)){
+                    notfound(req,res);
+                    return;
+              }
+
+
+              var stream    = fs.createReadStream(abs);
+              
+              var type    = mime(abs);
+              res.writeHead(200,{'content-type':type});
+              stream.pipe(res);
+              
+        }//request
+        
+        
+        function cors(req,res){
+        
+              cors.headers(res);
+              
+              if(req.method!='OPTIONS'){
+                    return;
+              }
+              
+              res.writeHead(200);
+              res.end();
+              
+        }//cors
+        
+        
+        cors.headers    = function(res){
+        
+              res.setHeader('access-control-allow-origin','*');
+              
+        }//headers
+        
+        
+        request.bad   = function(req,res){
+        
+              res.writeHead(400);
+              res.end(`${req.url} bad request`);
+              
+        }//bad
+        
+        
+        request.notfound    = function(req,res){
+        
+              res.writeHEad(400);
+              res.end(`${req.url} not found`);
+              
+        }//notfound
+        
+        
+        function resolve(url,docroot='.'){
+
+              url         = decodeURI(url);
+              var p2      = path.resolve(docroot);
+              var file    = path.resolve(docroot,url);
+              var s       = file.substring(0,p2.length);
+              var p1      = path.resolve(s);
+              if(p1!==p2){
+                    return false;
+              }
+              return file;
+
+        }//resolve        
+        
+        
+        function favicon(req,res){
+        
+              var buf   = Buffer.from(img.favicon,'base64');
+              
+              res.writeHead(200,{'content-type':'image/png'});
+              res.end(buf);
+              
+        }//favicon
+        
+        
+        function mime(fn){
+        
+              var ext   = fn;
+              var i     = fn.lastIndexOf('.');
+              if(i!=-1){
+                    ext   = fn.slice(i+1);
+              }
+              
+              switch(ext){
+                
+                case 'html'   : return 'text/html';
+                case 'css'    : return 'text/css';
+                case 'js'     : return 'text/javascript';
+                
+              }//switch
+              
+        }//mime
+
+
+        
+        img.favicon   = 
+
+              'iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABsFBMVEVHcEzY'   +
+              'yZrsuEbkjh7rrDb2ujDwph3bhSTmiRPpggjrrTDgoEHlvmHqhQnbji/shATq'   +
+              'nyfzsRntryb3th33uR3iiBnrkRLvkQjogwrtjAnoixLmgwzzrRz0sB7rnSHy'   +
+              'qRvytB3usCX3vSnuqyf2uBn1uB/2uRv2uhnngQztmRbrlRPtiwXphQnqgwbv'   +
+              'mhDxnw/zoxTvlgzymwv2uCbwlwj3vyn1tBbzqx/5xDX2uBb2uhn////+///t'   +
+              'hADthgDzlQH0lwH6qQHykwD5pgHzkADviAH3pAH7qwH9sAH1mgHtggD+/vvy'   +
+              'jgHwjQH7rQH8+/X5pwHvigD9sQD7uhz60l/379zhgwbikRD0oQT1ngL2nAH5'   +
+              'xUP6yEfgpEfpvF7x5cXx4brunwT06dLphQLs1ajmpB77rAH4vjX8rwHjoS7p'   +
+              'yI3fkifpzqHpjgL2rxz7+O3fjB75shX0qRn1pA77swj5z1jtlADdhxHhsWno'   +
+              'wXXmiAHy3K7pqjDgnDzsoxP69uvv1Zb1tCfuuUHuqA73nwP0rw/5zlT5zFH7'   +
+              'wTLs3L7ps0jgun3jwoLju3nouVLnmArvlstGAAAAO3RSTlMAAxA1Gv19G3Pb'   +
+              'HwwGzRL8P3MrzsJOlea84pqnqtpqylEl72W4RnynkaiO++Xsyt3X1Njv9eWP'   +
+              '8vZilVucdXYAAAIZSURBVCjPjZMHc9owFICZYUMY2bOZ3XsjHFpKIBhju+y9'   +
+              'yw6Ekb1oZlf6lysJTGib3vU7n+/pfVq2nni8fvgKgZL3DwSLS8sGw8LbN7ob'   +
+              'usiX9K8vPJBW5MXyIv93yZ/Vhz3nl27IZcRzPvdS1G+V2rlWxN38iLE3c63w'   +
+              'gq5vrFZ84c7n83b72ZkLvvPNcMRwq6dnn0U2XAjb5+MTHLhy4UkBtyt9eMP2'   +
+              'yQafkz36ahUGsJETa7t6QNx+h7FcVUEiy3QauanO9PIpMcNYIMxhApB0LMnA'   +
+              'JmNZFw9gPd9eX4UEAskYDQCIZ5MB2LRY2jNodf4ktIHD/a87x14jhEwUY/uo'   +
+              'S/3VIPqXM/XTYCzupUkAkIYTkEfeTDbYqM9DLXrcCIYKCay6AEDv/AyeNtDi'   +
+              'okfBUMhciIN++92/FgoFsH66BtkspK49WfSbURJpwUMzYjPq7dmyfwXnptHO'   +
+              '76xgKhlO09EKzjxHO+dNv8f493qjtys48wSfqm7kA8Kf6q39Yxdn7naOc5hy'   +
+              'Op1UyWsEZOpLFX59cRcmnCPCzpEIxyiKYg+qZOpbaStaPjJmfDBBDXMVJb3H'   +
+              'skQ0vl3zEWzad1DObLEsq5Jz5aAYt1qJWs2XtkKItK8Eg7HB62pSj2sIk4ng'   +
+              'gKFsqL8WFdL7JoeJw6EZFf5R58KJB44uGpVU/dc9UAqlEyqZTDZ6e0hy8zXi'   +
+              'qyUSiYL3//wC2BenWkIiIBYAAAAASUVORK5CYII='
+              
+              
+              </code>
+            
+            
+      
+      </body>
+      
+      
+</html>
+
+
+
+
