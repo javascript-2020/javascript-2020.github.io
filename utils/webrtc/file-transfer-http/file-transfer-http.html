@@ -697,8 +697,8 @@
               var headers   = {mode};
               
               var str       = JSON.stringify(sdp);
-              var b64       = btoa(str);
-              var body      = b64;
+              //var b64       = btoa(str);
+              var body      = str;
               
               var res       = await fetch(url,{headers,method:'post',body});
               var txt       = await res.text();
@@ -757,9 +757,9 @@
   
         http.read.sdp   = async function(sdp){
           
-              var b64   = sdp;
-              var str   = window.atob(b64);
-              var sdp   = JSON.parse(str);
+              //var b64   = sdp;
+              //var str   = window.atob(b64);
+              var sdp   = JSON.parse(sdp);
               
               await pc.con.setRemoteDescription(sdp);
               
