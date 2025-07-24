@@ -748,6 +748,7 @@
                     
               }//for
 
+              pc.process();
               
         }//read
   
@@ -1062,6 +1063,8 @@
               if(!candidate){
                     return;
               }
+              
+              ui.view.sys('ice candidate created');
 
               http.send.ice(candidate);
               buf.push(candidate);
@@ -1070,33 +1073,7 @@
                     return;
               }
 
-              buf.forEach(async candidate=>{
-                
-                    ui.view.sys('ice candidate created');
-                    
-                    try{
-                      
-                          await pc.con.addIceCandidate(candidate);
-                      
-                    }//try
-                    
-                    catch(err){
-                      
-                          ui.view.sys.red('add ice error');
-                          ui.view.sys.red(err.toString());
-                          
-/*                    
-                          if(!ignoreOffer){
-                                throw err;
-                          }
-*/                    
-      
-                          
-                    }//catch
-      
-            
-              });
-    
+              pc.process();    
               
         }//onice
         
@@ -1153,6 +1130,38 @@
                                                                                 debug('pc.on.track');
                                                                                 
         }//ontrack
+        
+        
+        pc.process    = function(){
+
+              buf.forEach(async candidate=>{
+                    
+                    try{
+                      
+                          await pc.con.addIceCandidate(candidate);
+                      
+                    }//try
+                    
+                    catch(err){
+                      
+                          ui.view.sys.red('add ice error');
+                          ui.view.sys.red(err.toString());
+                          
+/*                    
+                          if(!ignoreOffer){
+                                throw err;
+                          }
+*/                    
+      
+                          
+                    }//catch
+      
+            
+              });
+
+              buf.length    = 0;
+              
+        }//process
         
         
   //:
