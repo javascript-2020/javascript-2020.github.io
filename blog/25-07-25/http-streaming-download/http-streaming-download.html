@@ -24,13 +24,13 @@
 
       
             <h3>
-                  http2 server
+                  http streaming download
             </h3>
 
 
             <div id=desc>
 
-http2 server
+http streaming download
             
             </div>
 
@@ -38,8 +38,57 @@ http2 server
             <code>
             
             
+        require('http').createServer(request).listen(3000);
+        console.log('http://localhost:3000');
+        
+        
+        function request(req,res){
+        
+              var c   = 0;
+              fn();
+              
+              
+              function fn(){
+              
+                    res.write('hello '+c);
+                    c++;
+                    if(c<5){
+                          setTimeout(fn,500);
+                          return;
+                    }
+                    res.end();
+                    
+              }//fn
+              
+        }//request
+        
+            
             </code>
             
+            
+            <code>
+            
+        <script>
+        
+(async()=>{
+
+        var res       = await fetch('/');
+        
+        var stream    = new TextDecoderStream();
+        var reader    = res.body.pipeThrough(stream).getReader();
+                                                                          console.log('response stream aquired');
+        while(true){
+        
+              const {value,done}    = await reader.read();
+              if(done)break;
+                                                                          console.log('fetch',value);                                                                          
+        }//while
+        
+        console.log('done');
+        
+})();
+
+            </code>
             
       
       </body>
