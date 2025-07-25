@@ -33,13 +33,19 @@
                   function load(e){
                     
                         var iframe    = e.target;
+                        var win       = iframe.contentWindow;
+                        win.init.complete.add(()=>ready(iframe));
                         
+                  }//load
+                  
+                  function ready(iframe){
+                    
                         var msg   = {
                               type    : 'load',
                               url     : 'https://javascript-2020.github.io/utils/webrtc/file-transfer-http/file-transfer-http.html'
                         };
-                        
-                        iframe.contentWindow.postMessage(msg);
+                        var str   = JSON.stringify(msg);
+                        iframe.contentWindow.postMessage(str);
                         
                   }//load
                   
