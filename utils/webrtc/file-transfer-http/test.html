@@ -24,18 +24,24 @@
             <iframe id=peer2 src='https://javascript-2020.github.io/utils/editors/srcdoc/srcdoc.html'></iframe>
       
             <script>
+
             
-                  peer1.onload    = e=>{
+                  peer1.onload    = load;
+                  peer2.onload    = load;
+                  
+                  
+                  function load(e){
                     
+                        var iframe    = e.target;
+                        
                         var msg   = {
                               type    : 'load',
                               url     : 'https://javascript-2020.github.io/utils/webrtc/file-transfer-http/file-transfer-http.html'
                         };
                         
-                        peer1.contentWindow.postMessage(msg);
-                        peer2.contentWindow.postMessage(msg);
+                        iframe.contentWindow.postMessage(msg);
                         
-                  }//onload
+                  }//load
                   
             </script>
             
