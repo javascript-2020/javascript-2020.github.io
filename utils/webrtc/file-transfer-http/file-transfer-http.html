@@ -792,7 +792,7 @@
               var candidate   = JSON.parse(str);
                                                                 //console.log(candidate);
 
-              ui.view.sys('ice candidate received');
+              ui.view.sys('remote ice candidate');
               
               buf.push(candidate);
               
@@ -1099,16 +1099,12 @@
               }
 */              
               
-              ui.view.sys('ice candidate created');
+              ui.view.sys('local ice candidate');
 
               http.send.ice(candidate);
               buf.push(candidate);
               
-              if(!pc.con.remoteDescription){
-                    return;
-              }
-
-              //pc.process();    
+              pc.process();    
               
         }//onice
         
@@ -1169,6 +1165,10 @@
         
         pc.process    = function(){
 
+              if(!pc.con || !pc.con.localDescription || !pc.con.remoteDescription){
+                    return;
+              }
+              
               var buf2    = buf;
               buf         = [];
               
