@@ -53,8 +53,11 @@
         var iframe;
 
         
-        var btn       = {};
-        var github    = {};
+        var btn           = {};
+        var github        = {};
+
+        var parse         = {};
+        parse.github.is   = {};
 
 
     //:
@@ -108,7 +111,6 @@
                   
 
 
-        var parse   = {};
       
         parse.github    = function(url){
         
@@ -159,7 +161,6 @@
         }//build
         
         
-        parse.github.is   = {};
         
         parse.github.is.api   = function(url){
           
@@ -236,6 +237,40 @@
         }//dir
 
                   
+
+
+
+
+  //:
+  
+  
+        window.onmessage    = function(e){
+          
+              var str     = e.data;
+              var json    = JSON.parse(str);
+              
+              switch(json.type){
+                
+                case 'load'   : onmsg.load(json);       break;
+                
+              }//switch
+              
+        }//onmessage
+        
+        
+        onmsg.load    = function(json){
+          
+              input.value   = json.url;
+              
+              if(json.auto){
+                    btn.go();
+              }
+              
+        }//load
+        
+        
+  //:
+  
                   
         function debug(){
           
