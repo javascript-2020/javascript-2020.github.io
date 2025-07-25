@@ -794,30 +794,8 @@
 
               ui.view.sys('remote ice candidate');
               
-              buf.push(candidate);
+              pc.process(candidate);
               
-              return;
-              
-              
-              var err;
-              try{
-                
-                    await pc.con.addIceCandidate(candidate);
-                    
-              }//try
-              catch(err2){
-                
-                    err   = err2;
-                    
-              }//catch
-              if(err){
-                                                                                console.log('ice candidate error');
-                                                                                console.error(err);
-                    ui.view.sys.red('ice cadidate received error');
-                    ui.view.sys.red(err.toString());
-                    return;
-              }
-          
         }//ice
         
 
@@ -831,6 +809,8 @@
         
         
         poll.stop   = function(){
+          
+          
         }//stop
         
         
@@ -1102,9 +1082,7 @@
               ui.view.sys('local ice candidate');
 
               http.send.ice(candidate);
-              buf.push(candidate);
-              
-              pc.process();    
+              pc.process(candidate);
               
         }//onice
         
@@ -1163,8 +1141,12 @@
         }//ontrack
         
         
-        pc.process    = function(){
+        pc.process    = function(candidate){
 
+              if(candidate){
+                    buf.push(candidate);
+              }
+                
               if(!pc.con || !pc.con.localDescription || !pc.con.remoteDescription){
                     return;
               }
