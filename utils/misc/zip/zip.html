@@ -28,6 +28,8 @@
         var datatype;
         var menumod;
         var keydown;
+        var hs;
+        
         var jszip;
         
         var filemod;
@@ -40,7 +42,8 @@
         var zip;
 
 
-        
+  //:
+  
 
         async function init(){
                                                                                 debug('init',version);
@@ -139,9 +142,10 @@
                     'js/dom/$.js.api',
                     'js/core/datatype.js',
                     'js/dom/menumod/menumod.js',
-                    'js/dom/keydown/keydown.js'
+                    'js/dom/keydown/keydown.js',
+                    'js/string/hs.js'
               );
-              [$,datatype,menumod,keydown]   = await promise;
+              [$,datatype,menumod,keydown,hs]   = await promise;
 
               init.stack.complete;
 
@@ -286,6 +290,11 @@
             
             <script>
 
+
+        var size          = 0;
+        
+
+        
         var ui            = {};
         ui.view           = {};
         
@@ -305,6 +314,11 @@
               
 
               filemod.initdom(root);
+              
+              
+              info                                  = $(root,'#info');
+              ui.info();
+              
               
               add.root                              = $(root,'#add');
               add.file.initdom(add.root);
@@ -335,6 +349,20 @@
   //:
   
   
+        ui.info   = function(){
+          
+              var str   = 'not set';
+              if(filemod.cur){
+                    str   = filemod.cur.filename;
+              }
+              $(info,'#filename').textContent   = str;
+              
+              var str   = hs(size)+' , '+size+' B';              
+              $(info,'#size').textContent   = str;
+              
+        }//info
+        
+        
         ui.view.add   = function(item,abs){
           
               $(item,'.rem').onclick    = rem;
@@ -359,8 +387,10 @@
         }//source
         
         
-        function complete(){
+        function complete(file){
           
+              filemod.cur   = file;
+              
         }//complete
         
         
@@ -368,15 +398,26 @@
           
               var name    = file.filename;
               var size    = hs(blob.size);
+
+              
+              complete(file);
               
               
+              
+              //need to add files to view
               
               
         }//load
 
 
-        complete.save   = function(file){
+        complete.save   = function(file,confirm=true){
           
+              complete(file);
+
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
         }//save
 
 
@@ -403,12 +444,17 @@
               zip.file(abs,blob);
 
               
+              
         }//load
         
         
         //add.complete.save   = function(){}
 
 
+  //:
+  
+  
+        
   //:
   
 
