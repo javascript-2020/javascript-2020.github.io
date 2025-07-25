@@ -121,7 +121,7 @@ console.log(github);
     {content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==);}
     
   #url-root
-    {display:flex;}
+    {display:flex;gap:5px;align-items:center}
   #url
     {flex:1;padding:5px 10px;font-size:16px}
   
@@ -182,6 +182,21 @@ console.log(github);
               
               
         }//initdom
+        
+        
+        btn.copy    = async function(){
+          
+              var txt   = input.value;
+              await navigator.clipboard.writeText(txt);
+        }//copy
+        
+        
+        btn.paste   = async function(){
+          
+              var txt       = await navigator.clipboard.readText();
+              input.value   = txt;
+              
+        }//paste
         
         
         btn.go    = async function(){
