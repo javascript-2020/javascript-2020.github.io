@@ -91,7 +91,7 @@ console.log(github);
               var promise   = ext.load.libs(
                     'js/dom/$.js.api',
                     'js/core/datatype.js',
-                    'github/github.js'
+                    'github/github.js.api'
               );
               [$,datatype,github]   = await promise;
 
@@ -164,8 +164,13 @@ console.log(github);
         
         btn.go    = async function(){
           
-              var url   = input.value;
-              var url   = github.parse(url);
+              var url       = input.value;
+              var result    = github.parse(url);
+              if(result.error){
+                    alert(result.error);
+                    return;
+              }
+              var url   = gihub.build(result);
               
               var err;
               
