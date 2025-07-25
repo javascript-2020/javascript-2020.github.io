@@ -28,9 +28,18 @@
         var datatype;
         var menumod;
         var keydown;
-
-        var filemod;                                                                                
+        var jszip;
+        
+        var filemod;
+        
+        var add   = {};
+        
         var log;
+
+
+        var zip;
+
+
         
 
         async function init(){
@@ -41,16 +50,19 @@
               //mod.utils.hdr             = mod.utils.hdr();
               //mod.menu.main             = mod.menu.main();
               filemod                   = mod.filemod();
+              add.file                  = mod.filemod();
               log                       = mod.log();
               
               //mod.utils.hdr.initmod({ext,$,menu,menumod});
               //mod.menu.main.initmod({ext,$,menumod,editor,filemod});
               filemod.initmod({ext,$,menumod,complete});
+              add.file.initmod({ext,$,menumod,complete:add.complete});
               log.initmod({ext,$});
               
               //mod.menu.main.init();
               //mod.utils.hdr.init();
               filemod.init();
+              add.file.init();
               log.init();
 
   //:
@@ -62,6 +74,10 @@
               
               await initdom(document.body);
 
+
+              zip   = new jszip();
+              
+              
 
               init.complete();
 
@@ -134,6 +150,19 @@
 })();
 
 
+(async()=>{
+     
+        init.stack.add;
+
+        
+        jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
+
+        console.log(jszip);
+        
+        init.stack.complete;
+        
+})();
+
 
             </script init>
 
@@ -148,7 +177,7 @@
   html
     {height:100%}
   body
-    {height:calc(100% - 40px);margin:20px;font-family:arial;display:flex;flex-direction:column}
+    {height:calc(100% - 40px);margin:20px;font-family:arial;display:flex;flex-direction:column;gap:10px}
   
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
@@ -157,11 +186,27 @@
 
 
   #info
-    {display:flex;gap:10px}
-    
+    {display:flex;gap:10px;flex-direction:column}
+  #info>div
+    {display:flex}
+  #info label
+    {width:60px;text-align:right;margin-right:20px}
     
   #view
-    {flex:1;display:flex;overflow:auto;border:1px solid lightgray;border-radius:5px;padding:10px}
+    {flex:1;display:flex;flex-direction:column;gap:5px;overflow:auto;border:1px solid lightgray;border-radius:5px;padding:10px}
+    
+  .item
+    {}
+  .item .filename
+    {}
+  .item .size
+    {}
+  .item .rem
+    {}
+    
+  #empty
+    {color:lightgray;font-weight:bold;font-size:12px;text-align:center}
+    
       
             </style>
 
@@ -176,21 +221,25 @@
 
             
             <div id=info>
+       
+                  <div>           
+                        <label>
+                              filename
+                        </label>
+                        
+                        <div id=filename>
+                              not set
+                        </div>
+                  </div>
                   
                   <div>
-                        filename
-                  </div>
-                  
-                  <div id=filename>
-                        not set
-                  </div>
-                  
-                  <div>
-                        size
-                  </div>
-                  
-                  <div id=size>
-                        --
+                        <label>
+                              size
+                        </label>
+                        
+                        <div id=size>
+                              --
+                        </div>
                   </div>
                   
             </div>
@@ -206,6 +255,8 @@
                         <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </filemod-api>
                   
+                  <input value=save type=button>
+                  
             </div>
 
             
@@ -219,6 +270,12 @@
                         
                   </div>
                   
+                  <div id=empty>
+                  
+                        EMPTY
+                        
+                  </div>
+                  
             </div>
 
 
@@ -229,6 +286,9 @@
             
             <script>
 
+        var ui            = {};
+        ui.view           = {};
+        
         var root;
         var view;
         var item;
@@ -241,13 +301,23 @@
   
         async function initdom(rootnode){
           
-              root                      = rootnode;
+              root                                  = rootnode;
               
 
               filemod.initdom(root);
               
+              add.root                              = $(root,'#add');
+              add.file.initdom(add.root);
+              
+              $(root,'[value=save]').onclick        = btn.save;
 
 
+              view                                  = $(root,'#view');
+              item                                  = $(view,'.item');
+              item.remove();
+
+
+              
               log.initdom();
 
 
@@ -258,23 +328,89 @@
   //:
   
   
+        btn.save    = function(){
+        }//save
+        
+
+  //:
+  
+  
+        ui.view.add   = function(item,abs){
+          
+              $(item,'.rem').onclick    = rem;
+              
+              view.append(item);
+              
+              
+              function rem(){
+              }//rem
+              
+        }//add
+        
+        
+  //:
+  
+
+        async function source(){
+          
+              var blob      = await zip.generateAsync({type:'blob'});
+              return blob;
+              
+        }//source
+        
+        
+        function complete(){
+          
+        }//complete
+        
+        
         complete.load   = function(file,blob){
           
               var name    = file.filename;
               var size    = hs(blob.size);
               
-              dc.send.json({type:'transfer',name});
-              dc.con.send(blob);
               
-              //var str   = `${name} ${size} sent`;
-              ui.view.transfer(name,blob);
+              
               
         }//load
+
+
+        complete.save   = function(file){
+          
+        }//save
 
 
     //:
 
 
+        add.complete    = function(){}
+        
+        add.complete.load   = function(file,blob){
+        
+              var size    = hs(blob.size);
+              
+              var nitem   = item.cloneNode(true);
+              
+              $(nitem,'.filename').textContent    = file.filename;
+              $(nitem,'.size').textContent        = size;
+              
+              ui.view.add(nitem);
+
+
+        
+              var abs   = file.filename;
+              
+              zip.file(abs,blob);
+
+              
+        }//load
+        
+        
+        //add.complete.save   = function(){}
+
+
+  //:
+  
 
         function debug(){
           
