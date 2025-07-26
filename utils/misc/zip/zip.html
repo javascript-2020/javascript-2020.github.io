@@ -33,6 +33,7 @@
         var jszip;
         
         var filemod;
+        var filenav;
         
         var add   = {};
         
@@ -54,12 +55,14 @@
               //mod.menu.main             = mod.menu.main();
               filemod                   = mod.filemod();
               add.file                  = mod.filemod();
+              filenav                   = mod.filenav();
               log                       = mod.log();
               
               //mod.utils.hdr.initmod({ext,$,menu,menumod});
               //mod.menu.main.initmod({ext,$,menumod,editor,filemod});
               filemod.initmod({ext,$,menumod,complete});
               add.file.initmod({ext,$,menumod,complete:add.complete});
+              filenav.initmod({ext,$,datatype});
               log.initmod({ext,$});
               
               //mod.menu.main.init();
@@ -209,23 +212,6 @@
   view>div:nth-of-type(even) 
     {background:lightyellow;}
 
-  .item
-    {display:flex;justify-content:space-between;padding:5px 20px}
-  .item:hover
-    {background:lightyellow}
-    
-  .item .filename
-    {}
-  .item .size
-    {}
-  .item .rem
-    { width:20px;height:20px;border-color:lightgray;padding:2px;
-      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAG1BMVEVHcEz/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AACeYvHRAAAACHRSTlMAshvkTlvjTdJU7DIAAAC1SURBVCjPbdMxDoMwDAVQK2rVvRMjvkOHjkhcoFNvgFg7dUcsPnaJsbFLPtNX8gKJY4iIrnc6Hn5Z+C69j5Vu3sPlKQdlWQcNo4jT0ok8DIpT3qLSDTqtUOmtQqOscf3QW4PSHYpMZKFStrhE6kvMR4zptCi9KGiCQRM8Uz8xt/CfRhW5hZkGTDRdDByEy9GH4JbQ5uExUUFg6VCR4XXAi4NXDJsBtg1sMNyKsGlxe8Mfof1lfq62539imm/1AAAAAElFTkSuQmCC);
-    }
-    
-  #empty
-    {color:lightgray;font-weight:bold;font-size:12px;text-align:center}
-    
   input    
     {font-size:16px;padding:5px 10px;box-sizing:border-box}
     
@@ -238,7 +224,7 @@
       
             <h3>
                   zip
-            </zip>
+            </h3>
             
             
             <div id=hdr>
@@ -292,20 +278,10 @@
             
             <div id=view>
             
-                  <div class=item>
-                  
-                        <div class=filename></div>
-                        <div class=size></div>
-                        <img class='rem icon'>
-                        
-                  </div>
-                  
-                  <div id=empty>
-                  
-                        EMPTY
-                        
-                  </div>
-                  
+                  <file-nav-api>
+                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </file-nav-api>
+            
             </div>
 
 
@@ -326,8 +302,11 @@
         
         var root;
         var view;
-        var item;
 
+
+        var file;
+        var dir;
+        
         var btn           = {};
 
 
@@ -353,10 +332,6 @@
 
 
               view                                  = $(root,'#view');
-              item                                  = $(view,'.item');
-              item.remove();
-              
-              empty                                 = $(root,'#empty');
 
 
               
@@ -426,7 +401,7 @@
         }//complete
         
         
-        complete.load   = function(file,blob){
+        complete.load   = async function(file,blob){
           
               var name    = file.filename;
               var size    = hs(blob.size);
@@ -438,7 +413,7 @@
               var err;
               try{
                 
-                    zip   await jszip.loadAsync(blob);
+                    zip   = await jszip.loadAsync(blob);
                     
               }//try
               catch(err2){
@@ -451,15 +426,19 @@
                     return;
               }
               
-              var list    = Object.entries(zip.files);
+              
+              
+              var list      = [];
+              var entries   = Object.entries(zip.files);
               var path;
               var entry;
               for([path,entry] of list){
                 
-                    console.log(path,entry);
+                    list.push(path);
                     
               }//for
               
+              console.json(list);
               
               //need to add files to view
               
@@ -510,6 +489,37 @@
         //add.complete.save   = function(){}
 
 
+  //:
+  
+  
+        file.rem    = function(){
+        }//rem
+        
+        
+        dir.read    = function(){
+        }//read
+        
+        
+        dir.par   = function(){
+        }//par
+        
+        
+        dir.add   = function(){
+        }//add
+        
+        
+        dir.rem   = function(){
+        }//rem
+        
+        
+        dir.clear   = function(){
+        }//clear
+        
+        
+        dir.dblclick    = function(){
+        }//dblclick
+
+        
   //:
   
   
