@@ -226,6 +226,10 @@
 
   file-nav
     {height:100%}
+    
+    
+  [value=test]
+    {margin-left:30px}
       
             </style>
 
@@ -242,6 +246,7 @@
                   </filemod>
             
                   <input value=save type=button>
+                  <input value=test type=button>
                   
             </div>
 
@@ -337,7 +342,7 @@
               add.file.initdom(add.root);
               
               $(root,'[value=save]').onclick        = btn.save;
-
+              $(root,'[value=test]').onclick        = btn.test;
 
               view                                  = $(root,'#view');
 
@@ -361,6 +366,10 @@
         }//save
         
 
+        btn.test    = function(){
+        }//test
+        
+        
   //:
   
   
@@ -481,6 +490,11 @@
                     if(!fn.startsWith('/')){
                           fn    = '/'+fn;
                     }
+                    
+                    if(!fn.startsWith(path)){
+                          return;
+                    }
+                    
                     list.push(fn);
                     
               }//for
