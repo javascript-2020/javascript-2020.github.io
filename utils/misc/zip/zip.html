@@ -81,11 +81,12 @@
               menumod.on.close          = null;
 
               
-              await initdom(document.body);
-
-
               zip   = new jszip();
               
+              
+              
+              await initdom(document.body);
+
               
 
               init.complete();
@@ -167,6 +168,7 @@
         
         jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
         jszip   = jszip.default;
+
         
         init.stack.complete;
         
@@ -367,12 +369,15 @@
               }
               $(info,'#filename').textContent   = str;
               
+              var str     = '--';
               var blob    = await source();
-              var size    = blob.size;
+              if(blob){
+                    var size    = blob.size;
               
-              var str   = hs(size);
-              if(size>1024){
-                    str  += ' , '+size+' B';              
+                    var str   = hs(size);
+                    if(size>1024){
+                          str  += ' , '+size+' B';              
+                    }
               }
               $(info,'#size').textContent   = str;
               
