@@ -35,6 +35,8 @@
         var filemod;
         var filenav;
         
+        var menu;
+        
         var add   = {};
         
         var log;
@@ -50,7 +52,7 @@
                                                                                 debug('init',version);
 
               //keydown                   = keydown();
-              menumod                   = menumod();
+              menu                      = menumod();
               //mod.utils.hdr             = mod.utils.hdr();
               //mod.menu.main             = mod.menu.main();
               filemod                   = mod.filemod();
@@ -58,10 +60,10 @@
               filenav                   = mod.filenav();
               log                       = mod.log();
               
-              //mod.utils.hdr.initmod({ext,$,menu,menumod});
-              //mod.menu.main.initmod({ext,$,menumod,editor,filemod});
-              filemod.initmod({ext,$,menumod,complete,source});
-              add.file.initmod({ext,$,menumod,complete:add.complete});
+              //mod.utils.hdr.initmod({ext,$,menu,menu});
+              //mod.menu.main.initmod({ext,$,menu,editor,filemod});
+              filemod.initmod({ext,$,menu,complete,source});
+              add.file.initmod({ext,$,menu,complete:add.complete});
               filenav.initmod({ext,$,datatype});
               filenav.file    = file;
               filenav.dir     = dir;
@@ -78,7 +80,7 @@
           
               window.onfocus            = null;
               //keydown.add(kd);
-              menumod.on.close          = null;
+              menu.on.close          = null;
 
               
               zip   = new jszip();
