@@ -435,6 +435,31 @@
               complete(file);
               
               
+              var err;
+              try{
+                
+                    zip   await jszip.loadAsync(blob);
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                  
+              }//catch
+              if(err){
+                    alert('error loading zip file\n'+err.toString());
+                    return;
+              }
+              
+              var list    = Object.entries(zip.files);
+              var path;
+              var entry;
+              for([path,entry] of list){
+                
+                    console.log(path,entry);
+                    
+              }//for
+              
               
               //need to add files to view
               
