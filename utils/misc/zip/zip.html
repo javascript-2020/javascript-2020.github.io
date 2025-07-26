@@ -536,12 +536,39 @@
   //:
   
   
-        file.add    = function(){
+        file.add    = function(path,name){
+          
+              var abs   = path+name;
+              zip.file(abs);
+              display(path);
+              
         }//add
         
         
-        file.rem    = function(){
+        file.rem    = function(path,name){
+          
+              var abs   = path+name;
+              zip.remove(abs);
+              display(path);
+              
         }//rem
+        
+        
+        file.upload   = function(path,name,blob){
+          
+              var abs   = path+name;
+              zip.file(abs,blob);
+              display(path);
+              
+        }//upload
+        
+        
+        file.download   = async function(path){
+          
+              var blob    = async zip.file(path).async('blob');
+              return {blob};
+              
+        }//download
         
 
 /*        
@@ -598,7 +625,7 @@
         }//clear
         
         
-        dir.dblclick    = function(path,name){debugger;
+        dir.dblclick    = function(path,name){
           
               path   += name;
               display(path);
