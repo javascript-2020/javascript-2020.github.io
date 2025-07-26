@@ -468,13 +468,13 @@
     //:
     
     
-        function display(path){
+        function read(path){
           
-              path        ||= filemod.cur.path;
               var list      = [];
               var entries   = Object.entries(zip.files);
               var fn;
               var entry;
+              
               for([fn,entry] of entries){
                                                                                 //console.log(fn,entry);
                                                                                 console.log(fn);
@@ -484,7 +484,16 @@
                     list.push(fn);
                     
               }//for
-                                                                                //console.json(list);
+
+              return list;              
+              
+        }//read
+        
+        
+        function display(path){
+          
+              path      ||= filemod.cur.path;
+              var list    = read(path);                                                                                //console.json(list);
               
               filenav.display.flat(path,list);
 
@@ -570,7 +579,21 @@
         }//rem
         
         
-        dir.clear   = function(){
+        dir.clear   = function(path){
+          
+              var list    = read(path);
+              list        = list.filter(fn=>fn.startsWith(path));
+              list        = list.filter(Boolean);
+              
+              
+              /*
+              list.forEach(fn=>{
+                
+                    zip.remove(fn);
+                    
+              });
+              */
+              
         }//clear
         
         
