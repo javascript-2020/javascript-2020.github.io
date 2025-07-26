@@ -165,8 +165,6 @@
         jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
         jszip   = jszip.default;
         
-        console.log(jszip);
-        
         init.stack.complete;
         
 })();
@@ -427,22 +425,7 @@
               }
               
               
-              
-              var list      = [];
-              var entries   = Object.entries(zip.files);
-              var path;
-              var entry;
-              for([path,entry] of list){
-                
-                    list.push(path);
-                    
-              }//for
-              
-              console.json(list);
-              
-              //need to add files to view
-              
-              filenav.display.flat('/',list);
+              display('/');
               
               
         }//load
@@ -458,6 +441,31 @@
               
         }//save
 
+
+    //:
+    
+    
+        function display(path){
+          
+              
+              var list      = [];
+              var entries   = Object.entries(zip.files);
+              var path;
+              var entry;
+              for([path,entry] of list){
+                
+                    list.push(path);
+                    
+              }//for
+              
+              console.json(list);
+              
+              //need to add files to view
+              
+              filenav.display.flat(path,list);
+
+          
+        }//display
 
     //:
 
@@ -502,11 +510,21 @@
         }//read
         
         
-        dir.par   = function(){
+        dir.par   = function(path){
+          
+              arguments;
+              debugger;
+              
         }//par
         
         
-        dir.add   = function(){
+        dir.add   = function(path,name){
+          
+              var abs   = path+name;
+              zip.folder(abs);
+              
+              
+              
         }//add
         
         
