@@ -41,13 +41,21 @@ simple proxy
             <script>
 
 (async()=>{
-  
+console.clear();
+
         var url             = window.location.toString();
+        console.log(url);
+        if(url.includes('about:')){
+              var base    = document.querySelector('base');
+              url         = base.href;
+        }
+          
         var i               = url.lastIndexOf('/');
         var fn              = url.slice(i+1);
         var i               = fn.lastIndexOf('.');
         fn                  = fn.slice(0,i);
         fn                 += '.js';
+        console.log(fn);
         
         var res             = await fetch(fn);
         var txt             = await res.text();
