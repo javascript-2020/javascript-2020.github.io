@@ -5,15 +5,246 @@
 
       <head>
       
-      
+            <title>gcloud file-browser</title>
+
+            <base href='https://javascript-2020.github.io/utils/gcloud/file-browser/file-browser.html'>
+            
+            <link rel=icon type='image/png' href='image/file-browser-30.png'>
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var version       = 'v1.0';
+            
+        var df            = true;
+
+
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        
+        var mod           = {};
+
+        var filenav;
+        var filemod;
+        var log;
+
+        var btn           = {};
+        
+
+  //:
+
+              
+        async function init(){
+                                                                                debug('init',version);
+
+              //keydown                   = keydown();
+              menumod                   = mod.menumod();
+              filenav                   = mod.filenav();
+              //filemod                   = mod.filemod();
+              log                       = mod.log();
+              
+              //filemod.initmod({ext,$,menumod,complete,source,focus,editor});
+              filenav.initmod({ext,$,datatype});
+              filenav.file    = file;
+              filenav.dir     = dir;
+              log.initmod({ext,$});
+              
+              //filemod.init();
+              log.init();
+
+  //:
+
+              
+              await initdom(document.body);
+
+
+              init.complete();
+
+              
+        }//init
+
+
+        init.stack            = [];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+              init.stack.ct>=init.stack.total && init();
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+        
+        init.complete   = function(){
+          
+              init.complete.stack.forEach(fn=>fn());
+              
+        }//complete
+        
+        init.complete.stack   = [];
+        init.complete.add     = fn=>init.complete.stack.push(fn);
+
+                  
+
+(async()=>{
+  
+        init.stack.add;
+        
+        var token   = localStorage['github-token'];
+        var url;
+        var headers;
+        if(token){
+              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
+        }else{
+              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
+        }
+        
+        await fetch(url,{headers}).then(res=>res.text()).then(complete);
+
+            
+        async function complete(txt){
+
+              ext           = eval(txt);
+              var promise   = ext.load.libs(
+                    'js/dom/$.js.api',
+                    'js/core/datatype.js',
+                    'js/dom/menumod/menumod.js',
+                    'js/dom/keydown/keydown.js'
+              );
+              [$,datatype,menumod,keydown,encrypt]   = await promise;
+
+              init.stack.complete;
+
+        }//ext_fn
+
+})();
+
+
+(async()=>{
+  
+        var promise   = ext.load.libs('google/google-storage/google-storage.js');
+        
+        [gs]    = await promise;
+
+        console.log(gs);
+        
+        
+})();
+
+
+            </script init>
+            
+    
       </head>
       
       
       <body>
       
-      
+            <style id=page-inline>
+
+  html
+    {height:100%}
+    
+  body
+    {height:calc(100% - 16px);display:flex;flex-direction:column}
+    
+
+  #file-browser
+    {height:200px;border:1px solid lightgray;}
+    
+  #preview
+    {flex:1}
+    
+            </style>
+            
+            <div id=hdr>
+
+                  <filemod api>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </filemod>
+            
+            </div>
+
+            <div id=file-browser>
+            
+                  <file-nav api>
+                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </file-nav>
+                  
+            </div>
+            
+            <div id=preview>
+            
+            </div>
+            
       </body>
+            
+      <script>
+
       
+        var root;
+        var preview;
+        
+        
+        var file    = {};
+        var dir     = {};
+        
+        
+        var complete    = {};
+        
+        
+  //:
+  
+  
+        async function initdom(rootnode){   //c
+                                                                                debug('initdom');
+              root                                  = rootnode;
+              
+              keydown.initdom();
+              menumod.add.style();
+
+
+              filemod.initdom(root);
+
+              
+              filenav.initdom(root);
+              
+
+              preview                               = $(root,'#preview');
+              
+              
+              log.initdom();
+
+
+        }//initdom            
+      
+
+  //:
+  
+  
+        complete.load   = function(file,blob){
+        }//load
+        
+        
+  //:
+  
+  
+  init.stack.complete;
+  
+  
+      </script>
       
 </html>
 
