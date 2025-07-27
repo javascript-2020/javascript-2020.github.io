@@ -155,7 +155,7 @@
     {height:100%}
     
   body
-    {height:calc(100% - 16px);display:flex;flex-direction:column}
+    {height:calc(100% - 16px);display:flex;flex-direction:column;font-family:arial}
 
     
   .icon
@@ -335,6 +335,8 @@
         var dir     = {};
         
         
+        var btn         = {};
+        btn.token       = {};
         var complete    = {};
         
         
@@ -361,16 +363,260 @@
               log.initdom();
 
 
+
+            //client_id
+            
+              var clientid                        = window.localStorage[localstorage+'client-id'];
+              $(root,'#client-id').value          = clientid||'';
+
+
+            //client_secret
+            
+              var clientsecret                    = window.localStorage[localstorage+'client-secret'];
+              $(root,'#client-secret').value      = clientsecret||'';
+
+
+            //refresh-token
+
+              var refresh                         = window.localStorage[localstorage+'refresh-token'];
+              $(root,'#refresh-token').value      = refresh||'';
+
+
+            //token
+
+              var root2                           = $(root,'#token-root');
+              var token                           = window.localStorage[localstorage+'token'];
+              $(shadow,'#token').value            = token||'';
+              $(root2,'.refresh').onclick         = btn.token.refresh;
+
+
+
+
+
+
+              $.all(shadow,'.paste').forEach(icon=>{
+              
+                    var root        = icon.parentNode.parentNode
+                    var input       = $(root,'input:not([type])');
+                    icon.onclick    = async e=>{
+                                            
+                                            var txt       = await navigator.clipboard.readText();
+                                            input.value   = txt;
+                                            input.focus();
+                                            
+                                      }//icon.onclick
+                                      
+              });//foreach
+
+
+              $.all(shadow,'.copy').forEach(icon=>{
+                
+                    var root        = icon.parentNode.parentNode;
+                    var input       = $(root,'input:not([type])');
+                    icon.onclick    = async e=>{
+                      
+                                            var txt   = input.value;
+                                            await navigator.clipboard.writeText(txt);
+                                            input.focus();
+                                            
+                                      }//icon.onclick
+                                      
+              });//foreach              
+
+
+              $.all(shadow,'.storage').forEach(icon=>{
+                
+                    var root    = icon.parentNode.parentNode;
+                    var key     = root.id.slice(0,-5);
+                    var input   = $(root,'input:not([type])');
+                    var name    = localstorage+key;
+                                                                                console.log(key,localStorage[name]);
+                    var token;
+                    
+                    icon.onclick    = e=>{
+                      
+                                            if(e.shiftKey){
+                                                  token   = localStorage[name];
+                                                  if(!token){
+                                                        $.mousetext(`no stored ${key}, localStorage[${name}]`);
+                                                        return;
+                                                  }
+                                                  input.value   = token;
+                                                  return;
+                                            }
+                                                  
+                                            token   = input.value;
+                                            if(!token){
+                                                  $.mousetext(`${key} empty`);
+                                                  return;
+                                            }
+                                            localStorage[name]    = token;
+                                            $.mousetext(`localStorage[${name}] saved`);
+                                            
+                                      }//icon.onclick
+                                      
+                    icon.title    = `${key} : click - store, shift - read`;
+                    
+              });//foreach
+
+
         }//initdom            
       
 
   //:
   
   
+        btn.token.refresh   = async function(){
+          
+              var id        = $(shadow,'#client-id').value;
+              var secret    = $(shadow,'#client-secret').value;
+              var refresh   = $(shadow,'#refresh-token').value;
+              
+              var token     = await gs.refresh(id,secret,refresh);
+              
+              localStorage[localstorage+'token']    = token;
+              $(shadow,'#token').value              = token;
+
+              $.mousetext('token refreshed');
+          
+        }//refresh
+        
+        
+  //:
+  
+  
         complete.load   = function(file,blob){
         }//load
         
+
+
+  //:
+  
+  
+        function read(){
+        }//read
         
+        
+        function display(path){
+
+              path      ||= filemod.cur.path;
+              
+              var token   = $(root,'#token').value;
+              
+              var {files,dirs,error}    = gs.list(token,path);
+              if(error){
+                    log.red(error);
+                    return;
+              }
+                                                                                //console.json(list);
+              filenav.display(path,dirs,files);
+          
+        }//display
+        
+        
+  //:
+  
+  
+        file.add    = function(path,name){
+                                                                                debug('file.add',path,name);
+              var abs   = path+name;
+              zip.file(abs,'');
+              display(path);
+              
+        }//add
+        
+        
+        file.rem    = function(path,name){
+                                                                                debug('file.rem',path,name);          
+              var abs   = path+name;
+              zip.remove(abs);
+              display(path);
+              
+        }//rem
+        
+        
+        file.upload   = function(path,name,blob){
+                                                                                debug('file.upload',path,name,blob.size);          
+              var abs   = path+name;
+              zip.file(abs,blob);
+              display(path);
+              
+        }//upload
+        
+        
+        file.download   = async function(path){
+                                                                              debug('file.download',path);          
+              var blob    = await zip.file(path).async('blob');
+              
+              console.log(blob);
+              
+              return {blob};
+              
+        }//download
+        
+
+/*        
+        dir.read    = function(){
+          
+        }//read
+*/        
+        
+        
+        dir.parent    = function(path){
+                                                                                debug('dir.par',path);
+              display(path);
+              
+        }//par
+        
+        
+        dir.add   = function(path,name){
+                                                                                debug('dir.add',path,name);
+              var abs   = path+name;
+              zip.folder(abs);
+              
+              display(path);
+              
+              return false;
+              
+        }//add
+        
+        
+        dir.rem   = function(path,name){
+          
+              var abs   = path+name;
+              zip.remove(abs);
+              display(path);
+              
+        }//rem
+        
+        
+        dir.clear   = function(path){
+                                                                                debug('dir.clear',path);
+              var list    = read(path);
+              list        = list.filter(fn=>fn.startsWith(path));
+              list        = list.filter(Boolean);
+              
+              console.json(list);
+              
+              /*
+              list.forEach(fn=>{
+                
+                    zip.remove(fn);
+                    
+              });
+              */
+              
+        }//clear
+        
+        
+        dir.dblclick    = function(path,name){
+          
+              path   += name;
+              display(path);
+              
+        }//dblclick
+
+
   //:
   
 
