@@ -42,8 +42,14 @@ simple proxy
 
 (async()=>{
   
-        var url             = 'simple-proxy.js';
-        var res             = await fetch(url);
+        var url             = window.location.toString();
+        var i               = url.lastIndexOf('/');
+        var fn              = url.slice(i+1);
+        var i               = fn.lastIndexOf('.');
+        fn                  = fn.slice(0,i);
+        fn                 += '.js';
+        
+        var res             = await fetch(fn);
         var txt             = await res.text();
         
         var code            = document.querySelector('code');
