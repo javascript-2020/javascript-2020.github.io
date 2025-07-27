@@ -408,8 +408,10 @@
               
 
               ui.preview                          = $(root,'#preview');
+              
               ui.text                             = $(ui.preview,'#text');
-              ui.text.remove();
+              var node                            = $(ui.text,'#editor');
+              editor(node);
               
               ui.preview.style.display            = '';
               
@@ -523,6 +525,27 @@
         }//initdom            
       
 
+  //:
+  
+  
+        function editor(node){
+          
+              editor      = ace.edit(node);
+              editor.setShowInvisibles(false);
+              editor.setShowPrintMargin(false);
+              editor.setPrintMarginColumn(false);
+              editor.setBehavioursEnabled(false);
+              editor.setDisplayIndentGuides(false);
+              editor.setScrollSpeed(2);
+              editor.setFontSize(16);
+              editor.session.setOptions({tabSize:2,useSoftTabs:true});
+              //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
+              editor.session.setMode('ace/mode/'+mode)                        
+              editor.session.on('change',onchange);
+          
+        }//editor
+        
+        
   //:
   
   
