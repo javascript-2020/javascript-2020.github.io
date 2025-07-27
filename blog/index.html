@@ -16,18 +16,21 @@
     {display:flex;flex-direction:column;justify-content:center;margin:20px;gap:10px;font-family:arial;}
     
   a
-    {cursor:pointer}
+    {display:flex;align-items:center;cursor:pointer;gap:20px}
   a>img
-    {margin-right:20px}
+    {width:20px;height:20px;margin-right:20px}
+    
+  .spc
+    {flex:1}
     
   .like
-    {}
+    {display:flex;align-items:center;gap:10px}
   .like-icon
-    {
+    {width:20px;height:20px;
       content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAaVBMVEVHcEwvzHE5ynmBw6E8y3k3zHYvy3I5ynhEyXwxzHMwy3I5yXcxy3M+y3s7y3kyy3Rexo5Mx4I8yXk6zHgwzHNRyoczy3Q8yXlIzINEx31FzX9C0H5Jz4Mxy3JBzn4tzHA1znU50HhC0n4qQpevAAAAH3RSTlMA/GcCT4r1cBnx3GXYX33JBw5BlOYTsDotKG/qir6oKpj3pgAAAOBJREFUKM+F08kWgyAMBVAUi0RxHjsK/P9HVtBaEGizcXHPOyaaIPS3miSP3cqnWuvwEouvoMSr4kJI7lEu7rNKP6T0hbmUieKLI1G0PfwMaRcJHmLIUdOJUHrVdZoqwFpxCn7elTit9SoA8VctZm0BtprMJoTyzFKTu/X74is21WSSYv1/DLXevbmpdufKLT3NTW61pScWMMISZO7sxMbllnU3hrSKW/Bml6Wietaiio5sz7K92Djtmzz3u7JypkfVn0Wnme6kSqn3DhSTZzEEzoQyMiZN+IrKtv5xZDgob7HbOQQ5nhBqAAAAAElFTkSuQmCC);
     }
   .like .num
-    {}
+    {text-decoration:none !important;font-size:12px}
     
             </style>
       </head>
@@ -110,13 +113,19 @@
         var root    = document.body;
         var list    = [...root.querySelectorAll('a')];
         
+        var spc     = document.createElement('span');
+        spc.className   = 'spc';
+        
         var like    = document.body.querySelector('.like');
         like.remove();
         like.style.display    = '';
         
         list.forEach(node=>{
         
-              var nlike   = like.cloneNode(true;
+              var nspc    = spc.cloneNode(true);
+              node.append(nspc);
+              
+              var nlike   = like.cloneNode(true);
               node.append(nlike);
           
         });
