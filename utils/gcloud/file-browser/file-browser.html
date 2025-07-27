@@ -134,13 +134,29 @@
               [gs,getmime]                    = libs.slice(4,6);
               //encrypt                         = result.at(-1);
 
-              console.log(getmime);
-              
-              
               init.stack.complete;
 
         }//ext_fn
 
+})();
+
+
+(()=>{
+
+      init.stack.add;
+      
+      var script      = document.createElement('script');
+      script.src      = 'https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js';
+      script.onload   = onload;
+      document.head.append(script);
+      
+      
+      function onload(){
+        
+            init.stack.complete;
+            
+      }//onload
+      
 })();
 
 
@@ -198,12 +214,12 @@
     {height:200px;border:1px solid lightgray;}
     
   #preview
-    {flex:1}
+    {flex:1;display:flex;flex-direction:column;gap:10px}
     
-  #preview>div
+  #preview-view>div
     {display:none}
 
-  #preview #text
+  #preview-view #text
     {border:1px solid lightgray;background:whitesmoke;padding:10px;white-space:pre}
 
   input
@@ -324,7 +340,14 @@
             
             <div id=preview>
             
-                  <div id=text>
+                  <div id=preview-hdr>
+                  </div>
+                  
+                  <div id=preview-view>
+                        <div id=text>
+                              <div id=editor>
+                              </div>
+                        </div>
                   </div>
             
             </div preview>
