@@ -331,7 +331,7 @@
 
       
         var root;
-        var preview;
+        var ui      = {};
         
         
         var file    = {};
@@ -372,7 +372,7 @@
               filenav.initdom(root);
               
 
-              preview                               = $(root,'#preview');
+              ui.preview                           = $(root,'#preview');
               
               
               log.initdom();
@@ -503,6 +503,11 @@
   
   
         complete.load   = function(file,blob){
+                                                                                debug('complete.load',file,blob);
+              var mime    = getmime(file.filename);
+              blob.type   = mime;
+              preview(blob);
+              
         }//load
         
 
@@ -537,7 +542,7 @@
         file.add    = function(path,name){
                                                                                 debug('file.add',path,name);
               var abs   = path+name;
-              zip.file(abs,'');
+              //zip.file(abs,'');
               display(path);
               
         }//add
@@ -546,7 +551,7 @@
         file.rem    = function(path,name){
                                                                                 debug('file.rem',path,name);          
               var abs   = path+name;
-              zip.remove(abs);
+              //zip.remove(abs);
               display(path);
               
         }//rem
@@ -555,7 +560,7 @@
         file.upload   = function(path,name,blob){
                                                                                 debug('file.upload',path,name,blob.size);          
               var abs   = path+name;
-              zip.file(abs,blob);
+              //zip.file(abs,blob);
               display(path);
               
         }//upload
@@ -563,7 +568,7 @@
         
         file.download   = async function(path){
                                                                               debug('file.download',path);          
-              var blob    = await zip.file(path).async('blob');
+              //var blob    = await zip.file(path).async('blob');
               
               console.log(blob);
               
@@ -589,7 +594,7 @@
         dir.add   = function(path,name){
                                                                                 debug('dir.add',path,name);
               var abs   = path+name;
-              zip.folder(abs);
+              //zip.folder(abs);
               
               display(path);
               
@@ -601,7 +606,7 @@
         dir.rem   = function(path,name){
           
               var abs   = path+name;
-              zip.remove(abs);
+              //zip.remove(abs);
               display(path);
               
         }//rem
@@ -634,6 +639,35 @@
         }//dblclick
 
 
+  //:
+  
+  
+        function preview(blob){
+          
+              switch(blob.type){
+                
+                case 'text/html'    :
+                case 'text/javascript'    :
+                case 'text/css'           :
+                                            preview.text(blob);       
+                                                                      break;
+              }//switch
+              
+        }//preview
+        
+        
+        preview.text    = async function(blob){
+          
+              var txt   = await blob.text();
+              
+              ui.preview.replaceChildren();
+              ui.preview.append(ui.text);
+              
+              $(ui.text,'#text').textContent    = txt;
+              
+        }//text
+        
+        
   //:
   
 
