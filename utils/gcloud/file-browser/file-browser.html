@@ -514,13 +514,13 @@
         }//read
         
         
-        function display(path){
+        async function display(path){
 
               path      ||= filemod.cur.path;
               
               var token   = $(root,'#token').value;
               
-              var {files,dirs,error}    = gs.list(token,path);
+              var {files,dirs,error}    = await gs.list(token,path);
               if(error){
                     log.red(error);
                     return;
