@@ -146,8 +146,8 @@
 (async()=>{
   
         he    = await import('https://cdn.jsdelivr.net/npm/he/+esm');
-        console.log(he);
-  
+        he    = he.default;
+        
 })();
 
 
@@ -257,7 +257,7 @@
 
         function focus(){
           
-              editor.focus();
+              editor.source.focus();
               
         }//focus
 
@@ -267,9 +267,9 @@
   
         btn.convert   = function(){
           
-              var txt   = editor.source.getValue();
-              txt       = convert(txt);
-              editor.output.setValue(txt,-1);
+              var txt       = editor.source.getValue();
+              var encoded   = convert(txt);
+              editor.output.setValue(encoded,-1);
               
         }//convert
 
@@ -295,6 +295,13 @@
   
 
         function convert(txt){
+          
+              var opts;
+              
+              var encoded   = he.encode(txt,opts);
+              
+              return encoded;
+              
         }//convert
         
         
