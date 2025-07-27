@@ -29,7 +29,9 @@
         var mod           = {};
 
         var filemod;                                                                                
-        var editor;
+        var editor        = {};
+        editor.source     = null;
+        editor.output     = null;
         var log;
 
 
@@ -43,15 +45,18 @@
               //keydown                   = keydown();
               menumod                   = mod.menumod();
               filemod                   = mod.filemod();
-              editor                    = mod.editor();
+              editor.source             = mod.editor();
+              editor.output             = mod.editor();
               log                       = mod.log();
               
-              filemod.initmod({ext,$,menumod,complete,source,focus,editor});
-              editor.initmod({ext,$,menumod});
+              filemod.initmod({ext,$,menumod,complete,source,focus});
+              editor.source.initmod({ext,$,menumod});
+              editor.output.initmod({ext,$,menumod});
               log.initmod({ext,$});
               
               filemod.init();
-              editor.init();
+              editor.source.init();
+              editor.output.init();
               log.init();
 
   //:
@@ -143,7 +148,27 @@
       <body>
       
             <style id=page-inline>
-            
+
+  html
+    {height:100%}
+    
+  body
+    {height:calc(100% - 16px);display:flex;flex-direction:column;gap:10px}
+    
+    
+  #hdr
+    {}
+    
+  #view
+    {flex:1;display:flex;gap:10px}
+
+
+  input
+    {font-size:16px;padding:5px 10px}
+    
+  input[type=button]
+    {cursor:pointer}
+    
             </style>
             
             <div id=hdr>
@@ -152,15 +177,24 @@
                         <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </filemod>
 
-            
+                  <input value=convert type=button>
+                  
             </div>
             
             <div id=view>
             
-                  <editor api>
-                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </editor>
+                  <div id=source>
+                        <editor api>
+                              <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                        </editor>
+                  </div>
 
+                  <div id=output>
+                        <editor api>
+                              <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                        </editor>
+                  </div>
+                  
             </div>
 
 
@@ -178,19 +212,28 @@
       
         var root;
         
+        
+        
 
   //:
   
   
         async function initdom(rootnode){
           
-              root                      = rootnode;
+              root                                  = rootnode;
               
-              filemod.initdom(root);
+              var hdr                               = $(root,'#hdr');
+              
+              filemod.initdom(hdr);
+              
+              $(hdr,'[value=convert]').onclick      = btn.convert;
+              
+              
 
-              var view                              = $('#view');
+              var view                              = $(root,'#view');
 
-              await editor.initdom(view,'html');
+              await editor.source.initdom(view,'source');
+              await editor.output.initdom(view,'output');
 
               log.initdom();
 
@@ -207,10 +250,30 @@
 
 
   //:
+  
+  
+        btn.convert   = function(){
+        }//convert
+
+  //:
 
 
+        function source(){
+        }//source
+        
+        
+        function complete(){
+        }//complete
+        
+        
+        complete.load   = function(file,blob){
+        }//load
+        
+        
+        complete.save   = function(file){}
 
 
+  //:
 
 
         function debug(){
