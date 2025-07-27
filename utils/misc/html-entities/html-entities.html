@@ -41,10 +41,10 @@
                                                                                 debug('init',version);
 
               //keydown                   = keydown();
-              menumod                   = menumod();
-              filemod                   = filemod();
-              editor                    = editor();
-              log                       = log();
+              menumod                   = mod.menumod();
+              filemod                   = mod.filemod();
+              editor                    = mod.editor();
+              log                       = mod.log();
               
               filemod.initmod({ext,$,menumod,complete,source,focus,editor});
               editor.initmod({ext,$,menumod});
@@ -195,6 +195,47 @@
 
 
   //:
+
+
+
+
+
+
+        function debug(){
+          
+              if(!df)return;
+              var str   = [...arguments].join(' ');
+              console.log('[ https-file ]',str);
+              
+        }//debug
+        
+        
+        debug.log   = function(){
+          
+              if(!df)return;
+              
+              console.log.apply(console,arguments);
+              
+              if(debug.trace){
+                    console.trace();
+              }
+              delete debug.trace;
+              
+        }//log
+        
+        
+        debug.log.trace   = function(){
+          
+              debug.trace   = true;
+              debug.log.apply(null,arguments);
+              
+        }//trace
+
+
+
+  //:
+  
+  
 
 
   init.stack.complete;  
