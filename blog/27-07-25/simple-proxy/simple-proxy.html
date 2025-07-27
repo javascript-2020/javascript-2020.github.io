@@ -9,7 +9,7 @@
       
             <title></title>
 
-            <base href='https://javascript-2020.github.io/blob/23-07-25/'>
+            <base href='https://javascript-2020.github.io/blog/27-07-25/simple-proxy/simple-proxy.html'>
             
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             
@@ -35,62 +35,23 @@ simple proxy
             </div>
 
 
-            <code>
-
-
-//  simple-proxy.js
-
-        var host    = &#x27;127.0.0.1&#x27;;
-        var port    = 8080;
-        
-        var net       = require(&#x27;net&#x27;);
-        var server    = net.createServer();
-        
-        server.on(&#x27;connection&#x27;,connection);
-        server.on(&#x27;error&#x27;,err=&#x3E;console.error);
-        server.on(&#x27;close&#x27;,()=&#x3E;console.log(&#x27;proxy closed&#x27;));
-        server.listen({host,port});
-        console.log(&#x60;proxy ${host}:${port}&#x60;);
-        
-        function connection(client){
-                                                                                console.log(&#x27;client connected&#x27;);
-              client.on(&#x27;close&#x27;,()=&#x3E;console.log(&#x27;client closed&#x27;));
-              client.on(&#x27;error&#x27;,err=&#x3E;console.error);
-              client.once(&#x27;data&#x27;,data=&#x3E;{
-                                                                                //console.log(data.toString());
-                    var tls   = (data.toString().indexOf(&#x27;CONNECT&#x27;)!==-1);
-                    var port;
-                    var host;
-                    
-                    if(tls){
-                          var url   = data.toString().split(&#x27;CONNECT &#x27;)[1].split(&#x27; &#x27;)[0];
-                          url       = new URL(url);
-                          host      = url.host.split(&#x27;:&#x27;)[0];
-                          port      = url.host.split(&#x27;:&#x27;)[1]||443;
-                    }else{
-                          port    = 80;
-                          host    = data.toString().split(&#x27;Host: &#x27;)[1].split(&#x27;\r&#x27;)[0];
-                    }
-                                        
-                    var proxy   = net.createConnection({host,port},()=&#x3E;console.log(&#x27;proxy established :&#x27;,host));
-                    proxy.on(&#x27;error&#x27;,err=&#x3E;console.error);
-                    
-                    if(tls){
-                          client.write(&#x27;HTTP/1.1 200 OK\r\n\r\n&#x27;);
-                    }else{
-                          proxy.write(data);
-                    }
-                    
-                    client.pipe(proxy);
-                    proxy.pipe(client);
-                    
-              });
-              
-        }//connection            
-            
-            </code>
+            <code></code>
             
             
+            <script>
+
+(async()=>{
+  
+        var url             = 'simple-proxy.js';
+        var res             = await fetch(url);
+        var txt             = await res.text();
+        
+        var code            = document.querySelector('code');
+        code.textContent    = txt;
+        
+})();
+
+            </script>
       
       </body>
       
