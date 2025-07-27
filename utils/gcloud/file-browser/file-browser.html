@@ -215,9 +215,11 @@
     
   #preview
     {flex:1;display:flex;flex-direction:column;gap:10px}
-    
+
+/*    
   #preview-view>div
     {display:none}
+*/
 
   #preview-view #text
     {border:1px solid lightgray;background:whitesmoke;padding:10px;white-space:pre}
@@ -344,10 +346,12 @@
                   </div>
                   
                   <div id=preview-view>
+                  
                         <div id=text>
                               <div id=editor>
                               </div>
                         </div>
+                        
                   </div>
             
             </div preview>
@@ -411,6 +415,7 @@
               
               ui.view                             = $(ui.preview,'#preview-view');
               
+              debugger;
               ui.text                             = $(ui.view,'#text');
               var node                            = $(ui.text,'#editor');
               editor(node);
@@ -544,7 +549,7 @@
               //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
               editor.session.setMode('ace/mode/text');
               editor.session.on('change',onchange);
-          
+              
         }//editor
         
         
@@ -737,7 +742,7 @@
   
         function preview(blob){
           
-              ui.preview.childNodes.forEach(node=>node.style.display='none');
+              $.all(ui.view,'div').forEach(node=>node.style.display='none');
               
               switch(blob.type){
                 
@@ -752,15 +757,14 @@
         }//preview
         
         
-        preview.text    = async function(blob){
+        preview.text    = async function(blob){debugger;
                     
+              ui.text.style.display   = 'block';
+              
               var txt   = await blob.text();
               
-              ui.preview.replaceChildren();
-              ui.preview.append(ui.text);
-              
               editor.setValue(txt,-1);
-              ui.text.style.display   = 'block';
+              
               
         }//text
         
