@@ -1,0 +1,80 @@
+
+
+
+<html>
+
+
+      <head>
+
+      
+            <title></title>
+
+            <base href='https://javascript-2020.github.io/blob/26-07-25/very-simple-http-proxy/very-simple-http-proxy.html'>
+            
+            <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            
+            <link rel=stylesheet href='/blog/css/blog.css'>
+
+            
+      </head>
+      
+      
+      <body>
+
+
+      
+            <h3>
+                  very simple proxy
+            </h3>
+
+
+            <div id=desc>
+
+a very simple http proxy
+            
+            </div>
+
+
+            <code>
+            </code>
+
+            
+            <script>
+                                                                                console.clear();
+
+(async()=>{
+
+        var url             = window.location.toString();
+        console.log(url);
+        if(url.includes('about:')){
+              var base    = document.querySelector('base');
+              url         = base.href;
+        }
+          
+        var i               = url.lastIndexOf('/');
+        var fn              = url.slice(i+1);
+        var i               = fn.lastIndexOf('.');
+        fn                  = fn.slice(0,i);
+        fn                 += '.js';
+        console.log(fn);
+        
+        var res             = await fetch(fn);
+        var txt             = await res.text();
+        
+        var code            = document.querySelector('code');
+        code.textContent    = txt;
+        
+})();
+
+            </script>
+      
+            
+      
+      </body>
+      
+      
+</html>
+
+
+
+
