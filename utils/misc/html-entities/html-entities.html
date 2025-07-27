@@ -20,6 +20,9 @@
         var df            = true;
 
 
+        var he;
+        
+        
         var ext;
         var $;
         var datatype;
@@ -140,6 +143,14 @@
 })();
 
 
+(async()=>{
+  
+        he    = await import('https://cdn.jsdelivr.net/npm/he/+esm');
+        console.log(he);
+  
+})();
+
+
             </script init>
       
       </head>
@@ -157,7 +168,7 @@
     
     
   #hdr
-    {}
+    {display:flex;align-items:center}
     
   #view
     {flex:1;display:flex;gap:10px}
@@ -232,8 +243,10 @@
 
               var view                              = $(root,'#view');
 
-              await editor.source.initdom(view,'source');
-              await editor.output.initdom(view,'output');
+              var root2                             = $(view,'#source');
+              await editor.source.initdom(root2,'txt');
+              var root2                             = $(view,'#output');
+              await editor.output.initdom(root2,'txt');
 
               log.initdom();
 
@@ -253,6 +266,11 @@
   
   
         btn.convert   = function(){
+          
+              var txt   = editor.source.getValue();
+              txt       = convert(txt);
+              editor.output.setValue(txt,-1);
+              
         }//convert
 
   //:
@@ -273,6 +291,13 @@
         complete.save   = function(file){}
 
 
+  //:
+  
+
+        function convert(txt){
+        }//convert
+        
+        
   //:
 
 
