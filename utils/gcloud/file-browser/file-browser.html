@@ -199,6 +199,9 @@
     
   #preview
     {flex:1}
+    
+  #preview>div
+    {display:none}
 
   #preview #text
     {border:1px solid lightgray;background:whitesmoke;padding:10px;white-space:pre}
@@ -319,7 +322,7 @@
             </div file-browser>
 
             
-            <div id=preview style='display:none'>
+            <div id=preview>
             
                   <div id=text>
                   </div>
@@ -686,6 +689,8 @@
   
         function preview(blob){
           
+              ui.preview.childNodes.forEach(node=>node.style.display='none');
+              
               switch(blob.type){
                 
                 case 'text/plain'         :
@@ -700,13 +705,14 @@
         
         
         preview.text    = async function(blob){
-          
+                    
               var txt   = await blob.text();
               
               ui.preview.replaceChildren();
               ui.preview.append(ui.text);
               
-              ui.text.textContent    = txt;
+              ui.text.textContent     = txt;
+              ui.text.style.display   = 'block';
               
         }//text
         
