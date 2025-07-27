@@ -295,6 +295,7 @@
                         
                         <div class=hldr>
                             <img class='paste icon'>
+                            <img class='storage icon'>
                             <input id=bucket autocomplete=off spellcheck=false>
                         </div>
                         
@@ -416,7 +417,11 @@
               $(root,'#token').value              = token||'';
               $(root2,'.refresh').onclick         = btn.token.refresh;
 
-
+            //bucket
+            
+              var root2                           = $(root,'#bucket-root');
+              var bucket                          = window.localStorage[localstorage+'bucket'];
+              $(root,'#bucket').value             = bucket||'';
 
 
 
@@ -592,6 +597,7 @@
         file.dblclick   = async function(path,filename){
                                                                                 debug('file.dblclick',path,filename);
               var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
               path             += filename;
               
               var {ok,error}    = await gs.load(token,path);
