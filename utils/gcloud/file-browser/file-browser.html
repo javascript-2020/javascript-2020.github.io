@@ -158,7 +158,7 @@
     {height:100%}
     
   body
-    {height:calc(100% - 16px);display:flex;flex-direction:column;font-family:arial}
+    {height:calc(100% - 16px);display:flex;flex-direction:column;gap:10px;font-family:arial}
 
     
   .icon
@@ -609,7 +609,7 @@
               
               var mime    = getmime(filename);
               
-              blob        = new Blob([blob],mime);
+              blob        = new Blob([blob],{type:mime});
               blob.name   = filename;
               
               console.log(blob);
@@ -688,7 +688,8 @@
           
               switch(blob.type){
                 
-                case 'text/html'    :
+                case 'text/plain'         :
+                case 'text/html'          :
                 case 'text/javascript'    :
                 case 'text/css'           :
                                             preview.text(blob);       
@@ -705,7 +706,7 @@
               ui.preview.replaceChildren();
               ui.preview.append(ui.text);
               
-              $(ui.text,'#text').textContent    = txt;
+              ui.text.textContent    = txt;
               
         }//text
         
