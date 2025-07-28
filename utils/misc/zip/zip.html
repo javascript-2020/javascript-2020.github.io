@@ -246,7 +246,7 @@
                   </filemod>
             
                   <input value=save type=button>
-                  <input value=test type=button>
+                  <input value=list type=button>
                   
             </div>
 
@@ -342,7 +342,7 @@
               add.file.initdom(add.root);
               
               $(root,'[value=save]').onclick        = btn.save;
-              $(root,'[value=test]').onclick        = btn.test;
+              $(root,'[value=list]').onclick        = btn.test;
 
 
               view                                  = $(root,'#view');
@@ -368,7 +368,7 @@
         }//save
         
 
-        btn.test    = function(){
+        btn.list    = function(){
           
               var list    = read();
               console.json(list);
@@ -590,6 +590,9 @@
         
         file.download   = async function(path){
                                                                               debug('file.download',path);          
+              if(path.startsWith('/')){
+                    path    = path.slice(1);
+              }
               var blob    = await zip.file(path).async('blob');
               
               console.log(blob);
