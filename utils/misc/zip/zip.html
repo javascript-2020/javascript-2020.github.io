@@ -552,6 +552,9 @@
         file.add    = function(path,name){
                                                                                 debug('file.add',path,name);
               var abs   = path+name;
+              if(abs.startsWith('/')){
+                    abs   = abs.slice(1);
+              }
               zip.file(abs,'');
               display(path);
               
@@ -561,6 +564,9 @@
         file.rem    = function(path,name){
                                                                                 debug('file.rem',path,name);          
               var abs   = path+name;
+              if(abs.startsWith('/')){
+                    abs   = abs.slice(1);
+              }
               zip.remove(abs);
               display(path);
               
@@ -570,6 +576,9 @@
         file.upload   = function(path,name,blob){
                                                                                 debug('file.upload',path,name,blob.size);          
               var abs   = path+name;
+              if(abs.startsWith('/')){
+                    abs   = abs.slice(1);
+              }
               zip.file(abs,blob);
               display(path);
               
@@ -604,6 +613,9 @@
         dir.add   = function(path,name){
                                                                                 debug('dir.add',path,name);
               var abs   = path+name;
+              if(abs.startsWith('/')){
+                    abs   = abs.slice(1);
+              }
               zip.folder(abs);
               
               display(path);
@@ -616,6 +628,9 @@
         dir.rem   = function(path,name){
           
               var abs   = path+name;
+              if(abs.startsWith('/')){
+                    abs   = abs.slice(1);
+              }
               zip.remove(abs);
               display(path);
               
