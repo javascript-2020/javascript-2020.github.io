@@ -1,0 +1,74 @@
+
+
+
+<html>
+
+
+      <head>
+
+      
+            <title></title>
+
+            <base href='https://javascript-2020.github.io/blob/29-07-25/deploy-cloud-run-service/deploy-cloud-run-service.html'>
+            
+            <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            
+            <link rel=stylesheet href='/blog/css/blog.css'>
+
+            
+      </head>
+      
+      
+      <body>
+
+
+      
+            <h3>
+                  make cloud run service public
+            </h3>
+
+
+            <div id=desc>
+
+make cloud run service public
+            
+            </div>
+
+            <div>
+
+generate service account token
+
+            </div>
+            
+            <code>
+
+        
+        import { GoogleAuth } from 'google-auth-library';
+        
+        const auth = new GoogleAuth({
+          keyFile: 'me.json',
+          scopes: ['https://www.googleapis.com/auth/cloud-platform']
+        });
+        
+        const client = await auth.getClient();
+        const token = await client.getAccessToken();
+        
+        console.log('Access Token:', token);
+        
+        
+            </code>
+            
+            <div>
+            
+the result will contain a log url to view the progress
+
+            </div>
+            
+      </body>
+      
+      
+</html>
+
+
+
+
