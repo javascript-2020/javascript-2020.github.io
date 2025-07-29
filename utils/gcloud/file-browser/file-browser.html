@@ -229,7 +229,16 @@
   #preview-view #preview-text #preview-text-editor
     {width:100%;height:100%}
     
-
+  #preview-image
+    {}
+    
+  #preview-image img
+    {max-width:100%;max-height:100%}
+    
+  #preview-unknown
+    {display:flex;flex-direction:column;gap:10px}
+    
+    
   input
     {font-size:16px;padding:5px 10px}
     
@@ -362,6 +371,15 @@
                               <img id=preview-image-img>
                         </div>
                         
+                        <div id=preview-unknown>
+                        
+                              <div>filename</div>
+                              <div id=filename></div>
+                              <div>size</div>
+                              <div id=size></div>
+                              
+                        </div>
+                        
                   </div>
             
             </div preview>
@@ -433,6 +451,7 @@
               
               ui.image                            = $(ui.view,'#preview-image');
               
+              ui.unknown                          = $(ui.view,'#preview-unknown');
               
               
               log.initdom();
@@ -756,15 +775,20 @@
           
               ui.view.childNodes.forEach(node=>node.nodeType==Node.ELEMENT_NODE && (node.style.display='none'));
               
+              if(blob.type.startsWith('text')){
+                    preview.text(blob);
+                    return;
+              }
+              
+              if(blob.type.startsWith('image')){
+                    preview.image(blob);
+                    return;
+              }
+              
               switch(blob.type){
-                
-                case 'text/plain'         :
-                case 'text/html'          :
-                case 'text/javascript'    :
-                case 'text/css'           :
-                                            preview.text(blob);       
-                                                                      break;
               }//switch
+              
+              preview.unknown(blob);
               
         }//preview
         
@@ -790,6 +814,16 @@
               $(ui.image,'#img').src    = url;
               
         }//image
+        
+        
+        preview.unknown   = function(blob){
+          
+              ui.unknown.style.display    = 'block';
+              
+              $(ui.unknown,'#filename').textContent   = blob.name;
+              $(ui.unknown,'#size').textContent       = blob.size;
+              
+        }//unknown
         
         
   //:
