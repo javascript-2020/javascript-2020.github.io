@@ -216,13 +216,19 @@
   #preview
     {flex:1;display:flex;flex-direction:column;gap:10px}
 
-/*    
+
+  #preview-view
+    {flex:1}
+
   #preview-view>div
     {display:none}
-*/
 
-  #preview-view #text
-    {border:1px solid lightgray;background:whitesmoke;padding:10px;white-space:pre}
+  #preview-view #preview-text
+    {border:1px solid lightgray;background:whitesmoke;height:100%}
+
+  #preview-view #preview-text #preview-text-editor
+    {width:100%;height:100%}
+    
 
   input
     {font-size:16px;padding:5px 10px}
@@ -347,8 +353,8 @@
                   
                   <div id=preview-view>
                   
-                        <div id=text>
-                              <div id=editor>
+                        <div id=preview-text>
+                              <div id=preview-text-editor>
                               </div>
                         </div>
                         
@@ -377,6 +383,7 @@
         var dir     = {};
         
         
+        var setup       = {};
         var btn         = {};
         btn.token       = {};
         var complete    = {};
@@ -415,12 +422,10 @@
               
               ui.view                             = $(ui.preview,'#preview-view');
               
-              debugger;
-              ui.text                             = $(ui.view,'#text');
-              var node                            = $(ui.text,'#editor');
-              editor(node);
-              
-              ui.preview.style.display            = '';
+              //debugger;
+              ui.text                             = $(ui.view,'#preview-text');
+              var node                            = $(ui.text,'#preview-text-editor');
+              setup.editor(node);
               
               
               log.initdom();
@@ -535,7 +540,7 @@
   //:
   
   
-        function editor(node){
+        setup.editor=function(node){
           
               editor      = ace.edit(node);
               editor.setShowInvisibles(false);
@@ -547,8 +552,8 @@
               editor.setFontSize(16);
               editor.session.setOptions({tabSize:2,useSoftTabs:true});
               //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
-              editor.session.setMode('ace/mode/text');
-              editor.session.on('change',onchange);
+              //editor.session.setMode('ace/mode/text');
+              //editor.session.on('change',onchange);
               
         }//editor
         
@@ -742,7 +747,7 @@
   
         function preview(blob){
           
-              $.all(ui.view,'div').forEach(node=>node.style.display='none');
+              ui.view.childNodes.forEach(node=>node.nodeType==Node.ELEMENT_NODE && (node.style.display='none'));
               
               switch(blob.type){
                 
@@ -757,7 +762,7 @@
         }//preview
         
         
-        preview.text    = async function(blob){debugger;
+        preview.text    = async function(blob){
                     
               ui.text.style.display   = 'block';
               
