@@ -358,6 +358,10 @@
                               </div>
                         </div>
                         
+                        <div id=preview-image>
+                              <img id=preview-image-img>
+                        </div>
+                        
                   </div>
             
             </div preview>
@@ -426,6 +430,9 @@
               ui.text                             = $(ui.view,'#preview-text');
               var node                            = $(ui.text,'#preview-text-editor');
               setup.editor(node);
+              
+              ui.image                            = $(ui.view,'#preview-image');
+              
               
               
               log.initdom();
@@ -772,6 +779,17 @@
               
               
         }//text
+        
+        
+        preview.image   = async function(blob){
+          
+              ui.image.style.display    = 'block';
+              
+              var url   = window.URL.createObjectURL(blob);
+              
+              $(ui.image,'#img').src    = url;
+              
+        }//image
         
         
   //:
