@@ -858,11 +858,13 @@
                     log.error(error);
               }
               
-              files.forEach(async(file,i)=>{
+              var n   = files.length;
+              for(var i=0;i<n;i++){
                 
+                    var file          = files[i];
                     var abs2          = abs+'/'+file.name;
-                                                                                console.log(i,file.name,abs);
-                    var {ok,error}    = await gs.delete(token,bucket,abs);
+                                                                                console.log(i,file.name,abs2);
+                    var {ok,error}    = await gs.delete(token,bucket,abs2);
                     if(error){
                           log.error(error);
                     }
