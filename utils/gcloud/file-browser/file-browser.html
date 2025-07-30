@@ -751,6 +751,7 @@
               if(error){
                     log.error(error);
               }
+              
               display(path);
               
         }//rem
@@ -832,20 +833,31 @@
         
         dir.add   = function(path,name){
                                                                                 debug('dir.add',path,name);
-              var abs   = path+name;
-              //zip.folder(abs);
+              var abs           = path+name+'/';
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              
+              var {ok,error}    = await gs.save(token,bucket,abs,'');
+              if(error){
+                    log.error(error);
+              }
               
               display(path);
-              
-              return false;
               
         }//add
         
         
         dir.rem   = function(path,name){
           
-              var abs   = path+name;
-              //zip.remove(abs);
+              var abs           = path+name;
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              
+              var {files,error}   = await gs.list.full(token,bucket,abs);
+              if(error){
+                    log.error(error);
+              }
+              
               display(path);
               
         }//rem
