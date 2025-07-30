@@ -179,7 +179,8 @@
     
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
-
+  .spc
+    {flex:1}
     
   #hdr
     {display:flex;flex-direction:column}
@@ -195,7 +196,15 @@
     {border-color:gray;background:whitesmoke;color:gray}
     
   #view
-    {border-top:1px solid lightgray;border-bottom:1px solid lightgray;padding:10px 0}
+    {border-top:1px solid lightgray;border-bottom:1px solid lightgray;padding:10px 0 5px;
+      transition:0.3s;
+    }
+  #view-ftr
+    {display:flex;padding-top:10px}
+  #view-show
+    {width:20px;margin-right:5px;cursor:pointer;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAUCAMAAACtdX32AAAAsVBMVEVHcEwESIkDSIoESo12i58gV44FTpEaVIwMS4gJSYcMS4gISIgHR4cMSogKSYgUUIkFR4kKSokKSok3Z5AISIcFRocJSYgGR4cOTYoST4sTUIsnWo4FRodQyvtRzP1HxPtRy/slrPlNx/oIVJcFUJUKaLQMWpsRg9Mqi8U3odhMw/YMcb0kp/Qlg707p91CuO8ZnPAKX6URh9ohovE0t/sifLg+rOEfd7QnoegUkuYab6wVt2+yAAAAHXRSTlMA5+/1AQ79E051YJ2lWWYa3GuDA5SxkaxAMyoHuPP9IMMAAAEDSURBVCjPddFnk4IwEAbgpUsV0KN5ATQYRaWpV///D7tQ4ghy+2lnnn0nmwQAQtfTFJiUZHpuINLGtHEjvy3HujQEQjhLhNDe11VJ3keu+PhwqQouABfX9zT+JM95xcDXbRKfmjXoDWU0csXIqCKEfn1Qs5877eKS+MN+kt5rWhEXIrup28m0xIYy6KHT05cdAQTc/pakD5fWMlNu0Y4vmOdYlzYe049eB0e9d9m0U5OtSv3Se8ayBf9QWDFHeZ60uit47fmZTH7Ix2hGWz/3+VaPgjX9Io0/b3dMHXHKYA1OVX1VEB2BeoyorgDm/bs6yvNK72fZGebUDfxXkeWEo3P/AOjcJRNFOQSkAAAAAElFTkSuQmCC);
+    }
     
   section
     {margin-bottom:10px}          
@@ -370,6 +379,10 @@
                         
                   </div google-storage>
                   
+                  <div id=view-ftr>
+                        <div class=spc></div>
+                        <img id=view-show>
+                  </div view-ftr>
                   
             </div view>
 
@@ -474,18 +487,22 @@
               filenav.initdom(root);
               
 
+              ui.view                             = $(root,'#view');
+              $(ui.view,'#view-show').onclick     = btn.show;
+              
+              
               ui.preview                          = $(root,'#preview');
               
-              ui.view                             = $(ui.preview,'#preview-view');
+              ui.pview                            = $(ui.preview,'#preview-view');
               
               //debugger;
-              ui.text                             = $(ui.view,'#preview-text');
+              ui.text                             = $(ui.pview,'#preview-text');
               var node                            = $(ui.text,'#preview-text-editor');
               setup.editor(node);
               
-              ui.image                            = $(ui.view,'#preview-image');
+              ui.image                            = $(ui.pview,'#preview-image');
               
-              ui.unknown                          = $(ui.view,'#preview-unknown');
+              ui.unknown                          = $(ui.pview,'#preview-unknown');
               
               
               log.initdom();
@@ -635,6 +652,17 @@
               $.mousetext('token refreshed');
           
         }//refresh
+        
+        
+        btn.show    = function(){
+          
+              if(ui.view.style.height){
+                    ui.view.style.height    = '';
+              }else{
+                    ui.view.style.height    = '30px';
+              }
+                
+        }//show
         
         
   //:
@@ -808,7 +836,7 @@
   
         function preview(blob){
           
-              ui.view.childNodes.forEach(node=>node.nodeType==Node.ELEMENT_NODE && (node.style.display='none'));
+              ui.pview.childNodes.forEach(node=>node.nodeType==Node.ELEMENT_NODE && (node.style.display='none'));
               
               if(blob.type.startsWith('text')){
                     preview.text(blob);
