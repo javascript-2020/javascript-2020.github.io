@@ -736,8 +736,14 @@
         
         file.rem    = function(path,name){
                                                                                 debug('file.rem',path,name);          
-              var abs   = path+name;
-              //zip.remove(abs);
+              var abs           = path+name;
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              
+              var {ok,error}    = await gs.delete(token,bucket,path);
+              if(error){
+                    log.error(error);
+              }
               display(path);
               
         }//rem
@@ -753,7 +759,7 @@
               if(error){
                     log.error(error);
               }
-              display(path);
+              //display(path);
               
               return false;
               
