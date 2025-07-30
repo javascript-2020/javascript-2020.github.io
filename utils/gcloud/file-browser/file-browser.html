@@ -859,10 +859,12 @@
               }
               
               files.forEach(async(i,file)=>{
-                
-                    console.log(i,file.name);
-                    //var abs2          = abs+file.name;
-                    //var {ok,error}    = await gs.delete(token,bucket,abs);
+                                                                                //console.log(i,file.name);
+                    var abs2          = abs+'/'+file.name;
+                    var {ok,error}    = await gs.delete(token,bucket,abs);
+                    if(error){
+                          log.error(error);
+                    }
                     
               });
               
