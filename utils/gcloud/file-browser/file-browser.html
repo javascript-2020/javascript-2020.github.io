@@ -752,9 +752,18 @@
         }//upload
         
         
-        file.download   = async function(path){
+        file.download   = async function(path,name){
                                                                               debug('file.download',path);          
-              //var blob    = await zip.file(path).async('blob');
+              var abs   = path+name;
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              
+              var {ok,error}    = await gs.load(token,bucket,abs);
+              if(error){
+                    log.error(error);
+                    return;
+              }
+              var blob    = ok;
               
               console.log(blob);
               
