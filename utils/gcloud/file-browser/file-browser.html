@@ -745,8 +745,14 @@
         
         file.upload   = function(path,name,blob){
                                                                                 debug('file.upload',path,name,blob.size);          
-              var abs   = path+name;
-              //zip.file(abs,blob);
+              var abs           = path+name;
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              
+              var {ok,error}    = await gs.save(token,bucket,abs,blob);
+              if(error){
+                    log.error(error);
+              }
               display(path);
               
         }//upload
@@ -754,7 +760,7 @@
         
         file.download   = async function(path,name){
                                                                                 debug('file.download',path,name);          
-              var abs   = path+name;
+              var abs           = path+name;
               var token         = $(root,'#token').value;
               var bucket        = $(root,'#bucket').value;
               
