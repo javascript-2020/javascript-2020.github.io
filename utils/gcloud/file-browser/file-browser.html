@@ -727,8 +727,15 @@
   
         file.add    = function(path,name){
                                                                                 debug('file.add',path,name);
-              var abs   = path+name;
-              //zip.file(abs,'');
+              var abs           = path+name;
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              
+              var {ok,error}    = await gs.save(token,bucket,abs,'');
+              if(error){
+                    log.error(error);
+              }
+              
               display(path);
               
         }//add
@@ -740,7 +747,7 @@
               var token         = $(root,'#token').value;
               var bucket        = $(root,'#bucket').value;
               
-              var {ok,error}    = await gs.delete(token,bucket,path);
+              var {ok,error}    = await gs.delete(token,bucket,abs);
               if(error){
                     log.error(error);
               }
