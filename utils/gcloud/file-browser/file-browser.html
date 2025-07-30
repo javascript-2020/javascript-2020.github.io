@@ -878,11 +878,10 @@
         
         dir.clear   = async function(path){
                                                                                 debug('dir.clear',path);
-              var abs             = path+name+'/';
               var token           = $(root,'#token').value;
               var bucket          = $(root,'#bucket').value;
               
-              var {files,error}   = await gs.list.full(token,bucket,abs);
+              var {files,error}   = await gs.list.full(token,bucket,path);
               if(error){
                     log.error(error);
               }
