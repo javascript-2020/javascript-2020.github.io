@@ -35,33 +35,143 @@ xml http request
             </div>
 
 
-            <code>
+            <div>
+upload progress
+            </div>
             
-        var xhr   = new XMLHttpRequest();
-                                                                                //  readyState will be 0
-                                                                                console.log("UNSENT",xhr.readyState);
-        xhr.open('GET','/api',true);
-                                                                                //  readyState will be 1
-                                                                                console.log("OPENED",xhr.readyState);
-        xhr.onprogress    = ()=>{
-                                                                                //  readyState will be 3
-                                                                                console.log("LOADING",xhr.readyState); 
-        }//onprogress
+            
+            <code>
 
+      
+      &#x3C;style&#x3E;
+  body        {display:flex;flex-direction:column;gap:10px}
+  #progress   {border:1px solid lightgray;padding:1px;height:20px}
+  #bar        {background:lightblue;height:100%;width:0}
+  
+      &#x3C;/style&#x3E;
+
+      
+      &#x3C;input id=upload type=file&#x3E;
+
+      
+      &#x3C;div id=progress&#x3E;
+        &#x3C;div id=bar&#x3E;&#x3C;/div&#x3E;
+      &#x3C;/div&#x3E;
+
+      
+      &#x3C;div id=result&#x3E;ready&#x3C;/div&#x3E;
+      
+      
+      &#x3C;script&#x3E;
+                                                                                console.clear();
+        var url   = &#x27;https://localhost:3010/upload&#x27;;
         
-        xhr.onload    = ()=>{
+        upload.onchange   = e=&#x3E;{
+        
+              result.textContent    = &#x27;starting upload&#x27;;
+              bar.style.width       = 0;
+              
+              var file    = upload.files[0];
+              
+              var xhr   = new XMLHttpRequest();
+              
+              xhr.open(&#x27;post&#x27;,url);
+              
+              xhr.upload.onprogress   = e=&#x3E;{
+                                                                                console.log(&#x27;upload.onprogress&#x27;);
+                                                                                console.log(e);
+                    if(e.lengthComputable){
+                          var p             = e.loaded/e.total*100;
+                          bar.style.width   = p+&#x27;%&#x27;;
+                    }
+                    
+              }//onprogress
+              
+              xhr.onload    = ()=&#x3E;{
                                                                                 //  readyState will be 4
-                                                                                console.log("DONE",xhr.readyState);
-        }//onload
-        
-        
-        xhr.send(null);
+                                                                                console.log(&#x22;DONE&#x22;,xhr.readyState);
+                    bar.style.width       = &#x27;100%&#x27;;
+                    result.textContent    = &#x27;done&#x27;;
+                    
+              }//onload
+                    
+              xhr.send(file);
+              
+        }//onchange
 
 
+      &#x3C;/script&#x3E;
+            
             </code>
             
+
+            <code>
             
-      
+  //  upload-server.js
+
+
+        var {key,cert}    = require('server-cert.js');
+        
+        require('https').createServer({key,cert},request).listen(3010);
+        
+        
+        function request(req,res){
+
+              if(cors(req,res))return;
+              
+              var f   = true;
+              switch(req.url){
+              
+                case '/'          : res.end('helloworld');        break;
+                case '/upload'    : upload(req,res);              break;
+                
+                default           : f   = false;
+              
+              }//switch
+              
+              if(!f){
+                    res.end('not found');
+              }
+              
+        }//request
+        
+        
+        function cors(req,res){
+        
+              res.setHeader('access-control-allow-origin','*');
+              res.setHeader('access-control-allow-headers','content-type');
+              
+              if(req.method!='OPTIONS'){
+                    return;
+              }
+              
+              res.writeHead(200);
+              res.end();
+              
+              return true;
+              
+        }//cors
+        
+        
+        function upload(req,res){
+        
+              req.on('data',data=>console.log(data.length));
+              req.on('end',()=>{
+                                                                                console.log('done');
+                    res.end('ok');
+                    
+              });
+              
+        }//upload
+
+            </code>
+
+            
+            <div>
+download progress
+            </div>
+            
+            
       </body>
       
       
