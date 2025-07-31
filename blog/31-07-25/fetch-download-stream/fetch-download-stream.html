@@ -1,0 +1,64 @@
+
+
+
+<html>
+
+
+      <head>
+
+      
+            <title></title>
+
+            <base href='https://javascript-2020.github.io/blob/31-07-25/fetch-download-stream/fetch-download-stream.html'>
+            
+            <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            
+            <link rel=stylesheet href='/blog/css/blog.css'>
+
+            
+      </head>
+      
+      
+      <body>
+
+
+      
+            <h3>
+                  fetch download stream
+            </h3>
+
+
+            <div id=desc>
+
+fetch download stream
+            
+            </div>
+
+            
+            <code>
+            
+        var res       = await fetch(url,{headers,method,body});
+        
+        var decoder   = new TextDecoderStream();
+        var stream    = res.body.pipeThrough(decoder)
+        var reader    = stream.getReader();
+
+        while(true){
+        
+              const {value,done}    = await reader.read();
+              if(done)break;
+                                                                          console.log('fetch',value);
+                                                                          
+        }//while
+        
+        console.log('done');        
+            
+            
+      </body>
+      
+      
+</html>
+
+
+
+
