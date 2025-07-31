@@ -180,6 +180,9 @@
       content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAA81BMVEVHcExUrLxOr7/pXWA1r6pdrtffYWb813JttLRJrrbjYWToXWBertY2r6kzsKr713H71nP812/813A0r6per9ddr9f+129er9foXWFMr8D31oDmX2PpXGD812/oXWH813Bdr9foXWBertb51nc0r6o1r6rmXmI2r6lir9Ner9Y2r6per9boXWE1r6lfrtU3rqn613Ndr9fpXWD31n00r6r812/713H713HnXWHoXmHnXmL613X613XpXWDlYGP713HoXWA1r6k1r6rsW183r6lfr9Zfr9bnXmFfr9b71nL813A2r6k1r6rpXWA0r6pdr9f812+Zt6BJAAAATXRSTlMABSH52oMFXwwSD9VhYYSZLOnx+974g9KQVQEihvql1/xfpxj5pz+SFZiVvrm7Q0FG8O4G7/6QvmB/VCMe4h6myoDKgqKhkZ6SLsmk9w12AA0AAAGGSURBVCjPbZBXYsIwEETXvWA7wQGbEgiYlkoJpEBo6Q0k3/80WYnqoPmy9TSzowVI6lRJlR+neweFJF4ul0pqWNwe1IIjpvvaFqNSVX3jNvwY5R/zv8f5RGFcydkbv1FCnF5h3S6Oyrfswuea9+/vdphfaV4zntN35n0MYOdwglJln09ncXz3kPb3cUHPsX6sf4DWh5px9p14oM3yhwBjNPtdgO44uZ8m9ktN+eRZ/2A9oJf59FkclwwQaITtyoDZ6ScRLk4wHXBlP6YI23NMhyAIjIII69XT11fQNM2RRFhyPc+DLKWhMNx8IWQBIaUZWUALskqIChGllbzInT8hpAEOpkeC4VKDkLoLMqb32oe4M8BsnKpRSq/O/1PrhhDi4Qez04t/5c1LsjIDn165SPityxM+mZf4oCy/ve0ndVgyaa0PrHfGe1FeNiXJlPONAaNv1jbrK8suVDKh476odQYXLWvvkU6Gcmke4VLd5CpkLaxscF19Plyz7ERhVnteqL/uDv4BF0ZImcToH4gAAAAASUVORK5CYII=);
     }
     
+  [value=read]
+    {margin-left:50px}
+    
   #message
     {display:flex;flex-direction:column;gap:10px}
     
@@ -385,6 +388,7 @@
         dc.on               = {};
         dc.send             = {};
         var btn             = {};
+        btn.click           = {};
         var create          = {};
         var send            = {};
         var server          = {};
@@ -417,7 +421,8 @@
               img.disconnected                        = $(root,'#status').src;
               
               $(root,'#server').value                 = url;
-              $(root,'[value=connect]').onclick       = btn.connect;
+              btn.connect                             = $(root,'[value=connect]');
+              btn.connect.onclick                     = btn.click.connect;
               $(root,'#server-init').onclick          = btn['server-init'];
 
               $(root,'[value=read]').onclick          = btn.read;
@@ -484,13 +489,19 @@
   //:
   
 
-        btn.connect   = async function(){
+        btn.click.connect   = async function(){
                                                                                 console.clear();
               focus();
               
-              await http.create(url);
-              poll.start();
-              await pc.create();
+              if(btn.connect.value=='connect'){
+                    await http.create(url);
+                    poll.start();
+                    await pc.create();
+                    btn.connect.value   = 'close';
+              }else{
+                    pc.close();
+                    btn.connect.value   = 'connect';
+              }
 
         }//connect
         
@@ -1107,6 +1118,17 @@
         }//answer
         
 
+        pc.close    = function(){
+          
+              if(!pc.con){
+                    return;
+              }
+              pc.con.close();
+              pc.con    = null;
+              
+        }//close
+        
+        
   //:
   
 
