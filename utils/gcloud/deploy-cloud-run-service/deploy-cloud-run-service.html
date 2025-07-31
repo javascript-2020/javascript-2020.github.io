@@ -459,7 +459,13 @@
               var {result,monitor,build,logurl}   = await gs.deploy(params);
               
               output('build_id',build);
-              output('logul',logurl);
+              output('logul');
+              
+              var a             = document.createElement('a');
+              a.href            = logurl;
+              a.textContent     = logurl;
+              a.style.display   = 'block';
+              ui.output.append(a);
               
               output.json(result);
               
