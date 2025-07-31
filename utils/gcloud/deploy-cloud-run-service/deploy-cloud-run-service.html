@@ -436,6 +436,11 @@
               
               var {result,monitor,build,logurl}   = await gs.deploy(params);
               
+              output('build_id',build);
+              output('logul',logurl);
+              
+              output.json(result);
+              
         }//deploy
         
         
@@ -454,9 +459,17 @@
         function output(){
           
               var str   = [...arguments].join(' ');
-              output.textContent   += str;
+              output.textContent   += str+'\n';
               
         }//output
+        
+        
+        output.json   = function(v){
+          
+              var str   = JSON.stringify(v,null,4);
+              output(str);
+              
+        }//json
         
         
 
