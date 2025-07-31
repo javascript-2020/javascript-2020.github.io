@@ -3,6 +3,131 @@
 <html>
 
       <head>
+
+            <title>deploy cloud run service</title>
+
+            <base href='https://javascript-2020.github.io/utils/gcloud/deploy-cloud-run-service/deploy-cloud-run-service.html'>
+            
+            <link rel=icon type='image/png' href='image/cloud-run-30.png'>
+
+
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var version       = 'v1.0';
+            
+        var df            = true;
+
+
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        
+        var mod           = {};
+        
+        var log;
+        
+
+        
+
+  //:
+
+              
+        async function init(){
+                                                                                debug('init',version);
+
+              log                       = log();
+              
+              log.initmod({ext,$});
+              
+              log.init();
+
+  //:
+          
+
+              
+              await initdom(document.body);
+
+
+              init.complete();
+
+              
+        }//init
+
+
+        init.stack            = [];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+              init.stack.ct>=init.stack.total && init();
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+        
+        init.complete   = function(){
+          
+              init.complete.stack.forEach(fn=>fn());
+              
+        }//complete
+        
+        init.complete.stack   = [];
+        init.complete.add     = fn=>init.complete.stack.push(fn);
+
+                  
+
+(async()=>{
+  
+        init.stack.add;
+        
+        var token   = localStorage['github-token'];
+        var url;
+        var headers;
+        if(token){
+              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
+        }else{
+              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
+        }
+        
+        await fetch(url,{headers}).then(res=>res.text()).then(complete);
+
+            
+        async function complete(txt){
+
+              ext           = eval(txt);
+              var promise   = ext.load.libs(
+                    'js/dom/$.js.api',
+                    'js/core/datatype.js',
+                    'js/dom/menumod/menumod.js',
+                    'js/dom/keydown/keydown.js',
+                    'google/google-storage/google-storage.js.api',
+              );
+              [$,datatype,menumod,keydown,gs]   = await promise;
+
+
+              ext.load.libs['js/debug.js'];
+              
+              init.stack.complete;
+
+        }//ext_fn
+
+})();
+
+
+            </script init>
       
       
       </head>
@@ -11,7 +136,19 @@
       <body>
       
             <style>
-            
+
+  html
+    {height:100%}
+  body
+    {height:calc(100% - 16px);display:flex;flex-direction:column;gap:10px}
+
+
+    
+  #output
+    {flex:1;padding:10px;border:1px solid lightgray}
+  
+
+
             
             </style>
             
@@ -49,6 +186,20 @@
                             <img class='storage icon'>
                             <input id=email autocomplete=off spellcheck=false>
                             <img class='copy icon'>
+                        </div>
+                        
+                  </section>
+
+
+                  <section id=bucket-root>
+                  
+                        <div>
+                              bucket name
+                        </div>
+                        
+                        <div class=hldr>
+                            <img class='paste icon'>
+                            <input id=bucket autocomplete=off spellcheck=false>
                         </div>
                         
                   </section>
@@ -117,6 +268,10 @@
             </pre>
             
             
+<log api>
+      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+</log>
+
             
       </body>
       
@@ -124,19 +279,138 @@
       <script>
       
 
+        var ui    = {};
+        
+        
+        
+        
+        var btn   = {};
+        
+        
   //:
   
   
         function initdom(rootnode){
+
+
+        
+              ui.root                                 = rootnode;
+              
+              
+              
+              ui.token                                = $(root,'#token');
+              ui.email                                = $(root,'#email');
+              ui.bucket                               = $(root,'#bucket');
+              ui.zip                                  = $(root,'#zip');
+              ui.project                              = $(root,'#project');
+              ui.service                              = $(root,'#service');
+              
+
+              
+              $(root,'[value=deploy]').onclick        = btn.deploy;
+
+
+
+
+              $.all(root,'.paste').forEach(icon=>{
+              
+                    var root        = icon.parentNode.parentNode
+                    var input       = $(root,'input:not([type])');
+                    icon.onclick    = async e=>{
+                                            
+                                            var txt       = await navigator.clipboard.readText();
+                                            input.value   = txt;
+                                            input.focus();
+                                            
+                                      }//icon.onclick
+                                      
+              });//foreach
+
+
+              $.all(root,'.copy').forEach(icon=>{
+                
+                    var root        = icon.parentNode.parentNode;
+                    var input       = $(root,'input:not([type])');
+                    icon.onclick    = async e=>{
+                      
+                                            var txt   = input.value;
+                                            await navigator.clipboard.writeText(txt);
+                                            input.focus();
+                                            
+                                      }//icon.onclick
+                                      
+              });//foreach              
+
+
+              $.all(root,'.storage').forEach(icon=>{
+                
+                    var root    = icon.parentNode.parentNode;
+                    var key     = root.id.slice(0,-5);
+                    var input   = $(root,'input:not([type])');
+                    var name    = localstorage+key;
+                                                                                console.log(key,localStorage[name]);
+                    var token;
+                    
+                    icon.onclick    = e=>{
+                      
+                                            if(e.shiftKey){
+                                                  token   = localStorage[name];
+                                                  if(!token){
+                                                        $.mousetext(`no stored ${key}, localStorage[${name}]`);
+                                                        return;
+                                                  }
+                                                  input.value   = token;
+                                                  return;
+                                            }
+                                                  
+                                            token   = input.value;
+                                            if(!token){
+                                                  $.mousetext(`${key} empty`);
+                                                  return;
+                                            }
+                                            localStorage[name]    = token;
+                                            $.mousetext(`localStorage[${name}] saved`);
+                                            
+                                      }//icon.onclick
+                                      
+                    icon.title    = `${key} : click - store, shift - read`;
+                    
+              });//foreach
+                      
+
+
+
+
+              
+              
+              
+          
         }//initdom
         
   
   //:
   
   
+        btn.deploy    = function(){
+          
+              var token     = ui.token.value;
+              var email     = ui.email.value;
+              var bucket    = ui.bucket.value;
+              var zip       = ui.zip.value;
+              var project   = ui.prject.value;
+              var service   = ui.service.value;
+              
+              
+              
+        }//deploy
+        
+        
+
+
+
+
   
-  
-  
+  init.stack.complete;
   
   
       </script>
