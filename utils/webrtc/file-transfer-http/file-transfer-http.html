@@ -704,22 +704,40 @@
         }//init
         
         
-        http.send.sdp   = async function(sdp){
+        http.send.offer   = async function(offer){
           
               var url       = $(root,'#server').value;
-              url          += '/sdp';
+              url          += '/offer';
               
               var headers   = {mode};
               
-              var str       = JSON.stringify(sdp);
-              //var b64       = btoa(str);
+              var str       = JSON.stringify(offer);
               var body      = str;
               
               var res       = await fetch(url,{headers,method:'post',body});
               var txt       = await res.text();
+              
               console.log(txt);
               
-        }//sdp
+        }//offer
+
+
+        http.send.answer   = async function(answer){
+          
+              var url       = $(root,'#server').value;
+              url          += '/answer';
+              
+              var headers   = {mode};
+              
+              var str       = JSON.stringify(answer);
+              var body      = str;
+              
+              var res       = await fetch(url,{headers,method:'post',body});
+              var txt       = await res.text();
+              
+              console.log(txt);
+              
+        }//answer
         
         
         http.send.ice   = async function(ice){
@@ -753,6 +771,8 @@
                 
                     var type    = parts[i];
                     var value   = parts[i+1];
+                    
+                    console.log(type);
                     
                     switch(type){
                       
