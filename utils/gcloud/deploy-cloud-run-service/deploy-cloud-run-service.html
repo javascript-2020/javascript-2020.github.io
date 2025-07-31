@@ -18,6 +18,7 @@
         var version       = 'v1.0';
             
         var df            = true;
+        var debug_id      = 'deploy';
 
 
         var ext;
@@ -409,7 +410,9 @@
 
 
 
-
+              ui.output   = $(root,'#output');
+              
+              
               
               
               
@@ -429,15 +432,37 @@
               var project   = ui.prject.value;
               var service   = ui.service.value;
               
+              var params    = {token,email,bucket,zip,project,service};
               
+              var {result,monitor,build,logurl}   = await gs.deploy(params);
               
         }//deploy
         
         
 
 
+  //:
+  
+        
+        output.clear    = function(){
+          
+              ui.output.textContent   = '';
+              
+        }//clear
+        
+        
+        function output(){
+          
+              var str   = [...arguments].join(' ');
+              output.textContent   += str;
+              
+        }//output
+        
+        
 
-
+  //:
+  
+  
   
   init.stack.complete;
   
