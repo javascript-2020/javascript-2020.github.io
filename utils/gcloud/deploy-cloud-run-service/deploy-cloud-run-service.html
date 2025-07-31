@@ -25,6 +25,7 @@
         var datatype;
         var menumod;
         var keydown;
+        var debug;
         
         var mod           = {};
         
@@ -118,7 +119,7 @@
               [$,datatype,menumod,keydown,gs]   = await promise;
 
 
-              ext.load.libs['js/debug.js'];
+              debug   = await ext.load.libs['js/debug.js'];
               
               init.stack.complete;
 
@@ -140,7 +141,7 @@
   html
     {height:100%}
   body
-    {height:calc(100% - 16px);display:flex;flex-direction:column;gap:10px}
+    {height:calc(100% - 16px);display:flex;flex-direction:column;gap:10px;font-family:arial}
 
   
   .icon
@@ -159,6 +160,14 @@
       content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAACZFBMVEVHcEy9TEyD1eZpgIXXxLrhjWPyYyfxn3bljF/5jFrrpnnvNB/8ai/yh1bUmnLiaDbqLSDaiG/tOCL5dDT1ilrgXC4SabrEVkTwYSLqe0nxl3XsNx75cC74dTX7i1X2iVv+lVr3jlz0iFr4h1LtnWv7sHj5ZCPkazfVQirbeEX4UhvtaC7uUSXrQSD3KhbwSSz2Zij1ZyutZ1f2d0P3iFnAHhX6h1L4f0v6eT3zjlzumW3nnGzroHHeMiDYSin4Wx3sbTDkdj73ZST3QhrlJx32Sxr0OR3seDzvfj7zfz70OBv1aSzoYyfTSTb0Ziv3h1j2iVnxYCnyVSbtUC3wOSDlNiH2cTrWKSDWKyP3gEX6k2H0hlP1mWfypHXPq4vPo4D1soPZqIjis5LVrI3+Xxv/ejT/civ+Qxf/dzH+JBb+Nhb+byz+LRb/bSj/fTX/URb+aSX+YyH+WRf/ZSH+HBX/PxX/SBX/dTCsEhT/aya7EhP+Shb/NBb9fULoJhj/ZyX+JhT9cjP8YR/tKBv+fjj+g03+UBb/jVn/iFT+kl/+dzrmGxfrKxzuMBzIHBX8Sx76VCzUFxbEFBL+nGj/cSr8XB79Lxz8VyjZLhf7UR/9Yyj+hUX+gEP/l2PyaCr8OhnEIxf6XSbaGha7GBT3RCXhVif3ThnoQxn9Zie1EhL4IxrjJhj7YDDQJxbvPBv7Vhv9hVH/om7AIBX+Uxz0RB/dPhzzOiP2IRfsYiz2MR3zJh7RTSjjSx/lUx/LExXuOxz/jU7+iUn8PCnEKB3IOST4cS/jNBP6SBa9IRLWJxXTJhD2HBcZjAsKAAAAZHRSTlMACQICAyWlLzTrqMH+Tzg0pgrB5Ik+AQumHBrC89n2e/5oj+q1lPU9GhjzgZCQ+6XOqwW0v7/d5e1BdaSBSSf2kEPp5nrw2Xahv9iscRWgqtS/mb+4s47CwNGUYtzWEVqLW0Yax/uzPQAAArxJREFUOMvdlGdXGlEQhjfiGqIgarCLvbcYNfb03nvviRRFdLFEXFySRWx0UASxd7BrNDGxpdc/lbuQE3fB/AHfz8+ZufOcuQNBOzX+YXRmTBQ7NpYdFcOkh/pvT4Ux2bl5exyJi4vLzy/g5NxihrpjUVci21rb24vg3c4U5mFKnJGV5oLCufMA6+voKIGeeRMpjo/82MvFG8RZLAoY2+zgFha8PZ/7gtDpRdEfehRK4Uu5lyeJ87zsBDsWHj5++iQhIcEXigEgVg/Aq+SZPHIw0Lq1PbrvAfyoJD6+mA7dA50BJx66votc8TwDawaZb4tkM+kwDBfev6vEhUiN1WYOoID7SxEc68UwTKlUFnA4eyOEiM06ZNbr56Q+LqAYEQoUPT29QAouZFin9bpPXV3ldS1U0OMSAEWd9dxK8C5EXDqn45dXlNW+auS3SG+QQSi9ugYR8QAo6GyoKa2uelHnAMv5Vd/9aOSKfpnjNifIc4DSur8VJ34doLTe91ZlWVv5ylVweaJ/FX/Lfv6wG+9QQK/udyqD9vOX1dWxsfX1tYlly4x2RCKRoDOzAVRQbjWPalSGDSNqlzhjR42GqdluaTgVJPQIGdP60TcatVotkzU1Nb2frBgAU4cHu4IinqBSwcVFNrnptY4/0FVWW0boobSGrpnECHnqLT3Sm9kUPQOm7cBG/vg3Vz2yiSEh0ZoMTmosWuNt8htphJ5hy/LYSn9/v9w0N740q5ka3kDt6Mwm5Y20ELnYPKpWDRu02sHBwcXFkREUJfRsdlOXghZC6MGBniVCj2yK8AP0EMO4g+56HNtDEQ5dkIvJ29OypUeXEUQGg9OOba8nNf0i9WPTWEc4EYJK6j5mnssIzHa/KSlHT585C75LYuLh1JPHT/n4nTiYHPSfKxXknwKzkpICA1mHkoNpO/YYQ38AABZHleIztVMAAAAASUVORK5CYII=);
     }
 
+  section
+    {margin-bottom:10px;display:flex;gap:10px;align-items:center}
+  section label
+    {display:inline-block;width:150px;text-align:right;margin-right:20px}
+  section .hldr
+    {flex:1;display:flex;align-items:center}
+  section .hldr input
+    {flex:1}
     
   #output
     {flex:1;padding:10px;border:1px solid lightgray}
@@ -181,9 +190,9 @@
             
                   <section id=token-root>
                   
-                        <div>
+                        <label>
                               token
-                        </div>
+                        </label>
                         
                         <div class=hldr>
                             <img class='paste icon'>
@@ -197,9 +206,9 @@
 
                   <section id=email-root>
                   
-                        <div>
+                        <label>
                               service account email
-                        </div>
+                        </label>
                         
                         <div class=hldr>
                             <img class='paste icon'>
@@ -213,9 +222,9 @@
 
                   <section id=bucket-root>
                   
-                        <div>
+                        <label>
                               bucket name
-                        </div>
+                        </label>
                         
                         <div class=hldr>
                             <img class='paste icon'>
@@ -227,9 +236,9 @@
 
                   <section id=zip-root>
                   
-                        <div>
+                        <label>
                               zip path
-                        </div>
+                        </label>
                         
                         <div class=hldr>
                             <img class='paste icon'>
@@ -243,9 +252,9 @@
 
                   <section id=project-root>
                   
-                        <div>
+                        <label>
                               project
-                        </div>
+                        </label>
                         
                         <div class=hldr>
                             <img class='paste icon'>
@@ -259,9 +268,9 @@
 
                   <section id=service-root>
                   
-                        <div>
+                        <label>
                               service
-                        </div>
+                        </label>
                         
                         <div class=hldr>
                             <img class='paste icon'>
@@ -313,8 +322,8 @@
         function initdom(rootnode){
 
 
-        
-              ui.root                                 = rootnode;
+              var root                                = rootnode;
+              ui.root                                 = root;
               
               
               
