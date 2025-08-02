@@ -129,9 +129,10 @@
                     'js/dom/$.js.api',
                     'js/core/datatype.js',
                     'js/dom/menumod/menumod.js',
-                    'js/dom/keydown/keydown.js'
+                    'js/dom/keydown/keydown.js',
+                    'js/debug/debug.js'
               );
-              [$,datatype,menumod,keydown]   = await promise;
+              [$,datatype,menumod,keydown,debug]   = await promise;
 
               init.stack.complete;
 
@@ -197,7 +198,7 @@
                               <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                         </filemod>
       
-                        <button id=run>run</button>
+                        <input value=encode type=button>
                   
                   </div preview-hdr>
             
@@ -208,6 +209,7 @@
                               <label>
                                     filename
                               </label>
+                              
                               <div id=filename>
                               </div>
                               
@@ -218,6 +220,7 @@
                               <label>
                                     size
                               </label>
+                              
                               <div id=size>
                               </div>
                               
@@ -274,14 +277,14 @@
         
               preview.root              = $(root,'#preview');
               
-              preview.filemod.initdom(root);
+              preview.filemod.initdom(preview.root);
               
               preview.view              = $(preview.root,'#preview-view');
               
               
               output.root               = $(root,'#output');
               
-              output.filemod.initdom(root);
+              output.filemod.initdom(output.root);
               
               output.view               = $(output.root,'#output-view');
               
@@ -300,7 +303,7 @@
   //:
   
   
-        btn.encode    = function(){
+        btn.encode    = async function(){
           
               if(!cur.blob){
                     log.red('no file');
@@ -337,7 +340,10 @@
 
 
 
-
+  //:
+  
+  
+  init.stack.complete;
 
 
       </script>      
