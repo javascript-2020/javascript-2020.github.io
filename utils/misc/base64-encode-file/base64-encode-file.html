@@ -189,7 +189,9 @@
 
 
   #b64
-    {white-space:pre-wrap;border:1px solid lightgray;padding:10px;flex:1;overflow:auto;word-break:break-all;font-family:monospace}    
+    {border:1px solid lightgray;padding:10px;flex:1;}
+  #b64 #text
+    {height:100%;white-space:pre-wrap;overflow:auto;word-break:break-all;font-family:monospace;box-sizing:border-box}    
 
   
   #output
@@ -240,7 +242,7 @@
                         
                   </div>
                   
-                  <filename-ui>
+                  <filename-ui api>
                         <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </filename-ui>
                   
@@ -302,7 +304,7 @@
                         
                   </div>
                         
-                  <filename-ui>
+                  <filename-ui api>
                         <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </filename-ui>
                   
@@ -535,12 +537,12 @@
         
         preview.complete    = {};
         
-        preview.complete.load   = function(file,blob){
+        preview.complete.load   = function(file,srcblob){
           
               menumod.close();
               
               cur.preview.file    = file;
-              cur.blob            = blob;
+              cur.blob            = srcblob;
         
               preview.filename.show(file);
               blob.display();
