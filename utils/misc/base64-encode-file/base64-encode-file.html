@@ -161,29 +161,36 @@
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
 
-
-  #btns
+  
+  .user
+    {}
+  .user #btns
     {display:inline-flex;gap:10px}
+
     
   #preview
-    {display:flex;flex-direction:column;gap:10px;flex:1;border:1px solid lightgray;padding:10px}
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
     
   #preview-hdr
     {display:flex;align-items:center}
+
     
-  #preview-view
-    {display:flex;flex-direction:column;gap:10px}
+  #blob
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
     
-  #preview-view label
-    {display:inline-block;width:100px;text-align:right;margin-right:20px}
+  #blob label
+    {flex:1;display:inline-block;width:100px;text-align:right;margin-right:20px}
+
+
+  #b64
+    {white-space:pre-wrap;border:1px solid lightgray;padding:10px;flex:1;overflow:auto;word-break:break-all;font-family:monospace}    
 
   
   #output
-    {display:flex;flex-direction:column;gap:10px;flex:1;border:1px solid lightgray;padding:10px}
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
   #output-hdr
     {display:flex;align-items:center}
-  #output-view
-    {white-space:pre-wrap;border:1px solid lightgray;padding:10px;flex:1;overflow:auto;word-break:break-all;font-family:monospace}
+    
 
     
     
@@ -207,11 +214,15 @@
             
 
             <div id=preview>
-            
-                  <div id=preview-hdr>
+
+                  <div>
+                        file
+                  </div>
+                  
+                  <div class=user>
                   
                         <filemod api>
-                              <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                              <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                         </filemod>
       
                         <div id=btns>
@@ -220,43 +231,46 @@
                               <input value=save type=button>
                               
                         </div>
+                        
+                  </div>
                   
-                  </div preview-hdr>
-            
-                  <div id=preview-view>
-                  
-                        <section>
-                        
-                              <label>
-                                    filename
-                              </label>
-                              
-                              <div id=filename>
-                              </div>
-                              
-                        </section>
-                        
-                        <section>
-                        
-                              <label>
-                                    size
-                              </label>
-                              
-                              <div id=size>
-                              </div>
-                              
-                        </section>
-                              
-                  </div preview-view>
+                  <filename-ui>
+                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </filename-ui>
                   
             </div>
-                  
-            <div id=output>
             
-                  <div id=output-hdr>
+            
+            <div id=blob>
+            
+                  <section>
+                  
+                        <label>
+                              size
+                        </label>
+                        
+                        <div id=size>
+                        </div>
+                        
+                  </section>
+                  
+            </div>
+
+            
+            <div id=b64>
+            </div>
+                  
+
+            <div id=output>
+
+                  <div>
+                        base64
+                  </div>
+                        
+                  <div class=user>
                   
                         <filemod api>
-                              <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                              <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                         </filemod>
                         
                         <div id=btns>
@@ -268,12 +282,13 @@
                               
                         </div>
                         
-                  </div output-hdr>
+                  </div>
+                        
+                  <filename-ui>
+                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </filename-ui>
                   
-                  <div id=output-view>
-                  </div output-view>
-                  
-            </div>
+            </div output>
                   
             
       </body>
@@ -294,6 +309,8 @@
         
         
         var preview       = {};
+        var blob          = {};
+        var b64           = {};
         var output        = {};
         
         var ui            = {};
@@ -322,6 +339,11 @@
               $(preview.root,'[value=encode]').onclick        = btn.preview.encode;
               $(preview.root,'[value=save]').onclick          = btn.preview.save;
               
+              
+              blob.root                                       = $(root,'#blob');
+
+              
+              b64.root                                        = $(root,'#b64');
               
               
               output.root                                     = $(root,'#output');
@@ -361,11 +383,9 @@
               }
 
               
-              var b64                   = await encode(cur.blob);
+              cur.b64           = await encode(cur.blob);
 
-              cur.b64   = b64;
-              
-              output.view.textContent   = b64;
+              b64.textContent   = cur.b64;
 
               
         }//encode
@@ -390,10 +410,8 @@
                     return;
               }
               
-              var blob    = decode(cur.b64);
+              cur.blob    = decode(cur.b64);
               
-              cur.blob    = blob;
-
               
         }//decode
 
@@ -458,19 +476,13 @@
   //:
   
   
-        ui.info   = function(){
+        blob.info   = function(){
           
-              var str   = 'none';
-              if(cur.preview.file){
-                    str   = cur.preview.file.filename;
-              }
-              $(preview.view,'#filename').textContent             = str;
-              
               var str   = '---';
               if(cur.blob){
                     str   = cur.blob.size;
               }
-              $(preview.view,'#size').textContent                 = str;
+              $(blob,'#size').textContent                 = str;
               
         }//info
         
