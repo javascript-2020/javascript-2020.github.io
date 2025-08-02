@@ -181,7 +181,7 @@
   #output-hdr
     {display:flex;align-items:center}
   #output-view
-    {white-space:pre-wrap;border:1px solid lightgray;padding:10px;flex:1;overflow:auto}
+    {white-space:pre-wrap;border:1px solid lightgray;padding:10px;flex:1;overflow:auto;word-break:break-all;font-family:monospace}
 
     
     
@@ -253,6 +253,7 @@
                         </filemod>
                         
                         <input value=save type=button>
+                        <input value=copy type=button>
                         
                   </div output-hdr>
                   
@@ -284,6 +285,7 @@
         
         
         var btn           = {};
+        btn.output        = {};
 
 
   //:
@@ -309,6 +311,8 @@
               
               output.filemod.initdom(output.root);
               
+              $(output.root,'[value=copy]').onclick   = btn.output.copy;
+              
               output.view               = $(output.root,'#output-view');
               
               
@@ -333,12 +337,23 @@
                     return;
               }
               
-              var bin   = await cur.blob.text();
+              var bin   = await blob_b64(cur.blob);
               var b64   = window.btoa(bin);
               
               output.view.textContent   = b64;
               
         }//encode
+        
+        
+        
+        btn.output.copy   = async function(){
+          
+              var txt   = output.view.textContent;
+              console.log(txt);
+              
+              await navigator.clipboard.writeText(txt);
+              
+        }//copy
         
 
   //:
@@ -368,6 +383,8 @@
         
         preview.complete.load   = function(file,blob){
           
+              //cur.filemod.menumod.close();
+              
               cur.file    = file;
               cur.blob    = blob;
         
@@ -382,6 +399,46 @@
           
           
         }//save
+
+
+
+  //:
+  
+  
+     async function blob_b64(blob){
+      
+            var buf     = await blob.arrayBuffer();
+            var bytes   = new Uint8Array(buf);
+            var bin     = [...bytes].reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+            var b64     = btoa(bin);
+            return b64;
+      
+      }//blob_b64
+
+      function b64_blob(b64,type='text/plain'){
+      
+            var bin     = atob(b64);
+            var bytes   = [...bin].map(c=>c.charCodeAt(0));
+            var buf     = new Uint8Array(bytes);
+            var blob    = new Blob([buf],{type});
+            return blob;
+            
+      }//b64_blob
+
+      function b64_dataurl(b64,type){
+      
+            var dataurl   = `data:${type};base64,${b64}`;
+            return dataurl;
+            
+      }//b64_datauri
+      
+      function dataurl_b64(dataurl){
+      
+            var i     = dataurl.indexOf(',')+1;
+            var b64   = dataurl.slice(i);
+            return b64;
+            
+      }//datauri_b64  
 
 
 
