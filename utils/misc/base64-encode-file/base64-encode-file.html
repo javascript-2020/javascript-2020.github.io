@@ -362,6 +362,8 @@
 
               
               var b64                   = await encode(cur.blob);
+
+              cur.b64   = b64;
               
               output.view.textContent   = b64;
 
@@ -388,14 +390,34 @@
                     return;
               }
               
-              decode(cur.b64);
+              var blob    = decode(cur.b64);
+              
+              cur.blob    = blob;
+
               
         }//decode
 
         
+        btn.output.save   = function(){
+          
+              if(!cur.output.file){
+                    log.red('no output file');
+                    return;
+              }
+              
+              output.filemod.save(cur.output.file);
+              
+        }//save
+        
+        
         btn.output.copy   = async function(){
           
-              var txt   = output.view.textContent;
+              if(!cur.b64){
+                    log.red('no base64 to copy');
+                    return;
+              }
+              
+              var txt   = cur.b64;
                                                                                 console.log(txt);
               await navigator.clipboard.writeText(txt);
               
@@ -419,7 +441,6 @@
         async function encode(blob){
           
               var b64   = await blob_b64(cur.blob);
-              cur.b64   = b64;
               return b64;
               
         }//encode
