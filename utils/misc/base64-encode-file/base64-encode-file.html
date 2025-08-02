@@ -355,8 +355,6 @@
               preview.filemod.initdom(preview.root);
               preview.filename.initdom(preview.root);
               
-              preview.view                                    = $(preview.root,'#preview-view');
-              
               $(preview.root,'[value=encode]').onclick        = btn.preview.encode;
               $(preview.root,'[value=save]').onclick          = btn.preview.save;
               
@@ -377,8 +375,6 @@
               $(output.root,'[value=save]').onclick           = btn.output.save;
               $(output.root,'[value=copy]').onclick           = btn.output.copy;
               $(output.root,'[value=paste').onclick           = btn.output.paste;
-              
-              output.view                                     = $(output.root,'#output-view');
               
 
               
@@ -409,7 +405,7 @@
               
               cur.b64           = await encode(cur.blob);
 
-              b64.textContent   = cur.b64;
+              b64.display();
 
               
         }//encode
@@ -573,10 +569,10 @@
         
         output.complete.load    = async function(file,blob){
           
-              var b64   = await blob_b64(blob);
+              var b64txt        = await blob_b64(blob);
               
               cur.output.file   = file;
-              cur.b64           = b64;
+              cur.b64           = b64txt;
               
               output.filename.show(file);
               b64.display();
