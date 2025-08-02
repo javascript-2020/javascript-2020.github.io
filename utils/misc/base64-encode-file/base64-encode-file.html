@@ -213,6 +213,7 @@
                         </filemod>
       
                         <input value=encode type=button>
+                        <input value=save type=button>
                   
                   </div preview-hdr>
             
@@ -252,8 +253,10 @@
                               <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                         </filemod>
                         
+                        <input value=decode type=button>
                         <input value=save type=button>
                         <input value=copy type=button>
+                        <input value=paste type=button>
                         
                   </div output-hdr>
                   
@@ -285,6 +288,7 @@
         
         
         var btn           = {};
+        btn.preview       = {};
         btn.output        = {};
 
 
@@ -294,26 +298,30 @@
         function initdom(rootnode){
           
           
-              root                      = rootnode;
+              root                                            = rootnode;
         
         
-              preview.root              = $(root,'#preview');
+              preview.root                                    = $(root,'#preview');
               
               preview.filemod.initdom(preview.root);
               
-              preview.view              = $(preview.root,'#preview-view');
+              preview.view                                    = $(preview.root,'#preview-view');
               
-              $(preview.root,'[value=encode]').onclick    = btn.encode;
+              $(preview.root,'[value=encode]').onclick        = btn.preview.encode;
+              $(preview.root,'[value=save]').onclick          = btn.preview.save;
               
               
               
-              output.root               = $(root,'#output');
+              output.root                                     = $(root,'#output');
               
               output.filemod.initdom(output.root);
               
-              $(output.root,'[value=copy]').onclick   = btn.output.copy;
+              $(output.root,'[value=decode]').onclick         = btn.output.decode;
+              $(output.root,'[value=save]').onclick           = btn.output.save;
+              $(output.root,'[value=copy]').onclick           = btn.output.copy;
+              $(output.root,'[value=paste').onclick           = btn.output.paste;
               
-              output.view               = $(output.root,'#output-view');
+              output.view                                     = $(output.root,'#output-view');
               
               
               
@@ -330,33 +338,88 @@
   //:
   
   
-        btn.encode    = async function(){
+        btn.preview.encode    = async function(){
           
               if(!cur.blob){
                     log.red('no file');
                     return;
               }
+
               
-              var b64   = await blob_b64(cur.blob);
+              encode(cur.blob);
               
               output.view.textContent   = b64;
-
 
               
         }//encode
         
         
+        btn.preview.save    = function(){
+          
+              if(!cur.file){
+                    log.red('no file');
+                    return;
+              }
+              
+              preview.filemod.save(cur.file);
+              
+        }//save
+        
+        
+        
+        btn.output.decode   = async function(){
+          
+              if(!cur.b64){
+                    log.red('no base64 to decode');
+                    return;
+              }
+              
+              decode(b64);
+              
+        }//decode
+
         
         btn.output.copy   = async function(){
           
               var txt   = output.view.textContent;
-              console.log(txt);
-              
+                                                                                console.log(txt);
               await navigator.clipboard.writeText(txt);
               
         }//copy
-        
 
+
+        btn.output.paste    = function(){
+          
+              var b64                   = await navigator.clipboard.readText();
+              
+              cur.b64                   = b64;
+              
+              output.view.textContent   = b64;
+              
+        }//paste
+        
+        
+  //:
+  
+
+        function encode(blob){
+          
+              var b64   = await blob_b64(cur.blob);
+              cur.b64   = b64;
+              return b64;
+              
+        }//encode
+        
+        
+        function decode(b64){
+          
+              var blob    = b64_blob(b64);
+              cur.blob    = blob;
+              return blob;
+              
+        }//decode
+        
+        
   //:
   
   
@@ -380,6 +443,13 @@
   //:
   
   
+        preview.source    = function(){
+          
+              return cur.blob;
+              
+        }//source
+        
+        
         preview.complete    = {};
         
         preview.complete.load   = function(file,blob){
@@ -394,7 +464,31 @@
         }//load
         
         
+        preview.complete.save   = function(file){
+        }//save
+        
+        
+        
+        output.source   = function(){
+          
+              return cur.b64;
+              
+        }//source
+        
+        
         output.complete   = {};
+        
+        output.complete.load    = function(file,blob){
+          
+              var b64   = await blob_b64(blob);
+              
+              cur.file    = file;
+              cur.b64     = b64;
+              
+              output.view.textContent   = b64;
+              
+        }//load
+        
         
         output.complete.save    = function(file,confirm=true){
           
