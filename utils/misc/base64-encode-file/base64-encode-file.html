@@ -162,7 +162,9 @@
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
 
 
-
+  #btns
+    {display:inline-flex;gap:10px}
+    
   #preview
     {display:flex;flex-direction:column;gap:10px;flex:1;border:1px solid lightgray;padding:10px}
     
@@ -287,6 +289,8 @@
 
       
         var cur           = {};
+        cur.preview       = {};
+        cur.output        = {};
         
         
         var preview       = {};
@@ -354,7 +358,7 @@
               }
 
               
-              encode(cur.blob);
+              var b64                   = await encode(cur.blob);
               
               output.view.textContent   = b64;
 
@@ -364,17 +368,16 @@
         
         btn.preview.save    = function(){
           
-              if(!cur.file){
+              if(!cur.preview.file){
                     log.red('no file');
                     return;
               }
               
-              preview.filemod.save(cur.file);
+              preview.filemod.save(cur.preview.file);
               
         }//save
         
-        
-        
+                
         btn.output.decode   = async function(){
           
               if(!cur.b64){
@@ -434,8 +437,8 @@
         ui.info   = function(){
           
               var str   = 'none';
-              if(cur.file){
-                    str   = cur.file.filename;
+              if(cur.preview.file){
+                    str   = cur.preview.file.filename;
               }
               $(preview.view,'#filename').textContent             = str;
               
@@ -464,7 +467,7 @@
           
               menumod.close();
               
-              cur.file    = file;
+              cur.preview.file    = file;
               cur.blob    = blob;
         
               ui.info();
@@ -474,7 +477,7 @@
         
         preview.complete.save   = function(file){
           
-              cur.file    = file;
+              cur.preview.file    = file;
               
               log.green(file.filename+' saved');
               
@@ -495,7 +498,7 @@
           
               var b64   = await blob_b64(blob);
               
-              cur.file    = file;
+              cur.output.file    = file;
               cur.b64     = b64;
               
               output.view.textContent   = b64;
@@ -505,7 +508,7 @@
         
         output.complete.save    = function(file,confirm=true){
           
-              cur.file    = file;
+              cur.output.file    = file;
               
               log.green(file.filename+' saved');
               
