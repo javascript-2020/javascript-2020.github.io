@@ -42,23 +42,29 @@
                                                                                 debug('init',version);
 
               //keydown                   = keydown();
-              menumod                   = menumod();
+              menumod                   = mod.menumod();
               //mod.utils.hdr             = mod.utils.hdr();
               //mod.menu.main             = mod.menu.main();
-              preview.filemod           = filemod();
-              output.filemod            = filemod();
-              log                       = log();
+              preview.filemod           = mod.filemod();
+              preview.filename          = mod['filename-ui']();
+              output.filemod            = mod.filemod();
+              output.filename           = mod['filename-ui']();
+              log                       = mod.log();
               
               //mod.utils.hdr.initmod({ext,$,menu,menumod});
               //mod.menu.main.initmod({ext,$,menumod,editor,filemod});
               preview.filemod.initmod({ext,$,menumod,complete:preview.complete,source:preview.source});
+              preview.filename({ext,$});
               output.filemod.initmod({ext,$,menumod,complete:output.complete,source:output.source});
+              output.filename({ext,$});
               log.initmod({ext,$});
               
               //mod.menu.main.init();
               //mod.utils.hdr.init();
               preview.filemod.init();
+              preview.filename.init();
               output.filemod.init();
+              output.filename.init();
               log.init();
 
   //:
@@ -244,6 +250,10 @@
             <div id=blob>
             
                   <section>
+                        file
+                  </section>
+                  
+                  <section>
                   
                         <label>
                               size
@@ -258,6 +268,14 @@
 
             
             <div id=b64>
+            
+                  <section>
+                        base64
+                  </section>
+                  
+                  <section id=text>
+                  </section>
+                  
             </div>
                   
 
@@ -333,6 +351,7 @@
               preview.root                                    = $(root,'#preview');
               
               preview.filemod.initdom(preview.root);
+              preview.filename.initdom(preview.root);
               
               preview.view                                    = $(preview.root,'#preview-view');
               
@@ -344,11 +363,13 @@
 
               
               b64.root                                        = $(root,'#b64');
+              b64.text                                        = $(b64.root,'#text');
               
               
               output.root                                     = $(root,'#output');
               
               output.filemod.initdom(output.root);
+              output.filename.initdom(output.root);
               
               $(output.root,'[value=decode]').onclick         = btn.output.decode;
               $(output.root,'[value=save]').onclick           = btn.output.save;
@@ -476,15 +497,24 @@
   //:
   
   
-        blob.info   = function(){
+        blob.display   = function(){
           
               var str   = '---';
               if(cur.blob){
                     str   = cur.blob.size;
               }
+              
               $(blob,'#size').textContent                 = str;
               
-        }//info
+        }//display
+        
+        
+        
+        b64.display   = function(){
+          
+              $(blob.root,'#text').textContent    = cur.b64;
+              
+        }//display
         
         
   //:
@@ -504,9 +534,9 @@
               menumod.close();
               
               cur.preview.file    = file;
-              cur.blob    = blob;
+              cur.blob            = blob;
         
-              ui.info();
+              blob.display();
               
         }//load
         
@@ -534,10 +564,10 @@
           
               var b64   = await blob_b64(blob);
               
-              cur.output.file    = file;
-              cur.b64     = b64;
+              cur.output.file   = file;
+              cur.b64           = b64;
               
-              output.view.textContent   = b64;
+              b64.display();
               
         }//load
         
