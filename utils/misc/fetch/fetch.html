@@ -30,13 +30,10 @@
         var debug;
         
         var mod           = {};
-        //mod.menu          = {};
-        //mod.utils         = {};
+        mod.hdr           = {};
+        mod.menu          = {};
         
         var filemod;                                                                                
-        //var publish;
-        //var editor;
-        //var output;
         var log;
         
 
@@ -48,7 +45,7 @@
 
               //keydown                   = keydown();
               menumod                   = menumod();
-              //mod.utils.hdr             = mod.utils.hdr();
+              mod.hdr.network           = mod.hdr.network();
               //mod.menu.main             = mod.menu.main();
               filemod                     = mod.filemod();
               //publish                   = publish();
@@ -56,7 +53,7 @@
               //output                    = output();
               log                         = mod.log();
               
-              //mod.utils.hdr.initmod({ext,$,menu,menumod});
+              mod.hdr.network.initmod({ext,$,menu,menumod});
               //mod.menu.main.initmod({ext,$,menumod,editor,filemod});
               filemod.initmod({ext,$,menumod,source,complete});
               //publish.initmod({ext,$,menumod,run});
@@ -203,7 +200,7 @@
     {display:inline-block;width:var(--label-width);text-align:right;margin-right:20px}
     
   #headers
-    {margin-bottom:20px;display:flex;flex-direction:column;gap:10px}
+    {display:flex;flex-direction:column;gap:10px}
     
   .hdr
     {display:flex;align-items:center;gap:20px}
@@ -211,7 +208,7 @@
     {display:block;width:var(--label-width);text-align:right;margin-right:20px}
     
   #output #file
-    {display:flex;flex-direction:column;gap:10px}
+    {display:flex;flex-direction:column;gap:10px;margin-bottom:40px;}
     
   input
     {font-size:16px;padding:5px 10px}
@@ -219,6 +216,14 @@
     {cursor:pointer}
     
             </style>
+            
+            
+            <hdr-network-grp api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  <img class=title src='image/fetch-title-50.png' style='top:5px;height:40px'>
+                  <span slot=date>03 Aug 2025</span>
+            </hdr-network-grp>
+            
             
             
             <div id=url-root>
@@ -248,15 +253,6 @@
             
             <div id=output>
             
-                  <div id=headers>
-                        <div class=hdr>
-                              <div class=name>
-                              </div>
-                              <div class=value>
-                              </div>
-                        </div>
-                  </div>
-                  
                   <div id=file>
                   
                         <section>
@@ -287,7 +283,17 @@
                         </section>
                         
                   </div>
+
                         
+                  <div id=headers>
+                        <div class=hdr>
+                              <div class=name>
+                              </div>
+                              <div class=value>
+                              </div>
+                        </div>
+                  </div>
+                  
             </div>
 
       </body>
@@ -319,6 +325,10 @@
         function initdom(rootnode){
           
               root                                  = rootnode;
+
+              
+              mod.hdr.network.initdom(root);
+              
               
               $(root,'.copy').onclick               = btn.copy;
               $(root,'.paste').onclick              = btn.paste;
