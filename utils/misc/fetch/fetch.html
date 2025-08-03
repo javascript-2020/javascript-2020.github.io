@@ -48,15 +48,15 @@
               menumod                   = menumod();
               //mod.utils.hdr             = mod.utils.hdr();
               //mod.menu.main             = mod.menu.main();
-              //filemod                   = filemod();
+              filemod                     = mod.filemod();
               //publish                   = publish();
               //editor                    = editor();
               //output                    = output();
-              log                       = log();
+              log                         = mod.log();
               
               //mod.utils.hdr.initmod({ext,$,menu,menumod});
               //mod.menu.main.initmod({ext,$,menumod,editor,filemod});
-              //filemod.initmod({ext,$,menumod,complete,source,focus,editor});
+              filemod.initmod({ext,$,menumod,source,complete});
               //publish.initmod({ext,$,menumod,run});
               //editor.initmod({ext,$,menumod});
               //output.initmod({ext,$});
@@ -167,6 +167,12 @@
     {height:calc(100% - 40px);margin:20px}
 
             
+  #url-root
+    {display:flex;gap:20px}
+  #url
+    {flex:1}
+    
+    
             </style>
             
             
@@ -192,6 +198,38 @@
 
             </div>
             
+            <div id=output>
+            
+                  <div id=header>
+                        <div id=hdr>
+                              <div id=hdr-name>
+                                    content-type
+                              </div>
+                              <div id=hdr-value>
+                              </div>
+                        </div>
+                  </div>
+                  
+                  <section>
+                        <div>
+                              filename
+                        </div>
+                        <div id=filename>
+                              ---
+                        </div>
+                  </section>
+                  
+                  <section>
+                        <div>
+                              size
+                        </div>
+                        <div id=size>
+                              ---
+                        </div>
+                  </section>
+                        
+            </div>
+            
       </body>
       
       <script>
@@ -200,7 +238,9 @@
 
       
         var cur           = {};
+
         
+        var hdrs          = {};
         
         
         var btn           = {};
@@ -216,6 +256,12 @@
               
               $(root,'[value=fetch]').onclick       = btn.fetch;
           
+
+              hdrs.root                             = $(root,'#headers');
+              
+              hdrs.item                             = $(hdrs.root,'#hdr');
+              hdrs.item.remove();
+
           
         }//initdom
         
@@ -225,12 +271,20 @@
   
         btn.fetch   = function(){
           
-              var url     = $(root,'#url').value;
+              var url         = $(root,'#url').value;
               
-              var res     = await fetch(url);
-              var blob    = await res.blob();
+              var i           = url.lastIndexOf('/');
+              var filename    = url.slice(i+1);
               
-              cur.blob    = blob;
+              var res         = await fetch(url);
+              var blob        = await res.blob();
+              
+              cur.blob        = blob;
+              
+              display(url,res,blob);
+              
+              log.green(filename+' downloaded');
+
               
         }//fetch
 
@@ -253,6 +307,35 @@
         }//save
         
 
+  //:
+  
+  
+        function display(url,res,blob){
+  
+              display.hdrs(res);
+              
+        }//display
+        
+        
+        display.headers   = function(res){
+          
+              hdrs.root.replaceChildren();
+              
+              for(var [name,value] of res.headers){
+                
+                    console.log(name,value);
+                    
+              }//for
+              
+        }//headers
+
+
+
+
+  //:
+  
+  
+  init.stack.complete;
         
       </script>
       
