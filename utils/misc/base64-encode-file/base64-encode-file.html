@@ -28,6 +28,7 @@
         
         var mod           = {};
         mod.menu          = {};
+        mod.hdr           = {};
         //mod.utils         = {};
         
         var filemod;                                                                                
@@ -166,12 +167,13 @@
 
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
-
+  .spc
+    {flex:1}
   
   .user
     {}
   .user #btns
-    {display:inline-flex;gap:10px}
+    {display:inline-flex;gap:10px;flex:1}
 
     
   #preview
@@ -179,13 +181,19 @@
     
   #preview-hdr
     {display:flex;align-items:center}
+  #preview .user
+    {display:flex;align-items:center}
 
     
-  #blob
-    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
+  section.title
+    {margin-bottom:10px}
     
+  #blob
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}    
+  #blob section
+    {display:flex;align-items:center}    
   #blob label
-    {flex:1;display:inline-block;width:100px;text-align:right;margin-right:20px}
+    {width:100px;text-align:right;margin-right:20px}
 
 
   #b64
@@ -198,6 +206,8 @@
     {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
   #output-hdr
     {display:flex;align-items:center}
+  #output .user
+    {display:flex;align-items:center}
     
 
     
@@ -208,7 +218,16 @@
     {cursor:pointer}
     
             </style>
+
+
             
+            <hdr-base64-grp api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  <img class=title src='images/html-editor.png' style='top:-5px;height:55px'>
+                  <span slot=date>11 Jun 2025</span>
+            </hdr-base64-grp>
+
+
             
             <div id=hdr>
 
@@ -235,8 +254,9 @@
       
                         <div id=btns>
                         
-                              <input value=encode type=button>
                               <input value=save type=button>
+                              <div class=spc></div>
+                              <input value=encode type=button>
                               
                         </div>
                         
@@ -251,7 +271,7 @@
             
             <div id=blob>
             
-                  <section>
+                  <section class=title>
                         file
                   </section>
                   
@@ -283,10 +303,11 @@
                         
                         <div id=btns>
                         
-                              <input value=decode type=button>
                               <input value=save type=button>
                               <input value=copy type=button>
                               <input value=paste type=button>
+                              <div class=spc></div>
+                              <input value=decode type=button>
                               
                         </div>
                         
@@ -301,7 +322,7 @@
             
             <div id=b64>
             
-                  <section>
+                  <section class=title>
                         base64
                   </section>
                   
