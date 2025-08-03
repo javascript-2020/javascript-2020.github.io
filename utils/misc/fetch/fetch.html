@@ -241,6 +241,15 @@
                   
                   <section>
                         <div>
+                              url
+                        </div>
+                        <div id=url>
+                              ---
+                        </div>
+                  </section>
+                  
+                  <section>
+                        <div>
                               filename
                         </div>
                         <div id=filename>
@@ -372,6 +381,10 @@
   
         function display(url,res,blob){
   
+              $(hdrs.root,'#url').textContent         = url;
+              $(hdrs.root,'#filename').textContent    = filename;
+              $(hdrs.root,'#size').textContent        = blob.size;
+              
               display.hdrs(res);
               
         }//display
@@ -382,8 +395,13 @@
               hdrs.root.replaceChildren();
               
               for(var [name,value] of res.headers){
-                
-                    console.log(name,value);
+                                                                                console.log(name,value);
+                    var nitem                       = hdrs.item.cloneNode(true);
+                    
+                    $(nitem,'#name').textContent    = name;
+                    $(nitem,'#value').textContent   = value;
+                    
+                    hdrs.root.append(nitem);
                     
               }//for
               
