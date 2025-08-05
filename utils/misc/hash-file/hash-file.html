@@ -155,6 +155,45 @@
   .spc
     {flex:1}
   
+
+  #preview
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
+    
+  #preview-hdr
+    {display:flex;align-items:center}
+  #preview .user
+    {display:flex;align-items:center}
+
+    
+  section.title
+    {margin-bottom:10px}
+
+    
+  #blob
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}    
+  #blob section
+    {display:flex;align-items:center}    
+  #blob label
+    {width:100px;text-align:right;margin-right:20px}
+
+
+
+  #output
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
+  #output-hdr
+    {display:flex;align-items:center}
+
+
+
+
+
+
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+
+
   
             </style>
 
@@ -196,9 +235,29 @@
       
                         <div id=btns>
                         
-                              <input value=save type=button>
-                              <div class=spc></div>
-                              <input value=encode type=button>
+                              <input value=md2 type=button disabled>
+                              <input value=md4 type=button disabled>
+                              <input value=md5 type=button >
+                              <input value=md6 type=button disabled>
+                              
+                              <br>
+                              
+                              <input value=sha1 type=button>
+                              <input value=sha256 type=button>
+                              <input value=sha512 type=button>
+                              <input value=sha-3 type=button disabled>
+                              
+                              <br>
+                              
+                              <input value=blake2 type=button disabled>
+
+                              <br>
+                              
+                              <input value=crc8 type=button disabled>
+                              <input value=crc16 type=button disabled>
+                              <input value=crc32 type=button disabled>
+                              <input value=crc32c type=button disabled>
+                              <input value=crc64 type=button disabled>
                               
                         </div>
                         
@@ -211,9 +270,32 @@
             </div>
             
 
+
+            <div id=blob>
+            
+                  <section class=title>
+                        file
+                  </section>
+                  
+                  <section>
+                  
+                        <label>
+                              size
+                        </label>
+                        
+                        <div id=size>
+                        </div>
+                        
+                  </section>
+                  
+            </div>
+
+
+
             <div id=output-root>
             
                   <div id=output-hdr>
+                        <input value=copy type=button>
                   </div>
                   
                   <div id=output>
@@ -227,18 +309,161 @@
       
       <script>
       
+        
+        var preview       = {};
+        var blob          = {};
+        
+
+        var root;
+        
+
+
+        var btn           = {};
+
 
 
   //:
   
   
         async function initdom(rootnode){
+
+              
+              root                                            = rootnode;
+
+
+              preview.root                                    = $(root,'#preview');
+              preview.filemod.initdom(preview.root);
+              preview.filename.initdom(preview.root);
+
           
+              $(preview.root,'[value=md5]').onclick           = btn.md5;
+              
+              $(preview.root,'[value=sha1]').onclick          = btn.sha1;
+              $(preview.root,'[value=sha256]').onclick        = btn.sha256;
+              $(preview.root,'[value=sha512]').onclick        = btn.sha512;
+              $(preview.root,'[value=sha-3]').onclick         = btn.sha3;
+              
+              $(preview.root,'[value=blake2]').onclick        = btn.blake2;
+              
+              $(preview.root,'[value=crc8]').onclick          = btn.crc8;
+              $(preview.root,'[value=crc16]').onclick         = btn.crc16;
+              $(preview.root,'[value=crc32]').onclick         = btn.crc32;
+              $(preview.root,'[value=crc32c]').onclick        = btn.crc32c;
+              $(preview.root,'[value=crc64]').onclick         = btn.crc64;
+              
+
+
+
+              blob.root                                       = $(root,'#blob');
+
+
+
+
+              log.initdom(root);
+
+
+              blob.display();
+
+
           
         }//initdom
 
 
   //:
+
+
+        btn.output.copy   = async function(){
+          
+              if(!cur.b64){
+                    log.red('no base64 to copy');
+                    return;
+              }
+              
+              var txt   = cur.b64;
+                                                                                console.log(txt);
+              await navigator.clipboard.writeText(txt);
+              
+        }//copy
+
+
+
+  //:
+  
+  
+  
+        blob.display   = function(){
+          
+              var str   = '---';
+              if(cur.blob){
+                    str   = cur.blob.size;
+              }
+              
+              $(blob.root,'#size').textContent                 = str;
+              
+        }//display
+
+
+
+
+  //:
+  
+  
+        preview.source    = function(){
+          
+              return cur.blob;
+              
+        }//source
+        
+        
+        preview.complete    = {};
+        
+        preview.complete.load   = function(file,srcblob){
+          
+              menu.close();
+              
+              cur.preview.file    = file;
+              cur.blob            = srcblob;
+        
+              preview.filename.show(file);
+              blob.display();
+              
+        }//load
+        
+        
+        preview.complete.save   = function(file){
+          
+              cur.preview.file    = file;
+              
+              log.green(file.filename+' saved');
+              
+              preview.filename.show(file);
+              
+        }//save
+        
+        
+  //:
+  
+  
+        async function sha256(txt){
+          
+            const msg   = new TextEncoder().encode(txt);
+            const buf   = await crypto.subtle.digest('SHA-256',msg);
+        
+            var uint8   = new Uint8Array(buf);
+            var hex     = uint8.reduce((a,byte)=>a   += byte.toString(16).padStart(2,'0'),'')
+            
+            $(card,'#sha256-root #value').textContent   = hex;
+            console.log(hex);
+            
+        }//sha256
+  
+
+        
+  //:
+  
+  
+  init.stack.complete;
+
 
       
       </script>
