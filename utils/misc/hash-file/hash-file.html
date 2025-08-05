@@ -178,10 +178,12 @@
 
 
 
-  #output
+  #output-root
     {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
   #output-hdr
     {display:flex;align-items:center}
+  #output
+    {font-family:monospace}
 
 
 
@@ -336,7 +338,10 @@
               preview.filename.initdom(preview.root);
 
           
+              $(preview.root,'[value=md2]').onclick           = btn.md2;
+              $(preview.root,'[value=md4]').onclick           = btn.md4;
               $(preview.root,'[value=md5]').onclick           = btn.md5;
+              $(preview.root,'[value=md6]').onclick           = btn.md6;
               
               $(preview.root,'[value=sha1]').onclick          = btn.sha1;
               $(preview.root,'[value=sha256]').onclick        = btn.sha256;
@@ -359,6 +364,13 @@
 
 
 
+              output.root                                     = $(root,'#output-root');
+              
+              output.text                                     = $(output.root,'#output');
+              
+              
+              
+
               log.initdom(root);
 
 
@@ -370,6 +382,54 @@
 
 
   //:
+
+        function chk(){
+          
+              if(!cur.blob){
+                    log.red('no file');
+                    return true;
+              }
+              
+        }//chk
+        
+
+        btn.md2   = function(){
+        }//md2
+        
+        btn.md4;
+        
+        btn.md5   = function(){
+          
+              if(chk())return;
+              hash('md5');
+              
+        }//md5
+        
+        btn.md6;
+        
+        btn.sha1;
+        
+        btn.sha256    = function(){
+          
+              if(chk())return;
+              hash('sha256');
+              
+        }//sha256
+        
+        btn.sha512;
+        btn.sha3;
+        
+        btn.blake2;
+        
+        btn.crc8;
+        btn.crc16;
+        btn.crc32;
+        btn.crc32c;
+        btn.crc64;
+
+
+
+
 
 
         btn.output.copy   = async function(){
@@ -444,7 +504,18 @@
   //:
   
   
-        async function sha256(txt){
+  
+        function hash(alg){
+          
+              var txt   = await cur.blob.text();
+              var hex   = await hash[alg](txt);
+              
+              output.text.textContent   = hex;
+              
+        }//hash
+
+  
+        hash.sha256   = async function(txt){
           
             const msg   = new TextEncoder().encode(txt);
             const buf   = await crypto.subtle.digest('SHA-256',msg);
