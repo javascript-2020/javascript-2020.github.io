@@ -304,13 +304,21 @@
                   </div>
                   
             </div>
+
             
+            <log api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            </log>
+
             
       </body>
       
       
       <script>
       
+      
+        var cur           = {};
+        cur.blob          = new Blob(['helloworld']);
         
         var preview       = {};
         var blob          = {};
@@ -321,6 +329,7 @@
 
 
         var btn           = {};
+        btn.output        = {};
 
 
 
@@ -505,11 +514,12 @@
   
   
   
-        function hash(alg){
+        async function hash(alg){
           
               var txt   = await cur.blob.text();
               var hex   = await hash[alg](txt);
               
+                                                                                console.log(hex);
               output.text.textContent   = hex;
               
         }//hash
@@ -523,8 +533,7 @@
             var uint8   = new Uint8Array(buf);
             var hex     = uint8.reduce((a,byte)=>a   += byte.toString(16).padStart(2,'0'),'')
             
-            $(card,'#sha256-root #value').textContent   = hex;
-            console.log(hex);
+            return hex;
             
         }//sha256
   
