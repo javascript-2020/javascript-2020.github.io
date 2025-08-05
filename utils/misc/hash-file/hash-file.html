@@ -11,6 +11,8 @@
             
             <link rel=icon type='image/png' href='image/hash-text-30.png'>
             <link rel=stylesheet href='/utils/css/utils.css'>
+
+            <script src="https://cdn.jsdelivr.net/npm/hash-wasm@4"></script>            
             
             <script init>
                                                                                 console.clear();
@@ -136,6 +138,11 @@
 
         }//ext_fn
 
+
+        var hash    = await import('https://cdn.jsdelivr.net/npm/hash-wasm/+esm');
+        console.log(hash);
+        
+        
 })();
 
 
@@ -500,17 +507,47 @@
   //:
   
   
+        function load(alg){
+          
+              if(hash[alg])return;
+              
+              var resolve,promise     = new Promise(res=>resolve=res);
+              
+              var src                 = `https://cdn.jsdelivr.net/npm/hash-wasm@4/dist/${alg}.umd.min.js`;
+              
+              var script              = document.createElement('script');
+              script.onload           = onload;
+              script.src              = src;
+              document.head.append(script);
+              
+              return promise;
+              
+              
+              function onload(){
+                
+                    resolve();
+                    
+              }//onload
+              
+        }//load
+        
   
         async function hash(alg){
           
+              await load(alg);
+              var fn    = hashwasm[alg];
+              
               var txt   = await cur.blob.text();
-              var hex   = await hash[alg](txt);
+              
+              var hex   = await fn(txt);
               
                                                                                 console.log(hex);
               output.text.textContent   = hex;
               
         }//hash
 
+
+/*
   
         hash.sha256   = async function(txt){
           
@@ -523,6 +560,9 @@
             return hex;
             
         }//sha256
+        
+*/
+
   
 
         
