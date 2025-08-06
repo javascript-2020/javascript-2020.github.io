@@ -38,7 +38,10 @@
         var filename;
         var log;
         
-
+        
+        var desc;
+        
+        
   //:
 
               
@@ -139,9 +142,108 @@
         }//ext_fn
 
 
+
+
         var hash    = await import('https://cdn.jsdelivr.net/npm/hash-wasm/+esm');
         console.log(hash);
-        
+
+
+/*
+
+adler32 : ƒ(A)
+
+argon2d : ƒ (A)
+argon2i : ƒ (A)
+argon2id : ƒ (A)
+
+bcrypt : ƒ (A)
+
+blake2b : ƒ (A,I=512,B=null)
+blake2s : ƒ (A,I=256,B=null)
+blake3 : ƒ (A,I=256,B=null)
+
+crc32 : ƒ (A,I=3988292384)
+crc64 : ƒ (A,I="c96c5795d7870f42")
+
+keccak : ƒ (A,I=512)
+
+md4 : ƒ (A)
+md5 : ƒ (A)
+
+pbkdf2 : ƒ gI(A)
+
+ripemd160 : ƒ (A)
+
+scrypt : ƒ (A)
+
+sha1 : ƒ (A)
+sha3 : ƒ (A,I=512)
+sha224 : ƒ (A)
+sha256 : ƒ (A)
+sha384 : ƒ (A)
+sha512 : ƒ (A)
+
+sm3 : ƒ (A)
+
+whirlpool : ƒ (A)
+
+xxhash3 : ƒ (A,I=0,B=0)
+xxhash32 : ƒ (A,I=0)
+xxhash64 : ƒ (A,I=0,B=0)
+xxhash128 : ƒ (A,I=0,B=0)
+
+
+*/
+
+        desc    = {
+
+              adler32         : {g:1},
+                        
+              argon2d         : {g:2},
+              argon2i         : {g:2},
+              argon2id        : {g:2},
+              
+              bcrypt          : {g:3},
+              
+              blake2b         : 'ƒ (A,I=512,B=null)',
+              blake2s         : 'ƒ (A,I=256,B=null)',
+              blake3          : 'ƒ (A,I=256,B=null)',
+              
+              crc32           : 'ƒ (A,I=3988292384)',
+              crc64           : 'ƒ (A,I="c96c5795d7870f42")',
+              
+              keccak          : 'ƒ (A,I=512)',
+              
+              md4             : {g:7},
+              md5             : {g:7},
+              
+              pbkdf2          : 'ƒ gI(A)',
+              
+              ripemd160       : {g:9},
+              
+              scrypt          : {g:10},
+              
+              sha1            : {g:11},
+              sha3            : {g:11,bits:{values:[512]}},
+              sha224          : {g:11},
+              sha256          : {g:11},
+              sha384          : {g:11},
+              sha512          : {g:11},
+              
+              sm3             : {g:12},
+              
+              whirlpool       : {g:13},
+              
+              xxhash3         : 'ƒ (A,I=0,B=0)',
+              xxhash32        : 'ƒ (A,I=0)',
+              xxhash64        : 'ƒ (A,I=0,B=0)',
+              xxhash128       : 'ƒ (A,I=0,B=0)',
+
+              
+        };
+
+
+
         
 })();
 
@@ -257,8 +359,32 @@
             </div>
 
 
+
+            <div id=params style='display:none'>
+            
+                  <div id=bits-value-root>
+                  
+                        <div>
+                              bits
+                        </div>
+                        
+                        <div>
+                        </div>
+                        
+                  </div>
+                  
+            </div params>
+            
+
+            
+
+
+            
             <div id=btns>
             
+                  <input value=test type=button>
+
+<!--            
                   <div>
                         <input value=md2 type=button disabled>
                         <input value=md4 type=button disabled>
@@ -284,7 +410,8 @@
                         <input value=crc32c type=button disabled>
                         <input value=crc64 type=button disabled>
                   </div>
-                  
+-->
+
             </div>
 
 
@@ -343,7 +470,13 @@
               filemod.initdom(root);
               filename.initdom(root);
 
-          
+
+
+
+              $(root,'[value=test]').onclick    = btn.test;
+              
+              
+/*              
               $(root,'[value=md2]').onclick           = btn.md2;
               $(root,'[value=md4]').onclick           = btn.md4;
               $(root,'[value=md5]').onclick           = btn.md5;
@@ -361,13 +494,43 @@
               $(root,'[value=crc32]').onclick         = btn.crc32;
               $(root,'[value=crc32c]').onclick        = btn.crc32c;
               $(root,'[value=crc64]').onclick         = btn.crc64;
-              
+*/              
 
 
 
               blob.root                                       = $(root,'#blob');
 
 
+              var btns                                        = $(root,'#btns');
+              var cur     = {};
+              cur.g       = null;
+              cur.root    = null;
+              
+              for(let key in desc){
+                
+                    var d   = desc[key];
+                    if(typeof d=='object'){
+                      
+                          var list    = Object.keys(d);
+                          if(list.length==1){
+                            
+                                if(cur.g!=d.g){
+                                      cur.g       = d.g;
+                                      cur.root    = document.createElement('div');
+                                      btns.append(cur.root);
+                                }
+                                
+                                var input       = document.createElement('input');
+                                input.value     = key;
+                                input.type      = 'button';
+                                input.onclick   = e=>hash(key);
+                                cur.root.append(input);
+                                
+                          }//list
+                                
+                    }//object
+                    
+              }//for
 
 
               output.root                                     = $(root,'#output-root');
@@ -400,22 +563,42 @@
               
         }//chk
         
+        
+        btn.test    = async function(){
+          
+              //await load('argon2');
+              console.log(hashwasm);
+              var alg   = 'blake2s';
+              hash(alg);
+              
+        }//test
+        
+        
 
         btn.md2   = function(){
         }//md2
         
         btn.md4;
+
         
         btn.md5   = function(){
           
               if(chk())return;
-              hash('md5');
+              hash('blake2s');
               
         }//md5
+
         
         btn.md6;
+
         
-        btn.sha1;
+        btn.sha1    = function(){
+          
+              if(chk())return;
+              hash('sha1');
+              
+        }//sha1
+
         
         btn.sha256    = function(){
           
@@ -534,14 +717,14 @@
   
         async function hash(alg){
           
-              await load(alg);
+              //await load(alg);
               var fn    = hashwasm[alg];
               
               var txt   = await cur.blob.text();
               
               var hex   = await fn(txt);
               
-                                                                                console.log(hex);
+                                                                                console.log(alg,hex);
               output.text.textContent   = hex;
               
         }//hash
