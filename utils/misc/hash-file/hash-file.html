@@ -197,13 +197,13 @@ xxhash128 : ƒ (A,I=0,B=0)
 
         desc    = {
 
-              adler32         : {g:1},
+              adler32         : {grp:1,alg:'hashwasm'},
                         
-              argon2d         : {g:2},
-              argon2i         : {g:2},
-              argon2id        : {g:2},
+              argon2d         : {grp:2,alg:'hashwasm'},
+              argon2i         : {grp:2,alg:'hashwasm'},
+              argon2id        : {grp:2,alg:'hashwasm'},
               
-              bcrypt          : {g:3},
+              bcrypt          : {grp:3,alg:'hashwasm'},
               
               blake2b         : 'ƒ (A,I=512,B=null)',
               blake2s         : 'ƒ (A,I=256,B=null)',
@@ -214,25 +214,25 @@ xxhash128 : ƒ (A,I=0,B=0)
               
               keccak          : 'ƒ (A,I=512)',
               
-              md4             : {g:7},
-              md5             : {g:7},
+              md4             : {grp:7,alg:'hashwasm'},
+              md5             : {grp:7,alg:'hashwasm'},
               
               pbkdf2          : 'ƒ gI(A)',
               
-              ripemd160       : {g:9},
+              ripemd160       : {grp:9,alg:'hashwasm'},
               
-              scrypt          : {g:10},
+              scrypt          : {grp:10,alg:'hashwasm'},
               
-              sha1            : {g:11},
-              sha3            : {g:11,bits:{values:[512]}},
-              sha224          : {g:11},
-              sha256          : {g:11},
-              sha384          : {g:11},
-              sha512          : {g:11},
+              sha1            : {grp:11,alg:'hashwasm'},
+              sha3            : {grp:11,alg:'hashwasm',bits:{values:[512]}},
+              sha224          : {grp:11,alg:'hashwasm'},
+              sha256          : {grp:11,alg:'hashwasm'},
+              sha384          : {grp:11,alg:'hashwasm'},
+              sha512          : {grp:11,alg:'hashwasm'},
               
-              sm3             : {g:12},
+              sm3             : {grp:12,alg:'hashwasm'},
               
-              whirlpool       : {g:13},
+              whirlpool       : {grp:13,alg:'hashwasm'},
               
               xxhash3         : 'ƒ (A,I=0,B=0)',
               xxhash32        : 'ƒ (A,I=0)',
@@ -292,7 +292,8 @@ xxhash128 : ƒ (A,I=0,B=0)
     {font-family:monospace;font-size:16px;padding:5px 10px;border:1px solid lightblue;overflow:auto}
 
 
-
+  #hash-type
+    {color:blue;font-weight:bold}
 
 
 
@@ -381,48 +382,24 @@ xxhash128 : ƒ (A,I=0,B=0)
 
             
             <div id=btns>
-            
-                  <input value=test type=button>
-
-<!--            
-                  <div>
-                        <input value=md2 type=button disabled>
-                        <input value=md4 type=button disabled>
-                        <input value=md5 type=button >
-                        <input value=md6 type=button disabled>
-                  </div>
-
-                  <div>                  
-                        <input value=sha1 type=button>
-                        <input value=sha256 type=button>
-                        <input value=sha512 type=button>
-                        <input value=sha-3 type=button disabled>
-                  </div>
-
-                  <div>                  
-                        <input value=blake2 type=button disabled>
-                  </div>
-
-                  <div>
-                        <input value=crc8 type=button disabled>
-                        <input value=crc16 type=button disabled>
-                        <input value=crc32 type=button disabled>
-                        <input value=crc32c type=button disabled>
-                        <input value=crc64 type=button disabled>
-                  </div>
--->
-
             </div>
 
 
             <div id=output-root>
             
                   <div>
-                        hash
+                  
+                        <label>
+                              hash
+                        </label>
+                        
                   </div>
                   
                   <div id=output-hdr>
                         <input value=copy type=button>
+                  </div>
+                  
+                  <div id=hash-type>
                   </div>
                   
                   <div id=output>
@@ -473,35 +450,12 @@ xxhash128 : ƒ (A,I=0,B=0)
 
 
 
-              $(root,'[value=test]').onclick    = btn.test;
-              
-              
-/*              
-              $(root,'[value=md2]').onclick           = btn.md2;
-              $(root,'[value=md4]').onclick           = btn.md4;
-              $(root,'[value=md5]').onclick           = btn.md5;
-              $(root,'[value=md6]').onclick           = btn.md6;
-              
-              $(root,'[value=sha1]').onclick          = btn.sha1;
-              $(root,'[value=sha256]').onclick        = btn.sha256;
-              $(root,'[value=sha512]').onclick        = btn.sha512;
-              $(root,'[value=sha-3]').onclick         = btn.sha3;
-              
-              $(root,'[value=blake2]').onclick        = btn.blake2;
-              
-              $(root,'[value=crc8]').onclick          = btn.crc8;
-              $(root,'[value=crc16]').onclick         = btn.crc16;
-              $(root,'[value=crc32]').onclick         = btn.crc32;
-              $(root,'[value=crc32c]').onclick        = btn.crc32c;
-              $(root,'[value=crc64]').onclick         = btn.crc64;
-*/              
-
-
-
               blob.root                                       = $(root,'#blob');
 
 
+
               var btns                                        = $(root,'#btns');
+              
               var cur     = {};
               cur.g       = null;
               cur.root    = null;
@@ -512,7 +466,7 @@ xxhash128 : ƒ (A,I=0,B=0)
                     if(typeof d=='object'){
                       
                           var list    = Object.keys(d);
-                          if(list.length==1){
+                          if(list.length==2){
                             
                                 if(cur.g!=d.g){
                                       cur.g       = d.g;
@@ -725,7 +679,8 @@ xxhash128 : ƒ (A,I=0,B=0)
               var hex   = await fn(txt);
               
                                                                                 console.log(alg,hex);
-              output.text.textContent   = hex;
+              $(root,'#hash-type').textContent    = alg;
+              output.text.textContent             = hex;
               
         }//hash
 
