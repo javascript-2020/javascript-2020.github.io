@@ -280,29 +280,31 @@
             
         async function initdom(rootnode){
           
-              var root                        = rootnode;
+              var root                                  = rootnode;
 
-              var hdr                         = $(root,'#hdr');
+              var hdr                                   = $(root,'#hdr');
               
               
-              ui.password.root                = $(root,'#password-root');
-              ui.password.chk                 = $(root,'#password-chk');
-              ui.password.chk.onchange        = chk.password;
-              ui.password.input               = $(root,'#password');
-              ui.password.input.value         = 'abc';
+              ui.password.root                          = $(root,'#password-root');
+              ui.password.chk                           = $(root,'#password-chk');
+              ui.password.chk.onchange                  = chk.password;
+              ui.password.input                         = $(root,'#password');
+              ui.password.input.value                   = 'abc';
               
-              ui.private.chk                  = $(root,'#private-chk');
-              var node                        = $(root,'[value="private key"]');
-              node.onclick                    = btn.private;
-              ui.private.fn                   = $(root,'#private-fn');
+              $(ui.password.root,'#show').onclick       = btn.show;
               
-              ui.public.chk                   = $(root,'#public-chk');
-              var node                        = $(root,'[value="public key"]');
-              node.onclick                    = btn.public;
-              ui.public.fn                    = $(root,'#public-fn');
+              ui.private.chk                            = $(root,'#private-chk');
+              var node                                  = $(root,'[value="private key"]');
+              node.onclick                              = btn.private;
+              ui.private.fn                             = $(root,'#private-fn');
               
-              $('#encrypt').onclick           = btn.encrypt;
-              $('#decrypt').onclick           = btn.decrypt;
+              ui.public.chk                             = $(root,'#public-chk');
+              var node                                  = $(root,'[value="public key"]');
+              node.onclick                              = btn.public;
+              ui.public.fn                              = $(root,'#public-fn');
+              
+              $('#encrypt').onclick                     = btn.encrypt;
+              $('#decrypt').onclick                     = btn.decrypt;
               
               
               filemod.initdom(root);
@@ -504,6 +506,18 @@
         }//decrypt
 
 
+        btn.show    = function(){
+          
+              if(ui.password.input.hasAttribute('type')){
+                    ui.password.input.removeAttribute('type');
+              }else{
+                    ui.password.input.setAttribute('type','password');
+              }
+              
+        }//show
+        
+        
+  //:
 
 
         var fn    = {};
