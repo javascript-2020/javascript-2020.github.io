@@ -142,7 +142,7 @@
     }
     
   code
-    {margin:0}
+    {margin:0;border:1px solid lightgray}
     
   input
     {font-size:16px;padding:5px 10px}
@@ -305,14 +305,22 @@ determine datatypes in javascript
                     if(clear){
                           cons.clear();
                     }
+
                     
-                    var console   = {};
-                    console.log   = function(){
+                    var console     = {};
+                    console.log     = function(){
                                     
-                                          cons.log.apply(null,arguments);
-                                          window.console.log.apply(window.console,arguments);
+                                            cons.log.apply(null,arguments);
+                                            window.console.log.apply(window.console,arguments);
                                           
-                                    }//log
+                                      }//log
+                    console.clear   = function(){
+                        
+                                            cons.clear();
+                                            window.console.clear();
+                                            
+                                      }//clear
+
                                     
                     var result    = eval(js);
                     
