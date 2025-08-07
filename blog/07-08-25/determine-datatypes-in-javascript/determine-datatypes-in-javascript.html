@@ -42,7 +42,7 @@
 
               
         async function init(){
-                                                                                debug('init',version);
+                                                                                //debug('init',version);
 
 
               cons    = mod.console();
@@ -50,7 +50,7 @@
               cons.initmod({ext,$,ace});
               
               
-              cons.init();
+              await cons.init();
               
               
               
@@ -132,7 +132,25 @@
             </script init>
 
 
-
+            <style>
+            
+  html
+    {height:100%}
+  body
+    {height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;
+      font-family:arial
+    }
+    
+  code
+    {flex:1}
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+    
+    
+            </style>
 
       </head>
       
@@ -179,6 +197,12 @@ determine datatypes in javascript
             </code>
 
 
+
+            <div>
+                  <input value=run type=button>
+            </div>
+
+
             
             <console api>
                   <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
@@ -211,7 +235,7 @@ determine datatypes in javascript
               
               cons.initdom(root);
               
-              
+              cons.log('ready');
 
 
           
@@ -222,6 +246,10 @@ determine datatypes in javascript
   
   
         btn.run   = function(){
+          
+              var js    = editor.getValue();
+              sandbox(js);
+              
         }//run
         
             
@@ -244,21 +272,51 @@ determine datatypes in javascript
               editor.session.setMode('ace/mode/'+mode)                        
               editor.session.on('change',onchange);
               
-              update();
+
               editor.focus();
   
                                       
               function onchange(e){
   
-                    filename.save(true);
-                    update();
-                                      
               }//onchange
               
         }//editor
             
             
-            
+
+  //:
+  
+  
+        function sandbox(js,disp_result){
+          
+              (()=>{
+
+                    cons.clear();
+                    
+                    var console   = {};
+                    console.log   = function(){
+                                    
+                                          cons.log.apply(null,arguments);
+                                          window.console.log.apply(window.console,arguments);
+                                          
+                                    }//log
+                                    
+                    var result    = eval(js);
+                    
+                    if(disp_result){
+                          cons.log('result :',result);
+                    }
+                    
+              })();
+              
+        }//sandbox
+
+
+  //:
+  
+  
+  init.stack.complete;
+  
             
             </script>
       
