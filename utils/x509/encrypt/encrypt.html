@@ -525,7 +525,23 @@
           
               txt             = encrypt.str_buf(txt);
               
-              var cipher      = await encrypt.encrypt.crypto['aes-gcm'](key,txt);
+              var err;
+              try{
+                
+                    var cipher      = await encrypt.encrypt.crypto['aes-gcm'](key,txt);
+                    
+              }
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    log.red('encrypt failed');
+                    log.error(err.toString());
+                    return;
+              }
+              
               var b64         = encrypt.buf_b64(cipher);
               editor.setValue(b64,-1);
           
@@ -537,7 +553,23 @@
               txt           = encrypt.str_buf(txt);          
               password      = encrypt.str_buf(password);
           
-              var cipher    = await encrypt.encrypt.crypto['aes-gcm'].password(password,txt);
+              var err;
+              try{
+                
+                    var cipher    = await encrypt.encrypt.crypto['aes-gcm'].password(password,txt);
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    log.red('encrypt failed');
+                    log.red(err.toString());
+                    return;
+              }
+              
               var b64       = encrypt.buf_b64(cipher);
               editor.setValue(b64,-1);
               
@@ -549,7 +581,23 @@
           
               txt             = encrypt.str_buf(txt);
               
-              var decrypted   = await encrypt.decrypt.crypto['aes-gcm'](key,buf);
+              var err;
+              try{
+                
+                    var decrypted   = await encrypt.decrypt.crypto['aes-gcm'](key,buf);
+                    
+              }
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    log.red('decrypt failed');
+                    log.red(err.toString());
+                    return;
+              }
+              
               var txt         = encrypt.buf_str(decrypted);
               editor.setValue(txt,-1);
               
@@ -561,7 +609,23 @@
               password        = encrypt.str_buf(password);
               var buf         = encrypt.str_buf(txt);
               
-              var decrypted   = await encrypt.decrypt.crypto['aes-gcm'].password(password,buf);
+              var err;
+              try{
+                
+                    var decrypted   = await encrypt.decrypt.crypto['aes-gcm'].password(password,buf);
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    log.red('decrypt failed');
+                    log.red(err.toString());
+                    return;
+              }
+              
               var txt         = encrypt.buf_str(decrypted);
               editor.setValue(txt,-1);
               
