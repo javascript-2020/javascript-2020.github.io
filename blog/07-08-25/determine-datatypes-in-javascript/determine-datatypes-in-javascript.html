@@ -331,9 +331,6 @@ This can be extended further through the use of
               var node        = document.createElement('snippet-console');
               code.after(node);
               
-              return;
-              
-              
               
               var script      = document.createElement('script');
               //html-loader               
@@ -350,7 +347,10 @@ This can be extended further through the use of
                     var snippet   = mod['snippet-console']();
                     snippet.initmod({ext,$,source});
                     snippet.init();
-                    snippet.initdom();
+                    
+                    var node    = code.nextElementSibling;
+                    node        = node.shadowRoot;
+                    snippet.initdom(node);
                     
               }//onload
               
