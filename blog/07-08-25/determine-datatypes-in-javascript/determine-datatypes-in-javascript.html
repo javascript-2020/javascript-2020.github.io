@@ -35,7 +35,7 @@
         
         var mod           = {};
         
-        var cons;
+        var snippet;
         
         
   //:
@@ -45,12 +45,12 @@
                                                                                 //debug('init',version);
 
 
-              cons    = mod.console();
+              snippet   = mod.snippet();
               
-              cons.initmod({ext,$,ace});
+              snippet.initmod({ext,$,ace,source});
               
               
-              await cons.init();
+              await snippet.init();
               
               
               
@@ -198,19 +198,13 @@ determine datatypes in javascript
 
 
 
-            <div>
-                  <input value=run type=button>
-            </div>
-
-
-            
-            <console api>
+            <snippet-console api>
                   <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-            </console>
-
-
+            </snippet-console>
+            
             
             <script>
+
 
 
         var editor;
@@ -228,18 +222,25 @@ determine datatypes in javascript
               root                                  = rootnode;
               
               var node                              = $(root,'code');
+              
+              
+              var h   = node.offsetHeight;
+              console.log('***',h);
+              
+              
+              
               node.style.height   = node.offsetHeight+'px';
               
+              
+              //return;
               setup(node);
               
               
               $(root,'[value=run]').onclick         = btn.run;
               
               
-              cons.initdom(root);
+              snippet.initdom(root);
               
-              cons.clear();
-              cons.log('ready');
               
 
 
@@ -249,23 +250,14 @@ determine datatypes in javascript
 
   //:
   
-  
-        btn.run   = function(){
-          
-              var js    = editor.getValue();
-              sandbox(js);
-              
-        }//run
-        
-            
-  //:
-  
             
         async function setup(node,mode='javascript'){
 
               node.onkeydown    = kd;
               
-              editor      = ace.edit(node);
+              editor      = ace.edit(node,{
+                minLines: 30,
+              });
               editor.setShowInvisibles(false);
               editor.setShowPrintMargin(false);
               editor.setPrintMarginColumn(false);
@@ -281,9 +273,35 @@ determine datatypes in javascript
 
               editor.focus();
   
-                                      
-              function onchange(e){
   
+  
+              console.log(node.scrollHeight);
+              
+              var ace_node    = node.querySelector('.ace_content');
+              console.log(ace_node.scrollHeight);
+              
+              node.style.height   = node.scrollHeight+'px';
+  
+  
+              
+              function onchange(e){
+                
+                
+                
+  console.log('onchange',node.scrollHeight);
+              console.log(ace_node.scrollHeight);
+              
+      const newHeight = editor.getSession().getScreenLength() *
+        (editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth());
+      console.log(newHeight);
+      
+       editor.container.style.height = `${newHeight}px`;
+      editor.resize();
+
+
+
+
+      
               }//onchange
               
         }//editor
@@ -297,44 +315,6 @@ determine datatypes in javascript
               
         }//kd
         
-        
-  //:
-  
-  
-        function sandbox(js,{clear,disp_result}={}){
-          
-              (()=>{
-
-                    if(clear){
-                          cons.clear();
-                    }
-
-                    
-                    var console     = {};
-                    console.log     = function(){
-                                    
-                                            cons.log.apply(null,arguments);
-                                            window.console.log.apply(window.console,arguments);
-                                          
-                                      }//log
-                    console.clear   = function(){
-                        
-                                            cons.clear();
-                                            window.console.clear();
-                                            
-                                      }//clear
-
-                                    
-                    var result    = eval(js);
-                    
-                    if(disp_result){
-                          cons.log('result :',result);
-                    }
-                    
-              })();
-              
-        }//sandbox
-
 
   //:
   
