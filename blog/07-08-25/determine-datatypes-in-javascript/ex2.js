@@ -1,3 +1,4 @@
+
       var myObject                    = {};
       myObject[Symbol.toStringTag]    = 'my-object';
 
