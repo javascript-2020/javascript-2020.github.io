@@ -161,6 +161,9 @@
     {cursor:pointer}
     
     
+  .break
+    {margin-top:30px}
+    
             </style>
 
       </head>
@@ -210,12 +213,7 @@ complex and then just mysteriously stop working, my go to for datatype has alway
             </code>
 
 
-<!--
-            <snippet-console api style='height:50px'>
-                  <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-            </snippet-console>
--->            
-            
+            <div class=break></div>            
 
             <div>
 
@@ -238,16 +236,6 @@ This can be extended further through the use of
 
             
             <script>
-
-
-
-        //var editor;
-        
-
-        var btn   = {};
-        
-        
-  //:
   
   
         function initdom(rootnode){
@@ -255,78 +243,13 @@ This can be extended further through the use of
           
               root                                  = rootnode;
 
-/*              
-              var node                              = $(root,'#ex1');
-              editor    = setup(node);
-              snippet.initdom(root);
-              
-              
-              var node    = $(root,'#ex2');
-*/
 
               $.all(root,'code').forEach(node=>create(node));
               
-              //create(node);
-              
-
 
           
         }//initdom
             
-
-  //:
-  
-            
-        function setup(node,{mode='javascript',kd}){
-
-              node.onkeydown    = kd;
-              
-              var editor      = ace.edit(node);
-              editor.setShowInvisibles(false);
-              editor.setShowPrintMargin(false);
-              editor.setPrintMarginColumn(false);
-              editor.setBehavioursEnabled(false);
-              editor.setDisplayIndentGuides(false);
-              editor.setScrollSpeed(2);
-              editor.setFontSize(16);
-              editor.session.setOptions({tabSize:2,useSoftTabs:true});
-              //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
-              editor.session.setMode('ace/mode/'+mode)                        
-              editor.session.on('change',onchange);
-              editor.setOption('maxLines',Infinity);
-
-
-              editor.focus();
-              return editor;
-              
-              
-              function onchange(e){
-                                                                                //console.log('onchange');                
-                    var lh      = editor.renderer.lineHeight;
-                    var lines   = editor.session.getLength();
-                    var h       = lh*lines;
-                    
-                    editor.container.style.height = h+'px';
-                    editor.resize();
-
-              }//onchange
-              
-        }//editor
-            
-            
-  //:
-  
-  
-  
-        function source(){
-          
-              var txt   = editor.getValue();
-              return txt;
-              
-        }//source
-  
-  
-  
   
   //:
   
@@ -337,10 +260,11 @@ This can be extended further through the use of
               init.stack.add;
               init.stack.push(complete);
               
-              var editor      = setup(code,{kd});
+              var editor      = $.editor.max(code,{kd});
+
 
               var node        = document.createElement('snippet-console');
-              node.setAttribute('api');
+              node.setAttribute('api','api');
               code.after(node);
                             
               var script      = document.createElement('script');
@@ -388,10 +312,9 @@ This can be extended further through the use of
                     
               }//kd
         
-
-          
         }//create
   
+
   
   init.stack.complete;
   
