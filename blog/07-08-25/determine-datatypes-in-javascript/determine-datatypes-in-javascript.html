@@ -250,7 +250,7 @@ This can be extended further through the use of
               
               var node    = $(root,'#ex2');
               
-              snippet.create(node,{datatype});
+              create(node);
               
 
 
@@ -319,6 +319,46 @@ This can be extended further through the use of
   
   
   
+  
+  //:
+  
+  
+  
+        function create(code){
+
+              
+              var node        = document.createElement('snippet-console');
+              code.append(node);
+              
+              var script      = document.createElement('script');
+              //html-loader               
+              script.src      = 'https://html-loader-1024713184986.us-central1.run.app/';
+              script.onload   = onload;
+              
+              node.append(script);
+              
+              var editor    = setup(code);
+              
+
+              function onload(){
+                
+                    var snippet   = mod['snippet-console']();
+                    snippet.initmod({ext,$,source});
+                    snippet.init();
+                    snippet.initdom();
+                    
+              }//onload
+              
+              
+              function source(){
+                
+                    var txt   = editor.getValue();
+                    return txt;
+                    
+              }//source
+
+          
+        }//create
   
   
   init.stack.complete;
