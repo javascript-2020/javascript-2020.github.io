@@ -277,7 +277,7 @@ This can be extended further through the use of
   //:
   
             
-        function setup(node,mode='javascript'){
+        function setup(node,{mode='javascript',kd}){
 
               node.onkeydown    = kd;
               
@@ -337,7 +337,7 @@ This can be extended further through the use of
               init.stack.add;
               init.stack.push(complete);
               
-              var editor      = setup(code);
+              var editor      = setup(code,{kd});
 
               var node        = document.createElement('snippet-console');
               node.setAttribute('api');
@@ -383,7 +383,7 @@ This can be extended further through the use of
               function kd(e){
                 
                     if(e.key==='Enter' && e.ctrlKey){
-                          btn.run();
+                          snippet.run();
                     }
                     
               }//kd
