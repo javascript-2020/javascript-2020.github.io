@@ -166,12 +166,14 @@
 
             <div id=desc>
 
-determine datatypes in javascript
+Determining datatypes in javascript always seemed to be a bit of a mystery, I've seen hundreds
+of incarnations over the years, some work in some circumstances, until the code starts to get more 
+complex and then just mysteriously stop working, my go to for datatype has always been the following :
             
             </div>
 
 
-            <code>
+            <code id=ex1>
             
 
         var v       = new Uint8Array();
@@ -198,10 +200,30 @@ determine datatypes in javascript
 
 
 
-            <snippet-console api>
+            <snippet-console api style='height:50px'>
                   <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
             </snippet-console>
             
+
+            <div>
+
+This can be extended further through the use of
+
+            </div>
+            
+            
+            <code id=ex2>
+
+      var myObject                    = {};
+      myObject[Symbol.toStringTag]    = 'my-object';
+
+      var type    = datatype(myObject);
+      
+      console.log(type);
+      
+            </code>
+            
+
             
             <script>
 
@@ -221,15 +243,13 @@ determine datatypes in javascript
           
               root                                  = rootnode;
               
-              var node                              = $(root,'code');
-              
-              
+              var node                              = $(root,'#ex1');
               setup(node);
-              
-              
-              
               snippet.initdom(root);
               
+              
+              var node    = $(root,'#ex2');
+              snippet.create(node,{datatype});
               
 
 
