@@ -66,7 +66,7 @@
         }//init
 
 
-        init.stack            = [];
+        init.stack            = [init];
         init.stack.ct         = 0;
         init.stack.total      = 1;
         init.stack.mode       = '';
@@ -78,7 +78,12 @@
         Object.defineProperty(init.stack,'complete',{get:()=>{
               init.stack.ct++;
               init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
-              init.stack.ct>=init.stack.total && init();
+              if(init.stack.ct>=init.stack.total){
+                    init.stack.forEach(fn=>fn());
+                    init.stack.length   = 0;
+                    init.stack.ct       = 0;
+                    init.stack.total    = 0;
+              }
         }});
         
         //  (typeof init!='undefined' && init?.stack && init.stack.add)
@@ -335,26 +340,28 @@ This can be extended further through the use of
               var script      = document.createElement('script');
               //html-loader               
               script.src      = 'https://html-loader-1024713184986.us-central1.run.app/';
-              script.onload   = onload;
+              init.stack.push(complete);
+              
               
               node.append(script);
               
               var editor    = setup(code);
               
 
-              function onload(){
+              async function complete(){
                 
                     var snippet   = mod['snippet-console']();
+              
                     snippet.initmod({ext,$,source});
-                    snippet.init();
-                    
+                    await snippet.init();
                     var node    = code.nextElementSibling;
                     node        = node.shadowRoot;
+                    debugger;
                     snippet.initdom(node);
                     
               }//onload
               
-              
+                            
               function source(){
                 
                     var txt   = editor.getValue();
