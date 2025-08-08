@@ -13,6 +13,7 @@
               `);
               
               var list    = iframe.contentWindow.list;
+              
               console.log(list instanceof Array);    //  false
               
               iframe.remove();
