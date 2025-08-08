@@ -69,7 +69,7 @@
         init.stack            = [init];
         init.stack.ct         = 0;
         init.stack.total      = 1;
-        init.stack.mode       = '';
+        init.stack.mode       = 'log';
         init.stack.complete   = false;
         Object.defineProperty(init.stack,'add',{get:()=>{
               init.stack.total++;
@@ -93,7 +93,7 @@
         init.complete   = function(){
           
               init.complete.stack.forEach(fn=>fn());
-              delete init.stack;
+              
               
         }//complete
         
@@ -250,7 +250,7 @@ This can be extended further through the use of
               root                                  = rootnode;
               
               var node                              = $(root,'#ex1');
-              setup(node);
+              editor    = setup(node);
               snippet.initdom(root);
               
               
@@ -271,7 +271,7 @@ This can be extended further through the use of
 
               node.onkeydown    = kd;
               
-              editor      = ace.edit(node);
+              var editor      = ace.edit(node);
               editor.setShowInvisibles(false);
               editor.setShowPrintMargin(false);
               editor.setPrintMarginColumn(false);
@@ -287,7 +287,8 @@ This can be extended further through the use of
 
 
               editor.focus();
-  
+              return editor;
+              
               
               function onchange(e){
                                                                                 //console.log('onchange');                
@@ -331,7 +332,7 @@ This can be extended further through the use of
   
   
         function create(code){
-
+console.log('*** create ***');
               
               var node        = document.createElement('snippet-console');
               code.after(node);
@@ -355,7 +356,7 @@ This can be extended further through the use of
                     snippet.initmod({ext,$,source});
                     await snippet.init();
                     var node    = code.nextElementSibling;
-                    node        = node.shadowRoot;
+                    //node        = node.shadowRoot;
                     debugger;
                     snippet.initdom(node);
                     
