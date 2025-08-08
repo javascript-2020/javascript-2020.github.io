@@ -169,29 +169,7 @@ complex and then just mysteriously stop working, my go to for datatype has alway
             </div>
 
 
-            <code id=ex1>
-            
-
-        var v       = new Uint8Array();
-        
-        
-        var type    = datatype(v);
-        
-        console.log(type);
-        
-
-
-        function datatype(v){
-        
-              var str   = Object.prototype.toString.call(v);
-              str       = str.slice(8,-1);
-              str       = str.toLowerCase();
-              return str;
-              
-        }//datatype
-
-
-            
+            <code snippet-console=ex1>
             </code>
 
 
@@ -204,7 +182,7 @@ This can be extended further through the use of
             </div>
             
             
-            <code id=ex2>
+            <code snippet-console>
 
       var myObject                    = {};
       myObject[Symbol.toStringTag]    = 'my-object';
@@ -225,7 +203,7 @@ There have been many a bug created by using
             </div>
             
             
-            <code>
+            <code id=ex3 snippet-console>
 
         var iframe      = document.createElement('iframe');
         iframe.onload   = onload;
@@ -253,13 +231,16 @@ There have been many a bug created by using
             <script>
   
   
-        function initdom(rootnode){
+        async function initdom(rootnode){
           
           
               root                                  = rootnode;
 
 
-              $.all(root,'code').forEach(node=>create(node));
+              //$.all(root,'code').forEach(node=>create(node));
+              await load(root);
+              await snippet_console.all(root);
+              
               
 
           
@@ -269,8 +250,49 @@ There have been many a bug created by using
   //:
   
   
+        function load(rootnode){
+          
+              var list    = $.all(rootnode,'code');
+              list        = list.map(load);
+              //await Promise.all(list);
+              
+              async function load(code){
+                
+                    var fn    = code.getAttribute('snippet-console');
+                    if(!fn)return;
+                    
+                    var fn              = code.id+'.js';
+                    var err;
+                    try{
+                      
+                          var res             = await fetch(fn);
+                          
+                    }
+                    catch(err2){
+                      
+                          err   = err2;
+                    
+                    }
+                    if(err){
+                            console.error(err);
+                            return;
+                    }
+                    
+                    if(!res.ok){
+                            var txt   = await res.text();
+                            console.log(txt);
+                            return;
+                    }
+                    
+                    var txt             = await res.text();
+                    code.textContent    = txt;
+                          
+              }//load
+              
+        }//load
+
   
-        function create(code){
+        function snippet_console(code){
 
               init.stack.add;
               init.stack.push(complete);
@@ -327,9 +349,23 @@ There have been many a bug created by using
                     
               }//kd
         
-        }//create
+        }//snippet_console
+        
+        
+        snippet_console.all   = function(rootnode){
+          
+              var list    = $.all(rootnode,'code[snippet-console]');
+              list.forEach(code=>snippet_console(code));
+              
+        }//all
   
 
+
+
+
+  //:
+  
+  
   
   init.stack.complete;
   
