@@ -137,7 +137,7 @@
   html
     {height:100%}
   body
-    {height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;
       font-family:arial
     }
     
@@ -224,15 +224,6 @@ determine datatypes in javascript
               var node                              = $(root,'code');
               
               
-              var h   = node.offsetHeight;
-              console.log('***',h);
-              
-              
-              
-              node.style.height   = node.offsetHeight+'px';
-              
-              
-              //return;
               setup(node);
               
               
@@ -253,9 +244,7 @@ determine datatypes in javascript
 
               node.onkeydown    = kd;
               
-              editor      = ace.edit(node,{
-                minLines: 30,
-              });
+              editor      = ace.edit(node);
               editor.setShowInvisibles(false);
               editor.setShowPrintMargin(false);
               editor.setPrintMarginColumn(false);
@@ -269,36 +258,22 @@ determine datatypes in javascript
               editor.session.on('change',onchange);
               editor.setOption('maxLines',Infinity);
 
-              
 
               editor.focus();
   
-  
-  
-              console.log(node.scrollHeight);
-              
-              var ace_node    = node.querySelector('.ace_content');
-              console.log(ace_node.scrollHeight);
-              
-              node.style.height   = node.scrollHeight+'px';
-  
-  
               
               function onchange(e){
+                    console.log('onchange');                
                 
                 
-                
-  console.log('onchange',node.scrollHeight);
-              console.log(ace_node.scrollHeight);
-              
-      const newHeight = editor.getSession().getScreenLength() *
-        (editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth());
-      console.log(newHeight);
-      
-       editor.container.style.height = `${newHeight}px`;
-      editor.resize();
-
-
+                    const lineHeight    = editor.renderer.lineHeight;
+                    const lines         = editor.session.getLength();
+                    const newHeight     = lineHeight * lines;
+                    
+                    console.log(newHeight);
+                    
+                    editor.container.style.height = newHeight+"px";
+                    editor.resize();
 
 
       
