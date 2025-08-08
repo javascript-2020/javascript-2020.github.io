@@ -35,7 +35,7 @@
         
         var mod           = {};
         
-        var snippet;
+        //var snippet;
         
         
   //:
@@ -45,12 +45,15 @@
                                                                                 //debug('init',version);
 
 
+/*
               snippet   = mod['snippet-console']();
               
               snippet.initmod({ext,$,ace,source});
               
               
               await snippet.init();
+              
+*/              
               
               
               
@@ -79,10 +82,12 @@
               init.stack.ct++;
               init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
               if(init.stack.ct>=init.stack.total){
-                    init.stack.forEach(fn=>fn());
-                    init.stack.length   = 0;
+                console.log('*** complete');
                     init.stack.ct       = 0;
                     init.stack.total    = 0;
+                    var list    = [...init.stack];
+                    init.stack.length   = 0;
+                    list.forEach(fn=>fn());
               }
         }});
         
@@ -205,10 +210,11 @@ complex and then just mysteriously stop working, my go to for datatype has alway
             </code>
 
 
-
+<!--
             <snippet-console api style='height:50px'>
                   <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
             </snippet-console>
+-->            
             
 
             <div>
@@ -235,7 +241,7 @@ This can be extended further through the use of
 
 
 
-        var editor;
+        //var editor;
         
 
         var btn   = {};
@@ -248,15 +254,19 @@ This can be extended further through the use of
           
           
               root                                  = rootnode;
-              
+
+/*              
               var node                              = $(root,'#ex1');
               editor    = setup(node);
               snippet.initdom(root);
               
               
               var node    = $(root,'#ex2');
+*/
+
+              $.all(root,'code').forEach(node=>create(node));
               
-              create(node);
+              //create(node);
               
 
 
@@ -332,24 +342,30 @@ This can be extended further through the use of
   
   
         function create(code){
-console.log('*** create ***');
+
+              init.stack.add;
+              init.stack.push(complete);
               
-              var editor    = setup(code);
-              debugger;
+              var editor      = setup(code);
+
               var node        = document.createElement('snippet-console');
               code.after(node);
-              
-              
+                            
               var script      = document.createElement('script');
               //html-loader               
               script.src      = 'https://html-loader-1024713184986.us-central1.run.app/';
-              init.stack.push(complete);
-              
+              script.onload   = onload;              
               
               node.append(script);
               
               
-
+              function onload(){
+              
+                    init.stack.complete;
+                    
+              }//onload
+              
+              
               async function complete(){
                 
                     var snippet   = mod['snippet-console']();
@@ -359,6 +375,7 @@ console.log('*** create ***');
                     await snippet.init();
                     
                     var node    = code.nextElementSibling;
+                    debugger;
                     snippet.initdom(node);
                     
               }//onload
