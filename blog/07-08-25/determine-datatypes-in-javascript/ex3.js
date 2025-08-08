@@ -12,7 +12,8 @@
                     
               `);
               
-              console.log(iframe.contentWindow.list instanceof Array);    //  false
+              var list    = iframe.contentWindow.list;
+              console.log(list instanceof Array);    //  false
               
               iframe.remove();
               
