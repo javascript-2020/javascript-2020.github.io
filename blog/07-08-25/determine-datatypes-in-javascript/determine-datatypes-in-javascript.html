@@ -9,7 +9,7 @@
       
             <title></title>
 
-            <base href='https://javascript-2020.github.io/blog/07-08-25/'>
+            <base href='https://javascript-2020.github.io/blog/07-08-25/determine-datatypes-in-javascript/determine-datatypes-in-javascript.html'>
             
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             
@@ -169,8 +169,7 @@ complex and then just mysteriously stop working, my go to for datatype has alway
             </div>
 
 
-            <code snippet-console=ex1>
-            </code>
+            <code snippet-console=ex1></code>
 
 
             <div class=break></div>            
@@ -182,16 +181,7 @@ This can be extended further through the use of
             </div>
             
             
-            <code snippet-console>
-
-      var myObject                    = {};
-      myObject[Symbol.toStringTag]    = 'my-object';
-
-      var type    = datatype(myObject);
-      
-      console.log(type);
-      
-            </code>
+            <code snippet-console=ex2></code>
             
 
             <div class=break></div>            
@@ -203,28 +193,7 @@ There have been many a bug created by using
             </div>
             
             
-            <code id=ex3 snippet-console>
-
-        var iframe      = document.createElement('iframe');
-        iframe.onload   = onload;
-        document.body.append(iframe);
-
-        
-        function onload(){
-        
-              iframe.contentWindow.eval(`
-              
-                    var list    = [];
-                    
-              `);
-              
-              console.log(iframe.contentWindow.list instanceof Array);    //  false
-              
-              iframe.remove();
-              
-        }//onload
-        
-            </code>
+            <code snippet-console=ex3></code>
 
 <!-- ----- -->
 
@@ -237,28 +206,23 @@ There have been many a bug created by using
               root                                  = rootnode;
 
 
-              //$.all(root,'code').forEach(node=>create(node));
-              await load(root);
               await snippet_console.all(root);
               
-              
-
-          
         }//initdom
             
   
   //:
   
   
-        function load(rootnode){
+        async function load(rootnode,css){
           
-              var list    = $.all(rootnode,'code');
+              var list    = $.all(rootnode,`code[${css}]`);
               list        = list.map(load);
-              //await Promise.all(list);
+              await Promise.all(list);
               
               async function load(code){
                 
-                    var fn    = code.getAttribute('snippet-console');
+                    var fn    = code.getAttribute('css');
                     if(!fn)return;
                     
                     var fn              = fn+'.js';
@@ -292,11 +256,21 @@ There have been many a bug created by using
         }//load
 
   
-        function snippet_console(code){
+        snippet_console.all   = function(rootnode){
 
+              await load(root,'snippet-console');
+          
+              var list    = $.all(rootnode,'code[snippet-console]');
+              list.forEach(code=>snippet_console(code));
+              
+        }//all
+
+
+        function snippet_console(code){
+      
               init.stack.add;
               init.stack.push(complete);
-              
+
               var editor      = $.editor.max(code,{kd});
 
 
@@ -352,12 +326,6 @@ There have been many a bug created by using
         }//snippet_console
         
         
-        snippet_console.all   = function(rootnode){
-          
-              var list    = $.all(rootnode,'code[snippet-console]');
-              list.forEach(code=>snippet_console(code));
-              
-        }//all
   
 
 
