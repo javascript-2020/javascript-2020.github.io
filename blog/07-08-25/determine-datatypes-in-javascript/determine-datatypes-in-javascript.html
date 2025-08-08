@@ -267,7 +267,7 @@ This can be extended further through the use of
   //:
   
             
-        async function setup(node,mode='javascript'){
+        function setup(node,mode='javascript'){
 
               node.onkeydown    = kd;
               
@@ -334,6 +334,8 @@ This can be extended further through the use of
         function create(code){
 console.log('*** create ***');
               
+              var editor    = setup(code);
+              debugger;
               var node        = document.createElement('snippet-console');
               code.after(node);
               
@@ -346,7 +348,6 @@ console.log('*** create ***');
               
               node.append(script);
               
-              var editor    = setup(code);
               
 
               async function complete(){
@@ -354,10 +355,10 @@ console.log('*** create ***');
                     var snippet   = mod['snippet-console']();
               
                     snippet.initmod({ext,$,source});
+                    
                     await snippet.init();
+                    
                     var node    = code.nextElementSibling;
-                    //node        = node.shadowRoot;
-                    debugger;
                     snippet.initdom(node);
                     
               }//onload
