@@ -32,6 +32,7 @@
         var ext;
         var $;
         var datatype;
+        var menumod;
         var code;
         
         var mod           = {};
@@ -51,6 +52,7 @@
               
               //await codeblock.init();
               
+              menu    = menumod();
               
               await initdom(document.body);
 
@@ -121,9 +123,10 @@
               var promise   = ext.load.libs(
                     'js/dom/$.js.api',
                     'js/core/datatype.js',
+                    'js/dom/menumod/menumod.js',
                     'js/dom/code/code.js.api',
               );
-              [$,datatype,code]   = await promise;
+              [$,datatype,menumod,code]   = await promise;
 
               code.initmod({ext,$,datatype});
               
@@ -218,6 +221,8 @@ There have been many a bug created by using
 
       <script>
 
+
+        var menu;
   
         var snippets    = [];
 
