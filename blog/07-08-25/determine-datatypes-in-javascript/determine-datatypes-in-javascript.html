@@ -36,7 +36,7 @@
         
         var mod           = {};
         
-        var codeblock;
+        //var codeblock;
         
 
   //:
@@ -44,15 +44,16 @@
               
         async function init(){
                                                                                 //debug('init',version);
-              codeblock   = mod['code-block']();
+              //codeblock   = mod['code-block']();
               
-              codeblock.initmod({ext,$,code});
+              //codeblock.initmod({ext,$,code});
 
               
-              await codeblock.init();
+              //await codeblock.init();
               
               
               await initdom(document.body);
+
 
               init.complete();
 
@@ -72,7 +73,7 @@
               init.stack.ct++;
               init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
               if(init.stack.ct>=init.stack.total){
-                console.log('*** complete');
+                                                                                //console.log('*** complete');
                     init.stack.ct       = 0;
                     init.stack.total    = 0;
                     var list    = [...init.stack];
@@ -184,9 +185,7 @@ complex and then just mysteriously stop working, my go to for datatype has alway
             </div>
 
 
-            <code-block snippet-console=ex1 api>
-                  <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-            </code-block>
+            <code-block snippet-console=ex1 api></code-block>
 
 
             <div class=break></div>            
@@ -231,9 +230,17 @@ There have been many a bug created by using
           
               root                                  = rootnode;
 
-              codeblock.initdom(root);
+              //codeblock.initdom(root);
+              var node    = $(root,'code-block');
+              code.codeblock(node);
+
+
+
               
               await code.snippet_console.all(root);
+
+
+
               
         }//initdom
             
