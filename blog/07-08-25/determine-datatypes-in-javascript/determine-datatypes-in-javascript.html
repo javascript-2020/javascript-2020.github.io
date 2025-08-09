@@ -36,12 +36,22 @@
         
         var mod           = {};
         
+        var codeblock;
+        
 
   //:
 
               
         async function init(){
                                                                                 //debug('init',version);
+              codeblock   = mod['code-block']();
+              
+              codeblock.initmod({ext,$});
+
+              
+              await codeblock.init();
+              
+              
               await initdom(document.body);
 
               init.complete();
@@ -174,7 +184,7 @@ complex and then just mysteriously stop working, my go to for datatype has alway
             </div>
 
 
-            <code-block snippet-console=ex1>
+            <code-block snippet-console=ex1 api>
                   <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
             </code-block>
 
@@ -220,7 +230,9 @@ There have been many a bug created by using
           
           
               root                                  = rootnode;
-debugger;
+
+              codeblock.initdom(root);
+              
               await code.snippet_console.all(root);
               
         }//initdom
