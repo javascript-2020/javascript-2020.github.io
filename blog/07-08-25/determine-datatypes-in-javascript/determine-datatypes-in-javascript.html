@@ -69,11 +69,17 @@
         init.stack.complete   = false;
         Object.defineProperty(init.stack,'add',{get:()=>{
               init.stack.total++;
-              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+              if(init.stack.mode){
+                    console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+                    console.trace();
+              }
         }});
         Object.defineProperty(init.stack,'complete',{get:()=>{
               init.stack.ct++;
-              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+              if(init.stack.mode){
+                    console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+                    console.trace();
+              }
               if(init.stack.ct>=init.stack.total){
                                                                                 console.log('*** complete');
                     init.stack.ct       = 0;
