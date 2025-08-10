@@ -42,6 +42,10 @@
 
         
         var menu          = {};
+        menu.click        = {};
+        var hdr           = {};
+        
+        
         var slider        = {};
         
         var ui            = {};
@@ -59,25 +63,25 @@
                                                                                 debug('init',version);
 
               //keydown                   = keydown();
-              menumod                   = menumod();
-              mod.utils.hdr             = mod.utils.hdr();
-              mod.menu.main             = mod.menu.main();
+              menu.root                 = menumod();
+              hdr.utils                 = mod.utils.hdr();
+              menu.main                 = mod.menu.main();
               filemod                   = filemod();
               publish                   = publish();
               editor                    = editor();
               output                    = output();
               log                       = log();
               
-              mod.utils.hdr.initmod({ext,$,menu,menumod});
-              mod.menu.main.initmod({ext,$,menumod,editor,filemod});
-              filemod.initmod({ext,$,menumod,complete,source,focus,editor});
-              publish.initmod({ext,$,menumod,run});
-              editor.initmod({ext,$,menumod});
+              hdr.utils.initmod({ext,$,menu:menu.root,menumod});
+              menu.main.initmod({ext,$,menumod:menu.root,editor,filemod});
+              filemod.initmod({ext,$,menumod:menu.root,complete,source,focus,editor});
+              publish.initmod({ext,$,menumod:menu.root,run});
+              editor.initmod({ext,$,menumod:menu.root});
               output.initmod({ext,$});
               log.initmod({ext,$});
               
-              mod.menu.main.init();
-              mod.utils.hdr.init();
+              menu.main.init();
+              hdr.utils.init();
               filemod.init();
               publish.init();
               editor.init();
@@ -88,7 +92,7 @@
           
               window.onfocus            = focus;
               keydown.add(kd);
-              menumod.on.close          = focus;
+              menu.root.on.close        = focus;
 
               
               await initdom(document.body);
@@ -279,13 +283,13 @@
               root                                  = rootnode;
               
               keydown.initdom();
-              menumod.add.style();
+              menu.root.add.style();
 
               
-              mod.utils.hdr.initdom();
+              hdr.utils.initdom();
 
               
-              mod.menu.main.initdom();
+              menu.main.initdom();
 
               filemod.initdom(root);
 
@@ -293,7 +297,7 @@
               $(root,'#save').onclick               = btn.save;
 
               var card                              = $(root,'#save-root .menu');
-              $(root,'.menu-icon').onclick          = menumod.click(card,false,false,menu.save);
+              $(root,'.menu-icon').onclick          = menu.root.click(card,false,false,menu.click.save);
 
               autosave                              = $(root,'#autosave');
               autosave.checked                      = false;
@@ -372,7 +376,7 @@
   //:
   
   
-        menu.save   = function(){}
+        menu.click.save   = function(){}
         
         
   //:
