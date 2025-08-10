@@ -24,19 +24,21 @@
             </div>
       
       </template>
+
       
       <script>
       
-mod.menu.top=function(){
+mod.menu.top    = function(){
                                                                                 true && console.log('top-menu');      
   var obj   = {};
               
-        var menumod
+        var menu,menumod
         ;
                   
-        obj.initmod=function(params){
+        obj.initmod   = function(params){
           
               menumod   = params.menumod;
+              menu      = params.menu;
               
         }//initmod
                   
@@ -47,88 +49,51 @@ mod.menu.top=function(){
   //
   
   
-        obj.init=function(){
+        obj.init    = function(){
         }//init
 
                   
   //:
 
               
-        obj.initdom=function(rootnode){
+        obj.initdom   = function(rootnode){
         
               var root                        = $.$(rootnode,'top-menu');
               var shadow                      = root.shadowRoot;
 
-              menumod.add.style(shadow);
+              menu.add.style(shadow);
               
               
               var card                        = $(shadow,'.menu');
-              $(shadow,'#icon').onclick       = menumod.click(card,false,false,menu);
+              $(shadow,'#icon').onclick       = menu.click(card,false,false,click);
 
               
         }//initdom
         
         
-        function menu(type,opt){
+        function click(type,opt){
         
             if(type=='opt'){
-                  menu[opt.id]();
+                  switch(opt.id){
+                  
+                    case 'editor'             : window.open('/utils/editors/editor/editor.html');                         break;
+                    case 'js-console'         : window.open('/utils/editors/js-console/js-console.html');                 break;
+                    case 'html-editor'        : window.open('/utils/editors/html-editor/html-editor.html');               break;
+                    case 'markdown-editor'    : window.open('/utils/editors/markdown-editor/markdown-editor.html');       break;
+                    case 'srcdoc'             : window.open('/utils/editors/srcdoc/srcdoc.html');                         break;
+                    case 'text-diff'          : window.open('/utils/editors/text-diff/text-diff.html');                   break;
+                    case 'stackblitz'         : window.open('/utils/editors/stackblitz/stackblitz.html');                 break;
+                  
+                  }//switch
             }
         
-        }//menu
+        }//click
                     
 
   //:
   
   
-        menu.editor=function(){
-  
-              window.open('/utils/editors/editor/editor.html');
-  
-        }//editor
-  
-  
-        menu['js-console']=function(){
-  
-              window.open('/utils/editors/js-console/js-console.html');
-  
-        }//js-console
           
-        
-        menu['html-editor']=function(){
-        
-              window.open('/utils/editors/html-editor/html-editor.html');
-        
-        }//html-editor
-        
-          
-        menu['markdown-editor']=function(){
-        
-              window.open('/utils/editors/markdown-editor/markdown-editor.html');
-        
-        }//html-editor
-  
-  
-        menu.srcdoc=function(){
-        
-              window.open('/utils/editors/srcdoc/srcdoc.html');
-        
-        }//html-editor
-  
-  
-        menu['text-diff']=function(){
-        
-              window.open('/utils/editors/text-diff/text-diff.html');
-        
-        }//html-editor
-  
-  
-        menu.stackblitz=function(){
-        
-              window.open('/utils/editors/stackblitz/stackblitz.html');
-        
-        }//html-editor
-
 
 
   return obj;
