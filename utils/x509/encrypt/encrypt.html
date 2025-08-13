@@ -39,7 +39,7 @@
   
         async function init(){
 
-              menumod                   = menumod();
+              menu                      = menumod();
           
               filemod                   = filemod();
               editor                    = editor();
@@ -47,8 +47,8 @@
               encrypt                   = encrypt();
 
 
-              filemod.initmod({ext,$,menu:menumod,complete,focus,source,editor});
-              editor.initmod({ext,$,menu:menumod});
+              filemod.initmod({ext,$,menu,menumod,complete,focus,source,editor});
+              editor.initmod({ext,$,menu,menumod});
               log.initmod({ext,$});
               encrypt.initmod({ext});
 
@@ -59,7 +59,7 @@
               encrypt.init();
 
 
-              menumod.on.close          = focus;
+              menu.on.close          = focus;
 
           
               await initdom(document.body);
@@ -267,6 +267,8 @@
             <script>
 
                                                                                 debug(version);
+
+        var menu;
                                                                                 
         var ui            = {};
         ui.password       = {};
@@ -387,7 +389,7 @@
               editor.filename(file);
               editor.filename.save.hide();
               filemod.cur   = file;
-              menumod.close();
+              menu.close();
               editor.focus();
               
         }//complete
