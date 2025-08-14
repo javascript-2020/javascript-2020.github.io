@@ -153,7 +153,17 @@
             
         async function complete(txt){
 
-              ext           = eval(txt);
+              try{
+              
+                    ext           = eval(txt);
+                    
+              }
+              catch(err){
+                    console.log('error');
+                    console.error(err);
+                    console.log(txt);
+              }
+              
               var promise   = ext.load.libs(
                     'js/dom/$.js.api',
                     'js/core/datatype.js',
