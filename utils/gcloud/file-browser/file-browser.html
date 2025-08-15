@@ -478,7 +478,7 @@
         
         function ready(){
           
-              display('/');
+              //display('/');
               
         }//ready
         
@@ -709,11 +709,12 @@
         
         async function display(path){
 
-              path      ||= filemod.cur.path;
+              path      ||= filemod.cur.path||'/';
               
-              var token   = $(root,'#token').value;
+              var token     = $(root,'#token').value;
+              var bucket    = $(root,'#bucket').value;
               
-              var {files,dirs,error}    = await gs.list(token,path);
+              var {files,dirs,error}    = await gs.dir.list({token,bucket,path});
               if(error){
                     log.red(error);
                     return;
