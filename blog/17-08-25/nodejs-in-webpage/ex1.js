@@ -1,13 +1,14 @@
 
 (async()=>{
-  
-      console.clear();
-      console.log('webcontainer example');
-      console.log();
+                                                                    console.clear();
+                                                                    console.log('webcontainer example');
+                                                                    console.log();
+                                                                    
       var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
       
       const files   = {
             'test.txt'        : {file:{contents:'helloworld'}},
+            
             'package.json'    : {
                                       file: {
                                             contents: `
@@ -22,17 +23,21 @@
                                 },
       };
       
+                                                                    console.log('booting ...');
       var webcontainer    = await WebContainer.boot();
+                                                                    console.log('mounting file system ...');
       await webcontainer.mount(files);
+                                                                    console.log('installing ...');
       await install();
-      
+
+                                                                    console.log('running ...');      
       run(`
       
             var txt   = require('fs').readFileSync('test.txt','utf8');
             console.log(txt);
             
       `);
-      
+                                                                    console.log('done');
       
       async function install(){
       
