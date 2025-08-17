@@ -1,3 +1,8 @@
+
+(async()=>{
+  
+  
+  
       var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
       
       var webcontainer;
@@ -55,4 +60,9 @@
       }//run
             
       
+
+})();
+
+
+
 
