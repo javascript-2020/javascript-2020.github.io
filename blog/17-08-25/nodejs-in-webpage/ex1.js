@@ -35,10 +35,6 @@
       `);
       
       
-      
-      
-      
-      
       async function install(){
       
       }//install
