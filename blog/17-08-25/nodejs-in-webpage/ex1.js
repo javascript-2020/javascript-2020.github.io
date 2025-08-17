@@ -5,7 +5,8 @@
                                                                                 console.log();
         var nodejs    = `
         
-              var txt   = require('fs').readFileSync('test.txt','utf8');
+              var fs    = require('fs');
+              var txt   = fs.readFileSync('test.txt','utf8');
               console.log(txt);
               
         `;
