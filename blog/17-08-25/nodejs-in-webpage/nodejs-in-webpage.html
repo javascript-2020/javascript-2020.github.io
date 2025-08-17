@@ -1,0 +1,289 @@
+
+
+<!-- headers
+      cross-origin-isolate
+-->
+
+
+<html>
+
+
+      <head>
+
+            <title>
+                  nodejs in webpage
+            </title>
+
+            <base href='https://javascript-2020.github.io/blog/17-08-25/nodejs-in-webpage/nodejs-in-webpage.html'>
+            
+            <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            
+            <link rel=stylesheet href='/blog/css/blog.css'>
+
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var version       = 'v1.0';
+            
+        var df            = true;
+
+
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var code;
+        
+        var mod           = {};
+        
+        //var codeblock;
+        
+
+  //:
+
+              
+        async function init(){
+                                                                                //debug('init',version);
+              menu    = menumod();
+              
+              await initdom(document.body);
+
+
+              init.complete();
+
+        }//init
+
+
+        init.stack            = [init];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              if(init.stack.mode){
+                    console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+                                                                                //console.trace();
+              }
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              if(init.stack.mode){
+                    console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+                                                                                //console.trace();
+              }
+              if(init.stack.ct>=init.stack.total){
+                                                                                //console.log('*** complete');
+                    init.stack.ct       = 0;
+                    init.stack.total    = 0;
+                    var list    = [...init.stack];
+                    init.stack.length   = 0;
+                    list.forEach(fn=>fn());
+              }
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+        
+        init.complete   = function(){
+          
+              init.complete.stack.forEach(fn=>fn());
+              
+              
+        }//complete
+        
+        init.complete.stack   = [];
+        init.complete.add     = fn=>init.complete.stack.push(fn);
+
+                  
+
+(async()=>{
+  
+        init.stack.add;
+        
+        var token   = localStorage['github-token'];
+        var url;
+        var headers;
+        if(token){
+              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
+        }else{
+              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
+        }
+        
+        await fetch(url,{headers}).then(res=>res.text()).then(complete);
+
+            
+        async function complete(txt){
+
+              ext           = eval(txt);
+              var promise   = ext.load.libs(
+                    'js/dom/$.js.api',
+                    'js/core/datatype.js',
+                    'js/dom/menumod/menumod.js',
+                    'js/dom/code/code.js.api',
+              );
+              [$,datatype,menumod,code]   = await promise;
+
+              code.initmod({ext,$,datatype,menumod});
+              
+              init.stack.complete;
+
+        }//ext_fn
+
+})();
+
+
+            </script init>
+
+
+            <style>
+            
+  html
+    {height:100%}
+  body
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;
+      font-family:arial
+    }
+    
+  h3
+    {text-align:center;color:blue}
+    
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+    
+    
+            </style>
+      
+      </head>
+      
+      
+      <body>
+
+            <h3>
+                  nodejs in webpage
+            </h3>
+
+
+            <div id=desc>
+
+running nodejs code in a webpage
+
+            </div>
+
+      
+      
+      </body>
+
+
+<!-- ----- -->
+
+
+      <script>
+
+
+        var menu;
+
+
+        async function initdom(rootnode){
+
+              test();
+              
+        }//initdom      
+
+
+  //:  
+  
+  
+  init.stack.complete;
+  
+            
+      </script>
+      
+      
+      
+      <script>
+      
+      
+
+console.clear();
+
+
+
+async function test(){
+
+      var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
+      
+      var webcontainer;
+      
+      const files = {
+            'package.json': {
+                  file: {
+                        contents: `
+                              {
+                                    "name": "node-test",
+                                    "version": "1.0.0",
+                                    "scripts": {
+                                    }
+                              }
+                        `,
+                  },
+            },
+      };
+      
+      
+      webcontainer    = await WebContainer.boot();
+      await webcontainer.mount(files);
+      await install();
+      
+      
+      run(`
+      
+            console.log('helloworld');
+            
+      `);
+      
+      
+      
+      
+      
+      
+      async function install(){
+      
+      }//install
+      
+      
+      async function run(js){
+      
+            await webcontainer.fs.writeFile('main.js',js);
+      
+            var process   = await webcontainer.spawn('node',['main.js']);
+            var stream    = new WritableStream({write(data){console.log(data)}});
+            process.output.pipeTo(stream);
+  
+            var code      = await process.exit;
+            if(code!=0){
+                  console.log('an error occurred');
+            }
+            
+      }//run
+            
+      
+                
+                
+                
+}//test
+
+      
+      </script>
+      
+</html>
+
+
