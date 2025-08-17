@@ -37,7 +37,11 @@
             console.log(txt);
             
       `);
+                                                                    console.log('complete');
+                                                                    console.log('teardown ...');
+      webcontainer.teardown();
                                                                     console.log('done');
+
       
       async function install(){
       
