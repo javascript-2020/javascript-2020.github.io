@@ -1,36 +1,35 @@
 
 (async()=>{
   
-  
-  
+      console.clear();
+      console.log('webcontainer example');
+      console.log();
       var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
       
-      var webcontainer;
-      
-      const files = {
-            'package.json': {
-                  file: {
-                        contents: `
-                              {
-                                    "name": "node-test",
-                                    "version": "1.0.0",
-                                    "scripts": {
-                                    }
-                              }
-                        `,
-                  },
-            },
+      const files   = {
+            'test.txt'        : {file:{contents:'helloworld'}},
+            'package.json'    : {
+                                      file: {
+                                            contents: `
+                                                  {
+                                                        "name": "node-test",
+                                                        "version": "1.0.0",
+                                                        "scripts": {
+                                                        }
+                                                  }
+                                            `,
+                                      },
+                                },
       };
       
-      
-      webcontainer    = await WebContainer.boot();
+      var webcontainer    = await WebContainer.boot();
       await webcontainer.mount(files);
       await install();
       
-      
       run(`
       
-            console.log('helloworld');
+            var txt   = require('fs').readFileSync('test.txt','utf8');
+            console.log(txt);
             
       `);
       
@@ -54,11 +53,6 @@
             }
             
       }//run
-            
-      
 
 })();
-
-
-
 
