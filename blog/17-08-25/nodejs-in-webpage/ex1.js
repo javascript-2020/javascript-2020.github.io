@@ -6,10 +6,12 @@
         var nodejs    = `
         
               var fs    = require('fs');
+              
               var txt   = fs.readFileSync('test.txt','utf8');
               console.log(txt);
               
         `;
+
         
         var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
         
