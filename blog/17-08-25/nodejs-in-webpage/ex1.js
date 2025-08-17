@@ -7,6 +7,7 @@
       var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
       
       const files   = {
+        
             'test.txt'        : {file:{contents:'helloworld'}},
             
             'package.json'    : {
