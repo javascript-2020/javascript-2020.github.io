@@ -153,6 +153,8 @@
   h3
     {text-align:center;color:blue}
     
+  #desc
+    {white-space:pre-wrap}
     
   input
     {font-size:16px;padding:5px 10px}
@@ -176,12 +178,16 @@
 
 running nodejs code in a webpage
 
+the containing page requires the following headers
+
+cross-origin-embedder-policy    : credentialless || require-corp
+cross-origin-opener-policy      : same-origin
+
+
             </div>
 
 
-            <code-block snippet-console=ex1 api>
-
-            </code-block>
+            <code-block snippet-console=ex1 api></code-block>
 
       
       </body>
@@ -192,6 +198,8 @@ running nodejs code in a webpage
 
       <script>
 
+
+        var code_block;
 
         var menu;
         
@@ -205,8 +213,8 @@ running nodejs code in a webpage
               
 
 
-              var node    = $(root,'code-block');
-              code.code_block(node,{menu});
+              var node      = $(root,'code-block');
+              code_block    = await code.code_block(node,{menu});
 
 
 
