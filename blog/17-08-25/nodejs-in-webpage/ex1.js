@@ -29,9 +29,8 @@
       await webcontainer.mount(files);
                                                                     console.log('installing ...');
       await install();
-
                                                                     console.log('running ...');      
-      run(`
+      await run(`
       
             var txt   = require('fs').readFileSync('test.txt','utf8');
             console.log(txt);
@@ -39,9 +38,8 @@
       `);
                                                                     console.log('complete');
                                                                     console.log('teardown ...');
-      webcontainer.teardown();
-                                                                    console.log('done');
-
+      await webcontainer.teardown();
+                                                                    console.log('done.');
       
       async function install(){
       
