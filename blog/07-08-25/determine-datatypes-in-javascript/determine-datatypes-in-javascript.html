@@ -111,10 +111,11 @@
 (async()=>{
   
         init.stack.add;
+
         
-        var token   = localStorage['github-token'];
         var url;
         var headers;
+        var token       = localStorage['github-token'];
         if(token){
               url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
               headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
@@ -122,28 +123,35 @@
               url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
         }
         
-        await fetch(url,{headers}).then(res=>res.text()).then(complete);
+        var res   = await fetch(url,{headers});
+        var txt   = await res.text();
 
-            
-        async function complete(txt){
-
-              ext           = eval(txt);
-              var promise   = ext.load.libs(
-                    'js/dom/$.js.api',
-                    'js/core/datatype.js',
-                    'js/dom/menumod/menumod.js',
-                    'js/dom/code/code.js.api',
-              );
-              [$,datatype,menumod,code]   = await promise;
-
-              code.initmod({ext,$,datatype,menumod});
+        if(res.headers.get('content-type').includes('json')){
+                                                                                console.log('*** ext : json');
+              var json    = JSON.parse(txt);
+              var b64     = json.content;
+              txt         = atob(b64);
+        }else{
+                                                                                console.log('*** ext : text');
+        }
+        
+        ext   = eval(txt);
               
-              init.stack.complete;
+              
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/code/code.js.api',
+        );
+        [$,datatype,menumod,code]   = await promise;
 
-        }//ext_fn
+        code.initmod({ext,$,datatype,menumod});
+
+        
+        init.stack.complete;
 
 })();
-
 
             </script init>
 
