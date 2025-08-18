@@ -426,8 +426,24 @@
   
         window.onmessage    = function(e){
   
+              var err;
+              try{
               
-              var json    = JSON.parse(e.data);
+                    var json    = JSON.parse(e.data);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    return;
+              }
+              
+              if(typeof json!='object'){
+                    return;
+              }
   
               var txt   = json.code||json.text||json.txt;
               if(txt){
