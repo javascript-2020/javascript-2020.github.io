@@ -1,0 +1,17 @@
+
+console.log(window.crossOriginIsolated);
+
+(async()=>{
+  
+      var [sandbox]   = await ext.load.libs('js/sandbox/sandbox.js.api');
+      console.log(sandbox);
+      
+      
+      var js    = `
+            console.log(123);
+      `;
+      var {code}    = await sandbox.nodejs(js,{console});
+      console.log(code);
+      
+      
+})();
