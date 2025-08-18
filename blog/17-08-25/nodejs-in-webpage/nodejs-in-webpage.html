@@ -115,12 +115,19 @@
               url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
         }
         
-        await fetch(url,{headers}).then(res=>res.text()).then(complete);
+        await fetch(url,{headers}).then(res=>res.text()).then(txt=>complete(res,txt));
 
             
-        async function complete(txt){
+        async function complete(res,txt){
 
+              if(res.headers['content-type'].includes('json')){
+                    var json    = JSON.parse(txt);
+                    var b64     = json.content;
+                    txt         = atob(b64);
+              }
+              
               ext           = eval(txt);
+              
               var promise   = ext.load.libs(
                     'js/dom/$.js.api',
                     'js/core/datatype.js',
