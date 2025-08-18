@@ -4,13 +4,15 @@
 
 <html>
   <body>
+  <!--
     <iframe src="iframe.html"></iframe>
+  -->
+  
   </body>
   <script>
   
-        window.onload   = ()=>{
-        
-              var iframe    = document.querySelector('iframe');
+        function onload2(){
+
               var win       = iframe.contentWindow;
               var doc       = iframe.contentDocument;
               
@@ -35,6 +37,16 @@
               `;
               doc.head.append(script);
               win.test();
+
+
+        }//onload2
+        
+        window.onload   = ()=>{
+        
+              var iframe    = document.createElement('iframe');
+              iframe.onload   = onload2;
+              document.body.append(iframe);
+              
               
 
         }//onload
