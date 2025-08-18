@@ -41,9 +41,14 @@
 <script>
                                                                                 console.clear();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+      var ext;
+      var $,datatype,menumod,keydown;
+      
+      
       var mod         = {};
       mod.menu        = {};
       mod.utils       = {};
+
       
       var primary     = {};
       var secondary   = {};
@@ -140,32 +145,52 @@
       //  (typeof init!='undefined' && init?.stack && init.stack.add)
       //  (typeof init!='undefined' && init?.stack && init.stack.complete)
       
-</script>
 
-<script libs>
 
-      init.stack.add;
+(async()=>{
+
+        init.stack.add;
       
-      var ext;
-      var $,datatype,menumod,keydown;
       
-      fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js')
-        .then(res=>res.text().then(async txt=>{
+        var url;
+        var headers;
+        var token       = localStorage['github-token'];
+        if(token){
+              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
+        }else{
+              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
+        }
+        
+        var res   = await fetch(url,{headers});
+        var txt   = await res.text();
 
-            ext           = eval(txt);
-            var promise   = ext.load.libs(
-                  'js/dom/$.js',
-                  'js/core/datatype.js',
-                  'js/dom/menumod/menumod.js',
-                  'js/dom/keydown/keydown.js'
-            );
-            [$,datatype,menumod,keydown]   = await promise;
+        if(res.headers.get('content-type').includes('json')){
+                                                                                console.log('*** ext : json');
+              var json    = JSON.parse(txt);
+              var b64     = json.content;
+              txt         = atob(b64);
+        }else{
+                                                                                console.log('*** ext : text');
+        }
+        
+        ext   = eval(txt);
+            
+            
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js'
+        );
+        [$,datatype,menumod,keydown]   = await promise;
+  
+  
+        init.stack.complete;
 
-            init.stack.complete;
+})();
 
-        }));
-
-</script>
+            </script init>
             
       </head>
 
