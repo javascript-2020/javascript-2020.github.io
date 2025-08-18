@@ -38,6 +38,7 @@
         var log;
 
 
+        var menu;
 
         var btn           = {};
 
@@ -46,15 +47,15 @@
                                                                                 debug('init',version);
 
               //keydown                   = keydown();
-              menumod                   = mod.menumod();
+              menu                      = mod.menumod();
               filemod                   = mod.filemod();
               editor.source             = mod.editor();
               editor.output             = mod.editor();
               log                       = mod.log();
               
-              filemod.initmod({ext,$,menumod,complete,source,focus});
-              editor.source.initmod({ext,$,menumod});
-              editor.output.initmod({ext,$,menumod});
+              filemod.initmod({ext,$,menumod,menu,complete,source,focus});
+              editor.source.initmod({ext,$,menumod,menu});
+              editor.output.initmod({ext,$,menumod,menu});
               log.initmod({ext,$});
               
               filemod.init();
@@ -66,7 +67,7 @@
           
               window.onfocus            = focus;
               //keydown.add(kd);
-              menumod.on.close          = focus;
+              menu.on.close             = focus;
 
               
               await initdom(document.body);
