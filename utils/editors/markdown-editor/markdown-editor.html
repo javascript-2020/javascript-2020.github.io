@@ -82,26 +82,13 @@
         var keydown;
 
 
-        var root;
-        var autosave;
-        
   //:
-
-        
-        var menu      = {};
-        var slider    = {};
-        var ui        = {};
-        ui.mode       = 'vert';
-        var btn       = {};
-
-        
-  //:
-
-        
+  
+  
         async function init(){
                                                                       console.log('init');
               //keydown                   = keydown();
-              menumod                   = menumod();
+              menu                      = menumod();
               mod.utils.hdr             = mod.utils.hdr();
               mod.menu.main             = mod.menu.main();
               filemod                   = filemod();
@@ -110,12 +97,12 @@
               output                    = output();
               log                       = log();
               
-              
+              menu.initmod({keydown});
               mod.utils.hdr.initmod({ext,$,menumod,menu});
-              mod.menu.main.initmod({ext,$,menumod,editor});
-              filemod.initmod({ext,$,menumod,complete,focus,source,editor});
-              publish.initmod({ext,$,ui,menumod});
-              editor.initmod({ext,$,menumod});
+              mod.menu.main.initmod({ext,$,menumod,menu,editor});
+              filemod.initmod({ext,$,menumod,menu,complete,focus,source,editor});
+              publish.initmod({ext,$,ui,menumod,menu});
+              editor.initmod({ext,$,menumod,menu});
               output.initmod({ext,$,editor});
               log.initmod({ext,$});
               
@@ -133,14 +120,18 @@
         
               window.onfocus            = ()=>editor && editor.focus();
               keydown.add(kd);
-              menumod.on.close          = ()=>editor.focus();
+              menu.on.close             = ()=>editor.focus();
         
         
               initdom(document.body);
         
         
         }//init
-        
+
+
+  //:
+  
+  
         init.stack            = [];
         init.stack.ct         = 0;
         init.stack.total      = 1;
@@ -268,6 +259,24 @@
 
       <script>
 
+        
+        var menu;
+        
+        var root;
+        var autosave;
+
+        var ui        = {};
+        ui.mode       = 'vert';
+
+        
+        
+        var slider    = {};
+        var btn       = {};
+        var click     = {};
+
+        
+  //:
+
 
         async function initdom(rootnode){   //c
                                                                                 console.log('initdom');
@@ -275,7 +284,7 @@
               
               
               keydown.initdom();
-              menumod.add.style();
+              menu.add.style();
 
               
               mod.utils.hdr.initdom();
@@ -289,7 +298,7 @@
               $(root,'#save').onclick               = btn.save;
 
               var card                              = $(root,'#save-root .menu');
-              $(root,'.menu-icon').onclick          = menumod.click(card,false,false,menu.save);
+              $(root,'.menu-icon').onclick          = menu.click(card,false,false,click.menu);
 
               autosave                              = $(root,'#autosave');
               autosave.checked                      = false;
