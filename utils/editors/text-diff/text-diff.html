@@ -10,35 +10,52 @@
             
             <style>
             
-        :root {--red:rgba(209,153,153,0.5);--green:rgba(153,204,153,0.5)}
-        
-        input {font-size:16px;padding:5px;cursor:pointer}
-        
-        #hdr          {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
-        .icon         {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
-        .spc          {flex:1}
-        
-        #run          {color:blue;font-weight:bold}
-        #horiz        {margin-left:50px;border:none}
-        #vert         {border:none}
-        
-        
-        
-        #main {display:flex;flex:1;margin:5px 0}
-        #view1 {flex:1;display:flex;flex-direction:column;border:1px solid var(--green)}
-        #view2 {flex:1;display:flex;flex-direction:column;border:1px solid var(--red)}
-        #hdr {display:flex;align-items:center;padding:5px}
-        #label {flex:1;text-align-center}
-        editor-root {flex:1;border-top:1px solid lightgray}
-        #display {flex:1;border:1px solid lightgray;overflow:auto;margin:0}
-        
-        .red {position:absolute;background:var(--red);z-index:20}
-        .green {position:absolute;background:var(--green);z-index:20}
+  :root
+    {--red:rgba(209,153,153,0.5);--green:rgba(153,204,153,0.5)}
+  
+  input
+    {font-size:16px;padding:5px;cursor:pointer}
+  
+  #hdr
+    {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+  .spc
+    {flex:1}
+  
+  #run
+    {color:blue;font-weight:bold}
+  #horiz
+    {margin-left:50px;border:none}
+  #vert
+    {border:none}
+  
+  
+  
+  #main
+    {display:flex;flex:1;margin:5px 0}
+  #view1
+    {flex:1;display:flex;flex-direction:column;border:1px solid var(--green)}
+  #view2
+    {flex:1;display:flex;flex-direction:column;border:1px solid var(--red)}
+  #hdr
+    {display:flex;align-items:center;padding:5px}
+  #label
+    {flex:1;text-align-center}
+  editor-root
+    {flex:1;border-top:1px solid lightgray}
+  #display
+    {flex:1;border:1px solid lightgray;overflow:auto;margin:0}
+  
+  .red
+    {position:absolute;background:var(--red);z-index:20}
+  .green
+    {position:absolute;background:var(--green);z-index:20}
     
             </style>
         
 
-<script>
+            <script init>
                                                                                 console.clear();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
       var ext;
@@ -50,6 +67,8 @@
       mod.utils       = {};
 
       
+      var menu;
+      
       var primary     = {};
       var secondary   = {};
       
@@ -57,7 +76,6 @@
       var log;
 
 
-      var menu        = {};
       var slider      = {};
       
       var ui          = {};
@@ -68,10 +86,9 @@
       async function init(){
                                                                                 console.log('init');
                                                                     
-        //define:
         
             //keydown                   = keydown();
-            menumod                   = menumod();
+            menu                      = menumod();
             mod.utils.hdr             = mod.utils.hdr();
             //mod.menu.main             = mod.menu.main();
             
@@ -85,23 +102,19 @@
             log                       = log();
 
         
-        //initmod:
-        
             mod.utils.hdr.initmod({menu,menumod});
             //mod.menu.main.initmod({menumod,editor});
             
-            primary.filemod.initmod({menumod,complete,editor,ext});
+            primary.filemod.initmod({menu,menumod,complete,editor,ext});
             primary.editor.initmod({});
             
-            secondary.filemod.initmod({menumod,complete,ext});
+            secondary.filemod.initmod({menu,menumod,complete,ext});
             secondary.editor.init({});
             
             output.initmod({});
             log.initmod({});
 
 
-        //init:
-        
             //mod.menu.main.init();
             mod.utils.hdr.init();
             primary.filemod.init();
@@ -119,7 +132,7 @@
         
             window.onfocus            = ()=>primary.editor && primary.editor.focus();
             keydown.add(kd);
-            menumod.on.close          = ()=>editor.focus();
+            menu.on.close             = ()=>editor.focus();
 
             
             initdom(document.body);
@@ -200,7 +213,7 @@
             <hdr-grp>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   <img class=title src='images/text-diff.png' style='top:5px;height:35px'>
-                  <span slot=date>30 Apr 2025</span>
+                  <span slot=date>24 Aug 2025</span>
             </hdr-grp>
 
             
@@ -238,34 +251,36 @@
 
       </body>        
             
-<script>
-
-      function initdom(rootnode){
-                                                                          console.log('initdom');
-            var root                      = rootnode;
             
-            keydown.initdom();
-            menumod.add.style();
-      
-      
-            mod.utils.hdr.initdom();
-      
-            
-            //mod.menu.main.initdom();
-      
-            
-            var view1                     = $('#view1');
-            primary.filemod.initdom(view1);
-            primary.editor.initdom(view1);
-            
-            var view2                     = $('#view2');
-            secondary.filemod.initdom(view2);
-            secondary.editor.initdom(view2);
-            
+      <script>
 
 
-            
-      }//initdom
+        function initdom(rootnode){
+                                                                                console.log('initdom');
+              var root                      = rootnode;
+              
+              keydown.initdom();
+              menu.add.style();
+        
+        
+              mod.utils.hdr.initdom();
+        
+              
+              //mod.menu.main.initdom();
+        
+              
+              var view1                     = $('#view1');
+              primary.filemod.initdom(view1);
+              primary.editor.initdom(view1);
+              
+              var view2                     = $('#view2');
+              secondary.filemod.initdom(view2);
+              secondary.editor.initdom(view2);
+              
+  
+  
+              
+        }//initdom
 
 
   //:
@@ -310,7 +325,7 @@
         }//complete
 
         
-        complete.load=function(file,txt){
+        complete.load   = function(file,txt){
         
               editor.clear();
               output.kill();
@@ -320,7 +335,7 @@
         }//complete.load
 
         
-        complete.save=function(file,confirm=true){
+        complete.save   = function(file,confirm=true){
 
               complete(file);
               
@@ -334,46 +349,48 @@
   //:
 
 
-      function check(){
+        function check(){
+        
+              var txt1        = editor['1'].getValue();
+              var txt2        = editor['2'].getValue();
+              var d           = diff.diffChars(txt2,txt1);
+              console.log(d);
+              
+              var list    = [];
+              var txt     = '';
+              d.forEach(part=>{
+              
+                    var start   = txt.length;
+                    txt        += part.value;
+                    var end     = txt.length;
+                    var color   = part.added ? 'green' : part.removed ? 'red' : 'grey';
+                    if(color!='grey'){
+                          list.push({start,end,color});
+                    }
+                    
+              });
+              editor.output.setValue(txt,-1);
+              list.forEach(part=>{
+              
+                    var start   = editor.output.getSession().doc.indexToPosition(part.start);
+                    var end     = editor.output.getSession().doc.indexToPosition(part.end);
+                    var range   = new ace.Range(start.row,start.column,end.row,end.column);
+                    editor.output.getSession().addMarker(range,part.color,'text');
+                    
+              });
+        
+        }//check
+
+
+
+
+        init.stack.complete;
+
       
-            var txt1        = editor['1'].getValue();
-            var txt2        = editor['2'].getValue();
-            var d           = diff.diffChars(txt2,txt1);
-            console.log(d);
-            
-            var list    = [];
-            var txt     = '';
-            d.forEach(part=>{
-            
-                  var start   = txt.length;
-                  txt        += part.value;
-                  var end     = txt.length;
-                  var color   = part.added ? 'green' : part.removed ? 'red' : 'grey';
-                  if(color!='grey'){
-                        list.push({start,end,color});
-                  }
-                  
-            });
-            editor.output.setValue(txt,-1);
-            list.forEach(part=>{
-            
-                  var start   = editor.output.getSession().doc.indexToPosition(part.start);
-                  var end     = editor.output.getSession().doc.indexToPosition(part.end);
-                  var range   = new ace.Range(start.row,start.column,end.row,end.column);
-                  editor.output.getSession().addMarker(range,part.color,'text');
-                  
-            });
       
-      }//check
+      </script>
 
 
-
-
-      init.stack.complete;
-
-      
-      
-</script>
 
 <!-- components -->
 
