@@ -30,109 +30,127 @@
 
       <script>
         
-            mod.menu.main   = function(){
+mod.menu.main   = function(){
 
-              var obj   = {};
-              
-                  var menumod,editor
-                  ;
-                  
-                  obj.initmod=function(params){
-                    
-                        menumod   = params.menumod;
-                        editor    = params.editor;
-                        
-                  }//initmod
-                  
-              //vars:-
-              
-              //:
-              
-                  obj.init=function(){
-                  }//init
-                  
-              //:
-              
-                  obj.initdom=function(rootnode){
-                  
-                        var root                      = $.$(rootnode,'main-menu');
-                        var shadow                    = root.shadowRoot;
+  var obj   = {};
 
-                        var style                     = $(shadow,'style');
-                        $.stylesheet.copyrule('#page-inline','.icon',style);
-                        
-                        menumod.add.style(shadow);
-                        
-                        
-                        var card                      = $(shadow,'.menu');
-                        $(shadow,'#icon').onclick     = menumod.click(card,false,false,menu);
+  
+        var menumod,editor,menu
+        ;
+        
+        obj.initmod   = function(params){
+          
+              menumod   = params.menumod;
+              editor    = params.editor;
+              menu      = params.menu;
+              
+        }//initmod
+  
       
-      
-                  }//initdom
-            
-
-//:
+  //vars:-
   
   
-                  function menu(type,opt){
-            
-                        if(type=='opt'){
-                              menu[opt.id]();
-                        }
-            
-                  }//menu
+        var click   = {};
+        
+        
+  //:
+
+  
+        obj.init    = function(){
+        }//init
+
       
-            
-                  menu.new=function(){
-            
-                        var win   = window.open('https://javascript-2020.github.io/utils/editors/markdown-editor/markdown-editor.html');
-                        return win;
-            
-                  }//new
-      
-            
-                  menu.fork=function(){
-            
-                        var win   = menu.new();
-                        var txt   = editor.getValue();
-                        win.postMessage({txt},'*');
-            
-                  }//fork
-      
-            
-                  menu.source=function(){
-                  
-                        window.open('https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/editors/markdown-editor');
-                        
-                  }//source
-                  
-                  
-                  menu['ex-1']=async function(){
-                    
-                        var err;
-                        try{
-                              var res   = await fetch('https://raw.githubusercontent.com/javascript-2020/javascript-2020.github.io/main/utils/editors/markdown-editor/examples/example-1.md');
-                        }
-                        catch(err2){
-                              err   = err2;
-                        }
-                        if(err){
-                              console.error(err);
-                              return;
-                        }
-                        if(!res.ok){
-                              console.log('failed to load example 1',res.status);
-                              return;
-                        }
-                        var txt   = await res.text();
-                        editor.setValue(txt);
-                        
-                  }//ex-1
-                  
-                  
-              return obj;
+  //:
+
+  
+        obj.initdom   = function(rootnode){
+        
+              var root                      = $.$(rootnode,'main-menu');
+              var shadow                    = root.shadowRoot;
+  
+              var style                     = $(shadow,'style');
+              $.stylesheet.copyrule('#page-inline','.icon',style);
               
-            }//main
+              menu.add.style(shadow);
+              
+              
+              var card                      = $(shadow,'.menu');
+              $(shadow,'#icon').onclick     = menu.click(card,false,false,click.menu);
+  
+  
+        }//initdom
+
+
+  //:
+
+
+        click.menu    = function(type,opt){
+  
+              if(type=='opt'){
+                    click.menu[opt.id]();
+              }
+  
+        }//menu
+  
+  
+        click.menu.new    = function(){
+  
+              var win   = window.open('');
+              return win;
+  
+        }//new
+  
+  
+        menu.fork   = function(){
+  
+              var win   = menu.new();
+              var txt   = editor.getValue();
+              win.postMessage({txt},'*');
+  
+        }//fork
+  
+  
+        menu.source   = function(){
+        
+              window.open('https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/editors/markdown-editor');
+              
+        }//source
+      
+      
+        menu['ex-1']    = async function(){
+
+              var url   = 'https://raw.githubusercontent.com/javascript-2020/javascript-2020.github.io/main/utils/editors/markdown-editor/examples/example-1.md';          
+              var err;
+              try{
+              
+                    var res   = await fetch(url);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.error(err);
+                    return;
+              }
+              if(!res.ok){
+                                                                                console.log('failed to load example 1',res.status);
+                    return;
+              }
+              
+              var txt   = await res.text();
+              editor.setValue(txt);
+              
+        }//ex-1
+      
+
+
+      
+  return obj;
+  
+}//main
                   
         
       </script>
