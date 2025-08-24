@@ -5,9 +5,12 @@
       <head>
 
             <title>markdown-editor</title>
-
-            <base href='https://javascript-2020.github.io/utils/editors/markdown-editor/markdown-editor.html'>
+            <meta name=description content='Write and preview Markdown instantly in your browser. A clean, fast, and distraction-free editor built for developers, writers, and technical bloggers'>
             
+            <base href='https://javascript-2020.github.io/utils/editors/markdown-editor/markdown-editor.html'>
+            <link rel=canonical href='https://ext-code.com/utils/editors/markdown-editor/markdown-editor.html'>
+            
+            <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='images/markdown-editor-favicon.png'>
             <link rel=stylesheet href='/utils/css/utils.css'>
             
@@ -106,6 +109,7 @@
               editor                    = editor();
               output                    = output();
               log                       = log();
+              
               
               mod.utils.hdr.initmod({ext,$,menumod,menu});
               mod.menu.main.initmod({ext,$,menumod,editor});
@@ -261,7 +265,9 @@
 
       </body>
 
-<script>
+
+      <script>
+
 
         async function initdom(rootnode){   //c
                                                                                 console.log('initdom');
@@ -405,107 +411,123 @@
   //:
 
   
-      window.onmessage    = function(e){
-
-            
-            var json    = JSON.parse(e.data);
-
-            var txt   = json.code||json.text||json.txt;
-            if(txt){
-                  editor.setValue(txt,-1);
-            }
-
-            if(json.run){
-                  run();
-            }
-
-
-      }//onmessage
-
-
-  //:
-
-
-      ui.read   = function(){
-
-            var txt     = editor.getValue();
-            var json    = {v:1,txt};
-            return json;
-
-      }//read
-
-
-      ui.setup    = function(view){
-
-            var o   = localStorage.getItem('orientation');
-            if(o==='horiz'){
-                  horiz();
-            }
-            view.style.display    = 'flex';
-
-      }//setup
+        window.onmessage    = function(e){
+  
+              var err;
+              try{
+              
+                    var json    = JSON.parse(e.data);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    return;
+              }
+              
+              if(!json){
+                    return;
+              }
+  
+              var txt   = json.code||json.text||json.txt;
+              if(txt){
+                    editor.setValue(txt,-1);
+              }
+  
+              if(json.run){
+                    run();
+              }
+  
+  
+        }//onmessage
 
 
   //:
 
 
-      function horiz(){
-
-            localStorage.setItem('orientation','horiz');
-
-            ui.mode                     = 'horiz';
-            slider.node.style.cursor    = 'ns-resize';
-            slider.node.style.width     = '100%';
-            slider.node.style.height    = '10px';
-
-            view.style.flexDirection    = 'column';
-
-            editor.horiz();
-            output.horiz();
-            editor.focus();
-
-      }//horiz
+        ui.read   = function(){
+  
+              var txt     = editor.getValue();
+              var json    = {v:1,txt};
+              return json;
+  
+        }//read
 
 
-      function vert(){
+        ui.setup    = function(view){
+  
+              var o   = localStorage.getItem('orientation');
+              if(o==='horiz'){
+                    horiz();
+              }
+              view.style.display    = 'flex';
+  
+        }//setup
 
-            localStorage.setItem('orientation','vert');
 
-            ui.mode                     = 'vert';
-            slider.node.style.cursor    = 'ew-resize';
-            slider.node.style.width     = '10px';
-            slider.node.style.height    = '100%';
+  //:
 
-            view.style.flexDirection    = 'row';
 
-            editor.vert();
-            output.vert();
-            editor.focus();
-            
-            
-
-      }//vert
+        function horiz(){
+  
+              localStorage.setItem('orientation','horiz');
+  
+              ui.mode                     = 'horiz';
+              slider.node.style.cursor    = 'ns-resize';
+              slider.node.style.width     = '100%';
+              slider.node.style.height    = '10px';
+  
+              view.style.flexDirection    = 'column';
+  
+              editor.horiz();
+              output.horiz();
+              editor.focus();
+  
+        }//horiz
+  
+  
+        function vert(){
+  
+              localStorage.setItem('orientation','vert');
+  
+              ui.mode                     = 'vert';
+              slider.node.style.cursor    = 'ew-resize';
+              slider.node.style.width     = '10px';
+              slider.node.style.height    = '100%';
+  
+              view.style.flexDirection    = 'row';
+  
+              editor.vert();
+              output.vert();
+              editor.focus();
+              
+              
+  
+        }//vert
 
 
   //:
 
   
-      function run(){
-
-            var txt   = editor.getValue();
-            output.display(txt);
-
-            
-            if(autosave.checked){
+        function run(){
+  
+              var txt   = editor.getValue();
+              output.display(txt);
+  
+              
+              if(autosave.checked){
                                                                                 console.log('save');
-                  filemod.save();
-            }
-
-      }//run
-
-
-
-      init.stack.complete;
+                    filemod.save();
+              }
+  
+        }//run
+  
+  
+  
+        init.stack.complete;
 
       
 </script>
