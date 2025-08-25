@@ -16,131 +16,137 @@
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs/loader.min.js"></script>
 
 <script>
-console.clear();
+                                                                                console.clear();
 
 
-  require.config({paths:{'vs':'https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs'}});
-
-  var editor;
-  var container;
-  
-  require(['vs/editor/editor.main'],function(monaco){
-  
-  var txt   = `
-  
-  function hello() {
-  
-        console.log("Hello, Monaco!");
+        require.config({paths:{'vs':'https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs'}});
+      
+        var editor;
+        var container;
         
-  }
-  
-  console.log('hello');
-  
-  `;
-  
-    container   = document.getElementById('editor');
-    editor      = monaco.editor.create(container,{
-    
-          value                         : txt,
-          language                      : 'plaintext',
-          theme                         : 'vs-light',
-          autoClosingBrackets           : 'never',
-          autoClosingQuotes             : 'never',
-          autoSurround                  : 'never',
-          glyphMargin                   : true,
-          scrollBeyondLastLine          : false,
-          overviewRulerBorder           : false,
-          renderIndentGuides            : false,
-          quickSuggestions              : {other:false,comments:false,strings:false},
-          suggestOnTriggerCharacters    : false,
-          acceptSuggestionOnEnter       : 'off',
-          tabCompletion                 : 'off',
-          wordBasedSuggestions          : false,
-          parameterHints                : {enabled:false},
-          hover                         : {enabled:false},
-          occurrencesHighlight          : false,
-          matchBrackets                 : 'near',
-          tabSize                       : 2,
-          insertSpaces                  : true,
-          detectIndentation             : false,
+        require(['vs/editor/editor.main'],ready);
+        
+        
+        function ready(monaco){
+      
+        
+              var txt   = `
+              
+        function hello() {
+        
+              console.log("Hello, Monaco!");
+              
+        }
+        
+        console.log('hello');
+              
+              `;
+      
+      
+            
+              container   = document.getElementById('editor');
+              editor      = monaco.editor.create(container,{
+              
+                    value                         : txt,
+                    language                      : 'plaintext',
+                    theme                         : 'vs-light',
+                    autoClosingBrackets           : 'never',
+                    autoClosingQuotes             : 'never',
+                    autoSurround                  : 'never',
+                    glyphMargin                   : true,
+                    scrollBeyondLastLine          : false,
+                    overviewRulerBorder           : false,
+                    renderIndentGuides            : false,
+                    quickSuggestions              : {other:false,comments:false,strings:false},
+                    suggestOnTriggerCharacters    : false,
+                    acceptSuggestionOnEnter       : 'off',
+                    tabCompletion                 : 'off',
+                    wordBasedSuggestions          : false,
+                    parameterHints                : {enabled:false},
+                    hover                         : {enabled:false},
+                    occurrencesHighlight          : false,
+                    matchBrackets                 : 'near',
+                    tabSize                       : 2,
+                    insertSpaces                  : true,
+                    detectIndentation             : false,
+                    
+                    //autoIndent: 'none'
+                    snippetSuggestions: 'none',
           
-          //autoIndent: 'none'
-          snippetSuggestions: 'none',
-
-
+          
+                    
+                    
+              });
+          
+              monaco.editor.defineTheme('my-clean-theme',{
+                    base      : 'vs',
+                    inherit   : false,
+                    rules     : [],
+                    colors    : {
+                                      'editorGutter.background'             : '#f0f0f0',
+                                      'editorLineNumber.foreground'         : '#333',
+                                      //'editorLineNumber.activeForeground'   : '#0f0',
+                                      'editorLineNumber.activeBackground'   : '#3a3d41',
+                                      'editor.lineHighlightBackground'      : '#00000012',//'rgba(0, 0, 0, 0.07)',
+                                      'editor.lineHighlightBorder'          : '#00000000',  
+                                      
+          
+                                }
+              });
+              monaco.editor.setTheme('my-clean-theme');
           
           
-    });
-
-    monaco.editor.defineTheme('my-clean-theme',{
-          base      : 'vs',
-          inherit   : false,
-          rules     : [],
-          colors    : {
-                            'editorGutter.background'             : '#f0f0f0',
-                            'editorLineNumber.foreground'         : '#333',
-                            //'editorLineNumber.activeForeground'   : '#0f0',
-                            'editorLineNumber.activeBackground'   : '#3a3d41',
-                            'editor.lineHighlightBackground'      : '#00000012',//'rgba(0, 0, 0, 0.07)',
-                            'editor.lineHighlightBorder'          : '#00000000',  
+              let highlights = [];
+          
+              editor.onDidChangeCursorSelection(({selection})=>{
+              
+                    var decorations     = [];
+                    var model           = editor.getModel();
+                    if(model){
+                          var selected    = model.getValueInRange(selection);
+                          if(selected && selected.length>1){
+                          
+                                var fulldoc     = true;
+                                var usecase     = false;
+                                var regex       = false;
+                                var wordsep     = null;
+                                var overlap     = true;
+                                
+                                var matches     = model.findMatches(selected,fulldoc,usecase,regex,wordsep,overlap);
                             
-
-                      }
-    });
-    monaco.editor.setTheme('my-clean-theme');
-
-
-    let highlights = [];
-
-    editor.onDidChangeCursorSelection(({selection})=>{
-    
-          var decorations     = [];
-          var model           = editor.getModel();
-          if(model){
-                var selected    = model.getValueInRange(selection);
-                if(selected && selected.length>1){
-                
-                      var fulldoc     = true;
-                      var usecase     = false;
-                      var regex       = false;
-                      var wordsep     = null;
-                      var overlap     = true;
-                      
-                      var matches     = model.findMatches(selected,fulldoc,usecase,regex,wordsep,overlap);
-                  
-                      decorations     = matches.map(match=>({
-                            range     : match.range,
-                            options   : {className:'manual-highlight',isWholeLine:false}
-                      }));
-                  
-                }
-          }
-          highlights    = editor.deltaDecorations(highlights,decorations);
+                                decorations     = matches.map(match=>({
+                                      range     : match.range,
+                                      options   : {className:'manual-highlight',isWholeLine:false}
+                                }));
+                            
+                          }
+                    }
+                    highlights    = editor.deltaDecorations(highlights,decorations);
+                    
+              });
           
-    });
-
-
-    
-    editor.onDidChangeModelContent(resize);
-    resize();
-    
-    function resize(){
-    
-          var lineCount             = editor.getModel().getLineCount();
-          var lineHeight            = editor.getOption(monaco.editor.EditorOption.lineHeight);
-          var padding               = 20; // optional buffer
-          var newHeight             = lineCount*lineHeight+padding;
-          container.style.height    = `${newHeight}px`;
-          editor.layout();
           
-    }//resize
-
-
-
-
+              
+              editor.onDidChangeModelContent(resize);
+              resize();
+              
+              function resize(){
+              
+                    var lineCount             = editor.getModel().getLineCount();
+                    var lineHeight            = editor.getOption(monaco.editor.EditorOption.lineHeight);
+                    var padding               = 20; // optional buffer
+                    var newHeight             = lineCount*lineHeight+padding;
+                    container.style.height    = `${newHeight}px`;
+                    editor.layout();
+                    
+              }//resize
+          
+          
+    
+    
 
     
-});
+        }//ready
 
 
 </script>
