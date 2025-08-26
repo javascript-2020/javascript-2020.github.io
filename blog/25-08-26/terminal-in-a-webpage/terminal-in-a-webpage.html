@@ -21,68 +21,82 @@
         var version       = 'v1.0';
             
         var df            = true;
-        var debug_id      = 'snippet-html test';
 
 
         var ext;
         var $;
         var datatype;
-        var debug;
+        var menumod;
+        var code;
         
-
         var mod           = {};
-
-        var html;
-        var snippet_html;
         
-
+        //var codeblock;
         
 
   //:
 
               
         async function init(){
-                                                                                debug('init',version);
-
-              snippet_html           = mod.snippet_html();
+                                                                                //debug('init',version);
+              menu    = menumod();
               
-              snippet_html.initmod({ext,$,source});
-              
-              await snippet_html.init();
-              
-              
-  //:
-
-          
               await initdom(document.body);
 
+
+              init.complete();
 
         }//init
 
 
-  //:
-  
-  
-        init.stack            = [];
+        init.stack            = [init];
         init.stack.ct         = 0;
         init.stack.total      = 1;
         init.stack.mode       = '';
         init.stack.complete   = false;
         Object.defineProperty(init.stack,'add',{get:()=>{
               init.stack.total++;
-              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+              if(init.stack.mode){
+                    console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+                                                                                //console.trace();
+              }
         }});
         Object.defineProperty(init.stack,'complete',{get:()=>{
               init.stack.ct++;
-              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
-              init.stack.ct>=init.stack.total && init();
+              if(init.stack.mode){
+                    console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+                                                                                //console.trace();
+              }
+              if(init.stack.ct>=init.stack.total){
+                                                                                //console.log('*** complete');
+                    init.stack.ct       = 0;
+                    init.stack.total    = 0;
+                    var list    = [...init.stack];
+                    init.stack.length   = 0;
+                    list.forEach(fn=>fn());
+              }
         }});
         
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+        
+        init.complete   = function(){
+          
+              init.complete.stack.forEach(fn=>fn());
+              
+              
+        }//complete
+        
+        init.complete.stack   = [];
+        init.complete.add     = fn=>init.complete.stack.push(fn);
+
+                  
 
 (async()=>{
   
         init.stack.add;
-        
+
         
         var url;
         var headers;
@@ -107,27 +121,38 @@
         }
         
         ext   = eval(txt);
+
         
-              
         var promise   = ext.load.libs(
               'js/dom/$.js.api',
               'js/core/datatype.js',
-              'js/debug/debug.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/code/code.js.api',
         );
-        [$,datatype,debug]   = await promise;
+        [$,datatype,menumod,code]   = await promise;
 
-
-        html    = await ext.text.libs('html/snippet-html/ex1.html');
-
-
+        code.initmod({ext,$,datatype,menumod});
+        
         init.stack.complete;
 
 })();
 
 
             </script init>
+
             
             <link rel=stylesheet href='/blog/css/blog.css'>
+            <style>
+            
+  html
+    {height:100%}
+  body
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;margin:20px;
+      font-family:arial
+    }
+            
+            </style>
+            
 
             
       </head>
@@ -158,20 +183,35 @@ terminal in a webpage
       <script>
 
 
+        var code_block;
+
+        var menu;
+        
         var root;
+        
 
 
-          
-        function initdom(rootnode){
-  
+        async function initdom(rootnode){
+
               root    = rootnode;
               
+
+
+              var node        = $(root,'code-block');
+              ({code_block}   = await code.code_block(node,{menu,ace}));
+
+
+
+              //test();
+
+
+
               
-              snippet_html.initdom(root);
-              
-              
-        }//initdom
-        
+        }//initdom      
+
+
+  //:
+  
 
   init.stack.complete;        
 
