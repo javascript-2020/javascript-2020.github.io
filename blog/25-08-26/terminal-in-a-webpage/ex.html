@@ -1,0 +1,57 @@
+
+
+<html>
+
+      <head>
+      
+            <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css'>
+            <style>
+
+  html
+    {height:100%}
+  body
+    {margin:20px;height:calc(100% - 40px);}
+    
+  #terminal
+    {width:100%;height:100%}
+    
+            </style>
+      
+      </head>
+      
+      
+      <body>
+    
+            <div id=terminal></div>
+
+      </body>
+
+
+      <script type=module>
+                                                                                      console.clear();
+              import {Terminal} from 'https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm';
+              import {FitAddon} from 'https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'              
+              import {WebContainer} from 'https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm'
+              
+              var term            = new Terminal();
+              var fitAddon        = new FitAddon();
+              term.loadAddon(fitAddon);
+              term.open(terminal);
+              fitAddon.fit();
+                                                                                      term.write('booting container ...\r\n')
+              var webcontainer    = await WebContainer.boot();
+                                                                                      term.write('spawn jsh ...\r\n')
+              var shell           = await webcontainer.spawn('jsh');
+              var output          = new WritableStream({write(data){term.write(data)}});
+              shell.output.pipeTo(output);
+      
+              var input           = shell.input.getWriter();
+              term.onData(data=>input.write(data));
+              
+              term.focus();
+      
+      </script>
+
+</html>
+      
+
