@@ -1,6 +1,5 @@
 
 
-<script>
 
 (async()=>{
                                                                                 console.clear();
@@ -90,11 +89,4 @@
         }//run
 
 })();
-
-
-
-
-</script>
-
-
 
