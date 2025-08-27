@@ -1,0 +1,76 @@
+<iframe id=iframe></iframe>
+
+<script>
+
+(async()=>{
+                                                                                console.clear();
+                                                                                console.log('webcontainer example');
+                                                                                console.log();
+        
+        var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
+        
+        const files   = {
+          
+              'server.js'        : {file:{contents:`
+              
+    //server.js
+
+    var port          = 3000;
+
+    require('http').createServer(request).listen(port);
+                                                                                console.log('listening',port);
+
+    function request(req,res){
+                                                                                console.log(req.method,req.url);
+          var headers   = {
+                'access-control-allow-origin': '*',
+          };
+
+          res.writeHead(204,headers);
+          
+          if(req.method==='OPTIONS'){    //  cors
+                res.end();
+                return;
+          }
+
+          if(req.url==='/test'){
+                res.end('testing 1 2 3');
+                return;
+          }
+
+          res.end('helloworld');
+
+    }//request
+    
+                                    `}},
+              
+        };
+        
+                                                                                console.log('booting ...');
+        var webcontainer    = await WebContainer.boot();
+                                                                                console.log('mounting file system ...');
+        await webcontainer.mount(files);
+
+        webcontainer.on('server-ready',ready);
+                                                                                console.log('launching server ...');
+        var process   = await webcontainer.spawn('node',['server.js']);
+        
+        var stream    = new WritableStream({write(data){console.log(data)}});
+        process.output.pipeTo(stream);
+        
+        var code      = await process.exit;
+        if(code!=0){
+                                                                                console.log('an error occurred');
+        }
+
+
+        function ready(port,url){
+                                                                                console.log('server-ready',port,url);
+            iframe.src    = url;
+            
+        }//ready
+
+})();
+
+</script>
+
