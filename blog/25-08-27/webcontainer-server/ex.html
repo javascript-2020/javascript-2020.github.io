@@ -24,13 +24,10 @@
 
     function request(req,res){
                                                                                 console.log(req.method,req.url);
-          var headers   = {
-                'access-control-allow-origin': '*',
-          };
-
-          res.writeHead(204,headers);
+          res.setHeader('access-control-allow-origin','*');
           
           if(req.method==='OPTIONS'){    //  cors
+                res.writeHead(204);
                 res.end();
                 return;
           }
