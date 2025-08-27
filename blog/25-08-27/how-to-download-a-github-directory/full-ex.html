@@ -1,0 +1,118 @@
+
+
+      
+      <style>
+      
+  body
+    {display:flex;flex-direction:column;font-family:arial;margin:0}
+  #title
+    {margin:0;font-size:12px;display:flex}
+  section
+    {display:grid;grid-template-columns:auto 1fr;gap:3px;align-items:center;margin:3px}
+  input
+    {font-size:16px;padding:2px 5px}
+  button
+    {cursor:pointer;width:200px;font-size:16px;padding:2px}
+  #auto
+    {margin:0 30px}
+  #download
+    {display:flex}
+  #progress
+    {flex:1;margin:0 3px 0 10px;border:1px solid blue;padding:1px;position:relative}
+  #bar
+    {background:lightblue;width:0;position:absolute;inset: 2px 2px 2px 2px}
+  #output
+    {display:none;font-size:16px;margin:0}
+          
+      </style>
+
+      <div id=title>download a directory from a github repository<span style=flex:1></span>
+            <a href='https://github.com/javascript-2020/stackoverflow' style=text-decoration:none>try : javascript-2020 : stackoverflow : main</a>
+            <a id=auto href='#' onclick='auto();return false;'>auto</a>
+      </div>
+      
+      <section>
+            <div>owner</div><input class=owner>
+            <div>repo</div><input class=repo>
+            <div>branch</div><input class=branch>
+            <div>path</div><input class=path>
+      </section>
+      
+      <div id=download>
+            <button onclick=download()>download</button>
+            <div id=progress style='display:none'><div id=bar></div></div>
+      </div>
+      
+      <pre id=output></pre>
+
+      <script type=module>
+
+        import jszip from 'https://cdn.jsdelivr.net/npm/jszip/+esm';
+        var $   = sel=>document.querySelector(sel);
+        
+        window.auto   = function(){
+              
+              $('.owner').value     = 'javascript-2020';
+              $('.repo').value      = 'stackoverflow';
+              $('.branch').value    = 'main';
+              download();
+              return false;
+              
+        }//auto
+        
+        window.download   = async function(){
+        
+              $('#progress').style.display    = '';
+              
+              var owner   = $('.owner').value;
+              var repo    = $('.repo').value;
+              var branch  = $('.branch').value;
+              var path    = $('.path').value;
+              
+              if(path[0]=='/')path    = path.slice(1);
+              if(path && path.slice(-1)!='/')path  += '/';
+        
+              var url     = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=true`;
+              var json    = await fetch(url).then(res=>res.json());
+              var file    = `${path.split('/').filter(Boolean).at(-1)||repo}.zip`;                            
+              var zip     = new jszip();                    
+              
+              var total   = 2;
+              var c       = 1;
+              
+              await Promise.all(json.tree.map(async item=>{
+              
+                    if(!item.path.startsWith(path))return;
+                    
+                    total++;
+                    $('#bar').style.width   = `calc(${100*c/total}% - 4px)`;
+                    
+                    var fn    = item.path.slice(path.length);
+                    if(item.type=='tree'){
+                          zip.folder(fn);
+                    }else{
+                      var url     = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${item.path}`;
+                      var blob    = await fetch(url).then(res=>res.blob());
+                      zip.file(fn,blob);
+                    }
+                    
+                    c++;
+                    $('#bar').style.width   = `calc(${100*c/total}% - 4px)`;
+                    
+              }));
+                        
+              var blob                = await zip.generateAsync({type:'blob'});
+              
+              $('#bar').style.width   = 'calc(100% - 4px)';
+              output.style.display    = 'block';
+              var url                 = window.URL.createObjectURL(blob);
+              var a                   = document.createElement('a');
+              a.href                  = url;
+              a.download              = file;
+              a.textContent           = file+' ( right-click - save link as )';
+              output.append(a,'\n');
+              
+        }//download
+
+      </script>
+
