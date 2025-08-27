@@ -29,17 +29,58 @@
 
             <div id=desc>
 
-how to download a github directory
+A more complete solution as none of the other answers actually describe how to do it
+
+
+Download a zipped directory right here in the browser by running this code snippet
+
+The path can be empty ( therefore it will download all files in the repo )
+
             
             </div>
 
 
-            <code>
+            <code-block src='full-ex.html' snippet-html api></code-block>
             
+            <div>
             
-            </code>
+A link to a GitHub webpage for a more complete example (work in progress)
+
+javascript-2020.github.io : download a directory from a GitHub repository
             
+            </div>
             
+            <div>
+As per the documentation REST API endpoints for Git trees : Get a tree
+<br>
+a complete list of files for a repo can be downloaded in json format by adding ?recursive=true to the endpoint
+<br>
+https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=true
+each file can be downloaded individually from raw.githubusercontent.com
+<br>
+https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}
+and the whole process only requires 1 github api request which helps with the github api rate restrictions, 60 p/hr anonymous, 5000 p/hr authorised, there is however a delay between updating a repo and those changes being reflected at raw.githubusercontent.com, this can be 5-10mins
+<br>
+Individual files can also be downloaded from ( changes reflected immediately )
+<br>
+https://api.github.com/repos/${owner}/${repo}/contents/${path}
+To use authorized requests with the github api, a http header needs to be added to the request
+<br>
+authorization : bearer ${token}
+A GitHub api token can be generated at github.com : Fine-grained personal access tokens, you'll need to add permissions / repository permissions / contents permission to the token
+<br>
+Given a successful request the api url will return a json object with the file data base64 encoded in the content field, such as
+<br>
+            
+            </div>
+            
+            <code-block src='data-structure.js' snippet-console api></code-block>
+            
+            <div>
+    
+This structure can then be coupled with npm : jszip to create a zip file containing the files in the folder
+            
+            </div>
       
       </body>
             
