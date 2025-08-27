@@ -18,7 +18,139 @@
             <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             
+            
+            <script init>
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+                                                                                
+                                                                                console.log('ace',ace.version);
+        var version       = 'v1.0';
+            
+        var df            = true;
+
+
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var code;
+        
+        var mod           = {};
+        
+        //var codeblock;
+        
+
+  //:
+
+              
+        async function init(){
+                                                                                //debug('init',version);
+              menu    = menumod();
+              
+              await initdom(document.body);
+
+
+              init.complete();
+
+        }//init
+
+
+        init.stack            = [init];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              if(init.stack.mode){
+                    console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+                                                                                //console.trace();
+              }
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              if(init.stack.mode){
+                    console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+                                                                                //console.trace();
+              }
+              if(init.stack.ct>=init.stack.total){
+                                                                                //console.log('*** complete');
+                    init.stack.ct       = 0;
+                    init.stack.total    = 0;
+                    var list    = [...init.stack];
+                    init.stack.length   = 0;
+                    list.forEach(fn=>fn());
+              }
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+        
+        init.complete   = function(){
+          
+              init.complete.stack.forEach(fn=>fn());
+              
+              
+        }//complete
+        
+        init.complete.stack   = [];
+        init.complete.add     = fn=>init.complete.stack.push(fn);
+
+                  
+
+(async()=>{
+  
+        init.stack.add;
+
+        
+        var url;
+        var headers;
+        var token       = localStorage['github-token'];
+        if(token){
+              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
+        }else{
+              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
+        }
+        
+        var res   = await fetch(url,{headers});
+        var txt   = await res.text();
+
+        if(res.headers.get('content-type').includes('json')){
+                                                                                console.log('*** ext : json');
+              var json    = JSON.parse(txt);
+              var b64     = json.content;
+              txt         = atob(b64);
+        }else{
+                                                                                console.log('*** ext : text');
+        }
+        
+        ext   = eval(txt);
+
+        
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/code/code.js.api',
+        );
+        [$,datatype,menumod,code]   = await promise;
+
+        code.initmod({ext,$,datatype,menumod});
+        
+        init.stack.complete;
+
+})();
+
+
+            </script init>
+            
+            
             <link rel=stylesheet href='/blog/css/blog.css'>
+            <style>
+            
+            </style>
             
       </head>
       
@@ -133,6 +265,45 @@ node --experimental-network-imports --no-warnings .\test.node.mjs
             </code>
             
       </body>
+
+      
+      <script>
+
+
+        var code_block;
+
+        var menu;
+        
+        var root;
+        
+
+
+        async function initdom(rootnode){
+
+              root    = rootnode;
+              
+
+
+              var list        = $.all(root,'code-block');
+              list.forEach(node=>{
+              
+                    ({code_block}   = await code.code_block.all(node,{menu,ace}));
+                    code_block.snippet_console.snippet.dconsole.height('200px');
+                    
+              });
+
+              
+        }//initdom      
+
+
+  //:  
+  
+  
+  init.stack.complete;
+  
+            
+      </script>
+      
             
 </html>
 
