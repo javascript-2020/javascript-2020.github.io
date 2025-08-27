@@ -17,6 +17,8 @@
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
             
             
             <script init>
@@ -284,9 +286,9 @@ node --experimental-network-imports --no-warnings .\test.node.mjs
 
 
               var list        = $.all(root,'code-block');
-              list.forEach(node=>{
+              list.forEach(async node=>{
               
-                    ({code_block}   = await code.code_block.all(node,{menu,ace}));
+                    ({code_block}   = await code.code_block(node,{menu,ace}));
                     code_block.snippet_console.snippet.dconsole.height('200px');
                     
               });
