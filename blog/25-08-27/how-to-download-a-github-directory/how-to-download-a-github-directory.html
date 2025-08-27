@@ -200,48 +200,65 @@
             
             <p>
             
-As per the documentation
-<a href='https://docs.github.com/en/rest/git/trees?apiVersion=2022-11-28#get-a-tree'>
-      docs.github.com : REST API endpoints for Git trees : Get a tree
-</a>
-<br>
-a complete list of files for a repo can be downloaded in json format by adding <code>?recursive=true</code> to the endpoint
-<br>
-
-<code>https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=true</code>
-
-each file can be downloaded individually from 
-<a href='https://stackoverflow.com/questions/39065921/what-do-raw-githubusercontent-com-urls-represent'>
-      raw.githubusercontent.com
-</a>
-<br>
-
-<code>https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}</code>
-
-and the whole process only requires 1 github api request which helps with the github api rate restrictions,
-60 p/hr anonymous, 5000 p/hr authorised, there is however a delay between updating a repo and those changes
-being reflected at raw.githubusercontent.com, this can be 5-10mins
-<br>
-Individual files can also be downloaded from ( changes reflected immediately )
-<br>
-
-<code>https://api.github.com/repos/${owner}/${repo}/contents/${path}</code>
-
-To use authorized requests with the github api, a http header needs to be added to the request
-<br>
-<code>authorization : bearer ${token}</code>
-A GitHub api token can be generated at 
-<a href='https://github.com/settings/personal-access-tokens'>
-      github.com : Fine-grained personal access tokens
-</a>
-, you'll need to add
-
-<code>permissions / repository permissions / contents</code>
-
-permission to the token
-<br>
-Given a successful request the api url will return a json object with the file data base64 encoded in the content field, such as
-<br>
+                  As per the documentation
+                  
+                  <a href='https://docs.github.com/en/rest/git/trees?apiVersion=2022-11-28#get-a-tree'>
+                        docs.github.com : REST API endpoints for Git trees : Get a tree
+                  </a>
+                  
+                  <br>
+                  
+                  a complete list of files for a repo can be downloaded in json format by adding <code>?recursive=true</code> to the endpoint
+                  
+                  <br>
+                  
+                  <code>https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=true</code>
+                  
+                  each file can be downloaded individually from 
+                  
+                  <a href='https://stackoverflow.com/questions/39065921/what-do-raw-githubusercontent-com-urls-represent'>
+                        raw.githubusercontent.com
+                  </a>
+                  
+                  <br>
+                  
+                  <code>https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}</code>
+                  
+                  and the whole process only requires 1 github api request which helps with the github api rate restrictions,
+                  60 p/hr anonymous, 5000 p/hr authorised, there is however a delay between updating a repo and those changes
+                  being reflected at raw.githubusercontent.com, this can be 5-10mins
+                  
+                  <br>
+                  
+                  Individual files can also be downloaded from ( changes reflected immediately )
+                  
+                  <br>
+                  
+                  <code>https://api.github.com/repos/${owner}/${repo}/contents/${path}</code>
+                  
+                  To use authorized requests with the github api, a http header needs to be added to the request
+                  
+                  <br>
+                  
+                  <code>authorization : bearer ${token}</code>
+                  
+                  A GitHub api token can be generated at 
+                  
+                  <a href='https://github.com/settings/personal-access-tokens'>
+                        github.com : Fine-grained personal access tokens
+                  </a>
+                  
+                  , you'll need to add
+                  
+                  <code>permissions / repository permissions / contents</code>
+                  
+                  permission to the token
+                  
+                  <br>
+                  
+                  Given a successful request the api url will return a json object with the file data base64 encoded in the content field, such as
+                  
+                  <br>
             
             </p>
             
