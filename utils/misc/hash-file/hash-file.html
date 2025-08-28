@@ -65,6 +65,7 @@
         
         var filemod;   
         var filename;
+        var editor;
         var log;
         
         
@@ -81,17 +82,25 @@
               //mod.hdr.base64            = mod.hdr.base64();
               filemod                   = mod.filemod();
               filename                  = mod['filename-ui']();
+              
+              editor                    = mod.editor();
+              
               log                       = mod.log();
               
               //mod.hdr.base64.initmod({ext,$,menu,menumod:menu});
+              
               filemod.initmod({ext,$,menumod,menu,complete:preview.complete,source:preview.source});
               filename.initmod({ext,$});
+              
+              editor.initmod({ext,$,menu});
+              
               log.initmod({ext,$});
               
               //mod.hdr.base64.init();
-              filemod.init();
-              filename.init();
-              log.init();
+              await filemod.init();
+              await filename.init();
+              await editor.init();
+              await log.init();
 
   //:
           
@@ -317,12 +326,16 @@ xxhash128 : ƒ (A,I=0,B=0)
   .spc
     {flex:1}
   
-
+  .chk-root
+    {cursor:pointer;display:flex;align-items:center}
+    
   #file
     {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
+  #file-hdr
+    {}
+  #file-hdr [type=checkbox]
+    {width:25px;height:25px;margin-right:10px}
     
-
-
     
   #blob
     {display:flex;flex-direction:column;gap:10px;}    
@@ -332,9 +345,21 @@ xxhash128 : ƒ (A,I=0,B=0)
     {width:100px;text-align:right;margin-right:20px}
 
 
+  #text
+    {height:200px;display:flex;flex-direction:column;gap:5px;border:1px solid lightgray;padding:10px}
+  #text-hdr
+    {}
+  #text-hdr [type=checkbox]
+    {width:25px;height:25px;margin-right:10px}
+    
+  editor-root
+    {flex:1}
+  
   #btns
-    {display:flex;flex-direction:column;gap:10px}
+    {/*display:flex;flex-direction:column;gap:10px*/}
 
+  .btn
+    {}
   .btn-group
     {display:inline;margin-right:15px}
   
@@ -388,8 +413,13 @@ xxhash128 : ƒ (A,I=0,B=0)
 
             <div id=file>
 
-                  <div>
-                        file
+                  <div id=file-hdr>
+                        <span class=chk-root>
+                              <input type=checkbox>
+                              <label>
+                                    file
+                              </label>
+                        </span>
                   </div>
                   
                   <filemod api>
@@ -415,6 +445,23 @@ xxhash128 : ƒ (A,I=0,B=0)
                   
             </div>
 
+
+            <div id=text>
+            
+                  <div id=text-hdr>
+                        <span class=chk-root>
+                              <input type=checkbox checked>
+                              <label>
+                                    text
+                              </label>
+                        </span>
+                  </div>
+                  
+                  <editor>
+                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </editor>
+                  
+            </div>
 
 
             <div id=params style='display:none'>
@@ -516,6 +563,8 @@ xxhash128 : ƒ (A,I=0,B=0)
               filemod.initdom(root);
               filename.initdom(root);
 
+
+              editor.initdom(root);
 
 
 
