@@ -89,7 +89,7 @@
               
               //mod.hdr.base64.initmod({ext,$,menu,menumod:menu});
               
-              filemod.initmod({ext,$,menumod,menu,complete:preview.complete,source:preview.source});
+              filemod.initmod({ext,$,menumod,menu,complete});
               filename.initmod({ext,$});
               
               editor.initmod({ext,$,menu});
@@ -414,7 +414,7 @@ xxhash128 : ƒ (A,I=0,B=0)
             <div id=text>
             
                   <div id=text-hdr>
-                        <span class=chk-root>
+                        <span id=text-chk-root class=chk-root>
                               <input id=text-chk type=checkbox checked>
                               <label>
                                     text
@@ -432,7 +432,7 @@ xxhash128 : ƒ (A,I=0,B=0)
             <div id=file>
 
                   <div id=file-hdr>
-                        <span class=chk-root>
+                        <span id=file-chk-root class=chk-root>
                               <input id=file-chk type=checkbox>
                               <label>
                                     file
@@ -558,7 +558,7 @@ xxhash128 : ƒ (A,I=0,B=0)
 
               
               root                                    = rootnode;
-debugger;
+
               chk                             = $.chkbox.group(root,'#file-hdr .chk-root','#text-hdr .chk-root');
               filemod.initdom(root);
               filename.initdom(root);
@@ -649,51 +649,6 @@ debugger;
         
         
 
-        btn.md2   = function(){
-        }//md2
-        
-        btn.md4;
-
-        
-        btn.md5   = function(){
-          
-              if(chk())return;
-              hash('blake2s');
-              
-        }//md5
-
-        
-        btn.md6;
-
-        
-        btn.sha1    = function(){
-          
-              if(chk())return;
-              hash('sha1');
-              
-        }//sha1
-
-        
-        btn.sha256    = function(){
-          
-              if(chk())return;
-              hash('sha256');
-              
-        }//sha256
-        
-        btn.sha512;
-        btn.sha3;
-        
-        btn.blake2;
-        
-        btn.crc8;
-        btn.crc16;
-        btn.crc32;
-        btn.crc32c;
-        btn.crc64;
-
-
-
 
 
 
@@ -727,29 +682,29 @@ debugger;
 
   //:
   
-  
+/*  
         preview.source    = function(){
           
               return cur.blob;
               
         }//source
+*/        
         
         
-        preview.complete    = {};
+        var complete    = {};
         
-        preview.complete.load   = function(file,srcblob){
+        complete.load   = function(file,srcblob){
           
               menu.close();
               
-              cur.file            = file;
               cur.blob            = srcblob;
         
-              preview.filename.show(file);
+              filename.show(file);
               blob.display();
               
         }//load
         
-        
+/*        
         preview.complete.save   = function(file){
           
               cur.preview.file    = file;
@@ -759,11 +714,12 @@ debugger;
               preview.filename.show(file);
               
         }//save
+*/        
         
         
   //:
   
-  
+/*  
         function load(alg){
           
               if(hash[alg])return;
@@ -787,17 +743,21 @@ debugger;
               }//onload
               
         }//load
-        
+*/
+
+
   
         async function hash(alg){
           
-              //await load(alg);
+              var txt;
+              if(chk.read()=='text'){
+                    txt   = editor.getvalue();
+              }else{
+                    txt   = await cur.blob.text();
+              }
+              
               var fn    = hashwasm[alg];
-              
-              var txt   = await cur.blob.text();
-              
               var hex   = await fn(txt);
-              
                                                                                 console.log(alg,hex);
               $(root,'#hash-type').textContent    = alg;
               output.text.textContent             = hex;
