@@ -326,7 +326,7 @@ xxhash128 : ƒ (A,I=0,B=0)
   .spc
     {flex:1}
   
-  .chk-root
+  .chk-root, .chk-root *
     {cursor:pointer;display:flex;align-items:center}
     
   #file
@@ -411,6 +411,24 @@ xxhash128 : ƒ (A,I=0,B=0)
             </div>
 
 
+            <div id=text>
+            
+                  <div id=text-hdr>
+                        <span class=chk-root>
+                              <input type=checkbox checked>
+                              <label>
+                                    text
+                              </label>
+                        </span>
+                  </div>
+                  
+                  <editor>
+                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </editor>
+                  
+            </div>
+
+
             <div id=file>
 
                   <div id=file-hdr>
@@ -442,24 +460,6 @@ xxhash128 : ƒ (A,I=0,B=0)
                         </div>
                               
                   </div>
-                  
-            </div>
-
-
-            <div id=text>
-            
-                  <div id=text-hdr>
-                        <span class=chk-root>
-                              <input type=checkbox checked>
-                              <label>
-                                    text
-                              </label>
-                        </span>
-                  </div>
-                  
-                  <editor>
-                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </editor>
                   
             </div>
 
@@ -541,9 +541,9 @@ xxhash128 : ƒ (A,I=0,B=0)
         var preview       = {};
         var blob          = {};
         
-
-        var root;
         
+        var root;
+        var chk;
 
 
         var btn           = {};
@@ -559,7 +559,7 @@ xxhash128 : ƒ (A,I=0,B=0)
               
               root                                    = rootnode;
 
-
+              chk                             = $.chkkbox.group(root,'#file-hdr .chk-root','#text-hdr .chk-root');
               filemod.initdom(root);
               filename.initdom(root);
 
