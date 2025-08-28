@@ -5,15 +5,44 @@
 
       <head>
       
-            <title>hash text</title>
-
+            <title>hash generator - SHA1, SHA256, MD5, RIPEMD - all the common types</title>
+            <meta name=description content='Generate secure hashes using SHA1, SHA256, MD5, RIPEMD and more. Fast, browser-based cryptographic tool for developers. adler32 argon2d argon2i argon2id bcrypt blake2b blake2s blake3 crc32 crc64 keccak md4 md5 pbkdf2 ripemd160 scrypt sha1 sha3 sha224 sha256 sha384 sha512 sm3 whirlpool xxhash3 xxhash32 xxhash64 xxhash128'>
+            
             <base href='https://javascript-2020.github.io/utils/misc/hash-file/hash-file.html'>
+            <link rel=canonical href='https://ext-code.com/utils/misc/hash-file/hash-file.html'>
             
+            <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='image/hash-text-30.png'>
-            <link rel=stylesheet href='/utils/css/utils.css'>
 
-            <script src="https://cdn.jsdelivr.net/npm/hash-wasm@4"></script>            
-            
+
+            <script src='https://cdn.jsdelivr.net/npm/hash-wasm@4'></script>
+
+            <script name=keywords value='adler32 argon2d argon2i argon2id bcrypt blake2b blake2s blake3 crc32 crc64 keccak md4 md5 pbkdf2 ripemd160 scrypt sha1 sha3 sha224 sha256 sha384 sha512 sm3 whirlpool xxhash3 xxhash32 xxhash64 xxhash128'>
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "WebApplication",
+                        "name"                  : "Hash Generator",
+                        "url"                   : "https://yourdomain.com/hash-file.html",
+                        "description"           : "Generate cryptographic hashes using SHA, MD5, and RIPEMD algorithms."
+                        "applicationCategory"   : "DeveloperTool",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                        "featureList"           : [
+                                                        "SHA-1",
+                                                        "SHA-224",
+                                                        "SHA-256",
+                                                        "SHA-384",
+                                                        "SHA-512",
+                                                        "MD5",
+                                                        "RIPEMD-160"
+                                                  ],
+                  }
+            </script>
+
+
             <script init>
                                                                                 console.clear();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
@@ -249,8 +278,23 @@ xxhash128 : ƒ (A,I=0,B=0)
               
         };
 
-
-
+        
+        var meta_keywords       = '';
+        var meta_description    = '';
+        var ul                  = '';
+        for(var key in desc){
+        
+              meta_keywords      += key+' ';
+              meta_description   += key+' ';
+              ul                 += `<li>${key}</li>`;
+              
+        }//for
+        
+        if(1){
+              console.log(meta_keywords);
+              console.log(meta_description);
+              console.log(ul);
+        }
         
 })();
 
@@ -258,6 +302,7 @@ xxhash128 : ƒ (A,I=0,B=0)
             </script init>
         
       
+            <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymouse>
       
             <style id=page-inline>
             
@@ -277,6 +322,8 @@ xxhash128 : ƒ (A,I=0,B=0)
     {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
     
 
+  .btn-group
+    {display:inline;margin-right:15px}
 
     
   #blob
@@ -303,6 +350,10 @@ xxhash128 : ƒ (A,I=0,B=0)
     {color:blue;font-weight:bold}
 
 
+  #desc
+    {}
+  #desc li
+    {display:inline;margin-right:10px}
 
   input
     {font-size:16px;padding:5px 10px}
@@ -332,9 +383,6 @@ xxhash128 : ƒ (A,I=0,B=0)
 -->                  
 
             </div>
-
-
-
 
 
             <div id=file>
@@ -414,6 +462,19 @@ xxhash128 : ƒ (A,I=0,B=0)
                   
             </div>
 
+
+            <section id=desc>
+                  <h1>Hash Generator Tool</h1>
+                  <p>This tool supports the following hash functions:</p>
+                  <ul>
+                        <li>adler32</li><li>argon2d</li><li>argon2i</li><li>argon2id</li><li>bcrypt</li><li>blake2b</li>
+                        <li>blake2s</li><li>blake3</li><li>crc32</li><li>crc64</li><li>keccak</li><li>md4</li><li>md5</li>
+                        <li>pbkdf2</li><li>ripemd160</li><li>scrypt</li><li>sha1</li><li>sha3</li><li>sha224</li>
+                        <li>sha256</li><li>sha384</li><li>sha512</li><li>sm3</li><li>whirlpool</li><li>xxhash3</li>
+                        <li>xxhash32</li><li>xxhash64</li><li>xxhash128</li>
+                  </ul>
+            </section>
+
             
             <log api>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
@@ -475,9 +536,10 @@ xxhash128 : ƒ (A,I=0,B=0)
                           var list    = Object.keys(d);
                           if(list.length==2){
                             
-                                if(cur.g!==d.g){
-                                      cur.g       = d.g;
-                                      cur.root    = document.createElement('div');
+                                if(cur.grp!==d.grp){
+                                      cur.grp               = d.grp;
+                                      cur.root              = document.createElement('div');
+                                      cur.root.className    = 'btn-group';
                                       btns.append(cur.root);
                                 }
                                 
