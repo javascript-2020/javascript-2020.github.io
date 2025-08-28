@@ -326,8 +326,10 @@ xxhash128 : ƒ (A,I=0,B=0)
   .spc
     {flex:1}
   
-  .chk-root, .chk-root *
-    {cursor:pointer;display:flex;align-items:center}
+  .chk-root
+    {display:inline-flex;align-items:center;border:1px solid lightgray;border-radius:5px;padding:5px;}
+  .chk-root *
+    {cursor:pointer}
     
   #file
     {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
@@ -378,6 +380,9 @@ xxhash128 : ƒ (A,I=0,B=0)
 
   #desc
     {}
+  #desc #support
+    {font-size:12px}
+    
   #desc li
     {display:inline;margin-right:10px}
 
@@ -397,6 +402,7 @@ xxhash128 : ƒ (A,I=0,B=0)
       
       <body>
 
+            <h3>Hash Generator Tool</h3>
 
 
             
@@ -512,15 +518,18 @@ xxhash128 : ƒ (A,I=0,B=0)
 
 
             <section id=desc>
-                  <h1>Hash Generator Tool</h1>
-                  <p>This tool supports the following hash functions:</p>
-                  <ul>
-                        <li>adler32</li><li>argon2d</li><li>argon2i</li><li>argon2id</li><li>bcrypt</li><li>blake2b</li>
-                        <li>blake2s</li><li>blake3</li><li>crc32</li><li>crc64</li><li>keccak</li><li>md4</li><li>md5</li>
-                        <li>pbkdf2</li><li>ripemd160</li><li>scrypt</li><li>sha1</li><li>sha3</li><li>sha224</li>
-                        <li>sha256</li><li>sha384</li><li>sha512</li><li>sm3</li><li>whirlpool</li><li>xxhash3</li>
-                        <li>xxhash32</li><li>xxhash64</li><li>xxhash128</li>
-                  </ul>
+                  <div id=support>
+                        <p>
+                              This tool supports the following hash functions:
+                        </p>
+                        <ul>
+                              <li>adler32</li><li>argon2d</li><li>argon2i</li><li>argon2id</li><li>bcrypt</li><li>blake2b</li>
+                              <li>blake2s</li><li>blake3</li><li>crc32</li><li>crc64</li><li>keccak</li><li>md4</li><li>md5</li>
+                              <li>pbkdf2</li><li>ripemd160</li><li>scrypt</li><li>sha1</li><li>sha3</li><li>sha224</li>
+                              <li>sha256</li><li>sha384</li><li>sha512</li><li>sm3</li><li>whirlpool</li><li>xxhash3</li>
+                              <li>xxhash32</li><li>xxhash64</li><li>xxhash128</li>
+                        </ul>
+                  </div>
             </section>
 
             
@@ -549,6 +558,8 @@ xxhash128 : ƒ (A,I=0,B=0)
         var btn           = {};
         btn.output        = {};
 
+
+        var complete      = {};
 
 
   //:
@@ -661,9 +672,7 @@ xxhash128 : ƒ (A,I=0,B=0)
         }//copy
 
 
-
   //:
-  
   
   
         blob.display   = function(){
@@ -678,20 +687,8 @@ xxhash128 : ƒ (A,I=0,B=0)
         }//display
 
 
-
-
   //:
   
-/*  
-        preview.source    = function(){
-          
-              return cur.blob;
-              
-        }//source
-*/        
-        
-        
-        var complete    = {};
         
         complete.load   = function(file,srcblob){
           
@@ -704,48 +701,10 @@ xxhash128 : ƒ (A,I=0,B=0)
               
         }//load
         
-/*        
-        preview.complete.save   = function(file){
-          
-              cur.preview.file    = file;
-              
-              log.green(file.filename+' saved');
-              
-              preview.filename.show(file);
-              
-        }//save
-*/        
         
         
   //:
   
-/*  
-        function load(alg){
-          
-              if(hash[alg])return;
-              
-              var resolve,promise     = new Promise(res=>resolve=res);
-              
-              var src                 = `https://cdn.jsdelivr.net/npm/hash-wasm@4/dist/${alg}.umd.min.js`;
-              
-              var script              = document.createElement('script');
-              script.onload           = onload;
-              script.src              = src;
-              document.head.append(script);
-              
-              return promise;
-              
-              
-              function onload(){
-                
-                    resolve();
-                    
-              }//onload
-              
-        }//load
-*/
-
-
   
         async function hash(alg){
           
