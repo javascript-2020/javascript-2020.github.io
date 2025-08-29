@@ -96,7 +96,7 @@
               hdr.utils.initmod({ext,$,menu:menu.root,menumod});
               menu.main.initmod({ext,$,menumod:menu.root,editor,filemod});
               filemod.initmod({ext,$,menumod,menu:menu.root,complete,source,focus,editor});
-              publish.initmod({ext,$,menu:menu.root,run,source});
+              publish.initmod({ext,$,menu:menu.root,run,source,complete});
               editor.initmod({ext,$,menu:menu.root});
               output.initmod({ext,$});
               log.initmod({ext,$});
@@ -430,10 +430,12 @@
         
         function complete(file){
         
-              editor.filename(file);
-              editor.filename.save.hide();
-              
-              filemod.cur   = file;
+              if(file){
+                    editor.filename(file);
+                    editor.filename.save.hide();
+                    
+                    filemod.cur   = file;
+              }
               
               menu.root.close();
               editor.focus();
