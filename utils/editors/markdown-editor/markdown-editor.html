@@ -53,7 +53,7 @@
               mod.utils.hdr.initmod({ext,$,menumod,menu});
               mod.menu.main.initmod({ext,$,menumod,menu,editor});
               filemod.initmod({ext,$,menumod,menu,complete,focus,source,editor});
-              publish.initmod({ext,$,ui,menumod,menu});
+              publish.initmod({ext,$,ui,menumod,menu,source,complete});
               editor.initmod({ext,$,menumod,menu});
               output.initmod({ext,$,editor});
               log.initmod({ext,$});
@@ -391,9 +391,11 @@
 
         function complete(file){
         
-              editor.filename(file);
-              editor.filename.save.hide();
-              filemod.cur   = file;
+              if(complete){
+                    editor.filename(file);
+                    editor.filename.save.hide();
+                    filemod.cur   = file;
+              }
               menumod.close();
               editor.focus();
               
