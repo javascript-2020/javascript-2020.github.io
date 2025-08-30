@@ -1,0 +1,77 @@
+
+download link
+https://ccadb.my.salesforce-sites.com/microsoft/IncludedCACertificateReportForMSFTCSV
+
+webpage
+https://ccadb.my.salesforce-sites.com/microsoft/IncludedCACertificateReportForMSFT
+
+
+
+run as admin
+
+
+//  install certificate win
+
+$certPath = "C:\path\to\my-local-cert.crt"
+$store = New-Object System.Security.Cryptography.X509Certificates.X509Store("Root", "LocalMachine")
+$store.Open("ReadWrite")
+$cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certPath)
+$store.Add($cert)
+$store.Close()
+
+
+// list trusted root ca
+
+Get-ChildItem -Path Cert:\LocalMachine\Root | Format-Table Subject, Thumbprint, NotAfter
+
+// list current user store
+
+Get-ChildItem -Path Cert:\CurrentUser\Root | Format-Table Subject, Thumbprint, NotAfter
+
+// list Use Microsoft’s CTL (Certificate Trust List)
+
+Get-ChildItem -Path Cert:\LocalMachine\AuthRoot
+
+
+// get a cert
+Get-ChildItem -Path Cert:\LocalMachine\Root | Where-Object { $_.Subject -like "*MyDevCA*" }
+
+
+
+thumbprint 
+sha256 ( sha1 ) hash over binary der file
+
+
+// remove cert
+
+$store = New-Object System.Security.Cryptography.X509Certificates.X509Store("Root", "LocalMachine")
+$store.Open("ReadWrite")
+$store.Remove($cert)  # where $cert is the suspicious certificate object
+$store.Close()
+
+
+
+$store = New-Object System.Security.Cryptography.X509Certificates.X509Store("Root", "LocalMachine")
+$store.Open("ReadWrite")
+
+
+$thumb = "ABC123DEF456..."  # no spaces
+$cert = $store.Certificates | Where-Object { $_.Thumbprint -eq $thumb }
+
+if ($cert) {
+    $store.Remove($cert)
+    Write-Host "Certificate removed: $($cert.Subject)"
+} else {
+    Write-Host "Certificate not found."
+}
+
+$store.Close()
+
+
+
+// export
+
+$cert.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert) | Set-Content "C:\suspicious-cert.cer" -Encoding Byte
+
+
+ 
