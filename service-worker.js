@@ -1,7 +1,7 @@
         
         
         
-        
+                                                                                console.log('[ sw ] running');
         var cache_name    = 'runtime-cache-v1';
         var ttl           = 5000;
         var timestamps    = new Map();
