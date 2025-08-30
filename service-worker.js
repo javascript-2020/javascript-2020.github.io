@@ -9,14 +9,14 @@
 
 
         self.addEventListener('install',e=>{
-          
+                                                                                console.log('[ sw ] install');
               self.skipWaiting();
               
         });
 
 
         self.addEventListener('activate',e=>{
-          
+                                                                                console.log('[ sw ] activate');
               e.waitUntil((async()=>{
                   
                     var keys    = await caches.keys();
@@ -36,7 +36,7 @@
 
         
         self.addEventListener('fetch',e=>{
-          
+                                                                                console.log('[ sw ] fetch');
               var {request}   = e;
               if(request.method!=='GET'){
                     return;
@@ -63,7 +63,7 @@
 
         
         async function cache_request(request){
-          
+                                                                                console.log('[ sw ] cache_request');
               var now       = Date.now();
               var last      = timestamps.get(request.url)||0;
               
@@ -89,7 +89,7 @@
         
         
         async function purge(){
-          
+                                                                                console.log('[ sw ] purge');
               var cache   = await caches.open(cache_name);
               var keys    = await cache.keys();
               var now     = Date.now();
