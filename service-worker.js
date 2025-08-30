@@ -1,0 +1,102 @@
+        
+        
+        
+        
+        var cache_name    = 'runtime-cache-v1';
+        var ttl           = 5000;
+        var timestamps    = new Map();
+
+
+        self.addEventListener('activate',e=>{
+          
+              e.waitUntil((async()=>{
+                  
+                    var keys    = await caches.keys();
+                    await Promise.all(keys.map(key=>{
+                      
+                          if(key!==cache_name){
+                                return caches.delete(key);
+                          }
+                            
+                    }));
+                    await purge();
+                    self.clients.claim();
+                      
+              })());
+              
+        });
+
+        
+        self.addEventListener('fetch',e=>{
+          
+              var {request}   = e;
+              if(request.method!=='GET'){
+                    return;
+              }
+              
+              var client;
+              var url;
+              if(e.clientId){
+                    client    = await self.client.get(e.clientId);
+                    url       = client?.url;
+              }
+                                                                                console.log('[ sw ]',url,request.url);
+              if(!url){
+                    return;
+              }
+                          
+              if(!url.includes('/html-editor')){
+                    return;
+              }
+                
+              event.respondWith(cache_request(request));
+              
+        });
+
+        
+        async function cache_request(request){
+          
+              var now       = Date.now();
+              var last      = timestamps.get(request.url)||0;
+              
+              var cache     = await caches.open(cache_name);
+              var cached    = await cache.match(request);
+            
+              if(cached){
+                    if(now-last<ttl){
+                          return cached;
+                    }
+                    timestamp.delete(request.url);
+                    cache.delete(request);
+              }
+              
+              var response    = await fetch(request);
+              
+              cache.put(request,response.clone());
+              timestamps.set(request.url,now);
+              
+              return response;
+              
+        }//handle_request
+        
+        
+        async function purge(){
+          
+              var cache   = await caches.open(cache_name);
+              var keys    = await cache.keys();
+              var now     = Date.now();
+            
+              for(var request of keys){
+                
+                    var last    = timestamps.get(request.url)||0;
+                    if(now-last>TTL){
+                          await cache.delete(request);
+                          timestamps.delete(request.url);
+                    }
+                    
+              }//for
+              
+        }//purge
+        
+        
+        
