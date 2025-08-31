@@ -42,6 +42,13 @@
                     return;
               }
               
+              event.respondWith(cache_request(e,request));
+              
+        });
+
+        
+        async function cache_request(e,request){
+                                                                                console.log('[ sw ] cache_request');
               var client;
               var url;
               if(e.clientId){
@@ -49,43 +56,44 @@
                     url       = client?.url;
               }
                                                                                 console.log('[ sw ]',url,request.url);
-              if(!url){
-                    return;
-              }
+              if(url){
                           
-              if(!url.includes('/html-editor')){
-                    return;
-              }
-                
-              event.respondWith(cache_request(request));
-              
-        });
-
-        
-        async function cache_request(request){
-                                                                                console.log('[ sw ] cache_request');
-              var now       = Date.now();
-              var last      = timestamps.get(request.url)||0;
-              
-              var cache     = await caches.open(cache_name);
-              var cached    = await cache.match(request);
-            
-              if(cached){
-                    if(now-last<ttl){
-                          return cached;
+                    if(url.includes('/html-editor')){
+                                                                                            
+                          var now       = Date.now();
+                          var last      = timestamps.get(request.url)||0;
+                          
+                          var cache     = await caches.open(cache_name);
+                          var cached    = await cache.match(request);
+                        
+                          if(cached){
+                                if(now-last<ttl){
+                                      return cached;
+                                }
+                                timestamp.delete(request.url);
+                                cache.delete(request);
+                          }
+                          
                     }
-                    timestamp.delete(request.url);
-                    cache.delete(request);
+                    
               }
               
+              var response    = await cache_request.fetch(request);
+              return response;
+              
+        }//cache_request
+        
+        
+        cache_request.fetch   = async function(request){
+          
               var response    = await fetch(request);
               
               cache.put(request,response.clone());
               timestamps.set(request.url,now);
               
               return response;
-              
-        }//handle_request
+          
+        }//fetch
         
         
         async function purge(){
