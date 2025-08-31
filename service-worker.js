@@ -69,6 +69,7 @@
                           
                           if(cached){
                                 if(now-last<ttl){
+                                                                                console.log('[ sw ]','cache hit');
                                       return cached;
                                 }
                                 timestamp.delete(request.url);
