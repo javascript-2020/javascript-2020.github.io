@@ -32,7 +32,7 @@
 
 
             <script>
-            
+/*            
         navigator.serviceWorker.register('/service-worker.js')
           .then(reg=>{
           
@@ -48,6 +48,15 @@
               reg.active.postMessage({type:'load'});
               
         });
+*/
+
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(reg => {
+      reg.unregister().then(success => {
+        console.log(`Unregistered: ${success}`);
+      });
+    });
+  });
 
             </script>
             
