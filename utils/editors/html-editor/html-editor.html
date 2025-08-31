@@ -43,16 +43,10 @@
           })
           .catch(err=>console.error('SW registration failed:',err));
 
-        navigator.serviceWorker.ready.then(reg=>{
-        
-              reg.active.postMessage({type:'load'});
-              
-        });
-            
             </script>
             
             <script init>
-                                                                                console.clear();
+                                                                                //console.clear();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var version       = 'v1.0';
             
@@ -101,6 +95,13 @@
               
         async function init(){
                                                                                 debug('init',version);
+                                                                                
+              navigator.serviceWorker.ready.then(reg=>{
+              
+                    reg.active.postMessage({type:'load',ext});
+                    
+              });
+
 
               //keydown                   = keydown();
               menu.root                 = menumod();
