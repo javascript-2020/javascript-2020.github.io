@@ -55,7 +55,7 @@
                     client    = await self.client.get(e.clientId);
                     url       = client?.url;
               }
-                                                                                console.log('[ sw ]',url,request.url);
+                                                                                console.log('[ sw ]','url',url,request.url);
               var cache     = await caches.open(cache_name);
               var cached    = await cache.match(request);
               
