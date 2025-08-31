@@ -1,7 +1,7 @@
         
         
         
-                                                                                console.log('[ sw ] running');
+                                                                                console.log('[ sw ]','running');
         var cache_name    = 'runtime-cache-v1';
         var ttl           = 5000;
         var timestamps    = new Map();
@@ -12,14 +12,14 @@
         
 
         self.addEventListener('install',e=>{
-                                                                                console.log('[ sw ] install');
+                                                                                console.log('[ sw ]','install');
               self.skipWaiting();
               
         });
 
 
         self.addEventListener('activate',e=>{
-                                                                                console.log('[ sw ] activate');
+                                                                                console.log('[ sw ]','activate');
               e.waitUntil((async()=>{
                   
                     var keys    = await caches.keys();
@@ -61,7 +61,7 @@
   
   
         async function cache_request(e,request){
-                                                                                console.log('[ sw ] cache_request');
+                                                                                console.log('[ sw ]','cache_request');
               var client;
               var url;
               if(e.clientId){
@@ -104,7 +104,7 @@
         
         
         async function cache_purge(){
-                                                                                console.log('[ sw ] purge');
+                                                                                console.log('[ sw ]','cache_purge');
               var cache   = await caches.open(cache_name);
               var keys    = await cache.keys();
               var now     = Date.now();
