@@ -99,7 +99,7 @@
               for(var request of keys){
                 
                     var last    = timestamps.get(request.url)||0;
-                    if(now-last>TTL){
+                    if(now-last>ttl){
                           await cache.delete(request);
                           timestamps.delete(request.url);
                     }
