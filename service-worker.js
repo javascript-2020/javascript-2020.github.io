@@ -56,6 +56,9 @@
                     url       = client?.url;
               }
                                                                                 console.log('[ sw ]',url,request.url);
+              var cache     = await caches.open(cache_name);
+              var cached    = await cache.match(request);
+              
               if(url){
                           
                     if(url.includes('/html-editor')){
@@ -63,9 +66,6 @@
                           var now       = Date.now();
                           var last      = timestamps.get(request.url)||0;
                           
-                          var cache     = await caches.open(cache_name);
-                          var cached    = await cache.match(request);
-                        
                           if(cached){
                                 if(now-last<ttl){
                                       return cached;
