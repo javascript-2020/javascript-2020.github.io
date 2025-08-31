@@ -49,7 +49,7 @@
               
         });
 
-        
+
         self.addEventListener('message',({data})=>{
                                                                                 console.log('[ sw ]','message',data);
               if(data.type=='load')load(data);
@@ -57,6 +57,9 @@
         });
         
         
+  //:
+  
+  
         async function cache_request(e,request){
                                                                                 console.log('[ sw ] cache_request');
               var client;
