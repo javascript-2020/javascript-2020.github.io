@@ -1,0 +1,234 @@
+        
+      <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css'>
+        
+      <style>
+
+  #terminal
+    {width:500px;height:300px}
+    
+    
+      </style>
+
+      
+      <iframe id=iframe></iframe>
+      
+      <div id=terminal></div>
+
+      
+      <script>        
+
+        var term;
+        
+        
+        async function setup(){
+        
+              var {Terminal}    = await import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm');
+              var {FitAddon}    = await import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm');
+              
+              term                = new Terminal();
+              var fitAddon        = new FitAddon();
+              term.loadAddon(fitAddon);
+              term.open(terminal);
+              fitAddon.fit();
+
+
+              
+        
+        }//setup
+        
+        
+        setTimeout(start,50);
+        
+        
+        async function start(){
+                                                                                console.clear();
+                                                                                console.log('rollup example');
+                                                                                console.log();
+                                                                                
+              await setup();
+              
+              
+              var packages          = [
+                                            'espree',
+                                            'rollup',
+                                            '@rollup/plugin-commonjs',
+                                            '@rollup/plugin-node-resolve',
+                                            '@rollup/plugin-json',
+                                            'rollup-plugin-polyfill-node'
+                                      ];
+
+              
+              var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
+              
+              for(var key in files)files[key]   = {file:{contents:files[key]}};
+              
+              
+                                                                                console.log('booting ...');
+              var webcontainer    = await WebContainer.boot();
+              
+                                                                                console.log('mounting file system ...');
+              await webcontainer.mount(files);
+              
+              
+                                                                                console.log('installing ...');
+              await package_json();
+              await install();
+                                                                                console.log('rollup ...');
+              await rollup();                                                                        
+                                                                                console.log('launching server ...');
+              await server();
+                                                                                console.log('done.');
+                                                                                
+              
+              async function package_json(){
+                                                                                console.log('installing package.json ...');
+                    var process   = await webcontainer.spawn('npm',['install']);
+                    var stream    = new WritableStream({write(data){term.write(data);console.log(data)}});
+                    process.output.pipeTo(stream)
+                    var code      = await process.exit;
+                    return code;
+              
+              }//package_json
+              
+              
+              async function install(){
+                                                                                console.log('installing ...');
+                    packages.unshift('install');
+                    var process   = await webcontainer.spawn('npm',packages);
+                    var stream    = new WritableStream({write(data){term.write(data);console.log(data)}});
+                    process.output.pipeTo(stream)
+                    var code      = await process.exit;
+                    return code;
+                    
+              }//install
+              
+              
+              async function rollup(){
+              
+                    var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.js']);
+                    
+                    var stream    = new WritableStream({write(data){term.write(data);console.log(data)}});
+                    process.output.pipeTo(stream);
+                    
+                    var code      = await process.exit;
+                    if(code!=0){
+                                                                                console.log('an error occurred');
+                    }
+              
+              }//rollup
+              
+
+              async function server(){
+
+                    webcontainer.on('server-ready',(port,url)=>iframe.src=url);
+              
+                    var process   = await webcontainer.spawn('node',['server.js']);
+                    
+                    var stream    = new WritableStream({write(data){term.write(data);console.log(data)}});
+                    process.output.pipeTo(stream);
+                    
+                    var code      = await process.exit;
+                    if(code!=0){
+                                                                                console.log('an error occurred');
+                    }
+                    
+              }//server
+              
+        }//start
+        
+
+
+        var files   = {};
+        
+        files['package.json']   = `
+        
+              {
+                    "name": "node-test",
+                    "version": "1.0.0",
+                    "scripts": {
+                    }
+              }
+        
+        `;
+        
+        
+        files['rollup.config.js']   = `
+
+              import resolve from '@rollup/plugin-node-resolve';
+              import commonjs from '@rollup/plugin-commonjs';
+              import json from '@rollup/plugin-json';              
+              import nodePolyfills from 'rollup-plugin-polyfill-node';
+
+              export default {
+                input     : 'index.js',
+                output    : {
+                                  file      : 'bundle.js',
+                                  format    : 'es'
+                                  
+                                  //format    : 'iife', // or 'umd'
+                                  //name      : 'EspreeBundle'    // This becomes window.EspreeBundle
+
+
+                },
+                plugins   : [
+                                  commonjs(),
+                                  json(),
+                                  nodePolyfills(),
+                                  resolve({preferBuiltins:false})
+                            ]
+              };
+
+        `;
+
+        files['index.js']   = `
+        
+              import * as espree from "espree";
+              export {espree};
+              
+              //const ast = espree.parse('let x = 42;', { ecmaVersion: 2020 });
+              //console.log(ast);
+
+        `;
+        
+        files['server.js']    = `
+        
+              var port          = 3000;
+          
+              require('http').createServer(request).listen(port);
+              
+              var fs    = require('fs');
+                                                                                          console.log('listening',port);
+          
+              function request(req,res){
+                                                                                          console.log(req.method,req.url);
+                    res.setHeader('access-control-allow-origin','*');
+                    
+                    if(req.method==='OPTIONS'){    //  cors
+                          res.writeHead(204);
+                          res.end();
+                          return;
+                    }
+          
+                    if(req.url==='/bundle.js'){
+                          var stream    = fs.createReadStream('bundle.js');
+                          res.writeHead(200,{'content-type':'application/octet-stream'});
+                          stream.pipe(res);
+                          return;
+                    }
+          
+                    res.writeHead(200,{'content-type':'text/html'});
+                    res.end(\`
+                          
+                          <a href='/bundle.js'>bundle.js</a>
+                          
+                    \`);
+          
+              }//request
+        
+        `;
+
+
+</script>
+
+
+
