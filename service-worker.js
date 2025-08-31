@@ -103,8 +103,6 @@
         }//cache_request
         
         
-        
-        
         async function cache_purge(){
                                                                                 console.log('[ sw ] purge');
               var cache   = await caches.open(cache_name);
@@ -126,11 +124,6 @@
         
         function load(data){
           
-              ext         = data.ext;
-              
-              [html_loader]   = await ext.text.libs('html/html-load.js');            
-              console.log(html_loader);
-              
         }//load
         
         
