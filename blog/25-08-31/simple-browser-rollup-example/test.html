@@ -1,0 +1,28 @@
+
+<style>
+
+  #output
+    {white-space:pre;font-family:monospace}
+    
+</style>
+
+<div>espree test</div>
+
+<div id=output></div>
+
+<script type=module>
+console.clear();
+
+      var {espree}    = await import('https://localhost:3002/tmp/bundle.js');
+
+      console.log(espree);
+      
+      const ast = espree.parse('let x = 42;', { ecmaVersion: 2020 });
+      console.log(ast);
+
+      output.textContent    = JSON.stringify(ast,null,4);      
+      
+</script>
+
+
+
