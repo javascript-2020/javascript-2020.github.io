@@ -85,7 +85,7 @@
                                                                                 console.log('[ sw ]','cache hit');
                                       return cached;
                                 }
-                                timestamp.delete(request.url);
+                                timestamps.delete(request.url);
                                 cache.delete(request);
                           }
                           
