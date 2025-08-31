@@ -7,6 +7,9 @@
         var timestamps    = new Map();
 
 
+        var ext;
+        var html_loader;
+        
 
         self.addEventListener('install',e=>{
                                                                                 console.log('[ sw ] install');
@@ -27,7 +30,7 @@
                           }
                             
                     }));
-                    await purge();
+                    await cache_purge();
                     self.clients.claim();
                       
               })());
@@ -36,7 +39,7 @@
 
         
         self.addEventListener('fetch',e=>{
-                                                                                console.log('[ sw ] fetch');
+                                                                                console.log('[ sw ]','fetch');
               var {request}   = e;
               if(request.method!=='GET'){
                     return;
@@ -46,6 +49,13 @@
               
         });
 
+        
+        self.addEventListener('message',({data})=>{
+                                                                                console.log('[ sw ]','message',data);
+              if(data.type=='load')load(data);
+              
+        });
+        
         
         async function cache_request(e,request){
                                                                                 console.log('[ sw ] cache_request');
@@ -92,7 +102,7 @@
         
         
         
-        async function purge(){
+        async function cache_purge(){
                                                                                 console.log('[ sw ] purge');
               var cache   = await caches.open(cache_name);
               var keys    = await cache.keys();
@@ -109,6 +119,45 @@
               }//for
               
         }//purge
+        
+        
+        function load(data){
+          
+              ext         = data.ext;
+              
+              [html_loader]   = await ext.text.libs('html/html-load.js');            
+              console.log(html_loader);
+              
+        }//load
+        
+        
+        function cloud_loader(request){
+          
+              var url   = request.url;
+              
+              var nodename;
+						  var i	=	url.indexOf('?');
+						  if(i!=-1){
+										nodename		=	url.slice(i+1);
+										nodename    = decodeURI(nodename);
+										                                                            //df && console.log('url ?',nodename);
+						  }
+
+							if(nodename){
+										var i		    =	txt.indexOf('/* params */');
+										i			      =	txt.indexOf('\n',i)+1;
+										var txt2    =	txt.slice(0,i)+`var nodename='${nodename}';`+txt.slice(i+1);
+							}
+
+              var opts        = {};
+              var response    = new Response(txt2,opts);
+              return response;
+              
+        }//cloud_loader
+        
+        
+        
+        
         
         
         
