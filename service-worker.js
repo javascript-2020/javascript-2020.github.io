@@ -1,6 +1,6 @@
         
         
-        
+//1        
                                                                                 console.log('[ sw ]','running');
         var cache_name    = 'runtime-cache-v1';
         var ttl           = 5000;
