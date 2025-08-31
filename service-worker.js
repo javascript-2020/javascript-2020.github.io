@@ -140,9 +140,10 @@
 						  }
 
 							if(nodename){
+							      var txt     = html_loader;
 										var i		    =	txt.indexOf('/* params */');
-										i			      =	txt.indexOf('\n',i)+1;
-										var txt2    =	txt.slice(0,i)+`var nodename='${nodename}';`+txt.slice(i+1);
+										i			      = txt.indexOf('\n',i)+1;
+										txt         =	txt.slice(0,i)+`var nodename='${nodename}';`+txt.slice(i+1);
 							}
 
               var opts        = {};
