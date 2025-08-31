@@ -78,22 +78,16 @@
                     
               }
               
-              var response    = await cache_request.fetch(request);
-              return response;
-              
-        }//cache_request
-        
-        
-        cache_request.fetch   = async function(request){
-          
               var response    = await fetch(request);
               
               cache.put(request,response.clone());
               timestamps.set(request.url,now);
               
               return response;
-          
-        }//fetch
+              
+        }//cache_request
+        
+        
         
         
         async function purge(){
