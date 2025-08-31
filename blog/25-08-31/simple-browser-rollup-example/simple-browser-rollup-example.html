@@ -208,8 +208,16 @@ and the test code
               
 
 
-              var node        = $(root,'code-block');
-              ({code_block}   = await code.code_block(node,{menu}));
+              var list        = $.all(root,'code-block');
+              list.forEach(async node=>{
+              
+                    ({code_block}   = await code.code_block(node,{menu,ace}));
+                    
+                    if(code_block.snippet_console){
+                          code_block.snippet_console.snippet.dconsole.height('200px');
+                    }
+                    
+              });
 
 
 
