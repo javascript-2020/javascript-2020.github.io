@@ -52,7 +52,7 @@
               var client;
               var url;
               if(e.clientId){
-                    client    = await self.client.get(e.clientId);
+                    client    = await self.client?.get(e.clientId);
                     url       = client?.url;
               }
                                                                                 console.log('[ sw ]','url',url,request.url);
