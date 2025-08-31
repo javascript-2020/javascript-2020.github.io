@@ -53,6 +53,7 @@
               var url;
               if(e.clientId){
                     client    = await self.clients.get(e.clientId);
+                    console.log(client);
                     url       = client?.url;
               }
                                                                                 console.log('[ sw ]','url',url,request.url);
