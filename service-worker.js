@@ -42,7 +42,7 @@
                     return;
               }
               
-              event.respondWith(cache_request(e,request));
+              e.respondWith(cache_request(e,request));
               
         });
 
