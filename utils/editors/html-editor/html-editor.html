@@ -43,6 +43,12 @@
           })
           .catch(err=>console.error('SW registration failed:',err));
 
+        navigator.serviceWorker.ready.then(reg=>{
+        
+              reg.active.postMessage({type:'load'});
+              
+        });
+
             </script>
             
             <script init>
@@ -96,13 +102,6 @@
         async function init(){
                                                                                 debug('init',version);
                                                                                 
-              navigator.serviceWorker.ready.then(reg=>{
-              
-                    reg.active.postMessage({type:'load',ext});
-                    
-              });
-
-
               //keydown                   = keydown();
               menu.root                 = menumod();
               hdr.utils                 = mod.utils.hdr();
