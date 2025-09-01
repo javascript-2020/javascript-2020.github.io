@@ -24,7 +24,7 @@
 
 
         var term;
-
+        var webcontainer;
 
         var files   = {};
 
@@ -79,16 +79,16 @@
               var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
               
                                                                                 console.log('booting ...');
-              var webcontainer    = await WebContainer.boot();
+              webcontainer          = await WebContainer.boot();
               
                                                                                 console.log('mounting file system ...');
               await webcontainer.mount(files);
               
-                                                                                test();
               await package_json();
               await install();
                                                                                 console.log('rollup ...');
-              await rollup();                                                                        
+              await rollup();
+              test();
                                                                                 console.log('launching server ...');
               await server();
                                                                                 console.log('done.');
@@ -100,6 +100,9 @@
                     var stream    = new WritableStream({write(data){console.xterm(data)}});
                     process.output.pipeTo(stream)
                     var code      = await process.exit;
+                    if(code!=0){
+                                                                                console.log('an error occurred');
+                    }
                     return code;
               
               }//package_json
@@ -114,6 +117,9 @@
                     process.output.pipeTo(stream)
                     
                     var code      = await process.exit;
+                    if(code!=0){
+                                                                                console.log('an error occurred');
+                    }
                     return code;
                     
               }//install
@@ -130,6 +136,7 @@
                     if(code!=0){
                                                                                 console.log('an error occurred');
                     }
+                    return code;
               
               }//rollup
               
@@ -147,18 +154,24 @@
                     if(code!=0){
                                                                                 console.log('an error occurred');
                     }
+                    return code;
                     
               }//server
               
         }//start
         
         
-        function test(){
+        async function test(){
         
-              var dom   = document.querySelector('#terminal .xterm-rows');
-              var div   = document.createElement('div');
-              div.textContent   = 'helloworld';
-              dom.append(div);
+              var fsp       = await.webcontainer.fs.promises;
+              var js        = await fsp.readFile('/espree.m.js','utf8');
+              
+              var blob      = new Blob([js]);
+              var url       = window.URL.createObjectURL(blob);
+              var a         = document.createElement('a');
+              a.href        = url;
+              a.download    = 'espree.m.js';
+              a.click();
               
         }//test
 
