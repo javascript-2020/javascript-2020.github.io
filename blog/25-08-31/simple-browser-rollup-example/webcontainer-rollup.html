@@ -57,20 +57,26 @@
               
               
               var packages          = [
-                                            'espree',
-                                            
-                                            'rollup',
-                                            '@rollup/plugin-commonjs',
-                                            '@rollup/plugin-node-resolve',
-                                            '@rollup/plugin-json',
-                                            'rollup-plugin-polyfill-node'
-                                      ];
+              
+                    'espree',
+                    
+                    'rollup',
+                    '@rollup/plugin-commonjs',
+                    '@rollup/plugin-node-resolve',
+                    '@rollup/plugin-json',
+                    'rollup-plugin-polyfill-node'
+                    
+              ];
 
+
+              for(var key in files){
               
+                    files[key]   = {file:{contents:files[key]}};
+                    
+              }//for
+
+                                                                                console.log('importing ...');
               var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
-              
-              for(var key in files)files[key]   = {file:{contents:files[key]}};
-              
               
                                                                                 console.log('booting ...');
               var webcontainer    = await WebContainer.boot();
@@ -89,7 +95,7 @@
                                                                                 
               
               async function package_json(){
-                                                                                console.log('installing package.json ...');
+                                                                                console.log('npm install ( package.json ) ...');
                     var process   = await webcontainer.spawn('npm',['install']);
                     var stream    = new WritableStream({write(data){console.xterm(data)}});
                     process.output.pipeTo(stream)
@@ -100,11 +106,13 @@
               
               
               async function install(){
-                                                                                console.log('installing : npm install',packages.join(' '),'...');
+                                                                                console.log('npm install',packages.join(' '),'...');
                     packages.unshift('install');
                     var process   = await webcontainer.spawn('npm',packages);
+                    
                     var stream    = new WritableStream({write(data){console.xterm(data)}});
                     process.output.pipeTo(stream)
+                    
                     var code      = await process.exit;
                     return code;
                     
