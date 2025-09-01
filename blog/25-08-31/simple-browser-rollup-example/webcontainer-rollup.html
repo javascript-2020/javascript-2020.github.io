@@ -21,10 +21,17 @@
 
 
         var term;
+
+
+        var files   = {};
+
         
         setTimeout(start,50);
 
-        
+
+  //:
+  
+  
         async function setup(){
         
               var {Terminal}    = await import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm');
@@ -41,8 +48,6 @@
               
         
         }//setup
-        
-        
         
         
         async function start(){
@@ -89,7 +94,7 @@
               async function package_json(){
                                                                                 console.log('installing package.json ...');
                     var process   = await webcontainer.spawn('npm',['install']);
-                    var stream    = new WritableStream({write(data){term.write(data);console.log(data)}});
+                    var stream    = new WritableStream({write(data){console.log(data)}});
                     process.output.pipeTo(stream)
                     var code      = await process.exit;
                     return code;
@@ -101,7 +106,7 @@
                                                                                 console.log('installing ...');
                     packages.unshift('install');
                     var process   = await webcontainer.spawn('npm',packages);
-                    var stream    = new WritableStream({write(data){term.write(data);console.log(data)}});
+                    var stream    = new WritableStream({write(data){console.log(data)}});
                     process.output.pipeTo(stream)
                     var code      = await process.exit;
                     return code;
@@ -113,7 +118,7 @@
               
                     var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.js']);
                     
-                    var stream    = new WritableStream({write(data){term.write(data);console.log(data)}});
+                    var stream    = new WritableStream({write(data){console.log(data)}});
                     process.output.pipeTo(stream);
                     
                     var code      = await process.exit;
@@ -130,7 +135,7 @@
               
                     var process   = await webcontainer.spawn('node',['server.js']);
                     
-                    var stream    = new WritableStream({write(data){term.write(data);console.log(data)}});
+                    var stream    = new WritableStream({write(data){console.log(data)}});
                     process.output.pipeTo(stream);
                     
                     var code      = await process.exit;
@@ -143,8 +148,8 @@
         }//start
         
 
-
-        var files   = {};
+  //:
+  
         
         files['package.json']   = `
         
@@ -185,6 +190,7 @@
 
         `;
 
+
         files['entry.js']   = `
         
               import * as espree from "espree";
@@ -194,6 +200,7 @@
               //console.log(ast);
 
         `;
+
         
         files['server.js']    = `
         
@@ -232,7 +239,10 @@
         
         `;
         
-        
+
+  //:
+  
+  
         var console     = {};
         console.log     = function(){
           
@@ -247,6 +257,8 @@
                                 term.reset();
 
                           }//clear
+
+
 
 })();
 
