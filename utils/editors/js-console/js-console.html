@@ -20,6 +20,7 @@
         mod.menu    = {};
         mod.utils   = {};
         
+        var espree;
         var filemod;                                                                                
         var publish;
         var editor;
@@ -46,6 +47,7 @@
         
         var ui          = {};
         ui.mode         = 'vert';
+
         
         var btn         = {};
 
@@ -156,7 +158,11 @@
               'js/dom/keydown/keydown.js'
         );
         [$,datatype,menumod,keydown]   = await promise;
+
   
+        ({espree}   = await import('https://javascript-2020.github.io/libs/js/external/espree/espree.js'));
+
+        
         init.stack.complete;
         
 })();
@@ -184,6 +190,9 @@
     {position:absolute;left:0;top:30px}
 
 
+  #syntax-chk
+    {content:url(data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAFVBMVEUAAAD7+/v///////8AAADo6OgRERE8gmv3AAAAA3RSTlMA9T5S3MyNAAAAdElEQVQY07WQwQ2AQAgESa4FC7AEDFgBW4r916BgEHLRp/ObYzdcICnIUSTG5cHtlvEvz/o8/6EvXPnL5eDeFwX3vMC62wLJff64+7i5+rj3wd0VtrpH3NdHnCRcn3uNLMOoGIh4oREv4q+9kPVEJ5eN3jgB8k5GOJR+D40AAAAASUVORK5CYII=);
+    }
     
   #run  
     {color:blue;font-weight:bold}
@@ -245,6 +254,8 @@
 
                   <button id=run>run</button>
 
+                  <img id=syntax-chk class=icon>
+                  
                   <span class=spc></span>
 
                   <img id=horiz class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAPhJREFUSEtjZICChoaGKE5OzvIfP35o/f//nwUmTg2akZHxDwcHx7Xv3793NjQ0LAOZyQgimpubJ/Hz88fZ2dnxKyoqMrCwUNVehj9//jDcv3+f4dChQx8/fvy4qLa2No8R5FMhIaFp8fHx/NS2ED20QA5YuHDhx3fv3mUxdnZ2XnR3d9dTVVWlRqgSNOP27dsMO3fuvMTY2Nj4u6CggIXWvoW5COTrCRMm/AEF9f/S0lKCLqWmgu7uboZRi6kZojjNGg1qugQzyJLRoKZ/UNPNRiSLRksuuoT6aHaiSzCPllx0C2Z4UA9YY2/AmrcD1qAfsC7MQHXaANO37pOxy/mWAAAAAElFTkSuQmCC'>
@@ -297,10 +308,12 @@
               
               publish.initdom();
               
-              $('#run').onclick                     = run;
-  
-              $('#horiz').onclick                   = horiz;
-              $('#vert').onclick                    = vert;
+              $(root,'#run').onclick                = run;
+              $(root,'#syntax-chk').onclick         = btn.syntax;
+              
+              
+              $(root,'#horiz').onclick              = horiz;
+              $(root,'#vert').onclick               = vert;
               
   
               var view                              = $('#view');
@@ -333,7 +346,6 @@
   //:
 
   
-
         function kd(e){
 
               if(e.key=='Enter' && e.ctrlKey){
@@ -368,7 +380,21 @@
               
         }//save
 
-  
+
+        btn.syntax    = function(){
+        
+              var js        = editor.getValue();
+              var result    = syntax();
+              var str       = JSON.stringify(result,null,4);
+              if(result.error){
+                    log.red(str);
+              }else{
+                    log.green(str);
+              }
+              
+        }//syntax
+        
+        
   //:
 
 
@@ -542,6 +568,57 @@
         }//run
 
 
+        function syntax(){
+                                                                              console.log('validate');
+              var err;
+              try{
+              
+                    var params    = {
+                          tolerant      : true,
+                          loc           : true,
+                          range         : true,
+                          
+                          ecmaVersion   : 'latest',
+                    };
+                    
+                    var syntax    = espree.parse(txt,params);
+                                                                              console.log(syntax);
+                    
+              }//try
+              catch(err2){
+                                                                              console.log('catch');
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var index   = err.index-16;
+                    var line    = err.lineNumber-1;
+                    var col     = err.column;
+                    var msg     = err.message;
+                    var i       = msg.indexOf(':');
+                    msg         = msg.slice(i+1);
+                    msg         = [msg];
+                    
+                    var json    = {
+                          error   : true,
+                          index   : index,
+                          line    : line,
+                          col     : col,
+                          msg     : msg
+                    };
+                    return json;
+              }//err
+              
+              var msg     = ['syntax ok'];
+              var json    = {
+                    error   : false,
+                    msg     : msg
+              };
+              return json;
+
+        }//syntax
+        
+        
 
         init.stack.complete;
 
