@@ -17,8 +17,13 @@
       
       <script>        
 
+(()=>{
+
+
         var term;
         
+        setTimeout(start,50);
+
         
         async function setup(){
         
@@ -32,12 +37,12 @@
               fitAddon.fit();
 
 
+              term.write('xterm ready\n');
               
         
         }//setup
         
         
-        setTimeout(start,50);
         
         
         async function start(){
@@ -161,16 +166,15 @@
               import nodePolyfills from 'rollup-plugin-polyfill-node';
 
               export default {
-                input     : 'index.js',
+                input     : 'entry.js',
                 output    : {
                                   file      : 'espree.m.js',
+                                  
                                   format    : 'es'
                                   
                                   //format    : 'iife', // or 'umd'
                                   //name      : 'EspreeBundle'    // This becomes window.EspreeBundle
-
-
-                },
+                            },
                 plugins   : [
                                   commonjs(),
                                   json(),
@@ -181,7 +185,7 @@
 
         `;
 
-        files['index.js']   = `
+        files['entry.js']   = `
         
               import * as espree from "espree";
               export {espree};
@@ -227,7 +231,24 @@
               }//request
         
         `;
+        
+        
+        var console     = {};
+        console.log     = function(){
+          
+                                window.console.log.apply(window.console,arguments);
+                                var str   = [...arguments].join(' ')+'\n';
+                                term.write(str);
+                                
+                          }//log
+        console.clear   = function(){
+        
+                                window.console.clear();
+                                term.reset();
 
+                          }//clear
+
+})();
 
 </script>
 
