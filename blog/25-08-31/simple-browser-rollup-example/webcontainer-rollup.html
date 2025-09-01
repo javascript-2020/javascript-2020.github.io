@@ -3,8 +3,11 @@
         
       <style>
 
+  body
+    {margin:20px}
+    
   #terminal
-    {width:500px;height:300px}
+    {width:calc(100% - 40px);height:500px}
     
     
       </style>
@@ -76,7 +79,6 @@
               await webcontainer.mount(files);
               
               
-                                                                                console.log('installing ...');
               await package_json();
               await install();
                                                                                 console.log('rollup ...');
@@ -98,7 +100,7 @@
               
               
               async function install(){
-                                                                                console.log('installing ...');
+                                                                                console.log('installing : npm install',packages.join(' '),'...');
                     packages.unshift('install');
                     var process   = await webcontainer.spawn('npm',packages);
                     var stream    = new WritableStream({write(data){console.xterm(data)}});
