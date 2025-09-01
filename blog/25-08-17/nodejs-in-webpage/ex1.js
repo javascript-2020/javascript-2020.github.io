@@ -10,7 +10,7 @@
               import fs from 'fs';
               import chalk from 'chalk';
               
-              var txt   = fs.readFileSync('test.txt','utf8');
+              var txt   = fs.readFileSync('src/test.txt','utf8');
               var str   = chalk.blue(txt);
               console.log(str);
               
@@ -20,21 +20,23 @@
         var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
         
         const files   = {
+
+              'src'             : {directory: {
+                                                    'test.txt'    : {file: { contents:'helloworld'}}
+                                              }
+                                  },
           
               'test.txt'        : {file:{contents:'helloworld'}},
               
-              'package.json'    : {
-                                        file: {
-                                              contents: `
-                                                    {
-                                                          "name": "node-test",
-                                                          "version": "1.0.0",
-                                                          "scripts": {
+              'package.json'    : {file:{contents : `
+                                                          {
+                                                                "name": "node-test",
+                                                                "version": "1.0.0",
+                                                                "scripts": {
+                                                                }
                                                           }
-                                                    }
-                                              `,
-                                        },
-                                  },
+                                                    `,
+                                  }},
         };
         
                                                                                 console.log('booting ...');
