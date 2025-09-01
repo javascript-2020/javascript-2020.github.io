@@ -89,7 +89,7 @@
               async function package_json(){
                                                                                 console.log('installing package.json ...');
                     var process   = await webcontainer.spawn('npm',['install']);
-                    var stream    = new WritableStream({write(data){console.log(data)}});
+                    var stream    = new WritableStream({write(data){console.xterm(data)}});
                     process.output.pipeTo(stream)
                     var code      = await process.exit;
                     return code;
@@ -101,7 +101,7 @@
                                                                                 console.log('installing ...');
                     packages.unshift('install');
                     var process   = await webcontainer.spawn('npm',packages);
-                    var stream    = new WritableStream({write(data){console.log(data)}});
+                    var stream    = new WritableStream({write(data){console.xterm(data)}});
                     process.output.pipeTo(stream)
                     var code      = await process.exit;
                     return code;
@@ -113,7 +113,7 @@
               
                     var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.js']);
                     
-                    var stream    = new WritableStream({write(data){console.log(data)}});
+                    var stream    = new WritableStream({write(data){console.xterm(data)}});
                     process.output.pipeTo(stream);
                     
                     var code      = await process.exit;
@@ -130,7 +130,7 @@
               
                     var process   = await webcontainer.spawn('node',['server.js']);
                     
-                    var stream    = new WritableStream({write(data){console.log(data)}});
+                    var stream    = new WritableStream({write(data){console.xterm(data)}});
                     process.output.pipeTo(stream);
                     
                     var code      = await process.exit;
@@ -239,10 +239,18 @@
   
   
         var console     = {};
+        console.xterm   = function(){
+        
+                                window.console.log.apply(window.console,arguments);
+                                //var str   = [...arguments].join(' ');
+                                //term.write(str);
+                                term.write.apply(term,arguments);
+                                
+                          }//xterm
         console.log     = function(){
           
                                 window.console.log.apply(window.console,arguments);
-                                var str   = [...arguments].join(' ')+'\n';
+                                var str   = [...arguments].join(' ')+'\r\n';
                                 term.write(str);
                                 
                           }//log
