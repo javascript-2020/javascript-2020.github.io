@@ -96,15 +96,6 @@
               await setup();
 
               
-              packages.push(
-                    'rollup',
-                    '@rollup/plugin-commonjs',
-                    '@rollup/plugin-node-resolve',
-                    '@rollup/plugin-json',
-                    'rollup-plugin-polyfill-node'
-              );
-
-
               for(var key in files){
               
                     files[key]   = {file:{contents:files[key]}};
@@ -122,29 +113,16 @@
               await webcontainer.mount(files);
               
               
-                                                                                
-              await package_json();
               await install();
+              await package_json();
+              await install_rollup();
+              
                                                                                 
               await rollup();                                                                        
                                                                                 
               await server();
                                                                                 console.log('done.');
                                                                                 
-              
-              async function package_json(){
-                                                                                console.log('npm install ( package.json ) ...');
-                    var process   = await webcontainer.spawn('npm',['install']);
-                    var stream    = new WritableStream({write(data){console.term(data)}});
-                    process.output.pipeTo(stream)
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
-              
-              }//package_json
-              
               
               async function install(){
                                                                                 var str   = packages.join(' ');
@@ -160,6 +138,44 @@
                     return code;
                     
               }//install
+              
+              
+              async function package_json(){
+                                                                                console.log('npm install ( package.json ) ...');
+                    var process   = await webcontainer.spawn('npm',['install']);
+                    var stream    = new WritableStream({write(data){console.term(data)}});
+                    process.output.pipeTo(stream)
+                    var code      = await process.exit;
+                    if(code!=0){
+                                                                                console.log('an error occurred');
+                    }
+                    return code;
+              
+              }//package_json
+
+
+              async function install_rollup(){
+              
+                    var packages    = [
+                          'rollup',
+                          '@rollup/plugin-commonjs',
+                          '@rollup/plugin-node-resolve',
+                          '@rollup/plugin-json',
+                          'rollup-plugin-polyfill-node'
+                    ];
+                                                                                console.log('npm install',packages.join(' '),'...');
+                    packages.unshift('install');
+                    
+                    var process   = await webcontainer.spawn('npm',packages);
+                    var stream    = new WritableStream({write(data){console.term(data)}});
+                    process.output.pipeTo(stream)
+                    var code      = await process.exit;
+                    if(code!=0){
+                                                                                console.log('an error occurred');
+                    }
+                    return code;
+              
+              }//install_rollup
               
               
               async function rollup(){
