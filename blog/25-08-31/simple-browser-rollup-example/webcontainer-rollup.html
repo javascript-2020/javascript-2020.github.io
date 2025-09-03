@@ -36,6 +36,35 @@
               export {espree};
               
         `;
+        
+        
+        files['index.html']   = `
+                          
+            <div style='display:flex;flex-direction:column;gap:10px'>
+            
+                  <a href='/download'>${filename}</a>
+                  <a href='/test.html'>test</a>
+                  
+            </div>
+                          
+        `;
+        
+        
+        files['test.html']    = `
+        
+              <script type=module>
+              
+                    import {espree} from 'espree.m.js';
+                    
+                    var js        = 'let a=42;';
+                    
+                    var result    = espree.parse(js);
+                    var str       = JSON.stringify(result,null,4);
+                    console.log(str);
+                    
+              </script>
+              
+        `;
 
         
         async function setup(){
@@ -221,25 +250,30 @@
                                                                                           console.log(req.method,req.url);
                     if(cors(req,res))return;
                     
-                    if(req.url==='/${filename}'){
+                    if(req.url==='/download'){
                           var stream    = fs.createReadStream('${filename}');
                           res.writeHead(200,{'content-type':'application/octet-stream'});
                           stream.pipe(res);
                           return;
                     }
                     
-                    if(req.url==='/test'){
+                    if(req.url==='/${filename}'){
+                          var stream    = fs.createReadStream('${filename}');
+                          res.writeHead(200,{'content-type':'text/javascript'});
+                          stream.pipe(res);
+                          return;
+                    }
+                    
+                    if(req.url==='/test.html'){
+                          var stream    = fs.createReadStream('test.html');
                           res.writeHead(200,{'content-type':'text/html'});
-                          res.end(files.test);
+                          stream.pipe(res);
                           return;
                     }
           
+                    var stream    =fs.createReadStream('index.html');
                     res.writeHead(200,{'content-type':'text/html'});
-                    res.end(\`
-                          
-                          <a href='${filename}'>${filename}</a>
-                          
-                    \`);
+                    stream.pipe(res);
           
               }//request
         
