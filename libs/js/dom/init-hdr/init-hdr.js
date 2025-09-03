@@ -12,13 +12,21 @@
         stack.df          = false;
 
         
-        Object.defineProperty(stack,'add',{get:()=>{
+        Object.defineProperty(stack,'add',{
+              get:()=>{
           
-              stack.total++;
+                    stack.total++;
                                                                                 if(stack.df){
                                                                                       console.log('add',stack.ct,stack.total);
                                                                                 }
-        }});
+              },//get
+              set:v=>{
+        
+                    stack.total++;
+                    stack.push(v);
+                    
+              }//set
+        });
         
         Object.defineProperty(stack,'complete',{get:()=>{
           
