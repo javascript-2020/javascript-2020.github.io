@@ -4,14 +4,14 @@
       <style>
 
   body
-    {margin:20px}
+    {display:flex;flex-direction:column;gap:10px}
     
   #terminal
-    {width:calc(100% - 40px);height:500px}
-    
-    
+    {height:500px}
+        
       </style>
 
+      <h3>rollup example</h3>
       
       <iframe id=iframe></iframe>
       
@@ -22,60 +22,56 @@
 
 (()=>{
 
-
         var term;
         var webcontainer;
-
         var files   = {};
 
         
-        setTimeout(start,50);
+        var packages          = ['espree',];
+        var filename          = 'espree.m.js';
 
-
-  //:
-  
-  
+        
         async function setup(){
         
               var {Terminal}    = await import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm');
               var {FitAddon}    = await import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm');
               
-              term              = new Terminal();
-              var fitAddon      = new FitAddon();
+              term                = new Terminal();
+              var fitAddon        = new FitAddon();
               term.loadAddon(fitAddon);
               term.open(terminal);
               fitAddon.fit();
                                                                                 console.clear();
                                                                                 console.log('rollup example');
-                                                                                console.log();
+                                                                                console.log();        
         }//setup
+        
+        
+        setTimeout(start,50);
         
         
         async function start(){
                                                                                 
               await setup();
+
               
-              
-              var packages          = [
-              
-                    'espree',
-                    
+              packages.shift(
                     'rollup',
                     '@rollup/plugin-commonjs',
                     '@rollup/plugin-node-resolve',
                     '@rollup/plugin-json',
                     'rollup-plugin-polyfill-node'
-                    
-              ];
+              );
 
 
               for(var key in files){
               
-                    files[key]   = {file:{contents:files[key]}};
+                    files[key]   = {file:{contents:files[key]};
                     
               }//for
 
-                                                                                console.log('importing ...');
+
+                                                                                console.log('download ...');              
               var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
               
                                                                                 console.log('booting ...');
@@ -84,12 +80,13 @@
                                                                                 console.log('mounting file system ...');
               await webcontainer.mount(files);
               
+              
+                                                                                
               await package_json();
               await install();
-                                                                                console.log('rollup ...');
-              await rollup();
-              test();
-                                                                                console.log('launching server ...');
+                                                                                
+              await rollup();                                                                        
+                                                                                
               await server();
                                                                                 console.log('done.');
                                                                                 
@@ -97,7 +94,7 @@
               async function package_json(){
                                                                                 console.log('npm install ( package.json ) ...');
                     var process   = await webcontainer.spawn('npm',['install']);
-                    var stream    = new WritableStream({write(data){console.xterm(data)}});
+                    var stream    = new WritableStream({write(data){console.term(data)}});
                     process.output.pipeTo(stream)
                     var code      = await process.exit;
                     if(code!=0){
@@ -109,13 +106,12 @@
               
               
               async function install(){
-                                                                                console.log('npm install',packages.join(' '),'...');
+                                                                                var str   = packages.join(' ');
+                                                                                console.log('npm install',str,'...');
                     packages.unshift('install');
                     var process   = await webcontainer.spawn('npm',packages);
-                    
-                    var stream    = new WritableStream({write(data){console.xterm(data)}});
+                    var stream    = new WritableStream({write(data){console.term(data)}});
                     process.output.pipeTo(stream)
-                    
                     var code      = await process.exit;
                     if(code!=0){
                                                                                 console.log('an error occurred');
@@ -126,10 +122,10 @@
               
               
               async function rollup(){
-              
+                                                                                console.log('rollup ...');
                     var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.js']);
                     
-                    var stream    = new WritableStream({write(data){console.xterm(data)}});
+                    var stream    = new WritableStream({write(data){console.term(data)}});
                     process.output.pipeTo(stream);
                     
                     var code      = await process.exit;
@@ -142,12 +138,12 @@
               
 
               async function server(){
-
+                                                                                console.log('launching server ...');
                     webcontainer.on('server-ready',(port,url)=>iframe.src=url);
               
                     var process   = await webcontainer.spawn('node',['server.js']);
                     
-                    var stream    = new WritableStream({write(data){console.xterm(data)}});
+                    var stream    = new WritableStream({write(data){console.term(data)}});
                     process.output.pipeTo(stream);
                     
                     var code      = await process.exit;
@@ -160,20 +156,6 @@
               
         }//start
         
-        
-        async function test(){
-        
-              var fsp       = await webcontainer.fs.promises;
-              var js        = await fsp.readFile('/espree.m.js','utf8');
-              
-              var blob      = new Blob([js]);
-              var url       = window.URL.createObjectURL(blob);
-              var a         = document.createElement('a');
-              a.href        = url;
-              a.download    = 'espree.m.js';
-              a.click();
-              
-        }//test
 
   //:
   
@@ -198,15 +180,16 @@
               import nodePolyfills from 'rollup-plugin-polyfill-node';
 
               export default {
-                input     : 'entry.js',
+                input     : 'index.js',
                 output    : {
-                                  file      : 'espree.m.js',
-                                  
+                                  file      : ${filename},
                                   format    : 'es'
                                   
                                   //format    : 'iife', // or 'umd'
                                   //name      : 'EspreeBundle'    // This becomes window.EspreeBundle
-                            },
+
+
+                },
                 plugins   : [
                                   commonjs(),
                                   json(),
@@ -220,12 +203,9 @@
 
         files['entry.js']   = `
         
-              import * as espree from "espree";
+              import * as espree from 'espree';
               export {espree};
               
-              //const ast = espree.parse('let x = 42;',{ecmaVersion:'latest'});
-              //console.log(ast);
-
         `;
 
         
@@ -248,8 +228,8 @@
                           return;
                     }
           
-                    if(req.url==='/espree.m.js'){
-                          var stream    = fs.createReadStream('espree.m.js');
+                    if(req.url==='/${filename}'){
+                          var stream    = fs.createReadStream(${filename});
                           res.writeHead(200,{'content-type':'application/octet-stream'});
                           stream.pipe(res);
                           return;
@@ -258,7 +238,7 @@
                     res.writeHead(200,{'content-type':'text/html'});
                     res.end(\`
                           
-                          <a href='/espree.m.js'>espree.m.js</a>
+                          <a href='${filename}'>${filename}</a>
                           
                     \`);
           
@@ -270,32 +250,30 @@
   //:
   
   
-        var console     = {};
-        console.xterm   = function(){
-        
+        var console   = {};
+        console.term    = function(){
+                          
                                 window.console.log.apply(window.console,arguments);
-                                //var str   = [...arguments].join(' ');
-                                //term.write(str);
                                 term.write.apply(term,arguments);
                                 
-                          }//xterm
-        console.log     = function(){
-          
-                                window.console.log.apply(window.console,arguments);
-                                var str   = [...arguments].join(' ')+'\r\n';
-                                term.write(str);
-                                
-                          }//log
+                          }//term
         console.clear   = function(){
-        
+                          
                                 window.console.clear();
                                 term.reset();
-
+                                
                           }//clear
+        console.log     = function(){
+        
+                                window.console.log(window.console,arguments);
+                                term.writeln.apply(term,arguments);
+                                
+                          }//log
 
 
 
 })();
+
 
 </script>
 
