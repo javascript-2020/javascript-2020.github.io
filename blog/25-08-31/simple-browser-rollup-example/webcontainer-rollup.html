@@ -254,7 +254,8 @@
         console.term    = function(){
                           
                                 window.console.log.apply(window.console,arguments);
-                                term.write.apply(term,arguments);
+                                var str   = [...arguments].join(' ')||'';
+                                term.write(str);
                                 
                           }//term
         console.clear   = function(){
@@ -266,9 +267,8 @@
         console.log     = function(){
         
                                 window.console.log.apply(window.console,arguments);
-                                var args    = [...arguments];
-                                if(args.length==0)args.push('');
-                                term.writeln.apply(term,args);
+                                var str   = [...arguments].join(' ')||'';
+                                term.writeln(str);
                                 
                           }//log
 
