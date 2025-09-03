@@ -40,12 +40,12 @@
         
         files['index.html']   = `
                           
-            <div style='display:flex;flex-direction:column;gap:10px'>
-            
-                  <a href='/download'>${filename}</a>
-                  <a href='/test.html'>test</a>
-                  
-            </div>
+              <div style='display:flex;flex-direction:column;gap:10px'>
+              
+                    <a href='/download'>${filename}</a>
+                    <a href='/test.html'>test</a>
+                    
+              </div>
                           
         `;
         
@@ -56,13 +56,18 @@
               
                     import {espree} from 'espree.m.js';
                     
-                    var js        = 'let a=42;';
+                    var js                = 'let a=42;';
+                    var result            = espree.parse(js);
                     
-                    var result    = espree.parse(js);
-                    var str       = JSON.stringify(result,null,4);
-                    console.log(str);
+                    var str               = JSON.stringify(result,null,4);
+                    output.textContent    = str;
                     
               </script>
+              
+              <div style='display:flex;flex-direction:column;gap:10px'>
+                    <a href='/'>home</a>
+                    <div id=output style='white-space:pre;font-family:monospace'></div>
+              </div>
               
         `;
 
