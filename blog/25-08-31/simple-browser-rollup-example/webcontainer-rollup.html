@@ -27,7 +27,7 @@
         var files   = {};
 
         
-        var packages          = ['espree',];
+        var packages          = ['espree'];
         var filename          = 'espree.m.js';
 
         
@@ -265,8 +265,12 @@
                           }//clear
         console.log     = function(){
         
-                                window.console.log(window.console,arguments);
-                                term.writeln.apply(term,arguments);
+                                window.console.log.apply(window.console,arguments);
+                                var args    = [...arguments];
+                                if(args.length==0){
+                                      args.push('');
+                                }
+                                term.writeln.apply(term,args);
                                 
                           }//log
 
