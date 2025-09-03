@@ -55,12 +55,43 @@
               <script type=module>
               
                     import {espree} from '/espree.m.js';
+
                     
-                    var js                = 'let a=42;';
-                    var result            = espree.parse(js);
+                    var js    = \`
                     
-                    var str               = JSON.stringify(result,null,4);
-                    output.textContent    = str;
+                          let a=42;
+                          
+                    \`;
+
+                    
+                    log(js);
+                    
+                    var err;
+                    try{
+                    
+                          var result            = espree.parse(js);
+                          
+                    }
+                    catch(err2){
+                    
+                          err   = err2;
+                          
+                    }
+                    if(err){
+                          log(err.tostring());
+                          return;
+                    }
+                    
+                    var str   = JSON.stringify(result,null,4);
+                    log(str);
+                    
+                    
+                    function log(){
+                    
+                          var str   = [...arguments].join(' ');
+                          output.textContent   += str+'\\n';
+                          
+                    }//log
                     
               </scr`+`ipt>
               
