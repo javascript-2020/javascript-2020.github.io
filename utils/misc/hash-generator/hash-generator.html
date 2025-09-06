@@ -706,17 +706,17 @@ xxhash128 : ƒ (A,I=0,B=0)
   //:
   
   
-        async function hash(alg){debugger;
+        async function hash(alg){
           
-              var txt;
+              var buf;
               if(chk.read()=='text'){
-                    txt   = editor.getvalue();
+                    buf   = editor.getvalue();
               }else{
-                    txt   = await cur.blob.text();
+                    buf   = await cur.blob.arrayBuffer();
               }
               
               var fn    = hashwasm[alg];
-              var hex   = await fn(txt);
+              var hex   = await fn(buf);
                                                                                 console.log(alg,hex);
               $(root,'#hash-type').textContent    = alg;
               output.text.textContent             = hex;
