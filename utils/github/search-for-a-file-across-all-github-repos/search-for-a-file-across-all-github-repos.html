@@ -112,7 +112,9 @@
       
         window.onload   = init;
 
-        
+        var ext;
+        var $;
+        var datatype;
         var github;
         
         
@@ -137,9 +139,11 @@
         var item;
         var spinner;
         
+        var node      = {};
         
-        var btn   = {};
-        var fn    = {};
+        var btn       = {};
+        var create    = {};
+        var fn        = {};
         
   
         function initdom(rootnode){
@@ -163,8 +167,8 @@
               
               
               results                           = $('#results');
-              item                              = $('#item');
-              item.remove();
+              node.item                         = $('#item');
+              node.item.remove();
               spinner                           = $('#spinner');
               spinner.remove();
               
@@ -218,6 +222,20 @@
         
         }//regex
         
+
+  //:
+  
+  
+        create.item   = function(item){
+        
+              var nitem   = node.item.cloneNode(true);
+              
+              $(nitem,'#filename').textContent    = item.name;
+              
+              results.append(nitem);
+              
+        }//create.item
+        
         
   //:
   
@@ -226,7 +244,7 @@
         
               var owner   = username;
               
-              var {error,list}    = await github.user.repolist({owner});
+              var {list,error}    = await github.user.repolist({owner});
               if(error){
                                                                                 console.log(error);
                     return;
@@ -234,6 +252,23 @@
 
               list.forEach(repo=>{
               
+                    var {branch,error}    = await github.repo.default({owner,repo,token});
+                    var {tree,error}      = await github.repo.tree({owner,repo,branch,token});
+                    
+                    tree.forEach(item=>{
+                    
+                          var i           = item.path.lastIndexOf('/');
+                          var name        = item.path.slice(i+1);
+                          
+                          switch(type){
+                          
+                            case 'plain'      : if(plain(name,search))create.item(item);          break;
+                            case 'wildcard'   : if(wildcard(name,search))create.item(item);       break;
+                            case 'regex'      : if(regex(name,search))create.item(item);          break;
+                            
+                          }//switch
+                    
+                    });
                     
               });
         
@@ -245,38 +280,20 @@
   
         async function libs(){
         
-              var {error,txt}   = await libs.fetch();
-              if(error){}
-              github    = eval(txt);
+              var res   = await fetch('https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js');
+              var txt   = await res.text();
+              ext       = eval(txt);
+              
+              var promise   = ext.load.libs(
+                    'js/dom/$.js',
+                    'js/core/datatype.js',
+                    'github/github.js.api',
+              );
+              [$,datatype,github]   = await promise;
               
         }//libs
         
         
-        libs.fetch    = async function(url){
-        
-              var err;
-              try{
-              
-                    var res   = await fetch(url);
-                    
-              }//try
-              catch(err2){
-              
-                    err   = err2;
-                    
-              }//catch
-              if(err){
-                    var error   = err.toString();
-                    return {error};
-              }
-              if(!res.ok){
-                    var error   = await res.text();
-                    return {error};
-              }
-              var txt   = await res.text();
-              return {txt};
-              
-        }//fetch
         
         
         
