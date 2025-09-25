@@ -13,12 +13,12 @@
     {height:calc(100% - 40px);margin:20px;display:flex;flex-direction:column;gap:20px}
     
   #title
-    {}
+    {margin-bottom:10px}
   #desc
     {}
     
   #field
-    {display:flex;gap:20px}
+    {display:flex;gap:20px;align-items:center}
   #label
     {width:70px;text-align:right}
   #field input
@@ -36,7 +36,7 @@
     {padding:5px 20px}
     
   #results
-    {border:1px solid lightgray;padding:10px;overflow:auto;border-radius:10px}
+    {flex:1;border:1px solid lightgray;padding:10px;overflow:auto;border-radius:10px}
   #item
     {}
   #spinner
@@ -80,6 +80,10 @@
             </div>
             
             <div id=type>
+            
+                  <span id=label></span>
+                  
+                  <input value=search type=button>
                   <div>
                         plain
                         <input id=plain type=checkbox>
@@ -92,7 +96,6 @@
                         regex
                         <input id=regex type=checkbox>
                   </div>
-                  <input value=search type=button>
             </div>
 
             <div id=results>
@@ -108,25 +111,163 @@
       
       
         window.onload   = init;
+
+        
+        var github;
         
         
-        function init(){
+        async function init(){
+        
+              await libs();
+        
+              initdom(document.body);
+              
+              
         }//init
         
         
   //:
   
   
+        var username;
+        var search;
+        var type;
+        var chk   = {};
+        var results;
+        var item;
+        var spinner;
+        
+        
+        var btn   = {};
+        var fn    = {};
         
   
         function initdom(rootnode){
+        
+        
+              username    = $('#username');
+              
+              search      = $('#search');
+              
+              $('[value=search]').onclick       = btn.search;
+              
+              
+              chk.plain                         = $('#plain');
+              chk.plain.onclick                 = btn.plain;
+              
+              chk.wildcard                      = $('#wildcard');
+              chk.wildcard.onclick              = btn.wildcard;
+              
+              chk.regex                         = $('#regex');
+              chk.regex.onclick                 = btn.regex;
+              
+              
+              results                           = $('#results');
+              item                              = $('#item');
+              item.remove();
+              spinner                           = $('#spinner');
+              spinner.remove();
+              
         }//initdom
         
         
   //:
   
   
+        btn.search    = function(){
+        
+              var params    = {
+                    username    : username.value,
+                    search      : search.value,
+                    type,
+              };
+              fn.search(params);
+              
+        }//search
+        
+        
+        btn.plain   = function(){
+        
+              type                    = 'plain';
+              
+              chk.plain.checked       = true;
+              chk.wildcard.checked    = false;
+              chk.regex.checked       = false;
+              
+        }//plain
+
+
+        btn.wildcard    = function(){
+        
+              type                    = 'wildcard';
+              
+              chk.plain.checked       = false;
+              chk.wildcard.checked    = true;
+              chk.regex.checked       = false;
+        
+        }//wildcard
+        
+        
+        btn.regex   = function(){
+
+              type                    = 'regex';
+              
+              chk.plain.checked       = false;
+              chk.wildcard.checked    = false;
+              chk.regex.checked       = true;
+        
+        }//regex
+        
+        
+  //:
   
+  
+        fn.search   = function(){
+        
+        
+        }//search
+        
+        
+  //:
+  
+  
+        async function libs(){
+        
+              var {error,txt}   = await libs.fetch();
+              if(error){}
+              github    = eval(txt);
+              
+        }//libs
+        
+        
+        libs.fetch    = async function(url){
+        
+              var err;
+              try{
+              
+                    var res   = await fetch(url);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    return {error};
+              }
+              if(!res.ok){
+                    var error   = await res.text();
+                    return {error};
+              }
+              var txt   = await res.text();
+              return {txt};
+              
+        }//fetch
+        
+        
+        
       </script>
       
       
