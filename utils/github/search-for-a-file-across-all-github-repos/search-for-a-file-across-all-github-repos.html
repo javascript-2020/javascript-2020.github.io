@@ -38,6 +38,11 @@
   [value=search]
     {padding:5px 20px}
     
+  #clear
+    {
+      content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABL1BMVEVHcEynHyChIySwFRXAKyu8CQm4UE+5FBS2DQ22EBG1FxfvT0+/Cwu7BQXCGRnVJCTABAS9AwO/DQ3KGxvPHR3PHR3ABwi+CAjJGhvIEhLPJiXaPT7LHx+6EBG9FBW9DQ24BQa+BQXBAwO9Dg7BAwOTJCe9ERHGHR3JEBDFFxbQHx7aMjLNHh5tcG3NHx/YKSnYKSnkSEfdODjqSEiyEhLBCQnDBgapCwyxCQnCBQXqS0rdPz7dNTW+BQbCHR3hQkHiPDvmQ0LNFRTMGRnsVlXpU1LrV1blR0fUIyO2BgfmVFTpSUjCBQXCAQHdLy7oQkLlPT3VIiLYJybxU1PgNTXiOTn0WFjtTEvbKyvSHR3fMjLPGBfpRUT3Xl/rSEfEBAPICQnKDg7OFRXhNzfhNzbOdm/IAAAATXRSTlMACAQfDoQCKzRWGf52w3b37eZvs+zktqITznolSiI7Xq3f/U73A5ei98L3pskBY/XsZbvzQ5rQOGfX5D3M04JW4u7xh4FzUmzYky+xy1b2pHcAAAGYSURBVCjPhZNnV8IwFIYLbaGDsoeAiAwXw7333knbdJcy9f//BnPUaoGi+XRznjve9+aEIP451P3t3fNMWnzhFf54KzQDb4uG3lV2HmbwjXdH6WK+5Y8zpuYoum5cXUyh0FyJiDbMN9HgDfHyZFwxk9zLRYhANI1USXRE7bT4wwIMLZzlWDKI44VUDKqapsIm9QW5cjZeocNLbi7bQiaEJiq08Y2M7IMEXfIO4s7Tsixb6XmCixyB6iIzqXJ3rdPpjPK4EiQOA9MGueXV4XDQB0A48F1AkK72+7gx6UtDtTwuBfEFXzp3cz0cYAxyPoOJcMqyRgMgVEC9PE3nHxGSOwOB3K2Ao9Lk2PVNaEM0qmDNtQTYC45LLmyokmTLq59t2Xi95qVL0Zjq9CRoLX9VHdZfOQ9ej6k9xdBQ/ttwKFKlPaoy0NH1nt1gf17zyWO+hSSly0to5dcvtZil3Bi31hXRzIQ980gh6YabksE7tpUcM8Nk3eym5Ii2nKLGV8HS3+aL2xqU18KTz8e4UsjCSpT765e1Z6MPPqBEq7kmBRcAAAAASUVORK5CYII=');
+    }
+    
   #results
     {flex:1;border:1px solid lightgray;padding:10px;overflow:auto;border-radius:10px;
     }
@@ -70,6 +75,8 @@
     {}
 
 
+  .spc
+    {flex:1}
   .icon
     {cursor:pointer;width:32px;height:32px;padding:2px;border:1px solid gray;border-radius:3px;box-sizing:border-box}
   .copy
@@ -154,6 +161,11 @@
                         regex
                         <input id=regex type=checkbox>
                   </div>
+                  
+                  <div class=spc></div>
+                  
+                  <img id=clear class=icon>
+                  
             </div>
             
             <div id=progress>
@@ -271,6 +283,7 @@
               chk.regex                         = $(root,'#regex');
               chk.regex.onclick                 = btn.regex;
               
+              $('#clear').onclick               = e=>results.replaceChildren();
               
               results                           = $(root,'#results');
               node.item                         = $(root,'.item');
