@@ -20,7 +20,7 @@
   .field
     {display:flex;gap:20px;align-items:center}
   .label
-    {width:70px;text-align:right;display:flex;align-items:center}
+    {width:70px;text-align:right;text-align:right;}
   .field input
     {flex:1}
     
@@ -144,6 +144,11 @@
                         search
                   </span>
                   <input id=search>
+                  <span>
+                        <img id=search-copy class='copy icon' title=copy>
+                        <img id=search-paste class='paste icon' title=paste>
+                  </span>
+                  
             </div>
             
             <div id=type>
@@ -271,6 +276,12 @@
               
               search                            = $(root,'#search');
               search.value                      = 'index.html';
+              icon                              = $(root,'#search-copy');
+              $.icon.copy2(icon,search);
+              icon                              = $(root,'#search-paste');
+              $.icon.paste2(icon,search);
+
+              
               $('[value=search]').onclick       = btn.search;
               
               
