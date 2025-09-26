@@ -76,9 +76,11 @@
                   
                   <div id=desc>
                         search for a file across all github repos, you can use an ephemeral read only token
-                        <a href='https://github.com/settings/personal-access-tokens'>
-                              github.com : Fine-grained personal access tokens
-                        </a>
+                        <div>
+                              <a href='https://github.com/settings/personal-access-tokens'>
+                                    github.com : Fine-grained personal access tokens
+                              </a>
+                        </div>
                   </div>
             </div>
             
@@ -111,12 +113,10 @@
             
             <div id=type>
             
-                  <span id=label></span>
-                  
                   <input value=search type=button>
                   <div>
                         plain
-                        <input id=plain type=checkbox>
+                        <input id=plain type=checkbox checked>
                   </div>
                   <div>
                         wildcard
@@ -167,35 +167,39 @@
   //:
   
   
-        var token;
+        var ui              = {};
+        ui.token            = null;
+        var token           = localStorage['github-token']||'';
         var username;
         var search;
         var type;
-        var chk   = {};
+        var chk             = {};
         var results;
         var item;
         var progress;
         var bar;
         
-        var node      = {};
+        var node            = {};
         
-        var btn       = {};
-        btn.token     = {};
-        var create    = {};
-        var fn        = {};
+        var btn             = {};
+        btn.token           = {};
+        var create          = {};
+        var fn              = {};
         
   
         function initdom(rootnode){
         
         
-              token                             = $('#token');
+              ui.token                          = $('#token');
+              ui.token.value                    = token;
               $('#token-copy').onclick          = btn.token.copy;
               $('#token-paste').onclick         = btn.token.paste;
               
               username                          = $('#username');
+              username.value                    = 'octocat';
               
               search                            = $('#search');
-              
+              search.value                      = 'index.html';
               $('[value=search]').onclick       = btn.search;
               
               
@@ -303,7 +307,7 @@
         fn.search   = async function({username,search,type}){
         
               var owner   = username;
-              
+              debugger;
               var {list,error}    = await github.user.repolist({owner});
               if(error){
                                                                                 console.log(error);
@@ -320,19 +324,88 @@
                           var i           = item.path.lastIndexOf('/');
                           var name        = item.path.slice(i+1);
                           
-                          switch(type){
+                          var result      = fn[type](name,search,item);
+                          if(result){
+                                create.item(item);
+                          }
                           
-                            case 'plain'      : if(plain(name,search))create.item(item);          break;
-                            case 'wildcard'   : if(wildcard(name,search))create.item(item);       break;
-                            case 'regex'      : if(regex(name,search))create.item(item);          break;
-                            
-                          }//switch
-                    
                     });
                     
               });
         
         }//search
+        
+        
+        fn.plain    = function(name,search){
+        
+              var result    = name.contains(search);
+              return result;
+              
+        }//plain
+
+        
+        fn.wildcard   = function(name,search){
+        
+              var result    = wildcard(name,search);
+              return result;
+              
+        }//wildcard
+        
+        
+        fn.regex    = function(name,search){
+        }//regex
+        
+        
+        
+        function wildcard(search,pattern,mode){
+                                                                                
+              var re      = '';
+              var esc     = '.+^${}()|[]\\';
+              var n       = pattern.length;              
+              for(var i=0;i<n;i++){
+              
+                    var c   = pattern[i];
+                    
+                    if(esc.indexOf(c)!=-1){
+                          re   += '\\'+c;
+                    }
+                    else if(c=='?'){
+                          re   += '.';
+                    }
+                    else if(c=='*'){
+                          while(pattern[i+1]=='*')i++;
+                          re   += '.*';
+                    }
+                    else if(c=='~'){
+                          var c1    = pattern[i+1];
+                          if(c1=='*' || c1=='?' || c1=='~'){
+                                if(c1=='*' || c1=='?'){
+                                      re   += '\\';
+                                }
+                                re   += c1;
+                                i++;
+                          }else{
+                                re   += c;
+                          }
+                    }
+                    else{
+                          re   += c;
+                    }
+                    
+              }//for
+              
+              if(!mode || mode=='starts'){
+                    re    = '^'+re
+              }
+              if(!mode || mode=='ends'){
+                    re    = re+'$';
+              }              
+              var regex   = new RegExp(re);
+              
+              var result    = regex.test(search);
+              return result;
+              
+        }//wildcard
         
         
   //:
