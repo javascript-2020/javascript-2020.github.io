@@ -42,7 +42,7 @@
     {flex:1;border:1px solid lightgray;padding:10px;overflow:auto;border-radius:10px}
     
   .item
-    {display:flex;gap:20px;margin:5px auto}
+    {display:flex;gap:20px;margin:5px auto;white-space:nowrap}
   .item .repo
     {}
   .item .path
@@ -308,11 +308,24 @@
   //:
   
   
-        function update(){
+        var max   = 0;
+        
+        function update(w){
+        
+              if(w<max)return;
+              max   = w;
+              
+              var list    = $.all(results,'.item');
+              list.forEach(node=>{
+              
+                    $(node,'.repo').style.width   = max+'px';
+                    
+              });
+              
         }//update
         
         
-        create.item   = function(repo,item){console.log(item);
+        create.item   = function(repo,item){
         
               var nitem   = node.item.cloneNode(true);
               
@@ -324,8 +337,8 @@
               
               results.append(nitem);
               
-              var w   = $(nintem,'.repo').offsetWidth;
-              console.log(w);
+              var w   = $(nitem,'.repo').offsetWidth;
+              update(w);
               
         }//create.item
         
