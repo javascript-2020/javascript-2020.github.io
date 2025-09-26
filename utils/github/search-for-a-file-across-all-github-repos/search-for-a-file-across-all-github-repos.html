@@ -392,6 +392,15 @@
   
         fn.search   = async function({username,search,type}){
         
+              if(type=='regex'){
+                    var {regex,error}   = parse_regex(search);
+                    if(error){
+                          console.log(error);
+                          alert(error);
+                          return;
+                    }
+              }
+              
               var owner   = username;
               
               var {list,error}    = await github.user.repolist({owner});
