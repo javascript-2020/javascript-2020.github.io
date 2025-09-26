@@ -96,15 +96,15 @@
             
             <div id=token-root class=field>
                   <span class=label>
-                        <span>
-                              <img id=token-copy class='copy icon' title=copy>
-                              <img id=token-paste class='paste icon' title=paste>
-                        </span>
                         <span style='margin-left:10px'>
                               token
                         </span>
                   </span>
                   <input id=token>
+                  <span>
+                        <img id=token-copy class='copy icon' title=copy>
+                        <img id=token-paste class='paste icon' title=paste>
+                  </span>
             </div>
             
             <div class=field>
@@ -112,6 +112,10 @@
                         username
                   </span>
                   <input id=username>
+                  <span>
+                        <img id=username-copy class='copy icon' title=copy>
+                        <img id=username-paste class='paste icon' title=paste>
+                  </span>
             </div>
             
             <div class=field>
@@ -207,14 +211,22 @@
   
         function initdom(rootnode){
         
-        
+              
+              var icon;
+              
               ui.token                          = $('#token');
               ui.token.value                    = token;
-              $('#token-copy').onclick          = btn.token.copy;
-              $('#token-paste').onclick         = btn.token.paste;
+              icon                              = $('#token-copy');
+              $.icon.copy(icon);
+              icon                              = $('#token-paste');
+              $.icon.paste(icon);
               
               username                          = $('#username');
               username.value                    = 'octocat';
+              icon                              = $('#username-copy');
+              $.icon.copy(icon);
+              icon                              = $('#username-paste');
+              $.icon.paste(icon);
               
               search                            = $('#search');
               search.value                      = 'index.html';
@@ -328,12 +340,20 @@
         }//update
         
         
-        create.item   = function(repo,item){
+        create.item   = function(owner,repo,branch,item){console.log(item);
         
+              var url     = github.build.website({owner,repo,branch,path:item.path});
+              
               var nitem   = node.item.cloneNode(true);
+              nitem.onclick   = e=>window.open(url);
               
               $(nitem,'.repo').textContent    = repo;
-              $(nitem,'.path').textContent    = item.path;
+              
+              $(nitem,'.branch').textContent    = branch;
+              
+              var path    = item.path.replaceAll('/',' / ');
+              $(nitem,'.path').textContent    = path;
+              
               $(nitem,'.size').textContent    = hs(item.size);
               
               nitem.title   = item.path;
@@ -374,7 +394,7 @@
                           var result      = fn[type](name,search,item);
                           if(result){
                                 ct++;
-                                create.item(repo,item);
+                                create.item(owner,repo,branch,item);
                           }
                           
                     });
