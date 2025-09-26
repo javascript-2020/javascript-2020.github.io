@@ -41,6 +41,9 @@
   #results
     {flex:1;border:1px solid lightgray;padding:10px;overflow:auto;border-radius:10px;
     }
+  #results table
+    {width:100%;display:none}
+    
   .item:nth-child(odd)
     {background:whitesmoke}
     
@@ -49,13 +52,15 @@
     {margin:5px auto;white-space:nowrap;cursor:pointer}
 
   .item td 
-    {padding:5px 10px;border:none}
+    {padding:5px 20px;border:none}
   .item .repo
     {}
+  .item branch
+    {text-align:center}
   .item .path
-    {}
+    {width:100%}
   .item .size
-    {}
+    {text-align:right}
     
   #progress
     {}
@@ -166,7 +171,9 @@
                               </tr>
                               
                               <tr id=not-found style='background:white'>
-                                    no files found
+                                    <td>
+                                          no files found
+                                    </td>
                               </tr>
                   
                         </tbody>      
@@ -234,16 +241,16 @@
               ui.token                          = $(root,'#token');
               ui.token.value                    = token;
               icon                              = $(root,'#token-copy');
-              $.icon.copy(icon);
+              $.icon.copy2(icon,ui.token);
               icon                              = $(root,'#token-paste');
-              $.icon.paste(icon);
+              $.icon.paste(icon,ui.token);
               
               username                          = $(root,'#username');
               username.value                    = 'octocat';
               icon                              = $(root,'#username-copy');
-              $.icon.copy(icon);
+              $.icon.copy2(icon,username);
               icon                              = $(root,'#username-paste');
-              $.icon.paste(icon);
+              $.icon.paste2(icon,username);
               
               search                            = $(root,'#search');
               search.value                      = 'index.html';
@@ -265,6 +272,8 @@
               node.item.remove();
               node.notfound                     = $(root,'#not-found');
               node.notfound.remove();
+              
+              $(results,'table').style.display    = 'block';
               
               progress                          = $(root,'#progress');
               progress.remove();
