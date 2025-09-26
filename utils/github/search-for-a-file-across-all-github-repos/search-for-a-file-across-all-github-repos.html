@@ -39,12 +39,17 @@
     {padding:5px 20px}
     
   #results
-    {flex:1;border:1px solid lightgray;padding:10px;overflow:auto;border-radius:10px}
+    {flex:1;border:1px solid lightgray;padding:10px;overflow:auto;border-radius:10px;
+    }
   .item:nth-child(odd)
-    {background:lightgray}
+    {background:whitesmoke}
     
+  
   .item
     {margin:5px auto;white-space:nowrap;cursor:pointer}
+
+  .item td 
+    {padding:5px 10px;border:none}
   .item .repo
     {}
   .item .path
@@ -147,22 +152,28 @@
                   </div>
             </div>
 
-            <table id=results>
+            <div id=results>
             
-                  <tr class=item>
-                        <td class=repo></td>
-                        <td class=branch></td>
-                        <td class=path></td>
-                        <td class=size></td>
-                  </tr>
+                  <table>
                   
-                  <tr id=not-found style='background:white'>
-                        <td>
-                              no files found
-                        </td>
-                  </tr>
+                        <tbody>
+                        
+                              <tr class=item>
+                                    <td class=repo></td>
+                                    <td class=branch></td>
+                                    <td class=path></td>
+                                    <td class=size></td>
+                              </tr>
+                              
+                              <tr id=not-found style='background:white'>
+                                    no files found
+                              </tr>
                   
-            </table>
+                        </tbody>      
+                        
+                  </table>
+                  
+            </div>
             
                   
       </body>
@@ -328,6 +339,24 @@
   //:
   
   
+        var max   = 0;
+        
+        function update(w){
+        
+              if(w>max){
+                    max   = w;
+              }
+              
+              var list    = $.all(results,'.item');
+              list.forEach(node=>{
+              
+                    $(node,'.repo').style.width   = max+'px';
+                    
+              });
+              
+        }//update
+        
+        
         create.item   = function(owner,repo,branch,item){console.log(item);
         
               var url     = github.build.website({owner,repo,branch,path:item.path});
@@ -346,7 +375,11 @@
               
               nitem.title   = item.path;
               
-              results.append(nitem);
+              var body    = $(results,'tbody');
+              body.append(nitem);
+              
+              //var w   = $(nitem,'.repo').offsetWidth;
+              //update(w);
               
         }//create.item
         
