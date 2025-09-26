@@ -25,6 +25,8 @@
         var datatype;
         var menumod;
         var keydown;
+        var getmime;
+
         
         var mod           = {};
         mod.menu          = {};
@@ -41,7 +43,8 @@
               
         async function init(){
                                                                                 debug('init',version);
-
+getmime;
+debugger;
               //keydown                   = keydown();
               menu                      = mod.menumod();
               mod.hdr.base64            = mod.hdr.base64();
@@ -146,9 +149,10 @@
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
-              'js/debug/debug.js.api'
+              'js/debug/debug.js.api',
+              'js/string/getmime/getmime.js.api'
         );
-        [$,datatype,menumod,keydown,debug]   = await promise;
+        [$,datatype,menumod,keydown,debug,getmime]   = await promise;
 
 
         init.stack.complete;
@@ -263,12 +267,11 @@
                         
                               <input value=save type=button>
                               <div class=spc></div>
-                              <input value=encode type=button>
                               
                         </div>
                         
                   </div>
-                  
+
                   <filename-ui api>
                         <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </filename-ui>
@@ -295,6 +298,15 @@
                   
             </div>
 
+
+            <div>
+                  <input value=encode type=button>
+                  <span>
+                        dataurl
+                        <input id=dataurl type=checkbox>
+                  </span>
+            </div>
+
             
             <div id=output>
 
@@ -314,7 +326,6 @@
                               <input value=copy type=button>
                               <input value=paste type=button>
                               <div class=spc></div>
-                              <input value=decode type=button>
                               
                         </div>
                         
@@ -326,6 +337,9 @@
                   
             </div output>
                   
+            <div>
+                  <input value=decode type=button>
+            </div>
             
             <div id=b64>
             
@@ -385,11 +399,14 @@
               preview.filemod.initdom(preview.root);
               preview.filename.initdom(preview.root);
               
-              $(preview.root,'[value=encode]').onclick        = btn.preview.encode;
               $(preview.root,'[value=save]').onclick          = btn.preview.save;
               
               
               blob.root                                       = $(root,'#blob');
+
+
+              $('[value=encode]').onclick                     = btn.preview.encode;
+              preview.dataurl                                 = $('#dataurl');
 
               
               b64.root                                        = $(root,'#b64');
@@ -401,11 +418,13 @@
               output.filemod.initdom(output.root);
               output.filename.initdom(output.root);
               
-              $(output.root,'[value=decode]').onclick         = btn.output.decode;
               $(output.root,'[value=save]').onclick           = btn.output.save;
               $(output.root,'[value=copy]').onclick           = btn.output.copy;
               $(output.root,'[value=paste').onclick           = btn.output.paste;
               
+
+              $('[value=decode]').onclick                     = btn.output.decode;
+
 
               
               log.initdom(root);
@@ -508,9 +527,13 @@
   //:
   
 
-        async function encode(blob){
+        async function encode(blob,dataurl){
           
               var b64   = await blob_b64(cur.blob);
+              if(dataurl){
+                    var mime    = getmime(blob.type);
+                    b64         = `data:${mime};base64,${b64}`;
+              }
               return b64;
               
         }//encode
