@@ -83,8 +83,10 @@
                   <span class=label>
                         token
                   </span>
-                  <img id=token-copy class='copy icon' title=copy>
-                  <img id=token-paste class='paste icon' title=paste>
+                  <span>
+                        <img id=token-copy class='copy icon' title=copy>
+                        <img id=token-paste class='paste icon' title=paste>
+                  </span>
                   <input id=token>
             </div>
             
@@ -120,6 +122,11 @@
                         <input id=regex type=checkbox>
                   </div>
             </div>
+            
+            <div id=progress>
+                  <div id=bar>
+                  </div>
+            </div>
 
             <div id=results>
                   <div id=item>
@@ -131,7 +138,8 @@
       
       
       <script>
-      
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
       
         window.onload   = init;
 
@@ -161,7 +169,8 @@
         var chk   = {};
         var results;
         var item;
-        var spinner;
+        var progress;
+        var bar;
         
         var node      = {};
         
@@ -198,8 +207,9 @@
               results                           = $('#results');
               node.item                         = $('#item');
               node.item.remove();
-              spinner                           = $('#spinner');
-              spinner.remove();
+              
+              progress                          = $('#progress');
+              progress.remove();
               
         }//initdom
         
@@ -295,7 +305,7 @@
                     return;
               }
 
-              list.forEach(repo=>{
+              list.forEach(async repo=>{
               
                     var {branch,error}    = await github.repo.default({owner,repo,token});
                     var {tree,error}      = await github.repo.tree({owner,repo,branch,token});
