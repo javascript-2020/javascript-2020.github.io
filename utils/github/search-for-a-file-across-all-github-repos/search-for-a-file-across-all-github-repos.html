@@ -420,7 +420,7 @@
               var nitem   = node.item.cloneNode(true);
               nitem.onclick   = e=>window.open(url);
               
-              $(nitem,'.rem').onclick   = e=>nitem.remove();
+              $(nitem,'.rem').onclick   = remove;
               
               $(nitem,'.repo').textContent    = repo;
               
@@ -435,6 +435,14 @@
               
               var body      = $(results,'tbody');
               body.append(nitem);
+              
+              
+              function remove(e){
+              
+                    e.stopPropagation();
+                    nitem.remove();              
+                    
+              }//remove
               
         }//create.item
         
