@@ -10,7 +10,7 @@
             <base href='https://javascript-2020.github.io/utils/misc/base64-encode-file/base64-encode-file.html'>
             
             <link rel=icon type='image/png' href='image/base64-30.png'>
-            <link rel=stylesheet href='/utils/css/utils.css'>
+            <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymouse>
             
             <script init>
                                                                                 console.clear();
@@ -43,8 +43,6 @@
               
         async function init(){
                                                                                 debug('init',version);
-getmime;
-debugger;
               //keydown                   = keydown();
               menu                      = mod.menumod();
               mod.hdr.base64            = mod.hdr.base64();
@@ -451,8 +449,8 @@ debugger;
                     return;
               }
 
-              
-              cur.b64           = await encode(cur.blob);
+              var dataurl   = preview.dataurl.checked;
+              cur.b64       = await encode(cur.blob,dataurl);
 
               b64.display();
 
@@ -529,9 +527,11 @@ debugger;
 
         async function encode(blob,dataurl){
           
-              var b64   = await blob_b64(cur.blob);
+              var b64   = await blob_b64(blob);
               if(dataurl){
-                    var mime    = getmime(blob.type);
+              
+                    //var mime    = getmime(blob.name);
+                    var mime    = blob.type;
                     b64         = `data:${mime};base64,${b64}`;
               }
               return b64;
@@ -588,7 +588,7 @@ debugger;
         
         preview.complete    = {};
         
-        preview.complete.load   = function(file,srcblob){
+        preview.complete.load   = function(file,srcblob){debugger;
           
               menu.close();
               
