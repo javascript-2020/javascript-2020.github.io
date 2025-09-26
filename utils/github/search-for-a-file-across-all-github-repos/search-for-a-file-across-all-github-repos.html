@@ -137,6 +137,9 @@
                   <div id=item>
                         <span id=filename></span>
                   </div>
+                  <div id=not-found>
+                        no files found
+                  </div>
             </div>
                   
       </body>
@@ -176,6 +179,7 @@
         var chk             = {};
         var results;
         var item;
+        var notfound;
         var progress;
         var bar;
         
@@ -216,6 +220,8 @@
               results                           = $('#results');
               node.item                         = $('#item');
               node.item.remove();
+              node.notfound                     = $('#not-found');
+              node.notfound.remove();
               
               progress                          = $('#progress');
               progress.remove();
@@ -314,6 +320,8 @@
                     return;
               }
 
+              var ct    = 0;
+              
               list.forEach(async repo=>{
               
                     var {branch,error}    = await github.repo.default({owner,repo,token});
@@ -326,19 +334,24 @@
                           
                           var result      = fn[type](name,search,item);
                           if(result){
+                                ct++;
                                 create.item(item);
                           }
                           
                     });
                     
               });
+              
+              if(ct==0){
+                    results.append(node.notfound);
+              }
         
         }//search
         
         
         fn.plain    = function(name,search){
         
-              var result    = name.contains(search);
+              var result    = name.includes(search);
               return result;
               
         }//plain
