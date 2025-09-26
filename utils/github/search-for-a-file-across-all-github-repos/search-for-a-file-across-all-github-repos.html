@@ -446,6 +446,16 @@
         
         
         fn.regex    = function(name,search){
+        
+              var {regex,error}   = parse_regex(search);
+              if(error){
+                    console.log(error);
+                    alert(error);
+                    return;
+              }
+              var result    = regex.test(name);
+              return result;
+              
         }//regex
         
         
@@ -501,8 +511,33 @@
         }//wildcard
 
 
-
+        function parse_regex(str){
         
+              var index   = 0;
+              var parse   = [
+                    /^\/(.+)\/([a-z]*)$/i,
+                    /(\/?)(.+)\1([a-z]*)/i,
+                    /^\/((?:\\\/|[^\/])+)\/([a-z]*)$/i
+              ];
+              
+              var match   = str.match(parse[index]);
+              if(!match){
+                    var error   = 'Invalid regex literal format';
+                    return {error};
+              }
+              
+              var [first,pattern,mods]    = match;
+          
+              var flags   = Array.from(new Set(mods));
+              flags       = flags.filter(flag=>'gimsuy'.includes(flag))
+              flags       = flags.join('');
+          
+              var regex   = new RegExp(pattern,flags);
+              return {regex};
+            
+        }//parse_regex
+
+
         function hs(size){
 
               size    = Number(size);
