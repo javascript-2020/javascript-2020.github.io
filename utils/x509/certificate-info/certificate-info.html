@@ -23,6 +23,8 @@
   body
     {height:calc(100% - 42px);margin:20px;display:flex;flex-direction:column;font-family:arial}
 
+  html
+    {--col1:200px}
     
   .hdr                  
     {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
@@ -57,10 +59,10 @@
     {display:flex;flex-direction:column;gap:20px}
     
   #filename
-    {border:1px solid lightgray;padding:5px 10px;border-radius:5px;text-align:center;font-weight:bold}
+    {border:1px solid lightgray;padding:10px 10px;border-radius:5px;text-align:center;font-weight:bold;background:lightyellow}
     
 
-  #category-root
+  #dn-root
     {display:flex;gap:50px}
     
   #subject
@@ -70,45 +72,79 @@
   #subject .category-field:nth-child(even)
     {background:hsl(200,100%,98%)}
     
-    
-
-
-    
   #issuer
-    {}
+    {border=color:lightgreen}
   #issuer .category-title
     {background:green}
+  #issuer .category-field:nth-child(even)
+    {background:hsl(120,100%,98%)}
     
-  .category
+  .dn
     {flex:1;border:1px solid lightgray;border-radius:5px;padding:10px}
     
-  .category-title
+  .dn-title
     {font-weight:bold;color:white;text-align:center;padding:5px 10px;margin-bottom:10px}
     
-  .category-view
+  .dn-view
     {}
     
-  .category-field
+  .dn-field
     {display:flex;gap:40px;padding:10px 10px}
 
-  .category-field:nth-child(even)
+  .dn-field:nth-child(even)
     {background:whitesmoke}
 
 
-  .category-field-name
+  .dn-field-name
     {width:200px;text-align:right}
     
-  .category-field-value
-    {flex:1}
+  .dn-field-value
+    {flex:1;font-weight:bold}
 
 
-  #subject
+  #thumbprint
+    {}
+  #thumbprint-title
+    {background:lightgray;text-align:center;margin-bottom:10px;padding:5px}
+  #thumbprint-view
+    {}
+  .thumbprint-field
+    {display:flex;gap:40px;padding:10px}
+  .thumbprint-field-name
+    {width:var(--col1)}
+  .thumbprint-field-value
+    {flex:1;font-weight:bold}
+
+
+  #dates
+    {}
+  #dates-title
+    {}
+  
+  .date-root
+    {}
+  .date-label
+    {}
+  .date-simple
+    {}
+  .date-full
     {}
     
-  #issuer
+  #dates-valid
     {}
-    
-    
+
+
+
+
+
+  #signature
+    {}
+  #signature-field
+    {}
+  #signature-field-name
+    {}
+  #signature-field-value
+    {}
     
     
   #view
@@ -182,31 +218,31 @@
                   <div id=filename></div>
       
               
-                  <div id=category-root>
+                  <div id=dn-root>
                   
-                        <div id=subject class=category>
+                        <div id=subject class=dn>
                         
-                              <div class=category-title>
+                              <div class=dn-title>
                                     Subject
                               </div>
                               
-                              <div class=category-view>
-                                    <div class=category-field>
-                                          <div class=category-field-name></div>
-                                          <div class=category-field-value></div>
+                              <div class=dn-view>
+                                    <div class=dn-field>
+                                          <div class=dn-field-name></div>
+                                          <div class=dn-field-value></div>
                                     </div>
                               </div>
                               
                         </div>
             
             
-                        <div id=issuer class=category>
+                        <div id=issuer class=dn>
                         
-                              <div class=category-title>
+                              <div class=dn-title>
                                     Issuer
                               </div>
                               
-                              <div class=category-view>
+                              <div class=dn-view>
                               </div>
                               
                         </div>
@@ -214,16 +250,40 @@
                   </div>
               
               
-                  <div id=signature>
+                  <div id=thumbprint>
                   
-                        <div class=signature-field>
-                              <div class=signature-field-name></div>
-                              <div class=signature-field-value></div>
+                        <div id=thumbprint-title>
+                              thumbprint
+                        </div>
+                        <div id=thumbprint-view>
+                              <div class=thumbprint-field>
+                                    <div class=thumbprint-field-name></div>
+                                    <div class=thumbprint-field-value></div>
+                              </div>
                         </div>
                         
                   </div>
       
       
+                  <div id=dates>
+                  
+                        <div id=dates-title>
+                              dates
+                        </div>
+                        <div id=not-before-root class=date-root>
+                              <div id=not-before-label class=date-label>
+                                    not before
+                              </div>
+                              <div id=not-before-simple class=date-simple>
+                              </div>
+                              <div id=not-before-full class=date-full>
+                              </div>
+                        </div>
+                        
+                        <div id=dates-valid>
+                        </div>
+                        
+                  </div>
       
                   
                   <div id=view>
@@ -316,10 +376,12 @@
   //:
   
   
-        var subject;
-        var issuer;
-        var category        = {};
-        var signature       = {};
+        var subject   = {};
+        var issuer    = {};
+        var dn        = {};
+        var thumbprint      = {};
+        
+        
         var view            = {};
         
         
@@ -338,13 +400,18 @@
               $('[value=copy]').onclick             = btn.copy;
 
         
-              subject                               = $('#subject');
-              category.field                        = $(subject,'.category-field');
-              issuer                                = $('#issuer');
+              subject.root                          = $('#subject');
+              subject.view                          = $(subject.root,'.dn-view');
+              dn.field                              = $(subject,'.dn-field');
+              issuer.root                           = $('#issuer');
+              issuer.view                           = $(issuer.root,'.dn-view');
+
               
-              signature.root                        = $('#signature');
-              signature.field                       = $(signature.root,'.signature-field');
+              thumbprint.root                       = $('#thumbprint');
+              thumbprint.view                       = $(thumbprint.root,'#thumbprint-view');
+              thumbprint.field                      = $(thumbprint.root,'.thumbprint-field');
               
+
               
               
               view.root                             = $('#view');
@@ -409,8 +476,7 @@
 
 
 
-              var node    = $(subject,'.category-view');
-              node.replaceChildren();
+              subject.view.replaceChildren();
               
               props.subject.forEach(name=>{
                 
@@ -420,50 +486,49 @@
                           value   = attr.value;
                     }
                     
-                    var nfield    = category.field.cloneNode(true);
-                    $(nfield,'.category-field-name').textContent       = name;
-                    $(nfield,'.category-field-value').textContent      = value;
-                    node.append(nfield);
+                    var nfield    = dn.field.cloneNode(true);
+                    $(nfield,'.dn-field-name').textContent       = name;
+                    $(nfield,'.dn-field-value').textContent      = value;
+                    subject.view.append(nfield);
                     
               });
 
 
-              var node    = $(issuer,'.category-view');
-              node.replaceChildren();
+              issuer.view.replaceChildren();
               
               props.issuer.forEach(name=>{
                 
-                    var value   = '--';
+                    var value   = '';
                     var attr    = cert.issuer.attributes.find(attr=>attr.name===name);
                     if(attr){
                           value   = attr.value;
                     }
                     
-                    var nfield    = category.field.cloneNode(true);
-                    $(nfield,'.category-field-name').textContent       = name;
-                    $(nfield,'.category-field-value').textContent      = value;
-                    node.append(nfield);
+                    var nfield    = dn.field.cloneNode(true);
+                    $(nfield,'.dn-field-name').textContent       = name;
+                    $(nfield,'.dn-field-value').textContent      = value;
+                    issuer.view.append(nfield);
                     
               });
               
               
-              signature.root.replaceChildren();
+              thumbprint.view.replaceChildren();
               
               var asn1      = nodeforge.pki.certificateToAsn1(cert);
               var der       = nodeforge.asn1.toDer(asn1).getBytes();
               var format    = hex=>hex.match(/.{2}/g).join(' : ').toUpperCase();
 
               var sha1      = nodeforge.md.sha1.create().update(der).digest().toHex();
-              var nfield    = signature.field.cloneNode(true);
-              $(nfield,'.signature-field-name').textContent     = 'sha-1';
-              $(nfield,'.signature-field-value').textContent    = sha1;
-              signature.root.append(nfield);
+              var nfield    = thumbprint.field.cloneNode(true);
+              $(nfield,'.thumbprint-field-name').textContent     = 'sha-1';
+              $(nfield,'.thumbprint-field-value').textContent    = format(sha1);
+              thumbprint.view.append(nfield);
               
               var sha256    = nodeforge.md.sha256.create().update(der).digest().toHex();
-              var nfield    = signature.field.cloneNode(true);
-              $(nfield,'.signature-field-name').textContent     = 'sha-256';
-              $(nfield,'.signature-field-value').textContent    = sha256;
-              signature.root.append(nfield);
+              var nfield    = thumbprint.field.cloneNode(true);
+              $(nfield,'.thumbprint-field-name').textContent     = 'sha-256';
+              $(nfield,'.thumbprint-field-value').textContent    = format(sha256);
+              thumbprint.view.append(nfield);
               
 
 
