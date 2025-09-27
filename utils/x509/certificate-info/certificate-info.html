@@ -63,7 +63,7 @@
     
 
   #dn-root
-    {display:flex;gap:50px}
+    {display:flex;gap:50px;align-items:start}
     
   #subject
     {border-color:lightblue}
@@ -73,14 +73,14 @@
     {background:hsl(200,100%,98%)}
     
   #issuer
-    {border=color:lightgreen}
+    {border-color:lightgreen}
   #issuer .dn-title
     {background:green}
   #issuer .dn-field:nth-child(even)
     {background:hsl(120,100%,98%)}
     
   .dn
-    {flex:1;border:1px solid lightgray;border-radius:5px;padding:10px}
+    {flex:1;border:1px solid;border-radius:5px;padding:10px}
     
   .dn-title
     {font-weight:bold;color:white;text-align:center;padding:5px 10px;margin-bottom:10px}
@@ -574,12 +574,11 @@
               
               props.subject.forEach(name=>{
                 
-                    var value   = '';
                     var attr    = cert.subject.attributes.find(attr=>attr.name===name);
-                    if(attr){
-                          value   = attr.value;
+                    if(!attr){
+                          return;
                     }
-                    
+                    var value     = attr.value;
                     var nfield    = dn.field.cloneNode(true);
                     $(nfield,'.dn-field-name').textContent       = name;
                     $(nfield,'.dn-field-value').textContent      = value;
@@ -592,12 +591,11 @@
               
               props.issuer.forEach(name=>{
                 
-                    var value   = '';
                     var attr    = cert.issuer.attributes.find(attr=>attr.name===name);
-                    if(attr){
-                          value   = attr.value;
+                    if(!attr){
+                          return;
                     }
-                    
+                    var value     = attr.value;
                     var nfield    = dn.field.cloneNode(true);
                     $(nfield,'.dn-field-name').textContent       = name;
                     $(nfield,'.dn-field-value').textContent      = value;
