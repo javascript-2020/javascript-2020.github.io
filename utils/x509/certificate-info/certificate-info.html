@@ -455,6 +455,66 @@ see bottom for name constraints
                         </div>
                               
                   </div>
+
+
+                  <div id=meta class=category>
+                  
+                        <div class=category-title>
+                              meta data
+                        </div>
+                        
+                        <div id=meta-list>
+                        
+                              <div class=category-field>
+                                    <div class=category-field-name>
+                                    </div>
+                                    <div class=category-field-value>
+                                    </div>
+                              </div>
+                              
+                        </div>
+                              
+                  </div>
+
+
+                  <div id=public-key class=category>
+                  
+                        <div class=category-title>
+                              public key
+                        </div>
+                        
+                        <div id=public-key-list>
+                        
+                              <div class=category-field>
+                                    <div class=category-field-name>
+                                    </div>
+                                    <div class=category-field-value>
+                                    </div>
+                              </div>
+                              
+                        </div>
+                              
+                  </div>
+
+
+                  <div id=authority-key class=category>
+                  
+                        <div class=category-title>
+                              Authority Key Identifier
+                        </div>
+                        
+                        <div id=authority-key-list>
+                        
+                              <div class=category-field>
+                                    <div class=category-field-name>
+                                    </div>
+                                    <div class=category-field-value>
+                                    </div>
+                              </div>
+                              
+                        </div>
+                              
+                  </div>
       
 
 
@@ -562,6 +622,10 @@ see bottom for name constraints
         var extensions      = {};
         var san             = {};
         var constraints     = {};
+        var meta            = {};
+        var publickey       = {};
+        var authoritykey    = {};
+        
         
         
         var view            = {};
@@ -617,6 +681,21 @@ see bottom for name constraints
               constraints.field                     = $(constraints.list,'.category-field');
               
 
+              meta.root                             = $('#meta');
+              meta.list                             = $(meta.root,'#meta-list');
+              meta.field                            = $(meta.list,'.category-field');
+              
+              
+              publickey.root                        = $('#public-key');
+              publickey.list                        = $(publickey.root,'#public-key-list');
+              publickey.field                       = $(publickey.root,'.category-field');
+              
+              
+              authoritykey.root                     = $('#authority-key');
+              authoritykey.list                     = $(authoritykey.root,'#authority-key-list');
+              authoritykey.field                    = $(authoritykey.list,'.category-field');
+              
+              
 
               
               view.root                             = $('#view');
@@ -832,65 +911,76 @@ see bottom for name constraints
               
 
 
+              meta.list.replaceChildren();
+              
+              var nfield    = meta.field.cloneNode(true);
+              $(nfield,'.category-field-name').textContent    = 'version';
+              $(nfield,'.category-field-value').textContent   = cert.version;
+              meta.list.append(nfield);
+              
+              var nfield    = meta.field.cloneNode(true);
+              $(nfield,'.category-field-name').textContent    = 'serialNumber';
+              $(nfield,'.category-field-value').textContent   = cert.serialNumber;
+              meta.list.append(nfield);
+              
+
+              publickey.list.replaceChildren();
+              
+              var oid   = cert.siginfo.algorithmOid;
+              var alg   = nodeforge.pki.oids[oid];
+              var nfield    = publickey.field.cloneNode(true);
+              $(nfield,'.category-field-name').textContent    = 'key algorithm';
+              $(nfield,'.category-field-value').textContent   = alg;
+              publickey.list.append(nfield);
+              
+              var nfield    = publickey.field.cloneNode(true);
+              if(cert.publicKey.n){
+                    $(nfield,'.category-field-name').textContent    = 'key size';
+                    $(nfield,'.category-field-value').textContent   = cert.publicKey.n.bitLength()+' bits';
+              }
+              if(cert.publicKey.curve){
+                    $(nfield,'.category-field-name').textContent    = 'curve';
+                    $(nfield,'.category-field-value').textContent   = cert.publicKey.curve;
+              }
+              publickey.list.append(nfield);
 
 
+              var nfield    = publickey.field.cloneNode(true);
+              $(nfield,'.category-field-name').textContent    = 'Subject Key Identifier';
+              var ski   = cert.extensions.find(ext=>ext.name==='subjectKeyIdentifier');
+              var str   = 'not present';
+              if(ski){
+                    str   = nodeforge.util.bytesToHex(ski.subjectKeyIdentifier);
+              }
+              $(nfield,'.category-field-value').textContent   =  str;
+              publickey.list.append(nfield);
 
 
-// Get the signature algorithm
-const oid = cert.siginfo.algorithmOid;
-const alg = nodeforge.pki.oids[sigAlgOid];
-
-console.log('Signature Algorithm OID:', oid);
-console.log('Signature Algorithm Name:', alg);
-
-
-
-
-const keyAlgorithm = cert.publicKey.algorithm || cert.publicKey.constructor.name;
-console.log('Key Algorithm:', keyAlgorithm);
-
-if (cert.publicKey.n) {
-  // RSA
-  console.log('Key Size:', cert.publicKey.n.bitLength(), 'bits');
-} else if (cert.publicKey.curve) {
-  // EC
-  console.log('Curve:', cert.publicKey.curve);
-}
-
-
-if (cert.publicKey.n && cert.publicKey.e) {
-  // RSA
-  console.log('Modulus (n):', cert.publicKey.n.toString(16));
-  console.log('Exponent (e):', cert.publicKey.e.toString(10));
-} else if (cert.publicKey.encodePoint) {
-  // EC
-  const pointBytes = cert.publicKey.encodePoint();
-  console.log('Public Point:', forge.util.bytesToHex(pointBytes));
-}
-
-// 🧬 Subject Key Identifier
-const skiExt = cert.extensions.find(ext => ext.name === 'subjectKeyIdentifier');
-if (skiExt) {
-  console.log('Subject Key Identifier:', forge.util.bytesToHex(skiExt.subjectKeyIdentifier));
-}
-
-
-
-
-//authority key identifier and issuer
-
-// Find the authorityKeyIdentifier extension
-const akiExt = cert.extensions.find(ext => ext.name === 'authorityKeyIdentifier');
-
-if (akiExt) {
-  const authorityKeyIdentifier = akiExt.keyIdentifier;
-  const authorityIssuer = akiExt.authorityCertIssuer; // Array of GeneralNames
-  const authorityIssuerSerial = akiExt.authorityCertSerialNumber;
-
-  console.log('Authority Key Identifier:', authorityKeyIdentifier);
-  console.log('Authority Issuer:', authorityIssuer);
-  console.log('Authority Issuer Serial:', authorityIssuerSerial);
-}
+              authoritykey.list.replaceChildren();
+              
+              var aki   = cert.extensions.find(ext=>ext.name==='authorityKeyIdentifier');
+              if(!aki){
+                    var nfield    = authoritykey.field.cloneNode(true);
+                    $(nfield,'.category-field-name').textContent    = 'Authority Key Identifier';
+                    $(nfield,'.category-field-value').textContent   = 'not present';
+                    authoritykey.list.append(nfield);
+              }else{
+                    var ki    = aki.keyIdentifier;
+                    if(ki){
+                          var nfield    = authoritykey.field.cloneNode(true);
+                          console.log('Authority Key Identifier:', authorityKeyIdentifier);
+                    }
+                    
+                    var ai    = aki.authorityCertIssuer; // Array of GeneralNames
+                    if(ai){
+                          console.log('Authority Issuer:', authorityIssuer);
+                    }
+                    
+                    var authSerial = akiExt.authorityCertSerialNumber;
+                    if(authserial){
+                          console.log('Authority Issuer Serial:', authorityIssuerSerial);
+                    }
+              }
 
 
 
