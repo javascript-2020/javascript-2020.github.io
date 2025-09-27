@@ -3,112 +3,254 @@
 
 <html>
 
-    <head>
+      <head>
 
-        <title>certificate info</title>
-        
-        <base href='https://javascript-2020.github.io/utils/x509/certificate-info/certificate-info.html'>
-        <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico'>
-
-        <style>
-        
-    html
-                          {height:100%}
-    body
-                          {height:calc(100% - 42px);margin:20px;display:flex;flex-direction:column;font-family:arial}
-    .hdr                  
-                          {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
-                            padding-bottom:10px;border-bottom:3px solid lightblue}
-    .hdr-icon             
-                          {display:inline-block;text-align:center;background:whitesmoke;border-radius:5px;
-                            border:1px solid lightgray;padding:5px 3px 0px;cursor:pointer;margin-right:10px;
-                            min-width:50px}
-    .hdr-icon-img         
-                          {width:25px;height:25px}
-    .hdr-icon-label       
-                          {margin:2px 0 0}
-    .hdr-title            
-                          {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
-    .hdr-date
-                          {float:right}
-
-    input
-                          {padding:5px 10px;font-size:16px}
-    #btns
-                          {margin-bottom:20px}
-    #filename
-                          {background-color:lightgray;padding:5px 10px}
-    #view
-                          {margin-bottom:20px}
-    .category
-                          {margin-top:20px}
-    .field
-                          {display:flex;margin-top:10px}
-    .field-name
-                          {display:inline-block;width:200px}
-    .field-value
-                          {flex:1}
+            <title>x509 certificate info</title>
+            <meta name=description content='view x509 certificate information'>
+            
+            <base href='https://javascript-2020.github.io/utils/x509/certificate-info/certificate-info.html'>
+            <link rel=canonical href='https://ext-code.com/utils/x509/certificate-info/certificate-info.html'>
+            
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            <link rel='shortcut icon' type='image/x-icon' href='utils/x509/images/x509-30.png'>
     
-    #pem
-                          {border:1px solid lightgray;padding:10px;display:none}
+    
+            <style>
+        
+  html
+    {height:100%}
+    
+  body
+    {height:calc(100% - 42px);margin:20px;display:flex;flex-direction:column;font-family:arial}
+
+    
+  .hdr                  
+    {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
+      padding-bottom:10px;border-bottom:3px solid lightblue
+    }
+    
+  .hdr-icon             
+    {display:inline-block;text-align:center;background:whitesmoke;border-radius:5px;
+      border:1px solid lightgray;padding:5px 3px 0px;cursor:pointer;margin-right:10px;
+      min-width:50px
+    }
+    
+  .hdr-icon-img         
+    {width:25px;height:25px}
+    
+  .hdr-icon-label       
+    {margin:2px 0 0}
+    
+  .hdr-title            
+    {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
+    
+  .hdr-date
+    {float:right}
+
+
+    
+  #btns
+    {margin-bottom:20px}
+
+
+  #info
+    {display:flex;flex-direction:column;gap:20px}
+    
+  #filename
+    {border:1px solid lightgray;padding:5px 10px;border-radius:5px;text-align:center;font-weight:bold}
+    
+
+  #category-root
+    {display:flex;gap:50px}
+    
+  #subject
+    {border-color:lightblue}
+  #subject .category-title
+    {background:blue}
+  #subject .category-field:nth-child(even)
+    {background:hsl(200,100%,98%)}
+    
+    
+
+
+    
+  #issuer
+    {}
+  #issuer .category-title
+    {background:green}
+    
+  .category
+    {flex:1;border:1px solid lightgray;border-radius:5px;padding:10px}
+    
+  .category-title
+    {font-weight:bold;color:white;text-align:center;padding:5px 10px;margin-bottom:10px}
+    
+  .category-view
+    {}
+    
+  .category-field
+    {display:flex;gap:40px;padding:10px 10px}
+
+  .category-field:nth-child(even)
+    {background:whitesmoke}
+
+
+  .category-field-name
+    {width:200px;text-align:right}
+    
+  .category-field-value
+    {flex:1}
+
+
+  #subject
+    {}
+    
+  #issuer
+    {}
+    
+    
+    
+    
+  #view
+    {margin-bottom:20px}
+
+
+  .view-category
+    {margin-top:20px}
+    
+  .view-field
+    {display:flex;margin-top:10px}
+    
+  .view-field-name
+    {display:inline-block;width:200px}
+    
+  .view-field-value
+    {flex:1}
+
+
+    
+  #pem
+    {border:1px solid lightgray;padding:10px;display:none}
                           
-        </style>
-        
-    </head>
 
-    <body>
+
+  input
+    {padding:5px 10px;font-size:16px}
+
+                          
+            </style>
+        
+      </head>
+  
+      <body>
    
    
-        <div class=hdr>
-            <a class=hdr-icon href='https://javascript-2020.github.io/'>
-                <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAqFBMVEVHcEwjmpckopg9f3YxpJM6r5kjq58Nmp0Nn6QRoKExrpshnpgtoJUdoZwYnZ02spwYpaEmrZ8djpINn6Qtrp4inpcjqZ8SoqM3s5w0sp01spwrr58vr50oqpwdnpo0sZwtrJwUpKMMoaUtq50op5ssqpopppseqaM1sJwgpJ0NoaUSoaI3kYobqaMSpKQrr58PoaMVpaIOoKMLpKcXpaEkqp8Rm58YrKUL0CR4AAAAOHRSTlMACBkBCyinK59CQhUOLyKjqbUGpZgSYn6rp5WsekcmgkyWmCkmNB7AYTiuVgKuuo91i2PLn2lJ7kISMf4AAAElSURBVCjPrdPXloIwEAbgBDFKCRo6SO8lYEHd93+zxV7Zm2WuSL6Tk/MPEwBGLFH8SzFCeFiDXNeJ+7GtGds1D+ghDzzPzXX6xlJbq75s5KVLiJsSB76xIhd22Mz0pkyRnqzW2htD/SeUjL0EQKY60nqRvTLXGl64PR/SfDVxVvETZ123w8vN9Ur5YKUF4R9cd/WxqiePgCs3IMF1QXcVt6vK59tSqyjN4hwQbhS8mUuvWTLbwYtTQGhEjLHVPprv+4ztQ8AeRVn50uipBcXg/IPgfPaFF+z1axyeMEkcJwwdYHHZINQ02gALS49lJcQMci/COGzdue8apRQwNz4tYvM207JSRVEUhvtW6KeBIFVVbds07xPncZfCfWSK+UtNJ/9+VL/nTBuX7xjDZwAAAABJRU5ErkJggg==' />
-                <div class=icon-label>
-                    home
-                </div>
-            </a>
-            <a id=github class=hdr-icon href='https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/x509/generate-certificate-chain/generate-certificate-chain.html'>
-                <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAbFJREFUOE/l1E2IT2EUx/HPIFI2lJfGwmYsxFZKEUWjKWM3pZSpKcqeBcpLZsNeUeNlZWdBSVFmkAXbmRWbWRCRjYW8jv+pc/V4utff3q3bvfc5z/k+557zO2dA97UHy7ERx3LbZbzEZzxscx3o4L3GWizusP/AO6yv7TXwAo5g9V8iL03vcRWnm8USeBHH/xFUb7uEE7HYAOMZeVmGm7iN61jVccBHjOMQxvAl870QoIDMZ87CfxR3E7QDTyroTjzOtf24k++R0w0BHMY9LEpDCeyXgRL4EyMBjEKcSs+o3r4uSbTQQ1r3CzVMBnCh2PimTQp9wgyJDZZV/g+Bz7E1c/AdezHdr7xp34UHvcIuye8XUZSy9A1nDT5UBSvPCL9oz9BeeY2GYR3msBIHsi834WlPTt9yrXQKIUdEIfoVhSG6Z3PTejdwGG+xDc9SPud7UZ6popjEyZaURMuOl8NhKvtzpKf4yGvMwk95l/5xwNkKeA0T5XCI96EcRbsLh5mWAtXARznyXtXA5tD4/YNYmuBzVTQN8Ctu5V/93tI1sbdjS463KxXwaFZ/NnP9h/kXPcNYElddRc0AAAAASUVORK5CYII='>
-                <div class=hdr-icon-label>
-                      github
-                </div>
-            </a>
+            <div class=hdr>
             
-            <img class=hdr-title src='images/certificate-info.png' style='height:60px;top:-15px'>
-            
-            <div class=hdr-date>
-                  22 Apr 2025
+                  <a class=hdr-icon href='/'>
+                        <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAqFBMVEVHcEwjmpckopg9f3YxpJM6r5kjq58Nmp0Nn6QRoKExrpshnpgtoJUdoZwYnZ02spwYpaEmrZ8djpINn6Qtrp4inpcjqZ8SoqM3s5w0sp01spwrr58vr50oqpwdnpo0sZwtrJwUpKMMoaUtq50op5ssqpopppseqaM1sJwgpJ0NoaUSoaI3kYobqaMSpKQrr58PoaMVpaIOoKMLpKcXpaEkqp8Rm58YrKUL0CR4AAAAOHRSTlMACBkBCyinK59CQhUOLyKjqbUGpZgSYn6rp5WsekcmgkyWmCkmNB7AYTiuVgKuuo91i2PLn2lJ7kISMf4AAAElSURBVCjPrdPXloIwEAbgBDFKCRo6SO8lYEHd93+zxV7Zm2WuSL6Tk/MPEwBGLFH8SzFCeFiDXNeJ+7GtGds1D+ghDzzPzXX6xlJbq75s5KVLiJsSB76xIhd22Mz0pkyRnqzW2htD/SeUjL0EQKY60nqRvTLXGl64PR/SfDVxVvETZ123w8vN9Ur5YKUF4R9cd/WxqiePgCs3IMF1QXcVt6vK59tSqyjN4hwQbhS8mUuvWTLbwYtTQGhEjLHVPprv+4ztQ8AeRVn50uipBcXg/IPgfPaFF+z1axyeMEkcJwwdYHHZINQ02gALS49lJcQMci/COGzdue8apRQwNz4tYvM207JSRVEUhvtW6KeBIFVVbds07xPncZfCfWSK+UtNJ/9+VL/nTBuX7xjDZwAAAABJRU5ErkJggg==' />
+                        <div class=icon-label>
+                              home
+                        </div>
+                  </a>
+                  
+                  <a id=github class=hdr-icon href='/#x509'>
+                        <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABO1BMVEVHcEwAAABoQBqkcBqSXBGfaBGIUw52Sh6pchRxRBeveR2qbg+5p5FuQQ2baRFySB19SQyaaRjJtJFaMwt8Sg5mOxGZaBhxRh2TZhK4hiqucwrDkzy5hSyBWCqCVSX////8/f3s8PPf08X+/v/DomfLu53Nqmrdz7b79ujz9Pbn5+fx6NmhoaHHuKbNvaXu7u7Q0dH48uLd3d3069ysknLhzq+YmJjt0qHcyrD+y1r+vVDY2NjHxcPi4+Oxl3W+q5DFsJO1lmWmiWXAonG4nHHNzc3V1dWxsbH/2GT4r0u/v7/Wxa779uvr28Du5tmtj2W/nGLy47D733T7+O/8+/j48M6srKzo1LC3t7f43YTWx7PKpWLVuITe0bv51Wjo0K3syJ3ruXP4ymbhxpLzv2f37tjIrHqeflrQwKXcKNlbAAAAH3RSTlMAAaOYaW1hjXV+jV3+bh+YV6L+GGMipJUPm0Xe4+Lf7dZ8OwAAAWZJREFUKM+901lXgkAYgGErNcXSzKW9ocZSkATBrRB3zT0XJNdsr///CxplUczbei84nHnOB8MBDIb/aQO1ZvnQsjXP6fU6nfMzDLPYNT72ha5W+8Q0tu0n876VWqeYXeP8uDHx65uMLQv2D0fXK41OjuR5WyZf8zXq4XBAV/3NNGdjpvDd4gSeFQiw3KN8eWO6EGo1BbLK8DhahQQrymzSOMsRVJIVaJpMMlKfJugSS0x1XGXJ+z4Vi1ExSpLQgYnKbE6nQtkgJEmSF5hSVSoV+WKyyBA6BmB2YwBJWt1a1CjzTuTmIaisQRys8J7MuBoAYrgXgCCxxE14oUSAbrvTGfRUdiPONRfTsP1ULpcH3YRZno7kEC+mxfgt6vVDYZfjXDeNx+9Q7+GhW3ln1tSXPE3A2Za5l0qlEsdruwp7HGdNAFHKI3HT54YINEbzmctfpRbssW6jDhybS1ld679mtb/+c34AUBhYzLcT6lgAAAAASUVORK5CYII='>
+                        <div class=hdr-icon-label>
+                              x509
+                        </div>
+                  </a>
+                  
+                  <img class=hdr-title src='images/certificate-info.png' style='height:60px;top:-15px'>
+                  
+                  <div class=hdr-date>
+                        27 Sep 2025
+                  </div>
+                
+            </div hdr>
+
+
+            <div id=btns>
+                  <input value=load type=button>
+                  <input value=paste type=button>
+                  <input value=copy type=button>
             </div>
-        </div hdr>
 
+        
+            <div id=info>
+            
+                  <div id=filename></div>
+      
+              
+                  <div id=category-root>
+                  
+                        <div id=subject class=category>
+                        
+                              <div class=category-title>
+                                    Subject
+                              </div>
+                              
+                              <div class=category-view>
+                                    <div class=category-field>
+                                          <div class=category-field-name></div>
+                                          <div class=category-field-value></div>
+                                    </div>
+                              </div>
+                              
+                        </div>
+            
+            
+                        <div id=issuer class=category>
+                        
+                              <div class=category-title>
+                                    Issuer
+                              </div>
+                              
+                              <div class=category-view>
+                              </div>
+                              
+                        </div>
+                        
+                  </div>
+              
+              
+                  <div id=signature>
+                  
+                        <div class=signature-field>
+                              <div class=signature-field-name></div>
+                              <div class=signature-field-value></div>
+                        </div>
+                        
+                  </div>
+      
+      
+      
+                  
+                  <div id=view>
+                  
+                        <div class=view-category>
+                              <div class=view-label></div>
+                        </div category>
+                        
+                        <div class=view-field>
+                              <span class=view-field-name>commonName</span>
+                              <span class=view-field-value></span>
+                        </div>
+                        
+                  </div view>
+                  
+      
+      
+                  <div>
+                        <pre id=pem></pre>
+                  </div>
+                  
+            </div>
 
-        <div id=btns>
-              <input value=load type=button>
-              <input value=paste type=button>
-              <input value=copy type=button>
-        </div>
         
-        <div id=filename></div>
-        
-        <div>
-              <pre id=pem></pre>
-        </div>
-        
-        <div id=view>
-        
-              <div class=category>
-                    <div class=label></div>
-              </div category>
-              
-              <div class=field>
-                    <span class=field-name>commonName</span>
-                    <span class=field-value></span>
-              </div>
-              
-        </div>
-        
-    </body>
+      </body>
     
-<script>
+      <script>
                                                                                 console.clear();
                                                                                 console.log('certificate-info');
                                                                                 console.log();
@@ -149,7 +291,7 @@
         var btn       = {};
         
 
-  //
+  //:
   
   
         //window.onload   = init;
@@ -171,6 +313,21 @@
         }//init
 
 
+  //:
+  
+  
+        var subject;
+        var issuer;
+        var category        = {};
+        var signature       = {};
+        var view            = {};
+        
+        
+        
+        var create    = {};
+        
+        
+        
         function initdom(){
           
           
@@ -180,15 +337,26 @@
               $('[value=paste]').onclick            = btn.paste;
               $('[value=copy]').onclick             = btn.copy;
 
+        
+              subject                               = $('#subject');
+              category.field                        = $(subject,'.category-field');
+              issuer                                = $('#issuer');
               
-              view                                  = $('#view');
+              signature.root                        = $('#signature');
+              signature.field                       = $(signature.root,'.signature-field');
               
-              category                              = $('.category');
-              category.remove();
               
-              field                                 = $('.field');
-              field.remove();
               
+              view.root                             = $('#view');
+              
+              view.category                              = $('.view-category');
+              view.category.remove();
+              
+              view.field                                 = $('.view-field');
+              view.field.remove();
+              
+
+
               
               if(history.load()){
                     display();
@@ -198,6 +366,9 @@
         }//initdom
 
 
+  //:
+  
+  
         btn.load    = async function(){
           
               await load.cert(true);
@@ -235,6 +406,71 @@
               
               
               $('#filename').textContent    = file;
+
+
+
+              var node    = $(subject,'.category-view');
+              node.replaceChildren();
+              
+              props.subject.forEach(name=>{
+                
+                    var value   = '';
+                    var attr    = cert.subject.attributes.find(attr=>attr.name===name);
+                    if(attr){
+                          value   = attr.value;
+                    }
+                    
+                    var nfield    = category.field.cloneNode(true);
+                    $(nfield,'.category-field-name').textContent       = name;
+                    $(nfield,'.category-field-value').textContent      = value;
+                    node.append(nfield);
+                    
+              });
+
+
+              var node    = $(issuer,'.category-view');
+              node.replaceChildren();
+              
+              props.issuer.forEach(name=>{
+                
+                    var value   = '--';
+                    var attr    = cert.issuer.attributes.find(attr=>attr.name===name);
+                    if(attr){
+                          value   = attr.value;
+                    }
+                    
+                    var nfield    = category.field.cloneNode(true);
+                    $(nfield,'.category-field-name').textContent       = name;
+                    $(nfield,'.category-field-value').textContent      = value;
+                    node.append(nfield);
+                    
+              });
+              
+              
+              signature.root.replaceChildren();
+              
+              var asn1      = nodeforge.pki.certificateToAsn1(cert);
+              var der       = nodeforge.asn1.toDer(asn1).getBytes();
+              var format    = hex=>hex.match(/.{2}/g).join(' : ').toUpperCase();
+
+              var sha1      = nodeforge.md.sha1.create().update(der).digest().toHex();
+              var nfield    = signature.field.cloneNode(true);
+              $(nfield,'.signature-field-name').textContent     = 'sha-1';
+              $(nfield,'.signature-field-value').textContent    = sha1;
+              signature.root.append(nfield);
+              
+              var sha256    = nodeforge.md.sha256.create().update(der).digest().toHex();
+              var nfield    = signature.field.cloneNode(true);
+              $(nfield,'.signature-field-name').textContent     = 'sha-256';
+              $(nfield,'.signature-field-value').textContent    = sha256;
+              signature.root.append(nfield);
+              
+
+
+              return;
+              
+              
+
 
               
 
@@ -277,43 +513,8 @@
               view.append(nfield);
               
 
-              var ncategory   = category.cloneNode(true);
-              $(ncategory,'.label').textContent   = 'Subject';
-              
-              props.subject.forEach(name=>{
-                
-                    var attr    = cert.subject.attributes.find(attr=>attr.name===name);
-                    if(!attr){
-                          return;
-                    }
-                    
-                    var nfield    = field.cloneNode(true);
-                    $(nfield,'.field-name').textContent   = name;
-                    $(nfield,'.field-name').style.cssText    = 'padding-left:20px;box-sizing:border-box';
-                    $(nfield,'.field-value').textContent    = attr.value;
-                    ncategory.append(nfield);
-                    
-              });
-              view.append(ncategory);
               
               
-              var ncategory   = category.cloneNode(true);
-              $(ncategory,'.label').textContent   = 'Issuer';
-              props.issuer.forEach(name=>{
-                
-                    var attr    = cert.issuer.attributes.find(attr=>attr.name===name);
-                    if(!attr){
-                          return;
-                    }
-                    
-                    var nfield    = field.cloneNode(true);
-                    $(nfield,'.field-name').textContent   = name;
-                    $(nfield,'.field-name').style.cssText    = 'padding-left:20px;box-sizing:border-box';
-                    $(nfield,'.field-value').textContent    = attr.value;
-                    ncategory.append(nfield);
-                    
-              });
-              view.append(ncategory);
               
               
               var nfield    = field.cloneNode(true);
@@ -383,6 +584,11 @@
         }//display
 
 
+        create.field    = function(name,value){
+        }//field
+        
+        create.field.sub    = function(name,value){
+        }//sub
 
 
 
@@ -445,7 +651,9 @@
               
                     file    = input.files[0].name;
                     pem     = await input.files[0].text();
+                    
                     cert    = nodeforge.pki.certificateFromPem(pem);
+                    
                     history.save();
                     resolve();
                     
