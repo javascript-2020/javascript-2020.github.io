@@ -67,16 +67,16 @@
     
   #subject
     {border-color:lightblue}
-  #subject .category-title
+  #subject .dn-title
     {background:blue}
-  #subject .category-field:nth-child(even)
+  #subject .dn-field:nth-child(even)
     {background:hsl(200,100%,98%)}
     
   #issuer
     {border=color:lightgreen}
-  #issuer .category-title
+  #issuer .dn-title
     {background:green}
-  #issuer .category-field:nth-child(even)
+  #issuer .dn-field:nth-child(even)
     {background:hsl(120,100%,98%)}
     
   .dn
@@ -102,25 +102,38 @@
     {flex:1;font-weight:bold}
 
 
+  .category
+    {}
+  .category-title
+    {background:lightgray;text-align:center;margin-bottom:10px;padding:5px}
+  .category-view
+    {}
+  .category-field
+    {display:flex;gap:40px;padding:10px}
+  .category-field-name
+    {width:var(--col1)}
+  .category-field-value
+    {flex:1;font-weight:bold}
+    
+
   #thumbprint
     {}
   #thumbprint-title
-    {background:lightgray;text-align:center;margin-bottom:10px;padding:5px}
+    {}
   #thumbprint-view
     {}
   .thumbprint-field
-    {display:flex;gap:40px;padding:10px}
+    {}
   .thumbprint-field-name
-    {width:var(--col1)}
+    {}
   .thumbprint-field-value
-    {flex:1;font-weight:bold}
+    {}
 
 
   #dates
     {}
   #dates-title
-    {}
-  
+    {}  
   .date-root
     {}
   .date-label
@@ -128,8 +141,7 @@
   .date-simple
     {}
   .date-full
-    {}
-    
+    {}    
   #dates-valid
     {}
 
@@ -250,37 +262,42 @@
                   </div>
               
               
-                  <div id=thumbprint>
+                  <div id=thumbprint class=category>
                   
-                        <div id=thumbprint-title>
+                        <div id=thumbprint-title class=category-title>
                               thumbprint
                         </div>
-                        <div id=thumbprint-view>
-                              <div class=thumbprint-field>
-                                    <div class=thumbprint-field-name></div>
-                                    <div class=thumbprint-field-value></div>
+                        <div id=thumbprint-view class=category-view>
+                              <div class='thumbprint-field category-field'>
+                                    <div class='thumbprint-field-name category-field-name'></div>
+                                    <div class='thumbprint-field-value category-field-value'></div>
                               </div>
                         </div>
                         
                   </div>
       
       
-                  <div id=dates>
+                  <div id=dates class=category>
                   
-                        <div id=dates-title>
+                        <div id=dates-title class=category-title>
                               dates
                         </div>
-                        <div id=not-before-root class=date-root>
-                              <div id=not-before-label class=date-label>
-                                    not before
-                              </div>
-                              <div id=not-before-simple class=date-simple>
-                              </div>
-                              <div id=not-before-full class=date-full>
-                              </div>
-                        </div>
                         
-                        <div id=dates-valid>
+                        <div id=dates-view>
+                              <div id=dates-list>
+                                    <div class=date-root>
+                                          <div class='date-label category-name'>
+                                                not before
+                                          </div>
+                                          <div class=date-simple>
+                                          </div>
+                                          <div class=date-full>
+                                          </div>
+                                    </div>
+                              </div>
+                              
+                              <div id=dates-valid>
+                              </div>
                         </div>
                         
                   </div>
@@ -417,10 +434,8 @@
               
 
               dates.root                            = $('#dates');
-              dates.notbefore.simple                = $(dates.root,'#not-before-simple');
-              dates.notbefore.full                  = $(dates.root,'#not-before-full');
-              dates.notafter.simple                 = $(dates.root,'#not-after-simple');
-              dates.notafter.full                   = $(dates.root,'#not-after-full');
+              dates.list                            = $(dates.root,'#dates-list');
+              dates.date                            = $(dates.root,'.date-root');
               dates.valid                           = $(dates.root,'#dates-valid');
               
 
@@ -542,7 +557,21 @@
               $(nfield,'.thumbprint-field-name').textContent     = 'sha-256';
               $(nfield,'.thumbprint-field-value').textContent    = format(sha256);
               thumbprint.view.append(nfield);
+
               
+              dates.list.replaceChildren();
+              
+              var ndate   = dates.date.cloneNode(true);
+              $(ndate,'.date-label').textContent    = 'not before';
+              $(ndate,'.date-simple').textContent   = '';
+              $(ndate,'.date-full').textContent     = cert.validity.notBefore;
+              dates.list.append(ndate);
+
+              var ndate   = dates.date.cloneNode(true);
+              $(ndate,'.date-label').textContent   = 'not after';
+              $(ndate,'.date-simple').textContent   = '';
+              $(ndate,'.date-full').textContent    = cert.validity.notAfter;
+              dates.list.append(ndate);
 
 
               return;
@@ -578,17 +607,6 @@
               view.append(nfield);
               
               
-              var nfield    = field.cloneNode(true);
-              nfield.style.cssText    = 'margin-top:20px';
-              $(nfield,'.field-name').textContent   = 'not before';
-              $(nfield,'.field-value').textContent    = cert.validity.notBefore;
-              view.append(nfield);
-
-              
-              var nfield    = field.cloneNode(true);
-              $(nfield,'.field-name').textContent   = 'not after';
-              $(nfield,'.field-value').textContent    = cert.validity.notAfter;
-              view.append(nfield);
               
 
               
