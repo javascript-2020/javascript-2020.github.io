@@ -102,6 +102,32 @@
     {flex:1;font-weight:bold}
 
 
+  #keyUsage
+    {border-color:orange}
+  #keyUsage .extension-title
+    {background:orange}
+  #keyUsage .extension-field-value:nth-child(even)
+    {background:hsl(30,100%,98%)}
+    
+  #extKeyUsage
+    {border-color:purple}
+  #extKeyUsage .extension-title
+    {background:purple}
+  #extKeyUsage .extension-field-value:nth-child(even)
+    {background:hsl(270,100%,98%)}
+
+  #extensions-root
+    {display:flex;gap:50px}
+  .extension
+    {flex:1;border:1px solid lightgray;border-radius:5px;padding:10px}
+  .extension-title
+    {font-weight:bold;color:white;text-align:center;padding:5px 10px;margin-bottom:10px}
+  .extension-field-value
+    {padding:10px 10px;text-align:center;font-weight:bold}
+
+
+
+
   .category
     {}
   .category-title
@@ -152,6 +178,10 @@
     {content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAXVBMVEVHcEwa13Mb1XQc1XQpynsd03Uwv3oa13Mnynce03UlzHYd1HYg0XYc1XQh0XYd03Qe1HUg0XYc1HQf0HUd1XUd0XMfz3UZ13Pn5ucp2Hxo3Z+O4LXa5uC85M9H243zMKCpAAAAF3RSTlMA+NPWD40F/Bx9IJ5d716ho1/tW/BcW3mRwfMAAADcSURBVCjPjZNXFoQgDEVDsPcyM7Gy/2UOCBZQj74fyoUkJwVgVVRU/BOGOVZ1Aq6SGBkZMYztB0HByRIvgp16PiNHzPc2mtKFUsMDny7la/s1u8asXmLmdCOu4o/pVrHMBp6vh16vGEFx8tyP06g5y6A6066bhN6XgFd0MAeE3OyENmhRyiE0n+Zu7l1K4YrF3CluU4k344o7lJo9NMUdKkMr6chtSilkW1p6MTuUtVZShU1VUh9K8lTQg3enHbI3zfTQik+NLO1nTl3xG7wfomUE2xIbNYLlL9ou/yNmPb9gPGs5AAAAAElFTkSuQmCC')}
   .dates-invalid
     {content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAANlBMVEVHcEzvU1v1SlH2SVDMsrbqXGPlaW/rWl/0TFPzTVPyTlXrV1/zTlT0S1LvVVvuU1nxU1r3SE+VlM7ZAAAAEXRSTlMAbPP6AiEML9TKrEG55lp7jd7fFusAAAC6SURBVCjPhZPbFoQgCEVBSss7//+zoyZdZprFeWnl9gAqAJyyLpdaS3YWfrViTMRNlCKuX9Dixjdt+IiweuKHyN8CuJ1/tLvT+0Ibn37r+VX+yI/0jglHaKnZzG1kpP4eHuUn4Fg3GMTQ7DZOb4Clc4MLhOmPFlySTEvnZnxmmuQgS2EHODZJcRnKWWnnTRdlLlD5xsc5L8pVw0pwpTTlYMq1KJeqPYnyoFo7KM2ktaLWyNoYaEP0bwQ/OJUj5UwLjAIAAAAASUVORK5CYII=')}
+
+
+
+
 
 
 
@@ -309,6 +339,26 @@
                         
                   </div>
       
+
+                  <div id=extensions-root>
+                  
+                        <div class=extension>
+                        
+                              <div class=extension-title>
+                              </div>
+                              
+                              <div class=extension-list>
+                                    <div class=extension-field-value></div>
+                              </div>
+                              
+                        </div>
+                        
+                  </div>
+
+
+
+
+                        
                   
                   <div id=view>
                   
@@ -368,6 +418,7 @@
         props.ext         = {};                  
         props.ext.keyUsage      = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
         props.ext.extKeyUsage   = ['serverAuth','clientAuth','codeSigning','emailProtection','timeStamping'];
+        
         props.ext.nsCertType    = ['client','server','email','objSign','sslCA','emailCA','objCA'];
 
 
@@ -407,7 +458,7 @@
         var dates           = {};
         dates.notbefore     = {};
         dates.notafter      = {};
-        
+        var extensions           = {};
         
         
         var view            = {};
@@ -444,6 +495,15 @@
               dates.list                            = $(dates.root,'#dates-list');
               dates.date                            = $(dates.root,'.date-root');
               dates.valid                           = $(dates.root,'#dates-valid');
+              
+              
+              extensions.root                       = $('#extensions-root');
+              extensions.extension                  = $(extensions.root,'.extension');
+              extensions.value                       = $(extensions.extension,'.extension-field-value');
+              extensions.value.remove();
+              
+              
+              
               
 
 
@@ -504,7 +564,6 @@
               
               //console.log(nodeforge.pki);
               //console.json(cert);
-              
               
               
               $('#filename').textContent    = file;
@@ -586,6 +645,32 @@
                     dates.valid.className   = 'dates-invalid';
               }
 
+              
+              extensions.root.replaceChildren();
+              
+              ['keyUsage','extKeyUsage'].forEach(key=>{
+              
+                    var nextension    = extensions.extension.cloneNode(true);
+                    nextension.id     = key;
+                    $(nextension,'.extension-title').textContent    = key;
+                    var list      = $(nextension,'.extension-list');
+                    var attr      = cert.extensions.find(attr=>attr.name===key);
+                    var values    = props.ext[key].filter(name=>attr[name]);
+                    values.forEach(value=>{
+                    
+                          var nvalue   = extensions.value.cloneNode(true);
+                          nvalue.textContent    = value;
+                          list.append(nvalue);
+                          
+                    });
+                    extensions.root.append(nextension);
+                    
+              });
+                                            
+              
+                    
+              
+
               return;
               
               
@@ -596,7 +681,7 @@
               view.replaceChildren();
               
               
-              var extensions    = cert.extensions;
+              //var extensions    = cert.extensions;
 
           
               var nfield    = field.cloneNode(true);
