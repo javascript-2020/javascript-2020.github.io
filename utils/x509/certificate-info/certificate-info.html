@@ -879,6 +879,19 @@ if (skiExt) {
 
 //authority key identifier and issuer
 
+// Find the authorityKeyIdentifier extension
+const akiExt = cert.extensions.find(ext => ext.name === 'authorityKeyIdentifier');
+
+if (akiExt) {
+  const authorityKeyIdentifier = akiExt.keyIdentifier;
+  const authorityIssuer = akiExt.authorityCertIssuer; // Array of GeneralNames
+  const authorityIssuerSerial = akiExt.authorityCertSerialNumber;
+
+  console.log('Authority Key Identifier:', authorityKeyIdentifier);
+  console.log('Authority Issuer:', authorityIssuer);
+  console.log('Authority Issuer Serial:', authorityIssuerSerial);
+}
+
 
 
 
