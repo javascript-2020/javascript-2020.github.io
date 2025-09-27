@@ -926,13 +926,6 @@ see bottom for name constraints
 
               publickey.list.replaceChildren();
               
-              var oid   = cert.siginfo.algorithmOid;
-              var alg   = nodeforge.pki.oids[oid];
-              var nfield    = publickey.field.cloneNode(true);
-              $(nfield,'.category-field-name').textContent    = 'key algorithm';
-              $(nfield,'.category-field-value').textContent   = alg;
-              publickey.list.append(nfield);
-              
               var nfield    = publickey.field.cloneNode(true);
               if(cert.publicKey.n){
                     $(nfield,'.category-field-name').textContent    = 'key size';
@@ -957,11 +950,18 @@ see bottom for name constraints
 
 
               authoritykey.list.replaceChildren();
+
+              var oid   = cert.siginfo.algorithmOid;
+              var alg   = nodeforge.pki.oids[oid];
+              var nfield    = publickey.field.cloneNode(true);
+              $(nfield,'.category-field-name').textContent    = 'key algorithm';
+              $(nfield,'.category-field-value').textContent   = alg;
+              authoritykey.list.append(nfield);
               
               var aki   = cert.extensions.find(ext=>ext.name==='authorityKeyIdentifier');
               if(!aki){
                     var nfield    = authoritykey.field.cloneNode(true);
-                    $(nfield,'.category-field-name').textContent    = 'Authority Key Identifier';
+                    $(nfield,'.category-field-name').textContent    = 'Key Identifier';
                     $(nfield,'.category-field-value').textContent   = 'not present';
                     authoritykey.list.append(nfield);
               }else{
