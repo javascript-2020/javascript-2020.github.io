@@ -1,5 +1,15 @@
 
 
+<!--
+
+
+see bottom for name constraints
+
+
+-->
+
+
+
 
 <html>
 
@@ -803,7 +813,6 @@
               constraints.list.replaceChildren();
               
               var ca    = cert.extensions.find(ext=>ext.name=='basicConstraints');
-console.log(ca);
 
               var nconstraint   = constraints.field.cloneNode(true);
               $(nconstraint,'.category-field-name').textContent     = 'CA';
@@ -821,6 +830,57 @@ console.log(ca);
                     constraints.list.append(nconstraint);
               }
               
+
+
+
+
+
+
+// Get the signature algorithm
+const oid = cert.siginfo.algorithmOid;
+const alg = nodeforge.pki.oids[sigAlgOid];
+
+console.log('Signature Algorithm OID:', oid);
+console.log('Signature Algorithm Name:', alg);
+
+
+
+
+const keyAlgorithm = cert.publicKey.algorithm || cert.publicKey.constructor.name;
+console.log('Key Algorithm:', keyAlgorithm);
+
+if (cert.publicKey.n) {
+  // RSA
+  console.log('Key Size:', cert.publicKey.n.bitLength(), 'bits');
+} else if (cert.publicKey.curve) {
+  // EC
+  console.log('Curve:', cert.publicKey.curve);
+}
+
+if (cert.publicKey.n && cert.publicKey.e) {
+  // RSA
+  console.log('Modulus (n):', cert.publicKey.n.toString(16));
+  console.log('Exponent (e):', cert.publicKey.e.toString(10));
+} else if (cert.publicKey.encodePoint) {
+  // EC
+  const pointBytes = cert.publicKey.encodePoint();
+  console.log('Public Point:', forge.util.bytesToHex(pointBytes));
+}
+
+// 🧬 Subject Key Identifier
+const skiExt = cert.extensions.find(ext => ext.name === 'subjectKeyIdentifier');
+if (skiExt) {
+  console.log('Subject Key Identifier:', forge.util.bytesToHex(skiExt.subjectKeyIdentifier));
+}
+
+
+
+
+
+
+
+
+
               return;
               
               
@@ -1040,6 +1100,63 @@ console.log(ca);
 </script>
 
 </html>
+
+
+<!--
+
+
+
+/*
+
+const forge = require('node-forge');
+const fs = require('fs');
+
+const pem = fs.readFileSync('cert.pem', 'utf8');
+const cert = forge.pki.certificateFromPem(pem);
+
+const nameConstraintsExt = cert.extensions.find(ext => ext.name === 'nameConstraints');
+
+if (!nameConstraintsExt) {
+  console.log('No nameConstraints extension found.');
+  return;
+}
+
+
+const asn1 = forge.asn1.fromDer(nameConstraintsExt.value);
+
+// This is a SEQUENCE of permitted and excluded subtrees
+const [permittedNode, excludedNode] = asn1.value;
+
+// Helper to extract DNS names from subtree
+function extractDNSNames(subtreeNode) {
+  const names = [];
+  const sequence = subtreeNode.value[0]; // SEQUENCE of GeneralSubtree
+  for (const generalSubtree of sequence.value) {
+    const generalName = generalSubtree.value[0]; // GeneralName
+    if (generalName.type === 2) { // dNSName
+      names.push(forge.util.decodeUtf8(generalName.value));
+    }
+  }
+  return names;
+}
+
+const permitted = permittedNode ? extractDNSNames(permittedNode) : [];
+const excluded = excludedNode ? extractDNSNames(excludedNode) : [];
+
+console.log('Permitted DNS:', permitted);
+console.log('Excluded DNS:', excluded);
+
+
+*/
+
+
+
+-->
+
+
+
+
+
 
 
 
