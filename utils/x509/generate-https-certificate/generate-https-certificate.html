@@ -60,7 +60,7 @@
     {width:20px;height:20px}
   .sub                  
     {margin:20px auto 10px;background-color:whitesmoke;padding:10px 10px 5px;
-      color:blue;
+      color:blue;font-weight:bold;
     }
   .sub input            
     {margin-left:20px}
@@ -106,6 +106,8 @@
     {margin-bottom:10px;}
   #cert .label
     {width:200px;display:inline-block;text-align:right;margin-right:20px;}
+  #result
+    {display:flex}
   pre
     {padding:10px;border:1px solid lightgray;display:inline-block;}
 
@@ -299,8 +301,10 @@
                         <input id=x509-download type=button value=download>
                   </div>
                   
-                  <pre id=key></pre>
-                  <pre id=x509></pre>
+                  <div id=result>
+                        <pre id=key></pre>
+                        <pre id=x509></pre>
+                  </div>
                   
             </div cert>
                     
@@ -927,8 +931,10 @@
         
         certificate.complete    = function(key,cert,forge_cert){
                         
-              $('#spinner').style.display   = 'none';
+              $('#spinner').style.display     = 'none';
               show('cert');
+
+              key                             = conv.pkcs8(key);
               
               $('[value=pkcs1]').onclick      = e=>key   = conv.pkcs1(key);
               $('[value=pkcs8]').onclick      = e=>key   = conv.pkcs8(key);
