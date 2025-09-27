@@ -134,16 +134,24 @@
     {}
   #dates-title
     {}  
+  #dates-view
+    {display-flex}
+  #dates-list
+    {flex:1}
   .date-root
-    {}
+    {display:flex}
   .date-label
     {}
   .date-simple
     {}
   .date-full
-    {}    
+    {flex:1}    
   #dates-valid
     {}
+  .dates-valid
+    {content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAXVBMVEVHcEwa13Mb1XQc1XQpynsd03Uwv3oa13Mnynce03UlzHYd1HYg0XYc1XQh0XYd03Qe1HUg0XYc1HQf0HUd1XUd0XMfz3UZ13Pn5ucp2Hxo3Z+O4LXa5uC85M9H243zMKCpAAAAF3RSTlMA+NPWD40F/Bx9IJ5d716ho1/tW/BcW3mRwfMAAADcSURBVCjPjZNXFoQgDEVDsPcyM7Gy/2UOCBZQj74fyoUkJwVgVVRU/BOGOVZ1Aq6SGBkZMYztB0HByRIvgp16PiNHzPc2mtKFUsMDny7la/s1u8asXmLmdCOu4o/pVrHMBp6vh16vGEFx8tyP06g5y6A6066bhN6XgFd0MAeE3OyENmhRyiE0n+Zu7l1K4YrF3CluU4k344o7lJo9NMUdKkMr6chtSilkW1p6MTuUtVZShU1VUh9K8lTQg3enHbI3zfTQik+NLO1nTl3xG7wfomUE2xIbNYLlL9ou/yNmPb9gPGs5AAAAAElFTkSuQmCC')}
+  .dates-invalid
+    {content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAANlBMVEVHcEzvU1v1SlH2SVDMsrbqXGPlaW/rWl/0TFPzTVPyTlXrV1/zTlT0S1LvVVvuU1nxU1r3SE+VlM7ZAAAAEXRSTlMAbPP6AiEML9TKrEG55lp7jd7fFusAAAC6SURBVCjPhZPbFoQgCEVBSss7//+zoyZdZprFeWnl9gAqAJyyLpdaS3YWfrViTMRNlCKuX9Dixjdt+IiweuKHyN8CuJ1/tLvT+0Ibn37r+VX+yI/0jglHaKnZzG1kpP4eHuUn4Fg3GMTQ7DZOb4Clc4MLhOmPFlySTEvnZnxmmuQgS2EHODZJcRnKWWnnTRdlLlD5xsc5L8pVw0pwpTTlYMq1KJeqPYnyoFo7KM2ktaLWyNoYaEP0bwQ/OJUj5UwLjAIAAAAASUVORK5CYII=')}
 
 
 
@@ -285,18 +293,17 @@
                         
                         <div id=dates-view>
                               <div id=dates-list>
-                                    <div class=date-root>
-                                          <div class='date-label category-name'>
+                                    <div class='date-root category-field'>
+                                          <div class='date-label category-field-name'>
                                                 not before
-                                          </div>
-                                          <div class=date-simple>
                                           </div>
                                           <div class=date-full>
                                           </div>
                                     </div>
                               </div>
                               
-                              <div id=dates-valid>
+                              <div>
+                                    <img id=dates-valid>
                               </div>
                         </div>
                         
@@ -563,16 +570,21 @@
               
               var ndate   = dates.date.cloneNode(true);
               $(ndate,'.date-label').textContent    = 'not before';
-              $(ndate,'.date-simple').textContent   = '';
               $(ndate,'.date-full').textContent     = cert.validity.notBefore;
               dates.list.append(ndate);
 
               var ndate   = dates.date.cloneNode(true);
               $(ndate,'.date-label').textContent   = 'not after';
-              $(ndate,'.date-simple').textContent   = '';
               $(ndate,'.date-full').textContent    = cert.validity.notAfter;
               dates.list.append(ndate);
 
+              var today   = new Date();
+              var valid   = (cert.validity.notBefore<today) && (today<cert.validity.notAfter);
+              if(valid){
+                    dates.valid.className   = 'date-valid';
+              }else{
+                    dates.valid.className   = 'date-invalid';
+              }
 
               return;
               
