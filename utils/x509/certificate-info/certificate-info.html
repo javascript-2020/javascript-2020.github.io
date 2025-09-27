@@ -127,11 +127,66 @@
 
 
 
+  
+  #dns
+    {border-color:hsl(340,100%,85%)}
+  #dns .san-title
+    {background:hsl(340,100%,85%)}
+  #dns .san-value:nth-child(even)
+    {background:hsl(340,100%,98%)}
+
+  #ip
+    {border-color:hsl(210,100%,85%)}
+  #ip .san-title
+    {background:hsl(210,100%,85%)}
+  #ip .san-value:nth-child(even)
+    {background:hsl(210,100%,98%)}
+
+  #email
+    {border-color:hsl(150,100%,85%)}
+  #email .san-title
+    {background:hsl(150,100%,85%)}
+  #email .san-value:nth-child(even)
+    {background:hsl(150,100%,98%)}
+
+  #url
+    {border-color:hsl(270,100%,90%)}
+  #url .san-title
+    {background:hsl(270,100%,90%)}
+  #url .san-value:nth-child(even)
+    {background:hsl(270,100%,98%)}
+
+  #dir
+    {border-color:hsl(30,100%,85%)}
+  #dir .san-title
+    {background:hsl(30,100%,85%)}
+  #dir .san-value:nth-child(even)
+    {background:hsl(30,100%,98%)}
+
+  #oid
+    {border-color:hsl(50,100%,85%)}
+  #oid .san-title
+    {background:hsl(50,100%,85%)}
+  #oid .san-value:nth-child(even)
+    {background:hsl(50,100%,98%)}
+    
+    
+  #san-root
+    {display:flex;justify-content:space-between;gap:20px;align-items:start}
+  .san
+    {flex:1;border:1px solid lightgray;border-radius:5px;padding:10px}
+  .san-title
+    {font-weight:bold;color:gray;text-align:center;padding:5px 10px;margin-bottom:10px}
+  .san-value
+    {padding:10px 10px;text-align:center;font-weight:bold}
+    
+    
 
   .category
     {}
   .category-title
-    {background:lightgray;text-align:center;margin-bottom:10px;padding:5px}
+    /*{background:lightgray;text-align:center;margin-bottom:10px;padding:5px}*/
+    {margin-bottom:10px}
   .category-view
     {}
   .category-field
@@ -356,6 +411,42 @@
                   </div>
 
 
+                  <div id=san-root>
+                  
+                        <div class=san>
+                        
+                              <div class=san-title>
+                              </div>
+                              
+                              <div class=san-list>
+                                    <div class=san-value></div>
+                              </div>
+                              
+                        </div>
+                        
+                  </div>
+
+
+                  <div id=constraints class=category>
+                  
+                        <div class=category-title>
+                              Basic Constraints
+                        </div>
+                        
+                        <div id=constraints-list>
+                        
+                              <div class=category-field>
+                                    <div class=category-field-name>
+                                    </div>
+                                    <div class=category-field-value>
+                                    </div>
+                              </div>
+                              
+                        </div>
+                              
+                  </div>
+      
+
 
 
                         
@@ -458,7 +549,9 @@
         var dates           = {};
         dates.notbefore     = {};
         dates.notafter      = {};
-        var extensions           = {};
+        var extensions      = {};
+        var san             = {};
+        var constraints     = {};
         
         
         var view            = {};
@@ -499,22 +592,29 @@
               
               extensions.root                       = $('#extensions-root');
               extensions.extension                  = $(extensions.root,'.extension');
-              extensions.value                       = $(extensions.extension,'.extension-field-value');
+              extensions.value                      = $(extensions.extension,'.extension-field-value');
               extensions.value.remove();
               
               
-              
+              san.root                              = $('#san-root');
+              san.san                               = $(san.root,'.san');
+              san.value                             = $(san.san,'.san-value');
+              san.value.remove();
               
 
+              constraints.root                      = $('#constraints');
+              constraints.list                      = $(constraints.root,'#constraints-list');
+              constraints.field                     = $(constraints.list,'.category-field');
+              
 
 
               
               view.root                             = $('#view');
               
-              view.category                              = $('.view-category');
+              view.category                         = $('.view-category');
               view.category.remove();
               
-              view.field                                 = $('.view-field');
+              view.field                            = $('.view-field');
               view.field.remove();
               
 
@@ -666,9 +766,61 @@
               });
                                             
               
-                    
+              san.root.replaceChildren();
+              var attr    = cert.extensions.find(attr=>attr.name==='subjectAltName');
+              [{v:2,name:'dns'},{v:7,name:'ip'},{v:1,name:'email'},{v:6,name:'url'},{v:4,name:'dir'},{v:8,name:'oid'}].forEach(desc=>{
               
+                    var nsan    = san.san.cloneNode(true);
+                    nsan.id     = desc.name;
+                    $(nsan,'.san-title').textContent    = desc.name;                    
+                    var list    = $(nsan,'.san-list');
+                    var ct      = 0;
+                    attr.altNames.forEach(attr=>{
+                    
+                          if(attr.type!=desc.v)return;
+                          ct++;
+                          var nvalue    = san.value.cloneNode(true);
+                          var str;
+                          switch(attr.type){
+                          
+                            case 2    : str   = attr.value;       break;
+                            case 7    : str   = attr.ip;          break;
+                              
+                          }//switch
+                          
+                          nvalue.textContent    = str;
+                          list.append(nvalue);
+                          
+                    });
+                    
+                    if(ct){
+                          san.root.append(nsan);
+                    }
+                    
+              });
 
+
+              constraints.list.replaceChildren();
+              
+              var ca    = cert.extensions.find(ext=>ext.name=='basicConstraints');
+console.log(ca);
+
+              var nconstraint   = constraints.field.cloneNode(true);
+              $(nconstraint,'.category-field-name').textContent     = 'CA';
+              $(nconstraint,'.category-field-value').textContent    = ca.cA;
+              constraints.list.append(nconstraint);
+
+              if(ca.cA){              
+                    var value   = 'no limit';
+                    if('pathLenConstraint' in ca){
+                          value   = ca.pathLenConstraint;
+                    }
+                    var nconstraint   = constraints.field.cloneNode(true);
+                    $(nconstraint,'.category-field-name').textContent     = 'pathlen';
+                    $(nconstraint,'.category-field-value').textContent    = value
+                    constraints.list.append(nconstraint);
+              }
+              
               return;
               
               
