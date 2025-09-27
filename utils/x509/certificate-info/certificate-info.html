@@ -376,10 +376,14 @@
   //:
   
   
-        var subject   = {};
-        var issuer    = {};
-        var dn        = {};
+        var subject         = {};
+        var issuer          = {};
+        var dn              = {};
         var thumbprint      = {};
+        var dates           = {};
+        dates.notbefore     = {};
+        dates.notafter      = {};
+        
         
         
         var view            = {};
@@ -402,7 +406,7 @@
         
               subject.root                          = $('#subject');
               subject.view                          = $(subject.root,'.dn-view');
-              dn.field                              = $(subject,'.dn-field');
+              dn.field                              = $(subject.view,'.dn-field');
               issuer.root                           = $('#issuer');
               issuer.view                           = $(issuer.root,'.dn-view');
 
@@ -412,7 +416,16 @@
               thumbprint.field                      = $(thumbprint.root,'.thumbprint-field');
               
 
+              dates.root                            = $('#dates');
+              dates.notbefore.simple                = $(dates.root,'#not-before-simple');
+              dates.notbefore.full                  = $(dates.root,'#not-before-full');
+              dates.notafter.simple                 = $(dates.root,'#not-after-simple');
+              dates.notafter.full                   = $(dates.root,'#not-after-full');
+              dates.valid                           = $(dates.root,'#dates-valid');
               
+
+
+
               
               view.root                             = $('#view');
               
