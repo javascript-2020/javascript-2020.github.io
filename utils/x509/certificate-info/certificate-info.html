@@ -1051,14 +1051,16 @@ see bottom for name constraints
                     $(nextension,'.extension-title').textContent    = key;
                     var list      = $(nextension,'.extension-list');
                     var attr      = cert.extensions.find(attr=>attr.name===key);
-                    var values    = props.ext[key].filter(name=>attr[name]);
-                    values.forEach(value=>{
-                    
-                          var nvalue   = extensions.value.cloneNode(true);
-                          nvalue.textContent    = value;
-                          list.append(nvalue);
+                    if(attr){
+                          var values    = props.ext[key].filter(name=>attr[name]);
+                          values.forEach(value=>{
                           
-                    });
+                                var nvalue   = extensions.value.cloneNode(true);
+                                nvalue.textContent    = value;
+                                list.append(nvalue);
+                                
+                          });
+                    }
                     extensions.root.append(nextension);
                     
               });
@@ -1067,56 +1069,59 @@ see bottom for name constraints
               san.root.replaceChildren();
               
               var attr    = cert.extensions.find(attr=>attr.name==='subjectAltName');
-              [{v:2,name:'dns'},{v:7,name:'ip'},{v:1,name:'email'},{v:6,name:'url'},{v:4,name:'dir'},{v:8,name:'oid'}].forEach(desc=>{
-              
-                    var nsan    = san.san.cloneNode(true);
-                    nsan.id     = desc.name;
-                    $(nsan,'.san-title').textContent    = desc.name;                    
-                    var list    = $(nsan,'.san-list');
-                    var ct      = 0;
-                    attr.altNames.forEach(attr=>{
+              if(attr){
+                    [{v:2,name:'dns'},{v:7,name:'ip'},{v:1,name:'email'},{v:6,name:'url'},{v:4,name:'dir'},{v:8,name:'oid'}].forEach(desc=>{
                     
-                          if(attr.type!=desc.v)return;
-                          ct++;
-                          var nvalue    = san.value.cloneNode(true);
-                          var str;
-                          switch(attr.type){
+                          var nsan    = san.san.cloneNode(true);
+                          nsan.id     = desc.name;
+                          $(nsan,'.san-title').textContent    = desc.name;                    
+                          var list    = $(nsan,'.san-list');
+                          var ct      = 0;
+                          attr.altNames.forEach(attr=>{
                           
-                            case 2    : str   = attr.value;       break;
-                            case 7    : str   = attr.ip;          break;
-                              
-                          }//switch
+                                if(attr.type!=desc.v)return;
+                                ct++;
+                                var nvalue    = san.value.cloneNode(true);
+                                var str;
+                                switch(attr.type){
+                                
+                                  case 2    : str   = attr.value;       break;
+                                  case 7    : str   = attr.ip;          break;
+                                    
+                                }//switch
+                                
+                                nvalue.textContent    = str;
+                                list.append(nvalue);
+                                
+                          });
                           
-                          nvalue.textContent    = str;
-                          list.append(nvalue);
+                          if(ct){
+                                san.root.append(nsan);
+                          }
                           
                     });
-                    
-                    if(ct){
-                          san.root.append(nsan);
-                    }
-                    
-              });
+              }
 
 
               constraints.list.replaceChildren();
               
               var ca    = cert.extensions.find(ext=>ext.name=='basicConstraints');
-
-              var nconstraint   = constraints.field.cloneNode(true);
-              $(nconstraint,'.category-field-name').textContent     = 'CA';
-              $(nconstraint,'.category-field-value').textContent    = ca.cA;
-              constraints.list.append(nconstraint);
-
-              if(ca.cA){              
-                    var value   = 'no limit';
-                    if('pathLenConstraint' in ca){
-                          value   = ca.pathLenConstraint;
-                    }
+              if(ca){
                     var nconstraint   = constraints.field.cloneNode(true);
-                    $(nconstraint,'.category-field-name').textContent     = 'pathlen';
-                    $(nconstraint,'.category-field-value').textContent    = value
+                    $(nconstraint,'.category-field-name').textContent     = 'CA';
+                    $(nconstraint,'.category-field-value').textContent    = ca.cA;
                     constraints.list.append(nconstraint);
+      
+                    if(ca.cA){              
+                          var value   = 'no limit';
+                          if('pathLenConstraint' in ca){
+                                value   = ca.pathLenConstraint;
+                          }
+                          var nconstraint   = constraints.field.cloneNode(true);
+                          $(nconstraint,'.category-field-name').textContent     = 'pathlen';
+                          $(nconstraint,'.category-field-value').textContent    = value
+                          constraints.list.append(nconstraint);
+                    }
               }
               
 
@@ -1385,17 +1390,65 @@ see bottom for name constraints
               
               async function onchange(){
               
-                    file    = input.files[0].name;
-                    pem     = await input.files[0].text();
+                    file        = input.files[0].name;
+                    var blob    = input.files[0];
+                    if(is.pem(blob)){
+                          pem   = await blob.text();
+                    }else{
+                          pem   = der_pem(blob);
+                    }
+
                     
-                    cert    = nodeforge.pki.certificateFromPem(pem);
+                    var err;
+                    try{
+                    
+                          cert    = nodeforge.pki.certificateFromPem(pem);
+                          
+                    }//try
+                    catch(err2){
+                    
+                          err   = err2;
+                          
+                    }
+                    if(err){
+                          var error   = err.toString();
+                          log.red(error);
+                          return;
+                    }
+
                     
                     history.save();
                     resolve();
+
                     
               }//onchange
               
         }//cert
+
+
+        
+        var is={};
+        
+        is.pem    = async function(blob){
+        
+              var txt   = await blob.text();
+              if(txt.startsWith('---')){
+                    return true;
+              }
+              return false;
+              
+        }//pem
+
+        
+        async function der_pem(blob){
+        
+              var buf     = await blob.arrayBuffer();
+              var bytes   = nodeforge.util.createBuffer(buf,'binary');
+              var asn1    = nodeforge.asn1.fromDer(bytes);
+              var cert    = nodeforge.pki.certificateFromAsn1(asn1);
+              var pem     = nodeforge.pki.certificateToPem(cert);
+        
+        }//der_pem
         
 
   //:
