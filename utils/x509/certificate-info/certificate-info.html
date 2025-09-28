@@ -25,6 +25,127 @@ see bottom for name constraints
             <link rel='shortcut icon' type='image/x-icon' href='utils/x509/images/x509-30.png'>
     
     
+            <script init>
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var version       = 'v1.0';
+            
+        var df            = true;
+        var debug_id      = 'certificate-info';
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+
+        
+        var mod           = {};
+        mod.menu          = {};
+        mod.hdr           = {};
+            
+        
+        async function init(){
+        
+        
+              log   = mod.log();
+              
+              log.initmod({ext,$});
+              
+              
+              log.init();
+
+
+        
+              //history.delete();
+              
+              
+              await load();
+              
+              
+              initdom(document.body);              
+        
+        
+              
+        }//init
+
+
+        init.stack            = [];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+              init.stack.ct>=init.stack.total && init();
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+        
+        init.complete   = function(){
+          
+              init.complete.stack.forEach(fn=>fn());
+              
+        }//complete
+        
+        init.complete.stack   = [];
+        init.complete.add     = fn=>init.complete.stack.push(fn);
+                  
+
+(async()=>{
+  
+        init.stack.add;
+        
+
+        var url;
+        var headers;
+        var token       = localStorage['github-token'];
+        if(token){
+              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
+        }else{
+              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
+        }
+        
+        var res   = await fetch(url,{headers});
+        var txt   = await res.text();
+
+        if(res.headers.get('content-type').includes('json')){
+                                                                                console.log('*** ext : json');
+              var json    = JSON.parse(txt);
+              var b64     = json.content;
+              txt         = atob(b64);
+        }else{
+                                                                                console.log('*** ext : text');
+        }
+        
+        ext   = eval(txt);
+              
+              
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js.api',
+        );
+        [$,datatype,menumod,keydown,debug]   = await promise;
+
+
+        init.stack.complete;
+
+})();
+        
+            
+            </script>
+    
             <style>
         
   html
@@ -286,7 +407,10 @@ see bottom for name constraints
     {border:1px solid lightgray;padding:10px;display:none}
                           
 
-
+  #ftr
+    {height:100px}
+    
+    
   input
     {padding:5px 10px;font-size:16px}
 
@@ -591,6 +715,16 @@ see bottom for name constraints
                   
             </div>
 
+
+
+            <log api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            </log>
+
+
+
+            <div id=ftr>
+            </div>
         
       </body>
     
@@ -604,6 +738,12 @@ see bottom for name constraints
         var $,datatype,menumod,keydown;
         
         var mod   = {};
+        
+        var log;
+        
+        
+        
+        
         
         var nodeforge;
 
@@ -636,27 +776,6 @@ see bottom for name constraints
         var btn                 = {};
         
 
-  //:
-  
-  
-        //window.onload   = init;
-        setTimeout(init,50);
-
-        
-        async function init(){
-          
-          
-              //history.delete();
-              
-              
-              await load();
-              
-              
-              initdom();              
-              
-
-              
-        }//init
 
 
   //:
@@ -693,7 +812,7 @@ see bottom for name constraints
         
         
         
-        function initdom(){
+        function initdom(rootnode){
           
           
               var btns                              = $('#btns');
@@ -775,6 +894,14 @@ see bottom for name constraints
                     display();
               }
                           
+
+
+
+
+              log.initdom(rootnode);
+              log.ok('ready');
+
+
               
         }//initdom
 
@@ -1283,7 +1410,14 @@ see bottom for name constraints
         }//save
         
 
-</script>
+
+
+  //:
+  
+        init.stack.complete
+
+
+      </script>
 
 </html>
 
