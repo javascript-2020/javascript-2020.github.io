@@ -1445,11 +1445,12 @@ see bottom for name constraints
         
               var buf     = await blob.arrayBuffer();
               var uint8   = new Uint8Array(buf);
-              //var bytes   = nodeforge.util.createBuffer(uint8,'binary');
-              var asn1    = nodeforge.asn1.fromDer(uint8);
+              var bytes   = nodeforge.util.createBuffer(uint8,'binary');
+              var asn1    = nodeforge.asn1.fromDer(bytes);
               var cert    = nodeforge.pki.certificateFromAsn1(asn1);
               var pem     = nodeforge.pki.certificateToPem(cert);
-        
+              return pem;
+              
         }//der_pem
         
 
