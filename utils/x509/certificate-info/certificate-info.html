@@ -1392,10 +1392,11 @@ see bottom for name constraints
               
                     file        = input.files[0].name;
                     var blob    = input.files[0];
-                    if(is.pem(blob)){
+                    debugger;
+                    if(await is.pem(blob)){
                           pem   = await blob.text();
-                    }else{
-                          pem   = der_pem(blob);
+                    }else{debugger;
+                          pem   = await der_pem(blob);
                     }
 
                     
@@ -1443,8 +1444,9 @@ see bottom for name constraints
         async function der_pem(blob){
         
               var buf     = await blob.arrayBuffer();
-              var bytes   = nodeforge.util.createBuffer(buf,'binary');
-              var asn1    = nodeforge.asn1.fromDer(bytes);
+              var uint8   = new Uint8Array(buf);
+              //var bytes   = nodeforge.util.createBuffer(uint8,'binary');
+              var asn1    = nodeforge.asn1.fromDer(uint8);
               var cert    = nodeforge.pki.certificateFromAsn1(asn1);
               var pem     = nodeforge.pki.certificateToPem(cert);
         
