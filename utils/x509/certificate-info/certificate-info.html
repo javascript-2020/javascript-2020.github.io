@@ -194,10 +194,10 @@ see bottom for name constraints
     
 
   .category
-    {}
+    {margin-left:50px}
   .category-title
     /*{background:lightgray;text-align:center;margin-bottom:10px;padding:5px}*/
-    {margin-bottom:10px}
+    {margin-bottom:10px;color:blue;font-weight:bold}
   .category-view
     {}
   .category-field
@@ -330,6 +330,28 @@ see bottom for name constraints
 
         
             <div id=info>
+
+
+<!--            
+                  <div id=category class=category>
+                  
+                        <div class=category-title>
+                        </div>
+                        
+                        <div class=category-list>
+                        
+                              <div class=category-field>
+                                    <div class=category-field-name>
+                                    </div>
+                                    <div class=category-field-value>
+                                    </div>
+                              </div>
+                              
+                        </div>
+                              
+                  </div>
+-->                  
+
             
                   <div id=filename-root>
                         <span>
@@ -375,7 +397,7 @@ see bottom for name constraints
                   <div id=thumbprint class=category>
                   
                         <div id=thumbprint-title class=category-title>
-                              thumbprint
+                              Certificate Hash / ThumbPrint
                         </div>
                         <div id=thumbprint-view class=category-view>
                               <div class='thumbprint-field category-field'>
@@ -390,7 +412,7 @@ see bottom for name constraints
                   <div id=dates class=category>
                   
                         <div id=dates-title class=category-title>
-                              dates
+                              Dates
                         </div>
                         
                         <div id=dates-view>
@@ -524,6 +546,25 @@ see bottom for name constraints
                   </div>
       
 
+                  <div id=signature class=category>
+                  
+                        <div class=category-title>
+                              Signature
+                        </div>
+                        
+                        <div id=signature-list>
+                        
+                              <div class=category-field>
+                                    <div class=category-field-name>
+                                    </div>
+                                    <div class=category-field-value>
+                                    </div>
+                              </div>
+                              
+                        </div>
+                              
+                  </div>
+
 
 
                         
@@ -575,23 +616,23 @@ see bottom for name constraints
         
         
         
-        var props         = {};
-        props.issuer      = [ 'commonName','OrganizationalUnit','Organization','Locality',
-                              'StateOrProvinceName','CountryName'
-                            ];
-        props.subject     = [ 'commonName','OrganizationalUnit','Organization','Locality',
-                              'StateOrProvinceName','CountryName'
-                            ];
+        var props               = {};
+        props.issuer            = [ 'commonName','OrganizationalUnit','Organization','Locality',
+                                    'StateOrProvinceName','CountryName'
+                                  ];
+        props.subject           = [ 'commonName','OrganizationalUnit','Organization','Locality',
+                                    'StateOrProvinceName','CountryName'
+                                  ];
         
-        props.ext         = {};                  
+        props.ext               = {};                  
         props.ext.keyUsage      = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
         props.ext.extKeyUsage   = ['serverAuth','clientAuth','codeSigning','emailProtection','timeStamping'];
         
         props.ext.nsCertType    = ['client','server','email','objSign','sslCA','emailCA','objCA'];
 
 
-        var history   = {};
-        var btn       = {};
+        var history             = {};
+        var btn                 = {};
         
 
   //:
@@ -599,6 +640,7 @@ see bottom for name constraints
   
         //window.onload   = init;
         setTimeout(init,50);
+
         
         async function init(){
           
@@ -618,6 +660,9 @@ see bottom for name constraints
 
   //:
   
+
+        var category        = {};
+
   
         var subject         = {};
         var issuer          = {};
@@ -632,6 +677,10 @@ see bottom for name constraints
         var meta            = {};
         var publickey       = {};
         var authoritykey    = {};
+        var signature       = {};
+
+        
+        
         
         
         
@@ -703,6 +752,11 @@ see bottom for name constraints
               authoritykey.field                    = $(authoritykey.list,'.category-field');
               
               
+              signature                             = $('#signature');
+              signature.list                        = $(signature.root,'#signature-list');
+              signature.field                       = $(signature.list,'.category-field');
+
+
 
               
               view.root                             = $('#view');
@@ -822,12 +876,12 @@ see bottom for name constraints
               dates.list.replaceChildren();
               
               var ndate   = dates.date.cloneNode(true);
-              $(ndate,'.date-label').textContent    = 'not before';
+              $(ndate,'.date-label').textContent    = 'Not Before';
               $(ndate,'.date-full').textContent     = cert.validity.notBefore;
               dates.list.append(ndate);
 
               var ndate   = dates.date.cloneNode(true);
-              $(ndate,'.date-label').textContent   = 'not after';
+              $(ndate,'.date-label').textContent   = 'Not After';
               $(ndate,'.date-full').textContent    = cert.validity.notAfter;
               dates.list.append(ndate);
 
@@ -863,6 +917,7 @@ see bottom for name constraints
                                             
               
               san.root.replaceChildren();
+              
               var attr    = cert.extensions.find(attr=>attr.name==='subjectAltName');
               [{v:2,name:'dns'},{v:7,name:'ip'},{v:1,name:'email'},{v:6,name:'url'},{v:4,name:'dir'},{v:8,name:'oid'}].forEach(desc=>{
               
@@ -965,30 +1020,44 @@ see bottom for name constraints
               $(nfield,'.category-field-value').textContent   = alg;
               authoritykey.list.append(nfield);
               
+              var nfield    = authoritykey.field.cloneNode(true);
+              $(nfield,'.category-field-name').textContent    = 'Key Identifier';
+              var value   = 'not present'
               var aki   = cert.extensions.find(ext=>ext.name==='authorityKeyIdentifier');
-              if(!aki){
-                    var nfield    = authoritykey.field.cloneNode(true);
-                    $(nfield,'.category-field-name').textContent    = 'Key Identifier';
-                    $(nfield,'.category-field-value').textContent   = 'not present';
-                    authoritykey.list.append(nfield);
-              }else{
-                    var ki    = aki.keyIdentifier;
-                    if(ki){
-                          var nfield    = authoritykey.field.cloneNode(true);
-                          console.log('Authority Key Identifier:', authorityKeyIdentifier);
-                    }
-                    
-                    var ai    = aki.authorityCertIssuer; // Array of GeneralNames
-                    if(ai){
-                          console.log('Authority Issuer:', authorityIssuer);
-                    }
-                    
-                    var authSerial = akiExt.authorityCertSerialNumber;
-                    if(authserial){
-                          console.log('Authority Issuer Serial:', authorityIssuerSerial);
-                    }
+              if(aki){
+                    value ||= aki.keyIdentifier;
               }
+              $(nfield,'.category-field-value').textContent   = value;
+              authoritykey.list.append(nfield);
+              
+              var nfield    = authoritykey.field.cloneNode(true);
+              $(nfield,'.category-field-name').textContent    = 'Authority Issuer';
+              var value   = 'not present';
+              if(aki){
+                    value   ||= aki.authorityCertIssuer;
+              }
+              $(nfield,'.category-field-value').textContent   = value;
+              authoritykey.list.append(nfield);
+              
+              var nfield    = authoritykey.field.cloneNode(true);
+              $(nfield,'.category-field-name').textContent    = 'Authority Issuer Serial';
+              var value   = 'not present';
+              if(aki){
+                    value   ||= aki.authorityCertSerialNumber;
+              }
+              $(nfield,'.category-field-value').textContent   = value;
+              authoritykey.list.append(nfield);
+              
 
+              signature.list.replcaeChildren();
+              
+              var nfield    = signature.field.cloneNode(true);
+              $(nfield,'.category-field-name').textContent    = 'Signature';
+              
+              var bytes   = cert.signature;
+              var hex     = forge.util.bytesToHex(bytes);
+              
+              $(nfield,'.category-field-value').textContent   = hex;
 
 
 
