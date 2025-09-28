@@ -205,7 +205,7 @@ see bottom for name constraints
   .category-field-name
     {width:var(--col1)}
   .category-field-value
-    {flex:1;font-weight:bold;word-break:break-all}
+    {flex:1;font-weight:bold;word-break:break-all;font-family:monospace;font-size:20px}
     
 
   #thumbprint
@@ -858,7 +858,7 @@ see bottom for name constraints
               
               var asn1      = nodeforge.pki.certificateToAsn1(cert);
               var der       = nodeforge.asn1.toDer(asn1).getBytes();
-              var format    = hex=>hex.match(/.{2}/g).join(' : ').toUpperCase();
+              var format    = hex=>hex.match(/.{2}/g).join(':').toUpperCase();
 
               var sha1      = nodeforge.md.sha1.create().update(der).digest().toHex();
               var nfield    = thumbprint.field.cloneNode(true);
@@ -1055,7 +1055,7 @@ see bottom for name constraints
               $(nfield,'.category-field-name').textContent    = 'Signature';
               
               var bytes   = cert.signature;
-              var hex     = nodeforge.util.bytesToHex(bytes);
+              var hex     = nodeforge.util.bytesToHex(bytes).toUpperCase();
               
               $(nfield,'.category-field-value').textContent   = hex;
               signature.list.append(nfield);
