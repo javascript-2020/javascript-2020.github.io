@@ -57,21 +57,29 @@ see bottom for name constraints
         var menumod;
         var keydown;
 
+
+        var menu    = {};
+        
         
         var mod           = {};
         mod.menu          = {};
-        mod.hdr           = {};
             
         
         async function init(){
         
         
-              log   = mod.log();
+              menu.main                 = mod.menumod();
+              log                       = mod.log();
+
               
+              menu.main.initmod({});
               log.initmod({ext,$});
+
               
-              
+              menu.main.init();
               log.init();
+
+
 
 
         
@@ -439,6 +447,16 @@ see bottom for name constraints
   
       <body>
    
+   
+<!--
+            <hdr-grp api>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  <img class=title src='images/html-editor.png' style='top:-5px;height:55px'>
+                  <span slot=date>24 Aug 2025</span>
+            </hdr-grp>
+-->
+
+
    
             <div class=hdr>
             
@@ -831,6 +849,10 @@ see bottom for name constraints
         
         
         function initdom(rootnode){
+
+
+
+              menu.main.initdom();
           
           
               var btns                              = $('#btns');
