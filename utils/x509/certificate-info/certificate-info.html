@@ -1474,6 +1474,24 @@ see bottom for name constraints
               
         }//der_pem
         
+        
+        function pem_der(pem){
+              
+              var cert        = forge.pki.certificateFromPem(pem);
+              var asn1        = forge.pki.certificateToAsn1(cert);
+              var bin         = forge.asn1.toDer(asn1).getBytes();
+              var bytes       = [...bin].map(c=>c.charCodeAt(0));
+              var buf         = new Uint8Array(bytes);
+              var blob        = new Blob([buf],{type:'application/pkix-cert'});
+              return blob;
+              
+              
+//application/x-x509-ca-cert
+//application/x-pem-file
+
+
+        }//pem_def
+        
 
   //:
   
