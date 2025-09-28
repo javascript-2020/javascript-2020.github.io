@@ -45,7 +45,9 @@ see bottom for name constraints
     
             <script init>
                                                                                 //console.clear();
+                                                                                console.log('certificate-info');
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+                                                                                
         var version       = 'v1.0';
             
         var df            = true;
@@ -58,26 +60,31 @@ see bottom for name constraints
         var keydown;
 
 
-        var menu    = {};
+        var menu;
         
         
         var mod           = {};
-        mod.menu          = {};
+        
+        
+        var log;
+        var hdr;
             
         
         async function init(){
         
         
-              menu.main                 = mod.menumod();
+              menu                      = mod.menumod();
               log                       = mod.log();
+              hdr                       = mod['x509-hdr']();
 
               
-              menu.main.initmod({});
+              menu.initmod({});
               log.initmod({ext,$});
+              hdr.initmod({menu});
 
 
-              log.init();
-
+              await log.init();
+              await hdr.init()
 
 
 
@@ -102,10 +109,12 @@ see bottom for name constraints
         init.stack.complete   = false;
         Object.defineProperty(init.stack,'add',{get:()=>{
               init.stack.total++;
+              console.log('add',init.stack.ct,init.stack.total);
               init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
         }});
         Object.defineProperty(init.stack,'complete',{get:()=>{
               init.stack.ct++;
+              console.log('complete',init.stack.ct,init.stack.total);
               init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
               init.stack.ct>=init.stack.total && init();
         }});
@@ -448,11 +457,11 @@ see bottom for name constraints
    
    
 
-            <hdr-grp api>
+            <x509-hdr-grp api>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   <img class=title src='images/certificate-info.png' style='top:-5px;height:55px'>
                   <span slot=date>28 Sep 2025</span>
-            </hdr-grp>
+            </x509-hdr-grp>
 
 
 
@@ -481,6 +490,11 @@ see bottom for name constraints
                 
             </div hdr>
 -->
+
+
+
+
+
 
             <div id=btns>
                   <input value=load type=button>
@@ -764,20 +778,8 @@ see bottom for name constraints
       </body>
     
       <script>
-                                                                                console.clear();
-                                                                                console.log('certificate-info');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+
                                                                                 
-        var ext;
-        var $,datatype,menumod,keydown;
-        
-        var mod   = {};
-        
-        var log;
-        
-        
-        
         
         
         var nodeforge;
@@ -937,6 +939,7 @@ see bottom for name constraints
 
 
               log.initdom(rootnode);
+              hdr.initdom(rootnode);
 
 
               
