@@ -1397,6 +1397,9 @@ see bottom for name constraints
                           pem   = await blob.text();
                     }else{debugger;
                           pem   = await der_pem(blob);
+                          if(!pem){
+                                return;
+                          }
                     }
 
                     
@@ -1446,9 +1449,26 @@ see bottom for name constraints
               var buf     = await blob.arrayBuffer();
               var uint8   = new Uint8Array(buf);
               var bytes   = nodeforge.util.createBuffer(uint8,'binary');
-              var asn1    = nodeforge.asn1.fromDer(bytes);
-              var cert    = nodeforge.pki.certificateFromAsn1(asn1);
-              var pem     = nodeforge.pki.certificateToPem(cert);
+              
+              var err;
+              try{
+              
+                    var asn1    = nodeforge.asn1.fromDer(bytes);
+                    var cert    = nodeforge.pki.certificateFromAsn1(asn1);
+                    var pem     = nodeforge.pki.certificateToPem(cert);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    return;
+              }
+              
               return pem;
               
         }//der_pem
