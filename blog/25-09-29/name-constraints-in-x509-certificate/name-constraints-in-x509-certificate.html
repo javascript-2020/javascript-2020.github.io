@@ -63,6 +63,15 @@
 
             </script init>
             
+            <style>
+
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+
+    
+            </style>
       </head>
       
       
@@ -167,12 +176,13 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               var txt     = $('#cmd').textContent;
               txt         = txt.trim();
               var list    = txt.split('\n');
-              list.forEach(line=>{
+              var cmds    = list.map(line=>{
               
                     line        = line.trim();
                     var args    = line.split(' ');
                     args.shift();
-                    console.log(args);
+                                                                                console.log(args);
+                    return args;
                     
               });
               
