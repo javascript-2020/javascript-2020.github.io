@@ -65,8 +65,12 @@
             
             <style>
 
+  #fs
+    {font-family:monospace;white-space:pre-wrap;margin:10px;padding:10px;border:1px solid lightblue;
+      display:flex;flex-direction:column;line-height:1.4}
+    
   #output
-    {font-family:monospace;white-space:pre-wrap}
+    {font-family:monospace;white-space:pre-wrap;margin:10px;padding:10px;border:1px solid lightgray;line-height:1.4}
     
   input
     {font-size:16px;padding:5px 10px}
@@ -125,7 +129,7 @@ permitted;IP.1 = 192.168.0.0/255.255.0.0
             <code id=cmd>
 
 openssl genrsa -out ca.key.pem 1024
-openssl req -new -key ca.key.pem -out ca.csr -subj "/C=US/O=Example/OU=CA" -extensions v3_ca -config ca-ext.ini
+openssl req -new -key ca.key.pem -out ca.csr -subj /C=US/O=Example/OU=CA -extensions v3_ca -config ca-ext.ini
 openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions v3_ca -out ca.crt
 
 
@@ -135,7 +139,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                   <input value=run type=button>
             </div>
             
-            <div id=fs></div>
+            <div id=fs>
+            </div>
             
             <div id=output></div>
             
@@ -206,9 +211,20 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               //await openssl.run('genrsa','-out','ca.key.pem','1024');
               //await openssl.run('rsa','-in','ca.key.pem','-text','-noout');
               
+              $('#fs').replaceChildren();
               var fs    = openssl.fs.complete();
               console.log(fs);
+              for(var path in fs){
               
+                    let blob    = new Blob([fs[path]]);
+                    let url     = window.URL.createObjectURL(blob);
+                    let a       = document.createElement('a');
+                    a.href      = url;
+                    a.textContent   = path;
+                    a.download      = path;
+                    $('#fs').append(a);
+                    
+              }//for
         
         }//run
 
@@ -305,7 +321,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
       
       
               fs.snapshot   = function(Module,path='/'){
-                                                                                      console.log('fs.snapshot');
+                                                                                      //console.log('fs.snapshot');
                     var snapshot    = {};
                     var entries     = Module.FS.readdir(path);
                   
@@ -320,7 +336,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                                 var stats   = Module.FS.stat(fullPath);
                             
                                 if(Module.FS.isFile(stats.mode)){
-                                                                                      console.log('fullpath',fullPath);
+                                                                                      //console.log('fullpath',fullPath);
                                       var uint8             = Module.FS.readFile(fullPath);
                                       snapshot[fullPath]    = uint8;
                                 }
@@ -340,7 +356,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               
               
               fs.restore    = function(Module,snapshot){
-                                                                                console.log('fs.restore');
+                                                                                //console.log('fs.restore');
                     Object.entries(snapshot).forEach(([path,content])=>{
                     
                           var parts     = path.split("/").slice(1,-1);
@@ -361,7 +377,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                                 
                                 current   = next;
                           });
-                                                                                console.log(path);
+                                                                                //console.log(path);
                           Module.FS.writeFile(path,content);
                           
                     });
