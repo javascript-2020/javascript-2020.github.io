@@ -65,7 +65,7 @@
             
             <style>
 
-  #ouput
+  #output
     {font-family:monospace;white-space:pre-wrap}
     
   input
@@ -175,7 +175,9 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               console.log(txt);
               
               Module.FS.writeFile('ca-ext.ini',txt);
-              openssl.fs.snapshot(Module);
+              var snapshot    = openssl.fs.snapshot(Module);
+              console.log('***',snapshot);
+              openssl.fs.set(snapshot);
               
               
               var txt     = $('#cmd').textContent;
@@ -294,7 +296,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                     var Module    = await init();
                     
                     Module.callMain([...arguments]);
-                    fs.snapshot(Module);
+                    snapshot    = fs.snapshot(Module);
                     
                     return Module;
                     
@@ -304,7 +306,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
       
               fs.snapshot   = function(Module,path='/'){
                                                                                       console.log('fs.snapshot');
-                    //var snapshot    = {};
+                    var snapshot    = {};
                     var entries     = Module.FS.readdir(path);
                   
                     entries.forEach((entry) => {
@@ -332,14 +334,12 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                       
                     });
                   
-                    console.log(snapshot);
-                    var copy    = structuredClone(snapshot);
-                    return copy;
+                    return snapshot;
                     
               }//snapshotfs
               
               
-              fs.restore    = function(Module){//,snapshot) {
+              fs.restore    = function(Module,snapshot){
                                                                                 console.log('fs.restore');
                     Object.entries(snapshot).forEach(([path,content])=>{
                     
@@ -367,6 +367,13 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                     });
                     
               }//restore
+              
+              
+              fs.set    = function(snap){
+              
+                    snapshot    = snap;
+                    
+              }//fs.set
               
               
               fs.diff   = function(snap1,snap2){
