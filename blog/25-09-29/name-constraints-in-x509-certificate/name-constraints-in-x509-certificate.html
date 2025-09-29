@@ -301,7 +301,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
       
       
               fs.snapshot   = function(Module,path='/'){
-              
+                                                                                      console.log('fs.snapshot');
                     //var snapshot    = {};
                     var entries     = Module.FS.readdir(path);
                   
@@ -310,12 +310,13 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                           if(entry==='.'||entry==='..')return;
                           
                           var fullPath    = path+entry;
-                                                                                      console.log('fullpath',fullPath);
+                                                                                      //console.log('fullpath',fullPath);
                           try{
                           
                                 var stats   = Module.FS.stat(fullPath);
                             
                                 if(Module.FS.isFile(stats.mode)){
+                                                                                      console.log('fullpath',fullPath);
                                       var uint8             = Module.FS.readFile(fullPath);
                                       snapshot[fullPath]    = uint8;
                                 }
@@ -335,7 +336,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               
               
               fs.restore    = function(Module){//,snapshot) {
-              
+                                                                                console.log('fs.restore');
                     Object.entries(snapshot).forEach(([path,content])=>{
                     
                           var parts     = path.split("/").slice(1,-1);
@@ -356,7 +357,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                                 
                                 current   = next;
                           });
-                      
+                                                                                console.log(path);
                           Module.FS.writeFile(path,content);
                           
                     });
