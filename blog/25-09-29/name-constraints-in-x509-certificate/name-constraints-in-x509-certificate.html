@@ -175,6 +175,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               console.log(txt);
               
               Module.FS.writeFile('ca-ext.ini',txt);
+              openssl.fs.snapshot(Module);
               
               var txt     = $('#cmd').textContent;
               txt         = txt.trim();
@@ -290,7 +291,7 @@ debugger;
                     var Module    = await init();
                     
                     Module.callMain([...arguments]);
-                    snapshot    = fs.snapshot(Module);
+                    fs.snapshot(Module);
                     
                     return Module;
                     
@@ -300,7 +301,7 @@ debugger;
       
               fs.snapshot   = function(Module,path='/'){
               
-                    var snapshot    = {};
+                    //var snapshot    = {};
                     var entries     = Module.FS.readdir(path);
                   
                     entries.forEach((entry) => {
@@ -308,7 +309,7 @@ debugger;
                           if(entry==='.'||entry==='..')return;
                           
                           var fullPath    = path+entry;
-                                                                                      //console.log('fullpath',fullPath);
+                                                                                      console.log('fullpath',fullPath);
                           try{
                           
                                 var stats   = Module.FS.stat(fullPath);
@@ -327,12 +328,12 @@ debugger;
                       
                     });
                   
-                    return snapshot;
+                    //return snapshot;
                     
               }//snapshotfs
               
               
-              fs.restore    = function(Module,snapshot) {
+              fs.restore    = function(Module){//,snapshot) {
               
                     Object.entries(snapshot).forEach(([path,content])=>{
                     
