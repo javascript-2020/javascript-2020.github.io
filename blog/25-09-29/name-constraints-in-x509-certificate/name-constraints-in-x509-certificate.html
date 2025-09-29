@@ -186,13 +186,19 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                     
               });
               
+              var n   = cmds.length;
+              for(var i=0;i<n;i++){
               
+                    var cmd   = cmds[i];
+                    await openssl.run.apply(cmd);
+              
+              }//for
               
               //await openssl.run('genrsa','-out','ca.key.pem','1024');
               //await openssl.run('rsa','-in','ca.key.pem','-text','-noout');
               
-              //var fs    = openssl.fs.complete();
-              //console.log(fs);
+              var fs    = openssl.fs.complete();
+              console.log(fs);
               
         
         }//run
@@ -200,14 +206,18 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         
         function stdout(txt){
         
-              console.log('[ stdout ]',txt);
+              var str   = '[ stdout ] '+txt;
+              output.textContent   += str+'\n';
+              console.log(str);
               
         }//stdout
         
         
         function stderr(txt){
         
-              console.log('[ stderr ]',txt);
+              var str   = '[ stderr ] '+txt;
+              output.textContent   +=str+'\n';
+              console.log(str);
               
         }//stderr
 
