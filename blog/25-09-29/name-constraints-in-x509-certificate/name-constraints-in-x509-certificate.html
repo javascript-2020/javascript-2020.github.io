@@ -174,7 +174,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               var txt   = $('#config').textContent;
               console.log(txt);
               
-              Module.FS.writeFile('/ca-ext.ini',txt);
+              Module.FS.writeFile('ca-ext.ini',txt);
               
               var txt     = $('#cmd').textContent;
               txt         = txt.trim();
@@ -195,7 +195,7 @@ debugger;
               
                     var cmd   = cmds[i];
                     console.log(i,cmd);
-                    await openssl.run.apply(cmd);
+                    await openssl.run(...cmd);
               
               }//for
               
