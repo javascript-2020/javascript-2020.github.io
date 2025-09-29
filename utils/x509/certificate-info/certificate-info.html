@@ -312,6 +312,16 @@ https://fm4dd.com/openssl/certexamples.shtm
     {padding:10px 10px;text-align:center;font-weight:bold}
 
 
+  #name-constaints-root
+    {display:flex;gap:50px}
+  .name-constaints
+    {flex:1;border:1px solid lightgray;border-radius:5px;padding:10px}
+  .name-constaints-title
+    {font-weight:bold;color:white;text-align:center;padding:5px 10px;margin-bottom:10px}
+  .name-constaints-field-value
+    {padding:10px 10px;text-align:center;font-weight:bold}
+
+
 
   
   #dns
@@ -651,6 +661,23 @@ https://fm4dd.com/openssl/certexamples.shtm
                                     </div>
                                           
                               </div>
+
+                              
+                              <div id=name-constraints-root>
+                              
+                                    <div class=name-constraint>
+                                    
+                                          <div class=name-constraint-title>
+                                          </div>
+                                          
+                                          <div class=name-constraint-list>
+                                                <div class=name-constraint-field-value></div>
+                                          </div>
+                                          
+                                    </div>
+                                    
+                              </div>
+                              
             
             
                               <div id=meta class=category>
@@ -833,6 +860,7 @@ https://fm4dd.com/openssl/certexamples.shtm
         var extensions      = {};
         var san             = {};
         var constraints     = {};
+        var nameconstraints       = {};
         var meta            = {};
         var publickey       = {};
         var authoritykey    = {};
@@ -898,7 +926,14 @@ https://fm4dd.com/openssl/certexamples.shtm
               constraints.list                      = $(constraints.root,'#constraints-list');
               constraints.field                     = $(constraints.list,'.category-field');
               
-
+              
+              nameconstraints.root                  = $('#name-constraints-root');
+              nameconstraints.node                  = $(nameconstraints.root,'.name-constraint');
+              nameconstraints.list                  = $(nameconstraints.root,'.name-constraint-list');
+              nameconstraints.value                 = $(nameconstraints.list,'.name-constraint-field-value');
+              nameconstraints.value.remove();
+              
+              
               meta.root                             = $('#meta');
               meta.list                             = $(meta.root,'#meta-list');
               meta.field                            = $(meta.list,'.category-field');
@@ -1145,6 +1180,97 @@ https://fm4dd.com/openssl/certexamples.shtm
                           constraints.list.append(nconstraint);
                     }
               }
+              
+
+
+/*
+
+              extensions.root.replaceChildren();
+              
+              ['keyUsage','extKeyUsage'].forEach(key=>{
+              
+                    var nextension    = extensions.extension.cloneNode(true);
+                    nextension.id     = key;
+                    $(nextension,'.extension-title').textContent    = key;
+                    var list      = $(nextension,'.extension-list');
+                    var attr      = cert.extensions.find(attr=>attr.name===key);
+                    if(attr){
+                          var values    = props.ext[key].filter(name=>attr[name]);
+                          values.forEach(value=>{
+                          
+                                var nvalue   = extensions.value.cloneNode(true);
+                                nvalue.textContent    = value;
+                                list.append(nvalue);
+                                
+                          });
+                    }
+                    extensions.root.append(nextension);
+                    
+              });
+
+
+*/
+
+
+              
+              nameconstraints.root.replaceChildren();
+              
+              var nc    = cert.extensions.find(ext=>ext.name==='nameConstraints');
+              console.log(nc)
+              if(nc){
+              
+                    console.log(nc.permittedSubtrees);
+                    var raw = nc.value;
+                    
+                    // Convert to a byte buffer
+                    var buf = nodeforge.util.createBuffer(raw, 'raw');
+                    var asn1 = nodeforge.asn1.fromDer(buf);
+                    
+                    // Now you can inspect `asn1` manually
+                    console.log(JSON.stringify(asn1, null, 2));
+                    
+              }
+
+              
+              
+              if(nc){
+                                                                                              console.log('Name Constraints found:');
+                    var nn    = nameconstraints.node.cloneNode(true);
+                    $(nn,'.name-constraint-title').textContent    = 'Permitted';
+                    var list    = $(nn,'.name-constraint-list');
+                    if(nc.permittedSubtrees){
+                                                                                              console.log('Permitted:');
+                          nc.permittedSubtrees.forEach(subtree=>{
+
+                                var nvalue    = nameconstraints.value.cloneNode(true);
+                                nvalue.textContent    = subtree.type + ': ' + subtree.value;
+                                list.append(nvalue);
+                                                                                              console.log(subtree.type + ': ' + subtree.value);
+                          });
+                    }
+                    nameconstraints.root.append(nn);
+                    
+                    var nn    = nameconstraints.node.cloneNode(true);
+                    $(nn,'.name-constraint-title').textContent    = 'Excluded';
+                    var list    = $(nn,'.name-constraint-list');
+                    if(nc.excludedSubtrees){
+                                                                                              console.log('Excluded:');
+                          nc.excludedSubtrees.forEach(subtree =>{
+                          
+                                var nvalue    = nameconstraints.value.cloneNode(true);
+                                nvalue.textContent    = subtree.type + ': ' + subtree.value;
+                                list.append(nvalue);
+                                                                                              console.log(subtree.type + ': ' + subtree.value);
+                          });
+                    }
+                    nameconstraints.root.append(nn);
+                    
+              }else{
+                                                                                              console.log('No Name Constraints present in this certificate.');
+              }
+
+              
+              
               
 
 
