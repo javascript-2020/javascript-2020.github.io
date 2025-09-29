@@ -82,7 +82,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
       
       <script>
       
-        function openssl(){
+        function openssl(params){
         
           var obj   = {};
           
@@ -103,14 +103,20 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                     
                     function print(txt){
                     
-                          output.textContent   += txt+'\n';
+                          if(params.stdout){
+                                params.stdout(txt);
+                          }
+                          //output.textContent   += txt+'\n';
                           
                     }//print
       
                     
                     function printErr(txt){
                     
-                          output.textContent    += '[stderr] '+txt+'\n';
+                          if(params.stderr){
+                                params.stderr(txt);
+                          }
+                          //output.textContent    += '[stderr] '+txt+'\n';
                           
                     }//printErr
       
@@ -132,11 +138,11 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               
               
               
-              obj.run   = async function(){
+              obj.run   = async function(args,params){
               
-                    var Module    = await init();
+                    var Module    = await init(params);
                     
-                    Module.callMain([...arguments]);
+                    Module.callMain(arguments);
                     snapshot    = fs.snapshot(Module);
                     
                     return Module;
@@ -239,14 +245,29 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
 
         (async () => {
         
-              openssl   = openssl();
+              openssl   = openssl({stdout,stderr});
               var Module    = openssl.init();
               console.log(Module);
-              await openssl.run("genrsa", "-out", "ca.key.pem", "1024");
-              await openssl.run("rsa", "-in", "ca.key.pem", "-text", "-noout");
+              await openssl.run('genrsa','-out','ca.key.pem','1024');
+              await openssl.run('rsa','-in','ca.key.pem','-text','-noout');
               
               var fs    = openssl.fs.complete();
               console.log(fs);
+              
+              
+              
+              function stdout(txt){
+              
+                    console.log('[ stdout ]',txt);
+                    
+              }//stdout
+              
+              
+              function stderr(txt){
+              
+                    console.log('[ stderr ]',txt);
+                    
+              }//stderr
               
         })();
 
