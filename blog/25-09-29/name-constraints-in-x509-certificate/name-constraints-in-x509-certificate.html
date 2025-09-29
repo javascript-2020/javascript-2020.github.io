@@ -5,10 +5,10 @@
 
       <head>
       
-            <title></title>
+            <title>name constraints in x509 certificate</title>
 
-            <base href='https://javascript-2020.github.io/blog/23-07-25/'>
-            <link rel=canonical href='https://ext-code.com/blog/'>
+            <base href='https://javascript-2020.github.io/blog/25-09-29/name-constraints-in-x509-certificate/name-constraints-in-x509-certificate.html'>
+            <link rel=canonical href='https://ext-code.com/blog/25-09-29/name-constraints-in-x509-certificate/name-constraints-in-x509-certificate.html'>
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
@@ -33,13 +33,43 @@ add name constraints to a x509 certificate
             
             </div>
 
-
+            <div>
+                  ca-ext.ini
+            </div>
+            
             <code>
+
+[ req ]
+distinguished_name = req_distinguished_name
+x509_extensions = v3_ca
+prompt = no
+
+[ req_distinguished_name ]
+CN = My Test CA
+
+[ v3_ca ]
+basicConstraints = critical, CA:FALSE
+keyUsage = critical, keyCertSign, cRLSign
+subjectKeyIdentifier = hash
+nameConstraints = critical, @nc
+
+[ nc ]
+permitted;DNS.1 = .example.com
+permitted;DNS.2 = .internal.local
+excluded;DNS.1 = .malicious.com
+permitted;IP.1 = 192.168.0.0/255.255.0.0
             
             
             </code>
             
-            
+            <code>
+
+openssl genrsa -out ca.key.pem 1024
+openssl req -new -key ca.key.pem -out ca.csr -subj "/C=US/O=Example/OU=CA" -extensions v3_ca -config ca-ext.ini
+openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions v3_ca -out ca.crt
+
+
+            </code>
       
       </body>
             
