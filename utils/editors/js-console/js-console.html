@@ -38,6 +38,8 @@
         
         var autosave;
         
+        var iframe;
+        
   
         var menu        = {};
         menu.click      = {};
@@ -254,6 +256,13 @@
                   </publish>
 
                   <button id=run>run</button>
+                  
+                  <div id=iframe-root>
+                        <span>
+                              iframe
+                        </span>
+                        <input id=iframe type=checkbox>
+                  </div>
 
                   <img id=syntax-chk class=icon>
                   
@@ -310,6 +319,7 @@
               publish.initdom();
               
               $(root,'#run').onclick                = run;
+              iframe                                = $(root,'#iframe');
               $(root,'#syntax-chk').onclick         = btn.syntax;
               
               
@@ -559,7 +569,11 @@
         function run(){
   
               var js    = editor.getValue();
-              output.run(js);
+              if(iframe.checked){
+                    output.run.iframe(js);
+              }else{
+                    output.run(js);
+              }
               
               if(autosave.checked){
                                                                                 console.log('save');
