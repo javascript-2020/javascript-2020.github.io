@@ -136,9 +136,12 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               
                     var Module    = await init();
                     
-                    Module.callMain([...arguments]);
+                    if(arguments.length){
+                          Module.callMain([...arguments]);
+                          snapshot    = fs.snapshot(Module);
+                    }
                     
-                    snapshot    = fs.snapshot(Module);
+                    return module;
                     
               }//run
         
