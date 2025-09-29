@@ -33,7 +33,17 @@
 
 
         async function init(){
+
+
         
+              codeblock   = mod['code-block']();
+              
+              codeblock.initmod({ext,$,datatype});
+              
+              await codeblock.init();
+              
+              
+              
               initdom(document.body);
               
         }//init
@@ -50,7 +60,7 @@
 
         init.stack.add;
 
-        var {ext}   = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js');
+        {ext}   = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js');
         
         [$,datatype]    = await ext.load.libs(
               'js/dom/$.js',
@@ -101,8 +111,8 @@ add name constraints to a x509 certificate
                   ca-ext.ini
             </div>
             
-            <code id=config>
-
+            <code-block id=config>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
 [ req ]
 distinguished_name = req_distinguished_name
 x509_extensions = v3_ca
@@ -124,7 +134,7 @@ excluded;DNS.1 = .malicious.com
 permitted;IP.1 = 192.168.0.0/255.255.0.0
             
             
-            </code>
+            </code-block>
             
             <code id=cmd>
 
@@ -150,6 +160,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
 
 
         var root;
+        var codeblock;
         
         var btn   = {};
         
@@ -158,6 +169,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         function initdom(rootnode){
         
               root                          = rootnode;
+              
+              codeblock.initdom(root);
               
               $('[value=run]').onclick      = btn.run;
               
