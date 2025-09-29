@@ -140,6 +140,7 @@
                         }
                         
                   }//wrap
+
                   
                   obj.run   = async function(js){
                                                                                 console.log('run');
@@ -179,6 +180,35 @@
                         console.clear   = con.clear;
                     
                   }//run
+                  
+                  
+                  obj.run.iframe    = async function(js){
+                  
+                        var resolve,promise=new Promise(res=>resolve=res);
+                        
+                        var iframe      = document.createElement('iframe');
+                        iframe.onload   = onload;
+                        root.append(iframe);
+                        
+                        return promise;
+                        
+                        
+                        function onload(){
+                        
+                              var win             = iframe.contentWindow;
+                              win.console.log     = log;
+                              win.console.clear   = clear;
+                              
+                              if(!chk.persist){
+                                    clear();
+                              }
+                              
+                              var result    = await win.eval(js);
+                              resolve(result);
+                              
+                        }//onload
+                        
+                  }//iframe
                   
                   
                   obj.kill    = function(){
