@@ -141,11 +141,11 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               
               
               
-              obj.run   = async function(args,params){
+              obj.run   = async function(){
               
-                    var Module    = await init(params);
+                    var Module    = await init();
                     
-                    Module.callMain(arguments);
+                    Module.callMain([...arguments]);
                     snapshot    = fs.snapshot(Module);
                     
                     return Module;
