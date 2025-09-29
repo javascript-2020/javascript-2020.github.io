@@ -136,12 +136,10 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               
                     var Module    = await init();
                     
-                    if(arguments.length){
-                          Module.callMain([...arguments]);
-                          snapshot    = fs.snapshot(Module);
-                    }
+                    Module.callMain([...arguments]);
+                    snapshot    = fs.snapshot(Module);
                     
-                    return module;
+                    return Module;
                     
               }//run
         
@@ -242,6 +240,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         (async () => {
         
               openssl   = openssl();
+              var Module    = openssl.init();
+              console.log(Module);
               await openssl.run("genrsa", "-out", "ca.key.pem", "1024");
               await openssl.run("rsa", "-in", "ca.key.pem", "-text", "-noout");
               
