@@ -30,15 +30,19 @@
         var ext;
         var $;
         var datatype;
+        var menumod;
+        var keydown;
 
+        var menu;
 
         async function init(){
 
 
-        
+              menu        = mod.menumod();
+              
               codeblock   = mod['code-block']();
               
-              codeblock.initmod({ext,$,datatype});
+              codeblock.initmod({ext,$,datatype,menu});
               
               await codeblock.init();
               
@@ -49,7 +53,7 @@
         }//init
 
 
-        init.stack            = [];
+        init.stack            = [init];
         init.stack.ct         = 0;
         init.stack.total      = 1;
         Object.defineProperty(init.stack,'add',{get:()=>{init.stack.total++}});
@@ -74,9 +78,11 @@
 
         ({ext}   = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
         
-        [$,datatype]    = await ext.load.libs(
+        [$,datatype,menumod,keydown]    = await ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js'              
         );
         
         init.stack.complete;
@@ -123,7 +129,7 @@ add name constraints to a x509 certificate
                   ca-ext.ini
             </div>
             
-            <code-block id=config>
+            <code-block api id=config>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
 [ req ]
 distinguished_name = req_distinguished_name
@@ -181,8 +187,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         function initdom(rootnode){
         
               root                          = rootnode;
-              debugger;
-              codeblock.initdom(root);
+              //debugger;
+              codeblock.initdom(root,{mode:'text'});
               
               $('[value=run]').onclick      = btn.run;
               
@@ -201,7 +207,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               var Module    = await openssl.init();
               console.log(Module);
               
-              var txt   = $('#config').textContent;
+              //var txt   = $('#config').textContent;
+              var txt   = codeblock.editor.getValue();
               console.log(txt);
               
               Module.FS.writeFile('ca-ext.ini',txt);
