@@ -244,9 +244,10 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               obj.init    = function(){return init()}
               
               async function init(){
-      
+                                                                                console.log('init');
                     var Module    = {print,printErr,onRuntimeInitialized};
                     await EmscrJSR_openssl(Module);
+                                                                                console.log(1);
                     return Module;
                     
                     
@@ -274,6 +275,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                                                                                       console.log("OpenSSL ready");
                                                                                       console.log(Module);
                             if(!initial){
+                                                                                      console.log('initial');
                                   initial   = fs.snapshot(Module);
                             }
                             if(snapshot){
@@ -321,7 +323,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                                       snapshot[fullPath]    = uint8;
                                 }
                                 if(Module.FS.isDir(stats.mode)){
-                                      Object.assign(snapshot,snapshotFS(Module,fullPath+'/')); // recurse
+                                      Object.assign(snapshot,fs.snapshot(Module,fullPath+'/')); // recurse
                                 }
                                 
                           }//try
@@ -330,7 +332,9 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                       
                     });
                   
-                    return snapshot;
+                    console.log(snapshot);
+                    var copy    = structuredClone(snapshot);
+                    return copy;
                     
               }//snapshotfs
               
