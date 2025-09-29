@@ -216,12 +216,13 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               console.log(fs);
               for(var path in fs){
               
+                    var path2   = path.slice(1);
                     let blob    = new Blob([fs[path]]);
                     let url     = window.URL.createObjectURL(blob);
                     let a       = document.createElement('a');
                     a.href      = url;
-                    a.textContent   = path;
-                    a.download      = path;
+                    a.textContent   = path2;
+                    a.download      = path2;
                     $('#fs').append(a);
                     
               }//for
