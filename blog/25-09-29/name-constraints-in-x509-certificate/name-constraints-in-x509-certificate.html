@@ -44,6 +44,7 @@
         init.stack.total      = 1;
         Object.defineProperty(init.stack,'add',{get:()=>{init.stack.total++}});
         Object.defineProperty(init.stack,'complete',{get:()=>{init.stack.ct++;init.stack.ct>=init.stack.total && init()}});
+
         
 (async()=>{
 
@@ -161,7 +162,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               var txt   = $('#config').textContent;
               console.log(txt);
               
-              Module.fs.writeFile('/ca-ext.ini',txt);
+              Module.FS.writeFile('/ca-ext.ini',txt);
               
               var txt     = $('#cmd').textContent;
               txt         = txt.trim();
