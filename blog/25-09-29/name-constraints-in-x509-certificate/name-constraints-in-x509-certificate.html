@@ -188,6 +188,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         var root;
         var config;
         var cmd;
+        var output;
+        
         
         var btn   = {};
         
@@ -207,6 +209,9 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               
               
               $('[value=run]').onclick      = btn.run;
+              
+              
+              output                        = $(root,'#output');
               
               
               config.focus();
@@ -283,7 +288,9 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         function stdout(txt){
         
               var str   = '[ stdout ] '+txt;
-              output.textContent   += str+'\n';
+              var div   = document.createElement('div');
+              div.textContent   = str;
+              output.append(div);
               console.log(str);
               
         }//stdout
@@ -292,7 +299,9 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         function stderr(txt){
         
               var str   = '[ stderr ] '+txt;
-              output.textContent   +=str+'\n';
+              var div   = document.createElement('div');
+              div.textContent   = str;
+              output.append(div);
               console.log(str);
               
         }//stderr
