@@ -14,6 +14,8 @@
 
             <script src="https://cdn.jsdelivr.net/npm/prettier@2.8.8/standalone.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/prettier@2.8.8/parser-babel.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/terser/dist/bundle.min.js"></script>
+
 
             
             <script init>
@@ -205,6 +207,10 @@
     {padding:1px;
       content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAfCAMAAADHso01AAABO1BMVEVHcExctLXl5+nk5unk6Orm5+nm5+nm5+nl5una29T5u0Tg5efk6Om/kptusbXm5+jk5ehatLXvvF1jsbPhbmn3wFD2u0X6vEq9h75bs7W8h77l6Onk5uriZGHl5+lxra/0tVTbbW7l5ujpY2Hm5+nl5+jo387n6uv2vUtctbbm6Ork5ujl6Ozk5edZtLeqiKvpY2C+hoDyvFrtvFr3vEvsYmNdtbX6vEb3u0Tn6uq/ib/m5+lbtLT4vk5sqsO/ib7j5efm5+n5yjhWs7TmXV3lZWPnY2H5vUitkrK+h77aama6h7rAicBas7S5jLq8g733vEj3vEZasbO6i7voYmJbtrfkZWa7i7ztul/mY2K1ir5cs7TAhrxhsbPCir3zvVToZWL4vUfyvVXgamy8hr9itLO8irr2vE3jY2ERfpgJAAAAaXRSTlMAnTsSF2NfbCsC3gUPDiZQFNohFi1L2TWGQ6caCz1KIB0hW8IhQggNMZVwNx0+pAe0AxIlPnKLi60lvFK4QwmVVmgGgoE33TAbeBFjtTYhcsDScTXfUmI9LNgoxdBpRnRVcW9UnWttnJ1jjy+pAAACDUlEQVQoz6XQaW+iUBSAYQVaQbyWou2ooCxlsYqDoGNrKbi01H2p2n32/f//grn3qp1OMt/6xJzc5IT45kQir5NqRP/RSGl7mFdI/HdtFQp4j9dOOgxDJcK/eaHGJARBoFi4Vo5WV6vf4Ff8hVO3UCqVOhT+GlIcvljs9XpFpNfjGZOCXzP4v99uLIKfOej7Mhk9ljTPK5BofXG88cMetaDMo9TAfTpK6xbrddmZTAArWJZlOuk8Eg5ZQUBp/Dwe/yo97WetGMwhhtXVFfTwjeqs0/j7e9dOJgOWoyhKdJQ0BhiOQ2n9Vg5bUl673abdk1OsTnoeSgODDPZI6nqlYhlfTrCiqOsmXNthfujWfd/nnUl2axKImmatr/aQr18fHsY/pc73t56SdGxzNUUBoAa5tpTckliD40h8teg5FE19riK3oDUejzMBoapqG19tcQEtgvASydsjmDmyaV3XCRGl3X0Ern/wzO+azabG4gHX07P3dyhta16jY7EdDg2c1p8CwNd4WeZ5NGTDIEmShSOBr5Y7Q8ZLSt1VLTieqfhqo9lsMBjMpmaZKJNiuVIh4A8po7Qge3Mjdf0D12jSkBURaI7R0LNpwLUEb/VBnl/7VicG7RmFUkVU0ROnMX1JAkCWu0wCJpEmK5osi584TakeYXlhdwfb1aj1S+Xgenj7DlMSZWJdBPv+pr3GH71mYxE304wpAAAAAElFTkSuQmCC');
     }
+  #terser
+    {
+      content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABL1BMVEVHcEyyrqPktXj7yEntx18CsuD6x0kFKhkksNXfXFb8yEb8x0buw14Pst33SkAEsuLqWlBPqMAZr9j+Ox4BLi0UsNr8RTrwT0b1S0L5Rz0Lsd79RDkJst8Osd34x00FsuH6RjztT0f7RTv3QzgGsuH+QzgHmXcIst8wstD9QBcCOhUGmGv6yEkBO0EKst8UsdoMsd4XMDH1SUD2SD7aSkPyTEP4kTz0SkD5Rz0FmL6tNh7JPzj6RTvpVk0Hd14FZXo8KQ78pjeQLhDrNA8DXyklJg1xlzrXdCjCuUJQnT0VkT77x0gHWWcQst4wrM4Dco0Qpc59OTR2OzcXn8VcNzNWODb4SD/4aCD9XiCYt2Kct2cBs+P/yEL/QzgBJAv+Qzj+ykP5xEEAtOUBhzj/Mw15TFg9AAAAW3RSTlMAAQSxDv2p/Q0KyNAVaG/xEgQs/f5I5jBOpJ32u3iK57897v7g/vzJGf79/qr+sD2P/oKz3mHYlMX9+v3VIfr9/f39/v39+/v9/f60/FYK/t7+/t78/H79/dvUH0WokgAAAZdJREFUKM+Nk+dWwkAQRhMlEtSEQCD0pvTeVHpXEBV7DSGhvP8zuJvdEBQ8x/v3ntmd+XaWIHQMGGI3/kMV/95OS6anKjd/6AOk93/ryWRbm0xr7cvmLD81GSoVSWytAdGct27q5sWJLISQtbhFQNgX1zTHNmRJkl3oeLtZVIl9zYFU5ueViATxOKGlvSImej1Spt33hCwhKhzQDIUtFV2Or4aJFY+tJLOgRyawrl4Okpe9vqZlgQXNk1a3evmCaiVngE7tFF3tcqDRLHYvtRCrbdtMxfhSl6RI0KmHRzMP9xmbEWtb4bHMchupms7KTwVdZ9rPDK2/RajkkeT6q6Zvq6ARr92CrAMkCHs5rXWgTbZAIwCz2wpLzwQcQ4Tv9y6Ng2VKGzTMgNZZLaQIv0oMr8bLlJaT6APlXFCLgf/oTpXR9VrH4vBupwcVN87nCnySzxgO+Q5N5YJWeGumFfSgcV8Y6uwEty7ABAlCXweYcyCnDV5UE9xcJpBznlyHxm2vIk3/d5H/9w38Ryp/fCLCcKyy+QW/AbN1jCZHRao5AAAAAElFTkSuQmCC');
+    }
     
   #run  
     {color:blue;font-weight:bold}
@@ -293,6 +299,7 @@
 
                   <img id=syntax-chk class=icon>
                   <img id=prettier class=icon>
+                  <img id=terser class=icon>
                   
                   <span class=spc></span>
 
@@ -355,6 +362,7 @@
               mode.async                            = $(root,'#async');
               $(root,'#syntax-chk').onclick         = btn.syntax;
               $(root,'#prettier').onclick           = btn.prettier;
+              $(root,'#terser').onclick             = btn.terser;
               
               
               $(root,'#horiz').onclick              = horiz;
@@ -460,6 +468,31 @@
               editor.setvalue(formatted);
               
         }//prettier
+        
+        
+        btn.terser    = async function(){
+        
+              var js    = editor.getvalue();
+              
+              var options   = {
+                    compress: {
+                          dead_code: true,
+                          drop_console: true,
+                          passes: 2,
+                    },
+                    format: {
+                          beautify: false,
+                          comments: false,
+                          semicolons: true
+                    }
+              };
+              
+              var result    = await Terser.minify(code,options);
+              console.log(result);
+              console.log(result.code); // Minified output
+        
+
+        }//terser
         
         
   //:
