@@ -500,6 +500,7 @@ https://fm4dd.com/openssl/certexamples.shtm
 
       
                         <div id=btns>
+                              <input value=clear type=button>
                               <input value=load type=button>
                               <input value=paste type=button>
                               <input value=copy type=button>
@@ -814,22 +815,20 @@ https://fm4dd.com/openssl/certexamples.shtm
         var nodeforge;
 
         var store   = 'certificate-info';
+
         
         var file;
         var cert;
         var pem;
+
 
         var view;
         
         
         
         var props               = {};
-        props.issuer            = [ 'commonName','OrganizationalUnit','Organization','Locality',
-                                    'StateOrProvinceName','CountryName'
-                                  ];
-        props.subject           = [ 'commonName','OrganizationalUnit','Organization','Locality',
-                                    'StateOrProvinceName','CountryName'
-                                  ];
+        props.issuer            = [ 'commonName','OrganizationalUnit','Organization','Locality','StateOrProvinceName','CountryName'];
+        props.subject           = [ 'commonName','OrganizationalUnit','Organization','Locality','StateOrProvinceName','CountryName'];
         
         props.ext               = {};                  
         props.ext.keyUsage      = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment','keyAgreement','cRLSign','encipherOnly','decipherOnly'];
@@ -888,6 +887,7 @@ https://fm4dd.com/openssl/certexamples.shtm
           
               var btns                              = $('#btns');
               
+              $('[value=clear]').onclick            = btn.clear;
               $('[value=load]').onclick             = btn.load;
               $('[value=paste]').onclick            = btn.paste;
               $('[value=copy]').onclick             = btn.copy;
@@ -987,6 +987,16 @@ https://fm4dd.com/openssl/certexamples.shtm
   //:
   
   
+        btn.clear   = function(){
+        
+              file    = null;
+              cert    = null;
+              pem     = null;
+              display();
+              
+        }//clear
+        
+        
         btn.load    = async function(){
           
               await load.cert(true);
@@ -1021,164 +1031,181 @@ https://fm4dd.com/openssl/certexamples.shtm
               //console.log(nodeforge.pki);
               //console.json(cert);
               
-              
-              $('#filename').textContent    = file;
-
+              var str   = '';
+              if(file){
+                    str   = file;
+              }
+              $('#filename').textContent    = str;
 
 
               subject.view.replaceChildren();
               
-              props.subject.forEach(name=>{
-                
-                    var attr    = cert.subject.attributes.find(attr=>attr.name===name);
-                    if(!attr){
-                          return;
-                    }
-                    var value     = attr.value;
-                    var nfield    = dn.field.cloneNode(true);
-                    $(nfield,'.dn-field-name').textContent       = name;
-                    $(nfield,'.dn-field-value').textContent      = value;
-                    subject.view.append(nfield);
-                    
-              });
-
-
-              issuer.view.replaceChildren();
-              
-              props.issuer.forEach(name=>{
-                
-                    var attr    = cert.issuer.attributes.find(attr=>attr.name===name);
-                    if(!attr){
-                          return;
-                    }
-                    var value     = attr.value;
-                    var nfield    = dn.field.cloneNode(true);
-                    $(nfield,'.dn-field-name').textContent       = name;
-                    $(nfield,'.dn-field-value').textContent      = value;
-                    issuer.view.append(nfield);
-                    
-              });
-              
-              
-              thumbprint.view.replaceChildren();
-              
-              var asn1      = nodeforge.pki.certificateToAsn1(cert);
-              var der       = nodeforge.asn1.toDer(asn1).getBytes();
-              var format    = hex=>hex.match(/.{2}/g).join(':').toUpperCase();
-
-              var sha1      = nodeforge.md.sha1.create().update(der).digest().toHex();
-              var nfield    = thumbprint.field.cloneNode(true);
-              $(nfield,'.thumbprint-field-name').textContent     = 'sha-1';
-              $(nfield,'.thumbprint-field-value').textContent    = format(sha1);
-              thumbprint.view.append(nfield);
-              
-              var sha256    = nodeforge.md.sha256.create().update(der).digest().toHex();
-              var nfield    = thumbprint.field.cloneNode(true);
-              $(nfield,'.thumbprint-field-name').textContent     = 'sha-256';
-              $(nfield,'.thumbprint-field-value').textContent    = format(sha256);
-              thumbprint.view.append(nfield);
-
-              
-              dates.list.replaceChildren();
-              
-              var ndate   = dates.date.cloneNode(true);
-              $(ndate,'.date-label').textContent    = 'Not Before';
-              $(ndate,'.date-full').textContent     = cert.validity.notBefore;
-              dates.list.append(ndate);
-
-              var ndate   = dates.date.cloneNode(true);
-              $(ndate,'.date-label').textContent   = 'Not After';
-              $(ndate,'.date-full').textContent    = cert.validity.notAfter;
-              dates.list.append(ndate);
-
-              var today   = new Date();
-              var valid   = (cert.validity.notBefore<today) && (today<cert.validity.notAfter);
-              if(valid){
-                    dates.valid.className   = 'dates-valid';
-              }else{
-                    dates.valid.className   = 'dates-invalid';
-              }
-
-              
-              extensions.root.replaceChildren();
-              
-              ['keyUsage','extKeyUsage'].forEach(key=>{
-              
-                    var nextension    = extensions.extension.cloneNode(true);
-                    nextension.id     = key;
-                    $(nextension,'.extension-title').textContent    = key;
-                    var list      = $(nextension,'.extension-list');
-                    var attr      = cert.extensions.find(attr=>attr.name===key);
-                    if(attr){
-                          var values    = props.ext[key].filter(name=>attr[name]);
-                          values.forEach(value=>{
-                          
-                                var nvalue   = extensions.value.cloneNode(true);
-                                nvalue.textContent    = value;
-                                list.append(nvalue);
-                                
-                          });
-                    }
-                    extensions.root.append(nextension);
-                    
-              });
-                                            
-              
-              san.root.replaceChildren();
-              
-              var attr    = cert.extensions.find(attr=>attr.name==='subjectAltName');
-              if(attr){
-                    [{v:2,name:'dns'},{v:7,name:'ip'},{v:1,name:'email'},{v:6,name:'url'},{v:4,name:'dir'},{v:8,name:'oid'}].forEach(desc=>{
-                    
-                          var nsan    = san.san.cloneNode(true);
-                          nsan.id     = desc.name;
-                          $(nsan,'.san-title').textContent    = desc.name;                    
-                          var list    = $(nsan,'.san-list');
-                          var ct      = 0;
-                          attr.altNames.forEach(attr=>{
-                          
-                                if(attr.type!=desc.v)return;
-                                ct++;
-                                var nvalue    = san.value.cloneNode(true);
-                                var str;
-                                switch(attr.type){
-                                
-                                  case 2    : str   = attr.value;       break;
-                                  case 7    : str   = attr.ip;          break;
-                                    
-                                }//switch
-                                
-                                nvalue.textContent    = str;
-                                list.append(nvalue);
-                                
-                          });
-                          
-                          if(ct){
-                                san.root.append(nsan);
+              if(cert){
+                    props.subject.forEach(name=>{
+                      
+                          var attr    = cert.subject.attributes.find(attr=>attr.name===name);
+                          if(!attr){
+                                return;
                           }
+                          var value     = attr.value;
+                          var nfield    = dn.field.cloneNode(true);
+                          $(nfield,'.dn-field-name').textContent       = name;
+                          $(nfield,'.dn-field-value').textContent      = value;
+                          subject.view.append(nfield);
                           
                     });
               }
 
 
+              issuer.view.replaceChildren();
+
+              if(cert){              
+                    props.issuer.forEach(name=>{
+                      
+                          var attr    = cert.issuer.attributes.find(attr=>attr.name===name);
+                          if(!attr){
+                                return;
+                          }
+                          var value     = attr.value;
+                          var nfield    = dn.field.cloneNode(true);
+                          $(nfield,'.dn-field-name').textContent       = name;
+                          $(nfield,'.dn-field-value').textContent      = value;
+                          issuer.view.append(nfield);
+                          
+                    });
+              }
+              
+              
+              thumbprint.view.replaceChildren();
+              
+              if(cert){
+                    var asn1      = nodeforge.pki.certificateToAsn1(cert);
+                    var der       = nodeforge.asn1.toDer(asn1).getBytes();
+                    var format    = hex=>hex.match(/.{2}/g).join(':').toUpperCase();
+      
+                    var sha1      = nodeforge.md.sha1.create().update(der).digest().toHex();
+                    var nfield    = thumbprint.field.cloneNode(true);
+                    $(nfield,'.thumbprint-field-name').textContent     = 'sha-1';
+                    $(nfield,'.thumbprint-field-value').textContent    = format(sha1);
+                    thumbprint.view.append(nfield);
+                    
+                    var sha256    = nodeforge.md.sha256.create().update(der).digest().toHex();
+                    var nfield    = thumbprint.field.cloneNode(true);
+                    $(nfield,'.thumbprint-field-name').textContent     = 'sha-256';
+                    $(nfield,'.thumbprint-field-value').textContent    = format(sha256);
+                    thumbprint.view.append(nfield);
+              }
+
+              
+              dates.list.replaceChildren();
+              
+              if(cert){
+                    var ndate   = dates.date.cloneNode(true);
+                    $(ndate,'.date-label').textContent    = 'Not Before';
+                    $(ndate,'.date-full').textContent     = cert.validity.notBefore;
+                    dates.list.append(ndate);
+      
+                    var ndate   = dates.date.cloneNode(true);
+                    $(ndate,'.date-label').textContent   = 'Not After';
+                    $(ndate,'.date-full').textContent    = cert.validity.notAfter;
+                    dates.list.append(ndate);
+      
+                    var today   = new Date();
+                    var valid   = (cert.validity.notBefore<today) && (today<cert.validity.notAfter);
+                    if(valid){
+                          dates.valid.className   = 'dates-valid';
+                    }else{
+                          dates.valid.className   = 'dates-invalid';
+                    }
+              }
+
+              
+              extensions.root.replaceChildren();
+              
+              if(cert){
+                    ['keyUsage','extKeyUsage'].forEach(key=>{
+                    
+                          var nextension    = extensions.extension.cloneNode(true);
+                          nextension.id     = key;
+                          $(nextension,'.extension-title').textContent    = key;
+                          var list      = $(nextension,'.extension-list');
+                          var attr      = cert.extensions.find(attr=>attr.name===key);
+                                                                                      console.log(attr);
+                          if(attr){
+                                var values    = props.ext[key].filter(name=>attr[name]);
+                                values.forEach(value=>{
+                                
+                                      var nvalue   = extensions.value.cloneNode(true);
+                                      nvalue.textContent    = value;
+                                      list.append(nvalue);
+                                      
+                                });
+                          }
+                          extensions.root.append(nextension);
+                          
+                    });
+              }
+                                            
+              
+              san.root.replaceChildren();
+              
+              if(cert){
+                    var attr    = cert.extensions.find(attr=>attr.name==='subjectAltName');
+                    if(attr){
+                          [{v:2,name:'dns'},{v:7,name:'ip'},{v:1,name:'email'},{v:6,name:'url'},{v:4,name:'dir'},{v:8,name:'oid'}].forEach(desc=>{
+                          
+                                var nsan    = san.san.cloneNode(true);
+                                nsan.id     = desc.name;
+                                $(nsan,'.san-title').textContent    = desc.name;                    
+                                var list    = $(nsan,'.san-list');
+                                var ct      = 0;
+                                attr.altNames.forEach(attr=>{
+                                
+                                      if(attr.type!=desc.v)return;
+                                      ct++;
+                                      var nvalue    = san.value.cloneNode(true);
+                                      var str;
+                                      switch(attr.type){
+                                      
+                                        case 2    : str   = attr.value;       break;
+                                        case 7    : str   = attr.ip;          break;
+                                          
+                                      }//switch
+                                      
+                                      nvalue.textContent    = str;
+                                      list.append(nvalue);
+                                      
+                                });
+                                
+                                if(ct){
+                                      san.root.append(nsan);
+                                }
+                                
+                          });
+                    }
+              }
+
+
               constraints.list.replaceChildren();
               
-              var ca    = cert.extensions.find(ext=>ext.name=='basicConstraints');
-              if(ca){
-                    var nconstraint   = constraints.field.cloneNode(true);
-                    $(nconstraint,'.category-field-name').textContent     = 'CA';
-                    $(nconstraint,'.category-field-value').textContent    = ca.cA;
-                    constraints.list.append(nconstraint);
-      
-                    if(ca.cA){              
-                          var value   = 'no limit';
-                          if('pathLenConstraint' in ca){
-                                value   = ca.pathLenConstraint;
-                          }
+              if(cert){
+                    var ca    = cert.extensions.find(ext=>ext.name=='basicConstraints');
+                    if(ca){
                           var nconstraint   = constraints.field.cloneNode(true);
-                          $(nconstraint,'.category-field-name').textContent     = 'pathlen';
-                          $(nconstraint,'.category-field-value').textContent    = value
+                          $(nconstraint,'.category-field-name').textContent     = 'CA';
+                          $(nconstraint,'.category-field-value').textContent    = ca.cA;
                           constraints.list.append(nconstraint);
+            
+                          if(ca.cA){              
+                                var value   = 'no limit';
+                                if('pathLenConstraint' in ca){
+                                      value   = ca.pathLenConstraint;
+                                }
+                                var nconstraint   = constraints.field.cloneNode(true);
+                                $(nconstraint,'.category-field-name').textContent     = 'pathlen';
+                                $(nconstraint,'.category-field-value').textContent    = value
+                                constraints.list.append(nconstraint);
+                          }
                     }
               }
               
@@ -1216,58 +1243,60 @@ https://fm4dd.com/openssl/certexamples.shtm
               
               nameconstraints.root.replaceChildren();
               
-              var nc    = cert.extensions.find(ext=>ext.name==='nameConstraints');
-              console.log(nc)
-              if(nc){
-              
-                    console.log(nc.permittedSubtrees);
-                    var raw = nc.value;
+              if(cert){
+                    var nc    = cert.extensions.find(ext=>ext.name==='nameConstraints');
+                    console.log(nc)
+                    if(nc){
                     
-                    // Convert to a byte buffer
-                    var buf = nodeforge.util.createBuffer(raw, 'raw');
-                    var asn1 = nodeforge.asn1.fromDer(buf);
-                    
-                    // Now you can inspect `asn1` manually
-                    console.log(JSON.stringify(asn1, null, 2));
-                    
-              }
-
-              
-              
-              if(nc){
-                                                                                              console.log('Name Constraints found:');
-                    var nn    = nameconstraints.node.cloneNode(true);
-                    $(nn,'.name-constraint-title').textContent    = 'Permitted';
-                    var list    = $(nn,'.name-constraint-list');
-                    if(nc.permittedSubtrees){
-                                                                                              console.log('Permitted:');
-                          nc.permittedSubtrees.forEach(subtree=>{
-
-                                var nvalue    = nameconstraints.value.cloneNode(true);
-                                nvalue.textContent    = subtree.type + ': ' + subtree.value;
-                                list.append(nvalue);
-                                                                                              console.log(subtree.type + ': ' + subtree.value);
-                          });
-                    }
-                    nameconstraints.root.append(nn);
-                    
-                    var nn    = nameconstraints.node.cloneNode(true);
-                    $(nn,'.name-constraint-title').textContent    = 'Excluded';
-                    var list    = $(nn,'.name-constraint-list');
-                    if(nc.excludedSubtrees){
-                                                                                              console.log('Excluded:');
-                          nc.excludedSubtrees.forEach(subtree =>{
+                          console.log(nc.permittedSubtrees);
+                          var raw = nc.value;
                           
-                                var nvalue    = nameconstraints.value.cloneNode(true);
-                                nvalue.textContent    = subtree.type + ': ' + subtree.value;
-                                list.append(nvalue);
-                                                                                              console.log(subtree.type + ': ' + subtree.value);
-                          });
+                          // Convert to a byte buffer
+                          var buf = nodeforge.util.createBuffer(raw, 'raw');
+                          var asn1 = nodeforge.asn1.fromDer(buf);
+                          
+                          // Now you can inspect `asn1` manually
+                          console.log(JSON.stringify(asn1, null, 2));
+                          
                     }
-                    nameconstraints.root.append(nn);
+      
                     
-              }else{
-                                                                                              console.log('No Name Constraints present in this certificate.');
+                    
+                    if(nc){
+                                                                                                    console.log('Name Constraints found:');
+                          var nn    = nameconstraints.node.cloneNode(true);
+                          $(nn,'.name-constraint-title').textContent    = 'Permitted';
+                          var list    = $(nn,'.name-constraint-list');
+                          if(nc.permittedSubtrees){
+                                                                                                    console.log('Permitted:');
+                                nc.permittedSubtrees.forEach(subtree=>{
+      
+                                      var nvalue    = nameconstraints.value.cloneNode(true);
+                                      nvalue.textContent    = subtree.type + ': ' + subtree.value;
+                                      list.append(nvalue);
+                                                                                                    console.log(subtree.type + ': ' + subtree.value);
+                                });
+                          }
+                          nameconstraints.root.append(nn);
+                          
+                          var nn    = nameconstraints.node.cloneNode(true);
+                          $(nn,'.name-constraint-title').textContent    = 'Excluded';
+                          var list    = $(nn,'.name-constraint-list');
+                          if(nc.excludedSubtrees){
+                                                                                                    console.log('Excluded:');
+                                nc.excludedSubtrees.forEach(subtree =>{
+                                
+                                      var nvalue    = nameconstraints.value.cloneNode(true);
+                                      nvalue.textContent    = subtree.type + ': ' + subtree.value;
+                                      list.append(nvalue);
+                                                                                                    console.log(subtree.type + ': ' + subtree.value);
+                                });
+                          }
+                          nameconstraints.root.append(nn);
+                          
+                    }else{
+                                                                                                    console.log('No Name Constraints present in this certificate.');
+                    }
               }
 
               
@@ -1277,96 +1306,106 @@ https://fm4dd.com/openssl/certexamples.shtm
 
               meta.list.replaceChildren();
               
-              var nfield    = meta.field.cloneNode(true);
-              $(nfield,'.category-field-name').textContent    = 'Version';
-              $(nfield,'.category-field-value').textContent   = cert.version;
-              meta.list.append(nfield);
-              
-              var nfield    = meta.field.cloneNode(true);
-              $(nfield,'.category-field-name').textContent    = 'Serial Number';
-              $(nfield,'.category-field-value').textContent   = cert.serialNumber;
-              meta.list.append(nfield);
+              if(cert){
+                    var nfield    = meta.field.cloneNode(true);
+                    $(nfield,'.category-field-name').textContent    = 'Version';
+                    $(nfield,'.category-field-value').textContent   = cert.version;
+                    meta.list.append(nfield);
+                    
+                    var nfield    = meta.field.cloneNode(true);
+                    $(nfield,'.category-field-name').textContent    = 'Serial Number';
+                    $(nfield,'.category-field-value').textContent   = cert.serialNumber;
+                    meta.list.append(nfield);
+              }
               
 
               publickey.list.replaceChildren();
               
-              var nfield    = publickey.field.cloneNode(true);
-              if(cert.publicKey.n){
-                    $(nfield,'.category-field-name').textContent    = 'Key Size';
-                    $(nfield,'.category-field-value').textContent   = cert.publicKey.n.bitLength()+' bits';
-              }
-              if(cert.publicKey.curve){
-                    $(nfield,'.category-field-name').textContent    = 'Curve';
-                    $(nfield,'.category-field-value').textContent   = cert.publicKey.curve;
-              }
-              publickey.list.append(nfield);
+              if(cert){
+                    var nfield    = publickey.field.cloneNode(true);
+                    if(cert.publicKey.n){
+                          $(nfield,'.category-field-name').textContent    = 'Key Size';
+                          $(nfield,'.category-field-value').textContent   = cert.publicKey.n.bitLength()+' bits';
+                    }
+                    if(cert.publicKey.curve){
+                          $(nfield,'.category-field-name').textContent    = 'Curve';
+                          $(nfield,'.category-field-value').textContent   = cert.publicKey.curve;
+                    }
+                    publickey.list.append(nfield);
 
-
-              var nfield    = publickey.field.cloneNode(true);
-              $(nfield,'.category-field-name').textContent    = 'Subject Key Identifier';
-              var ski   = cert.extensions.find(ext=>ext.name==='subjectKeyIdentifier');
-              var str   = 'not present';
-              if(ski){
-                    str   = nodeforge.util.bytesToHex(ski.subjectKeyIdentifier);
+      
+                    var nfield    = publickey.field.cloneNode(true);
+                    $(nfield,'.category-field-name').textContent    = 'Subject Key Identifier';
+                    var ski   = cert.extensions.find(ext=>ext.name==='subjectKeyIdentifier');
+                    var str   = 'not present';
+                    if(ski){
+                          str   = nodeforge.util.bytesToHex(ski.subjectKeyIdentifier);
+                    }
+                    $(nfield,'.category-field-value').textContent   =  str;
+                    publickey.list.append(nfield);
               }
-              $(nfield,'.category-field-value').textContent   =  str;
-              publickey.list.append(nfield);
 
 
               authoritykey.list.replaceChildren();
 
-              var oid   = cert.siginfo.algorithmOid;
-              var alg   = nodeforge.pki.oids[oid];
-              var nfield    = publickey.field.cloneNode(true);
-              $(nfield,'.category-field-name').textContent    = 'Key Algorithm';
-              $(nfield,'.category-field-value').textContent   = alg;
-              authoritykey.list.append(nfield);
-              
-              var nfield    = authoritykey.field.cloneNode(true);
-              $(nfield,'.category-field-name').textContent    = 'Key Identifier';
-              var value   = 'not present'
-              var aki   = cert.extensions.find(ext=>ext.name==='authorityKeyIdentifier');
-              if(aki){
-                    value ||= aki.keyIdentifier;
+              if(cert){
+                    var oid   = cert.siginfo.algorithmOid;
+                    var alg   = nodeforge.pki.oids[oid];
+                    var nfield    = publickey.field.cloneNode(true);
+                    $(nfield,'.category-field-name').textContent    = 'Key Algorithm';
+                    $(nfield,'.category-field-value').textContent   = alg;
+                    authoritykey.list.append(nfield);
+                    
+                    var nfield    = authoritykey.field.cloneNode(true);
+                    $(nfield,'.category-field-name').textContent    = 'Key Identifier';
+                    var value   = 'not present'
+                    var aki   = cert.extensions.find(ext=>ext.name==='authorityKeyIdentifier');
+                    if(aki){
+                          value ||= aki.keyIdentifier;
+                    }
+                    $(nfield,'.category-field-value').textContent   = value;
+                    authoritykey.list.append(nfield);
+                    
+                    var nfield    = authoritykey.field.cloneNode(true);
+                    $(nfield,'.category-field-name').textContent    = 'Authority Issuer';
+                    var value   = 'not present';
+                    if(aki){
+                          value   ||= aki.authorityCertIssuer;
+                    }
+                    $(nfield,'.category-field-value').textContent   = value;
+                    authoritykey.list.append(nfield);
+                    
+                    var nfield    = authoritykey.field.cloneNode(true);
+                    $(nfield,'.category-field-name').textContent    = 'Authority Issuer Serial';
+                    var value   = 'not present';
+                    if(aki){
+                          value   ||= aki.authorityCertSerialNumber;
+                    }
+                    $(nfield,'.category-field-value').textContent   = value;
+                    authoritykey.list.append(nfield);
               }
-              $(nfield,'.category-field-value').textContent   = value;
-              authoritykey.list.append(nfield);
-              
-              var nfield    = authoritykey.field.cloneNode(true);
-              $(nfield,'.category-field-name').textContent    = 'Authority Issuer';
-              var value   = 'not present';
-              if(aki){
-                    value   ||= aki.authorityCertIssuer;
-              }
-              $(nfield,'.category-field-value').textContent   = value;
-              authoritykey.list.append(nfield);
-              
-              var nfield    = authoritykey.field.cloneNode(true);
-              $(nfield,'.category-field-name').textContent    = 'Authority Issuer Serial';
-              var value   = 'not present';
-              if(aki){
-                    value   ||= aki.authorityCertSerialNumber;
-              }
-              $(nfield,'.category-field-value').textContent   = value;
-              authoritykey.list.append(nfield);
               
 
               signature.list.replaceChildren();
               
-              var nfield    = signature.field.cloneNode(true);
-              $(nfield,'.category-field-name').textContent    = 'Signature';
-              
-              var bytes   = cert.signature;
-              var hex     = nodeforge.util.bytesToHex(bytes).toUpperCase();
-              
-              $(nfield,'.category-field-value').textContent   = hex;
-              signature.list.append(nfield);
-
-
+              if(cert){
+                    var nfield    = signature.field.cloneNode(true);
+                    $(nfield,'.category-field-name').textContent    = 'Signature';
+                    
+                    var bytes   = cert.signature;
+                    var hex     = nodeforge.util.bytesToHex(bytes).toUpperCase();
+                    
+                    $(nfield,'.category-field-value').textContent   = hex;
+                    signature.list.append(nfield);
+              }
 
 
               $('#pem').style.display   = 'inline-block';
-              $('#pem').textContent     = pem;
+              var str   = '';
+              if(pem){
+                    str   = pem;
+              }
+              $('#pem').textContent     = str;
 
 
 
