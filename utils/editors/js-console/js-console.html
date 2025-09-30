@@ -487,10 +487,24 @@
                     }
               };
               
-              var result    = await Terser.minify(js,options);
-              console.log(result);
-              console.log(result.code); // Minified output
-        
+              var err;
+              try{
+              
+                    var result    = await Terser.minify(js,options);
+                    
+              }
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    return;
+              }
+              
+              editor.setvalue(result.code);
 
         }//terser
         
