@@ -201,7 +201,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         var root;
         var config;
         var cmd;
-        var output;
+        var output    = {};
         
         
         var btn   = {};
@@ -224,7 +224,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               $('[value=run]').onclick      = btn.run;
               
               
-              output                        = $(root,'#output');
+              output.node                   = $(root,'#output');
               
               
               config.focus();
@@ -238,10 +238,12 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
 
         btn.run   = async function(){
         
-              openssl       = mod.openssl({stdout,stderr});
+              output.clear();
+              
+              openssl       = mod.openssl(output);
               openssl.fs.clear();
               var Module    = await openssl.init();
-              console.log(Module);
+                                                                                console.log(Module);
               
               //var txt   = $('#config').textContent;
               var txt   = config.getvalue();
@@ -300,32 +302,40 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         }//run
 
         
-        function disp(txt){
+        
+        output.clear    = function(){
+        
+              output.node.replaceChildren();
+              
+        }//clear
+        
+        
+        output.disp   = function(txt){
         
               var div   = document.createElement('div');
               div.textContent   = txt;
-              output.append(div);
+              output.node.append(div);
               
         }//disp
         
         
-        function stdout(txt){
+        output.stdout   = function(txt){
         
               var str   = '[ stdout ] '+txt;
               var div   = document.createElement('div');
               div.textContent   = str;
-              output.append(div);
+              output.node.append(div);
               console.log(str);
               
         }//stdout
         
         
-        function stderr(txt){
+        output.stderr   = function(txt){
         
               var str   = '[ stderr ] '+txt;
               var div   = document.createElement('div');
               div.textContent   = str;
-              output.append(div);
+              output.node.append(div);
               console.log(str);
               
         }//stderr
