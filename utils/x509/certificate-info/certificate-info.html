@@ -1110,6 +1110,7 @@ https://fm4dd.com/openssl/certexamples.shtm
                     $(ndate,'.date-full').textContent    = cert.validity.notAfter;
                     dates.list.append(ndate);
       
+                    dates.value.style.visibility    = '';
                     var today   = new Date();
                     var valid   = (cert.validity.notBefore<today) && (today<cert.validity.notAfter);
                     if(valid){
@@ -1117,6 +1118,8 @@ https://fm4dd.com/openssl/certexamples.shtm
                     }else{
                           dates.valid.className   = 'dates-invalid';
                     }
+              }else{
+                    dates.value.style.visibility    = 'hidden';
               }
 
               
