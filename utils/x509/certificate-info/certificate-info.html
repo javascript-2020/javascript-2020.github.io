@@ -967,6 +967,7 @@ https://fm4dd.com/openssl/certexamples.shtm
               
 
 
+              display();
               
               if(history.load()){
                     display();
@@ -1110,7 +1111,7 @@ https://fm4dd.com/openssl/certexamples.shtm
                     $(ndate,'.date-full').textContent    = cert.validity.notAfter;
                     dates.list.append(ndate);
       
-                    dates.value.style.visibility    = '';
+                    dates.valid.style.visibility    = '';
                     var today   = new Date();
                     var valid   = (cert.validity.notBefore<today) && (today<cert.validity.notAfter);
                     if(valid){
@@ -1119,7 +1120,7 @@ https://fm4dd.com/openssl/certexamples.shtm
                           dates.valid.className   = 'dates-invalid';
                     }
               }else{
-                    dates.value.style.visibility    = 'hidden';
+                    dates.valid.style.visibility    = 'hidden';
               }
 
               
@@ -1250,51 +1251,69 @@ https://fm4dd.com/openssl/certexamples.shtm
                     var nc    = cert.extensions.find(ext=>ext.name==='nameConstraints');
                     console.log(nc)
                     if(nc){
-                    
-                          console.log(nc.permittedSubtrees);
-                          var raw = nc.value;
-                          
-                          // Convert to a byte buffer
-                          var buf = nodeforge.util.createBuffer(raw, 'raw');
-                          var asn1 = nodeforge.asn1.fromDer(buf);
-                          
-                          // Now you can inspect `asn1` manually
-                          console.log(JSON.stringify(asn1, null, 2));
-                          
-                    }
-      
-                    
-                    
-                    if(nc){
                                                                                                     console.log('Name Constraints found:');
+                                                                                                    //console.log(nc.permittedSubtrees);
+                          var raw     = nc.value;
+                          var buf     = nodeforge.util.createBuffer(raw, 'raw');
+                          var asn1    = nodeforge.asn1.fromDer(buf);
+                                                                                                    console.log(JSON.stringify(asn1,null,4));
+                          
+                          var permitted   = asn1.value.find(o=>o.type===0);
+                                                                                                    console.log('permitted');
+                                                                                                    console.log(permitted);
+                          var excluded    = asn1.value.find(o=>o.type===1);
+                                                                                                    console.log('excluded');
+                                                                                                    console.log(excluded);
                           var nn    = nameconstraints.node.cloneNode(true);
                           $(nn,'.name-constraint-title').textContent    = 'Permitted';
                           var list    = $(nn,'.name-constraint-list');
-                          if(nc.permittedSubtrees){
-                                                                                                    console.log('Permitted:');
-                                nc.permittedSubtrees.forEach(subtree=>{
-      
-                                      var nvalue    = nameconstraints.value.cloneNode(true);
-                                      nvalue.textContent    = subtree.type + ': ' + subtree.value;
-                                      list.append(nvalue);
-                                                                                                    console.log(subtree.type + ': ' + subtree.value);
-                                });
-                          }
+                          
+                          permitted.value.forEach(sub=>{
+                                
+                                sub   = sub.value[0];
+                                                                                                    console.log(sub);
+                                var nvalue    = nameconstraints.value.cloneNode(true);
+                                var type;
+                                var value   = sub.value;
+                                switch(sub.type){
+                                  
+                                  case 2    : type    = 'dns';        break;
+                                  case 7    : 
+                                              type    = 'ip';
+                                              value   = decode_ip(value);
+                                              break;
+                                  
+                                }//switch
+                                nvalue.textContent    = type + ': ' + value;
+                                list.append(nvalue);
+                                                                                                    console.log(sub.type + ': ' + sub.value);
+                          });
                           nameconstraints.root.append(nn);
                           
                           var nn    = nameconstraints.node.cloneNode(true);
                           $(nn,'.name-constraint-title').textContent    = 'Excluded';
                           var list    = $(nn,'.name-constraint-list');
-                          if(nc.excludedSubtrees){
-                                                                                                    console.log('Excluded:');
-                                nc.excludedSubtrees.forEach(subtree =>{
+                          
+                          excluded.value.forEach(sub=>{
+                          
+                                sub   = sub.value[0];
+                                                                                                    console.log(sub);
+                                var nvalue    = nameconstraints.value.cloneNode(true);
+                                var type;
+                                var value   = sub.value;
+                                switch(sub.type){
                                 
-                                      var nvalue    = nameconstraints.value.cloneNode(true);
-                                      nvalue.textContent    = subtree.type + ': ' + subtree.value;
-                                      list.append(nvalue);
-                                                                                                    console.log(subtree.type + ': ' + subtree.value);
-                                });
-                          }
+                                  case 2    : type    = 'dns';        break;
+                                  case 7    : 
+                                              type    = 'ip';
+                                              value   = decode_ip(value);
+                                              break;
+                                  
+                                }//switch
+                                nvalue.textContent    = type + ': ' + value;
+                                list.append(nvalue);
+                                                                                                    console.log(sub.type + ': ' + sub.value);
+                          });
                           nameconstraints.root.append(nn);
                           
                     }else{
@@ -1302,6 +1321,36 @@ https://fm4dd.com/openssl/certexamples.shtm
                     }
               }
 
+              
+              
+              function decode_ip(bin){
+              
+                    var buf     = new Uint8Array(8);
+                    [...bin].forEach((c,i)=>buf[i]    = c.charCodeAt(0));
+                    var ip      = Array.from(buf.slice(0,4)).join('.');
+                    var mask    = Array.from(buf.slice(4,8)).join('.');
+                    return `${ip}/${mask}`;
+                    
+              }//decode_ip
+
+              
+              function general_name_type(type){
+              
+                    switch(type){
+                    
+                      case 0    : return 'otherName';
+                      case 1    : return 'email';
+                      case 2    : return 'dns';
+                      case 3    : return 'x.400';
+                      case 4    : return 'dir';   //directoryName dn
+                      case 5    : return 'edi';   //edi party name
+                      case 6    : return 'url';
+                      case 7    : return 'ip';
+                      case 8    : return 'oid';
+                      
+                    }//switch
+                    
+              }//general_name_type
               
               
               
