@@ -33,6 +33,7 @@
         var datatype;
         var menumod;
         var keydown;
+        var opensslmod;
 
         var menu;
 
@@ -81,12 +82,15 @@
 
         ({ext}   = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
         
-        [$,datatype,menumod,keydown]    = await ext.load.libs(
+        var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js'              
+              'js/dom/keydown/keydown.js',
+              'js/crypto/openssl/openssl.js'
+              
         );
+        [$,datatype,menumod,keydown,opensslmod]    = await promise;
         
         init.stack.complete;
 
@@ -385,7 +389,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         
               output.clear();
               
-              openssl       = mod.openssl(output);
+              //openssl       = mod.openssl(output);
+              openssl   = opensslmod(output);
               openssl.fs.clear();
               var Module    = await openssl.init();
                                                                                 console.log(Module);
@@ -478,7 +483,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
 
   //:
   
-  
+
+/*  
         mod.openssl   = function(params){
         
           var obj   = {};
@@ -663,6 +669,9 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
           return obj;
         
         }//openssl
+*/
+
+
 
   //:
   
