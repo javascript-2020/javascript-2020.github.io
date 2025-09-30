@@ -243,9 +243,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               
               
               Module.FS.writeFile('ca-ext.ini',txt);
-              var snapshot    = openssl.fs.snapshot(Module);
+              openssl.fs.save(Module);
                                                                                 console.log('***',snapshot);
-              openssl.fs.set(snapshot);
               
               
               //var txt     = $('#cmd').textContent;
@@ -465,6 +464,15 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                     
               }//restore
               
+              
+              fs.save    = function(Module){
+              
+                    var snap    = fs.snapshot(Module);
+                    snapshot    = snap;
+                    return snap;
+                    
+              }//store
+
               
               fs.set    = function(snap){
               
