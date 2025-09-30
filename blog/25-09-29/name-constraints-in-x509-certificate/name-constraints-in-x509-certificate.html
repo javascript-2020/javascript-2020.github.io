@@ -38,14 +38,16 @@
         async function init(){
 
 
-              menu        = mod.menumod();
+              menu                = mod.menumod();
               
-              codeblock   = mod['code-block']();
+              config              = mod['code-block']();
+              cmd                 = mod['code-block']();
               
-              codeblock.initmod({ext,$,datatype,menu});
+              config.initmod({ext,$,datatype,menu});
+              cmd.initmod({ext,$,datatype,menu});
               
-              await codeblock.init();
-              
+              await config.init();
+              await cmd.init();
               
               
               initdom(document.body);
@@ -178,7 +180,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
 
 
         var root;
-        var codeblock;
+        var config;
+        var cmd;
         
         var btn   = {};
         
@@ -187,8 +190,13 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         function initdom(rootnode){
         
               root                          = rootnode;
-              //debugger;
-              codeblock.initdom(root,{mode:'text'});
+              
+              
+              
+              config.initdom(root,{mode:'text'});
+              cmd.initdom(root,{mode:'text'});
+              
+              
               
               $('[value=run]').onclick      = btn.run;
               
@@ -208,7 +216,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               console.log(Module);
               
               //var txt   = $('#config').textContent;
-              var txt   = codeblock.editor.getValue();
+              var txt   = config.getvalue();
               console.log(txt);
               
               Module.FS.writeFile('ca-ext.ini',txt);
@@ -217,7 +225,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               openssl.fs.set(snapshot);
               
               
-              var txt     = $('#cmd').textContent;
+              //var txt     = $('#cmd').textContent;
+              var txt     = cmd.getvalue();
               txt         = txt.trim();
               var list    = txt.split('\n');
               var cmds    = list.map(line=>{
