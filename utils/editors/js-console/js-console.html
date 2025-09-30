@@ -468,7 +468,23 @@
                     plugins           : prettierPlugins,
               };
               
-              js   = prettier.format(js,options);
+              var err;
+              try{
+              
+                    js   = prettier.format(js,options);
+                    
+              }//catch
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    return;
+              }
+              
               editor.setvalue(js);
               
         }//prettier
@@ -518,13 +534,28 @@
         
               var js    = editor.getvalue();
               
-              var obfuscated    = obfuscator.obfuscate(js,{
-                    compact                 : true,
-                    controlFlowFlattening   : true,
-                    deadCodeInjection       : true,
-                    stringArrayEncoding     : ['base64'],
-                    renameGlobals           : true
-              });
+              var err;
+              try{
+              
+                    var obfuscated    = obfuscator.obfuscate(js,{
+                          compact                 : true,
+                          controlFlowFlattening   : true,
+                          deadCodeInjection       : true,
+                          stringArrayEncoding     : ['base64'],
+                          renameGlobals           : true
+                    });
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    return;
+              }
             
               js    = obfuscated.getObfuscatedCode();
               editor.setvalue(js);
