@@ -259,6 +259,9 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               
                     var args    = cmds[i];
                                                                                 console.log(i,cmd);
+                    var str   = 'openssl '+args.join(' ');
+                    disp(str);
+                    
                     await openssl.run(...args);
               
               }//for
@@ -284,6 +287,15 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         
         }//run
 
+        
+        function disp(txt){
+        
+              var div   = document.createElement('div');
+              div.textContent   = txt;
+              output.append(div);
+              
+        }//disp
+        
         
         function stdout(txt){
         
