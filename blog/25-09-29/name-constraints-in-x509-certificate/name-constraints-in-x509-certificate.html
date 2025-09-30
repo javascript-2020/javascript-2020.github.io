@@ -194,6 +194,10 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
       <script>
 
 
+        var mod   = {};
+
+        var openssl;
+        
         var root;
         var config;
         var cmd;
@@ -234,7 +238,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
 
         btn.run   = async function(){
         
-              openssl       = openssl({stdout,stderr});
+              openssl       = mod.openssl({stdout,stderr});
+              openssl.fs.clear();
               var Module    = await openssl.init();
               console.log(Module);
               
@@ -328,7 +333,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
   //:
   
   
-        function openssl(params){
+        mod.openssl   = function(params){
         
           var obj   = {};
           
@@ -500,6 +505,13 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                     return result;
                     
               }//complete
+              
+              
+              fs.clear    = function(){
+              
+                    initial   = null;
+                    
+              }//clear
               
               
           return obj;
