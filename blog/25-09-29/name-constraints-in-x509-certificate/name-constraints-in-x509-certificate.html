@@ -244,16 +244,10 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               openssl.fs.clear();
               var Module    = await openssl.init();
                                                                                 console.log(Module);
-              
-              //var txt   = $('#config').textContent;
               var txt   = config.getvalue();
-              
-              
               Module.FS.writeFile('ca-ext.ini',txt);
               openssl.fs.save(Module);
               
-              
-              //var txt     = $('#cmd').textContent;
               var txt     = cmd.getvalue();
               txt         = txt.trim();
               var list    = txt.split('\n');
@@ -274,14 +268,11 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                     var args    = cmds[i];
                                                                                 console.log(i,cmd);
                     var str   = 'openssl '+args.join(' ');
-                    disp(str);
+                    output.disp(str);
                     
                     await openssl.run(...args);
               
               }//for
-              
-              //await openssl.run('genrsa','-out','ca.key.pem','1024');
-              //await openssl.run('rsa','-in','ca.key.pem','-text','-noout');
               
               $('#fs').replaceChildren();
               var fs    = openssl.fs.complete();
