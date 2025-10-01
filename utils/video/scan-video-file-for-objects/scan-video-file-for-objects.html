@@ -41,15 +41,15 @@
 
 
         
-        window.onload     = load;
+        
 
         
         function init(){
         
-              if(!github){
-                    getfiles();
-              }
+
+              await load.promise;
               
+
               initdom();
               
               if(!enabled){
@@ -370,13 +370,15 @@
   
   
         load.ct   = 0;
+        load();
         
         async function load(){
         
-              await new Promise(res=>setTimeout(res,1000));
+              load.promise   = new Promise(res=>load.resolve=res);
+              
+              //await new Promise(res=>setTimeout(res,1000));
               
               if(!enabled){
-                    init();
                     return;
               }
               
@@ -435,8 +437,7 @@
               if(load.ct<2){
                     return;
               }
-              
-              init();
+              load.resolve();
               
         }//complete
         
@@ -888,7 +889,10 @@
         }//strtomilli
         
         
-        
+  //:
+
+  
+  init.stack.complete;
         
       </script>
         
