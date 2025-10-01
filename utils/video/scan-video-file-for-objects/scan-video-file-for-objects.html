@@ -49,7 +49,7 @@
 
         
         async function init(){
-        
+                                                                                console.log('init');
 
               await load.promise;
 
@@ -64,7 +64,7 @@
 
 
 
-              initdom();
+              initdom(document.body);
               
               if(!enabled){
                     complete();
@@ -303,11 +303,17 @@
   //:
   
   
-        function initdom(){   //c
+        function initdom(rootnode){   //c
         
+              var root    = rootnode;
+              
               menu.add.style();
+
+
         
               $('#loading').remove();
+              
+              filemod.initdom(root);
               
               $('#file').onclick            = e=>{
               
