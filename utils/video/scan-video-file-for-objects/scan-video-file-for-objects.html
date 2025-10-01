@@ -42,7 +42,8 @@
         var ext,$,datatype,menumod,keydown
         ;
 
-
+        var menu;
+        var filemod;
         
         
 
@@ -51,7 +52,17 @@
         
 
               await load.promise;
+
               
+              menu                      = menumod();
+
+              filemod                   = mod.filemod();
+              
+              filemod.initmod({ext,$,menumod,menu,complete,source});
+              
+              await filemod.init();
+
+
 
               initdom();
               
@@ -136,6 +147,10 @@
                   <h3 id="loading" style="font-weight: bold; color: blue; height: 20px; margin: 0px 0px 10px; text-align: center;">
                         loading model, please wait ...
                   </h3>
+
+                  <filemod api>
+                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </filemod>
                   
                   <input id="file" type="button" value="file" style="font-size: 16px; padding: 5px 10px; cursor: pointer;">
                   
@@ -290,6 +305,8 @@
   
         function initdom(){   //c
         
+              menu.add.style();
+        
               $('#loading').remove();
               
               $('#file').onclick            = e=>{
@@ -364,8 +381,54 @@
   
 
   //:
-  
-  
+
+        
+        function source(file){
+
+              return filemod.cur;
+              
+        }//source
+        
+        
+        function complete(file){
+        
+              if(file){
+                    filemod.cur   = file;
+              }
+              
+              menu.close();
+              
+        }//complete
+
+        
+        complete.load   = async function(file,blob){
+        
+              if(typeof blob=='string'){
+                    debugger;
+              }
+              
+              var url   = window.URL.createObjectURL(blob);
+              set(file.filename,blob);
+              
+              complete(file);
+              
+        }//complete.load
+
+        
+        complete.save   = function(file,confirm=true){
+
+              complete(file);
+              
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
+        }//save
+
+        
+  //:
+
+
         load.ct   = 0;
         setTimeout(load,50);
         
