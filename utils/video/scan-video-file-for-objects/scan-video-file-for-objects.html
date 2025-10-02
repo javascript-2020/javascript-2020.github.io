@@ -378,8 +378,6 @@
 
 
         
-              $('#loading').remove();
-              
               filemod.initdom(root);
 
               
@@ -425,7 +423,6 @@
               
               
               log.initdom(root);
-              log.ok('ready');
               
               
         }//initdom
@@ -500,22 +497,52 @@
         
         load.object   = async function(){
         
-              var script      = document.createElement('script');
-              script.src      = 'https://cdn.jsdelivr.net/npm/ml5@0.12.2/dist/ml5.min.js';
-              script.onload   = complete;
-              document.head.append(script);
+              var err;
+              try{
               
-              function complete(){
+                    var script      = document.createElement('script');
+                    script.src      = 'https://cdn.jsdelivr.net/npm/ml5@0.12.2/dist/ml5.min.js';
+                    script.onload   = onload;
+                    document.head.append(script);
+                    
+              }//try
+              catch(err2){
               
-                    detector    = ml5.objectDetector('cocossd',{},complete);
+                    err   = err2;
                     
-                                        
-                    function complete(){
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    return;
+              }
+
+              
+              async function onload(){
+
+                    var err;
+                    try{
                     
-                          load.complete();
+                          await new Promise(resolve=>{
                           
-                    }//complete
+                                detector    = ml5.objectDetector('cocossd',{},()=>resolve());
+                                
+                          });
+                          
+                    }//try
+                    catch(err2){
                     
+                          err   = err2;
+                          
+                    }//catch
+                    if(err){
+                          var error   = err.toString();
+                          log.red(error);
+                          return;
+                    }
+                    
+                    load.complete();
+                                        
               }//complete
               
         }//object
@@ -523,16 +550,47 @@
         
         load.face   = async function(){
         
-              var script      = document.createElement('script');
-              script.src      = 'face-api.js';
-              script.onload   = complete;
-              document.head.append(script);
+              var err;
+              try{
+              
+                    var script      = document.createElement('script');
+                    script.src      = 'face-api.js';
+                    script.onload   = onload;
+                    document.head.append(script);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    return;
+              }
 
               
-              async function complete(){
+              async function onload(){
               
-                    await faceapi.nets.ssdMobilenetv1.loadFromUri('https://javascript-2020.github.io/utils/video/scan-video-file-for-objects/');
-                    await faceapi.detectAllFaces(img);
+                    var err;
+                    try{
+                    
+                          await faceapi.nets.ssdMobilenetv1.loadFromUri('https://javascript-2020.github.io/utils/video/scan-video-file-for-objects/');
+                          await faceapi.detectAllFaces(img);
+                          
+                    }//try
+                    catch(err2){
+                    
+                          err   = err2;
+                          
+                    }//catch
+                    if(err){
+                          var error   = err.toString();
+                          log.red(error);
+                          return;
+                    }
+                    
                     load.complete();
                     
               }//complete
@@ -546,7 +604,10 @@
               if(load.ct<2){
                     return;
               }
+              
+              $('#loading').remove();
               load.resolve();
+              log.green('ready');
               
         }//complete
         
