@@ -162,9 +162,10 @@
   [value=start]
     {display:block;margin-top:10px}
 
+  #filename-root
+    {text-align:center;height:20px;margin-top:10px}
   #filename
-    {text-align:center;height:20px;margin-top:10px;margin-right:20px}
-
+    {margin-right:20px}
   #hs
     {}
     
@@ -201,7 +202,6 @@
                   
         
                   <h3 id=loading>
-                        loading model, please wait ...
                   </h3>
 
 
@@ -236,11 +236,11 @@
 
                   <input value=start type=button>
             
-                  <div>
-                        <div id=filename>
-                        </div>
-                        <div id=hs>
-                        </div>
+                  <div id=filename-root>
+                        <span id=filename>
+                        </span>
+                        <span id=hs>
+                        </span>
                   </div>
 
             
@@ -485,6 +485,8 @@
         
         async function load(){
                                                                                 console.log('load');
+              $('#loading').textContent   = 'loading model, please wait ...';
+              
               load.promise   = new Promise(res=>load.resolve=res);
               
               load.object();
