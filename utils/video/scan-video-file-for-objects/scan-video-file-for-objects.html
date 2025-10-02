@@ -180,7 +180,7 @@
   #canvas-root
     {margin-top:10px;text-align:center;position:relative;display:flex;justify-content:center}
   video
-    {position:absolute;left:0;top:0;width:450px;border:1px solid lightgray;padding:5px;box-sizing:border-box;background:white;z-index:1}
+    {position:absolute;left:0;top:0;width:450px;border:3px solid black;box-sizing:border-box;background:white;z-index:1}
   canvas
     {border:1px solid lightgray;padding:5px;box-sizing:border-box;width:450px}
     
@@ -399,7 +399,7 @@
         var initialstep   = 1;
         var inf           = 999999;
         
-        var btn;
+        var mainbtn;
         var step;
         var video;
         var width;
@@ -431,7 +431,8 @@
 
 
 
-        var btn   = {};
+        var btn           = {};
+        var ku            = {};
       
 
   //:
@@ -464,45 +465,46 @@
               step                                                = $('#step');
               step.value                                          = initialstep;
               
-              btn                                                 = $('[value=start]')
-              btn.onclick                                         = click;
+              mainbtn                                             = $('[value=start]')
+              mainbtn.onclick                                     = click;
               
-              video                                         = $('video');
-              video.onloadedmetadata                        = meta;
-              video.onloadeddata                            = loaded;
-              video.onseeked                                = seeked;
-              video.onplaying                               = playing;
-              video.onpause                                 = stopped;
-              video.onended                                 = stopped;
+              video                                               = $('video');
+              video.onloadedmetadata                              = meta;
+              video.onloadeddata                                  = loaded;
+              video.onseeked                                      = seeked;
+              video.onplaying                                     = playing;
+              video.onpause                                       = stopped;
+              video.onended                                       = stopped;
               
-              canvas                                        = $('canvas');
-              ctx                                           = canvas.getContext('2d');
-              canvas.width                                  = 300;
-              canvas.height                                 = 150;
+              canvas                                              = $('canvas');
+              ctx                                                 = canvas.getContext('2d');
+              canvas.width                                        = 300;
+              canvas.height                                       = 150;
               
-              bar                                           = $('#bar');
+              bar                                                 = $('#bar');
               
-              time                                          = $('#time');
-              time.onfocus                                  = e=>time.select();
-              time.onblur                                   = skip;
-              time.onkeyup                                  = skip;
-              timestamp                                     = $('#timestamp');
-              timestamp.onfocus                             = e=>timestamp.select();
-              timestamp.onblur                              = skip.ts;
-              timestamp.onkeyup                             = skip.ts;
+              time                                                = $('#time');
+              time.onblur                                         = skip;
+              time.onkeyup                                        = ku.time;
               
-              $('#zero').onclick                            = skip.start;
-              $('#back').onclick                            = skip.back;
-              seek                                          = $('#seek');
-              $('#forward').onclick                         = skip.forward;
+              timestamp                                           = $('#timestamp');
+              timestamp.onblur                                    = skip.ts;
+              timestamp.onkeyup                                   = ku.timestamp
+
               
-              $('#clear').onclick                           = e=>results.replaceChildren();
-              results                                       = $('#results');
-              item                                          = $('#item');
+              $('#zero').onclick                                  = skip.start;
+              $('#back').onclick                                  = skip.back;
+              seek                                                = $('#seek');
+              $('#forward').onclick                               = skip.forward;
+              
+              $('#clear').onclick                                 = e=>results.replaceChildren();
+              results                                             = $('#results');
+              item                                                = $('#item');
               item.remove();
               
-              spinner                                       = document.createElement('img');
-              spinner.src                                   = '/images/spinner.gif';
+              spinner                                             = document.createElement('img');
+              spinner.src                                         = '/images/spinner.gif';
+
               
               log.initdom(root);
               
@@ -519,6 +521,25 @@
               models.faceapi.load();
               
         }//load-all
+        
+        
+        ku.time   = function(e){
+        
+              if(e.key=='Enter'){
+                    skip();
+              }
+              
+        }//time
+        
+        
+        ku.timestamp    = function(e){
+        
+              if(e.key=='Enter'){
+                    skip.ts();
+              }
+              
+        }//timestamp
+        
         
         
   //:
@@ -545,6 +566,8 @@
         
               if(typeof blob=='string'){
                     debugger;
+                    log.error('internal system error : invalid file format');
+                    return;
               }
               
               set(file,blob);
@@ -693,10 +716,8 @@
   
   
         function set(file,blob){
-        
-        
+                
               stop();
-              cancelAnimationFrame(rtimer);
 
               cur.file    = file;
               cur.blob    = blob;
@@ -749,23 +770,23 @@
               height                          = video.videoHeight;
                                                                                 //console.log(width,height);
                                                                                 //console.log(video.videoWidth,video.videoHeight);
-              var root    = $('#canvas-root');
-              var rw      = root.offsetWidth;
-              var rh      = 800;//root.offsetHeight;
+              var root                        = $('#canvas-root');
+              var rw                          = root.offsetWidth;
+              var rh                          = 800;//root.offsetHeight;
                                                                                 console.log('root',rw,rh);
-              var w     = width;
-              var h     = height;
-              var ar    = w/h;
+              var w                           = width;
+              var h                           = height;
+              var ar                          = w/h;
                                                                                 console.log('source',w,h,ar);
-              var h1    = rh;
-              var w1    = ar*h1;
+              var h1                          = rh;
+              var w1                          = ar*h1;
               if(w1>rw){
-                    w1    = rw;
-                    h1    = rw/ar;
+                    w1                        = rw;
+                    h1                        = rw/ar;
               }
               
-              cw    = w1;
-              ch    = h1;
+              cw                              = w1;
+              ch                              = h1;
                                                                                 console.log('canvas',cw,ch);
               canvas.width                    = cw;
               canvas.style.width              = cw+'px';
@@ -773,16 +794,16 @@
               canvas.style.height             = ch+'px';
 
 
-              var max   = 200;
-              var h2    = max;
-              var w2    = ar*h2;
+              var max                         = 200;
+              var h2                          = max;
+              var w2                          = ar*h2;
               if(w2>max){
-                    w2    = max;
-                    h2    = w2/ar;
+                    w2                        = max;
+                    h2                        = w2/ar;
               }
                                                                                 console.log('video',w2,h2);
-              video.style.width     = w2+'px';
-              video.style.height    = h2+'px';
+              video.style.width               = w2+'px';
+              video.style.height              = h2+'px';
               
               draw();
               
@@ -794,7 +815,7 @@
   
         function click(e){
         
-              if(btn.value=='start'){
+              if(mainbtn.value=='start'){
                     start();
               }else{
                     stop();
@@ -813,7 +834,7 @@
                     return;
               }
               
-              btn.value           = 'stop';
+              mainbtn.value       = 'stop';
               abort               = false;
               
               results.replaceChildren();
@@ -824,8 +845,8 @@
 
         function stop(){
         
-              btn.value   = 'start';
-              abort       = true;
+              mainbtn.value   = 'start';
+              abort           = true;
               
         }//stop
         
@@ -845,6 +866,11 @@
         
               var str             = timestamp.value;
               var milli           = strtomilli(str,'ts1');
+              
+              if(isNaN(milli)){
+                    return;
+              }
+              
               var time            = milli/1000;
               video.currentTime   = time;
               
