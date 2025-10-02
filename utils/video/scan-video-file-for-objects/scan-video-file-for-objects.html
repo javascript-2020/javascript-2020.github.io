@@ -173,7 +173,7 @@
   #canvas-root
     {margin-top:10px;text-align:center;position:relative;display:flex;justify-content:center}
   video
-    {position:absolute;left:0;top:0;width:450px;border:1px solid lightgray;padding:5px;box-sizing:border-box}
+    {position:absolute;left:0;top:0;width:450px;border:1px solid lightgray;padding:5px;box-sizing:border-box;background:white;z-index:1}
   canvas
     {border:1px solid lightgray;padding:5px;box-sizing:border-box;width:450px}
     
@@ -377,6 +377,12 @@
         img.src   = 'moon.png';
 
 
+        var cw;
+        var ch;
+
+
+      
+
   //:
   
   
@@ -400,6 +406,7 @@
               
               video                         = $('video');
               video.onloadedmetadata        = meta;
+              video.onloadeddata            = loaded;
               video.onseeked                = seeked;
               video.onplaying               = playing;
               video.onpause                 = stopped;
@@ -657,8 +664,14 @@
         }//getfiles
 
 
-        var cw;
-        var ch;
+
+        
+        function loaded(){
+                                                                                console.log('loaded');
+              draw();
+              
+        }//loaded
+
         
         function meta(){
         
@@ -705,6 +718,8 @@
                                                                                 console.log('video',w2,h2);
               video.style.width     = w2+'px';
               video.style.height    = h2+'px';
+              
+              draw();
               
         }//meta
 
@@ -847,10 +862,10 @@
               
 
               //ctx.clearRect(0,0,cw,ch);
-              canvas.width    = bw;
-              canvas.height   = bh;
+              canvas.width          = bw;
+              canvas.height         = bh;
               canvas.style.width    = bw+'px';
-              canvas.style.height    = bh+'px';
+              canvas.style.height   = bh+'px';
               
               ctx.save();
               
