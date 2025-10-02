@@ -146,6 +146,9 @@
 
   #models
     {margin-bottom:10px}
+  #models-label [type=button]
+    {margin-left:20px}
+    
   .model
     {display:flex;align-items:center}
   .model-enabled
@@ -215,6 +218,11 @@
                   
         
                   <div id=models>
+                        <div #models-label>
+                              models
+                              <input value='load all' type=button>
+                        </div>
+                        
                         <div id=ml5 class=model>
                               <input type=checkbox checked class=model-enabled>
                               <span class=model-name>
@@ -439,7 +447,7 @@
               
               models.ml5.root                               = $('#models #ml5');
               models.ml5.chk                                = $(models.ml5.root,'[type=checkbox]');
-              modedls.ml5.status                            = $(models.ml5.root,'.model-status');
+              models.ml5.status                             = $(models.ml5.root,'.model-status');
               $('#models #ml5 [value=load]').onclick        = e=>models.ml5.load();
               
               models.faceapi.root                           = $('#models #faceapi');
