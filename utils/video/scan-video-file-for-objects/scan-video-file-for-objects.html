@@ -39,7 +39,7 @@
 
         var mod   = {};
         
-        var ext,$,datatype,menumod,keydown
+        var ext,$,datatype,menumod,keydown,hs
         ;
 
         var menu;
@@ -119,8 +119,9 @@
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js'
+              'js/string/hs.js',
         );
-        [$,datatype,menumod,keydown]   = await promise;
+        [$,datatype,menumod,keydown,hs]   = await promise;
 
         init.stack.complete;
 
@@ -133,11 +134,43 @@
             <style>
   html
     {height:100%}
-
+  body
+    {font-family:arial;height:calc(100% - 40px);margin:20px}
 
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
 
+
+  #center
+    {width: 1000px;margin:0px auto;display:flex;overflow:hidden;flex-direction:column;height:100%;}
+
+  #loading
+    {font-weight:bold;color:blue;height:20px;margin:0px 0px 10px;text-align:center}
+
+
+  [value=start]
+    {display:block;margin-top:10px;
+
+  #filename
+    {text-align:center;height:20px;margin-top:10px;margin-right:20px}
+
+  #hs
+    {}
+    
+
+
+  #progress
+    {height: 25px;border:1px solid lightgray;padding:3px;margin-top:10px}
+  #bar
+    {height: 100%;width:0px;background-color:rgb(206,232,240)}
+    
+
+    
+  input
+    {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  input[type=button]
+    {cursor:point}
+    
     
             </style>
             
@@ -145,20 +178,22 @@
       </head>
       
       
-      <body style="font-family: arial; height: calc(100% - 40px); margin: 20px;">
+      <body>
     
-            <div id="center" style="width: 1000px; margin: 0px auto; display: flex; overflow: hidden; flex-direction: column; height: 100%;">
+            <div id=center>
+
+
         
-                  <h3 id="loading" style="font-weight: bold; color: blue; height: 20px; margin: 0px 0px 10px; text-align: center;">
+                  <h3 id=loading>
                         loading model, please wait ...
                   </h3>
+
 
                   <filemod api>
                         <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   </filemod>
                   
-                  <select style="margin: 10px 0px; font-size: 16px; padding: 5px; font-weight: bold; cursor: pointer; width: 100%;"></select>
-            
+
                   <div style="display: flex; align-items: center; margin-top: 10px; justify-content: center; gap: 30px;">
                       <div style="display: flex; align-items: center;">
                           <div style="margin-right: 10px;">
@@ -182,10 +217,16 @@
                       </div>
                   </div>
             
-                  <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; padding: 5px 10px; display: block; margin-top: 10px;" type="button" value="start">
+
+                  <input value=start type=button>
             
-                  <div id="filename" style="text-align: center; height: 20px; margin-top: 10px;">
+                  <div>
+                        <div id=filename>
+                        </div>
+                        <div id=hs>
+                        </div>
                   </div>
+
             
                   <div style="margin-top: 10px; text-align: center;">
                         <video style="border: 1px solid lightgray; padding: 5px; box-sizing: border-box; width: 450px;" controls="">
@@ -193,11 +234,13 @@
                         <canvas style="border: 1px solid lightgray; padding: 5px; box-sizing: border-box; width: 450px;">
                         </canvas>
                   </div>
+
             
-                  <div id="progress" style="height: 25px; border: 1px solid lightgray; padding: 3px; margin-top: 10px;">
-                        <div id="bar" style="height: 100%; width: 0px; background-color: rgb(206, 232, 240);">
+                  <div id=progress>
+                        <div id=bar>
                         </div>
                   </div>
+
             
                   <div style="margin-top: 10px; display: flex; justify-content: center; gap: 10px; align-items: center;">
                       <input id="time" style="width: 100px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center;" spellcheck="false" autocomplete="off" value="0">
@@ -214,6 +257,7 @@
                             00:00:00
                       </div>
                   </div>
+
             
                   <div style="text-align: center; margin-top: 10px;">
                       <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; margin-right: 10px;" type="button" value="<<" id="zero">
@@ -221,6 +265,7 @@
                       <input id="seek" style="width: 50px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 10px;" spellcheck="false" autocomplete="off" value="1">
                       <input style="cursor: pointer; font-size: 16px; box-sizing: border-box;" type="button" value="forward" id="forward">
                   </div>
+
             
                   <div style="flex: 1 1 0%; display: flex; margin-top: 20px; justify-content: center; overflow: hidden;">
                         <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; align-self: start; margin-right: 10px;" type="button" value="clear" id="clear">
@@ -241,6 +286,7 @@
                             </div>
                         </div>
                   </div>
+
             
             </div center>
         
@@ -270,6 +316,10 @@
         };
         
         
+        
+        var cur           = {};
+        cur.file          = null;
+        cur.blob          = null;
         
         var abort         = false;
         var processing    = false;
@@ -317,35 +367,8 @@
               $('#loading').remove();
               
               filemod.initdom(root);
+
               
-              $('#file').onclick            = e=>{
-              
-                                                    stop();
-                                                    var input   = document.createElement('input');
-                                                    input.type    = 'file';
-                                                    input.onchange    = onchange;
-                                                    input.click();
-                                                    
-                                                    function onchange(){
-                                                    
-                                                          var file            = input.files[0];
-                                                          var url             = window.URL.createObjectURL(file);
-                                                          set(file.name,url);
-                                                          
-                                                    }//change
-                                                    
-                                              }
-                                              
-              $('select').onchange          = e=>{
-              
-                                                    stop();
-                                                    var file            = e.target.value;
-                                                    file                = '/video-'+file;
-                                                    set(file);
-                                                    
-                                              };
-                                              
-                                              
               $('#rotate').onchange         = e=>draw();
               step                          = $('#step');
               step.value                    = initialstep;
@@ -416,9 +439,7 @@
                     debugger;
               }
               
-              stop();
-              var url   = window.URL.createObjectURL(blob);
-              set(file.filename,url);
+              set(file,blob);
               
               complete(file);
               
@@ -515,15 +536,19 @@
   //:
   
   
-        function set(filename,url){
+        function set(file,blob){
         
+        
+              stop();
               cancelAnimationFrame(rtimer);
+
+              cur.file    = file;
+              cur.blob    = blob;
               
-              if(!url){
-                    url   = filename;
-              }
-              $('#filename').textContent    = filename;
+              $('#filename').textContent    = file.filename;
+              $('#hs').textContent          = hs(blob.size);
               
+              var url             = window.URL.createObjectURL(blob);
               video.src           = url;
               video.currentTime   = 0;
               
