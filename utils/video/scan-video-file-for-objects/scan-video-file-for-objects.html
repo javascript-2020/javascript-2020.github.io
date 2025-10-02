@@ -170,7 +170,14 @@
     {}
     
 
-
+  #canvas-root
+    {margin-top:10px;text-align:center}
+  video
+    {border:1px solid lightgray;padding:5px;box-sizing:border-box;width:450px}
+  canvas
+    {border:1px solid lightgray;padding:5px;box-sizing:border-box;width:450px}
+    
+    
   #progress
     {height:25px;border:1px solid lightgray;padding:3px;margin-top:10px}
   #bar
@@ -244,11 +251,9 @@
                   </div>
 
             
-                  <div style="margin-top: 10px; text-align: center;">
-                        <video style="border: 1px solid lightgray; padding: 5px; box-sizing: border-box; width: 450px;" controls="">
-                        </video>
-                        <canvas style="border: 1px solid lightgray; padding: 5px; box-sizing: border-box; width: 450px;">
-                        </canvas>
+                  <div id=canvas-root>
+                        <video controls></video>
+                        <canvas></canvas>
                   </div>
 
             
@@ -657,12 +662,19 @@
               duration                        = video.duration;
               $('#dur').textContent           = duration.toFixed(1);
               $('#dur-time').textContent      = millitostr(duration*1000,'ts1');
+
+              
               width                           = video.offsetWidth;
               height                          = video.offsetHeight;
+                                                                                console.log(width,height);
+                                                                                console.log(video.videoWidth,video.videoHeight);
+              
+
               canvas.width                    = width;
               canvas.style.width              = width+'px';
               canvas.height                   = height;
               canvas.style.height             = height+'px';
+
               
         }//meta
 
