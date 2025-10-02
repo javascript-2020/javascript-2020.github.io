@@ -171,9 +171,9 @@
     
 
   #canvas-root
-    {margin-top:10px;text-align:center}
+    {margin-top:10px;text-align:center;position:relative;display:flex;justify-content:center}
   video
-    {border:1px solid lightgray;padding:5px;box-sizing:border-box;width:450px}
+    {position:absolute;left:0;top:0;width:450px;border:1px solid lightgray;padding:5px;box-sizing:border-box}
   canvas
     {border:1px solid lightgray;padding:5px;box-sizing:border-box;width:450px}
     
@@ -666,14 +666,27 @@
               
               width                           = video.offsetWidth;
               height                          = video.offsetHeight;
-                                                                                console.log(width,height);
-                                                                                console.log(video.videoWidth,video.videoHeight);
-              
-
-              canvas.width                    = width;
-              canvas.style.width              = width+'px';
-              canvas.height                   = height;
-              canvas.style.height             = height+'px';
+                                                                                //console.log(width,height);
+                                                                                //console.log(video.videoWidth,video.videoHeight);
+              var root    = $('#canvas-root');
+              var rw      = root.offsetWidth;
+              var rh      = root.offsetHeight;
+                                                                                console.log('root',rw,rh);
+              var w     = video.videoWidth;
+              var h     = video.videoHeight;
+                                                                                console.log('video',w,h);
+              var ar    = w/h;
+              var h1    = rh;
+              var w1    = ar*h;
+              if(w1>rw){
+                    w1    = rw;
+                    h1    = rw/ar;
+              }
+                                                                                console.log(w1,h1);
+              canvas.width                    = w1;
+              canvas.style.width              = w1+'px';
+              canvas.height                   = h1;
+              canvas.style.height             = h1+'px';
 
               
         }//meta
