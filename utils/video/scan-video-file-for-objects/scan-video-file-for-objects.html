@@ -836,23 +836,29 @@
         
         function draw(){
         
-              ctx.clearRect(0,0,width,height);
               
               var deg   = parseFloat($('#rotate').value);
               var rad   = deg2rad(deg);
 
               
-              var bw    = Math.abs(w*Math.cos(rad))+Math.abs(h*Math.sin(rad));
-              var bh    = Math.abs(w*Math.sin(rad))+Math.abs(h*Math.cos(rad));
-
+              var bw    = Math.abs(cw*Math.cos(rad))+Math.abs(ch*Math.sin(rad));
+              var bh    = Math.abs(cw*Math.sin(rad))+Math.abs(ch*Math.cos(rad));
+                                                                                console.log('bounding',bw,bh);
               
-              var x     = width/2;
-              var y     = height/2;
+
+              //ctx.clearRect(0,0,cw,ch);
+              canvas.width    = bw;
+              canvas.height   = bh;
+              canvas.style.width    = bw+'px';
+              canvas.style.height    = bh+'px';
               
               ctx.save();
+              
+              var x     = bw/2;
+              var y     = bh/2;
               ctx.translate(x,y);
               ctx.rotate(rad);
-              ctx.drawImage(video,-width/2,-height/2,width,height);
+              ctx.drawImage(video,0,0,width,height,-cw/2,-ch/2,cw,ch);
               ctx.restore();
               
         }//draw
