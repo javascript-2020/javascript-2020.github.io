@@ -146,8 +146,14 @@
 
   #models
     {margin-bottom:10px}
+  .model
+    {display:flex;align-items:center}
+  .model-enabled
+    {margin-right:20px}
   .model-name
     {display:inline-block;width:100px}
+  .model-status
+    {}
     
   #ml5
     {}
@@ -156,11 +162,12 @@
     
     
 
-  [value=start]
+  #main-btn
     {display:block;margin-top:10px}
 
+
   #filename-root
-    {text-align:center;height:20px;margin-top:10px}
+    {text-align:center;height:20px;margin-top:10px;font-weight:bold;color:blue}
   #filename
     {margin-right:20px}
   #hs
@@ -185,7 +192,9 @@
   input
     {font-size:16px;padding:5px 10px;box-sizing:border-box}
   input[type=button]
-    {cursor:point}
+    {cursor:pointer}
+  input[type=checkbox]
+    {width:20px;height:20px;cursor:pointer}
     
     
             </style>
@@ -206,21 +215,25 @@
                   
         
                   <div id=models>
-                        <div id=ml5>
-                              <input type=checkbox checked>
+                        <div id=ml5 class=model>
+                              <input type=checkbox checked class=model-enabled>
                               <span class=model-name>
                                     ml5
                               </span>
-                              <input value=load type=button>
+                              <div class=model-status>
+                                    <input value=load type=button>
+                              </div>
                               <div id=detections>
                               </div>
                         </div>
-                        <div id=faceapi>
-                              <input type=checkbox checked>
+                        <div id=faceapi class=model>
+                              <input type=checkbox checked class=model-enabled>
                               <span class=model-name>
                                     face-api
                               </span>
-                              <input value=load type=button>
+                              <div class=model-status>
+                                    <input value=load type=button>
+                              </div>
                               <div id=detections>
                               </div>
                         </div>
@@ -256,7 +269,7 @@
                   </div>
             
 
-                  <input value=start type=button>
+                  <input id=main-btn value=start type=button>
             
                   <div id=filename-root>
                         <span id=filename>
@@ -344,11 +357,15 @@
         
         models.faceapi                  = {};
         models.faceapi.loaded           = false;
+        models.faceapi.root             = null;
         models.faceapi.chk              = null;
+        models.faceapi.status           = null;
         
         models.ml5                      = {}
         models.ml5.loaded               = false;
+        models.ml5.root                 = null;
         models.ml5.chk                  = null;
+        models.ml5.status               = null;
         
         
         var ml5           = {};
@@ -389,6 +406,7 @@
         var results;
         var item;
         var rtimer;
+        var spinner;
         
         var sound         = false;
         
@@ -419,11 +437,14 @@
         
               filemod.initdom(root);
               
-              
-              models.ml5.chk                                = $('#models #ml5 [type=checkbox]');
+              models.ml5.root                               = $('#models #ml5');
+              models.ml5.chk                                = $(models.ml5.root,'[type=checkbox]');
+              modedls.ml5.status                            = $(models.ml5.root,'.model-status');
               $('#models #ml5 [value=load]').onclick        = e=>models.ml5.load();
               
-              models.faceapi.chk                            = $('#models #face-api [type-checkbox]');
+              models.faceapi.root                           = $('#models #faceapi');
+              models.faceapi.chk                            = $(models.faceapi.root,'[type-checkbox]');
+              models.faceapi.status                         = $(models.faceapi.root,'.model-status');
               ('#models #faceapi [value=load]').onclick     = e=>models.faceapi.load();
 
               
@@ -468,6 +489,8 @@
               item                                          = $('#item');
               item.remove();
               
+              spinner                                       = document.createElement('spinner');
+              spinner.src                                   = '/images/spinner.gif';
               
               log.initdom(root);
               
@@ -525,6 +548,10 @@
 
         models.ml5.load   = async function(){
         
+              var status    = models.ml5.status;
+              var img       = spinner.cloneNode(true);
+              status.replaceChildren(img);
+              
               var err;
               try{
               
@@ -541,6 +568,7 @@
               }//catch
               if(err){
                     var error   = err.toString();
+                    status.replaceChildren('error');
                     log.red(error);
                     return;
               }
@@ -565,11 +593,14 @@
                     }//catch
                     if(err){
                           var error   = err.toString();
+                          status.replaceChildren('error');
                           log.red(error);
                           return;
                     }
                     
-                    models['ml5'].loaded    = true;
+                    models.ml5.loaded    = true;
+                    status.replaceChildren('loaded');
+                    
 
                     
               }//complete
@@ -579,6 +610,10 @@
         
         models.faceapi.load   = async function(){
         
+              var status    = modles.faceapi.status;
+              var img       = spinner.cloneNode();
+              status.replaceChildren(img);
+              
               var err;
               try{
               
@@ -595,6 +630,7 @@
               }//catch
               if(err){
                     var error   = err.toString();
+                    status.replaceChildren('error');
                     log.red(error);
                     return;
               }
@@ -616,12 +652,13 @@
                     }//catch
                     if(err){
                           var error   = err.toString();
+                          status.replaceChildren('error');
                           log.red(error);
                           return;
                     }
                     
-                    models['face-api'].loaded   = true;
-                    
+                    models.faceapi.loaded   = true;
+                    status.replaceChildren('loaded');
                     
               }//complete
               
