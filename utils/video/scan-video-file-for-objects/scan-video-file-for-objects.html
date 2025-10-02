@@ -656,6 +656,9 @@
               
         }//getfiles
 
+
+        var cw;
+        var ch;
         
         function meta(){
         
@@ -664,30 +667,44 @@
               $('#dur-time').textContent      = millitostr(duration*1000,'ts1');
 
               
-              width                           = video.offsetWidth;
-              height                          = video.offsetHeight;
+              width                           = video.videoWidth;
+              height                          = video.videoHeight;
                                                                                 //console.log(width,height);
                                                                                 //console.log(video.videoWidth,video.videoHeight);
               var root    = $('#canvas-root');
               var rw      = root.offsetWidth;
-              var rh      = root.offsetHeight;
+              var rh      = 800;//root.offsetHeight;
                                                                                 console.log('root',rw,rh);
               var w     = video.videoWidth;
               var h     = video.videoHeight;
-                                                                                console.log('video',w,h);
               var ar    = w/h;
+                                                                                console.log('video',w,h,ar);
               var h1    = rh;
-              var w1    = ar*h;
+              var w1    = ar*h1;
               if(w1>rw){
                     w1    = rw;
                     h1    = rw/ar;
               }
-                                                                                console.log(w1,h1);
-              canvas.width                    = w1;
-              canvas.style.width              = w1+'px';
-              canvas.height                   = h1;
-              canvas.style.height             = h1+'px';
+              
+              cw    = w1;
+              ch    = h1;
+                                                                                console.log('canvas',cw,ch);
+              canvas.width                    = cw;
+              canvas.style.width              = cw+'px';
+              canvas.height                   = ch;
+              canvas.style.height             = ch+'px';
 
+
+              var max   = 200;
+              var h2    = max;
+              var w2    = ar*h2;
+              if(w2>max){
+                    w2    = max;
+                    h2    = w2/ar;
+              }
+                                                                                console.log('video',w2,h2);
+              video.style.width     = w2+'px';
+              video.style.height    = h2+'px';
               
         }//meta
 
@@ -823,6 +840,12 @@
               
               var deg   = parseFloat($('#rotate').value);
               var rad   = deg2rad(deg);
+
+              
+              var bw    = Math.abs(w*Math.cos(rad))+Math.abs(h*Math.sin(rad));
+              var bh    = Math.abs(w*Math.sin(rad))+Math.abs(h*Math.cos(rad));
+
+              
               var x     = width/2;
               var y     = height/2;
               
