@@ -47,17 +47,12 @@
         var log;
         
         
-        var enabled       = false;
-
 
 
         
         async function init(){
                                                                                 console.log('init');
 
-              await load.promise;
-
-              
               menu                      = menumod();
 
               filemod                   = mod.filemod();
@@ -75,13 +70,6 @@
 
               initdom(document.body);
               
-              
-              if(enabled){
-                    await load();
-              }else{
-                    $('#loading').remove();
-              }
-
               
         }//init
 
@@ -155,9 +143,18 @@
   #center
     {width: 1000px;margin:0px auto;display:flex;overflow:hidden;flex-direction:column;height:100%;}
 
-  #loading
-    {font-weight:bold;color:blue;height:20px;margin:0px 0px 10px;text-align:center}
 
+  #models
+    {margin-bottom:10px}
+  .model-name
+    {display:inline-block;width:100px}
+    
+  #ml5
+    {}
+  #faceapi
+    {}
+    
+    
 
   [value=start]
     {display:block;margin-top:10px}
@@ -208,8 +205,26 @@
                   </div>
                   
         
-                  <h3 id=loading>
-                  </h3>
+                  <div id=models>
+                        <div id=ml5>
+                              <input type=checkbox checked>
+                              <span class=model-name>
+                                    ml5
+                              </span>
+                              <input value=load type=button>
+                              <div id=detections>
+                              </div>
+                        </div>
+                        <div id=faceapi>
+                              <input type=checkbox checked>
+                              <span class=model-name>
+                                    face-api
+                              </span>
+                              <input value=load type=button>
+                              <div id=detections>
+                              </div>
+                        </div>
+                  </div>
 
 
                   <filemod api>
@@ -325,13 +340,22 @@
   
   
         
+        var models                      = {};
+        
+        models.faceapi                  = {};
+        models.faceapi.loaded           = false;
+        models.faceapi.chk              = null;
+        
+        models.ml5                      = {}
+        models.ml5.loaded               = false;
+        models.ml5.chk                  = null;
         
         
         var ml5           = {};
         var opts          = {};
-        
         var detector;
         opts.object       = {};
+
         
         var faceapi;
         opts.faceapi      = {
@@ -346,7 +370,6 @@
         cur.blob          = null;
         
         var abort         = false;
-        var processing    = false;
         
         var initialstep   = 1;
         var inf           = 999999;
@@ -395,47 +418,54 @@
 
         
               filemod.initdom(root);
+              
+              
+              models.ml5.chk                                = $('#models #ml5 [type=checkbox]');
+              $('#models #ml5 [value=load]').onclick        = e=>models.ml5.load();
+              
+              models.faceapi.chk                            = $('#models #face-api [type-checkbox]');
+              ('#models #faceapi [value=load]').onclick     = e=>models.faceapi.load();
 
               
-              $('#rotate').onchange         = e=>draw();
-              step                          = $('#step');
-              step.value                    = initialstep;
+              $('#rotate').onchange                         = e=>draw();
+              step                                          = $('#step');
+              step.value                                    = initialstep;
               
-              btn                           = $('[value=start]')
-              btn.onclick                   = click;
+              btn                                           = $('[value=start]')
+              btn.onclick                                   = click;
               
-              video                         = $('video');
-              video.onloadedmetadata        = meta;
-              video.onloadeddata            = loaded;
-              video.onseeked                = seeked;
-              video.onplaying               = playing;
-              video.onpause                 = stopped;
-              video.onended                 = stopped;
+              video                                         = $('video');
+              video.onloadedmetadata                        = meta;
+              video.onloadeddata                            = loaded;
+              video.onseeked                                = seeked;
+              video.onplaying                               = playing;
+              video.onpause                                 = stopped;
+              video.onended                                 = stopped;
               
-              canvas                        = $('canvas');
-              ctx                           = canvas.getContext('2d');
-              canvas.width                  = 300;
-              canvas.height                 = 150;
+              canvas                                        = $('canvas');
+              ctx                                           = canvas.getContext('2d');
+              canvas.width                                  = 300;
+              canvas.height                                 = 150;
               
-              bar                           = $('#bar');
+              bar                                           = $('#bar');
               
-              time                          = $('#time');
-              time.onfocus                  = e=>time.select();
-              time.onblur                   = skip;
-              time.onkeyup                  = skip;
-              timestamp                     = $('#timestamp');
-              timestamp.onfocus             = e=>timestamp.select();
-              timestamp.onblur              = skip.ts;
-              timestamp.onkeyup             = skip.ts;
+              time                                          = $('#time');
+              time.onfocus                                  = e=>time.select();
+              time.onblur                                   = skip;
+              time.onkeyup                                  = skip;
+              timestamp                                     = $('#timestamp');
+              timestamp.onfocus                             = e=>timestamp.select();
+              timestamp.onblur                              = skip.ts;
+              timestamp.onkeyup                             = skip.ts;
               
-              $('#zero').onclick            = skip.start;
-              $('#back').onclick            = skip.back;
-              seek                          = $('#seek');
-              $('#forward').onclick         = skip.forward;
+              $('#zero').onclick                            = skip.start;
+              $('#back').onclick                            = skip.back;
+              seek                                          = $('#seek');
+              $('#forward').onclick                         = skip.forward;
               
-              $('#clear').onclick           = e=>results.replaceChildren();
-              results                       = $('#results');
-              item                          = $('#item');
+              $('#clear').onclick                           = e=>results.replaceChildren();
+              results                                       = $('#results');
+              item                                          = $('#item');
               item.remove();
               
               
@@ -493,21 +523,7 @@
   //:
 
 
-        load.ct   = 0;
-        
-        async function load(){
-                                                                                console.log('load');
-              $('#loading').textContent   = 'loading model, please wait ...';
-              
-              load.promise   = new Promise(res=>load.resolve=res);
-              
-              load.object();
-              load.face();
-              
-        }//load
-        
-        
-        load.object   = async function(){
+        models.ml5.load   = async function(){
         
               var err;
               try{
@@ -553,14 +569,15 @@
                           return;
                     }
                     
-                    load.complete();
-                                        
+                    models['ml5'].loaded    = true;
+
+                    
               }//complete
               
         }//object
         
         
-        load.face   = async function(){
+        models.faceapi.load   = async function(){
         
               var err;
               try{
@@ -603,25 +620,14 @@
                           return;
                     }
                     
-                    load.complete();
+                    models['face-api'].loaded   = true;
+                    
                     
               }//complete
               
         }//face
         
         
-        load.complete   = function(){
-                                                                console.log('load.complete');
-              load.ct++;
-              if(load.ct<2){
-                    return;
-              }
-              
-              $('#loading').remove();
-              load.resolve();
-              log.green('ready');
-              
-        }//complete
         
         
   //:
@@ -667,8 +673,8 @@
 
         
         function loaded(){
-                                                                                console.log('loaded');
-              draw();
+                                                                                console.log('loaded',video.readyState);
+              video.currentTime   = 0;
               
         }//loaded
 
@@ -745,7 +751,6 @@
         
               btn.value           = 'stop';
               abort               = false;
-              processing          = true;
               
               results.replaceChildren();
               next();
@@ -807,8 +812,8 @@
 
         function playing(){
                                                                                 //console.log('playing');
-              draw();
-              rtimer    = requestAnimationFrame(playing);
+              //draw();
+              //rtimer    = requestAnimationFrame(playing);
               
         }//playing
         
@@ -829,36 +834,41 @@
               time.value            = t.toFixed(2);
               timestamp.value       = millitostr(t*1000,'ts');
               bar.style.width       = t/duration*100+'%';
+              
               draw();
               
               if(abort)return;
-              if(!processing)return;
               
-              if(!enabled){
-                    next();
-                    return;
+              
+              ondetect.ct       = 0;
+              ondetect.total    = 1;
+              
+              if(models.ml5.loaded && models.ml5.chk.checked){
+                    ondetect.total++;
+                    detector.detect(canvas,ondetect.ml5);
+              }
+              if(models.faceapi.loaded && models.faceapi.chk.checked){
+                    ondetect.total++;
+                    faceapi.detectAllFaces(canvas).then(ondetect.faceapi);
               }
               
-              
-            //detect:
-            
-              detector.detect(canvas,ondetect.object);
-              faceapi.detectAllFaces(canvas).then(ondetect.faceapi);
+              ondetect.complete();
               
               
         }//onseeked
 
         
         function draw(){
-        
-              
+                                                                                //console.log('draw');
+                                                                                //console.log('video',width,height);
+                                                                                //console.log('canvas',cw,ch);
               var deg   = parseFloat($('#rotate').value);
               var rad   = deg2rad(deg);
 
               
               var bw    = Math.abs(cw*Math.cos(rad))+Math.abs(ch*Math.sin(rad));
               var bh    = Math.abs(cw*Math.sin(rad))+Math.abs(ch*Math.cos(rad));
-                                                                                console.log('bounding',bw,bh);
+                                                                                //console.log('bounding',bw,bh);
               
 
               //ctx.clearRect(0,0,cw,ch);
@@ -868,7 +878,6 @@
               canvas.style.height   = bh+'px';
               
               ctx.save();
-              
               var x     = bw/2;
               var y     = bh/2;
               ctx.translate(x,y);
@@ -883,11 +892,15 @@
   
         
         var ondetect      = {};
+        ondetect.ct       = 0;
+        ondetect.total    = 1;
         
-        ondetect.object   = function(error,detections){
+        ondetect.ml5   = function(err,detections){
         
-              if(error){
-                    console.error(error);
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                                                                                console.error(err);
                     return;
               }
                                                                                 //detections.forEach(detection=>console.log(detection.label));
@@ -906,39 +919,58 @@
                     }
                     
               });
-              
-              next();
+  
+              ondetect.complete();            
               
         }//ondetect
         
         
         ondetect.faceapi    = function(detections){
         
-              if(!detections.length)return;
+              if(detections.length){
               
-              //console.log(detections);
-              
-              var detection   = detections[0];
-              var label   = 'face';
-              var score   = detection._score.toFixed(2);
-              display(label,score);
-              
-              /*
-              detections.forEach(face=>{
-              
-                    var box=face._box;
-                    var x   = box._x*dw;
-                    var y   = box._y*dh;
-                    var w   = box._width*dw;
-                    var h   = box._height*dh;
-                    console.log(x,y,w,h);
-                    ctx.strokeRect(x,y,w,h);
+                    //console.log(detections);
                     
-              });
-              */
+                    var detection   = detections[0];
+                    var label   = 'face';
+                    var score   = detection._score.toFixed(2);
+                    display(label,score);
+                    
+                    /*
+                    detections.forEach(face=>{
+                    
+                          var box=face._box;
+                          var x   = box._x*dw;
+                          var y   = box._y*dh;
+                          var w   = box._width*dw;
+                          var h   = box._height*dh;
+                          console.log(x,y,w,h);
+                          ctx.strokeRect(x,y,w,h);
+                          
+                    });
+                    */
+              }
+              
+              ondetect.complete();
               
         }//faceapi
         
+        
+        ondetect.complete   = function(){
+        
+              ondetect.ct++;
+              
+              if(ondetect.ct<ondetect.total){
+                    return;
+              }
+              
+              next();
+              
+        }//complete
+
+
+  //:
+  
         
         function display(label,confidence){
         
@@ -991,7 +1023,6 @@
         function done(){
         
               audio.complete.play();
-              processing    = false;
               btn.value     = 'start';
               
         }//done
