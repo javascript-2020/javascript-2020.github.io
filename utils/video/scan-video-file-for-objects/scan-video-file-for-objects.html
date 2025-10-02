@@ -191,6 +191,14 @@
     {height:100%;width:0px;background-color:rgb(206,232,240)}
     
 
+  #skip-root
+    {text-align:center;margin-top:10px;display:flex;gap:5px}
+  #seek
+    {width:50px;font-weight:bold; text-align:center;}
+
+
+
+
     
   input
     {font-size:16px;padding:5px 10px;box-sizing:border-box}
@@ -316,11 +324,12 @@
                   </div>
 
             
-                  <div style="text-align: center; margin-top: 10px;">
-                      <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; margin-right: 10px;" type="button" value="<<" id="zero">
-                      <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; margin-right: 10px;" type="button" value="back" id="back">
-                      <input id="seek" style="width: 50px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 10px;" spellcheck="false" autocomplete="off" value="1">
-                      <input style="cursor: pointer; font-size: 16px; box-sizing: border-box;" type="button" value="forward" id="forward">
+                  <div id=skip-root>
+                      <input id=skip-start value="|<" type=button>
+                      <input id=back value=back type=button>
+                      <input id=seek value=1 spellcheck=false autocomplete=off>
+                      <input id=forward value=forward type=button>
+                      <input id=skip-end value=">|" type=button>
                   </div>
 
             
@@ -492,10 +501,11 @@
               timestamp.onkeyup                                   = ku.timestamp
 
               
-              $('#zero').onclick                                  = skip.start;
+              $('#skip-start').onclick                            = skip.start;
               $('#back').onclick                                  = skip.back;
               seek                                                = $('#seek');
               $('#forward').onclick                               = skip.forward;
+              $('#skip-end').onclick                              = skip.end;
               
               $('#clear').onclick                                 = e=>results.replaceChildren();
               results                                             = $('#results');
@@ -528,6 +538,9 @@
               if(e.key=='Enter'){
                     skip();
               }
+              if(e.key=='Escape'){
+                    video.currentTime   = video.currentTime;
+              }
               
         }//time
         
@@ -536,6 +549,9 @@
         
               if(e.key=='Enter'){
                     skip.ts();
+              }
+              if(e.key=='Escape'){
+                    video.currentTime   = video.currentTime;
               }
               
         }//timestamp
@@ -883,6 +899,12 @@
               
         }//start
         
+        
+        skip.end    = function(){
+        
+              video.currentTime   = Infinity;
+              
+        }//end
 
         skip.back   = function(e){
         
