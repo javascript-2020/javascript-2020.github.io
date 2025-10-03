@@ -42,6 +42,7 @@
         var ext,$,datatype,menumod,keydown,hs
         ;
 
+        var hdr;
         var menu;
         var filemod;
         var log;
@@ -55,14 +56,15 @@
 
               menu                      = menumod();
 
+              hdr                       = mod.hdr();
               filemod                   = mod.filemod();
               log                       = mod.log();
               
-              
+              hdr.initmod({ext,$,menu});
               filemod.initmod({ext,$,menumod,menu,complete,source});
               log.initmod({ext,$});
               
-              
+              await hdr.init();
               await filemod.init();
               await log.init();
 
@@ -462,6 +464,8 @@
               
               menu.add.style();
 
+
+              hdr.initdom(root);
 
         
               filemod.initdom(root);
