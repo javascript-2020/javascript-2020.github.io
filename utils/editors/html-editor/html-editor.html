@@ -31,6 +31,10 @@
             </script>
 
 
+            <script src="https://cdn.jsdelivr.net/npm/prettier@2.8.8/standalone.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/prettier@2.8.8/parser-html.js"></script>
+
+
             <script>
 /*            
         navigator.serviceWorker.register('/service-worker.js')
@@ -257,6 +261,12 @@
   
   #run
     {color:blue;font-weight:bold}
+    
+  #prettier
+    {padding:2px;
+      content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAfCAMAAADHso01AAABO1BMVEVHcExctLXl5+nk5unk6Orm5+nm5+nm5+nl5una29T5u0Tg5efk6Om/kptusbXm5+jk5ehatLXvvF1jsbPhbmn3wFD2u0X6vEq9h75bs7W8h77l6Onk5uriZGHl5+lxra/0tVTbbW7l5ujpY2Hm5+nl5+jo387n6uv2vUtctbbm6Ork5ujl6Ozk5edZtLeqiKvpY2C+hoDyvFrtvFr3vEvsYmNdtbX6vEb3u0Tn6uq/ib/m5+lbtLT4vk5sqsO/ib7j5efm5+n5yjhWs7TmXV3lZWPnY2H5vUitkrK+h77aama6h7rAicBas7S5jLq8g733vEj3vEZasbO6i7voYmJbtrfkZWa7i7ztul/mY2K1ir5cs7TAhrxhsbPCir3zvVToZWL4vUfyvVXgamy8hr9itLO8irr2vE3jY2ERfpgJAAAAaXRSTlMAnTsSF2NfbCsC3gUPDiZQFNohFi1L2TWGQ6caCz1KIB0hW8IhQggNMZVwNx0+pAe0AxIlPnKLi60lvFK4QwmVVmgGgoE33TAbeBFjtTYhcsDScTXfUmI9LNgoxdBpRnRVcW9UnWttnJ1jjy+pAAACDUlEQVQoz6XQaW+iUBSAYQVaQbyWou2ooCxlsYqDoGNrKbi01H2p2n32/f//grn3qp1OMt/6xJzc5IT45kQir5NqRP/RSGl7mFdI/HdtFQp4j9dOOgxDJcK/eaHGJARBoFi4Vo5WV6vf4Ff8hVO3UCqVOhT+GlIcvljs9XpFpNfjGZOCXzP4v99uLIKfOej7Mhk9ljTPK5BofXG88cMetaDMo9TAfTpK6xbrddmZTAArWJZlOuk8Eg5ZQUBp/Dwe/yo97WetGMwhhtXVFfTwjeqs0/j7e9dOJgOWoyhKdJQ0BhiOQ2n9Vg5bUl673abdk1OsTnoeSgODDPZI6nqlYhlfTrCiqOsmXNthfujWfd/nnUl2axKImmatr/aQr18fHsY/pc73t56SdGxzNUUBoAa5tpTckliD40h8teg5FE19riK3oDUejzMBoapqG19tcQEtgvASydsjmDmyaV3XCRGl3X0Ern/wzO+azabG4gHX07P3dyhta16jY7EdDg2c1p8CwNd4WeZ5NGTDIEmShSOBr5Y7Q8ZLSt1VLTieqfhqo9lsMBjMpmaZKJNiuVIh4A8po7Qge3Mjdf0D12jSkBURaI7R0LNpwLUEb/VBnl/7VicG7RmFUkVU0ROnMX1JAkCWu0wCJpEmK5osi584TakeYXlhdwfb1aj1S+Xgenj7DlMSZWJdBPv+pr3GH71mYxE304wpAAAAAElFTkSuQmCC');
+    }
+    
   #horiz
     {margin-left:50px;border:none}
   #vert
@@ -317,6 +327,7 @@
                   </publish>
 
                   <button id=run>run</button>
+                  <img id=prettier class=icon title=prettier>
 
                   <span class=spc></span>
 
@@ -373,6 +384,7 @@
               publish.initdom();
               
               $('#run').onclick                     = run;
+              $(root,'#prettier').onclick           = btn.prettier;
 
               $('#horiz').onclick                   = horiz;
               $('#vert').onclick                    = vert;
@@ -443,6 +455,41 @@
               
         }//save
 
+
+        btn.prettier    = function(){
+        
+              var js    = editor.getvalue();
+              
+              var options   = {
+                    parser            : 'html',
+                    plugins           : prettierPlugins,
+                    
+                    tabWidth                      : 6,
+                    htmlWhitespaceSensitivity     : 'css'
+
+              };
+              
+              var err;
+              try{
+              
+                    js   = prettier.format(js,options);
+                    
+              }//catch
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    return;
+              }//err
+              
+              editor.setvalue(js);
+        
+        }//prettier
+        
 
   //:
   
