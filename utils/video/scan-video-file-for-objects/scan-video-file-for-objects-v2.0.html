@@ -1,0 +1,1305 @@
+
+<html>
+
+      <head>
+
+
+            <title>scan video file for objects / people</title>
+            <meta name=description content='scan video file for objects / people'>
+
+            <base href='https://ext-code.com/utils/video/scan-video-file-for-objects/scan-video-file-for-objects.html'>
+            <base href='https://javascript-2020.github.io/utils/video/scan-video-file-for-objects/scan-video-file-for-objects.html'>
+            <link rel=canonical href='https://ext-code.com/utils/video/scan-video-file-for-objects/scan-video-file-for-objects.html'>
+            
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAqFBMVEVHcEwAAAAAAAAICAgAAAAEBAQBAQEJFRUAAQEBAQEBAQEHBwcBAQIzzMwGBAQBAQE0y8s2zs4EBAQGBgYICAgGBgY5ycpk4N86y8sAAAABAQEAAAACAQEBAAABAQEBAQEBAAAdb28faWkGERECAgIxvLw0zs4zy8w2zc4mc3QCAgIDAgIeZ2gGDQ092toBAQFLxMRNwMMHBwcCAQEdZ2g72toFCwsOMTGZqYpCAAAAN3RSTlMA/FNS+wpVE97ZnGXl2QK2k2k0Gl1FFgEa9tMoMIJKwI/pXvOV1uG0XlxGfNbTM9ICAkV81jPSYr24aQAAASVJREFUKM+Nk+mWgyAMhaOoiIKIu3bfW7vN3vd/s1HLWHvUsfcP5+Q7BJLcQJ4pWqnULEVpdaRVSMlyyLihVjIakhGegWJArwwFNBX8wLZDpxl3QtsOfEBaiYOUEEtvYt0iJA0ktskI689pdTwido1x+11c49DS21i3QlAr7Ejqo+N6fUS+5I68fdd4TlY/nJ9XZD6WoQfGE3o7HbDj4MPpRif4GXszc7G5QJwkMVw2C3PmNfHU5MvtHiKXMTeC/XbJzekDI2phwaLYZUIwN46YwBZFf9ijRWXu7j1hAkCw5G3nFnVR7zU8kHzoa7Kw777C7m356moLajT13G4qaozks2skvQN9yQ4DZvrXiqgy8kePkQfWoF6itgx+hfx6X8EOFSv4C+ktHfKSH9OaAAAAAElFTkSuQmCC'>
+
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "scan video file for objects / people",
+                        "url"                   : "https://ext-code.com/utils/video/scan-video-file-for-objects/scan-video-file-for-objects.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "scan video file for objects / people",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+
+            <script src='https://libs.ext-code.com/js/dom/init-hdr/init-hdr.js'></script>
+            
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('scan video');
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+
+        var ext,$,datatype,menumod,keydown,hs
+        ;
+
+        var hdr;
+        var menu;
+        var filemod;
+        var log;
+        
+        
+
+
+        
+        async function init(){
+                                                                                console.log('init');
+
+              menu                      = menumod();
+
+              hdr                       = mod.hdr();
+              filemod                   = mod.filemod();
+              log                       = mod.log();
+              
+              hdr.initmod({ext,$,menu});
+              filemod.initmod({ext,$,menumod,menu,complete,source,log});
+              log.initmod({ext,$});
+              
+              await hdr.init();
+              await filemod.init();
+              await log.init();
+
+
+
+              initdom(document.body);
+              
+              
+        }//init
+
+
+  //:
+  
+        init.stack    = mod.stack;
+        
+        init.stack            = [];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+              init.stack.ct>=init.stack.total && init();
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+        
+        init.complete   = function(){
+          
+              init.complete.stack.forEach(fn=>fn());
+              
+        }//complete
+        
+        init.complete.stack   = [];
+        init.complete.add     = fn=>init.complete.stack.push(fn);
+
+                  
+
+(async()=>{
+  
+        init.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+        
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/string/hs.js',
+        );
+        [$,datatype,menumod,keydown,hs]   = await promise;
+
+        init.stack.complete;
+
+})();
+
+
+            </script init>
+
+
+            <style>
+  html
+    {height:100%}
+  body
+    {font-family:arial;height:calc(100% - 40px);margin:20px}
+
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+
+
+  #center
+    {width: 1000px;margin:0px auto;display:flex;overflow:hidden;flex-direction:column;height:100%;}
+
+  #settings
+    {margin:10px 0;display:flex;align-items:center}
+    
+  #electron
+    {position:relative}
+  #electron-popup
+    {position:absolute;left:-500px}
+    
+  #models
+    {margin-bottom:10px}
+  #models-label [type=button]
+    {margin-left:20px}
+    
+  .model
+    {display:flex;align-items:center}
+  .model-enabled
+    {margin-right:20px}
+  .model-name
+    {display:inline-block;width:100px}
+  .model-status
+    {}
+    
+  #ml5
+    {}
+  #faceapi
+    {}
+    
+    
+
+  #main-btn
+    {display:block;margin-top:10px}
+
+
+  #filename-root
+    {text-align:center;height:20px;margin-top:10px;font-weight:bold;color:blue}
+  #filename
+    {margin-right:20px}
+  #hs
+    {}
+    
+
+  #canvas-root
+    {margin-top:10px;text-align:center;position:relative;display:flex;justify-content:center}
+  video
+    {position:absolute;left:0;top:0;width:450px;border:3px solid black;box-sizing:border-box;background:white;z-index:1}
+  canvas
+    {border:1px solid lightgray;padding:5px;box-sizing:border-box;width:450px}
+    
+    
+  #progress
+    {height:25px;border:1px solid lightgray;padding:3px;margin-top:10px}
+  #bar
+    {height:100%;width:0px;background-color:rgb(206,232,240)}
+    
+
+  #skip-root
+    {margin-top:10px;display:flex;gap:5px;justify-content:center}
+  #seek
+    {width:50px;font-weight:bold; text-align:center;}
+
+
+  .spinner
+    {width:15px;height:15px}
+  .spc
+    {flex:1}
+    
+  input
+    {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  input[type=button]
+    {cursor:pointer}
+  input[type=checkbox]
+    {width:20px;height:20px;cursor:pointer}
+    
+  
+            </style>
+            
+            
+      </head>
+      
+      
+      <body>
+    
+            <div id=center>
+
+                  <hdr-grp api>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                        <img class=title src='images/scan-video-file-for-objects.png' style='top:10px;height:55px'>
+                        <h1 slot=seo-hdr class=visually-hidden>scan video file for objects / people</h1>
+                        <span slot=date>03 Oct 2025</span>
+                  </hdr-grp>
+                  
+                  <div id=settings>
+                  
+                        <div id=audio>
+                              <span>
+                                    audio
+                              </span>
+                              <input type=checkbox checked>
+                        </div>
+                        
+                        <div class=spc></div>
+                        
+                  </div>
+        
+                  <div id=models>
+                        <div #models-label>
+                              models
+                              <input value='load all' type=button>
+                        </div>
+                        
+                        <div id=ml5 class=model>
+                              <input type=checkbox checked class=model-enabled>
+                              <span class=model-name>
+                                    ml5
+                              </span>
+                              <div class=model-status>
+                                    <input value=load type=button>
+                              </div>
+                              <div id=detections>
+                              </div>
+                        </div>
+                        <div id=faceapi class=model>
+                              <input type=checkbox checked class=model-enabled>
+                              <span class=model-name>
+                                    face-api
+                              </span>
+                              <div class=model-status>
+                                    <input value=load type=button>
+                              </div>
+                              <div id=detections>
+                              </div>
+                        </div>
+                  </div>
+
+
+                  <filemod api>
+                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </filemod>
+                  
+
+                  <div style="display: flex; align-items: center; margin-top: 10px; justify-content: center; gap: 30px;">
+                      <div style="display: flex; align-items: center;">
+                          <div style="margin-right: 10px;">
+                                rotate
+                          </div>
+                          <input id="rotate" style="width: 50px; margin-right: 10px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center;" value="0">
+                          </input>
+                          <div style="">
+                                deg
+                          </div>
+                      </div>
+                      <div style="display: flex; align-items: center;">
+                          <div style="margin-right: 10px;">
+                                step
+                          </div>
+                          <input id="step" style="width: 50px; margin-right: 10px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center;">
+                          </input>
+                          <div style="">
+                                secs
+                          </div>
+                      </div>
+                  </div>
+            
+
+                  <input id=main-btn value=start type=button>
+            
+                  <div id=filename-root>
+                        <span id=filename>
+                        </span>
+                        <span id=hs>
+                        </span>
+                  </div>
+
+            
+                  <div id=canvas-root>
+                        <video controls></video>
+                        <canvas></canvas>
+                  </div>
+
+            
+                  <div id=progress>
+                        <div id=bar>
+                        </div>
+                  </div>
+
+            
+                  <div style="margin-top: 10px; display: flex; justify-content: center; gap: 10px; align-items: center;">
+                      <input id="time" style="width: 100px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center;" spellcheck="false" autocomplete="off" value="0">
+                      </input>
+                      <input id="timestamp" style="width: 100px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center;" spellcheck="false" autocomplete="off" value="0">
+                      </input>
+                      <div>
+                            &#x2F;
+                      </div>
+                      <div id="dur" style="margin-right: 10px;">
+                            00000
+                      </div>
+                      <div id="dur-time" style="margin-right: 10px;">
+                            00:00:00
+                      </div>
+                  </div>
+
+            
+                  <div id=skip-root>
+                      <input id=skip-start value="|<" type=button>
+                      <input id=back value=back type=button>
+                      <input id=seek value=1 spellcheck=false autocomplete=off>
+                      <input id=forward value=forward type=button>
+                      <input id=skip-end value=">|" type=button>
+                  </div>
+
+            
+                  <div style="flex: 1 1 0%; display: flex; margin-top: 20px; justify-content: center; overflow: hidden;">
+                        <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; align-self: start; margin-right: 10px;" type="button" value="clear" id="clear">
+                        <div id="results" style="overflow: auto; border: 1px solid lightgray; padding: 5px; box-sizing: border-box; width: 500px;">
+                            <div id="item" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                                <div id="type" style="width: 100px;">
+                                </div>
+                                <div id="confidence" style="width: 60px;">
+                                </div>
+                                <div id="time" style="flex: 1 1 0%; white-space: nowrap;">
+                                </div>
+                                <div id="spc" style="flex: 1 1 0%;">
+                                </div>
+                                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box;" type="button" value="view">
+                                </input>
+                                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box;" type="button" value="plyr">
+                                </input>
+                            </div>
+                        </div>
+                  </div>
+
+            
+            </div center>
+        
+            <log>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            </log>
+            
+      </body>            
+      
+      
+      <script>
+        
+        
+  //:
+  
+  
+        
+        var models                      = {};
+        
+        models.faceapi                  = {};
+        models.faceapi.loaded           = false;
+        models.faceapi.root             = null;
+        models.faceapi.chk              = null;
+        models.faceapi.status           = null;
+        
+        models.ml5                      = {}
+        models.ml5.loaded               = false;
+        models.ml5.root                 = null;
+        models.ml5.chk                  = null;
+        models.ml5.status               = null;
+        
+        
+        var ml5           = {};
+        var opts          = {};
+        var detector;
+        opts.object       = {};
+
+        
+        var faceapi;
+        opts.faceapi      = {
+              withLandmarks     : false,
+              withDescriptors   : false,
+        };
+        
+        
+        
+        var cur           = {};
+        cur.file          = null;
+        cur.blob          = null;
+        
+        var abort         = false;
+        
+        var initialstep   = 1;
+        var inf           = 999999;
+        
+        var mainbtn;
+        var step;
+        var video;
+        var width;
+        var height;
+        var duration;
+        var canvas;
+        var ctx;
+        var bar;
+        var time;
+        var timestamp;
+        var seek;
+        var results;
+        var item;
+        var rtimer;
+        var spinner;
+        
+        var audio         = {};
+        audio.detect      = new Audio('detect.mp3');
+        audio.complete    = new Audio('complete.mp3');
+        
+        var moon   = new Image();
+        moon.src   = 'moon.png';
+
+
+        var cw;
+        var ch;
+
+
+
+        var btn           = {};
+        var ku            = {};
+      
+
+  //:
+  
+  
+        function initdom(rootnode){   //c
+        
+              var root    = rootnode;
+              
+              menu.add.style();
+
+
+              hdr.initdom(root);
+
+        
+              filemod.initdom(root);
+              
+              $('#models [value="load all"]').onclick             = btn['load-all'];
+              
+              models.ml5.root                                     = $('#models #ml5');
+              models.ml5.chk                                      = $(models.ml5.root,'[type=checkbox]');
+              models.ml5.status                                   = $(models.ml5.root,'.model-status');
+              $(models.ml5.root,'[value=load]').onclick           = e=>models.ml5.load();
+              
+              models.faceapi.root                                 = $('#models #faceapi');
+              models.faceapi.chk                                  = $(models.faceapi.root,'[type=checkbox]');
+              models.faceapi.status                               = $(models.faceapi.root,'.model-status');
+              $(models.faceapi.root,'[value=load]').onclick       = e=>models.faceapi.load();
+
+              
+              $('#rotate').onchange                               = e=>draw();
+              step                                                = $('#step');
+              step.value                                          = initialstep;
+              
+              mainbtn                                             = $('[value=start]')
+              mainbtn.onclick                                     = click;
+              
+              video                                               = $('video');
+              video.onloadedmetadata                              = meta;
+              video.onloadeddata                                  = loaded;
+              video.onseeked                                      = seeked;
+              video.onplaying                                     = playing;
+              video.onpause                                       = stopped;
+              video.onended                                       = stopped;
+              
+              canvas                                              = $('canvas');
+              ctx                                                 = canvas.getContext('2d');
+              canvas.width                                        = 300;
+              canvas.height                                       = 150;
+              
+              bar                                                 = $('#bar');
+              
+              time                                                = $('#time');
+              time.onblur                                         = skip;
+              time.onkeyup                                        = ku.time;
+              
+              timestamp                                           = $('#timestamp');
+              timestamp.onblur                                    = skip.ts;
+              timestamp.onkeyup                                   = ku.timestamp
+
+              
+              $('#skip-start').onclick                            = skip.start;
+              $('#back').onclick                                  = skip.back;
+              seek                                                = $('#seek');
+              $('#forward').onclick                               = skip.forward;
+              $('#skip-end').onclick                              = skip.end;
+              
+              $('#clear').onclick                                 = e=>results.replaceChildren();
+              results                                             = $('#results');
+              item                                                = $('#item');
+              item.remove();
+              
+              spinner                                             = document.createElement('img');
+              spinner.className                                   = 'spinner';
+              spinner.src                                         = '/images/spinner.gif';
+
+              
+              log.initdom(root);
+              
+              
+        }//initdom
+  
+
+  //:
+
+
+        btn['load-all']   = function(){
+        
+              models.ml5.load();
+              models.faceapi.load();
+              
+        }//load-all
+        
+        
+        ku.time   = function(e){
+        
+              if(e.key=='Enter'){
+                    skip();
+              }
+              if(e.key=='Escape'){
+                    video.currentTime   = video.currentTime;
+              }
+              
+        }//time
+        
+        
+        ku.timestamp    = function(e){
+        
+              if(e.key=='Enter'){
+                    skip.ts();
+              }
+              if(e.key=='Escape'){
+                    video.currentTime   = video.currentTime;
+              }
+              
+        }//timestamp
+        
+        
+        
+  //:
+        
+        function source(file){
+
+              return cur.blob;
+              
+        }//source
+        
+        
+        function complete(file){
+        
+              if(file){
+                    filemod.cur   = file;
+              }
+              
+              menu.close();
+              
+        }//complete
+
+        
+        complete.load   = async function(file,blob){
+        
+              if(typeof blob=='string'){
+                    debugger;
+                    log.error('internal system error : invalid file format');
+                    return;
+              }
+              
+              set(file,blob);
+              
+              complete(file);
+              
+        }//complete.load
+
+        
+        complete.save   = function(file,confirm=true){
+
+              complete(file);
+              
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
+        }//save
+
+        
+  //:
+
+
+        models.ml5.load   = async function(){
+        
+              var status    = models.ml5.status;
+              var img       = spinner.cloneNode(true);
+              status.replaceChildren(img);
+              
+              var err;
+              try{
+              
+                    var script      = document.createElement('script');
+                    script.src      = 'https://cdn.jsdelivr.net/npm/ml5@0.12.2/dist/ml5.min.js';
+                    script.onload   = onload;
+                    document.head.append(script);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    status.replaceChildren('error');
+                    log.red(error);
+                    return;
+              }
+
+              
+              async function onload(){
+
+                    var err;
+                    try{
+                    
+                          await new Promise(resolve=>{
+                          
+                                detector    = ml5.objectDetector('cocossd',{},()=>resolve());
+                                
+                          });
+                          
+                    }//try
+                    catch(err2){
+                    
+                          err   = err2;
+                          
+                    }//catch
+                    if(err){
+                          var error   = err.toString();
+                          status.replaceChildren('error');
+                          log.red(error);
+                          return;
+                    }
+                    
+                    models.ml5.loaded    = true;
+                    status.replaceChildren('loaded');
+                    
+
+                    
+              }//complete
+              
+        }//object
+        
+        
+        models.faceapi.load   = async function(){
+        
+              var status    = models.faceapi.status;
+              var img       = spinner.cloneNode();
+              status.replaceChildren(img);
+              
+              var err;
+              try{
+              
+                    var script      = document.createElement('script');
+                    script.src      = 'face-api.js';
+                    script.onload   = onload;
+                    document.head.append(script);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    status.replaceChildren('error');
+                    log.red(error);
+                    return;
+              }
+
+              
+              async function onload(){
+              
+                    var err;
+                    try{
+                    
+                          await faceapi.nets.ssdMobilenetv1.loadFromUri('https://javascript-2020.github.io/utils/video/scan-video-file-for-objects/');
+                          await faceapi.detectAllFaces(moon);
+                          
+                    }//try
+                    catch(err2){
+                    
+                          err   = err2;
+                          
+                    }//catch
+                    if(err){
+                          var error   = err.toString();
+                          status.replaceChildren('error');
+                          log.red(error);
+                          return;
+                    }
+                    
+                    models.faceapi.loaded   = true;
+                    status.replaceChildren('loaded');
+                    
+              }//complete
+              
+        }//face
+        
+        
+        
+        
+  //:
+  
+  
+        function set(file,blob){
+                
+              stop();
+
+              cur.file    = file;
+              cur.blob    = blob;
+              
+              $('#filename').textContent    = file.filename;
+              $('#hs').textContent          = hs(blob.size);
+              
+              var url             = window.URL.createObjectURL(blob);
+              video.src           = url;
+              video.currentTime   = 0;
+              
+        }//set
+        
+        
+        async function getfiles(){
+        
+              var res     = await fetch('/read');
+              var files   = await res.json();
+              files.forEach((file,i)=>{
+              
+                    if(i==0){
+                          video.src   = '/video-'+file;
+                    }
+                    var opt           = document.createElement('option');
+                    opt.textContent   = file;
+                    $('select').append(opt);
+                    
+              });
+              
+        }//getfiles
+
+
+
+        
+        function loaded(){
+                                                                                console.log('loaded',video.readyState);
+              video.currentTime   = 0;
+              
+        }//loaded
+
+        
+        function meta(){
+        
+              duration                        = video.duration;
+              $('#dur').textContent           = duration.toFixed(1);
+              $('#dur-time').textContent      = millitostr(duration*1000,'ts1');
+
+              
+              width                           = video.videoWidth;
+              height                          = video.videoHeight;
+                                                                                //console.log(width,height);
+                                                                                //console.log(video.videoWidth,video.videoHeight);
+              var root                        = $('#canvas-root');
+              var rw                          = root.offsetWidth;
+              var rh                          = 800;//root.offsetHeight;
+                                                                                console.log('root',rw,rh);
+              var w                           = width;
+              var h                           = height;
+              var ar                          = w/h;
+                                                                                console.log('source',w,h,ar);
+              var h1                          = rh;
+              var w1                          = ar*h1;
+              if(w1>rw){
+                    w1                        = rw;
+                    h1                        = rw/ar;
+              }
+              
+              cw                              = w1;
+              ch                              = h1;
+                                                                                console.log('canvas',cw,ch);
+              canvas.width                    = cw;
+              canvas.style.width              = cw+'px';
+              canvas.height                   = ch;
+              canvas.style.height             = ch+'px';
+
+
+              var max                         = 200;
+              var h2                          = max;
+              var w2                          = ar*h2;
+              if(w2>max){
+                    w2                        = max;
+                    h2                        = w2/ar;
+              }
+                                                                                console.log('video',w2,h2);
+              video.style.width               = w2+'px';
+              video.style.height              = h2+'px';
+              
+              draw();
+              
+        }//meta
+
+        
+  //:
+
+  
+        function click(e){
+        
+              if(mainbtn.value=='start'){
+                    start();
+              }else{
+                    stop();
+              }
+              
+        }//click
+
+        
+  //:
+
+  
+        function start(){
+        
+              if(!cur.blob){
+                    log.red('no video loaded');
+                    return;
+              }
+              
+              mainbtn.value       = 'stop';
+              abort               = false;
+              
+              //results.replaceChildren();
+              next();
+              
+        }//start
+        
+
+        function stop(){
+        
+              mainbtn.value   = 'start';
+              abort           = true;
+              
+        }//stop
+        
+
+        function skip(){
+        
+              var v               = parseFloat(time.value);
+              if(isNaN(v)){
+                    return;
+              }
+              video.currentTime   = v;
+              
+        }//skip
+        
+
+        skip.ts   = function(){
+        
+              var str             = timestamp.value;
+              var milli           = strtomilli(str,'ts1');
+              
+              if(isNaN(milli)){
+                    return;
+              }
+              
+              var time            = milli/1000;
+              video.currentTime   = time;
+              
+        }//ts
+        
+
+        skip.start    = function(e){
+        
+              video.currentTime    = 0;
+              
+        }//start
+        
+        
+        skip.end    = function(){
+        
+              video.currentTime   = 9999999999;
+              
+        }//end
+
+        skip.back   = function(e){
+        
+              var i   = parseFloat(seek.value);
+              video.currentTime   -= i;
+              
+        }//back
+        
+
+        skip.forward    = function(e){
+        
+              var i   = parseFloat(seek.value);
+              video.currentTime   += i;
+              
+        }//forward
+        
+
+        function playing(){
+                                                                                //console.log('playing');
+              //draw();
+              //rtimer    = requestAnimationFrame(playing);
+              
+        }//playing
+        
+
+        function stopped(){
+                                                                                console.log('stopped');
+              //cancelAnimationFrame(rtimer);
+              
+        }//stopped
+
+        
+  //:
+
+  
+        function seeked(e){
+                                                                                //console.log('seeked');
+              var t                 = video.currentTime;
+              time.value            = t.toFixed(2);
+              timestamp.value       = millitostr(t*1000,'ts');
+              bar.style.width       = t/duration*100+'%';
+              
+              draw();
+              
+              if(abort)return;
+              
+              
+              ondetect.ct       = 0;
+              ondetect.total    = 1;
+              
+              if(models.ml5.loaded && models.ml5.chk.checked){
+                    ondetect.total++;
+                    detector.detect(canvas,ondetect.ml5);
+              }
+              if(models.faceapi.loaded && models.faceapi.chk.checked){
+                    ondetect.total++;
+                    faceapi.detectAllFaces(canvas).then(ondetect.faceapi);
+              }
+              
+              ondetect.complete();
+              
+              
+        }//onseeked
+
+        
+        function draw(){
+                                                                                //console.log('draw');
+                                                                                //console.log('video',width,height);
+                                                                                //console.log('canvas',cw,ch);
+              var deg   = parseFloat($('#rotate').value);
+              var rad   = deg2rad(deg);
+
+              
+              var bw    = Math.abs(cw*Math.cos(rad))+Math.abs(ch*Math.sin(rad));
+              var bh    = Math.abs(cw*Math.sin(rad))+Math.abs(ch*Math.cos(rad));
+                                                                                //console.log('bounding',bw,bh);
+              
+
+              //ctx.clearRect(0,0,cw,ch);
+              canvas.width          = bw;
+              canvas.height         = bh;
+              canvas.style.width    = bw+'px';
+              canvas.style.height   = bh+'px';
+              
+              ctx.save();
+              var x     = bw/2;
+              var y     = bh/2;
+              ctx.translate(x,y);
+              ctx.rotate(rad);
+              ctx.drawImage(video,0,0,width,height,-cw/2,-ch/2,cw,ch);
+              ctx.restore();
+              
+        }//draw
+
+
+  //:
+  
+        
+        var ondetect      = {};
+        ondetect.ct       = 0;
+        ondetect.total    = 1;
+        
+        ondetect.ml5   = function(err,detections){
+        
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                                                                                console.error(err);
+                    return;
+              }
+                                                                                //detections.forEach(detection=>console.log(detection.label));
+                                                                                //console.log(results);
+              detections.forEach(detection=>{
+              
+                    var hit     = false;
+                    
+                    var {label,confidence}   = detection;
+                    
+                    if(label==='person')    hit   = true;
+                    if(label==='car')       hit   = true;
+                    
+                    if(hit){
+                          display(label,confidence.toFixed(2));
+                    }
+                    
+              });
+  
+              ondetect.complete();            
+              
+        }//ondetect
+        
+        
+        ondetect.faceapi    = function(detections){
+        
+              if(detections.length){
+              
+                    //console.log(detections);
+                    
+                    var detection   = detections[0];
+                    var label   = 'face';
+                    var score   = detection._score.toFixed(2);
+                    display(label,score);
+                    
+                    
+                    /*
+                    detections.forEach(face=>{
+                    
+                          var box=face._box;
+                          var x   = box._x*dw;
+                          var y   = box._y*dh;
+                          var w   = box._width*dw;
+                          var h   = box._height*dh;
+                          console.log(x,y,w,h);
+                          ctx.strokeRect(x,y,w,h);
+                          
+                    });
+                    */
+              }
+              
+              ondetect.complete();
+              
+        }//faceapi
+        
+        
+        ondetect.complete   = function(){
+        
+              ondetect.ct++;
+              
+              if(ondetect.ct<ondetect.total){
+                    return;
+              }
+              
+              next();
+              
+        }//complete
+
+
+  //:
+  
+        
+        function display(label,confidence){
+        
+              var chk   = $('#settings #audio [type=checkbox]');
+              if(chk.checked){
+                    audio.detect.play();
+              }
+        
+              var time                              = video.currentTime;
+              
+              var nitem                             = item.cloneNode(true);
+              $(nitem,'#type').textContent          = label;
+              $(nitem,'#confidence').textContent    = confidence;
+              $(nitem,'#time').textContent          = time+' -- '+millitostr(time*1000,'ts1');
+              $(nitem,'[value=view]').onclick       = e=>video.currentTime    = time;
+              $(nitem,'[value=plyr]').onclick       = open;
+              
+              results.append(nitem);
+              results.scrollTop                     = inf;
+
+              
+              function open(){
+              
+                    var src     = video.src;
+                    var i       = src.indexOf('-');
+                    var file    = src.slice(i+1);
+                    window.open('video-player.html?'+file+'='+time);
+                    
+              }//open
+              
+        }//display
+        
+        
+        
+        
+        
+        
+        
+        
+        function next(){
+        
+              var t   = video.currentTime;
+              if(t>=duration){
+                    done();
+                    return;
+              }
+              var dt                = parseFloat(step.value);
+              var t2                = t+dt;
+              video.currentTime     = t2;
+              
+        }//next
+        
+        
+        function done(){
+        
+              var chk   = $('#settings #audio [type=checkbox]');
+              if(chk.checked){
+                    audio.complete.play();
+              }
+              
+              mainbtn.value     = 'start';
+              abort         = true;
+              
+        }//done
+
+        
+  //:
+
+        
+        function deg2rad(v){
+        
+              return (v/180)*Math.PI;
+              
+        }//deg2rad
+
+        
+        function millitostr(milli,type){
+        
+              var seconds   = Math.round(milli/1000);
+              var years     = Math.floor(seconds / 31536000);
+              var days      = Math.floor((seconds % 31536000) / 86400);
+              var hours     = Math.floor(((seconds % 31536000) % 86400) / 3600);
+              var minutes   = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
+              var seconds   = (((seconds % 31536000) % 86400) % 3600) % 60;
+              var msecs     = milli%1000;
+              
+              var timestr;
+              
+              switch(type){
+              
+                case 'ts'       : timestr   = ts();         break;
+                case 'ts1'      : timestr   = ts1();        break;
+                
+              }//switch
+              
+              return timestr;
+              
+              
+              function ts(){
+              
+                    var s   = '';
+                    
+                    s      += (hours+'').padStart(2,'0');
+                    s      += ':';
+                    
+                    s      += (minutes+'').padStart(2,'0');
+                    s      += ':';
+                    
+                    s      += (seconds+'').padStart(2,'0');
+                    s      += '.';
+                    
+                    s      += (msecs+'').padStart(3,'0');
+                    
+                    return s;
+                    
+              }//ts
+              
+              function ts1(){
+              
+                    var s   = '';
+                    
+                    s      += (hours+'').padStart(2,'0');
+                    s      += ':';
+                    
+                    s      += (minutes+'').padStart(2,'0');
+                    s      += ':';
+                    
+                    s      += (seconds+'').padStart(2,'0');
+                    
+                    return s;
+                    
+              }//ts1
+              
+        }//millitostr
+
+        
+        function strtomilli(str,type){
+        
+              var years     = 0;
+              var days      = 0;
+              var hours     = 0;
+              var minutes   = 0;
+              var seconds   = 0;
+              var msecs     = 0;
+              
+              switch(type){
+              
+                case 'ts'     : ts();         break;
+                case 'ts1'    : ts1();        break;
+                default       : def();
+                
+              }//switch
+              
+              var milli   = years*365*24*60*60*1000   +
+                            hours*60*60*1000          +
+                            minutes*60*1000           +
+                            seconds*1000              +
+                            msecs
+              ;
+              return milli;
+              
+              function ts(){
+              
+                    [hours,minutes,seconds,msecs]   = str.split(':');
+                    
+              }//ts
+              
+              function ts1(){
+              
+                    [hours,minutes,seconds]   = str.split(':');
+                    
+              }//ts1
+              
+              function def(){
+              }//def
+              
+        }//strtomilli
+        
+        
+  //:
+
+  
+  init.stack.complete;
+        
+      </script>
+        
+</html>
+
+
+
+
+
+
