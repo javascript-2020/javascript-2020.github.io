@@ -14,8 +14,10 @@
         var ext,$,datatype,menumod,keydown,hs
         ;
 
-        var hdr;
         var menu;
+        
+        var hdr;
+        var log;
 
 
         mod.stack.add   = init;
@@ -27,10 +29,13 @@
 
 
               hdr                       = mod['video-hdr'];//();
+              log                       = mod.log;
               
               hdr.initmod({ext,$,menu});
+              log.initmod({ext,$});
               
-              hdr.init();
+              await hdr.init();
+              await log.init();
               
 
               initdom(document.body);
@@ -87,6 +92,7 @@
                         <span slot=date>03 Oct 2025</span>
                   </video-hdr>
 
+                  <log component></log>
 
       </body>      
       
@@ -100,12 +106,10 @@
 
 
               hdr.initdom(root);
+              log.initdom(root);
 
         }//initdom      
   
-  //:
-
-  mod.build();
   
       </script>
       
