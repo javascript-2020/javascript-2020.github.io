@@ -12,7 +12,10 @@
             
             <link rel=icon type='image/png' href='images/html-editor-favicon.png'>
             <link rel=stylesheet href='/utils/css/utils.css'>
+
             
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
             <script init>
                                                                                 console.clear();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
@@ -29,7 +32,7 @@
         var keydown;
         var debug;
         
-        var mod           = {};
+        //var mod           = {};
         mod.hdr           = {};
         mod.menu          = {};
         
@@ -40,6 +43,7 @@
 
   //:
 
+        mod.stack.add   = init;
               
         async function init(){
                                                                                 debug('init',version);
@@ -78,6 +82,10 @@
         }//init
 
 
+        init.stack    = mod.stack;
+        
+        
+/*
         init.stack            = [];
         init.stack.ct         = 0;
         init.stack.total      = 1;
@@ -105,6 +113,7 @@
         
         init.complete.stack   = [];
         init.complete.add     = fn=>init.complete.stack.push(fn);
+*/
 
                   
 (async()=>{
