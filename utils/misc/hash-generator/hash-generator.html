@@ -17,7 +17,9 @@
 
             <script src='https://cdn.jsdelivr.net/npm/hash-wasm@4'></script>
 
-            <script name=keywords value='adler32 argon2d argon2i argon2id bcrypt blake2b blake2s blake3 crc32 crc64 keccak md4 md5 pbkdf2 ripemd160 scrypt sha1 sha3 sha224 sha256 sha384 sha512 sm3 whirlpool xxhash3 xxhash32 xxhash64 xxhash128'>
+
+            <meta name=keywords content='adler32 argon2d argon2i argon2id bcrypt blake2b blake2s blake3 crc32 crc64 keccak md4 md5 pbkdf2 ripemd160 scrypt sha1 sha3 sha224 sha256 sha384 sha512 sm3 whirlpool xxhash3 xxhash32 xxhash64 xxhash128'>
+            
             <script type='application/ld+json'>
                   {
                         "@context"              : "https://schema.org",
@@ -43,6 +45,8 @@
             </script>
 
 
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
             <script init>
                                                                                 console.clear();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
@@ -58,7 +62,7 @@
         var keydown;
         var debug;
         
-        var mod           = {};
+        //var mod           = {};
         mod.menu          = {};
         mod.hdr           = {};
 
@@ -75,6 +79,8 @@
   //:
 
               
+        mod.stack.add   = init;
+        
         async function init(){
                                                                                 debug('init',version);
 
@@ -115,7 +121,9 @@
               
         }//init
 
-
+        init.stack    = mod.stack;
+        
+/*        
         init.stack            = [];
         init.stack.ct         = 0;
         init.stack.total      = 1;
@@ -133,6 +141,7 @@
         
         //  (typeof init!='undefined' && init?.stack && init.stack.add)
         //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+*/
 
         
         init.complete   = function(){
