@@ -6,13 +6,18 @@
       
             <style>
             
-                  :host {display:flex;flex-direction:column;height:100%}
+  :host
+    {display:flex;flex-direction:column;height:100%}
 
-                  #hdr {display:flex}
-                  
-                  #hldr {flex:1;box-sizing:border-box;position:relative}
-                  iframe {width:100%;height:100%}
-                  #glass {position:absolute;left:0;top:0;width:100%;height:100%;display:none}
+  #hdr
+    {display:flex}
+  
+  #hldr
+    {flex:1;box-sizing:border-box;position:relative}
+  iframe
+    {width:100%;height:100%}
+  #glass
+    {position:absolute;left:0;top:0;width:100%;height:100%;display:none}
                   
             </style>
             
@@ -30,111 +35,124 @@
       
       <script>
       
-            function output(){
-                                                                                  true && console.log('output');
-              var obj   = {};
+(function(){
+                                                                      true && console.log('output');
+  var obj   = {};
+
+      var ext,$;
+      
+      obj.initmod=function(params){
+      
+            ext   = params.ext;
+            $     = params.$;
+            
+      }//initmod
+
+      
+  //vars:-
+
+      var hldr;      
+      var iframe;
+      var glass;
+
+      
+      var btn   = {};
+
+
+  //:
+
+  
+      obj.init    = async function(){
+      }//init
+
+      
+  //:
+
+  
+      obj.initdom   = function(rootnode){
+      
+            root            = $.$(rootnode,'output-root');
+            shadow          = root.shadowRoot;
+            
+            var style       = $(shadow,'style');
+            $.stylesheet.insert(style,'button','.icon');
+
+            
+            var hdr         = $(shadow,'#hdr');
+            
+            $(hdr,'#kill').onclick    = btn.kill;
+
+            
+            hldr            = $(shadow,'#hldr');
+            iframe          = $(shadow,'iframe');
+            glass           = $(shadow,'#glass');
             
             
-                  obj.initmod=function(params){
-                  }//initmod
-                  
-              //vars:-
+      }//initdom
+
+
+  //:
+  
+  
+      btn.kill    = function(){
+      
+            kill();
             
-                  var hldr;      
-                  var iframe;
-                  var glass;
+      }//kill
 
-                  
-                  var btn   = {};
+  
+      obj.glass   = function(show=true){
 
-              //:
-              
-                  obj.init=function(){
-                  }//init
-                  
-              //:
-              
-                  obj.initdom=function(rootnode){
-                  
-                        root            = $.$(rootnode,'output-root');
-                        shadow          = root.shadowRoot;
-                        
-                        var style       = $(shadow,'style');
-                        $.stylesheet.insert(style,'button','.icon');
+            var display     = 'none';
+            if(show){
+                  display   = 'block';
+            }
+            glass.style.display    = display;
+      
+      }//glass
+      
+      
+      obj.horiz   = function(){
+      
+            iframe.style.width     = '100%';
+            iframe.style.height    = '50%';
+            
+      }//horiz
+      
 
-                        
-                        var hdr         = $(shadow,'#hdr');
-                        
-                        $(hdr,'#kill').onclick    = btn.kill;
+      obj.vert    = function(){
 
-                        
-                        hldr            = $(shadow,'#hldr');
-                        iframe          = $(shadow,'iframe');
-                        glass           = $(shadow,'#glass');
-                        
-                        
-                  }//initdom
-
-                  
-                  btn.kill=function(){
-                  
-                        kill();
-                        
-                  }//kill
-
-              
-                  obj.glass=function(show=true){
-
-                        var display     = 'none';
-                        if(show){
-                              display   = 'block';
-                        }
-                        glass.style.display    = display;
-                  
-                  }//glass
-                  
-                  
-                  obj.horiz=function(){
-                  
-                        iframe.style.width     = '100%';
-                        iframe.style.height    = '50%';
-                        
-                  }//horiz
-                  
-
-                  obj.vert=function(){
-
-                        iframe.style.width    = '50%';
-                        iframe.style.height   = '100%';
-                      
-                  }//vert
+            iframe.style.width    = '50%';
+            iframe.style.height   = '100%';
+          
+      }//vert
 
 
 
-                  obj.srcdoc=function(html){
-                  
-                        iframe.srcdoc   = html;
-                        
-                  }//srcdoc
+      obj.srcdoc    = function(html){
+      
+            iframe.srcdoc   = html;
+            
+      }//srcdoc
 
 
-                  obj.kill=function(){return kill()}    //d
-                  
-                  function kill(){
-                  
-                        var niframe       = iframe.cloneNode(true);
-                        niframe.srcdoc    = null;
-                        hldr.replaceChild(niframe,iframe);
-                        iframe            = niframe;
-                  
-                  }//kill
-                  
-                  
+      obj.kill    = function(){return kill()}    //d
+      
+      function kill(){
+      
+            var niframe       = iframe.cloneNode(true);
+            niframe.srcdoc    = null;
+            hldr.replaceChild(niframe,iframe);
+            iframe            = niframe;
+      
+      }//kill
+      
+      
 
-                  
-              return obj;
-              
-            }//output
+      
+  return obj;
+  
+});
             
       </script>
       
