@@ -79,9 +79,13 @@
         var ext,$,datatype,menumod,keydown
         ;
         
-        mod.menu          = {};
-        mod.utils         = {};
+        //mod.menu          = {};
+        //mod.utils         = {};
+
+
+        var menu;
         
+        var mainmenu;
         var filemod;                                                                                
         var publish;
         var editor;
@@ -94,8 +98,6 @@
         var autosave;
 
         
-        var menu          = {};
-        menu.click        = {};
         
         
         var slider        = {};
@@ -117,27 +119,28 @@
                                                                                 debug('init',version);
                                                                                 
               //keydown                   = keydown();
-              menu.root                 = menumod();
-              menu.main                 = mod.menu.main();
+              menu                      = menumod();
+              
               
               hdr                       = mod.hdr;
               
+              mainmenu                  = mod['main-menu'];
               filemod                   = mod.filemod;
               publish                   = mod.publish;
               editor                    = mod.editor;
               output                    = mod.output;
               log                       = mod.log;
               
-              menu.root.initmod({keydown});
-              menu.main.initmod({ext,$,menumod:menu.root,editor,filemod});
-              hdr.initmod({ext,$,menu:menu.root});
-              filemod.initmod({ext,$,menumod,menu:menu.root,complete,source,focus,log,editor});
-              publish.initmod({ext,$,menu:menu.root,run,source,complete,log});
-              editor.initmod({ext,$,menu:menu.root});
+              menu.initmod({keydown});
+              mainmenu.initmod({ext,$,menu,editor,filemod});
+              hdr.initmod({ext,$,menu});
+              filemod.initmod({ext,$,menumod,menu,complete,source,focus,log,editor});
+              publish.initmod({ext,$,menu,run,source,complete,log});
+              editor.initmod({ext,$,menu});
               output.initmod({ext,$});
               log.initmod({ext,$});
               
-              await menu.main.init();
+              await mainmenu.init();
               await hdr.init();
               await filemod.init();
               await publish.init();
@@ -149,7 +152,7 @@
           
               window.onfocus            = focus;
               keydown.add(kd);
-              menu.root.on.close        = focus;
+              menu.on.close             = focus;
 
               
               await initdom(document.body);
@@ -253,9 +256,7 @@
 
             <div id=hdr>
                         
-                  <main-menu-page>
-                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </main-menu-page>
+                  <main-menu component=page v2.0></main-menu>
 
                   <filemod component v2.0></filemod>
 
@@ -308,13 +309,13 @@
               root                                  = rootnode;
               
               keydown.initdom(root);
-              menu.root.add.style();
+              menu.add.style();
 
               
               hdr.initdom(root);
 
               
-              menu.main.initdom(root);
+              mainmenu.initdom(root);
 
               filemod.initdom(root);
 
@@ -322,7 +323,7 @@
               $(root,'#save').onclick               = btn.save;
 
               var card                              = $(root,'#save-root .menu');
-              $(root,'.menu-icon').onclick          = menu.root.click(card,false,false,menu.click.save);
+              $(root,'.menu-icon').onclick          = menu.click(card,false,false);
 
               autosave                              = $(root,'#autosave');
               autosave.checked                      = false;
@@ -437,13 +438,7 @@
               editor.setvalue(js);
         
         }//prettier
-        
-
-  //:
   
-  
-        menu.click.save   = function(){}
-        
         
   //:
 
