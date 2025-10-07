@@ -125,7 +125,7 @@
               filemod                   = mod.filemod;
               publish                   = publish();
               editor                    = mod.editor;
-              output                    = output();
+              output                    = mod.output;
               log                       = mod.log;
               
               menu.root.initmod({keydown});
@@ -289,9 +289,7 @@
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
-                  <output-local>
-                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </output-local>
+                  <output component=page v2.0></output>
                   
             </div>
             
@@ -347,7 +345,8 @@
               await editor.initdom(view,'html');
               
               slider.node                           = $.slider.glass('editor-root','#page-slider','output-root',slider,ui,output);
-              output.initdom();
+              
+              output.initdom(root);
 
 
               log.initdom();
