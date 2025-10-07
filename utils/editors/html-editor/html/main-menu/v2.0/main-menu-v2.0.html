@@ -7,11 +7,11 @@
       
             <style>
             
-                  #icon
-                        {padding:3px;width:20px;background:buttonface}
-                  
-                  .menu
-                        {position:absolute;left:0;top:35px;}
+  #icon
+    {padding:3px;width:20px;background:buttonface}
+  
+  .menu
+    {position:absolute;left:0;top:35px;}
             
             </style>
             
@@ -33,20 +33,21 @@
 
       <script>
         
-(function(){
-                                                                    true && console.log('mod.menu.main');
+(function({mod,root,node}){
+                                                                    true && console.log('main-menu');
   var obj   = {};
 
       var df=true
       ;
       
-      var editor,menumod,filemod
+      var $,editor,menu,filemod
       ;
       
       obj.initmod   = function(params){
         
+            $         = params.$;
             editor    = params.editor;
-            menumod   = params.menumod;
+            menu      = params.menu;
             filemod   = params.filemod;
             
       }//initomd
@@ -70,11 +71,11 @@
             var style                     = $(shadow,'style');
             $.stylesheet.copyrule('#page-inline','.icon',style);
             
-            menumod.add.style(shadow);
+            menu.add.style(shadow);
             
             
             var card                      = $(shadow,'.menu');
-            $(shadow,'#icon').onclick     = menumod.click(card,false,false,menu);
+            $(shadow,'#icon').onclick     = menu.click(card,false,false,menu);
 
 
       }//initdom
@@ -83,16 +84,16 @@
 //:
 
 
-      function menu(type,opt){
+      function click(type,opt){
 
             if(type=='opt'){
-                  menu[opt.id]();
+                  click[opt.id]();
             }
 
       }//menu
 
 
-      menu.clear    = function(){
+      click.clear    = function(){
         
             filemod.clear();
             editor.clear();
@@ -101,7 +102,7 @@
       }//clear
       
       
-      menu.new    = function(){
+      click.new    = function(){
 
             var url       = window.location.toString();
             var search    = window.location.search;
@@ -115,7 +116,7 @@
       }//new
 
 
-      menu.fork   = function(){
+      click.fork   = function(){
 
             var win   = newwin();
             var txt   = editor.getValue();
@@ -124,7 +125,7 @@
       }//fork
 
 
-      menu.trim   = function(){
+      click.trim   = function(){
 
             var pos     = editor.getCursorPosition();
             var txt     = editor.getValue();
@@ -137,7 +138,7 @@
       }//trim
       
       
-      menu['create-html-icon']    = async function(){
+      click['create-html-icon']    = async function(){
       
             var err;
             try{
@@ -167,11 +168,14 @@
       }//create-html-icon
       
       
-      menu.source   = function(){
+      click.source   = function(){
       
             window.open('https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/html-editor');
             
       }//source
+
+
+
       
   return obj;
   
