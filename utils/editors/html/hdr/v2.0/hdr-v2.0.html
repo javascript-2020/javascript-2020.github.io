@@ -1,6 +1,6 @@
 
 
-<utils-hdr>
+<editors-hdr>
 
       <template shadowrootmode=open>
       
@@ -51,9 +51,7 @@
                               home
                         </a>
                         
-                        <top-menu-grp api>
-                              <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                        </top-menu-grp>
+                        <top-menu component=grp v2.0></top-menu>
                       
                   </div>
 
@@ -71,19 +69,20 @@
       
       <script>
       
-mod.utils.hdr   = function(){
-                                                                    true && console.log('mod.hdr');
+(function({mod,root,node}){
+                                                                    true && console.log('editors-hdr');
   var obj   = {};
   
       var df=true
       ;
                                                             
-      var menu,menumod
+      var ext,$,menu
       ;
         
       obj.initmod   = function(params){
         
-            menumod   = params.menumod;
+            ext       = params.ext;
+            $         = params.$;
             menu      = params.menu;
             
       }//initmod
@@ -91,14 +90,17 @@ mod.utils.hdr   = function(){
 
   //:
   
-  
-      obj.init    = function(){debugger;
       
-            mod.menu.top    = mod.menu.top();
+      var top;
+      
+  
+      obj.init    = async function(){
+      
+            top   = mod['menu.top'];
             
-            mod.menu.top.initmod({menu,menumod});
+            top.initmod({ext,$,menu});
             
-            mod.menu.top.init();
+            await top.init();
 
             
       }//init
@@ -109,10 +111,10 @@ mod.utils.hdr   = function(){
   
       obj.initdom   = function(rootnode){
         
-            var root            = $.$(rootnode,'utils-hdr');
+            var root            = $.$(rootnode,'editors-hdr');
             var shadow          = root.shadowRoot;
             
-            mod.menu.top.initdom(shadow);
+            top.initdom(shadow);
             
             
       }//initdom
@@ -123,10 +125,10 @@ mod.utils.hdr   = function(){
   
   return obj;
   
-}//mod.hdr
+});
 
             
       </script>
       
-</utils-hdr>
+</editors-hdr>
 
