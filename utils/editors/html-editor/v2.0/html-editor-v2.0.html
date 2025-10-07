@@ -96,7 +96,6 @@
         
         var menu          = {};
         menu.click        = {};
-        var hdr           = {};
         
         
         var slider        = {};
@@ -121,7 +120,7 @@
               menu.root                 = menumod();
               menu.main                 = mod.menu.main();
               
-              hdr.utils                 = mod.utils.hdr();
+              hdr                       = mod.hdr;
               
               filemod                   = mod.filemod;
               publish                   = publish();
@@ -131,7 +130,7 @@
               
               menu.root.initmod({keydown});
               menu.main.initmod({ext,$,menumod:menu.root,editor,filemod});
-              hdr.utils.initmod({ext,$,menu:menu.root,menumod});
+              hdr.initmod({ext,$,menu:menu.root});
               filemod.initmod({ext,$,menumod,menu:menu.root,complete,source,focus,log,editor});
               publish.initmod({ext,$,menu:menu.root,run,source,complete,log});
               editor.initmod({ext,$,menu:menu.root});
@@ -139,7 +138,7 @@
               log.initmod({ext,$});
               
               await menu.main.init();
-              await hdr.utils.init();
+              await hdr.init();
               await filemod.init();
               await publish.init();
               await editor.init();
@@ -245,12 +244,11 @@
       <body>
             
 
-            <hdr-grp api>
-                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            <hdr component=grp v2.0>
                   <img class=title src='images/html-editor.png' style='top:-5px;height:55px' alt='html editor'>
                   <h1 slot=seo-hdr class=visually-hidden>html editor</h1>
                   <span slot=date>24 Aug 2025</span>
-            </hdr-grp>
+            </hdr>
 
 
             <div id=hdr>
@@ -313,14 +311,14 @@
                                                                                 debug('initdom');
               root                                  = rootnode;
               
-              keydown.initdom();
+              keydown.initdom(root);
               menu.root.add.style();
 
               
-              hdr.utils.initdom();
+              hdr.initdom(root);
 
               
-              menu.main.initdom();
+              menu.main.initdom(root);
 
               filemod.initdom(root);
 
