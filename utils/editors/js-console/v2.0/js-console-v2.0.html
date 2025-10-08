@@ -21,47 +21,29 @@
 
             <script init>
                                                                                 console.clear();
+                                                                                console.log('js-console-v2.0.html');
+                                                                                console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        //var mod     = {};
-        mod.menu    = {};
-        mod.utils   = {};
-
         var obfuscator;
-        
         var espree;
-        var filemod;                                                                                
-        var publish;
-        var editor;
-        var output;
-        var log;
-  
+        
         var ext;
         var $;
         var datatype;
         var menumod;
         var keydown;
         
+        var menu;
         
-        var root;
-        
-        var autosave;
-        
-        var iframe;
-        
+        var hdr;
+        var mainmenu;
+        var filemod;                                                                                
+        var publish;
+        var editor;
+        var output;
+        var log;
   
-        var menu        = {};
-        menu.click      = {};
-        var hdr         = {};
         
-        var slider      = {};
-        
-        var ui          = {};
-        ui.mode         = 'vert';
-
-        
-        var btn         = {};
-
-
   //:
 
 
@@ -70,26 +52,28 @@
         async function init(){
                                                                                 console.log('init');
               //keydown                   = keydown();
-              menu.root                 = menumod();
-              hdr.utils                 = mod.utils.hdr();
-              menu.main                 = mod.menu.main();
-              filemod                   = filemod();
-              publish                   = publish();
-              editor                    = editor();
-              output                    = output();
-              log                       = log();
+              menu                      = menumod();
               
-              menu.root.initmod({keydown});
-              hdr.utils.initmod({ext,$,menu:menu.root,menumod});
-              menu.main.initmod({ext,$,menu:menu.root,menumod,editor,filemod});
-              filemod.initmod({ext,$,menumod,menu:menu.root,complete,source,focus,log,editor});
-              publish.initmod({ext,$,ui,menu:menu.root,source,complete,log});
-              editor.initmod({ext,$,menu:menu.root});
+              hdr                       = mod.hdr;
+              menu.main                 = mod['main-menu'];
+              filemod                   = mod.filemod;
+              publish                   = mod.publish;
+              editor                    = mod.editor;
+              output                    = mod.output;
+              log                       = mod.log;
+              
+              menu.initmod({keydown});
+              
+              hdr.initmod({ext,$,menu});
+              mainmenu.initmod({ext,$,menu,editor,filemod});
+              filemod.initmod({ext,$,menu,complete,source,focus,log,editor});
+              publish.initmod({ext,$,ui,menu,source,complete,log});
+              editor.initmod({ext,$,menu});
               output.initmod({ext,$});
               log.initmod({ext,$});
               
-              await menu.main.init();
-              await hdr.utils.init();
+              await mainmenu.init();
+              await hdr.init();
               await filemod.init();
               await publish.init();
               await editor.init();
@@ -102,7 +86,7 @@
           
               window.onfocus              = ()=>editor && editor.focus();
               keydown.add(kd);
-              menu.root.on.close          = ()=>editor.focus();
+              menu.on.close               = ()=>editor.focus();
   
               
               initdom(document.body);
@@ -111,8 +95,6 @@
         }//init
 
   
-        init.stack    = mod.stack;
-        
   //:
   
 
@@ -225,13 +207,9 @@
 
             <div id=hdr>
                         
-                  <main-menu-page api>
-                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </main-menu-page>
+                  <main-menu component=page v2.0></main-menu>
 
-                  <filemod api>
-                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </filemod api>
+                  <filemod component v2.0></filemod>
 
                   <div id=save-root>
                         <button id=save>save</button>
@@ -243,9 +221,7 @@
                         </div>
                   </div>
 
-                  <publish>
-                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </publish>
+                  <publish component v2.0></publish>
 
                   <button id=run>run</button>
                   
@@ -277,24 +253,48 @@
             
             <div id=view>
             
-                  <editor>
-                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </editor>
+                  <editor component v2.0></editor>
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
-                  <output-page-api>
-                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </output-page-api>
+                  <output component=page v2.0></output>
                   
             </div>
 
+            
+            <log component v2.0></log>
+
+
+
+
+            <checkbox-one-template>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            </checkbox-one-template>
+
+
       </body>
 
+
       <script>
+
       
-      
+        var root;
+        
+        var autosave;
+        
+        var iframe;
+        
+  
+        
+        var slider      = {};
+        
+        var ui          = {};
+        ui.mode         = 'vert';
+
+        
+        var btn         = {};
         var mode    = {};
+      
         
 
         async function initdom(rootnode){   //c
@@ -302,27 +302,27 @@
               root                                  = rootnode;
               
               keydown.initdom();
-              menu.root.add.style();
+              menu.add.style();
   
   
-              hdr.utils.initdom();
+              hdr.initdom();
   
               
-              menu.main.initdom();
+              mainmenu.initdom(root);
   
-              filemod.initdom();
+              filemod.initdom(root);
 
 
               $(root,'#save').onclick               = btn.save;
 
               var card                              = $(root,'#save-root .menu');
-              $(root,'.menu-icon').onclick          = menu.root.click(card,false,false,menu.click.save);
+              $(root,'.menu-icon').onclick          = menu.click(card,false,false);
 
               autosave                              = $(root,'#autosave');
               autosave.checked                      = false;
 
               
-              publish.initdom();
+              publish.initdom(root);
               
               $(root,'#run').onclick                = run;
               mode.iframe                           = $(root,'#iframe');
@@ -342,7 +342,7 @@
               
               await editor.initdom(view,'html');
               slider.node                           = $.slider('editor-root','#page-slider','output-root',slider,ui);
-              output.initdom();
+              output.initdom(root);
   
   
               log.initdom();
@@ -376,7 +376,7 @@
 
               if(e.key==' ' && e.ctrlKey){
                     e.preventDefault();
-                    menumod.open();
+                    menu.open();
               }
 
               if(e.key=='s' && e.ctrlKey){
@@ -529,12 +529,6 @@
   //:
 
 
-        menu.click.save   = function(){}
-        
-        
-  //:
-
-
         function source(){
           
               var txt     = editor.getValue();
@@ -551,7 +545,7 @@
                     editor.filename.save.hide();
                     filemod.cur   = file;
               }
-              menu.root.close();
+              menu.close();
               editor.focus();
               
         }//complete
@@ -755,24 +749,7 @@
         
         
 
-        init.stack.complete;
-
-      
       </script>
-
-
-<!-- components -->
-
-<checkbox-one-template>
-      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-</checkbox-one-template>
-
-<log>
-      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-</log>
-
-<!-- components -->
-
 
 </html>
 
