@@ -68,10 +68,10 @@
               hdr.initmod({ext,$,menu,menumod});
               //mod.menu.main.initmod({menumod,editor});
               
-              primary.filemod.initmod({ext,$,menu,menumod,complete,log});
+              primary.filemod.initmod({ext,$,menu,menumod,complete:primary.complete,log});
               primary.editor.initmod({ext,$,menu});
               
-              secondary.filemod.initmod({ext,$,menu,menumod,complete,log});
+              secondary.filemod.initmod({ext,$,menu,menumod,complete:secondary.complete,log});
               secondary.editor.initmod({ext,$,menu});
               
               output.initmod({});
@@ -307,6 +307,75 @@
   //:
 
 
+        primary.complete   = function(file){
+
+              primary.editor.filename(file);
+              primary.editor.filename.save.hide();
+              primary.cur   = file;
+              menu.close();
+              primary.editor.focus();
+              
+        }//complete
+
+
+        primary.complete.load   = function(file,txt){
+        
+              primary.editor.clear();
+              output.kill();
+              primary.editor.setValue(txt,-1);
+              primary.complete(file);
+              
+        }//complete.load
+
+        
+        primary.complete.save   = function(file,confirm=true){
+
+              primary.complete(file);
+              
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
+        }//save
+
+
+        secondary.complete   = function(file){
+
+              secondary.editor.filename(file);
+              secondary.editor.filename.save.hide();
+              secondary.cur   = file;
+              menu.close();
+              secondary.editor.focus();
+              
+        }//complete
+
+
+        secondary.complete.load   = function(file,txt){
+        
+              secondary.editor.clear();
+              output.kill();
+              secondary.editor.setValue(txt,-1);
+              secondary.complete(file);
+              
+        }//complete.load
+
+        
+        secondary.complete.save   = function(file,confirm=true){
+
+              secondary.complete(file);
+              
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
+        }//save
+        
+
+
+
+
+/*
+
         function complete(file){
         
               editor.filename(file);
@@ -338,7 +407,10 @@
               
         }//save
 
-  
+*/
+
+
+
   //:
 
 
