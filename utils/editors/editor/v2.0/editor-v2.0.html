@@ -74,7 +74,7 @@
           
               window.onfocus            = ()=>editor && editor.focus();
               keydown.add(kd);
-              menu.root.on.close        = ()=>editor.focus();
+              menu.on.close        = ()=>editor.focus();
   
               
               initdom(document.body);
@@ -219,7 +219,7 @@
               root                                  = rootnode;
               
               keydown.initdom();
-              menu.root.add.style();
+              //menu.add.style();
   
   
               hdr.initdom(root);
@@ -233,7 +233,7 @@
               $(root,'#save').onclick               = btn.save;
 
               var card                              = $(root,'#save-root .menu');
-              $(root,'.menu-icon').onclick          = menu.root.click(card,false,false);
+              $(root,'.menu-icon').onclick          = menu.click(card,false,false);
 
               autosave                              = $(root,'#autosave');
               autosave.checked                      = false;
@@ -274,7 +274,7 @@
   
               if(e.key==' ' && e.ctrlKey){
                     e.preventDefault();
-                    menu.root.open();
+                    menu.open();
               }
   
               if(e.key=='s' && e.ctrlKey){
@@ -320,7 +320,7 @@
                     filemod.cur   = file;
               }
               
-              menu.root.close();
+              menu.close();
               editor.focus();
               
         }//complete
