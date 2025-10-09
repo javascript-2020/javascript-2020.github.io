@@ -1,10 +1,15 @@
+
+
+
 <html>
+
       <head>
       
             <title>text diff</title>
             <meta name=description content='Compare and highlight differences between two text files instantly with this free online text-diff tool. Fast, secure, and easy to use—no downloads required'>
             
-            <base href='https://javascript-2020.github.io/utils/editors/text-diff/text-diff.html'>
+            <base href='https://ext-code.com/utils/editors/text-diff/'>
+            <base href='https://javascript-2020.github.io/utils/editors/text-diff/'>
             <link rel=canonical href='https://ext-code.com/utils/editors/text-diff/text-diff.html'>
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
@@ -15,139 +20,93 @@
 
             <script init>
                                                                                 console.clear();
+                                                                                console.log('text-diff-v2.0.html');
+                                                                                console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-      var ext;
-      var $,datatype,menumod,keydown;
-      
-      
-      var mod         = {};
-      mod.menu        = {};
-      mod.utils       = {};
-
-      
-      var menu;
-      
-      var primary     = {};
-      var secondary   = {};
-      
-      var output;                  
-      var log;
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        
+        var menu;
+        
+        var hdr;
+        var primary     = {};
+        var secondary   = {};
+        
+        var output;                  
+        var log;
 
 
-      var slider      = {};
-      
-      var ui          = {};
-      ui.mode         = 'vert';
 
   //:
   
-      async function init(){
-                                                                                console.log('init');
-                                                                    
-        
-            //keydown                   = keydown();
-            menu                      = menumod();
-            mod.utils.hdr             = mod.utils.hdr();
-            //mod.menu.main             = mod.menu.main();
-            
-            primary.filemod           = filemod();
-            primary.editor            = editor();
-            
-            secondary.filemod         = filemod();
-            secondary.editor          = editor();
-            
-            output                    = output();                        
-            log                       = log();
-
-        
-            mod.utils.hdr.initmod({ext,$,menu,menumod});
-            //mod.menu.main.initmod({menumod,editor});
-            
-            primary.filemod.initmod({ext,$,menu,menumod,complete,editor,ext,log});
-            primary.editor.initmod({ext,$,menu});
-            
-            secondary.filemod.initmod({ext,$,menu,menumod,complete,ext,log});
-            secondary.editor.initmod({ext,$,menu});
-            
-            output.initmod({});
-            log.initmod({ext,$});
-
-
-            //mod.menu.main.init();
-            mod.utils.hdr.init();
-            primary.filemod.init();
-            primary.editor.init();
-            
-            secondary.filemod.init();
-            secondary.editor.init();
-            
-            //publish.init();
-            
-            output.init();
-            log.init();
-
-        //:
-        
-            window.onfocus            = ()=>primary.editor && primary.editor.focus();
-            keydown.add(kd);
-            //menu.on.close             = ()=>editor.focus();
-
-            
-            initdom(document.body);
-
-
-      }//init
-
-      init.stack            = [];
-      init.stack.ct         = 0;
-      init.stack.total      = 1;
-      init.stack.mode       = '';
-      init.stack.complete   = false;
-      Object.defineProperty(init.stack,'add',{get:()=>{
-            init.stack.total++;
-            init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
-      }});
-      Object.defineProperty(init.stack,'complete',{get:()=>{
-            init.stack.ct++;
-            init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
-            init.stack.ct>=init.stack.total && init();
-      }});
-      
-      //  (typeof init!='undefined' && init?.stack && init.stack.add)
-      //  (typeof init!='undefined' && init?.stack && init.stack.complete)
-      
+        async function init(){
+                                                                                  console.log('init');
+                                                                      
+          
+              //keydown                   = keydown();
+              menu                      = menumod();
+              
+              hdr                       = mod.hdr;
+              //mod.menu.main             = mod.menu.main();
+              
+              primary.filemod           = mod.filemod;
+              primary.editor            = mod.editor;
+              
+              secondary.filemod         = mod.filemod;
+              secondary.editor          = mod.editor;
+              
+              output                    = mod.output;
+              log                       = mod.log;
+  
+          
+              hdr.initmod({ext,$,menu,menumod});
+              //mod.menu.main.initmod({menumod,editor});
+              
+              primary.filemod.initmod({ext,$,menu,menumod,complete,log});
+              primary.editor.initmod({ext,$,menu});
+              
+              secondary.filemod.initmod({ext,$,menu,menumod,complete,log});
+              secondary.editor.initmod({ext,$,menu});
+              
+              output.initmod({});
+              log.initmod({ext,$});
+  
+  
+              await hdr.init();
+              //await mod.menu.main.init();
+              await primary.filemod.init();
+              await primary.editor.init();
+              
+              await secondary.filemod.init();
+              await secondary.editor.init();
+              
+              //publish.init();
+              
+              await output.init();
+              await log.init();
+  
+          //:
+          
+              window.onfocus            = ()=>primary.editor && primary.editor.focus();
+              keydown.add(kd);
+              //menu.on.close             = ()=>editor.focus();
+  
+              
+              initdom(document.body);
+  
+  
+        }//init
 
 
 (async()=>{
 
-        init.stack.add;
-      
-      
-        var url;
-        var headers;
-        var token       = localStorage['github-token'];
-        if(token){
-              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
-              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
-        }else{
-              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
-        }
+        mod.stack.add;
         
-        var res   = await fetch(url,{headers});
-        var txt   = await res.text();
-
-        if(res.headers.get('content-type').includes('json')){
-                                                                                console.log('*** ext : json');
-              var json    = JSON.parse(txt);
-              var b64     = json.content;
-              txt         = atob(b64);
-        }else{
-                                                                                console.log('*** ext : text');
-        }
-        
-        ext   = eval(txt);
-            
-            
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
@@ -156,15 +115,16 @@
         );
         [$,datatype,menumod,keydown]   = await promise;
   
-  
-        init.stack.complete;
-
+        mod.stack.complete;
+              
 })();
+
 
             </script init>
 
 
             <link rel=stylesheet href='/utils/css/utils.css'>
+            
             <style>
             
   :root
@@ -233,11 +193,10 @@
       
       <body>
 
-            <hdr-grp>
-                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            <hdr component=grp v2.0>
                   <img class=title src='images/text-diff.png' style='top:5px;height:35px'>
                   <span slot=date>24 Aug 2025</span>
-            </hdr-grp>
+            </hdr>
 
             
             <input type=button value=check>
@@ -245,32 +204,32 @@
             <div id=main>
                   <div id=view1>
                         <div id=hdr>
-                              <filemod>
-                                    <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                              </filemod>
+                              <filemod component v2.0></filemod>
                               <div id=label>primary</div>
                         </div>
-                        <editor>
-                              <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                        </editor>
+                        <editor component v2.0></editor>
                   </div>
                   <div id=view2>
                         <div id=hdr>
-                              <filemod>
-                                    <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                              </filemod>
+                              <filemod component v2.0></filemod>
                               <div id=label>secondary</div>
                         </div>
-                        <editor>
-                              <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                        </editor>
+                        <editor component v2.0></editor>
                   </div>
             </div>
             
             
-            <output-page>
+            <output component=page v2.0></output>
+
+            
+            <log  component v2.0></log>
+
+
+
+            <checkbox-one-template>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-            </output-page>
+            </checkbox-one-template>
+
 
       </body>        
             
@@ -278,15 +237,23 @@
       <script>
 
 
+        var slider      = {};
+        
+        var ui          = {};
+        ui.mode         = 'vert';
+
+
+  //:
+  
+  
         function initdom(rootnode){
                                                                                 console.log('initdom');
               var root                      = rootnode;
               
               keydown.initdom();
-              menu.add.style();
         
         
-              mod.utils.hdr.initdom();
+              hdr.initdom();
         
               
               //mod.menu.main.initdom();
@@ -318,7 +285,7 @@
 
               if(e.key==' ' && e.ctrlKey){
                     e.preventDefault();
-                    menumod.open();
+                    menu.open();
               }
 
               if(e.key=='s' && e.ctrlKey){
@@ -342,7 +309,7 @@
               editor.filename(file);
               editor.filename.save.hide();
               filemod.cur   = file;
-              menumod.close();
+              menu.close();
               editor.focus();
               
         }//complete
@@ -407,27 +374,14 @@
 
 
 
-        init.stack.complete;
-
-      
       
       </script>
 
 
-
-<!-- components -->
-
-<checkbox-one-template>
-      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-</checkbox-one-template>
-
-<log-api>
-      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-</log-api>
-
-<!-- components -->
-
-
 </html>
 
-                
+
+
+
+
+
