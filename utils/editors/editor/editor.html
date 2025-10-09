@@ -1,4 +1,8 @@
+
+
+
 <html>
+
       <head>
 
             <title>editor</title>
@@ -15,10 +19,16 @@
             
             <script init>
                                                                                 console.clear();
+                                                                                console.log('editor-v2.0.html');
+                                                                                console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var mod     = {};
-        mod.menu    = {};
-        mod.utils   = {};
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+                
+        var menu;
         
         var filemod;                                                                                
         var publish;
@@ -26,51 +36,33 @@
         var output;
         var log;
   
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
-
-        
-        var root;
-        var autosave;
-
-  
-        var menu        = {};
-        menu.click      = {};
-        var hdr         = {};
-        
-        
-        
-        var ui          = {};
-        var btn         = {};
-
 
   //:
 
   
+        mod.stack.add   = init;
+        
         async function init(){
                                                                                 console.log('init');
               //keydown                   = keydown();
-              menu.root                 = menumod();
-              hdr.utils                 = mod.utils.hdr();
-              menu.main                 = mod.menu.main();
-              filemod                   = filemod();
-              publish                   = publish();
-              editor                    = editor();
-              log                       = log();
+              menu                      = menumod();
+              hdr                       = mod.hdr;
+              mainmenu                  = mod['main-menu'];
+              filemod                   = mod.filemod;
+              publish                   = mod.publish;
+              editor                    = mod.editor;
+              log                       = mod.log;
               
-              menu.root.initmod({keydown});
-              hdr.utils.initmod({ext,$,menu:menu.root,menumod});
-              menu.main.initmod({ext,$,menu:menu.root,menumod,editor,filemod});
-              filemod.initmod({ext,$,menumod,menu:menu.root,complete,focus,source,log,editor});
-              publish.initmod({ext,$,ui,menu:menu.root,source,complete,log});
-              editor.initmod({ext,$,menu:menu.root});
+              menu.initmod({keydown});
+              hdr.initmod({ext,$,menu});
+              mainmenu.initmod({ext,$,menu,editor,filemod});
+              filemod.initmod({ext,$,menumod,menu,complete,focus,source,log});
+              publish.initmod({ext,$,ui,menu,source,complete,log});
+              editor.initmod({ext,$,menu});
               log.initmod({ext,$});
               
-              await menu.main.init();
-              await hdr.utils.init();
+              await mainmenu.init();
+              await hdr.init();
               await filemod.init();
               await publish.init();
               await editor.init();
@@ -82,7 +74,7 @@
           
               window.onfocus            = ()=>editor && editor.focus();
               keydown.add(kd);
-              menu.root.on.close        = ()=>editor.focus();
+              menu.on.close        = ()=>editor.focus();
   
               
               initdom(document.body);
@@ -91,75 +83,28 @@
         }//init
 
   
-  //:
-  
-  
-        init.stack            = [];
-        init.stack.ct         = 0;
-        init.stack.total      = 1;
-        init.stack.mode       = '';
-        init.stack.complete   = false;
-        Object.defineProperty(init.stack,'add',{get:()=>{
-              init.stack.total++;
-              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
-        }});
-        Object.defineProperty(init.stack,'complete',{get:()=>{
-              init.stack.ct++;
-              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
-              init.stack.ct>=init.stack.total && init();
-        }});
-        
-        //  (typeof init!='undefined' && init?.stack && init.stack.add)
-        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
-                  
-
-
 (async()=>{
 
-        init.stack.add;
+        mod.stack.add;
         
-
-        var url;
-        var headers;
-        var token       = localStorage['github-token'];
-        if(token){
-              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
-              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
-        }else{
-              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
-        }
-        
-        var res   = await fetch(url,{headers});
-        var txt   = await res.text();
-
-        if(res.headers.get('content-type').includes('json')){
-                                                                                console.log('*** ext : json');
-              var json    = JSON.parse(txt);
-              var b64     = json.content;
-              txt         = atob(b64);
-        }else{
-                                                                                console.log('*** ext : text');
-        }
-        
-        ext   = eval(txt);
-
-
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
         var promise   = ext.load.libs(
-              'js/dom/$.js.api',
+              'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js'
         );
         [$,datatype,menumod,keydown]   = await promise;
   
-        init.stack.complete;
-        
+        mod.stack.complete;
+              
 })();
 
             </script init>
 
 
-            <link rel=stylesheet href='/utils/css/utils.css'>
+            <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymous>
             
             <style id=page-inline>
             
@@ -206,23 +151,18 @@
       
       <body>
 
-            <hdr-grp>
-                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            <hdr component=grp v2.0>
                   <img class=title src='images/editor.png' style='top:-5px;height:55px'>
                   <h1 slot=seo-hdr class=visually-hidden>editor</h1>
                   <span slot=date>24 Aug 2025</span>
-            </hdr-grp>
+            </hdr>
 
 
             <div id=hdr>
                                           
-                  <main-menu-page api>
-                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </main-menu-page>
+                  <main-menu component=page v2.0></main-menu>
                                     
-                  <filemod>
-                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </filemod>
+                  <filemod component v2.0></filemod>
 
                   <div id=save-root>
                         <button id=save>save</button>
@@ -234,57 +174,78 @@
                         </div>
                   </div>
 
-                  <publish>
-                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </publish>
+                  <publish component v2.0></publish>
 
             </div>
             
             <div id=view>
             
-                  <editor>
-                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </editor>
+                  <editor component v2.0></editor>
                   
             </div>
+
+
+            <log component v2.0></log>
+
+
+
+            <checkbox-one-template>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+            </checkbox-one-template>
+            
+
 
       </body>
 
       <script>
 
 
+        var root;
+        var autosave;
+
+  
+        
+        
+        
+        var ui          = {};
+        var btn         = {};
+
+
+  //:
+  
+
         async function initdom(rootnode){   //c
                                                                                 console.log('initdom');
               root                                  = rootnode;
               
               keydown.initdom();
-              menu.root.add.style();
+              //menu.add.style();
   
   
-              hdr.utils.initdom();
+              hdr.initdom(root);
   
               
-              menu.main.initdom();
+              mainmenu.initdom(root);
   
-              filemod.initdom();
+              filemod.initdom(root);
 
 
               $(root,'#save').onclick               = btn.save;
 
               var card                              = $(root,'#save-root .menu');
-              $(root,'.menu-icon').onclick          = menu.root.click(card,false,false,menu.click.save);
+              $(root,'.menu-icon').onclick          = menu.click(card,false,false);
 
               autosave                              = $(root,'#autosave');
               autosave.checked                      = false;
 
 
               
-              publish.initdom();
+              publish.initdom(root);
   
   
               var view                              = $('#view');
   
-              await editor.initdom(view,'html');
+              await editor.initdom(view,{mode:'text'});
   
               
               log.initdom(root);
@@ -296,6 +257,9 @@
         }//initdom
 
 
+  //:
+  
+  
         function focus(){
           
               editor.focus();
@@ -310,7 +274,7 @@
   
               if(e.key==' ' && e.ctrlKey){
                     e.preventDefault();
-                    menu.root.open();
+                    menu.open();
               }
   
               if(e.key=='s' && e.ctrlKey){
@@ -339,12 +303,6 @@
   //:
   
   
-        menu.click.save   = function(){}
-          
-
-  //:
-
-
         function source(){
           
               var txt     = editor.getValue();
@@ -362,7 +320,7 @@
                     filemod.cur   = file;
               }
               
-              menu.root.close();
+              menu.close();
               editor.focus();
               
         }//complete
@@ -428,28 +386,9 @@
 
 
 
-
-  //:
   
 
-        init.stack.complete;
-
-      
       </script>
-
-
-<!-- components -->
-
-<checkbox-one-template>
-      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-</checkbox-one-template>
-
-<log>
-      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-</log>
-
-<!-- components -->
-
 
 </html>
 
