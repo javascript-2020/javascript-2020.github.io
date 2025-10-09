@@ -65,9 +65,13 @@
       <script>
       
 (function({mod,root,node}){
-                                                                                true && console.log('top-menu');      
-  var obj   = {};
+
+  var obj   = {
+        version   : 'v2.0'
+  };
               
+        var df=false,did='top-menu';
+                                                                                
         var ext,$,menu
         ;
                   
@@ -87,6 +91,7 @@
   
   
         obj.init    = async function(){
+                                                                                debug('init',obj.version);
         }//init
 
                   
@@ -110,6 +115,14 @@
 
   //:
   
+
+        function debug(){
+          
+              if(!df && !obj.df)return;
+              var str   = [...arguments].join(' ');
+              console.log(`[ ${did} ]`,str);
+              
+        }//debug
   
 
 
