@@ -66,7 +66,7 @@
               
               hdr.initmod({ext,$,menu});
               mainmenu.initmod({ext,$,menu,editor,filemod});
-              filemod.initmod({ext,$,menu,menumod,complete,source,focus,log,editor});
+              filemod.initmod({ext,$,menu,menumod,complete,source,focus,log});
               publish.initmod({ext,$,ui,menu,source,complete,log});
               editor.initmod({ext,$,menu});
               output.initmod({ext,$});
@@ -340,7 +340,8 @@
               var view                              = $('#view');
               ui.root                               = view;
               
-              await editor.initdom(view,'html');
+              editor.initdom(view,{mode:'javascript'});
+              
               slider.node                           = $.slider('editor-root','#page-slider','output-root',slider,ui);
               output.initdom(root);
   
@@ -356,6 +357,9 @@
   
         }//initdom
 
+
+  //:
+  
 
         function focus(){
           
