@@ -1,0 +1,451 @@
+<html>
+      <head>
+
+            <title>editor</title>
+            <meta name=description content='A fast, distraction-free online text editor for writing, coding, and note-taking. Built for developers and creators who value simplicity and speed'>
+            
+            <base href='https://javascript-2020.github.io/utils/editors/editor/editor.html'>
+            <link rel=canonical href='https://ext-code.com/utils/editors/editor/editor.html'>
+            
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABm1BMVEVHcEzhnCznsmDloTPlni/cUVWuim3xoSbyoCTiSUngTE3lR0jdlynlmSPOUlfd3+EoKCgkJCThlBvjkxnxpjHwoyvmlRnh09PrmyLiT1Hr6+vuybLfkBf59O3iTE7ilRzrpDjwpTDxoyvvpjTmSEfdTEzlSEj35MTf3+D8/Pzw+vt2b4EVFRXdo0srKyvt6egpKSnikxv7/PzckRvypCzxoiju6ubllh7fV1rpmB3hTU7k5OT8/PznzablSkrjTkzw8PDg4eHunCDyyIXxqTnZbnD47drffn3w6d3gkBX+/v7gRUXgza4nJyeqqqrfU1P///8mJiZTU1MoKCgnJycqKipBQUFBQUHtmh3vnSDplxrolhnnlRjjQ0PsmRzmlBfkkhX6+/vumx7jkBPmkxX39/fiQEDqmBvxnyLmRUbz8/PhjhLs6OX9/f3yoSbpqUbs2trrmBv06dbw4MTy1aXvvW7sypblnJ3gV1ficnHn28nhtXPzxXrxpjHeSkrnv8Dky6TflSXnkZHimizqurykpKR9fX3FxcVISEgmqyd1AAAAZHRSTlMADQQjGhMC4fXGWug5XwYW/TN22kiG8rrMT792xfqNkf11pTj6OfAIIZYiAQX+VfformpMtL7toiXqdmqAnt2u82Dz2NE+Pf725w2lr5Zz1KfZyM97QMwl///////////////+3U9RHgAAAatJREFUKM91k1dbE0EUhpcEEkgMCb1Kk64QpCgWVDrSlTZtZyab3exmN6TQVBBBEfBnM/GO2ezcvs9558w35yiKdCo6+j/2BRSPUx0Kp3urQhUeeLEqpabT4Y7pknS4aflXSlWFoKXaTX1tK/lv3wVX0x/eui94tnB6nLn6oRYF4RaZlvdktdxZpihIqf0hWd1dCU3+++I881cI1mR5fdCiRHecketM/s9Wn0T9kxbAjDsOv7k4j7dJnZc1VGoYk6TDCeMj68OPaaA+CBFBzHEY1pPtT2T1FDQJQtxhJuGfIwGXmhIESJKbiCU7yyR1JAgIAabOEcW83S/H1axhBjTMMTBZ3YQrLg3pFFLGAECNtZJ6oHvO1LElOgdaAb8sl4qX5rt03RKhUAhQnfwmZfzpSQ5mIaVQKzTW+uSveJ8wjn5eahSK4teyWhkYSiQSRYEFabNLrawKbBj28WkWvIn4XDi6fSiwYR+ddclx/cdNtii3bfvVjL/EeB58vbu3DftT62y01PTWfIn9u423vht8XnK498Zisf3NQa/NGR3b2a154bVWgdENT/gANP5uhp+UdMEAAAAASUVORK5CYII='>
+
+            
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>            
+            
+            <script init>
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+                
+        var filemod;                                                                                
+        var publish;
+        var editor;
+        var output;
+        var log;
+  
+        var menu;
+
+        
+        var root;
+        var autosave;
+
+  
+        
+        
+        
+        var ui          = {};
+        var btn         = {};
+
+
+  //:
+
+  
+        async function init(){
+                                                                                console.log('init');
+              //keydown                   = keydown();
+              menu                      = menumod();
+              hdr                       = mod.hdr;
+              menu.main                 = mod.menu.main();
+              filemod                   = filemod();
+              publish                   = publish();
+              editor                    = editor();
+              log                       = log();
+              
+              menu.root.initmod({keydown});
+              hdr.utils.initmod({ext,$,menu:menu.root,menumod});
+              menu.main.initmod({ext,$,menu:menu.root,menumod,editor,filemod});
+              filemod.initmod({ext,$,menumod,menu:menu.root,complete,focus,source,log,editor});
+              publish.initmod({ext,$,ui,menu:menu.root,source,complete,log});
+              editor.initmod({ext,$,menu:menu.root});
+              log.initmod({ext,$});
+              
+              await menu.main.init();
+              await hdr.utils.init();
+              await filemod.init();
+              await publish.init();
+              await editor.init();
+              await log.init();
+
+  
+  //:
+
+          
+              window.onfocus            = ()=>editor && editor.focus();
+              keydown.add(kd);
+              menu.root.on.close        = ()=>editor.focus();
+  
+              
+              initdom(document.body);
+  
+  
+        }//init
+
+  
+  //:
+  
+  
+        init.stack            = [];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+              init.stack.ct>=init.stack.total && init();
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+                  
+
+
+(async()=>{
+
+        init.stack.add;
+        
+
+        var url;
+        var headers;
+        var token       = localStorage['github-token'];
+        if(token){
+              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
+        }else{
+              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
+        }
+        
+        var res   = await fetch(url,{headers});
+        var txt   = await res.text();
+
+        if(res.headers.get('content-type').includes('json')){
+                                                                                console.log('*** ext : json');
+              var json    = JSON.parse(txt);
+              var b64     = json.content;
+              txt         = atob(b64);
+        }else{
+                                                                                console.log('*** ext : text');
+        }
+        
+        ext   = eval(txt);
+
+
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js'
+        );
+        [$,datatype,menumod,keydown]   = await promise;
+  
+        init.stack.complete;
+        
+})();
+
+            </script init>
+
+
+            <link rel=stylesheet href='/utils/css/utils.css'>
+            
+            <style id=page-inline>
+            
+  #hdr
+    {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
+  
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}                  
+  .spc
+    {flex:1;max-width:200px}
+
+
+  #save-root
+    {margin-left:5px;display:flex}
+  
+  #save-menu
+    {position:absolute;left:0;top:30px}
+
+
+  #help
+    {padding:2px}
+  
+  #clear
+    {margin-left:20px}
+  #run
+    {color:blue;font-weight:bold}
+  #horiz
+    {margin-left:50px;border:none}
+  #vert
+    {border:none}
+
+  #view
+    {flex:1}
+
+  button
+    {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
+
+  .visually-hidden
+    {position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0}
+    
+            </style>
+            
+      </head>
+      
+      <body>
+
+            <hdr-grp>
+                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  <img class=title src='images/editor.png' style='top:-5px;height:55px'>
+                  <h1 slot=seo-hdr class=visually-hidden>editor</h1>
+                  <span slot=date>24 Aug 2025</span>
+            </hdr-grp>
+
+
+            <div id=hdr>
+                                          
+                  <main-menu-page api>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </main-menu-page>
+                                    
+                  <filemod>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </filemod>
+
+                  <div id=save-root>
+                        <button id=save>save</button>
+                        <div id=save-menu-root class=menu-root>
+                              <img id=save-menu-icon class=menu-icon>
+                              <div id=save-menu class=menu style='display:none'>
+                                    <checkbox-one id=autosave></checkbox-one>
+                              </div>
+                        </div>
+                  </div>
+
+                  <publish>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </publish>
+
+            </div>
+            
+            <div id=view>
+            
+                  <editor>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </editor>
+                  
+            </div>
+
+      </body>
+
+      <script>
+
+
+        async function initdom(rootnode){   //c
+                                                                                console.log('initdom');
+              root                                  = rootnode;
+              
+              keydown.initdom();
+              menu.root.add.style();
+  
+  
+              hdr.utils.initdom();
+  
+              
+              menu.main.initdom();
+  
+              filemod.initdom();
+
+
+              $(root,'#save').onclick               = btn.save;
+
+              var card                              = $(root,'#save-root .menu');
+              $(root,'.menu-icon').onclick          = menu.root.click(card,false,false,menu.click.save);
+
+              autosave                              = $(root,'#autosave');
+              autosave.checked                      = false;
+
+
+              
+              publish.initdom();
+  
+  
+              var view                              = $('#view');
+  
+              await editor.initdom(view,'html');
+  
+              
+              log.initdom(root);
+              
+              
+              publish.query();
+              editor.focus();
+  
+        }//initdom
+
+
+        function focus(){
+          
+              editor.focus();
+              
+        }//focus
+
+
+  //:
+  
+        
+        function kd(e){
+  
+              if(e.key==' ' && e.ctrlKey){
+                    e.preventDefault();
+                    menu.root.open();
+              }
+  
+              if(e.key=='s' && e.ctrlKey){
+                    e.preventDefault();
+                    filemod.save();
+              }
+  
+              if(e.key=='Delete' && e.ctrlKey){
+                    e.preventDefault();
+                    jsonblob.util.delete()
+              }
+              
+        }//keydown
+        
+
+  //:
+  
+  
+        btn.save    = function(){
+          
+              filemod.save();
+              
+        }//save
+
+
+  //:
+  
+  
+        menu.click.save   = function(){}
+          
+
+  //:
+
+
+        function source(){
+          
+              var txt     = editor.getValue();
+              var blob    = new Blob([txt]);
+              return blob;
+              
+        }//source
+        
+
+        function complete(file){
+        
+              if(file){
+                    editor.filename(file);
+                    editor.filename.save.hide();
+                    filemod.cur   = file;
+              }
+              
+              menu.root.close();
+              editor.focus();
+              
+        }//complete
+
+        
+        complete.load   = async function(file,blob){
+        
+              var txt;
+              if(typeof blob=='string'){
+                    txt   = blob;
+              }else{
+                    txt   = await blob.text();
+              }
+              
+              editor.clear();
+              editor.setValue(txt,-1);
+              complete(file);
+              
+        }//complete.load
+
+        
+        complete.save   = function(file,confirm=true){
+
+              complete(file);
+              
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
+        }//save
+
+
+  //:
+
+  
+        window.onmessage    = function(e){
+                                                                                console.log('window.onmessage',e);
+              var json    = JSON.parse(e.data);
+  
+              var txt   = json.code||json.text||json.txt;
+              if(txt){
+                    editor.setValue(txt,-1);
+              }
+  
+              if(json.run){
+                    run();
+              }
+  
+  
+        }//onmessage
+
+
+  //:
+
+
+        ui.read   = function(){
+  
+              var txt     = editor.getValue();
+              var json    = {v:1,txt};
+              return json;
+  
+        }//read
+
+
+
+
+  //:
+  
+
+        init.stack.complete;
+
+      
+      </script>
+
+
+<!-- components -->
+
+<checkbox-one-template>
+      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+</checkbox-one-template>
+
+<log>
+      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+</log>
+
+<!-- components -->
+
+
+</html>
+
