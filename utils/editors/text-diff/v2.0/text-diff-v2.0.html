@@ -14,8 +14,11 @@
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='images/text-diff-favicon.png'>
-        
 
+        
+            <script src="https://cdn.jsdelivr.net/npm/diff@latest/dist/diff.min.js"></script>
+
+            
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
 
             <script init>
@@ -61,7 +64,7 @@
               secondary.filemod         = mod['filemod[2]'];
               secondary.editor          = mod['editor[2]'];
               
-              output                    = mod.output;
+              output                    = mod['editor[output]'];
               log                       = mod.log;
   
           
@@ -74,7 +77,7 @@
               secondary.filemod.initmod({ext,$,menu,menumod,complete:secondary.complete,log});
               secondary.editor.initmod({ext,$,menu});
               
-              output.initmod({});
+              output.initmod({ext,$,menu});
               log.initmod({ext,$});
   
   
@@ -179,7 +182,7 @@
   editor-root
     {flex:1;border-top:1px solid lightgray}
     
-  output-root
+  #output
     {flex:1;border:1px solid lightgray;overflow:auto;margin:0}
 
   
@@ -221,11 +224,12 @@
                   </div>
             </div>
             
-            
-            <output component=page v2.0></output>
+            <div id=output>
+                  <editor inst=output component v2.0></editor>
+            </div>
 
             
-            <log  component v2.0></log>
+            <log component v2.0></log>
 
 
 
@@ -246,10 +250,13 @@
         ui.mode         = 'vert';
 
 
+        var btn         = {};
+        
+
   //:
   
   
-        function initdom(rootnode){
+        async function initdom(rootnode){
                                                                                 console.log('initdom');
               var root                      = rootnode;
               
@@ -258,24 +265,47 @@
         
               hdr.initdom();
         
-              
               //mod.menu.main.initdom();
+
+
+              $('[value=check]').onclick    = btn.check;
+              
         
               
               var view1                     = $('#view1');
               primary.filemod.initdom(view1);
-              primary.editor.initdom(view1);
+              primary.editor.initdom(view1,{mode:'text'});
               
               var view2                     = $('#view2');
               secondary.filemod.initdom(view2);
-              secondary.editor.initdom(view2);
+              secondary.editor.initdom(view2,{mode:'text'});
               
+              var node    = $('#output');
+              await output.initdom(node,{mode:'text'});
   
-  
+              var style   = document.createElement('style');
+              style.textContent   = `
+  .red
+    {position:absolute;background:var(--red);z-index:20}
+  .green
+    {position:absolute;background:var(--green);z-index:20}
+              `;
+              
+              output.root.shadowRoot.append(style);
               
         }//initdom
 
 
+  //:
+  
+  
+        btn.check   = function(){
+          
+              check();
+              
+        }//check
+        
+        
   //:
 
   
@@ -418,9 +448,9 @@
 
         function check(){
         
-              var txt1        = editor['1'].getValue();
-              var txt2        = editor['2'].getValue();
-              var d           = diff.diffChars(txt2,txt1);
+              var txt1        = primary.editor.getValue();
+              var txt2        = secondary.editor.getValue();
+              var d           = Diff.diffChars(txt2,txt1);
               console.log(d);
               
               var list    = [];
@@ -436,13 +466,16 @@
                     }
                     
               });
-              editor.output.setValue(txt,-1);
-              list.forEach(part=>{
               
-                    var start   = editor.output.getSession().doc.indexToPosition(part.start);
-                    var end     = editor.output.getSession().doc.indexToPosition(part.end);
+              output.editor.setValue(txt,-1);
+              
+              list.forEach(part=>{
+              console.log(part);
+                    var start   = output.editor.getSession().doc.indexToPosition(part.start);
+                    var end     = output.editor.getSession().doc.indexToPosition(part.end);
                     var range   = new ace.Range(start.row,start.column,end.row,end.column);
-                    editor.output.getSession().addMarker(range,part.color,'text');
+                    console.log(range);
+                    output.editor.getSession().addMarker(range,part.color,'text');
                     
               });
         
