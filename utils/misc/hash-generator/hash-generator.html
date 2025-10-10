@@ -1,0 +1,695 @@
+
+
+
+<html>
+
+      <head>
+      
+            <title>hash generator - SHA1, SHA256, MD5, RIPEMD - all the common types</title>
+            <meta name=description content='Generate secure hashes using SHA1, SHA256, MD5, RIPEMD and more. Fast, browser-based cryptographic tool for developers. adler32 argon2d argon2i argon2id bcrypt blake2b blake2s blake3 crc32 crc64 keccak md4 md5 pbkdf2 ripemd160 scrypt sha1 sha3 sha224 sha256 sha384 sha512 sm3 whirlpool xxhash3 xxhash32 xxhash64 xxhash128'>
+            
+            <base href='https://ext-code.com/utils/misc/hash-file/'>
+            <base href='https://javascript-2020.github.io/utils/misc/hash-file/'>
+            
+            <link rel=canonical href='https://ext-code.com/utils/misc/hash-file/hash-file.html'>
+            
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            <link rel=icon type='image/png' href='image/hash-30.png'>
+
+
+            <script src='https://cdn.jsdelivr.net/npm/hash-wasm@4'></script>
+
+
+            <meta name=keywords content='adler32 argon2d argon2i argon2id bcrypt blake2b blake2s blake3 crc32 crc64 keccak md4 md5 pbkdf2 ripemd160 scrypt sha1 sha3 sha224 sha256 sha384 sha512 sm3 whirlpool xxhash3 xxhash32 xxhash64 xxhash128'>
+            
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "WebApplication",
+                        "name"                  : "Hash Generator",
+                        "url"                   : "https://yourdomain.com/hash-file.html",
+                        "description"           : "Generate cryptographic hashes using SHA, MD5, and RIPEMD algorithms."
+                        "applicationCategory"   : "DeveloperTool",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                        "featureList"           : [
+                                                        "SHA-1",
+                                                        "SHA-224",
+                                                        "SHA-256",
+                                                        "SHA-384",
+                                                        "SHA-512",
+                                                        "MD5",
+                                                        "RIPEMD-160"
+                                                  ],
+                  }
+            </script>
+
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,did='hash-text.html';
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var debug;
+
+        //var hdr;        
+        var filemod;   
+        var filename;
+        var editor;
+        var log;
+        
+        
+        var desc;
+        
+        
+  //:
+
+              
+        mod.stack.add   = init;
+        
+        async function init(){
+
+
+              menu                      = mod.menumod();
+              
+              //mod.hdr.base64            = mod.hdr.base64();
+              filemod                   = mod.filemod;
+              filename                  = mod['filename-ui'];
+              
+              editor                    = mod.editor;
+              
+              log                       = mod.log;
+              
+              //mod.hdr.base64.initmod({ext,$,menu,menumod:menu});
+              
+              filemod.initmod({ext,$,menumod,menu,complete,log});
+              filename.initmod({ext,$});
+              
+              editor.initmod({ext,$,menu});
+              
+              log.initmod({ext,$});
+              
+              //mod.hdr.base64.init();
+              await filemod.init();
+              await filename.init();
+              await editor.init();
+              await log.init();
+
+  //:
+          
+              menu.on.close          = null;
+
+              
+              await initdom(document.body);
+
+
+              
+        }//init
+
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js'
+        );
+        [$,datatype,menumod,keydown,debug]   = await promise;
+  
+        var hash    = await import('https://cdn.jsdelivr.net/npm/hash-wasm/+esm');
+        console.log(hash);
+        
+        mod.stack.complete;
+              
+
+
+
+/*
+
+adler32 : ƒ(A)
+
+argon2d : ƒ (A)
+argon2i : ƒ (A)
+argon2id : ƒ (A)
+
+bcrypt : ƒ (A)
+
+blake2b : ƒ (A,I=512,B=null)
+blake2s : ƒ (A,I=256,B=null)
+blake3 : ƒ (A,I=256,B=null)
+
+crc32 : ƒ (A,I=3988292384)
+crc64 : ƒ (A,I="c96c5795d7870f42")
+
+keccak : ƒ (A,I=512)
+
+md4 : ƒ (A)
+md5 : ƒ (A)
+
+pbkdf2 : ƒ gI(A)
+
+ripemd160 : ƒ (A)
+
+scrypt : ƒ (A)
+
+sha1 : ƒ (A)
+sha3 : ƒ (A,I=512)
+sha224 : ƒ (A)
+sha256 : ƒ (A)
+sha384 : ƒ (A)
+sha512 : ƒ (A)
+
+sm3 : ƒ (A)
+
+whirlpool : ƒ (A)
+
+xxhash3 : ƒ (A,I=0,B=0)
+xxhash32 : ƒ (A,I=0)
+xxhash64 : ƒ (A,I=0,B=0)
+xxhash128 : ƒ (A,I=0,B=0)
+
+
+*/
+
+        desc    = {
+
+              adler32         : {grp:1,alg:'hashwasm'},
+                        
+              argon2d         : {grp:2,alg:'hashwasm'},
+              argon2i         : {grp:2,alg:'hashwasm'},
+              argon2id        : {grp:2,alg:'hashwasm'},
+              
+              bcrypt          : {grp:3,alg:'hashwasm'},
+              
+              blake2b         : 'ƒ (A,I=512,B=null)',
+              blake2s         : 'ƒ (A,I=256,B=null)',
+              blake3          : 'ƒ (A,I=256,B=null)',
+              
+              crc32           : 'ƒ (A,I=3988292384)',
+              crc64           : 'ƒ (A,I="c96c5795d7870f42")',
+              
+              keccak          : 'ƒ (A,I=512)',
+              
+              md4             : {grp:7,alg:'hashwasm'},
+              md5             : {grp:7,alg:'hashwasm'},
+              
+              pbkdf2          : 'ƒ gI(A)',
+              
+              ripemd160       : {grp:9,alg:'hashwasm'},
+              
+              scrypt          : {grp:10,alg:'hashwasm'},
+              
+              sha1            : {grp:11,alg:'hashwasm'},
+              sha3            : {grp:11,alg:'hashwasm',bits:{values:[512]}},
+              sha224          : {grp:11,alg:'hashwasm'},
+              sha256          : {grp:11,alg:'hashwasm'},
+              sha384          : {grp:11,alg:'hashwasm'},
+              sha512          : {grp:11,alg:'hashwasm'},
+              
+              sm3             : {grp:12,alg:'hashwasm'},
+              
+              whirlpool       : {grp:13,alg:'hashwasm'},
+              
+              xxhash3         : 'ƒ (A,I=0,B=0)',
+              xxhash32        : 'ƒ (A,I=0)',
+              xxhash64        : 'ƒ (A,I=0,B=0)',
+              xxhash128       : 'ƒ (A,I=0,B=0)',
+
+              
+        };
+
+        
+        var meta_keywords       = '';
+        var meta_description    = '';
+        var ul                  = '';
+        for(var key in desc){
+        
+              meta_keywords      += key+' ';
+              meta_description   += key+' ';
+              ul                 += `<li>${key}</li>`;
+              
+        }//for
+        
+        if(0){
+              console.log(meta_keywords);
+              console.log(meta_description);
+              console.log(ul);
+        }
+        
+})();
+
+
+            </script init>
+        
+      
+            <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymous>
+      
+            <style id=page-inline>
+            
+  html
+    {height:100%}
+  body
+    {height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px}
+
+
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+  .spc
+    {flex:1}
+  
+  .chk-root
+    {display:inline-flex;align-items:center;border:1px solid lightgray;border-radius:5px;padding:5px;}
+  .chk-root *
+    {cursor:pointer}
+    
+  #file
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
+  #file-hdr
+    {}
+  #file-hdr [type=checkbox]
+    {width:25px;height:25px;margin-right:10px}
+    
+    
+  #blob
+    {display:flex;flex-direction:column;gap:10px;}    
+  #blob section
+    {display:flex;align-items:center}    
+  #blob label
+    {width:100px;text-align:right;margin-right:20px}
+
+
+  #text
+    {height:200px;display:flex;flex-direction:column;gap:5px;border:1px solid lightgray;padding:10px}
+  #text-hdr
+    {}
+  #text-hdr [type=checkbox]
+    {width:25px;height:25px;margin-right:10px}
+    
+  editor-root
+    {flex:1}
+  
+  #btns
+    {/*display:flex;flex-direction:column;gap:10px*/}
+
+  .btn
+    {}
+  .btn-group
+    {display:inline;margin-right:15px}
+  
+  
+  #output-root
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
+  #output-hdr
+    {display:flex;align-items:center}
+  #output
+    {font-family:monospace;font-size:16px;padding:5px 10px;border:1px solid lightblue;overflow:auto}
+
+
+  #hash-type
+    {color:blue;font-weight:bold}
+
+
+  #desc
+    {}
+  #desc #support
+    {font-size:12px}
+    
+  #desc li
+    {display:inline;margin-right:10px}
+
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+
+
+  
+            </style>
+
+
+            
+      </head>
+      
+      
+      <body>
+
+            <h3>Hash Generator Tool</h3>
+
+
+            
+            <div id=hdr>
+
+<!--                        
+                  <main-menu-page>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </main-menu-page>
+-->                  
+
+            </div>
+
+
+            <div id=text>
+            
+                  <div id=text-hdr>
+                        <span id=text-chk-root class=chk-root>
+                              <input id=text-chk type=checkbox checked>
+                              <label>
+                                    text
+                              </label>
+                        </span>
+                  </div>
+                  
+                  <editor component v2.0></editor>
+                  
+            </div>
+
+
+            <div id=file>
+
+                  <div id=file-hdr>
+                        <span id=file-chk-root class=chk-root>
+                              <input id=file-chk type=checkbox>
+                              <label>
+                                    file
+                              </label>
+                        </span>
+                  </div>
+                  
+                  <filemod component v2.0></filemod>
+      
+                  <div id=blob>
+                  
+                        <filename-ui component v2.0></filename-ui>
+      
+                        <section>                  
+                              <label>
+                                    size
+                              </label>
+                              
+                              <div id=size>
+                              </div>
+                        </div>
+                              
+                  </div>
+                  
+            </div>
+
+
+            <div id=params style='display:none'>
+            
+                  <div id=bits-value-root>
+                  
+                        <div>
+                              bits
+                        </div>
+                        
+                        <div>
+                        </div>
+                        
+                  </div>
+                  
+            </div params>
+            
+
+            
+
+
+            
+            <div id=btns>
+            </div>
+
+
+            <div id=output-root>
+            
+                  <div>
+                  
+                        <label>
+                              hash
+                        </label>
+                        
+                  </div>
+                  
+                  <div id=output-hdr>
+                        <input value=copy type=button>
+                  </div>
+                  
+                  <div id=hash-type>
+                  </div>
+                  
+                  <div id=output>
+                  </div>
+                  
+            </div>
+
+
+            <section id=desc>
+                  <div id=support>
+                        <p>
+                              This tool supports the following hash functions:
+                        </p>
+                        <ul>
+                              <li>adler32</li><li>argon2d</li><li>argon2i</li><li>argon2id</li><li>bcrypt</li><li>blake2b</li>
+                              <li>blake2s</li><li>blake3</li><li>crc32</li><li>crc64</li><li>keccak</li><li>md4</li><li>md5</li>
+                              <li>pbkdf2</li><li>ripemd160</li><li>scrypt</li><li>sha1</li><li>sha3</li><li>sha224</li>
+                              <li>sha256</li><li>sha384</li><li>sha512</li><li>sm3</li><li>whirlpool</li><li>xxhash3</li>
+                              <li>xxhash32</li><li>xxhash64</li><li>xxhash128</li>
+                        </ul>
+                  </div>
+            </section>
+
+            
+            <log component v2.0></log>
+
+            
+      </body>
+      
+      
+      <script>
+      
+      
+        var cur           = {};
+        cur.blob          = new Blob(['helloworld']);
+        
+        var preview       = {};
+        var blob          = {};
+        
+        
+        var root;
+        var chk;
+
+
+        var btn           = {};
+        btn.output        = {};
+
+
+        var complete      = {};
+
+
+  //:
+  
+  
+        async function initdom(rootnode){
+
+              
+              root                                    = rootnode;
+
+              chk                             = $.chkbox.group(root,'#file-hdr .chk-root','#text-hdr .chk-root');
+              filemod.initdom(root);
+              filename.initdom(root);
+
+
+              editor.initdom(root);
+
+
+
+              blob.root                                       = $(root,'#blob');
+
+
+
+              var btns                                        = $(root,'#btns');
+              
+              var cur     = {};
+              cur.g       = null;
+              cur.root    = null;
+              
+              for(let key in desc){
+                
+                    var d   = desc[key];
+                    if(typeof d=='object'){
+                      
+                          var list    = Object.keys(d);
+                          if(list.length==2){
+                            
+                                if(cur.grp!==d.grp){
+                                      cur.grp               = d.grp;
+                                      cur.root              = document.createElement('div');
+                                      cur.root.className    = 'btn-group';
+                                      btns.append(cur.root);
+                                }
+                                
+                                var input       = document.createElement('input');
+                                input.value     = key;
+                                input.type      = 'button';
+                                input.onclick   = e=>hash(key);
+                                if(!cur.root)debugger;
+                                cur.root.append(input);
+                                
+                          }//list
+                                
+                    }//object
+                    
+              }//for
+
+
+              output.root                                     = $(root,'#output-root');
+              
+              $(output.root,'[value=copy]').onclick           = btn.output.copy;
+              
+              output.text                                     = $(output.root,'#output');
+              
+              
+              
+
+              log.initdom(root);
+
+
+              blob.display();
+
+
+          
+        }//initdom
+
+
+  //:
+
+        function chk(){
+          
+              if(!cur.blob){
+                    log.red('no file');
+                    return true;
+              }
+              
+        }//chk
+        
+        
+        btn.test    = async function(){
+          
+              //await load('argon2');
+              console.log(hashwasm);
+              var alg   = 'blake2s';
+              hash(alg);
+              
+        }//test
+        
+        
+
+
+
+
+        btn.output.copy   = async function(){
+          
+              var txt   = output.textContent;
+                                                                                console.log(txt);
+              await navigator.clipboard.writeText(txt);
+              
+        }//copy
+
+
+  //:
+  
+  
+        blob.display   = function(){
+          
+              var str   = '---';
+              if(cur.blob){
+                    str   = cur.blob.size;
+              }
+              
+              $(blob.root,'#size').textContent                 = str;
+              
+        }//display
+
+
+  //:
+  
+        
+        complete.load   = function(file,srcblob){
+          
+              menu.close();
+              
+              cur.blob            = srcblob;
+        
+              filename.show(file);
+              blob.display();
+              
+        }//load
+        
+        
+        
+  //:
+  
+  
+        async function hash(alg){
+                                                                                console.log('hash',alg,chk.read());
+              var buf;
+              var c   = chk.read();
+              if(c.chkbox.id=='text-chk'){
+                                                                                console.log('text');
+                    buf   = editor.getvalue();
+                                                                                console.log(buf);
+              }else{
+                    buf   = await cur.blob.arrayBuffer();
+                    buf   = new Uint8Array(buf);
+              }
+              
+              var fn    = hashwasm[alg];
+              var hex   = await fn(buf);
+                                                                                console.log(alg,hex);
+              $(root,'#hash-type').textContent    = alg;
+              output.text.textContent             = hex;
+              
+        }//hash
+
+
+/*
+  
+        hash.sha256   = async function(txt){
+          
+            const msg   = new TextEncoder().encode(txt);
+            const buf   = await crypto.subtle.digest('SHA-256',msg);
+        
+            var uint8   = new Uint8Array(buf);
+            var hex     = uint8.reduce((a,byte)=>a   += byte.toString(16).padStart(2,'0'),'')
+            
+            return hex;
+            
+        }//sha256
+        
+*/
+
+  
+
+        
+
+      
+      </script>
+      
+      
+</html>
+
+
+
