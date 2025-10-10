@@ -16,7 +16,9 @@ see bottom for name constraints
             <title>generate https certificate</title>
             <meta name=description content='generate https certificates'>
             
-            <base href='https://javascript-2020.github.io/utils/x509/generate-https-certificate/generate-https-certificate.html'>
+            <base href='https://ext-code.com/utils/x509/generate-https-certificate/'>
+            <base href='https://javascript-2020.github.io/utils/x509/generate-https-certificate/'>
+            
             <link rel=canonical href='https://ext-code.com/utils/x509/generate-https-certificate/generate-https-certificate.html'>
             
             
@@ -40,28 +42,33 @@ see bottom for name constraints
             </script>
 
 
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            
             <script init>
-            
-        var version       = 'v1.0';
-            
-        var df            = true;
-        var debug_id      = 'gen-https-cert';
                                                                                 console.clear();
-                                                                                console.log(debug_id);
+                                                                                console.log('generate-https-certificate-v2.0.html');
+                                                                                console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+            
+        var df=true,did='gen-https-cert'
+        ;
+        
         var ext;
         var $;
         var datatype;
         var menumod;
         var keydown;
+        var debug;
 
 
         var menu;
         
         
-        var mod           = {};
+  //:
+  
             
-            
+        mod.stack.add   = init;
+        
         async function init(){
         
         
@@ -75,16 +82,11 @@ see bottom for name constraints
         }//init
         
         
-        init.stack            = [];
-        init.stack.ct         = 0;
-        init.stack.total      = 1;
-        Object.defineProperty(init.stack,'add',{get:()=>{init.stack.total++}});
-        Object.defineProperty(init.stack,'complete',{get:()=>{init.stack.ct++;init.stack.ct>=init.stack.total && init()}});
         
         
 (async()=>{
   
-        init.stack.add;
+        mod.stack.add;
 
         var {ext}   = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js');
         
@@ -93,17 +95,16 @@ see bottom for name constraints
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
-              'js/debug/debug.js.api',
+              'js/debug/debug.js',
         );
         [$,datatype,menumod,keydown,debug]   = await promise;
 
 
-        init.stack.complete;
+        mod.stack.complete;
 
 })();
         
             </script init>
-
 
 
             <style>
@@ -229,7 +230,7 @@ see bottom for name constraints
                   </a>
                   <img class=hdr-title src='images/generate-https-certificate.png' style='height:80px;top:-15px'>
                   <div class=hdr-date>
-                        25 Mar 2025
+                        10 Oct 2025
                   </div>
             </div hdr>
 
@@ -1062,13 +1063,6 @@ see bottom for name constraints
 
 
 
-
-
-  //:
-  
-  
-  init.stack.complete;
-  
   
       </script>
 
