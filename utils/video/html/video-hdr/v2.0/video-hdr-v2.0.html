@@ -1,0 +1,135 @@
+
+
+<video-hdr>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  section 
+    {margin:0;box-sizing:border-box;display:flex;align-items:center;
+      gap:10px;
+    }
+  
+  .icon
+    {cursor:pointer;border-radius:3px;border:1px solid gray;box-sizing:border-box;
+      width:38px;height:38px;
+    }
+  
+  .item
+    {display:inline-flex;align-items:center;text-align:center;background:buttonface;
+      border-radius:3px;border:1px solid lightgray;padding:5px 7px;
+    }
+  
+  .item-label
+    {}
+  
+  ::slotted(.title)
+    {text-align:center;position:absolute;left:0;right:0;top:0px;z-index:-1;margin:0 auto;
+    }
+
+  
+  .date
+    {position:absolute;top:20px;right:5px;}
+  
+  a
+    {color:blue;}
+  a:visited
+    {color:blue;}
+
+  ::slotted(.visually-hidden)
+    {position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0}
+    
+    
+            </style>
+            
+            <section>
+
+                  <div class=item>
+                  
+                        <a id=home class=item-label href='/'>
+                              home
+                        </a>
+                        
+                        <top-menu component=grp></top-menu>
+                      
+                  </div>
+
+                  <slot></slot>
+                  <slot name=seo-hdr class=visually-hidden></slot>
+                
+                  <div class=date>
+                        <slot name=date></slot>
+                  </div>
+                
+            </section>
+            
+      </template>
+
+      
+      <script id=hdr>
+      
+mod['video-hdr']   = function({mod,root}){
+                                                                    true && console.log('mod.hdr');
+  var obj   = {};
+  
+  
+  //:
+  
+  
+      var df=true
+      ;
+                                                            
+      var ext,$,menu
+      ;
+        
+      obj.initmod   = function(params){
+        
+            ext       = params.ext;
+            $         = params.$;
+            menu      = params.menu;
+            
+      }//initmod
+      
+
+  //:
+  
+      var topmenu;
+  
+      obj.init    = function(){
+      
+            topmenu   = mod['top-menu'];
+            
+            topmenu.initmod({ext,$,menu});
+            
+            topmenu.init();
+
+            
+      }//init
+
+
+  //:
+  
+  
+      obj.initdom   = function(rootnode){
+        
+            var root            = $.$(rootnode,'video-hdr');
+            var shadow          = root.shadowRoot;
+            
+            topmenu.initdom(shadow);
+            
+            
+      }//initdom
+      
+
+  //:
+  
+  return obj;
+  
+}//video-hdr
+
+            
+      </script>
+      
+</video-hdr>
+
