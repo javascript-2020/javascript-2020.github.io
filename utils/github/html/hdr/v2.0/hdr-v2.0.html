@@ -1,6 +1,6 @@
 
 
-<utils-hdr>
+<github-hdr>
 
       <template shadowrootmode=open>
       
@@ -69,9 +69,7 @@
                       
                   <div class=item>
                                   
-                        <top-menu-grp-api>
-                              <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                        </top-menu-grp-api>
+                        <top-menu component=grp v2.0></top-menu-grp-api>
                         
                         <a id=home class=item-label href='/'>
                               home
@@ -88,55 +86,66 @@
             </section>
             
       </template>
+
       
       <script>
+
       
-            mod.utils.hdr=function(){
-                                                                                true && console.log('mod.utils.hdr');
-              var obj   = {};
-              
-                  var df=true
-                  ;
-                                                                        
-                  var menu,menumod
-                  ;
-                    
-                  obj.initmod=function(params){
-                    
-                        menumod   = params.menumod;
-                        menu      = params.menu;
-                        
-                  }//initmod
-                  
+(function github_hdr(){
+
+  var obj   = {};
+  
+      var df=true
+      ;
+
+                                                            
+      var menu
+      ;
+        
+      obj.initmod   = function(params){
+        
+            menumod   = params.menumod;
+            menu      = params.menu;
             
-                  obj.init=function(){
-                  
-                        mod.menu.top    = mod.menu.top();
-                        
-                        mod.menu.top.initmod({menumod});
-                        
-                        mod.menu.top.init();
+      }//initmod
 
-                        
-                  }//init
 
-                    
-                  obj.initdom=function(rootnode){
-                    
-                        var root            = $.$(rootnode,'utils-hdr');
-                        var shadow          = root.shadowRoot;
-                        
-                        mod.menu.top.initdom(shadow);
-                        
-                        
-                  }//initdom
-                  
-                  
-              return obj;
-              
-            }//mod.utils.hdr
+  //:
+  
+
+      obj.init    = async function(){
+      
+            top    = mod['top-menu']
+            
+            top.initmod({$,menu});
+            
+            top.init();
+
+            
+      }//init
+
+
+  //:
+  
+        
+      obj.initdom   = function(rootnode){
+        
+            var root            = $.$(rootnode,'utils-hdr');
+            var shadow          = root.shadowRoot;
+            
+            top.initdom(shadow);
+            
+            
+      }//initdom
+
+      
+      
+  return obj;
+  
+})//github_hdr
+
             
       </script>
       
-</utils-hdr>
+</github-hdr>
 
