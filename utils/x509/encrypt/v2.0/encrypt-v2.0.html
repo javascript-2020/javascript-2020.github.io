@@ -1,0 +1,746 @@
+
+
+
+<html>
+
+      <head>
+      
+            <title>encrypt</title>
+            
+            <base href='https://javascript-2020.github.io/utils/x509/encrypt/'>
+
+
+            
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('encrypt.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,did='encrypt'
+        ;
+
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var encrypt;
+
+
+        var filemod;
+        var editor;
+        var log;
+        
+
+
+        
+  //:
+  
+  
+        async function init(){
+
+              menu                      = menumod();
+              encrypt                   = encrypt();
+          
+              filemod                   = mod.filemod;
+              editor                    = mod.editor;
+              log                       = mod.log;
+
+
+              encrypt.initmod({ext});
+              
+              filemod.initmod({ext,$,menu,menumod,complete,focus,source,editor,log});
+              editor.initmod({ext,$,menu,menumod});
+              log.initmod({ext,$});
+
+
+              await encrypt.init();
+              
+              await filemod.init();
+              await editor.init();
+              await log.init();
+
+
+              menu.on.close          = focus;
+
+          
+              await initdom(document.body);
+
+
+        }//init
+
+      
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/crypto/encrypt/encrypt.js',
+        );
+        [$,datatype,menumod,keydown,encrypt]   = await promise;
+  
+        mod.stack.complete;
+              
+})();
+      
+
+            </script init>
+            
+
+            <style>
+           
+  html
+    {height:100%}
+  body
+    {height:calc(100% - 40px);margin:20px;display:flex;flex-direction:column;
+      font-family:arial;
+    }
+  
+  #hdr
+    {}
+
+  #encrypt-root
+    {margin-bottom:10px;display:flex;gap:10px}
+    
+  #password-root
+    {display:flex;align-items:center;gap:10px;
+      border:1px solid lightgray;padding:5px 10px;border-radius:5px
+    }
+  #show
+    {padding:0 4px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABC1BMVEVHcEx0vfeNyfmOyflktfaQyvmMyfl+wvh1vfeNyfl/wvmQyvmQyvmQyvmQyvmQyvmGxfhcsfZquPdOpvBltfaQyvmQyvlzvPhKqfWQyvltuveOyflktfZktfZfsvVktfZgs/VktvZGou8uk+oii+eFxfhyvPdyvPeQyvmRy/lktfZktfZktfZMqvVcr/SRy/k5meuQyvlCpfZEWWORy/lCpvdltfZBpPTR2d1WrfRAo/IrkelPq/V9wfdEpvU7oPIljuiHxvlDl9k1mu67xcpEcZBDfKjG1NxrfIWgyOVEZXpCm+FFYnRNYWtJeJpadIRCgrNDjslWanN1r9y2z+GMwOirt7yGsM+QnaN+KCg5AAAAMXRSTlMA/coqMDA0AQb9HtATuJbk33H++/jnf119bic/0Mjc5T61W3J++6xpgbETf5b/9bL0wSmUewAAAT1JREFUKM/d0edywjAMAOAsZoGwyiwbutPWNk6ITQYJe3WP93+SOmEcLW+Afvn8nWRL4riTj3C0nE8VCql8ORr+byGxeJPMKiaEpvKQfCyKoUMNJGQw0OEmNMJ35URgj7HcOWCqQYihopuQuEYXyLnYRsU4YJH2Ep33j8msD92MdxMXPQ2eeedBn1V9eR72er1PaFGWDoAQZM/62jVMiF/RdMJ4ZmpU9TgiSJwAfOZZ6TV687K/Nc3WfeYrB6yNEJp+DX/WZMMRXq1wAWFXHI4RQqsVGmPLZsWZXkj7rykQO3PmaO5glxqgk/Z115jq9TVaLkcOS850eFVtSNuxXG/HgsliQTChNJtWa3e3+7kFE8mIwTrHGEPLprpau5f+rKR0dVnNEMtyqf1UbaRKoeOF1putdrvVrB8v9PTiFwZzQPWR9JMNAAAAAElFTkSuQmCC);
+    }
+  #keys-root
+    {flex:1;
+      display:grid;gap:10px;grid-template-columns:30px 120px 1fr;
+      border:1px solid lightgray;padding:5px 10px;border-radius:5px
+    }
+    
+  #private-root
+    {display:flex}
+  #private-root [type=button]
+    {width:120px}
+  #private-root span
+    {flex:1}
+  #public-root
+    {display:flex}
+  #public-root [type=button]
+    {width:120px}
+  #public-root span
+    {flex:1}
+    
+  #btns
+    {margin:10px 0}
+    
+  #view
+    {flex:1}
+      
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+  input[type=checkbox]
+    {cursor:pointer;width:18px;height:18px;margin:0}
+      
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+  .spc
+    {flex:1}
+            
+            </style>
+
+      </head>
+      
+      <body>
+      
+            <div>
+                  <h3>encrypt</h3>
+                  <div>
+                        note : encrypt before save
+                  </div>
+            </div>
+            
+            <div id=hdr>
+            
+                  <div id=encrypt-root>
+                  
+                        <div>
+                        
+                              <div id=password-root>
+                              
+                                    <input id=password-chk type=checkbox checked>
+                                    <label for=password-chk>
+                                          password
+                                    </label>
+                                    <input id=password type=password>
+                                    <img id=show class=icon>
+                              </div password-root>
+                              
+                        </div>
+
+                        <div id=keys-root>
+                        
+                              <div style='display:flex;align-items:center;justify-content:center'>
+                                    <input id=keys-chk type=checkbox>
+                              </div>
+                              
+                              <input value='private key' type=button>
+                              
+                              <span id=private-fn>
+                              </span>
+                        
+                              <div></div>
+                              
+                              <input value='public key' type=button>
+                              <span id=public-fn>
+                              </span>
+                                    
+                        </div>
+                        
+                  </div>
+                  
+                  <div id=btns>
+                  
+                        <input id=encrypt value=encrypt type=button>
+                        <input id=decrypt value=decrypt type=button>
+                        
+                  </div>
+                        
+                  <filemod component v2.0></filemod>
+                  
+            </div>
+            
+            <div id=view>
+
+                  <editor component v2.0></editor>
+            
+            </div>
+
+            <log component v2.0></log>
+            
+      </body>
+      
+      
+      <script>
+
+
+        var ui            = {};
+        ui.password       = {};
+        ui.private        = {};
+        ui.public         = {};
+
+        
+
+        
+        var chk           = {};
+        var btn           = {};
+        var rd            = {};
+        var set           = {};
+        
+
+  //:
+  
+  
+        async function initdom(rootnode){
+          
+              var root                                  = rootnode;
+
+              var hdr                                   = $(root,'#hdr');
+              
+              
+              ui.password.root                          = $(root,'#password-root');
+              ui.password.chk                           = $(root,'#password-chk');
+              ui.password.chk.onchange                  = chk.password;
+              ui.password.input                         = $(root,'#password');
+              ui.password.input.value                   = 'abc';
+              
+              $(ui.password.root,'#show').onclick       = btn.show;
+              
+              ui.private.chk                            = $(root,'#private-chk');
+              var node                                  = $(root,'[value="private key"]');
+              node.onclick                              = btn.private;
+              ui.private.fn                             = $(root,'#private-fn');
+              
+              ui.public.chk                             = $(root,'#public-chk');
+              var node                                  = $(root,'[value="public key"]');
+              node.onclick                              = btn.public;
+              ui.public.fn                              = $(root,'#public-fn');
+              
+              $('#encrypt').onclick                     = btn.encrypt;
+              $('#decrypt').onclick                     = btn.decrypt;
+              
+              
+              filemod.initdom(root);
+              
+              
+              view                      = $('#view');
+              
+
+              await editor.initdom(view,'text');
+              
+              
+
+              log.initdom();
+
+              
+              editor.setValue('helloworld');
+              editor.focus();
+              
+          
+        }//initdom
+        
+
+  //:
+  
+  
+        function focus(){
+          
+              editor.focus();
+              
+        }//focus
+
+        
+        rd.type   = function(){
+          
+              if(ui.password.chk.checked){
+                    return 'password';
+              }
+              if(ui.key.chk.checked){
+                    return 'key';
+              }
+              
+        }//type
+        
+        
+        set.password    = function(){
+          
+              ui.password.chk.checked   = true;
+              ui.key.chk.checked        = false;
+              
+        }//password
+        
+        
+        set.key   = function(){
+          
+              ui.password.chk.checked   = false;
+              ui.key.chk.checked        = true;
+              
+        }//key
+        
+        
+  //:
+  
+  
+        function source(){
+          
+              var txt     = editor.getValue();
+              var blob    = new Blob([txt]);
+              return blob;
+              
+        }//source
+        
+
+        function complete(file){
+          
+              editor.filename(file);
+              editor.filename.save.hide();
+              filemod.cur   = file;
+              menu.close();
+              editor.focus();
+              
+        }//complete
+
+
+        complete.load   = async function(file,blob){
+        
+              var txt;
+              if(typeof blob=='string'){
+                    txt   = blob;
+              }else{
+                    txt   = await blob.text();
+              }
+              
+              editor.clear();
+              editor.setValue(txt,-1);
+              complete(file);
+              
+        }//complete.load
+
+        
+        complete.save   = function(file,confirm=true){
+
+              complete(file);
+              
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
+        }//save
+
+        
+  //:
+  
+  
+        chk.password    = function(){
+          
+              set.password();
+              
+        }//password
+        
+        
+        btn.private   = function(){
+          
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              
+              function onchange(){
+                
+                    var file                    = input.files[0];
+                    private                     = file;
+                    ui.private.fn.textContent   = file.name;
+                    set.key();
+                    
+              }//onchange
+              
+        }//private
+        
+        
+        btn.public    = function(){
+          
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              
+              function onchange(){
+                
+                    var file                    = input.files[0];
+                    public                      = file;
+                    ui.public.fn.textContent    = file.name;
+                    set.key();
+                    
+              }//onchange
+              
+        }//public
+        
+        
+        btn.encrypt   = async function(){
+                                                                                console.clear();
+              var txt   = editor.getValue();
+              
+              var type    = rd.type();
+              switch(type){
+                
+                case 'password'   : 
+                                    var password    = ui.password.input.value;
+                                    fn.encrypt.password(password,txt);
+                                                                                      break;                                    
+                case 'key'        : 
+                                    fn.encrypt.key(public,txt);
+                                                                                      break;
+              }//switch
+              
+        }//encrypt
+        
+        
+        btn.decrypt   = async function(){
+                                                                                console.clear();
+              var b64   = editor.getValue();
+              var buf   = encrypt.b64_buf(b64);
+              
+              
+              var type    = rd.type();
+              switch(type){
+                  
+                case 'password' :
+                                  var password    = ui.password.input.value;
+                                  fn.decrypt.password(password,buf);
+                                                                                    break;
+                case 'key'      :
+                                  fn.decrypt.key(private,buf);
+                                                                                    break;
+              }//switch
+              
+        }//decrypt
+
+
+        btn.show    = function(){
+          
+              if(ui.password.input.hasAttribute('type')){
+                    ui.password.input.removeAttribute('type');
+              }else{
+                    ui.password.input.setAttribute('type','password');
+              }
+              
+        }//show
+        
+        
+  //:
+
+
+        var fn    = {};
+        
+        fn.encrypt    = async function(key,txt){
+          
+              txt             = encrypt.str_buf(txt);
+              
+              var err;
+              try{
+                
+                    var cipher      = await encrypt.encrypt.crypto['aes-gcm'](key,txt);
+                    
+              }
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    log.red('encrypt failed');
+                    log.error(err.toString());
+                    return;
+              }
+              
+              var b64         = encrypt.buf_b64(cipher);
+              editor.setValue(b64,-1);
+          
+        }//encrypt
+        
+        
+        fn.encrypt.password   = async function(password,txt){
+
+              txt           = encrypt.str_buf(txt);          
+              password      = encrypt.str_buf(password);
+          
+              var err;
+              try{
+                
+                    var cipher    = await encrypt.encrypt.crypto['aes-gcm'].password(password,txt);
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    log.red('encrypt failed');
+                    log.red(err.toString());
+                    return;
+              }
+              
+              var b64       = encrypt.buf_b64(cipher);
+              editor.setValue(b64,-1);
+              
+        }//password
+        
+        
+        
+        fn.decrypt    = async function(key,txt){
+          
+              txt             = encrypt.str_buf(txt);
+              
+              var err;
+              try{
+                
+                    var decrypted   = await encrypt.decrypt.crypto['aes-gcm'](key,buf);
+                    
+              }
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    log.red('decrypt failed ( invalid key? )');
+                    log.red(err.toString());
+                    return;
+              }
+              
+              var txt         = encrypt.buf_str(decrypted);
+              editor.setValue(txt,-1);
+              
+        }//decrypt
+        
+        
+        fn.decrypt.password   = async function(password,txt){
+          
+              password        = encrypt.str_buf(password);
+              var buf         = encrypt.str_buf(txt);
+              
+              var err;
+              try{
+                
+                    var decrypted   = await encrypt.decrypt.crypto['aes-gcm'].password(password,buf);
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    log.red('decrypt failed ( invalid password? )');
+                    log.red(err.toString());
+                    return;
+              }
+              
+              var txt         = encrypt.buf_str(decrypted);
+              editor.setValue(txt,-1);
+              
+        }//password
+
+
+
+
+
+        
+  //:
+
+
+        async function convert(){
+          
+              var type    = datatype(text);
+              var buf     = text;
+              switch(type){
+              
+                case 'string'       : buf   = encoder.encode(text);           break;
+                case 'uint8array'   : buf   = text.buffer;                    break;
+                case 'blob'         : buf   = await text.arrayBuffer();       break;
+                
+              }//switch
+              
+        }//convert
+
+  
+
+
+
+
+  
+  //:
+  
+  
+  
+        function output(name,buf){
+        
+              var b64   = buf_b64(buf);
+              var pad   = name.padStart(10);
+              console.log(pad,':',b64);
+              
+        }//output
+        
+        
+        function output_str(name,buf){
+
+              var str;        
+              if(typeof buf=='string'){
+                    str   = buf;
+              }else{
+                    str   = buf_str(buf);
+              }
+              var pad   = name.padStart(10);
+              console.log(pad,':',str);
+              
+        }//output_str
+
+
+        function buf_str(buf){
+        
+              var txt   = decoder.decode(buf);
+              return txt;
+              
+        }//buf_str
+        
+        
+        function buf_b64(buf){
+        
+              var bytes   = new Uint8Array(buf);
+              var bin     = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64     = btoa(bin);
+              return b64;
+        
+        }//blob_b64
+            
+  
+        function b64_buf(b64,type='text/plain'){
+        
+              var bin     = atob(b64);
+              var bytes   = [...bin].map(c=>c.charCodeAt(0));
+              var uint8   = new Uint8Array(bytes);
+              var buf     = uint8.buffer;
+              return buf;
+              
+        }//b64_blob
+
+
+        function buf_blob(buf){
+          
+              var uint8   = new Uint8Array(buf);
+              var blob    = new Blob([uint8]);
+              return blob;
+              
+        }//buf_blob
+        
+        
+        async function blob_buf(blob){
+          
+              var buf   = await blob.arrayBuffer();
+              return buf;
+          
+        }//blob_buf
+        
+      
+        function b64_blob(b64,type='text/plain'){
+        
+              var bin       = atob(b64);
+              var bytes     = [...bin].map(c=>c.charCodeAt(0));
+              var uint8     = new Uint8Array(bytes);
+              var blob      = new Blob([uint8],{type});
+              return blob;
+              
+        }//b64_blob
+  
+  
+        async function blob_b64(blob){
+        
+              var buf       = await blob.arrayBuffer();
+              var bytes     = new Uint8Array(buf);
+              var bin       = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64       = btoa(bin);
+              return b64;
+        
+        }//blob_b64
+
+
+  //:
+  
+  
+  
+        function debug(){
+          
+              if(!df)return;
+              var str   = [...arguments].join(' ');
+              console.log(`[ ${did} ]`,str);
+              
+        }//debug
+        
+        
+        
+      </script>
+            
+</html>
+      
+      
