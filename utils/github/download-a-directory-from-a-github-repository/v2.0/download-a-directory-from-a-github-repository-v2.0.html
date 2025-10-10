@@ -1,0 +1,635 @@
+
+
+
+
+<html>
+
+      <head>
+    
+            <title>download github directory</title>
+            <meta name=description content='Download any directory from a GitHub repository and create a ZIP file. Fast, lightweight tool for developers who want a copy of a specific folders without cloning the entire repo'>
+
+            <base href='https://javascript-2020.github.io/utils/github/download-a-directory-from-a-github-repository/download-a-directory-from-a-github-repository.html'>
+            <link rel='canonical' href='https://ext-code.com/utils/github/download-a-directory-from-a-github-repository/download-a-directory-from-a-github-repository.html'>
+            
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "download a directory from a github repository",
+                        "url"                   : "https://ext-code.com/utils/github/download-a-directory-from-a-github-repository/download-a-directory-from-a-github-repository.html"
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Download any directory from a GitHub repository and create a ZIP file. Fast, lightweight tool for developers who want a copy of a specific folders without cloning the entire repo",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+        
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('download-github-directory-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var JSZip
+        ;
+        
+        var ext,$,datatype,menumod,keydown,github,hs
+        ;
+        
+        var menu;
+        
+        var hdr;
+        var log;
+
+
+                              
+        
+        
+  //:
+
+        
+        async function init(){
+
+        
+              menu                      = menumod();
+              
+              hdr                       = mod.hdr;
+              log                       = mod.log;
+              
+              hdr.initmod({$,menu});
+              log.initmod({});
+              
+              await hdr.init();
+              await log.init();
+        
+  //:
+          
+              //keydown.add(kd);
+              menu.on.close          = ()=>{};
+        
+              
+              await initdom(document.body);
+        
+        
+              urlparams();
+              
+        }//init
+        
+        
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'github/github.js.api',
+              'js/string/hs.js',
+        );
+        [$,datatype,menumod,keydown,github,hs]   = await promise;
+
+  
+        JSZip   = (await import('https://cdn.jsdelivr.net/npm/jszip/+esm')).default;
+
+        mod.stack.complete;
+              
+})();
+
+                  
+            </script>
+
+
+            <style>
+        
+  html
+    {font-family:arial}
+  body
+    {height:calc(100% - 16px)}
+
+  #scroll
+    {}
+  #center
+    {width:100%;max-width:1200px;position:absolute;margin:auto;left:0;right:0}
+        
+  #url-examples
+    {font-size:12px;font-family:monospace;text-align:center;margin-top:30px}
+  #url-examples a
+    {margin-top:5px;display:block;white-space:nowrap}
+        
+  #parse-root
+    {padding-bottom:20px;margin:20px 0;display:flex;align-items:center;gap:10px;border-bottom:1px solid lightgray}
+  #url
+    {flex:1}
+
+  #token-root
+    {padding-bottom:20px;border-bottom:1px solid lightgray}
+        
+  #values 
+    {padding-bottom:20px;margin:bottom:20px;border-bottom:1px solid lightgray}
+  .value
+    {display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .value input
+    {flex:1}
+        
+        
+
+  #download-root
+    {margin:20px 0;display:flex;gap:10px;align-items:center}              
+  [value=download]
+    {width:150px}              
+  #progress
+    {flex:1;padding:3px;border:1px solid gray;height:24px;border-radius:3px}              
+  #track
+    {background:lightblue;width:0;height:100%}
+        
+  
+  #results-root
+    {}
+  #results-clear
+    {width:32px;height:32px;padding:2px;
+      content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAiZJREFUOE9jZKAAMML0Xuro0P34+jWbbW/vOQYGhv+4zOwUYeDV0bMz3Ljv0Bmw5mdrV9aI8XE3MTy+x/j6zMn9B/cdz4i4ce8WsgFr5eUlVczNa77wcFuefvKos2DX3rVgzfsqS63VhXgni319Y/jv9mWGT9evfzx5/320z/ufWxsYGJgcxMTS+ZUUmq/8+zcv/9SZlncMDJ9A+uDOZmBgYN1lrhmh8etTK8v7j7KfP//8dfnrvxyJf4wBjJycNruZmVIb3n1cw8DA8A/mImTNYLEEBgaBGD7mVpHfDBn/fv9j+viP4e0apv9BU/8wHEYPCwzNIAO2MDOEivxnXMT0/z/HP2bGb0cYWexKfv8+ix6IGJp3MjFkCvxnmPKdkfHjQUamQi9upmZmdqYvDa9/mm9iYPiMbACK5q0MDCmijAyzGJgZ/23+/z+m+S/DinY+dpUoCZZ9D37+W2n/8HsZstPhmtcyMFjIMjEeYmdlZL3IyDgr7sffLAYGhr8gm+aIsho68bHvXvvyl0Ppl19XMALsmCDvCf7f383fMjPeTfv42/wGA8NbZCfuFOVI4mFm9rB+8TUcZjvY5lZubvFoV5sXrLcvMZx7/67X99nPEiwpjOmYMOeGSW+/Z6xgYHgGj+ckBgbe9pbKl3xPb3Ku33M4L+r268nYkucCdnblt//+8RX//n0eJZFsTY0JY/322Tpj6ca6ewwMH4nJL1jjmRiNIDUADZXPhFJZPA0AAAAASUVORK5CYII=');
+    }
+  #results
+    {margin-top:10px}
+  .result
+    {display:flex;align-items:center;margin-bottom:10px}
+  .result .filename
+    {}
+  .error
+    {display:flex;align-items:center;margin-bottom:10px}
+  .error .tag
+    {margin-right:20px}
+        
+  .icon-root
+    {display:flex;align-items:center;gap:5px}
+  .icon
+    {cursor:pointer;width:32px;height:32px;padding:2px;border:1px solid gray;border-radius:3px;box-sizing:border-box}
+  .copy
+    {content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAABSlBMVEVHcEwnz/4C8P4g1P4L6P43wf5Mr/4a2v4Y3P4/uv5PrP4+vf5Auv4ozv5KsP4vyv45wP5Jsf5Auf49vP5Mrv4zxf44wf5Lr/46wP4h1P5Lr/46vv5Jsv4R5P5Hs/5Etv44wf5Hs/41w/4uyv47vv49vP5Ftf5GtP4c2f4rzP4tyv4m0f5Etv5Nrv4xxv4xxv4xx/4W3/5KsP5Mr/4/u/4uyv5Isv4K6f4l0f4qzv4W3/4V3/5Nrv5Mrv5Mrv5Mr/4W3v4e2P5BuP5Hsv4N5v4K6f4O5v42w/5Dt/4E7/4uyf4C8P4nz/4M5/4K6v4oz/4P5f4k0v4b2v5Gs/4E7v4I6/5Nrf4e1/4H7P4E7v5Auv5Dtv4sy/5Isv5GtP4wx/49vP4zxf47vv44wP42w/5LsP5Jsf4i1P4n0P4N5v4k0v4a2v4S4v4X3v6OfcqkAAAAVnRSTlMACo7CjQWN/VczjgIJMfIXJzHtjj5iVekR71Hvtz7CjelXjre2wiJj2PCFIWbR7+fEnXaodz3544/USfOC22Tm7CXOnqfUZ+/3VTV9bsTzqGDahpb2tyRB6bIAAAIDSURBVDjLrZVpV9pAFIYntdFiQkZsLCQECtJSlqAsFRBU3Kuta1sncYGuJEDt///aISkkkyHo6enzLTlP5s5758wNAC526pd3d1++/fzx/evNze1tp210wxURUMTWBz2v2EWtLc7jBTPmoJfNrqy8i0ajixgB00VISJIeW9JMKbcWDAYDNiFMQN1EqAAJcUfSBif0fsQWQjLxpjGnXUJa5CoIbTiP8KJ0OqfNMLQIZhGad/Ke3t///vWwGKv1+yPxfW55+TnmJWZW5ggxcqX3m6WSVTpSdPcxHCLExmf97AI8e1j8cK1f8X9Fq/Sotrf0k2v9KRiJ08L8mwhf2CQx8oK/yJyPw3Q67ULaV4Tr7tRCwFfkllLF4ushccwGPyUMzwzhMQz/X1Kz+QVMmh2LcjgsTxDZ3OpqIpFYfDu+KGwoxE5JvTtpF9NX9BEB792jn0gD4eNEsVAQHyXOO7fQFmNNLZOnPV5BqEyI+Yxm1qkluS0BCWRp8FEze6mTJQtVVd8MUfcEhBSGFOGMOWmaoc0AmRoXP5cmiHEReEXANOopzCsLRYlXjWolGXE2jK/r/ujEWAdOFIxWGrjO8ljXazG6MeynthEn2gAP9P7B4XCE2thzdG2v2jbK5LfHZ3hINbclSco6o/kIh1Einq4e1qxp5m2PkqZ/CPvbXvFot+xe7w/EpaiUrJ24NAAAAABJRU5ErkJggg==);
+    }
+  .paste
+    {content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAYxJREFUOE/NlLFKw1AUhs9thDSSNhYEC1LIdWj2bl07OPcJxMUXMFsHjUsXrdBdB3HwARxLwIIQXJxcUooHbCOEutRKh9AYucXGtknTGhw8Y3Lud89//stP4I+LRPEopdb3/31EbKxydyhQluVjQoiaTCZTPM9Dv98Hz/M0nufPTdMcRIF9oKIoKcdx3ifNHMeBJEkgiiJYlgWu605zsohoh4F9IJsqs+5pp+UeHNxsgSAIQMiPgOFwCGflHjTbAtw+ia+IuL0UmE1/asbhyxgYVuyyq4c01JuZ3wGjdlS/2/hnQNcDePvg/KEvDQkuDMkejUYF9rHT6TBzfMdmTJnscFry3nUW7p+FqC00EHF30rAUuHNCoVqtQrFYDEANw4BKpQKI6HNWBtZqtQBQVdX4QNM0A0BFUeIDmbT5YquILXmRK7GBsSZcSxBtU5wJAbAH3NjlfD4fGLLVai2WzLpZQMyfIoQclUqlRC6XCwC73S7ouh7+bBbtiFLKkuIx4mUXpqMsMrFXSej5ni+XXuAVg6oGswAAAABJRU5ErkJggg==');
+    }
+        
+  #api-root, #api-root *
+    {cursor:pointer}
+    
+  input 
+    {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  input[type=button]
+    {cursor:pointer}
+  label
+    {width:80px;text-align:right;margin-right:20px}
+  
+  a,a:visited
+    {color:dimgray;cursor:pointer}
+              
+  #help
+    {line-height:32px;border-top:1px solid lightgray;margin-top:20px;padding-top:20px}
+    
+            </style>
+
+
+      </head>
+    
+      <body>
+    
+            <hdr component=grp v2.0>
+                  <img style='top:0px;height:50px' class=title src='images/download-a-directory-from-a-github-repository.png'>
+                  <span slot=date>27 Aug 2025</span>
+            </hdr>
+
+        
+            <div id=scroll>
+            
+                  <div id=center>
+                  
+                        <section>
+                              <div id=url-examples>
+                                    <div style='display:inline-block;text-align:left'>
+                                    </div>
+                              </div>
+                        
+                              <div id=parse-root>
+                              
+                                  <label>
+                                      github url
+                                  </label>
+                                  <div class=icon-root>
+                                        <img id=url-copy class='copy icon' title=copy>
+                                        <img id=url-paste class='paste icon' title=paste>
+                                  </div>
+                                  <input id=parse value=parse type=button>
+                                  <input id=url>
+                                  
+                              </div>
+                              
+                            
+                              <div id=token-root class=value>
+                                    <label>
+                                          token
+                                    </label>
+                                    <img id=token-paste class='paste icon'>
+                                    <input class=token>
+                              </div>
+
+                              
+                              <div id=values>
+                            
+                                    <div id=owner-root class=value>
+                                          <label>
+                                                owner
+                                          </label>
+                                          <img id=owner-paste class='paste icon' title=paste>
+                                          <input class=owner>
+                                    </div>
+                                
+                                    <div id=repo-root class=value>
+                                          <label>
+                                                repo
+                                          </label>
+                                          <img id=repo-paste class='paste icon' title=paste>
+                                          <input class=repo>
+                                    </div>
+                                
+                                <div id=branch-root class=value>
+                                      <label>
+                                            branch
+                                      </label>
+                                      <img id=branch-paste class='paste icon' title=paste>
+                                      <input class=branch>
+                                </div>
+                                
+                                <div id=path-root class=value>
+                                      <label>
+                                            path
+                                      </label>
+                                      <img id=path-paste class='paste icon' title=paste>
+                                      <input class=path>
+                                </div>
+                                
+                            </div values>
+                            
+                            <div id=download-root>
+                            
+                                  <input value=download type=button>
+                                  
+                                  <div id=progress>
+                                        <div id=track>
+                                        </div>
+                                  </div>
+                            
+                                  <span id=api-root>
+                                        <label for=api>
+                                              api
+                                        </label>
+                                        <input id=api type=checkbox>
+                                  </span>
+                                  
+                            </div>
+                            
+                            <div results-root>
+                                  <img id=results-clear class=icon>
+                                  <div id=results>
+                                        <a class=result style='display:none' href='#'>
+                                              <div class=filename></div>
+                                        </a>
+                                        <div class=error style='display:none'>
+                                              <div class=tag style='color:red'>
+                                                    error
+                                              </div>
+                                              <div class=message>
+                                              </div>
+                                        </div>
+                                        
+                                  </div>
+                            </div>
+                            
+                        </section>
+      
+                      
+                        <section id=help>
+
+this page will download a directory from a github repository
+<br>
+paste in a url and it will automatically parse it into the relevant parts
+<br>
+if you have a github token you can enter it and it will use the github api to download the files, these will be as they are within the repository.  
+<br>
+if you do not have a token, it will download the files from raw.githubusercontent.com, these urls
+typically take upto 10 mins to reflect changes within the repository.
+<br>
+alternatively, you can check the api box, this will use the api to download the files, albeit using unauthenticated requests, these
+are rate limited to 60 per hour.
+<br>
+The path can be empty ( therefore it will download all files in the repo )
+<br>
+also check out the blog post on 
+<a style='color:blue;font-weight:bold' href='/blog/25-08-27/how-to-download-a-github-directory/how-to-download-a-github-directory.html'>
+      how to download a github directory
+</a>
+<br>
+                        </section>
+                        
+                  </div center>
+                
+                
+                
+            </div scroll>
+
+            <log component v2.0></log>
+
+      </body>
+
+
+      <script>
+
+
+        var results;
+        var result;
+        
+        
+        
+        var menu        = {};
+        var btn         = {};
+        btn.url         = {};
+        btn.token       = {};
+        btn.owner       = {};
+        btn.repo        = {};
+        btn.branch      = {};
+        btn.path        = {};
+        var display     = {};
+        
+        
+  //:
+  
+  
+        function initdom(rootnode){
+          
+              var root                          = rootnode;
+              
+
+              hdr.initdom(root);
+
+
+              $('#url-paste').onclick           = btn.url.paste;
+              $('#url-copy').onclick            = btn.url.copy;
+              
+              $('[value=parse]').onclick        = btn.parse;
+              
+              $('#token-paste').onclick         = btn.token.paste;
+              $('.token').value                 = localStorage['github-token']||'';
+              
+              $('#owner-paste').onclick         = btn.owner.paste;
+              $('#repo-paste').onclick          = btn.repo.paste;
+              $('#branch-paste').onclick        = btn.branch.paste;
+              $('#owner-paste').onclick         = btn.path.paste;
+              
+              
+              $('[value=download]').onclick     = btn.download;
+
+
+              $('#results-clear').onclick       = btn.clear;              
+              results                           = $('#results');
+              result                            = $('.result');
+              result.style.display              = '';
+              result.remove();
+              error                             = $('.error');
+              error.style.display               = '';
+              error.remove();
+              
+        }//initdom
+                
+                
+  //:
+  
+  
+        btn.url.paste   = async function(){
+              
+              var url           = await navigator.clipboard.readText();
+              $('#url').value   = url;
+              
+        }//paste          
+        
+        
+        btn.url.copy    = async function(e){
+          
+              $.mousetext(e,'copied');
+              var url   = $('#url').value;
+              await navigator.clipboard.writeText(url);
+              
+        }//copy
+
+
+        btn.parse   = function(e){
+              
+              var url               = $('#url').value;
+              var result            = github.parse(url);
+                                                                                //console.json(result);
+              if(result.error){
+                    alert(result.error);
+                    return;
+              }
+                
+              $('.owner').value     = result.owner;
+              $('.repo').value      = result.repo;
+              $('.branch').value    = result.branch;
+              $('.path').value      = result.path;
+                    
+        }//parse
+
+
+        btn.token.paste   = async function(e){
+          
+              var txt               = await navigator.clipboard.readText();
+              $('.token').value     = txt;
+              
+        }//paste
+        
+        
+        btn.owner.paste   = async function(e){
+          
+              var txt               = await navigator.clipboard.readText();
+              $('.owner').value     = txt;
+              
+        }//paste
+        
+        
+        btn.repo.paste   = async function(e){
+          
+              var txt               = await navigator.clipboard.readText();
+              $('.repo').value      = txt;
+              
+        }//paste
+        
+        
+        btn.branch.paste   = async function(e){
+          
+              var txt               = await navigator.clipboard.readText();
+              $('.branch').value    = txt;
+              
+        }//paste
+        
+        
+        btn.path.paste   = async function(e){
+          
+              var txt               = await navigator.clipboard.readText();
+              $('.path').value      = txt;
+              
+        }//paste
+        
+                
+        btn.download    = function(e){
+          
+              var owner     = $('.owner').value;
+              var repo      = $('.repo').value;
+              var branch    = $('.branch').value;
+              var path      = $('.path').value;
+              var auto      = e.shiftKey;
+              var token     = $('.token').value;
+              var api       = $('#api').checked;
+              
+              download(owner,repo,branch,path,auto,token,api);
+              
+              
+        }//download
+        
+        
+        btn.clear   = function(){
+          
+              results.replaceChildren();
+              
+        }//clear
+
+        
+  //:
+  
+  
+        async function download(owner,repo,branch,path,auto,token,api){
+
+              var {error,file,blob}   = await github.dir.download(owner,repo,branch,path,update,null,token,api);
+              
+              if(error){
+                    display.error(error);
+                    return;
+              }
+
+              
+              var size                              = hs(blob.size);
+              var str                               = file+' '+size;
+              
+              display.result(str,click);
+
+              if(auto){
+                    download();
+              }
+
+              
+              function click(e){
+                
+                    if(e.button!=0){
+                          return;
+                    }
+                    
+                    e.preventDefault();
+                    
+                    download();
+                    
+              }//click
+              
+              
+              function download(){
+                
+                    var url       = window.URL.createObjectURL(blob);
+                    
+                    var a         = document.createElement('a');
+                    a.download    = file;
+                    a.href        = url;
+                    a.click();
+                    
+              }//download
+              
+        }//download
+        
+        
+        function update(ct,total){
+                                                                                //console.log('update',ct,total);
+              var p                     = (ct/total)*100;
+              var w                     = p+'%';
+              $('#track').style.width   = w;
+              
+        }//update
+        
+        
+        display.result    = function(str,download){
+          
+              var nresult                           = result.cloneNode(true);
+              $(nresult,'.filename').textContent    = str;
+              nresult.onclick                       = download;
+              results.append(nresult);
+          
+        }//result
+        
+        
+        display.error   = function(err){
+          
+              var nerror                          = error.cloneNode(true);
+              $(nerror,'.message').textContent    = err;
+              results.append(nerror);
+              
+        }//error
+
+
+  //:
+  
+        
+        function urlparams(){
+          
+                                                                                console.log('urlparams');
+              var query             = window.location.search;
+                                                                                console.log(query);
+              var params            = new URLSearchParams(query);
+              
+              var owner             = params.get('owner');
+              var repo              = params.get('repo');
+              var branch            = params.get('branch')||'main';
+              var path              = params.get('path')||'';
+              var auto              = params.get('auto');
+              var api               = params.get('api');
+              
+              $('.owner').value     = owner;
+              $('.repo').value      = repo;
+              $('.branch').value    = branch;
+              $('.path').value      = path;
+              
+              var token             = $('.token').value;
+                                                                                console.log(owner,repo,branch,path,auto,token,api);
+              if(owner && repo){
+                    download(owner,repo,branch,path,auto,token,api);
+              }
+              
+        }//urlparams
+        
+
+
+        
+      </script>
+        
+
+</html>
+
+
+
