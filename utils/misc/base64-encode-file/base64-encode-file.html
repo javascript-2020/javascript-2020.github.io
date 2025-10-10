@@ -1,0 +1,657 @@
+
+
+
+<html>
+
+      <head>
+      
+            <title>base64 encode file</title>
+            <meta name=description content='base64 encode files, optional dataurl'>
+
+            <base href='https://ext-code.com/utils/misc/base64-encode-file/'>
+            <base href='https://javascript-2020.github.io/utils/misc/base64-encode-file/base64-encode-file.html'>
+            <link rel=canonical href='https://ext-code.com/utils/misc/base64-encode-file/base64-encode-file.html'>
+            
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            <link rel=icon type='image/png' href='image/base64-30.png'>
+            
+            
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "base64 encode file",
+                        "url"                   : "https://ext-code.com/utils/misc/base64-encode-file/base64-encode-file.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "base64 encodes files or text with the option to produce a dataurl",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+
+            
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('base64-encode-file-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,did='base64-encode-file'
+        ;
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var getmime;
+
+        var preview       = {};
+        var output        = {};
+        
+        var filemod;                                                                                
+        var publish;
+        var log;
+        
+
+  //:
+
+
+        mod.stack.add   = init;
+        
+        async function init(){
+
+              //keydown                   = keydown();
+              menu                      = mod.menumod();
+              
+              hdr                       = mod['hdr-base64'];
+              //mod.menu.main             = mod.menu.main();
+              preview.filemod           = mod['filemod[preview]'];
+              preview.filename          = mod['filename-ui[preview]'];
+              output.filemod            = mod['filemod[output]']
+              output.filename           = mod['filename-ui[output]'];
+              log                       = mod.log;
+              
+              hdr.initmod({ext,$,menu,menumod});
+              //mod.menu.main.initmod({ext,$,menumod,editor,filemod});
+              preview.filemod.initmod({ext,$,menumod,menu,complete:preview.complete,source:preview.source,log});
+              preview.filename.initmod({ext,$});
+              output.filemod.initmod({ext,$,menumod,menu,complete:output.complete,source:output.source,log});
+              output.filename.initmod({ext,$});
+              log.initmod({ext,$});
+              
+              await hdr.init();
+              await //mod.menu.main.init();
+              await preview.filemod.init();
+              await preview.filename.init();
+              await output.filemod.init();
+              await output.filename.init();
+              await log.init();
+
+  //:
+          
+              menu.on.close          = null;
+
+              
+              await initdom(document.body);
+
+
+        }//init
+
+
+
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js.api',
+              'js/string/getmime/getmime.js.api'
+        );
+        [$,datatype,menumod,keydown,debug,getmime]   = await promise;
+  
+        mod.stack.complete;
+              
+})();
+                  
+
+            </script init>
+
+        
+            <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymouse>
+
+            <style id=page-inline>
+            
+  html
+    {height:100%}
+  body
+    {height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px}
+
+
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+  .spc
+    {flex:1}
+  
+  .user
+    {}
+  .user #btns
+    {display:inline-flex;gap:10px;flex:1}
+
+    
+  #preview
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
+    
+  #preview-hdr
+    {display:flex;align-items:center}
+  #preview .user
+    {display:flex;align-items:center}
+
+    
+  section.title
+    {margin-bottom:10px}
+    
+  #blob
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}    
+  #blob section
+    {display:flex;align-items:center}    
+  #blob label
+    {width:100px;text-align:right;margin-right:20px}
+
+  #dataurl-root
+    {margin-left:20px;display:inline-flex;align-items:center}
+    
+  #dataurl
+    {width:20px;height:20px;margin:0;margin-left:10px}
+    
+  #b64
+    {border:1px solid lightgray;padding:10px;flex:1;}
+  #b64 #text
+    {height:100%;white-space:pre-wrap;overflow:auto;word-break:break-all;font-family:monospace;box-sizing:border-box}    
+
+  
+  #output
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
+  #output-hdr
+    {display:flex;align-items:center}
+  #output .user
+    {display:flex;align-items:center}
+    
+
+    
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+    
+            </style>
+      
+      
+      </head>
+      
+      
+      <body>
+      
+
+            <hdr-base64 component=grp v2.0>
+                  <img class=title src='image/base64-file-50.png' style='top:5px;height:40px'>
+                  <span slot=date>03 Aug 2025</span>
+            </hdr-base64>
+
+
+            
+            <div id=hdr>
+
+<!--                        
+                  <main-menu-page>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </main-menu-page>
+-->                  
+
+            </div>
+            
+
+            <div id=preview>
+
+                  <div>
+                        file
+                  </div>
+                  
+                  <div class=user>
+                  
+                        <filemod inst=preview component v2.0></filemod>
+      
+                        <div id=btns>
+                        
+                              <input value=save type=button>
+                              <div class=spc></div>
+                              
+                        </div>
+                        
+                  </div>
+
+                  <filename-ui inst=preview component v2.0></filename-ui>
+                  
+            </div>
+            
+            
+            <div id=blob>
+            
+                  <section class=title>
+                        file
+                  </section>
+                  
+                  <section>
+                  
+                        <label>
+                              size
+                        </label>
+                        
+                        <div id=size>
+                        </div>
+                        
+                  </section>
+                  
+            </div>
+
+
+            <div>
+                  <input value=encode type=button>
+                  <span id=dataurl-root>
+                        dataurl
+                        <input id=dataurl type=checkbox>
+                  </span>
+            </div>
+
+            
+            <div id=output>
+
+                  <div>
+                        base64
+                  </div>
+                        
+                  <div class=user>
+                  
+                        <filemod inst=output component v2.0></filemod>
+                        
+                        <div id=btns>
+                        
+                              <input value=save type=button>
+                              <input value=copy type=button>
+                              <input value=paste type=button>
+                              <div class=spc></div>
+                              
+                        </div>
+                        
+                  </div>
+                        
+                  <filename-ui inst=output component v2.0></filename-ui>
+                  
+            </div output>
+                  
+            <div>
+                  <input value=decode type=button>
+            </div>
+            
+            <div id=b64>
+            
+                  <section class=title>
+                        base64
+                  </section>
+                  
+                  <section id=text>
+                  </section>
+                  
+            </div>
+                  
+
+      </body>
+
+
+      <log component v2.0></log>
+      
+      
+      <script>
+
+
+      
+        var cur           = {};
+        cur.preview       = {};
+        cur.output        = {};
+        
+        
+        var blob          = {};
+        var b64           = {};
+        
+        var ui            = {};
+        
+        
+        var btn           = {};
+        btn.preview       = {};
+        btn.output        = {};
+
+
+  //:
+  
+  
+        function initdom(rootnode){
+          
+          
+              root                                            = rootnode;
+
+        
+              hdr.initdom(root);
+              
+              
+              preview.root                                    = $(root,'#preview');
+              preview.filemod.initdom(preview.root);
+              preview.filename.initdom(preview.root);
+              
+              $(preview.root,'[value=save]').onclick          = btn.preview.save;
+              
+              
+              blob.root                                       = $(root,'#blob');
+
+
+              $('[value=encode]').onclick                     = btn.preview.encode;
+              preview.dataurl                                 = $('#dataurl');
+
+              
+              b64.root                                        = $(root,'#b64');
+              b64.text                                        = $(b64.root,'#text');
+              
+              
+              output.root                                     = $(root,'#output');
+              
+              output.filemod.initdom(output.root);
+              output.filename.initdom(output.root);
+              
+              $(output.root,'[value=save]').onclick           = btn.output.save;
+              $(output.root,'[value=copy]').onclick           = btn.output.copy;
+              $(output.root,'[value=paste').onclick           = btn.output.paste;
+              
+
+              $('[value=decode]').onclick                     = btn.output.decode;
+
+
+              
+              log.initdom(root);
+
+
+              
+              blob.display();
+              b64.display();
+              
+              
+              
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        btn.preview.encode    = async function(){
+          
+              if(!cur.blob){
+                    log.red('no file');
+                    return;
+              }
+
+              var dataurl   = preview.dataurl.checked;
+              cur.b64       = await encode(cur.blob,dataurl);
+
+              b64.display();
+
+              
+        }//encode
+        
+        
+        btn.preview.save    = function(){
+          
+              if(!cur.preview.file){
+                    log.red('no file');
+                    return;
+              }
+              
+              preview.filemod.save(cur.preview.file);
+              
+        }//save
+        
+                
+        btn.output.decode   = async function(){
+          
+              if(!cur.b64){
+                    log.red('no base64 to decode');
+                    return;
+              }
+              
+              cur.blob    = decode(cur.b64);
+              
+              blob.display();
+              
+              
+        }//decode
+
+        
+        btn.output.save   = function(){
+          
+              if(!cur.output.file){
+                    log.red('no output file');
+                    return;
+              }
+              
+              output.filemod.save(cur.output.file);
+              
+        }//save
+        
+        
+        btn.output.copy   = async function(){
+          
+              if(!cur.b64){
+                    log.red('no base64 to copy');
+                    return;
+              }
+              
+              var txt   = cur.b64;
+                                                                                console.log(txt);
+              await navigator.clipboard.writeText(txt);
+              
+        }//copy
+
+
+        btn.output.paste    = async function(){
+          
+              var b64                   = await navigator.clipboard.readText();
+              
+              cur.b64                   = b64;
+              
+              output.view.textContent   = b64;
+              
+        }//paste
+        
+        
+  //:
+  
+
+        async function encode(blob,dataurl){
+          
+              var b64   = await blob_b64(blob);
+              if(dataurl){
+              
+                    //var mime    = getmime(blob.name);
+                    var mime    = blob.type;
+                    b64         = `data:${mime};base64,${b64}`;
+              }
+              return b64;
+              
+        }//encode
+        
+        
+        function decode(b64){
+          
+              var blob    = b64_blob(b64);
+              cur.blob    = blob;
+              return blob;
+              
+        }//decode
+        
+        
+  //:
+  
+  
+        blob.display   = function(){
+          
+              var str   = '---';
+              if(cur.blob){
+                    str   = cur.blob.size;
+              }
+              
+              $(blob.root,'#size').textContent                 = str;
+              
+        }//display
+        
+        
+        
+        b64.display   = function(){
+          
+              var str   = '---';
+              if(cur.b64){
+                    str   = cur.b64;
+              }
+              
+              $(b64.root,'#text').textContent    = str;
+              
+        }//display
+        
+        
+  //:
+  
+  
+        preview.source    = function(){
+          
+              return cur.blob;
+              
+        }//source
+        
+        
+        preview.complete    = {};
+        
+        preview.complete.load   = function(file,srcblob){
+          
+              menu.close();
+              
+              cur.preview.file    = file;
+              cur.blob            = srcblob;
+        
+              preview.filename.show(file);
+              blob.display();
+              
+        }//load
+        
+        
+        preview.complete.save   = function(file){
+          
+              cur.preview.file    = file;
+              
+              log.green(file.filename+' saved');
+              
+              preview.filename.show(file);
+              
+        }//save
+        
+        
+        
+        output.source   = function(){
+          
+              return cur.b64;
+              
+        }//source
+        
+        
+        output.complete   = {};
+        
+        output.complete.load    = async function(file,blob){
+          
+              var b64txt        = await blob_b64(blob);
+              
+              cur.output.file   = file;
+              cur.b64           = b64txt;
+              
+              output.filename.show(file);
+              b64.display();
+              
+        }//load
+        
+        
+        output.complete.save    = function(file,confirm=true){
+          
+              cur.output.file    = file;
+              
+              output.filename.show(file);
+              
+              log.green(file.filename+' saved');
+              
+        }//save
+
+
+
+  //:
+  
+  
+       async function blob_b64(blob){
+        
+              var buf     = await blob.arrayBuffer();
+              var bytes   = new Uint8Array(buf);
+              var bin     = [...bytes].reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64     = btoa(bin);
+              return b64;
+        
+        }//blob_b64
+  
+        function b64_blob(b64,type='text/plain'){
+        
+              var bin     = atob(b64);
+              var bytes   = [...bin].map(c=>c.charCodeAt(0));
+              var buf     = new Uint8Array(bytes);
+              var blob    = new Blob([buf],{type});
+              return blob;
+              
+        }//b64_blob
+  
+        function b64_dataurl(b64,type){
+        
+              var dataurl   = `data:${type};base64,${b64}`;
+              return dataurl;
+              
+        }//b64_datauri
+        
+        function dataurl_b64(dataurl){
+        
+              var i     = dataurl.indexOf(',')+1;
+              var b64   = dataurl.slice(i);
+              return b64;
+              
+        }//datauri_b64  
+
+
+
+      </script>      
+      
+</html>
+
+
