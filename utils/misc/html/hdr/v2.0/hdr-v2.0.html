@@ -69,9 +69,7 @@
                       
                   <div class=item>
                                   
-                        <top-menu-grp-api>
-                              <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                        </top-menu-grp-api>
+                        <top-menu component=grp v2.0></top-menu>
                         
                         <a id=home class=item-label href='https://javascript-2020.github.io/'>
                               home
@@ -91,50 +89,57 @@
       
       <script>
       
-            mod.misc.hdr=function(){
-                                                                                true && console.log('mod.misc.hdr');
-              var obj   = {};
+(function misc_hdr(){
+                                                                                
+  var obj   = {};
+  
+        var df=true
+        ;
+                                                              
+        var menu
+        ;
+          
+        obj.initmod=function(params){
+          
+              menu      = params.menu;
               
-                  var df=true
-                  ;
-                                                                        
-                  var menu,menumod
-                  ;
-                    
-                  obj.initmod=function(params){
-                    
-                        menumod   = params.menumod;
-                        menu      = params.menu;
-                        
-                  }//initmod
-                  
-            
-                  obj.init=function(){
-                  
-                        mod.menu.top    = mod.menu.top();
-                        
-                        mod.menu.top.initmod({menumod,menu});
-                        
-                        mod.menu.top.init();
+        }//initmod
 
-                        
-                  }//init
+        
+  //:    
 
-                    
-                  obj.initdom=function(rootnode){
-                    
-                        var root            = $.$(rootnode,'misc-hdr');
-                        var shadow          = root.shadowRoot;
-                        
-                        mod.menu.top.initdom(shadow);
-                        
-                        
-                  }//initdom
-                  
-                  
-              return obj;
+        var top;
+        
+        obj.init    = async function(){
+        
+              top       = mod['top-menu'];
               
-            }//mod.utils.hdr
+              top.initmod({$,menu});
+              
+              await top.init();
+    
+              
+        }//init
+    
+
+  //:
+  
+  
+        obj.initdom   = function(rootnode){
+          
+              var root            = $.$(rootnode,'misc-hdr');
+              var shadow          = root.shadowRoot;
+              
+              top.initdom(shadow);
+              
+              
+        }//initdom
+      
+
+      
+  return obj;
+  
+})//mod.utils.hdr
             
       </script>
       
