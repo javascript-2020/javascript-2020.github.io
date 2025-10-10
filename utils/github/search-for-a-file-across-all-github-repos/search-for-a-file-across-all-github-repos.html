@@ -1,0 +1,670 @@
+
+
+
+<html>
+
+      <head>
+
+
+            <title>search-for-a-file-across-all-github-repos</title>
+            <meta name=description content='search for a file across all github repos'>
+
+            <base href='https://ext-code.com/utils/github/search-for-a-file-across-all-github-repos/'>
+            <base href='https://javascript-2020.github.io/utils/github/search-for-a-file-across-all-github-repos/'>
+            
+            <link rel='canonical' href='https://ext-code.com/utils/github/search-for-a-file-across-all-github-repos/search-for-a-file-across-all-github-repos.html'>
+            
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "search-for-a-file-across-all-github-repos",
+                        "url"                   : "https://ext-code.com/utils/github/search-for-a-file-across-all-github-repos/search-for-a-file-across-all-github-repos.html"
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "search for a file across all github repos",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+      
+            
+      
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script>
+                                                                                console.clear();
+                                                                                console.log('search-for-a-file-across-all-github-repos-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var github;
+
+
+  //:
+  
+  
+        mod.stack.add   = init;
+        
+        async function init(){
+        
+        
+              initdom(document.body);
+              
+              
+        }//init
+        
+        
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'github/github.js.api',
+        );
+        [$,datatype,menumod,keydown,github]   = await promise;
+  
+        mod.stack.complete;
+              
+})();
+  
+
+      </script>
+
+            <style>
+
+  html
+    {height:100%;font-family:arial}
+  body
+    {height:calc(100% - 40px);margin:20px;display:flex;flex-direction:column;gap:20px}
+    
+  #hdr
+    {display:flex;justify-content:space-between;position:relative;margin-bottom:30px}
+    
+  #title
+    {}
+  #title img
+    {height:70px;top:-20px;position:absolute;left:0;right:0;margin:auto}
+    
+  #desc
+    {line-height:1.5}
+    
+  .field
+    {display:flex;gap:20px;align-items:center}
+  .label
+    {width:70px;text-align:right;text-align:right;}
+  .field input
+    {flex:1}
+    
+  #token-root
+    {margin-top:20px;margin-bottom:20px}
+    
+  #type
+    {display:flex;gap:20px}
+  #type>div
+    {display:flex;align-items:center}
+    
+  #type [type=checkbox]
+    {width:20px;height:20px;margin-left:10px}
+    
+  [value=search]
+    {padding:5px 20px}
+    
+  #clear
+    {
+      content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABL1BMVEVHcEynHyChIySwFRXAKyu8CQm4UE+5FBS2DQ22EBG1FxfvT0+/Cwu7BQXCGRnVJCTABAS9AwO/DQ3KGxvPHR3PHR3ABwi+CAjJGhvIEhLPJiXaPT7LHx+6EBG9FBW9DQ24BQa+BQXBAwO9Dg7BAwOTJCe9ERHGHR3JEBDFFxbQHx7aMjLNHh5tcG3NHx/YKSnYKSnkSEfdODjqSEiyEhLBCQnDBgapCwyxCQnCBQXqS0rdPz7dNTW+BQbCHR3hQkHiPDvmQ0LNFRTMGRnsVlXpU1LrV1blR0fUIyO2BgfmVFTpSUjCBQXCAQHdLy7oQkLlPT3VIiLYJybxU1PgNTXiOTn0WFjtTEvbKyvSHR3fMjLPGBfpRUT3Xl/rSEfEBAPICQnKDg7OFRXhNzfhNzbOdm/IAAAATXRSTlMACAQfDoQCKzRWGf52w3b37eZvs+zktqITznolSiI7Xq3f/U73A5ei98L3pskBY/XsZbvzQ5rQOGfX5D3M04JW4u7xh4FzUmzYky+xy1b2pHcAAAGYSURBVCjPhZNnV8IwFIYLbaGDsoeAiAwXw7333knbdJcy9f//BnPUaoGi+XRznjve9+aEIP451P3t3fNMWnzhFf54KzQDb4uG3lV2HmbwjXdH6WK+5Y8zpuYoum5cXUyh0FyJiDbMN9HgDfHyZFwxk9zLRYhANI1USXRE7bT4wwIMLZzlWDKI44VUDKqapsIm9QW5cjZeocNLbi7bQiaEJiq08Y2M7IMEXfIO4s7Tsixb6XmCixyB6iIzqXJ3rdPpjPK4EiQOA9MGueXV4XDQB0A48F1AkK72+7gx6UtDtTwuBfEFXzp3cz0cYAxyPoOJcMqyRgMgVEC9PE3nHxGSOwOB3K2Ao9Lk2PVNaEM0qmDNtQTYC45LLmyokmTLq59t2Xi95qVL0Zjq9CRoLX9VHdZfOQ9ej6k9xdBQ/ttwKFKlPaoy0NH1nt1gf17zyWO+hSSly0to5dcvtZil3Bi31hXRzIQ980gh6YabksE7tpUcM8Nk3eym5Ii2nKLGV8HS3+aL2xqU18KTz8e4UsjCSpT765e1Z6MPPqBEq7kmBRcAAAAASUVORK5CYII=');
+    }
+    
+  #results
+    {flex:1;border:1px solid lightgray;padding:10px;overflow:auto;border-radius:10px;
+    }
+  #results table
+    {width:100%;display:none}
+    
+  .item:nth-child(odd)
+    {background:whitesmoke}
+    
+  
+  .item
+    {margin:5px auto;white-space:nowrap;cursor:pointer}
+
+  .item td 
+    {padding:5px 20px;border:none}
+  .item .rem img
+    {border:none;width:15px;height:15px;padding:2px 0;
+      content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAASFBMVEVHcEzgREjwGx73CAz7AwjzCQ3sDBDhERT4Awf4BQn4Bwz6AwflJyzoJCj0CxDYREftExj0Cg/wEBT0DBC6am5n///9AAX8AQVcLXISAAAAFnRSTlMADDjJ83RsMPHj0fkVHbMIUZ1diwMB86U6hgAAAONJREFUKM9tklkShCAMREEU2QRFJfe/6QyLEoT+SJU8mwrpEPLIsFDEDOm1yQfLbYCNVUV25Cb01cfn+UC+3OEOGOpwn55alQ43OXYXTPkyFH9bdLSTQxOxrJPduoFBKrnKOhuj8omEp4ag6nBoSmPedx2CTjUAq9jZeCDWaf7/NK0i2u314jviUHH8Ou7a+tHjE4VywhcDxkuPl0pv3mOP3L7Dekc4PbXFE8LxvMEgGiy+brkinA14as0yp8jElHG6SuFlNipmxdhbA8PbbBIAlLdF20JcciABCoyQa9Et1jyDH2u8Iew6F6kaAAAAAElFTkSuQmCC');
+    }
+  .item .repo
+    {}
+  .item branch
+    {text-align:center}
+  .item .path
+    {width:100%}
+  .item .size
+    {text-align:right}
+    
+  #progress
+    {}
+
+
+  .spc
+    {flex:1}
+  .icon
+    {cursor:pointer;width:32px;height:32px;padding:2px;border:1px solid gray;border-radius:3px;box-sizing:border-box}
+  .copy
+    {content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAABSlBMVEVHcEwnz/4C8P4g1P4L6P43wf5Mr/4a2v4Y3P4/uv5PrP4+vf5Auv4ozv5KsP4vyv45wP5Jsf5Auf49vP5Mrv4zxf44wf5Lr/46wP4h1P5Lr/46vv5Jsv4R5P5Hs/5Etv44wf5Hs/41w/4uyv47vv49vP5Ftf5GtP4c2f4rzP4tyv4m0f5Etv5Nrv4xxv4xxv4xx/4W3/5KsP5Mr/4/u/4uyv5Isv4K6f4l0f4qzv4W3/4V3/5Nrv5Mrv5Mrv5Mr/4W3v4e2P5BuP5Hsv4N5v4K6f4O5v42w/5Dt/4E7/4uyf4C8P4nz/4M5/4K6v4oz/4P5f4k0v4b2v5Gs/4E7v4I6/5Nrf4e1/4H7P4E7v5Auv5Dtv4sy/5Isv5GtP4wx/49vP4zxf47vv44wP42w/5LsP5Jsf4i1P4n0P4N5v4k0v4a2v4S4v4X3v6OfcqkAAAAVnRSTlMACo7CjQWN/VczjgIJMfIXJzHtjj5iVekR71Hvtz7CjelXjre2wiJj2PCFIWbR7+fEnXaodz3544/USfOC22Tm7CXOnqfUZ+/3VTV9bsTzqGDahpb2tyRB6bIAAAIDSURBVDjLrZVpV9pAFIYntdFiQkZsLCQECtJSlqAsFRBU3Kuta1sncYGuJEDt///aISkkkyHo6enzLTlP5s5758wNAC526pd3d1++/fzx/evNze1tp210wxURUMTWBz2v2EWtLc7jBTPmoJfNrqy8i0ajixgB00VISJIeW9JMKbcWDAYDNiFMQN1EqAAJcUfSBif0fsQWQjLxpjGnXUJa5CoIbTiP8KJ0OqfNMLQIZhGad/Ke3t///vWwGKv1+yPxfW55+TnmJWZW5ggxcqX3m6WSVTpSdPcxHCLExmf97AI8e1j8cK1f8X9Fq/Sotrf0k2v9KRiJ08L8mwhf2CQx8oK/yJyPw3Q67ULaV4Tr7tRCwFfkllLF4ushccwGPyUMzwzhMQz/X1Kz+QVMmh2LcjgsTxDZ3OpqIpFYfDu+KGwoxE5JvTtpF9NX9BEB792jn0gD4eNEsVAQHyXOO7fQFmNNLZOnPV5BqEyI+Yxm1qkluS0BCWRp8FEze6mTJQtVVd8MUfcEhBSGFOGMOWmaoc0AmRoXP5cmiHEReEXANOopzCsLRYlXjWolGXE2jK/r/ujEWAdOFIxWGrjO8ljXazG6MeynthEn2gAP9P7B4XCE2thzdG2v2jbK5LfHZ3hINbclSco6o/kIh1Einq4e1qxp5m2PkqZ/CPvbXvFot+xe7w/EpaiUrJ24NAAAAABJRU5ErkJggg==);
+    }
+  .paste
+    {content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAYxJREFUOE/NlLFKw1AUhs9thDSSNhYEC1LIdWj2bl07OPcJxMUXMFsHjUsXrdBdB3HwARxLwIIQXJxcUooHbCOEutRKh9AYucXGtknTGhw8Y3Lud89//stP4I+LRPEopdb3/31EbKxydyhQluVjQoiaTCZTPM9Dv98Hz/M0nufPTdMcRIF9oKIoKcdx3ifNHMeBJEkgiiJYlgWu605zsohoh4F9IJsqs+5pp+UeHNxsgSAIQMiPgOFwCGflHjTbAtw+ia+IuL0UmE1/asbhyxgYVuyyq4c01JuZ3wGjdlS/2/hnQNcDePvg/KEvDQkuDMkejUYF9rHT6TBzfMdmTJnscFry3nUW7p+FqC00EHF30rAUuHNCoVqtQrFYDEANw4BKpQKI6HNWBtZqtQBQVdX4QNM0A0BFUeIDmbT5YquILXmRK7GBsSZcSxBtU5wJAbAH3NjlfD4fGLLVai2WzLpZQMyfIoQclUqlRC6XCwC73S7ouh7+bBbtiFLKkuIx4mUXpqMsMrFXSej5ni+XXuAVg6oGswAAAABJRU5ErkJggg==');
+    }
+
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  [type=button],[type=checkbox]
+    {cursor:pointer}
+    
+            </style>
+
+
+      </head>
+
+      
+      <body>
+    
+    
+            <div id=hdr>
+            
+                  <div>
+                        <a href='/'>
+                              home
+                        </a>
+                  </div>
+                  
+                  <div id=title>
+                        <img src='images/github-file-search-2.png'>
+                  </div>
+                  
+                  <div>
+                        26 Sep 25
+                  </div>
+                  
+            </div>
+
+
+            <div id=desc>
+                  <div>
+                        search for a file across all github repos
+                  </div>
+                  <div>
+                        you can use an ephemeral read only token
+                  </div>
+                  <div>
+                        <a href='https://github.com/settings/personal-access-tokens'>
+                              github.com : Fine-grained personal access tokens
+                        </a>
+                  </div>
+            </div>
+
+            
+            <div id=token-root class=field>
+                  <span class=label>
+                        <span>
+                              token
+                        </span>
+                  </span>
+                  <input id=token>
+                  <span>
+                        <img id=token-copy class='copy icon' title=copy>
+                        <img id=token-paste class='paste icon' title=paste>
+                  </span>
+            </div>
+            
+            <div class=field>
+                  <span class=label>
+                        username
+                  </span>
+                  <input id=username>
+                  <span>
+                        <img id=username-copy class='copy icon' title=copy>
+                        <img id=username-paste class='paste icon' title=paste>
+                  </span>
+            </div>
+            
+            <div class=field>
+                  <span class=label>
+                        search
+                  </span>
+                  <input id=search>
+                  <span>
+                        <img id=search-copy class='copy icon' title=copy>
+                        <img id=search-paste class='paste icon' title=paste>
+                  </span>
+                  
+            </div>
+            
+            <div id=type>
+            
+                  <input value=search type=button>
+                  <div>
+                        plain
+                        <input id=plain type=checkbox checked>
+                  </div>
+                  <div>
+                        wildcard
+                        <input id=wildcard type=checkbox>
+                  </div>
+                  <div>
+                        regex
+                        <input id=regex type=checkbox>
+                  </div>
+                  
+                  <div class=spc></div>
+                  
+                  <img id=clear class=icon>
+                  
+            </div>
+            
+            <div id=progress>
+                  <div id=bar>
+                  </div>
+            </div>
+
+            <div id=results>
+            
+                  <table>
+                  
+                        <tbody>
+                        
+                              <tr class=item>
+                                    <td class=repo></td>
+                                    <td class=branch></td>
+                                    <td class=path></td>
+                                    <td class=size></td>
+                                    <td class=rem><img></td>
+                              </tr>
+                              
+                              <tr id=not-found style='background:white'>
+                                    <td>
+                                          no files found
+                                    </td>
+                              </tr>
+                  
+                        </tbody>      
+                        
+                  </table>
+                  
+            </div>
+            
+                  
+      </body>
+
+
+      
+      <script>
+      
+      
+        var ui              = {};
+        ui.token            = null;
+        var token           = localStorage['github-token']||'';
+        var username;
+        var search;
+        var type            = 'plain';
+        var chk             = {};
+        var results;
+        var item;
+        var notfound;
+        var progress;
+        var bar;
+        
+        var node            = {};
+        
+        var btn             = {};
+        btn.token           = {};
+        var create          = {};
+        var fn              = {};
+        
+  
+        function initdom(rootnode){
+        
+              var root                          = rootnode;
+              
+              var icon;
+              
+              ui.token                          = $(root,'#token');
+              ui.token.value                    = token;
+              icon                              = $(root,'#token-copy');
+              $.icon.copy2(icon,ui.token);
+              icon                              = $(root,'#token-paste');
+              $.icon.paste(icon,ui.token);
+              
+              username                          = $(root,'#username');
+              username.value                    = 'octocat';
+              icon                              = $(root,'#username-copy');
+              $.icon.copy2(icon,username);
+              icon                              = $(root,'#username-paste');
+              $.icon.paste2(icon,username);
+              
+              search                            = $(root,'#search');
+              search.value                      = 'index.html';
+              icon                              = $(root,'#search-copy');
+              $.icon.copy2(icon,search);
+              icon                              = $(root,'#search-paste');
+              $.icon.paste2(icon,search);
+
+              
+              $('[value=search]').onclick       = btn.search;
+              
+              
+              chk.plain                         = $(root,'#plain');
+              chk.plain.onclick                 = btn.plain;
+              
+              chk.wildcard                      = $(root,'#wildcard');
+              chk.wildcard.onclick              = btn.wildcard;
+              
+              chk.regex                         = $(root,'#regex');
+              chk.regex.onclick                 = btn.regex;
+              
+              $('#clear').onclick               = e=>results.replaceChildren();
+              
+              results                           = $(root,'#results');
+              node.item                         = $(root,'.item');
+              node.item.remove();
+              node.notfound                     = $(root,'#not-found');
+              node.notfound.remove();
+              
+              $(results,'table').style.display    = 'block';
+              
+              progress                          = $(root,'#progress');
+              progress.remove();
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        btn.search    = function(){
+        
+              var params    = {
+                    username    : username.value,
+                    search      : search.value,
+                    type,
+              };
+              fn.search(params);
+              
+        }//search
+        
+        
+        btn.plain   = function(){
+        
+              type                    = 'plain';
+              
+              chk.plain.checked       = true;
+              chk.wildcard.checked    = false;
+              chk.regex.checked       = false;
+              
+        }//plain
+
+
+        btn.wildcard    = function(){
+        
+              type                    = 'wildcard';
+              
+              chk.plain.checked       = false;
+              chk.wildcard.checked    = true;
+              chk.regex.checked       = false;
+        
+        }//wildcard
+        
+        
+        btn.regex   = function(){
+
+              type                    = 'regex';
+              
+              chk.plain.checked       = false;
+              chk.wildcard.checked    = false;
+              chk.regex.checked       = true;
+        
+        }//regex
+        
+
+  //:
+        
+        
+        create.item   = function(owner,repo,branch,item){console.log(item);
+        
+              var url     = github.build.website({owner,repo,branch,path:item.path});
+              
+              var nitem   = node.item.cloneNode(true);
+              nitem.onclick   = e=>window.open(url);
+              
+              $(nitem,'.rem').onclick   = remove;
+              
+              $(nitem,'.repo').textContent    = repo;
+              
+              $(nitem,'.branch').textContent    = branch;
+              
+              var path    = item.path.replaceAll('/',' / ');
+              $(nitem,'.path').textContent    = path;
+              
+              $(nitem,'.size').textContent    = hs(item.size);
+              
+              nitem.title   = item.path;
+              
+              var body      = $(results,'tbody');
+              body.append(nitem);
+              
+              
+              function remove(e){
+              
+                    e.stopPropagation();
+                    nitem.remove();              
+                    
+              }//remove
+              
+        }//create.item
+        
+        
+  //:
+  
+  
+        fn.search   = async function({username,search,type}){
+        
+              if(type=='regex'){
+                    var {regex,error}   = parse_regex(search);
+                    if(error){
+                          console.log(error);
+                          alert(error);
+                          return;
+                    }
+              }
+              
+              var owner   = username;
+              
+              var {list,error}    = await github.user.repolist({owner});
+              if(error){
+                                                                                console.log(error);
+                    return;
+              }
+
+              var ct    = 0;
+              
+              await Promise.all(list.map(async repo=>{
+              
+                    var {branch,error}    = await github.repo.default({owner,repo,token});
+                    var {tree,error}      = await github.repo.tree({owner,repo,branch,token});
+                    
+                    tree.forEach(item=>{
+                    
+                          var i           = item.path.lastIndexOf('/');
+                          var name        = item.path.slice(i+1);
+                          
+                          var result      = fn[type](name,search,item);
+                          if(result){
+                                ct++;
+                                create.item(owner,repo,branch,item);
+                          }
+                          
+                    });
+                    
+              }));
+              
+              if(ct==0){
+                    results.append(node.notfound);
+              }
+        
+        }//search
+        
+        
+        fn.plain    = function(name,search){
+        
+              var result    = name.includes(search);
+              return result;
+              
+        }//plain
+
+        
+        fn.wildcard   = function(name,search){
+        
+              var result    = wildcard(name,search);
+              return result;
+              
+        }//wildcard
+        
+        
+        fn.regex    = function(name,search){
+        
+              var {regex,error}   = parse_regex(search);
+              if(error){
+                    console.log(error);
+                    alert(error);
+                    return;
+              }
+              var result    = regex.test(name);
+              return result;
+              
+        }//regex
+        
+        
+        
+        function wildcard(search,pattern,mode){
+                                                                                
+              var re      = '';
+              var esc     = '.+^${}()|[]\\';
+              var n       = pattern.length;              
+              for(var i=0;i<n;i++){
+              
+                    var c   = pattern[i];
+                    
+                    if(esc.indexOf(c)!=-1){
+                          re   += '\\'+c;
+                    }
+                    else if(c=='?'){
+                          re   += '.';
+                    }
+                    else if(c=='*'){
+                          while(pattern[i+1]=='*')i++;
+                          re   += '.*';
+                    }
+                    else if(c=='~'){
+                          var c1    = pattern[i+1];
+                          if(c1=='*' || c1=='?' || c1=='~'){
+                                if(c1=='*' || c1=='?'){
+                                      re   += '\\';
+                                }
+                                re   += c1;
+                                i++;
+                          }else{
+                                re   += c;
+                          }
+                    }
+                    else{
+                          re   += c;
+                    }
+                    
+              }//for
+              
+              if(!mode || mode=='starts'){
+                    re    = '^'+re
+              }
+              if(!mode || mode=='ends'){
+                    re    = re+'$';
+              }              
+              var regex   = new RegExp(re);
+              
+              var result    = regex.test(search);
+              return result;
+              
+        }//wildcard
+
+
+        function parse_regex(str){
+        
+              var index   = 0;
+              var parse   = [
+                    /^\/(.+)\/([a-z]*)$/i,
+                    /(\/?)(.+)\1([a-z]*)/i,
+                    /^\/((?:\\\/|[^\/])+)\/([a-z]*)$/i
+              ];
+              
+              var match   = str.match(parse[index]);
+              if(!match){
+                    var error   = 'Invalid regex literal format';
+                    return {error};
+              }
+              
+              var [first,pattern,mods]    = match;
+          
+              var flags   = Array.from(new Set(mods));
+              flags       = flags.filter(flag=>'gimsuy'.includes(flag))
+              flags       = flags.join('');
+          
+              var regex   = new RegExp(pattern,flags);
+              return {regex};
+            
+        }//parse_regex
+
+
+        function hs(size){
+
+              size    = Number(size);
+              
+              var t   = Math.floor(Math.log(size)/Math.log(1000));
+              var i   = size==0 ? 0 : t;
+              
+              var h   = size/Math.pow(1000,i);
+              var n   = h.toFixed(2);
+              
+              var u   = ['B','kB','MB','GB','TB'][i];
+              
+              var s   = n+' '+u
+              return s;
+              
+        }//hs
+        
+        
+        
+        
+        
+      </script>
+      
+      
+</html>
