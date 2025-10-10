@@ -1,0 +1,664 @@
+
+
+
+<html>
+
+      <head>
+      
+            <title>zip</title>
+
+            <base href='https://javascript-2020.github.io/utils/misc/zip/'>
+            
+            <link rel=icon type='image/png' href='images/zip-30.png'>
+
+      
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script init>
+            
+                                                                                console.clear();
+                                                                                console.log('zip-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df            = true;
+
+        var jszip;
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var hs;
+        
+        var menu;
+        
+        var hdr;
+        var filemod;
+        var filenav;
+        var add   = {};
+        var log;
+
+
+        var zip;
+
+
+  //:
+
+  
+        mod.stack.add   = init;
+
+        async function init(){
+                                                                                debug('init',version);
+
+
+              //keydown                   = keydown();
+              menu                      = menumod();
+              
+              hdr                       = mod.hdr;
+              //mod.menu.main             = mod.menu.main();
+              filemod                   = mod.filemod;
+              add.file                  = mod['filemod[add]'];
+              filenav                   = mod.filenav;
+              log                       = mod.log;
+              
+              hdr.initmod({ext,$,menumod,menu});
+              //mod.menu.main.initmod({ext,$,menu,editor,filemod});
+              filemod.initmod({ext,$,menumod,menu,complete,source,log});
+              add.file.initmod({ext,$,menumod,menu,complete:add.complete});
+              filenav.initmod({ext,$,datatype});
+              filenav.file    = file;
+              filenav.dir     = dir;
+              log.initmod({ext,$});
+              
+              await hdr.init();
+              //mod.menu.main.init();
+              await filemod.init();
+              await add.file.init();
+              await filenav.init();
+              await log.init();
+
+  //:
+          
+              window.onfocus            = null;
+              //keydown.add(kd);
+              menu.on.close          = null;
+
+              
+              zip   = new jszip();
+              
+              
+
+              
+              await initdom(document.body);
+
+              
+
+        }//init
+
+
+
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/string/hs.js'
+        );
+        [$,datatype,menumod,keydown,hs]   = await promise;
+  
+        mod.stack.complete;
+              
+})();
+
+
+(async()=>{
+     
+        mod.stack.add;
+
+        jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
+        jszip   = jszip.default;
+        
+        mod.stack.complete;
+        
+})();
+
+
+            </script init>
+
+            
+      </head>
+      
+      
+      <body>
+
+            <style>
+
+  html
+    {height:100%}
+  body
+    {height:calc(100% - 40px);margin:20px;font-family:arial;display:flex;flex-direction:column;gap:10px}
+  
+  .icon
+    {width:32px;height:32px;border:1px solid gray;border-radius:3px;box-sizing:border-box;cursor:pointer}
+  .spc
+    {flex:1}
+
+  #hdr
+    {display:flex;align-items:center;margin-top:20px}
+
+  #info
+    {display:flex;gap:10px;flex-direction:column;border-bottom:1px solid lightgray;padding-bottom:10px;margin-bottom:20px}
+  #info>div
+    {display:flex}
+  #info label
+    {width:60px;text-align:right;margin-right:20px}
+    
+  #add
+    {display:flex;align-items:center;gap:10px}
+    
+  #view
+    {flex:1;display:flex;flex-direction:column;gap:5px;overflow:auto;border:1px solid lightgray;border-radius:5px;padding:10px}
+  view>div:nth-of-type(odd)
+    {background:#e0e0e0;}
+  view>div:nth-of-type(even) 
+    {background:lightyellow;}
+
+  input    
+    {font-size:16px;padding:5px 10px;box-sizing:border-box}
+    
+  input[type=button]
+    {cursor:pointer}
+
+  file-nav
+    {height:100%}
+    
+    
+  [value='list files']
+    {margin-left:10px}
+      
+            </style>
+
+      
+            <hdr component=grp v2.0>
+                  <img class=title src='image/zip-title.png' style='top:5px;height:55px'>
+                  <span slot=date>28 Jul 2025</span>
+            </hdr>
+            
+            
+            <div id=hdr>
+            
+                  <filemod component v2.0></filemod>
+            
+                  <input value=save type=button>
+                  <input value='list files' type=button>
+                  
+            </div>
+
+            
+            <div id=info>
+       
+                  <div>           
+                        <label>
+                              filename
+                        </label>
+                        
+                        <div id=filename>
+                              not set
+                        </div>
+                  </div>
+                  
+                  <div>
+                        <label>
+                              size
+                        </label>
+                        
+                        <div id=size>
+                              --
+                        </div>
+                  </div>
+                  
+            </div>
+
+            
+            <div id=add>
+
+                  <div>
+                        add file
+                  </div>
+                  
+                  <filemod inst=add component v2.0></filemod>
+                  
+            </div>
+
+            
+            <div id=view>
+            
+                  <file-nav component v2.0></file-nav>
+            
+            </div>
+
+
+            <log component v2.0></log>
+
+            
+            <script>
+
+
+        var size          = 0;
+        
+
+        
+        var ui            = {};
+        ui.view           = {};
+        
+        var root;
+        var view;
+
+
+        var file          = {};
+        var dir           = {};
+        
+        var btn           = {};
+
+
+  //:
+  
+  
+        async function initdom(rootnode){
+          
+              root                                          = rootnode;
+
+              
+              mod.misc.hdr.initdom(root);
+
+
+              filemod.initdom(root);
+              
+              
+              info                                          = $(root,'#info');
+              ui.info();
+              
+              
+              add.root                                      = $(root,'#add');
+              add.file.initdom(add.root);
+              
+              $(root,'[value=save]').onclick                = btn.save;
+              $(root,'[value="list files"]').onclick        = btn['list-files'];
+
+
+              view                                          = $(root,'#view');
+
+              filenav.initdom(view);
+
+              
+              log.initdom();
+
+
+              
+        }//initdom
+
+
+  //:
+  
+  
+        btn.save    = function(){
+          
+              
+              filemod.save();
+              
+        }//save
+        
+
+        btn['list-files']   = function(){
+          
+              var list    = read();
+              console.json(list);
+              
+        }//test
+        
+        
+  //:
+  
+  
+        ui.info   = async function(){
+          
+              var str   = 'not set';
+              if(filemod.cur){
+                    str   = filemod.cur.filename;
+              }
+              $(info,'#filename').textContent   = str;
+              
+              var str     = '--';
+              var blob    = await source();
+              if(blob){
+                    var size    = blob.size;
+              
+                    var str   = hs(size);
+                    if(size>1024){
+                          str  += ' , '+size+' B';              
+                    }
+              }
+              $(info,'#size').textContent   = str;
+              
+        }//info
+        
+        
+        ui.view.add   = function(item,abs){
+          
+              $(item,'.rem').onclick    = rem;
+              
+              view.append(item);
+              empty.remove();
+              
+              
+              function rem(){
+              }//rem
+              
+        }//add
+        
+        
+  //:
+  
+
+        async function source(){
+          
+              var blob      = await zip.generateAsync({type:'blob'});
+              return blob;
+              
+        }//source
+        
+        
+        function complete(file){
+          
+              filemod.cur   = file;
+              ui.info();
+              
+        }//complete
+        
+        
+        complete.load   = async function(file,blob){
+                                                                                debug('complete.load');
+              menu.close();
+              
+              var name    = file.filename;
+              var size    = hs(blob.size);
+
+              
+              complete(file);
+              
+              
+              var err;
+              try{
+                
+                    zip   = await jszip.loadAsync(blob);
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                  
+              }//catch
+              if(err){
+                    alert('error loading zip file\n'+err.toString());
+                    return;
+              }
+              
+              
+              display('/');
+              
+              
+        }//load
+
+
+        complete.save   = function(file,confirm=true){
+          
+              complete(file);
+
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
+        }//save
+
+
+    //:
+    
+    
+        function read(path){
+                                                                                console.log('read',path);
+              path        ||= '';
+              
+              var list      = [];
+              var entries   = Object.entries(zip.files);
+              var fn;
+              var entry;
+              
+              for([fn,entry] of entries){
+                                                                                //console.log(fn,entry);
+                                                                                console.log(fn);
+                    if(!fn.startsWith('/')){
+                          fn    = '/'+fn;
+                    }
+                    
+                    if(fn.startsWith(path)){
+                                                                                console.log('found');
+                          list.push(fn);
+                    }
+                    
+              }//for
+
+              return list;              
+              
+        }//read
+        
+        
+        function display(path){
+          
+              path      ||= filenav.cur.path;
+              var list    = read(path);                                                                                //console.json(list);
+              
+              filenav.display.flat(path,list);
+
+          
+        }//display
+
+
+    //:
+
+
+        add.complete    = function(){}
+        
+        add.complete.load   = function(file,blob){
+                                                                                debug.log('add.complete.load',file,blob);
+              menu.close();
+              
+              var path    = filenav.cur.path;
+              var abs     = path+file.filename;
+              if(abs.startsWith('/')){
+                    abs   = abs.slice(1);
+              }
+              
+              zip.file(abs,blob);
+
+              ui.info();
+              //debugger;
+              display();              
+              
+        }//load
+        
+        
+        //add.complete.save   = function(){}
+
+
+  //:
+  
+  
+        file.add    = function(path,name){
+                                                                                debug('file.add',path,name);
+              var abs   = path+name;
+              if(abs.startsWith('/')){
+                    abs   = abs.slice(1);
+              }
+              zip.file(abs,'');
+              display(path);
+              
+        }//add
+        
+        
+        file.rem    = function(path,name){
+                                                                                debug('file.rem',path,name);          
+              var abs   = path+name;
+              if(abs.startsWith('/')){
+                    abs   = abs.slice(1);
+              }
+              zip.remove(abs);
+              display(path);
+              
+        }//rem
+        
+        
+        file.upload   = function(path,name,blob){
+                                                                                debug('file.upload',path,name,blob.size);          
+              var abs   = path+name;
+              if(abs.startsWith('/')){
+                    abs   = abs.slice(1);
+              }
+              zip.file(abs,blob);
+              display(path);
+              
+        }//upload
+        
+        
+        file.download   = async function(path){
+                                                                              debug('file.download',path);          
+              if(path.startsWith('/')){
+                    path    = path.slice(1);
+              }
+              var blob    = await zip.file(path).async('blob');
+              
+              console.log(blob);
+              
+              return {blob};
+              
+        }//download
+        
+
+/*        
+        dir.read    = function(){
+          
+        }//read
+*/        
+        
+        
+        dir.parent    = function(path){
+                                                                                debug('dir.par',path);
+              display(path);
+              
+        }//par
+        
+        
+        dir.add   = function(path,name){
+                                                                                debug('dir.add',path,name);
+              var abs   = path+name;
+              if(abs.startsWith('/')){
+                    abs   = abs.slice(1);
+              }
+              zip.folder(abs);
+              
+              display(path);
+              
+              return false;
+              
+        }//add
+        
+        
+        dir.rem   = function(path,name){
+          
+              var abs   = path+name;
+              if(abs.startsWith('/')){
+                    abs   = abs.slice(1);
+              }
+              zip.remove(abs);
+              display(path);
+              
+        }//rem
+        
+        
+        dir.clear   = function(path){
+                                                                                debug('dir.clear',path);
+              var list    = read(path);
+              list        = list.filter(fn=>fn.startsWith(path));
+              list        = list.filter(Boolean);
+              
+              console.json(list);
+              
+              /*
+              list.forEach(fn=>{
+                
+                    zip.remove(fn);
+                    
+              });
+              */
+              
+        }//clear
+        
+        
+        dir.dblclick    = function(path,name){
+          
+              path   += name;
+              display(path);
+              
+        }//dblclick
+
+        
+  //:
+  
+  
+        
+        function debug(){
+          
+              if(!df)return;
+              var str   = [...arguments].join(' ');
+              console.log('[ https-file ]',str);
+              
+        }//debug
+        
+        
+        debug.log   = function(){
+          
+              if(!df)return;
+              
+              console.log.apply(console,arguments);
+              
+              if(debug.trace){
+                    console.trace();
+              }
+              delete debug.trace;
+              
+        }//log
+        
+        
+        debug.log.trace   = function(){
+          
+              debug.trace   = true;
+              debug.log.apply(null,arguments);
+              
+        }//trace
+
+  
+  
+            </script>
+            
+      </body>
+      
+      
+</html>
+
+
