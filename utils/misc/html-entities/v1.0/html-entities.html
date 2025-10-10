@@ -1,0 +1,369 @@
+
+
+
+<html>
+
+
+      <head>
+      
+            <title>html-entities</title>
+
+            <base href='https://javascript-2020.github.io/utils/editors/html-editor/html-editor.html'>
+            
+            <link rel=icon type='image/png' href='images/html-entities-30.png'>
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var version       = 'v1.0';
+            
+        var df            = true;
+
+
+        var he;
+        
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        
+        var mod           = {};
+
+        var filemod;                                                                                
+        var editor        = {};
+        editor.source     = null;
+        editor.output     = null;
+        var log;
+
+
+        var menu;
+
+        var btn           = {};
+
+
+        async function init(){
+                                                                                debug('init',version);
+
+              //keydown                   = keydown();
+              menu                      = mod.menumod();
+              filemod                   = mod.filemod();
+              editor.source             = mod.editor();
+              editor.output             = mod.editor();
+              log                       = mod.log();
+              
+              filemod.initmod({ext,$,menumod,menu,complete,source,focus,log});
+              editor.source.initmod({ext,$,menumod,menu});
+              editor.output.initmod({ext,$,menumod,menu});
+              log.initmod({ext,$});
+              
+              await filemod.init();
+              await editor.source.init();
+              await editor.output.init();
+              await log.init();
+
+  //:
+          
+              window.onfocus            = focus;
+              //keydown.add(kd);
+              menu.on.close             = focus;
+
+              
+              await initdom(document.body);
+
+
+              init.complete();
+
+              
+        }//init
+
+
+        init.stack            = [];
+        init.stack.ct         = 0;
+        init.stack.total      = 1;
+        init.stack.mode       = '';
+        init.stack.complete   = false;
+        Object.defineProperty(init.stack,'add',{get:()=>{
+              init.stack.total++;
+              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
+        }});
+        Object.defineProperty(init.stack,'complete',{get:()=>{
+              init.stack.ct++;
+              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
+              init.stack.ct>=init.stack.total && init();
+        }});
+        
+        //  (typeof init!='undefined' && init?.stack && init.stack.add)
+        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
+
+        
+        init.complete   = function(){
+          
+              init.complete.stack.forEach(fn=>fn());
+              
+        }//complete
+        
+        init.complete.stack   = [];
+        init.complete.add     = fn=>init.complete.stack.push(fn);
+
+                  
+
+(async()=>{
+  
+        init.stack.add;
+
+        
+        var url;
+        var headers;
+        var token       = localStorage['github-token'];
+        if(token){
+              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
+              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
+        }else{
+              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
+        }
+        
+        var res   = await fetch(url,{headers});
+        var txt   = await res.text();
+
+        if(res.headers.get('content-type').includes('json')){
+                                                                                console.log('*** ext : json');
+              var json    = JSON.parse(txt);
+              var b64     = json.content;
+              txt         = atob(b64);
+        }else{
+                                                                                console.log('*** ext : text');
+        }
+        
+        ext   = eval(txt);
+              
+              
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js.api',
+              'js/dom/keydown/keydown.js'
+        );
+        [$,datatype,menumod,keydown]   = await promise;
+
+
+        init.stack.complete;
+
+})();
+
+
+(async()=>{
+  
+        he    = await import('https://cdn.jsdelivr.net/npm/he/+esm');
+        he    = he.default;
+        
+})();
+
+
+            </script init>
+      
+      </head>
+      
+      
+      <body>
+      
+            <style id=page-inline>
+
+  html
+    {height:100%}
+    
+  body
+    {height:calc(100% - 16px);display:flex;flex-direction:column;gap:10px}
+    
+  .icon
+    {width:32px;height:32px;border:1px solid gray;border-radius:3px;box-sizing:border-box;cursor:pointer}
+    
+  #hdr
+    {display:flex;align-items:center}
+    
+  #view
+    {flex:1;display:flex;gap:10px}
+
+
+  input
+    {font-size:16px;padding:5px 10px}
+    
+  input[type=button]
+    {cursor:pointer}
+    
+            </style>
+            
+            <div id=hdr>
+            
+                  <filemod api>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </filemod>
+
+                  <input value=convert type=button>
+                  
+            </div>
+            
+            <div id=view>
+            
+                  <div id=source>
+                        <editor api>
+                              <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                        </editor>
+                  </div>
+
+                  <div id=output>
+                        <editor api>
+                              <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                        </editor>
+                  </div>
+                  
+            </div>
+
+
+<log api>
+      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+</log>
+
+            
+      </body>
+      
+      
+      <script>
+
+
+      
+        var root;
+        
+        
+        
+
+  //:
+  
+  
+        async function initdom(rootnode){
+          
+              root                                  = rootnode;
+              
+              var hdr                               = $(root,'#hdr');
+              
+              filemod.initdom(hdr);
+              
+              $(hdr,'[value=convert]').onclick      = btn.convert;
+              
+              
+
+              var view                              = $(root,'#view');
+
+              var root2                             = $(view,'#source');
+              await editor.source.initdom(root2,'txt');
+              var root2                             = $(view,'#output');
+              await editor.output.initdom(root2,'txt');
+
+              log.initdom();
+
+
+              focus();
+              
+              
+        }//initdom
+        
+
+        function focus(){
+          
+              editor.source.focus();
+              
+        }//focus
+
+
+  //:
+  
+  
+        btn.convert   = function(){
+          
+              var txt       = editor.source.getValue();
+              var encoded   = convert(txt);
+              editor.output.setValue(encoded,-1);
+              
+        }//convert
+
+  //:
+
+
+        function source(){
+        }//source
+        
+        
+        function complete(){
+        }//complete
+        
+        
+        complete.load   = function(file,blob){
+        }//load
+        
+        
+        complete.save   = function(file){}
+
+
+  //:
+  
+
+        function convert(txt){
+          
+              var opts;
+              
+              var encoded   = he.encode(txt,opts);
+              
+              return encoded;
+              
+        }//convert
+        
+        
+  //:
+
+
+        function debug(){
+          
+              if(!df)return;
+              var str   = [...arguments].join(' ');
+              console.log('[ https-file ]',str);
+              
+        }//debug
+        
+        
+        debug.log   = function(){
+          
+              if(!df)return;
+              
+              console.log.apply(console,arguments);
+              
+              if(debug.trace){
+                    console.trace();
+              }
+              delete debug.trace;
+              
+        }//log
+        
+        
+        debug.log.trace   = function(){
+          
+              debug.trace   = true;
+              debug.log.apply(null,arguments);
+              
+        }//trace
+
+
+
+  //:
+  
+  
+
+
+  init.stack.complete;  
+  
+      </script>
+      
+      
+</html>
+
+
