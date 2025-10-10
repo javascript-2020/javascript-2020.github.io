@@ -1,0 +1,970 @@
+
+
+
+<html>
+
+      <head>
+      
+            <title>gcloud file-browser</title>
+
+            <base href='https://ext-code.com/utils/gcloud/file-browser/'>
+            <base href='https://javascript-2020.github.io/utils/gcloud/file-browser/'>
+            
+            <link rel=icon type='image/png' href='image/file-browser-30.png'>
+
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('file-browser-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,did='file-browser';
+
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        
+        var menu;
+        
+        var filenav;
+        var filemod;
+        var log;
+
+
+        var module        = {};
+        module.exports    = {};
+
+        
+
+  //:
+
+              
+        mod.stack.add   = init;
+        
+        async function init(){
+
+
+              //keydown                   = keydown();
+              menu                      = menumod();
+              
+              filenav                   = mod.filenav;
+              //filemod                   = mod.filemod();
+              log                       = mod.log;
+              
+              //filemod.initmod({ext,$,menumod,complete,source,focus,editor});
+              filenav.initmod({ext,$,datatype});
+              filenav.file    = file;
+              filenav.dir     = dir;
+              log.initmod({ext,$});
+              
+              await filenav.init();
+              //filemod.init();
+              await log.init();
+
+  //:
+
+              
+              await initdom(document.body);
+
+
+
+              
+        }//init
+
+
+
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'google/google-storage/google-storage.js.api',
+              '/js/string/getmime.js',
+        );
+        [$,datatype,menumod,keydown,gs,getmime]   = await promise;
+  
+      
+        var script      = document.createElement('script');
+        script.src      = 'https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js';
+        script.onload   = onload;
+        document.head.append(script);
+      
+      
+        function onload(){
+          
+              mod.stack.complete;
+              
+        }//onload
+      
+})();
+
+
+            </script init>
+            
+
+            <style id=page-inline>
+
+  html
+    {height:100%}
+    
+  body
+    {height:calc(100% - 16px);display:flex;flex-direction:column;gap:10px;font-family:arial}
+
+    
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+  .spc
+    {flex:1}
+    
+  #hdr
+    {display:flex;flex-direction:column}
+    
+  #tabs
+    {display:flex}
+    
+  .tab
+    {padding:5px 10px;border:1px solid;border-top-left-radius:5px;border-top-right-radius:5px}
+  .tab.active
+    {border-color:lightgreen;background:lightyellow;color:blue}
+  .tab.inactive
+    {border-color:gray;background:whitesmoke;color:gray}
+    
+  #view
+    {border-top:1px solid lightgray;padding-top:10px;overflow:hidden;
+      transition:0.3s;
+    }
+  #view-ftr
+    {display:flex;padding-bottom:5px;border-bottom:1px solid lightgray}
+  #view-show
+    {width:20px;margin-right:5px;cursor:pointer;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAUCAMAAACtdX32AAAAsVBMVEVHcEwESIkDSIoESo12i58gV44FTpEaVIwMS4gJSYcMS4gISIgHR4cMSogKSYgUUIkFR4kKSokKSok3Z5AISIcFRocJSYgGR4cOTYoST4sTUIsnWo4FRodQyvtRzP1HxPtRy/slrPlNx/oIVJcFUJUKaLQMWpsRg9Mqi8U3odhMw/YMcb0kp/Qlg707p91CuO8ZnPAKX6URh9ohovE0t/sifLg+rOEfd7QnoegUkuYab6wVt2+yAAAAHXRSTlMA5+/1AQ79E051YJ2lWWYa3GuDA5SxkaxAMyoHuPP9IMMAAAEDSURBVCjPddFnk4IwEAbgpUsV0KN5ATQYRaWpV///D7tQ4ghy+2lnnn0nmwQAQtfTFJiUZHpuINLGtHEjvy3HujQEQjhLhNDe11VJ3keu+PhwqQouABfX9zT+JM95xcDXbRKfmjXoDWU0csXIqCKEfn1Qs5877eKS+MN+kt5rWhEXIrup28m0xIYy6KHT05cdAQTc/pakD5fWMlNu0Y4vmOdYlzYe049eB0e9d9m0U5OtSv3Se8ayBf9QWDFHeZ60uit47fmZTH7Ix2hGWz/3+VaPgjX9Io0/b3dMHXHKYA1OVX1VEB2BeoyorgDm/bs6yvNK72fZGebUDfxXkeWEo3P/AOjcJRNFOQSkAAAAAElFTkSuQmCC);
+    }
+    
+    
+  section
+    {margin-bottom:10px}          
+  section input
+    {flex:1}
+    
+  .hldr
+    {display:flex}
+  
+  .paste
+    {margin-right:5px;padding:2px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==);
+    }
+  .copy
+    {margin-left:5px;padding:2px;
+      content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAABSlBMVEVHcEwnz/4C8P4g1P4L6P43wf5Mr/4a2v4Y3P4/uv5PrP4+vf5Auv4ozv5KsP4vyv45wP5Jsf5Auf49vP5Mrv4zxf44wf5Lr/46wP4h1P5Lr/46vv5Jsv4R5P5Hs/5Etv44wf5Hs/41w/4uyv47vv49vP5Ftf5GtP4c2f4rzP4tyv4m0f5Etv5Nrv4xxv4xxv4xx/4W3/5KsP5Mr/4/u/4uyv5Isv4K6f4l0f4qzv4W3/4V3/5Nrv5Mrv5Mrv5Mr/4W3v4e2P5BuP5Hsv4N5v4K6f4O5v42w/5Dt/4E7/4uyf4C8P4nz/4M5/4K6v4oz/4P5f4k0v4b2v5Gs/4E7v4I6/5Nrf4e1/4H7P4E7v5Auv5Dtv4sy/5Isv5GtP4wx/49vP4zxf47vv44wP42w/5LsP5Jsf4i1P4n0P4N5v4k0v4a2v4S4v4X3v6OfcqkAAAAVnRSTlMACo7CjQWN/VczjgIJMfIXJzHtjj5iVekR71Hvtz7CjelXjre2wiJj2PCFIWbR7+fEnXaodz3544/USfOC22Tm7CXOnqfUZ+/3VTV9bsTzqGDahpb2tyRB6bIAAAIDSURBVDjLrZVpV9pAFIYntdFiQkZsLCQECtJSlqAsFRBU3Kuta1sncYGuJEDt///aISkkkyHo6enzLTlP5s5758wNAC526pd3d1++/fzx/evNze1tp210wxURUMTWBz2v2EWtLc7jBTPmoJfNrqy8i0ajixgB00VISJIeW9JMKbcWDAYDNiFMQN1EqAAJcUfSBif0fsQWQjLxpjGnXUJa5CoIbTiP8KJ0OqfNMLQIZhGad/Ke3t///vWwGKv1+yPxfW55+TnmJWZW5ggxcqX3m6WSVTpSdPcxHCLExmf97AI8e1j8cK1f8X9Fq/Sotrf0k2v9KRiJ08L8mwhf2CQx8oK/yJyPw3Q67ULaV4Tr7tRCwFfkllLF4ushccwGPyUMzwzhMQz/X1Kz+QVMmh2LcjgsTxDZ3OpqIpFYfDu+KGwoxE5JvTtpF9NX9BEB792jn0gD4eNEsVAQHyXOO7fQFmNNLZOnPV5BqEyI+Yxm1qkluS0BCWRp8FEze6mTJQtVVd8MUfcEhBSGFOGMOWmaoc0AmRoXP5cmiHEReEXANOopzCsLRYlXjWolGXE2jK/r/ujEWAdOFIxWGrjO8ljXazG6MeynthEn2gAP9P7B4XCE2thzdG2v2jbK5LfHZ3hINbclSco6o/kIh1Einq4e1qxp5m2PkqZ/CPvbXvFot+xe7w/EpaiUrJ24NAAAAABJRU5ErkJggg==);
+    }
+  .storage
+    {margin-right:5px;padding:2px;
+      content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAACZFBMVEVHcEy9TEyD1eZpgIXXxLrhjWPyYyfxn3bljF/5jFrrpnnvNB/8ai/yh1bUmnLiaDbqLSDaiG/tOCL5dDT1ilrgXC4SabrEVkTwYSLqe0nxl3XsNx75cC74dTX7i1X2iVv+lVr3jlz0iFr4h1LtnWv7sHj5ZCPkazfVQirbeEX4UhvtaC7uUSXrQSD3KhbwSSz2Zij1ZyutZ1f2d0P3iFnAHhX6h1L4f0v6eT3zjlzumW3nnGzroHHeMiDYSin4Wx3sbTDkdj73ZST3QhrlJx32Sxr0OR3seDzvfj7zfz70OBv1aSzoYyfTSTb0Ziv3h1j2iVnxYCnyVSbtUC3wOSDlNiH2cTrWKSDWKyP3gEX6k2H0hlP1mWfypHXPq4vPo4D1soPZqIjis5LVrI3+Xxv/ejT/civ+Qxf/dzH+JBb+Nhb+byz+LRb/bSj/fTX/URb+aSX+YyH+WRf/ZSH+HBX/PxX/SBX/dTCsEhT/aya7EhP+Shb/NBb9fULoJhj/ZyX+JhT9cjP8YR/tKBv+fjj+g03+UBb/jVn/iFT+kl/+dzrmGxfrKxzuMBzIHBX8Sx76VCzUFxbEFBL+nGj/cSr8XB79Lxz8VyjZLhf7UR/9Yyj+hUX+gEP/l2PyaCr8OhnEIxf6XSbaGha7GBT3RCXhVif3ThnoQxn9Zie1EhL4IxrjJhj7YDDQJxbvPBv7Vhv9hVH/om7AIBX+Uxz0RB/dPhzzOiP2IRfsYiz2MR3zJh7RTSjjSx/lUx/LExXuOxz/jU7+iUn8PCnEKB3IOST4cS/jNBP6SBa9IRLWJxXTJhD2HBcZjAsKAAAAZHRSTlMACQICAyWlLzTrqMH+Tzg0pgrB5Ik+AQumHBrC89n2e/5oj+q1lPU9GhjzgZCQ+6XOqwW0v7/d5e1BdaSBSSf2kEPp5nrw2Xahv9iscRWgqtS/mb+4s47CwNGUYtzWEVqLW0Yax/uzPQAAArxJREFUOMvdlGdXGlEQhjfiGqIgarCLvbcYNfb03nvviRRFdLFEXFySRWx0UASxd7BrNDGxpdc/lbuQE3fB/AHfz8+ZufOcuQNBOzX+YXRmTBQ7NpYdFcOkh/pvT4Ux2bl5exyJi4vLzy/g5NxihrpjUVci21rb24vg3c4U5mFKnJGV5oLCufMA6+voKIGeeRMpjo/82MvFG8RZLAoY2+zgFha8PZ/7gtDpRdEfehRK4Uu5lyeJ87zsBDsWHj5++iQhIcEXigEgVg/Aq+SZPHIw0Lq1PbrvAfyoJD6+mA7dA50BJx66votc8TwDawaZb4tkM+kwDBfev6vEhUiN1WYOoID7SxEc68UwTKlUFnA4eyOEiM06ZNbr56Q+LqAYEQoUPT29QAouZFin9bpPXV3ldS1U0OMSAEWd9dxK8C5EXDqn45dXlNW+auS3SG+QQSi9ugYR8QAo6GyoKa2uelHnAMv5Vd/9aOSKfpnjNifIc4DSur8VJ34doLTe91ZlWVv5ylVweaJ/FX/Lfv6wG+9QQK/udyqD9vOX1dWxsfX1tYlly4x2RCKRoDOzAVRQbjWPalSGDSNqlzhjR42GqdluaTgVJPQIGdP60TcatVotkzU1Nb2frBgAU4cHu4IinqBSwcVFNrnptY4/0FVWW0boobSGrpnECHnqLT3Sm9kUPQOm7cBG/vg3Vz2yiSEh0ZoMTmosWuNt8htphJ5hy/LYSn9/v9w0N740q5ka3kDt6Mwm5Y20ELnYPKpWDRu02sHBwcXFkREUJfRsdlOXghZC6MGBniVCj2yK8AP0EMO4g+56HNtDEQ5dkIvJ29OypUeXEUQGg9OOba8nNf0i9WPTWEc4EYJK6j5mnssIzHa/KSlHT585C75LYuLh1JPHT/n4nTiYHPSfKxXknwKzkpICA1mHkoNpO/YYQ38AABZHleIztVMAAAAASUVORK5CYII=);
+    }
+  .refresh
+    {
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAPFBMVEVHcExGfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP1GfP2+fzHSAAAAE3RSTlMA9gwFGUK0wyQ166RV3tFpmXiESvD4SgAAAQtJREFUKM+1UluWhSAMkwIt7+f+9zqCVwHld/rhQXJokybHsSmwLH4uuVBKCThPktWgVlBnDN4YH2zUttZaZlAlU58yrH30QGWon7L8Qf0XrUzenTdvz0K4GKdzEpXoXCzo2cDd1ZoxK+EW5+iBSbQr6x2f1ONQ0MgrkrNEeXdnIbeWzi3rKf1dW05vzRVfYEmUooYx7O0HHP9QXIjXIDFOMqP3qwh1/YKONnS5eeGY2kJ4DGZe00CpaVAjCDjN1nj1guGBL1JBJynP9Pgrbm7ykHmyKWFn8gsrt9s02Ht72uyyIlaX1qAlMW0n9LEPB4Zu2V9jR0pmi0SYsn6ZBvgjygH4xg7tSexs+gMOKBiHuHhBJwAAAABJRU5ErkJggg==);
+    }
+    
+
+
+  #file-browser
+    {height:200px;border:1px solid lightgray;box-sizing:border-box}
+
+
+  #slider
+    {border:1px solid lightgray;/*background:lightblue;*/height:5px;cursor:ns-resize}
+    
+  #preview
+    {flex:1;display:flex;flex-direction:column;gap:10px;box-sizing:border-box}
+
+
+  #preview-view
+    {flex:1}
+
+  #preview-view>div
+    {display:none}
+
+  #preview-view #preview-text
+    {border:1px solid lightgray;background:whitesmoke;height:100%}
+
+  #preview-view #preview-text #preview-text-editor
+    {width:100%;height:100%}
+    
+  #preview-image
+    {}
+    
+  #preview-image img
+    {max-width:100%;max-height:100%}
+    
+  #preview-unknown
+    {display:flex;flex-direction:column;gap:10px}
+    
+    
+  input
+    {font-size:16px;padding:5px 10px}
+    
+            </style>
+
+    
+      </head>
+      
+      
+      <body>
+      
+
+            
+            <div id=hdr>
+
+
+                  <div id=tabs>
+                  
+                        <div class='tab active'>
+                              google storage
+                        </div>
+                        
+                  </div tabs>
+
+
+            </div hdr>
+
+            
+            <div id=view>
+            
+                  <div id=google-storage>
+                  
+                        <div class=title>
+                              google cloud storage
+                        </div>
+                        
+                        <section id=hdr>
+                        
+                              <a href='https://developers.google.com/oauthplayground' target=_blank>
+                                    https://developers.google.com/oauthplayground
+                              </a>
+                              
+                        </section>
+                        
+                        <section id=client-id-root>
+                        
+                              <div>
+                                    client id
+                              </div>
+                              
+                              <div class=hldr>
+                                  <img class='paste icon'>
+                                  <img class='storage icon'>
+                                  <input id=client-id autocomplete=off spellcheck=false>
+                                  <img class='copy icon'>
+                              </div>
+                              
+                        </section>
+      
+      
+                        <section id=client-secret-root>
+                        
+                              <div>
+                                    client secret
+                              </div>
+                              
+                              <div class=hldr>
+                                  <img class='paste icon'>
+                                  <img class='storage icon'>
+                                  <input id=client-secret autocomplete=off spellcheck=false>
+                                  <img class='copy icon'>
+                              </div>
+                              
+                        </section>
+      
+      
+                        <section id=refresh-token-root>
+                        
+                              <div>
+                                    refresh token
+                              </div>
+                              
+                              <div class=hldr>
+                                  <img class='paste icon'>
+                                  <img class='storage icon'>
+                                  <input id=refresh-token autocomplete=off spellcheck=false>
+                                  <img class='copy icon'>
+                              </div>
+                              
+                        </section>
+      
+      
+                        <section id=token-root>
+                        
+                              <div>
+                                    token
+                              </div>
+                              
+                              <div class=hldr>
+                                  <img class='paste icon'>
+                                  <img class='storage icon'>
+                                  <input id=token autocomplete=off spellcheck=false>
+                                  <img class='copy icon'>
+                                  <img class='refresh icon'>
+                              </div>
+                              
+                        </section>
+      
+                        
+                        <section id=bucket-root>
+                        
+                              <div>
+                                    bucket name
+                              </div>
+                              
+                              <div class=hldr>
+                                  <img class='paste icon'>
+                                  <img class='storage icon'>
+                                  <input id=bucket autocomplete=off spellcheck=false>
+                              </div>
+                              
+                        </section>
+                        
+                  </div google-storage>
+                  
+            </div view>
+
+            <div id=view-ftr>
+                  <div class=spc></div>
+                  <img id=view-show>
+            </div view-ftr>
+
+            <div id=btns>
+                  <input value=zip type=button>
+            </div>
+
+            <div id=file-browser>
+            
+                  <!--
+                  <filemod api>
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                  </filemod>
+                  -->
+                  
+                  <file-nav component v2.0></file-nav>
+                  
+            </div file-browser>
+
+
+            <div id=slider>
+            </div>
+            
+            
+            <div id=preview>
+            
+                  <div id=preview-hdr>
+                  </div>
+                  
+                  <div id=preview-view>
+                  
+                        <div id=preview-text>
+                              <div id=preview-text-editor>
+                              </div>
+                        </div>
+                        
+                        <div id=preview-image>
+                              <img id=preview-image-img>
+                        </div>
+                        
+                        <div id=preview-unknown>
+                        
+                              <div>filename</div>
+                              <div id=filename></div>
+                              <div>size</div>
+                              <div id=size></div>
+                              
+                        </div>
+                        
+                  </div>
+            
+            </div preview>
+
+
+            <log component v2.0></log>
+            
+      </body>
+
+            
+      <script>
+
+
+        var localstorage    = 'google-storage-';
+
+      
+        var root;
+        var ui      = {};
+        
+        
+        var file    = {};
+        var dir     = {};
+        
+        
+        var setup       = {};
+        var btn         = {};
+        btn.token       = {};
+        var complete    = {};
+
+        
+
+  //:
+
+  
+        function ready(){
+          
+              //display('/');
+              
+        }//ready
+        
+        
+  //:
+  
+  
+        async function initdom(rootnode){   //c
+                                                                                debug('initdom');
+              root                                  = rootnode;
+              
+              keydown.initdom();
+              menumod.add.style();
+
+
+
+              ui.view                             = $(root,'#view');
+              $(root,'#view-show').onclick        = btn.show;
+
+
+
+              ui.filebrowser                      = $(root,'#file-browser');
+              
+              //filemod.initdom(root);
+
+              
+              filenav.initdom(root);
+              
+              
+              var node1   = $(root,'#file-browser');
+              
+              $.slider('#file-browser','#slider','#preview',null,{root,mode:'horiz'});
+              
+              
+              ui.preview                          = $(root,'#preview');
+              
+              ui.pview                            = $(ui.preview,'#preview-view');
+              
+              //debugger;
+              ui.text                             = $(ui.pview,'#preview-text');
+              var node                            = $(ui.text,'#preview-text-editor');
+              setup.editor(node);
+              
+              ui.image                            = $(ui.pview,'#preview-image');
+              
+              ui.unknown                          = $(ui.pview,'#preview-unknown');
+              
+              
+              log.initdom();
+
+
+
+            //client_id
+            
+              var clientid                        = window.localStorage[localstorage+'client-id'];
+              $(root,'#client-id').value          = clientid||'';
+
+
+            //client_secret
+            
+              var clientsecret                    = window.localStorage[localstorage+'client-secret'];
+              $(root,'#client-secret').value      = clientsecret||'';
+
+
+            //refresh-token
+
+              var refresh                         = window.localStorage[localstorage+'refresh-token'];
+              $(root,'#refresh-token').value      = refresh||'';
+
+
+            //token
+
+              var root2                           = $(root,'#token-root');
+              var token                           = window.localStorage[localstorage+'token'];
+              $(root,'#token').value              = token||'';
+              $(root2,'.refresh').onclick         = btn.token.refresh;
+
+            //bucket
+            
+              var root2                           = $(root,'#bucket-root');
+              var bucket                          = window.localStorage[localstorage+'bucket'];
+              $(root,'#bucket').value             = bucket||'';
+
+
+
+
+              $.all(root,'.paste').forEach(icon=>{
+              
+                    var root        = icon.parentNode.parentNode
+                    var input       = $(root,'input:not([type])');
+                    icon.onclick    = async e=>{
+                                            
+                                            var txt       = await navigator.clipboard.readText();
+                                            input.value   = txt;
+                                            input.focus();
+                                            
+                                      }//icon.onclick
+                                      
+              });//foreach
+
+
+              $.all(root,'.copy').forEach(icon=>{
+                
+                    var root        = icon.parentNode.parentNode;
+                    var input       = $(root,'input:not([type])');
+                    icon.onclick    = async e=>{
+                      
+                                            var txt   = input.value;
+                                            await navigator.clipboard.writeText(txt);
+                                            input.focus();
+                                            
+                                      }//icon.onclick
+                                      
+              });//foreach              
+
+
+              $.all(root,'.storage').forEach(icon=>{
+                
+                    var root    = icon.parentNode.parentNode;
+                    var key     = root.id.slice(0,-5);
+                    var input   = $(root,'input:not([type])');
+                    var name    = localstorage+key;
+                                                                                console.log(key,localStorage[name]);
+                    var token;
+                    
+                    icon.onclick    = e=>{
+                      
+                                            if(e.shiftKey){
+                                                  token   = localStorage[name];
+                                                  if(!token){
+                                                        $.mousetext(`no stored ${key}, localStorage[${name}]`);
+                                                        return;
+                                                  }
+                                                  input.value   = token;
+                                                  return;
+                                            }
+                                                  
+                                            token   = input.value;
+                                            if(!token){
+                                                  $.mousetext(`${key} empty`);
+                                                  return;
+                                            }
+                                            localStorage[name]    = token;
+                                            $.mousetext(`localStorage[${name}] saved`);
+                                            
+                                      }//icon.onclick
+                                      
+                    icon.title    = `${key} : click - store, shift - read`;
+                    
+              });//foreach
+
+
+
+
+        }//initdom            
+      
+
+  //:
+  
+  
+        setup.editor    = function(node){
+          
+              editor      = ace.edit(node);
+              editor.setShowInvisibles(false);
+              editor.setShowPrintMargin(false);
+              editor.setPrintMarginColumn(false);
+              editor.setBehavioursEnabled(false);
+              editor.setDisplayIndentGuides(false);
+              editor.setScrollSpeed(2);
+              editor.setFontSize(16);
+              editor.session.setOptions({tabSize:2,useSoftTabs:true});
+              //editor.setGhostText('\n\nctrl-enter - run & autosave\nctrl-s - save\nctrl-del - delete');
+              //editor.session.setMode('ace/mode/text');
+              //editor.session.on('change',onchange);
+              
+        }//editor
+        
+        
+  //:
+  
+  
+        btn.token.refresh   = async function(){
+          
+              var id        = $(root,'#client-id').value;
+              var secret    = $(root,'#client-secret').value;
+              var refresh   = $(root,'#refresh-token').value;
+              
+              var token     = await gs.refresh(id,secret,refresh);
+              
+              localStorage[localstorage+'token']    = token;
+              $(root,'#token').value              = token;
+
+              $.mousetext('token refreshed');
+          
+        }//refresh
+        
+        
+        btn.show    = function(){
+          
+              if(ui.view.style.height){
+                    ui.view.style.height    = '';
+              }else{
+                    ui.view.style.height    = '0px';
+              }
+                
+        }//show
+        
+        
+  //:
+  
+  
+        complete.load   = function(file,blob){
+                                                                                debug('complete.load',file,blob);
+              var mime    = getmime(file.filename);
+              blob.type   = mime;
+              preview(blob);
+              
+        }//load
+        
+
+
+  //:
+  
+  
+        function read(){
+        }//read
+        
+        
+        async function display(path){
+
+              path        ||= filemod.cur.path||'/';
+              
+              var token     = $(root,'#token').value;
+              var bucket    = $(root,'#bucket').value;
+              
+              var {files,dirs,error}    = await gs.dir.list({token,bucket,path});
+              if(error){
+                    log.red(error);
+                    return;
+              }
+                                                                                //console.json(files);
+                                                                                //console.json(dirs);
+              filenav.display(path,dirs,files);
+          
+        }//display
+        
+        
+  //:
+  
+  
+        file.add    = async function(path,name){
+                                                                                debug('file.add',path,name);
+              var abs           = path+name;
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              
+              var {ok,error}    = await gs.save(token,bucket,abs,'');
+              if(error){
+                    log.error(error);
+              }
+              
+              display(path);
+              
+        }//add
+        
+        
+        file.rem    = async function(path,name){
+                                                                                debug('file.rem',path,name);          
+              var abs           = path+name;
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              
+              var {ok,error}    = await gs.delete(token,bucket,abs);
+              if(error){
+                    log.error(error);
+              }
+              
+              display(path);
+              
+        }//rem
+        
+        
+        file.upload   = async function(path,name,blob){
+                                                                                debug('file.upload',path,name,blob.size);          
+              var abs           = path+name;
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              
+              var {ok,error}    = await gs.save(token,bucket,abs,blob);
+              if(error){
+                    log.error(error);
+              }
+              //display(path);
+              
+              return false;
+              
+        }//upload
+        
+        
+        file.download   = async function(path,name){
+                                                                                debug('file.download',path,name);          
+              var abs           = path+name;
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              
+              var {ok,error}    = await gs.load(token,bucket,abs);
+              if(error){
+                    log.error(error);
+                    return false;
+              }
+              var blob    = ok;
+                                                                                //console.log(blob);
+              return {blob};
+              
+        }//download
+
+
+        file.dblclick   = async function(path,filename){
+                                                                                debug('file.dblclick',path,filename);
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              path             += filename;
+              
+              var {ok,error}    = await gs.load(token,bucket,path);
+              if(error){
+                    log.red(error);
+                    return;
+              }
+              var blob    = ok;
+              
+              var mime    = getmime(filename);
+              
+              blob        = new Blob([blob],{type:mime});
+              blob.name   = filename;
+              
+              console.log(blob);
+              
+              preview(blob);
+              
+        }//dblclick
+        
+
+        dir.read    = function(path){
+                                                                                debug('dir.read',path);
+              display(path);
+              
+        }//read
+        
+        
+        dir.parent    = function(path){
+                                                                                debug('dir.par',path);
+              display(path);
+              
+        }//par
+        
+        
+        dir.add   = async function(path,name){
+                                                                                debug('dir.add',path,name);
+              var abs           = path+name+'/';
+              var token         = $(root,'#token').value;
+              var bucket        = $(root,'#bucket').value;
+              
+              var {ok,error}    = await gs.save(token,bucket,abs,'');
+              if(error){
+                    log.error(error);
+              }
+              
+              display(path);
+              
+        }//add
+        
+        
+        dir.rem   = async function(path,name){
+                                                                                debug('dir.rem',path,name);
+              var abs             = path+name;
+              var token           = $(root,'#token').value;
+              var bucket          = $(root,'#bucket').value;
+              
+              var {files,error}   = await gs.list.full(token,bucket,abs);
+              if(error){
+                    log.error(error);
+              }
+              
+              var n   = files.length;
+              for(var i=0;i<n;i++){
+                
+                    var file          = files[i];
+                    var abs2          = abs+'/'+file.name;
+                                                                                //console.log(i,file.name,abs2);
+                    var {ok,error}    = await gs.delete(token,bucket,abs2);
+                    if(error){
+                          log.error(error);
+                    }
+                    
+              }//for
+              
+              display(path);
+              
+        }//rem
+        
+        
+        dir.clear   = async function(path){
+                                                                                debug('dir.clear',path);
+              var token           = $(root,'#token').value;
+              var bucket          = $(root,'#bucket').value;
+              
+              var {files,error}   = await gs.list.full(token,bucket,path);
+              if(error){
+                    log.error(error);
+              }
+                                                                                console.log(files);
+              var n   = files.length;
+              for(var i=0;i<n;i++){
+                
+                    var file          = files[i];
+                    if(file.name){
+                          var abs2          = path+file.name;
+                                                                                console.log(i,file.name,abs2);
+                          var {ok,error}    = await gs.delete(token,bucket,abs2);
+                          if(error){
+                                log.error(error);
+                          }
+                    }
+                    
+              }//for
+              
+              display(path);
+              
+        }//clear
+        
+        
+        dir.dblclick    = function(path,name){
+          
+              path   += name;
+              display(path);
+              
+        }//dblclick
+
+
+  //:
+  
+  
+        function preview(blob){
+          
+              ui.pview.childNodes.forEach(node=>node.nodeType==Node.ELEMENT_NODE && (node.style.display='none'));
+              
+              if(blob.type.startsWith('text')){
+                    preview.text(blob);
+                    return;
+              }
+              
+              if(blob.type.startsWith('image')){
+                    preview.image(blob);
+                    return;
+              }
+              
+              switch(blob.type){
+              }//switch
+              
+              preview.unknown(blob);
+              
+        }//preview
+        
+        
+        preview.text    = async function(blob){
+                    
+              ui.text.style.display   = 'block';
+              
+              var txt   = await blob.text();
+              
+              editor.setValue(txt,-1);
+              
+              
+        }//text
+        
+        
+        preview.image   = async function(blob){
+          
+              ui.image.style.display    = 'block';
+              
+              var url   = window.URL.createObjectURL(blob);
+              
+              $(ui.image,'#img').src    = url;
+              
+        }//image
+        
+        
+        preview.unknown   = function(blob){
+          
+              ui.unknown.style.display    = 'block';
+              
+              $(ui.unknown,'#filename').textContent   = blob.name;
+              $(ui.unknown,'#size').textContent       = blob.size;
+              
+        }//unknown
+        
+        
+  //:
+  
+
+        function debug(){
+          
+              if(!df)return;
+              var str   = [...arguments].join(' ');
+              console.log('[ file-browser ]',str);
+              
+        }//debug
+        
+        
+        debug.log   = function(){
+          
+              if(!df)return;
+              
+              console.log.apply(console,arguments);
+              
+              if(debug.trace){
+                    console.trace();
+              }
+              delete debug.trace;
+              
+        }//log
+        
+        
+        debug.log.trace   = function(){
+          
+              debug.trace   = true;
+              debug.log.apply(null,arguments);
+              
+        }//trace
+
+  
+  //:
+
+  
+  init.stack.complete;
+  
+  
+      </script>
+      
+</html>
+
+
