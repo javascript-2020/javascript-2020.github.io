@@ -69,18 +69,22 @@
       
       <script>
       
-mod['x509-hdr']   = function(){
-                                                                    true && console.log('x509-hdr');
-  var obj   = {};
+(function x509_hdr({mod,root,node}){
+
+  var obj   = {
+        version   : 'v2.0',
+  };
   
-      var df=true
+      var df=true,did='x509-hdr'
       ;
+
                                                             
-      var menu
+      var $,menu
       ;
         
       obj.initmod   = function(params){
         
+            $         = params.$;
             menu      = params.menu;
             
       }//initmod
@@ -89,17 +93,17 @@ mod['x509-hdr']   = function(){
   //:
 
   
-      var topmenu;
+      var top;
       
       
   
-      obj.init    = function(){
+      obj.init    = async function(){
       
-            topmenu         = mod['top-menu']();
+            top         = mod['top-menu'];
             
-            topmenu.initmod({menu});
+            top.initmod({menu});
             
-            topmenu.init();
+            await top.init();
 
             
       }//init
@@ -113,7 +117,7 @@ mod['x509-hdr']   = function(){
             var root            = $.$(rootnode,'x509-hdr');
             var shadow          = root.shadowRoot;
             
-            topmenu.initdom(shadow);
+            top.initdom(shadow);
             
             
       }//initdom
