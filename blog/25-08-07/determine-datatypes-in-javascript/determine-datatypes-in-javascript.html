@@ -11,7 +11,11 @@
                   determine datatypes in javascript
             </title>
 
-            <base href='https://javascript-2020.github.io/blog/07-08-25/determine-datatypes-in-javascript/determine-datatypes-in-javascript.html'>
+
+            <base href='https://ext-code.com/blog/07-08-25/determine-datatypes-in-javascript/'>
+            <base href='https://javascript-2020.github.io/blog/07-08-25/determine-datatypes-in-javascript/'>
+
+            
             <link rel=canonical href='https://ext-code.com/blog/07-08-25/determine-datatypes-in-javascript/determine-datatypes-in-javascript.html'>
             
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
@@ -25,13 +29,15 @@
 
 
 
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
             <script init>
                                                                                 console.clear();
+                                                                                console.log('determine-datatypes-in-javascript.html');
+                                                                                console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var version       = 'v1.0';
-            
-        var df            = true;
-
+        var df=true,did='page'
+        ;
 
         var ext;
         var $;
@@ -39,13 +45,14 @@
         var menumod;
         var code;
         
-        var mod           = {};
         
         //var codeblock;
         
 
   //:
 
+
+        mod.stack.add   = init;
               
         async function init(){
                                                                                 //debug('init',version);
@@ -61,100 +68,33 @@
               await initdom(document.body);
 
 
-              init.complete();
-
         }//init
 
 
-        init.stack            = [init];
-        init.stack.ct         = 0;
-        init.stack.total      = 1;
-        init.stack.mode       = '';
-        init.stack.complete   = false;
-        Object.defineProperty(init.stack,'add',{get:()=>{
-              init.stack.total++;
-              if(init.stack.mode){
-                    console[init.stack.mode]('add',init.stack.ct,init.stack.total);
-                                                                                //console.trace();
-              }
-        }});
-        Object.defineProperty(init.stack,'complete',{get:()=>{
-              init.stack.ct++;
-              if(init.stack.mode){
-                    console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
-                                                                                //console.trace();
-              }
-              if(init.stack.ct>=init.stack.total){
-                                                                                //console.log('*** complete');
-                    init.stack.ct       = 0;
-                    init.stack.total    = 0;
-                    var list    = [...init.stack];
-                    init.stack.length   = 0;
-                    list.forEach(fn=>fn());
-              }
-        }});
-        
-        //  (typeof init!='undefined' && init?.stack && init.stack.add)
-        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
-
-        
-        init.complete   = function(){
-          
-              init.complete.stack.forEach(fn=>fn());
-              
-              
-        }//complete
-        
-        init.complete.stack   = [];
-        init.complete.add     = fn=>init.complete.stack.push(fn);
-
-                  
-
 (async()=>{
-  
-        init.stack.add;
 
+        mod.stack.add;
         
-        var url;
-        var headers;
-        var token       = localStorage['github-token'];
-        if(token){
-              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
-              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
-        }else{
-              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
-        }
-        
-        var res   = await fetch(url,{headers});
-        var txt   = await res.text();
-
-        if(res.headers.get('content-type').includes('json')){
-                                                                                console.log('*** ext : json');
-              var json    = JSON.parse(txt);
-              var b64     = json.content;
-              txt         = atob(b64);
-        }else{
-                                                                                console.log('*** ext : text');
-        }
-        
-        ext   = eval(txt);
-              
-              
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
         var promise   = ext.load.libs(
-              'js/dom/$.js.api',
+              'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
-              'js/dom/code/code.js.api',
+              'js/dom/keydown/keydown.js',
+              'js/dom/code/v2.0/code-v2.0.js.api',
         );
-        [$,datatype,menumod,code]   = await promise;
+        [$,datatype,menumod,keydown,code]   = await promise;
 
+  
         code.initmod({ext,$,datatype,menumod});
 
         
-        init.stack.complete;
-
+        mod.stack.complete;
+              
 })();
 
+                  
             </script init>
 
 
@@ -257,12 +197,12 @@ There have been many a bug created by using
 
 
               var node    = $(root,'code-block');
-              code.code_block(node,{menu,ace});
+              code.code_block(mod,node,{menu,ace});
 
 
 
               
-              await code.snippet_console.all(root,{menu,ace});
+              //await code.snippet_console.all(root,{menu,ace});
 
 
 
@@ -270,11 +210,7 @@ There have been many a bug created by using
         }//initdom
             
   
-  //:
   
-  
-  
-  init.stack.complete;
   
             
       </script>
