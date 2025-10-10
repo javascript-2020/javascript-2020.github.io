@@ -35,21 +35,17 @@
       
       <script>
       
-mod.menu.network   = function(){
-                                                                                true && console.log('menu-network');      
+(function menu_network({mod,root,node}){
+
   var obj   = {};
+
               
-        var menu,menumod
+        var menu
         ;
 
-
-  //:
-
-  
         obj.initmod   = function(params){
           
               menu          = params.menu;
-              menumod       = params.menumod;
               
         }//initmod
                   
@@ -76,7 +72,7 @@ mod.menu.network   = function(){
               
               
               var card                        = $(root,'.menu');
-              $(root,'#icon').onclick         = menu.click(card,false,false,menu);
+              $(root,'#icon').onclick         = menu.click(card,false,false,click);
 
               
         }//initdom
@@ -85,61 +81,61 @@ mod.menu.network   = function(){
   //:
   
   
-        function menu(type,opt){
+        function click(type,opt){
         
             if(type=='opt'){
-                  menu[opt.id]();
+                  click[opt.id]();
             }
         
-        }//menu
+        }//click
                     
 
   //:
   
   
-        menu.editor   = function(){
+        click.editor   = function(){
   
               window.open('/utils/editors/editor/editor.html');
   
         }//editor
   
   
-        menu['js-console']=function(){
+        click['js-console']=function(){
   
               window.open('/utils/editors/js-console/js-console.html');
   
         }//js-console
           
         
-        menu['html-editor']=function(){
+        click['html-editor']=function(){
         
               window.open('/utils/editors/html-editor/html-editor.html');
         
         }//html-editor
         
           
-        menu['markdown-editor']=function(){
+        click['markdown-editor']=function(){
         
               window.open('/utils/editors/markdown-editor/markdown-editor.html');
         
         }//html-editor
   
   
-        menu.srcdoc=function(){
+        click.srcdoc=function(){
         
               window.open('/utils/editors/srcdoc/srcdoc.html');
         
         }//html-editor
   
   
-        menu['text-diff']=function(){
+        click['text-diff']=function(){
         
               window.open('/utils/editors/text-diff/text-diff.html');
         
         }//html-editor
   
   
-        menu.stackblitz=function(){
+        click.stackblitz=function(){
         
               window.open('/utils/editors/stackblitz/stackblitz.html');
         
@@ -149,7 +145,7 @@ mod.menu.network   = function(){
 
   return obj;
   
-}//mod.menu.network
+})//menu_network
                   
       </script>
       
