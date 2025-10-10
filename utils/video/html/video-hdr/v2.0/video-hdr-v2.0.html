@@ -51,7 +51,7 @@
                               home
                         </a>
                         
-                        <top-menu component=grp></top-menu>
+                        <top-menu component=grp v2.0></top-menu>
                       
                   </div>
 
@@ -69,15 +69,14 @@
       
       <script id=hdr>
       
-mod['video-hdr']   = function({mod,root}){
-                                                                    true && console.log('mod.hdr');
-  var obj   = {};
+(function video_hdr({mod,root,node}){
+
+  var obj   = {
+        version   : 'v2.0',
+  };
   
   
-  //:
-  
-  
-      var df=true
+      var df=true,did='video-hdr'
       ;
                                                             
       var ext,$,menu
@@ -94,15 +93,16 @@ mod['video-hdr']   = function({mod,root}){
 
   //:
   
-      var topmenu;
+      var top;
+
   
       obj.init    = function(){
       
-            topmenu   = mod['top-menu'];
+            top       = mod['top-menu'];
             
-            topmenu.initmod({ext,$,menu});
+            top.initmod({ext,$,menu});
             
-            topmenu.init();
+            top.init();
 
             
       }//init
@@ -116,13 +116,15 @@ mod['video-hdr']   = function({mod,root}){
             var root            = $.$(rootnode,'video-hdr');
             var shadow          = root.shadowRoot;
             
-            topmenu.initdom(shadow);
+            top.initdom(shadow);
             
             
       }//initdom
       
 
   //:
+
+
   
   return obj;
   
