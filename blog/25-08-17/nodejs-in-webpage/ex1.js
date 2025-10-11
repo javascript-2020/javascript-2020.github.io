@@ -4,7 +4,7 @@
 (async()=>{
                                                                                 !console.write && (console.write=console.log.bind(console));
                                                                                 console.clear();
-                                                                                console.log('webcontainer example');
+                                                                                console.log('nodejs-in-webpage');
                                                                                 console.log();
         var nodejs    = `
         
