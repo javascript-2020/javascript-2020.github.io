@@ -47,7 +47,7 @@
         var menumod;
         var code;
         
-        //var codeblock;
+        var snippet;
         
 
   //:
@@ -58,6 +58,14 @@
         async function init(){
                                                                                 //debug('init',version);
               menu    = menumod();
+              
+              
+              snippet   = mod['snippet-terminal'];
+              
+              snippet.initmod({ext,$,menu,ace});
+              
+              await snippet.init();
+              
               
               await initdom(document.body);
 
@@ -138,7 +146,7 @@ the containing page requires the following headers
             </div>
 
 
-            <code-block snippet-console src=ex1.js api></code-block>
+            <snippet-terminal component v2.0 src=ex1.js></snippet-terminal>
 
       
       </body>
@@ -163,11 +171,14 @@ the containing page requires the following headers
               root    = rootnode;
               
 
-
+/*
               var node        = $(root,'code-block');
               ({code_block}   = await code.code_block(mod,node,{menu,ace}));
               console.log(code_block);
               code_block.snippet_console.snippet.console.height('200px');
+*/
+
+              snippet.initdom(root);
 
 
 
