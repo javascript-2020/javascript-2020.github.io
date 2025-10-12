@@ -17,7 +17,7 @@
               
         `;
 
-        
+                                                                                console.log('loading ...');        
         var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
         
         const files   = {
