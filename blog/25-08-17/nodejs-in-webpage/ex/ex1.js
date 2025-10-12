@@ -57,7 +57,7 @@
         async function package_json(){
                                                                                 console.log('installing package.json ...');
               var process   = await webcontainer.spawn('npm',['install']);
-              var stream    = new WritableStream({write(data){console.write(data)}});
+              var stream    = new WritableStream({write(data){terminal.write(data)}});
               process.output.pipeTo(stream)
               var code      = await process.exit;
               return code;
@@ -68,7 +68,7 @@
         async function install(){
                                                                                 console.log('installing ...');
               var process   = await webcontainer.spawn('npm',['install','chalk']);
-              var stream    = new WritableStream({write(data){console.write(data)}});
+              var stream    = new WritableStream({write(data){terminal.write(data)}});
               process.output.pipeTo(stream)
               var code      = await process.exit;
               return code;
@@ -81,7 +81,7 @@
               await webcontainer.fs.writeFile('main.mjs',js);
         
               var process   = await webcontainer.spawn('node',['main.mjs']);
-              var stream    = new WritableStream({write(data){console.log(data)}});
+              var stream    = new WritableStream({write(data){terminal.write(data)}});
               process.output.pipeTo(stream);
     
               var code      = await process.exit;
