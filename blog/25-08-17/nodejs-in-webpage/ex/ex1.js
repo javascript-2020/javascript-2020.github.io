@@ -1,7 +1,7 @@
 
 
 
-(async()=>{
+
                                                                                 !console.write && (console.write=console.log.bind(console));
                                                                                 console.clear();
                                                                                 console.log('nodejs-in-webpage');
@@ -91,5 +91,5 @@
               
         }//run
 
-})();
+
 
