@@ -8,11 +8,13 @@
               var repo    = 'stackoverflow';
               var branch  = 'main';
               var path    = '/auto-login/';
-      
+                                                                                console.log(owner,repo,branch);
               if(path[0]=='/')path    = path.slice(1);
               if(path && path.at(-1)!='/')path  += '/';
-      
+                                                                                console.log(path);
+                                                                                
               var file    = `${path.split('/').filter(Boolean).at(-1)||repo}.zip`;
+                                                                                console.log(file);
               var zip     = new jszip();
               var url     = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=true`;
               var json    = await fetch(url).then(res=>res.json());
@@ -25,13 +27,14 @@
                     if(item.type=='tree'){
                           zip.folder(fn);
                     }else{
+                                                                                console.log(fn,item.size);
                           var url     = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${item.path}`;
                           var blob    = await fetch(url).then(res=>res.blob());
                           zip.file(fn,blob);
                     }
       
               }));
-      
+                                                                                console.log('done.');
               var blob      = await zip.generateAsync({type:'blob'});
               var url       = window.URL.createObjectURL(blob);
               var a         = document.createElement('a');
