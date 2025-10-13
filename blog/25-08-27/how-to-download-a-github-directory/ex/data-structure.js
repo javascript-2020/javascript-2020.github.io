@@ -1,6 +1,4 @@
 
-    (async ()=>{
-    
           var owner     = 'javascript-2020';
           var repo      = 'tmp';
           var branch    = 'main';
@@ -18,6 +16,4 @@
 
           var txt       = window.atob(json.content);
           console.log(txt);
-    
-    })();
     
