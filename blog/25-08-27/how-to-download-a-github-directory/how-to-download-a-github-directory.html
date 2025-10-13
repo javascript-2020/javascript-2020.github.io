@@ -49,6 +49,7 @@
         
         snippet['full-ex']              = null;
         snippet['data-structure']       = null;
+        snippet.zip                     = null;
         snippet['node-1']               = null;
         snippet['node-2']               = null;
         
@@ -66,6 +67,7 @@
 
               snippet['full-ex']              = mod['snippet-html-console[full-ex]'];
               snippet['data-structure']       = mod['snippet-console[data-structure]'];
+              snippet.zip                     = mod['snippet-console[zip]'];
               snippet['node-1']               = mod['snippet-terminal[node-1]'];
               snippet['node-2']               = mod['snippet-terminal[node-2]'];
               
@@ -73,6 +75,7 @@
               
               snippet['full-ex'].initmod({ext,$,menu,ace});
               snippet['data-structure'].initmod({ext,$,menu,ace});
+              snippet.zip.initmod({ext,$,menu,ace});
               snippet['node-1'].initmod({ext,$,menu,ace});
               snippet['node-2'].initmod({ext,$,menu,ace});
 
@@ -80,6 +83,7 @@
               await Promise.all([
                     snippet['full-ex'].init(),
                     snippet['data-structure'].init(),
+                    snippet.zip.init(),
                     snippet['node-1'].init(),
                     snippet['node-2'].init(),
               ]);
@@ -88,8 +92,6 @@
               
               await initdom(document.body);
 
-
-              init.complete();
 
         }//init
 
@@ -126,6 +128,7 @@
             <link rel=stylesheet href='/blog/css/blog.css'>
             
             <style>
+/*            
   html
     {height:100%;font-family:arial}
   body
@@ -133,10 +136,11 @@
     }
   body>*
     {max-width:1400px;width:100%;padding:0 20px;padding-bottom:200px}
-/*    
+*/    
+    
   body
     {height:calc(100% - 20px);margin:20px}
-*/
+
     
   p
     {margin:20px 0;line-height:32px}
@@ -268,7 +272,7 @@
             
             </p>
       
-            <snippet-html-console component v2.0 src='ex/zip.html'>
+            <snippet-html-console id=zip component v2.0 src='ex/zip.html'>
             </snippet-html-console>
             
             <p>
@@ -343,6 +347,9 @@ node --experimental-network-imports --no-warnings .\test.node.mjs
               
               var node        = $('#data-structure');
               snippet['data-structure'].initdom(node);
+              
+              var node        = $('#zip');
+              snippet.zup.initdom(node);
               
               var node        = $('#node-1');
               snippet['node-1'].initdom(node);
