@@ -24,10 +24,10 @@
               if(!item.path.startsWith(path))return;
                                                                                 //console.log(item);
               var fn    = item.path.slice(path.length);
-                                                                                console.log(fn,item.size);
               if(item.type=='tree'){
                     fs.mkdirSync(file+fn);
               }else{
+                                                                                console.log(fn,item.size);
                     var fh        = fs.createWriteStream(file+fn);
                     var stream    = new WritableStream({write:data=>fh.write(data)});
                     var url       = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${item.path}`;
