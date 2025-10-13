@@ -1,5 +1,4 @@
 
-
 <html>
 
       <head>
@@ -29,6 +28,8 @@
 
       <script type=module>
                                                                                       console.clear();
+                                                                                      console.log('terminal-in-a-webpage.html/ex/ex.html');
+                                                                                      console.log();
               import {Terminal} from 'https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm';
               import {FitAddon} from 'https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'              
               import {WebContainer} from 'https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm'
@@ -38,9 +39,9 @@
               term.loadAddon(fitAddon);
               term.open(terminal);
               fitAddon.fit();
-                                                                                      term.write('booting container ...\r\n')
+                                                                                      console.log('booting container ...')
               var webcontainer    = await WebContainer.boot();
-                                                                                      term.write('spawn jsh ...\r\n')
+                                                                                      console.log('spawn jsh ...')
               var shell           = await webcontainer.spawn('jsh');
               var output          = new WritableStream({write(data){term.write(data)}});
               shell.output.pipeTo(output);
