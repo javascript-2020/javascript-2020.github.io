@@ -227,7 +227,11 @@
 
               async function server(){
                                                                                 console.log('launching server ...');
-                    webcontainer.on('server-ready',(port,url)=>iframe.src=url);
+                    webcontainer.on('server-ready',(port,url)=>{
+                                                                                console.log('server : ',url,port);
+                          iframe.src    = url;
+                            
+                    });
               
                     var process   = await webcontainer.spawn('node',['server.js']);
                     
