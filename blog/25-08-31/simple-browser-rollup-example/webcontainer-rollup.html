@@ -160,7 +160,7 @@
                                                                                 console.log('npm install',str,'...');
                     packages.unshift('install');
                     var process   = await webcontainer.spawn('npm',packages);
-                    var stream    = new WritableStream({write(data){console.term(data)}});
+                    var stream    = new WritableStream({write(data){term.write(data)}});
                     process.output.pipeTo(stream)
                     var code      = await process.exit;
                     if(code!=0){
@@ -174,7 +174,7 @@
               async function package_json(){
                                                                                 console.log('npm install ( package.json ) ...');
                     var process   = await webcontainer.spawn('npm',['install']);
-                    var stream    = new WritableStream({write(data){console.term(data)}});
+                    var stream    = new WritableStream({write(data){term.write(data)}});
                     process.output.pipeTo(stream)
                     var code      = await process.exit;
                     if(code!=0){
@@ -198,7 +198,7 @@
                     packages.unshift('install');
                     
                     var process   = await webcontainer.spawn('npm',packages);
-                    var stream    = new WritableStream({write(data){console.term(data)}});
+                    var stream    = new WritableStream({write(data){term.write(data)}});
                     process.output.pipeTo(stream)
                     var code      = await process.exit;
                     if(code!=0){
@@ -213,7 +213,7 @@
                                                                                 console.log('perform rollup ...');
                     var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.js']);
                     
-                    var stream    = new WritableStream({write(data){console.term(data)}});
+                    var stream    = new WritableStream({write(data){term.write(data)}});
                     process.output.pipeTo(stream);
                     
                     var code      = await process.exit;
@@ -235,7 +235,7 @@
               
                     var process   = await webcontainer.spawn('node',['server.js']);
                     
-                    var stream    = new WritableStream({write(data){console.term(data)}});
+                    var stream    = new WritableStream({write(data){term.write(data)}});
                     process.output.pipeTo(stream);
                     
                     var code      = await process.exit;
@@ -354,7 +354,8 @@
 
   //:
   
-  
+/*  
+
         var console   = {};
         console.term    = function(){
                           
@@ -376,7 +377,7 @@
                                 term.writeln(str);
                                 
                           }//log
-
+*/
 
 
 })();
