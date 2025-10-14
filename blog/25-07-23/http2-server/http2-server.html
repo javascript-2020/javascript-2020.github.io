@@ -5,45 +5,131 @@
 
       <head>
       
-            <title>http2 server</title>
+            <title>
+                  http2 server
+            </title>
 
-            <base href='https://javascript-2020.github.io/blog/23-07-25/http2-server/http2-server.html'>
+            <base href='https://ext-code.com/blog/25-07-23/http2-server/'>
             
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+
+
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script init>            
+                                                                                console.clear();
+                                                                                console.log('http2-server.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var version='v1.0',df=true
+        ;
+
+
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var code;
+        var debug;
+            
+        var server;
+        
+    //:
+
+              
+        async function init(){
+                                                                                //debug('init',version);
+              
+              menu    = menumod();
+
+              server    = mod.server;
+              
+              server.initmod({ext,$,menu,ace});
+              
+              await server.init();
+              
+              server.on.run   = function(result){
+                
+                    console.log(result);
+                    
+              }//run
+              
+              initdom(document.body);
+
+              
+        }//init
+
+
+  //:
+  
+  
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/dom/code/v2.0/code-v2.0.js.api',
+              'js/debug/debug.js',
+        );
+        [$,datatype,menumod,keydown,code]   = await promise;
+  
+        code.initmod({ext,$,datatype,menumod});
+        
+        mod.stack.complete;
+              
+})();
+
+                  
+            </script init>
+
+            <style>
+            
+  html
+    {height:100%;font-family:arial}
+  body
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;margin:20px;align-items:center;
+      padding-bottom:200px;
+    }
+  body>*
+    {max-width:1400px;width:100%;padding:0 20px;}
+    
+            </style>
             
       </head>
       
       
       <body>
 
-            <style>
-            
-  html
-    {}
-  body
-    {font-family:arial;margin:20px}
-    
-  code
-    {display:block;border-radius:5px;background:whitesmoke;font-family:monospace;padding:10px;white-space:pre;
-      margin:20px 0;
-    }
-    
-            </style>
+
+            <blog-hdr component=grp1 v2.0>      
+                  <h1 class=title>
+                        http2 server
+                  </h1>
+                  <div slot=date>
+                        14 Oct 2025
+                  </div>
+            </blog-hdr>
 
 
-            <h3>
-                  http2 server
-            </h3>
-            
             
             <div>
 
-http2 server
+                  http2 server
             
             </div>
             
             
-            <code>
+            <snippet-terminal-console id=server type=nodejs component v2.0>
 
 
 
@@ -116,7 +202,7 @@ http2 server
 
             
             
-            </code>
+            </snippet-terminal-console>
 
 
 
@@ -125,6 +211,19 @@ http2 server
 
             
       </body>
+      
+      
+      <script>
+      
+      
+        function initdom(rootnode){
+          
+              server.initdom(rootnode);
+              
+        }//initdom
+        
+        
+      </script>
       
       
 </html>
