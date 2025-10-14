@@ -10,17 +10,23 @@
       
             <title>simple browser rollup example</title>
 
-            <base href='https://javascript-2020.github.io/blog/23-07-25/'>
-            <link rel=canonical href='https://ext-code.com/blog/'>
+            <base href='https://ext-code.com/blog/25-08-31/simple-browser-rollup-example/'>
+            
+            <link rel=canonical href='https://ext-code.com/blog/25-08-31/simple-browser-rollup-example'>
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
 
+
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
 
-            
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
             <script init>
                                                                                 console.clear();
+                                                                                console.log('simple-browser-rollup-example.html');
+                                                                                console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var version       = 'v1.0';
             
@@ -32,11 +38,11 @@
         var datatype;
         var menumod;
         var code;
+        var debug;
         
-        var mod           = {};
         
-        //var codeblock;
-        
+        var rollup;
+        var test;
 
   //:
 
@@ -46,118 +52,66 @@
               
               menu    = menumod();
               
+              rollup    = mod.rollup;
+              test      = mod.test;
               
-              code.initmod({ext,$,datatype,menumod});
+              rollup.initmod({ext,$,ace,menu});
+              test.initmod({ext,$,ace,menu});
+              
+              await Promise.all([
+                    rollup.init(),
+                    test.init(),
+              ]);
               
               
               await initdom(document.body);
 
 
-              init.complete();
-
         }//init
 
 
-        init.stack            = [init];
-        init.stack.ct         = 0;
-        init.stack.total      = 1;
-        init.stack.mode       = '';
-        init.stack.complete   = false;
-        Object.defineProperty(init.stack,'add',{get:()=>{
-              init.stack.total++;
-              if(init.stack.mode){
-                    console[init.stack.mode]('add',init.stack.ct,init.stack.total);
-                                                                                //console.trace();
-              }
-        }});
-        Object.defineProperty(init.stack,'complete',{get:()=>{
-              init.stack.ct++;
-              if(init.stack.mode){
-                    console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
-                                                                                //console.trace();
-              }
-              if(init.stack.ct>=init.stack.total){
-                                                                                //console.log('*** complete');
-                    init.stack.ct       = 0;
-                    init.stack.total    = 0;
-                    var list    = [...init.stack];
-                    init.stack.length   = 0;
-                    list.forEach(fn=>fn());
-              }
-        }});
-        
-        //  (typeof init!='undefined' && init?.stack && init.stack.add)
-        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
-
-        
-        init.complete   = function(){
-          
-              init.complete.stack.forEach(fn=>fn());
-              
-              
-        }//complete
-        
-        init.complete.stack   = [];
-        init.complete.add     = fn=>init.complete.stack.push(fn);
-
-                  
-
-(async()=>{
+  //:
   
-        init.stack.add;
+  
+(async()=>{
 
+        mod.stack.add;
         
-        var url;
-        var headers;
-        var token       = localStorage['github-token'];
-        if(token){
-              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
-              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
-        }else{
-              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
-        }
-        
-        var res   = await fetch(url,{headers});
-        var txt   = await res.text();
-
-        if(res.headers.get('content-type').includes('json')){
-                                                                                console.log('*** ext : json');
-              var json    = JSON.parse(txt);
-              var b64     = json.content;
-              txt         = atob(b64);
-        }else{
-                                                                                console.log('*** ext : text');
-        }
-        
-        ext   = eval(txt);
-
-        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
         var promise   = ext.load.libs(
-              'js/dom/$.js.api',
+              'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
-              'js/dom/code/code.js.api',
+              'js/dom/keydown/keydown.js',
+              'js/dom/code/v2.0/code-v2.0.js.api',
+              'js/debug/debug.js',
         );
-        [$,datatype,menumod,code]   = await promise;
-
+        [$,datatype,menumod,keydown,code]   = await promise;
+  
+        code.initmod({ext,$,datatype,menumod});
         
-        init.stack.complete;
-
+        mod.stack.complete;
+              
 })();
 
-
+                  
             </script init>
 
             
             <link rel=stylesheet href='/blog/css/blog.css'>
+            
             <style>
             
   html
-    {}
+    {height:100%;font-family:arial}
   body
-    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;margin:20px;
-      font-family:arial
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;margin:20px;align-items:center;
+      padding-bottom:200px;
     }
+  body>*
+    {max-width:1400px;width:100%;padding:0 20px;}
+
             
             </style>
             
@@ -168,29 +122,34 @@
       <body>
 
 
+            <blog-hdr component=grp1 v2.0>      
+                  <h1 class=title>
+                        simple browser rollup example
+                  </h1>
+                  <div slot=date>
+                        14 Oct 2025
+                  </div>
+            </blog-hdr>
+
+
       
-            <h3>
-                  simple browser rollup example
-            </h3>
-
-
             <div id=description>
 
-demonstrates how to use rollup in a browser to rollup nodejs libraries for client side use
+                  demonstrates how to use rollup in a browser to rollup nodejs libraries for client side use
             
             </div>
 
-            <code-block snippet-html src='webcontainer-rollup.html' api></code-block>
+            <snippet-html-console id=rollup component v2.0 src='webcontainer-rollup.html'></snippet-html-console>
 
 
             <div>
 
-and the test code
+                  and the test code
 
             </div>
 
             
-            <code-block src='test.html'></code-block>
+            <snippet-html-console id=test component v2.0 src='test.html'></snippet-html-console>
 
 
 
@@ -202,45 +161,19 @@ and the test code
       <script>
 
 
-        var code_block;
-
-        var menu;
-        
-        var root;
-        
 
 
         async function initdom(rootnode){
 
-              root    = rootnode;
+              var root    = rootnode;
               
 
-
-              var list        = $.all(root,'code-block');
-              list.forEach(async node=>{
-              
-                    ({code_block}   = await code.code_block(node,{menu,ace}));
-                    
-                    if(code_block.snippet_console){
-                          code_block.snippet_console.snippet.dconsole.height('200px');
-                    }
-                    
-              });
+              rollup.initdom();
+              test.initdom();
 
 
-
-              //test();
-
-
-
-              
         }//initdom      
 
-
-  //:
-  
-
-  init.stack.complete;        
 
       </script>
 
