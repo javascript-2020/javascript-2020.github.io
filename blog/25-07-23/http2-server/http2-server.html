@@ -6,16 +6,43 @@
       <head>
       
             <title>
-                  http2 server
+                  how to set up HTTP/2 server in Node.js
             </title>
 
             <meta name=description content='Learn how to set up an HTTP/2 server in Node.js with step-by-step code examples, TLS setup, and performance tips.'>
-            
-            
-            <base href='https://ext-code.com/blog/25-07-23/http2-server/'>
+
             
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            
+            <base href='https://ext-code.com/blog/25-07-23/http2-server/'>
+            <link rel=canonical href='https://ext-code.com/blog/25-07-23/http2-server/http2-server.html'>
+            
+
+            <script type="application/ld+json">
+            
+                  {
+                        "@context"            : "https://schema.org",
+                        "@type"               : "TechArticle",
+                        "headline"            : "How to Set Up an HTTP/2 Server in Node.js",
+                        "description"         : "Learn how to configure a secure HTTP/2 server in Node.js using the built-in http2 module, complete with TLS setup and testing tips.",
+                        "author"              : {"@type":"Person","name":"Matthew Richards"},
+                        "datePublished"       : "2025-07-23",
+                        "dateModified"        : "2025-10-15",
+                        "mainEntityOfPage"    : {"@type":"WebPage","@id":"https://ext-code.com/blog/25-07-23/http2-server/http2-server.html"},
+                        "publisher"           : {"@type":"Organization","name":"Your Blog or Company Name","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
+                  }
+            
+            </script>
+<!--
+                        "image"               : "https://yourdomain.com/images/http2-nodejs-demo.png"
+-->
+
+
+<!--
+  //:
+-->
 
 
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
@@ -138,36 +165,34 @@
                   <h1 class=title>
                         how to set up HTTP/2 server in Node.js
                   </h1>
-                  <div slot=date>
+                  <time slot=date datetime="2025-10-15">
                         15 Oct 2025
-                  </div>
+                  </time>
             </blog-hdr>
 
 
             
-            <div id=desc>
+            <div id=description>
 
                   <p>
-                        how to create a http2 server in nodejs
-                        <div>
-                              <a href='https://nodejs.org/api/http2.html'>
-                                    <span class=link-domain>
-                                          nodejs.org :
-                                    </span>
-                                    <span class=link-txt>
-                                          HTTP/2
-                                    </span>
-                              </a>
-                              
+                        how to set up HTTP/2 server in Node.js
+                        <a href='https://nodejs.org/api/http2.html'>
+                              <span class=link-domain>
+                                    nodejs.org :
+                              </span>
+                              <span class=link-txt>
+                                    HTTP/2
+                              </span>
+                        </a>
                   </p>
                   <p>
                         you can 
                         <a href='/utils/x509/generate-https-certificate/generate-https-certificate.html'>
                               <span class=link-domain>
-                                    ext-code.com :
+                                    [ ext-code.com ]
                               </span>
                               <span class=link-txt>
-                                    create key / cert
+                                    create https key / cert
                               </span>
                         </a>
                   </p>
@@ -176,79 +201,7 @@
             
             <div id=editor-root>
             
-                  <editor id=server type=nodejs component v2.0>
-
-
-
-        var http2         = require('http2');
-        
-        var host          = '127.0.0.1';
-        var port          = 3010;
-        var server        = http2.createSecureServer({key,cert}).listen(port,host);
-        console.log('https://localhost:3010/');
-        
-        
-        server.on('stream',(stream,headers)=>{
-        
-              var path    = headers[':path'];
-                                                                                console.log(path);
-
-              if(path==='/test'){
-                    test(stream,headers);
-                    return;
-              }
-
-              
-              stream.on('data',data=>console.log(data.toString()));
-              stream.on('end',complete);
-
-
-              function complete(){
-              
-                    var headers   = {
-                          'access-control-allow-origin'   : '*',
-                          'content-type'                  : 'text/html; charset=utf-8',
-                          ':status'                       : 200
-                    }
-                    stream.respond(headers)
-                    
-                    stream.write('ok');
-                    stream.end();
-                    
-              }//complete
-              
-        });
-
-
-
-
-        
-        
-        function test(stream,headers){
-        
-              stream.respond({
-                    'content-type'    : 'text/html; charset=utf-8',
-                    ':status'         : 200
-              })
-              
-              stream.on('data',data=>{
-                                                                                console.log('test: ',data.toString());
-                    stream.write(data);
-                    
-              });
-              
-              stream.on('end',()=>{
-                                                                                console.log('test: request complete');
-                    stream.write('complete');
-                    stream.end();
-                    
-              });
-              
-        }//test
-                
-
-            
-            
+                  <editor id=server type=nodejs component v2.0 src='ex/ex1.js'>
                   </editor>
                   
             </div>
