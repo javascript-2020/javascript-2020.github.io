@@ -9,7 +9,7 @@
         var cert          = '...';
         
         var server        = http2.createSecureServer({key,cert}).listen(port,host);
-                                                                                console.log(`https://${host}:${port}/');
+                                                                                console.log(`https://${host}:${port}/`);
         
         
         server.on('stream',(stream,headers)=>{
