@@ -70,8 +70,8 @@
         var debug;
         
         
-        var rollup;
-        var test;
+        var ex;
+
 
   //:
 
@@ -81,8 +81,14 @@
               
               menu    = menumod();
               
+
+              ex    = mod.ex;
+              
+              ex.initmod({ext,$,ace,menu});
+              
               
               await Promise.all([
+                    ex.init(),
               ]);
               
               
@@ -169,14 +175,24 @@
             </div>
             
             
-            <snippet-console id=fetch-ex component v2.0 src='ex/fetch.js'>
-            </snippet-console>
+            <editor id=ex component v2.0 src='ex/fetch.js'>
+            </editor>
 
 
-            
       </body>
       
       
+      <script>
+      
+      
+        function initdom(rootnode){
+          
+              ex.initdom();
+              
+        }//initdom
+        
+        
+      </script>
 </html>
 
 
