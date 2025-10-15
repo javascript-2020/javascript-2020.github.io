@@ -1,12 +1,13 @@
 
 
         var http2         = require('http2');
+        var fs            = require('fs');
         
         var host          = '127.0.0.1';
         var port          = 3010;
         
-        var key           = '...';
-        var cert          = '...';
+        var key           = fs.readFileSync('key.pem','utf8');
+        var cert          = fs.readFileSync('cert.pem','utf8');
         
         var server        = http2.createSecureServer({key,cert}).listen(port,host);
                                                                                 console.log(`https://${host}:${port}/`);
