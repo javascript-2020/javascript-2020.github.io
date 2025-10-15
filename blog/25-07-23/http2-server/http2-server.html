@@ -147,6 +147,15 @@
     
   #editor-root
     {border:1px solid lightblue;border-radius:5px;padding:10px;overflow:hidden;}
+  #editor-root>div
+    {margin:10px}
+
+
+  input
+    {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  input[type=button]
+    {cursor:pointer}
+
     
   a.link-stable
     {color:blue}
@@ -206,6 +215,10 @@
             
             <div id=editor-root>
             
+                  <div>
+                        <input value=download type=button>
+                  </div>
+            
                   <editor id=server type=nodejs component v2.0 src='ex/ex1.js'>
                   </editor>
                   
@@ -221,12 +234,38 @@
       
       <script>
       
-      
+        
+        var btn   = {};
+        
+        
+  //:
+  
+  
         function initdom(rootnode){
           
+              $('[value=download]').onclick                 = btn.download;
+              
               server.initdom(rootnode,{fullsize:true});
               
         }//initdom
+        
+
+  //:
+  
+  
+        btn.download    = function(){
+          
+              var txt       = server.getvalue();
+              var blob      = new Blob([txt]);
+              var url       = window.URL.createObjectURL(blob);
+              
+              var a         = document.createElement('a');
+              a.download    = 'http2-example-server.js';
+              a.href        = url;
+              a.click();
+              
+        }//download
+        
         
         
       </script>
