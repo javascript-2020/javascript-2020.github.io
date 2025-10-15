@@ -29,7 +29,7 @@
 
 
               function complete(){
-              
+                                                                                console.log('complete');
                     var headers   = {
                           'access-control-allow-origin'   : '*',
                           'content-type'                  : 'text/html; charset=utf-8',
