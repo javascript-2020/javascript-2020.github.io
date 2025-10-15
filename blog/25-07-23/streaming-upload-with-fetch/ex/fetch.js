@@ -8,12 +8,12 @@
       
       function start(ctrl){
       
-            var count   = 0;
+            var count   = 1;
             var timer   = setTimeout(send,1000);
   
             
             function send(){
-                                                                          console.log('sent');
+                                                                          console.log('send',count);
                   ctrl.enqueue('Hello');
                   
                   if(count==5){
