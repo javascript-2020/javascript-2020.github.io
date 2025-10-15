@@ -51,12 +51,15 @@
               server.initmod({ext,$,menu,ace});
               
               await server.init();
-              
-              server.on.run   = function(result){
-                
-                    console.log(result);
+
+              /*
+              server.on['server-ready']   = function(port,url){
+                                                                                console.log(port,url);
+                    iframe.src    = url+'/test';
                     
               }//run
+              */
+
               
               initdom(document.body);
 
@@ -74,7 +77,7 @@
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
           
         var promise   = ext.load.libs(
-              'js/dom/$.js',
+              'js/dom/$.js.api',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
@@ -104,7 +107,8 @@
     {max-width:1400px;width:100%;padding:0 20px;}
     
             </style>
-            
+
+    
       </head>
       
       
@@ -129,7 +133,7 @@
             </div>
             
             
-            <snippet-terminal-console id=server type=nodejs component v2.0>
+            <editor id=server type=nodejs component v2.0>
 
 
 
@@ -202,8 +206,7 @@
 
             
             
-            </snippet-terminal-console>
-
+            </editor>
 
 
 
@@ -218,7 +221,7 @@
       
         function initdom(rootnode){
           
-              server.initdom(rootnode);
+              server.initdom(rootnode,{fullsize:true});
               
         }//initdom
         
