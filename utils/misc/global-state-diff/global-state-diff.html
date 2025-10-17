@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Global State Diff</title>
+</head>
+<body>
+  <script>
+  
+    var src   = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.min.js';
+  
+    // Capture initial global state
+    const beforeKeys = new Set(Object.keys(window));
+
+    // Dynamically load external script
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => {
+      const afterKeys = new Set(Object.keys(window));
+      const added = [...afterKeys].filter(k => !beforeKeys.has(k));
+
+      console.log('🔍 New globals added by script:', added);
+      added.forEach(key => {
+        console.log(`window.${key} =`, window[key]);
+      });
+    };
+    document.head.appendChild(script);
+  </script>
+</body>
+</html>
