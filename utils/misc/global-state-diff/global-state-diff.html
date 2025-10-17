@@ -23,6 +23,7 @@
   input[type=button]
     {cursor:pointer}
 
+
   #output
     {white-space:pre;font-family:monospace}
   #item
@@ -31,6 +32,10 @@
     {}
   #values
     {}
+
+
+  iframe
+    {display:none}
     
             </style>
             
@@ -73,51 +78,66 @@
                     function process(src){
               
                           
-                          const beforeKeys    = new Set(Object.keys(window));
-                      
+                          var iframe    = document.createElement('iframe');
+                          iframe.onload   = onload;
+                          document.body.append(iframe);
+    
                           
-                          const script    = document.createElement('script');
-                          script.src      = src;
+                          function onload(){
                           
-                          script.onload   = ()=>{
-                          
-                                const afterKeys   = new Set(Object.keys(window));
-                                const added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
-
-                                var str   = '';                          
-                                added.forEach(key=>{
+                                var win   = iframe.contentWindow;
+                                var doc   = iframe.contentDocument;
                                 
-                                      var s     = window[key].toString();
-                                      var s1    = s.slice(0,80);
-                                      if(s.length>s1.length){
-                                            s1   += ' ...';
-                                      }
-                                      str  += `window.${key}   [ ${typeof window[key]} ]   :   ${s1}`+'\n';
+                                var beforeKeys    = new Set(Object.keys(win));
+                            
+                                
+                                var script    = document.createElement('script');
+                                script.src    = src;
+                                
+                                script.onload   = ()=>{
+                                
+                                      var afterKeys   = new Set(Object.keys(win));
+                                      var added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
+      
+                                      var str   = '';                          
+                                      added.forEach(key=>{
                                       
-                                      console.log(`window.${key} =`,window[key]);
+                                            var s     = win[key].toString();
+                                            var s1    = s.slice(0,80);
+                                            if(s.length>s1.length){
+                                                  s1   += ' ...';
+                                            }
+                                            str  += `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
+                                            
+                                            console.log(`window.${key} =`,win[key]);
+                                            
+                                      });
                                       
-                                });
+                                      var nitem   = item.cloneNode(true);
+                                      var $   = nitem.querySelector.bind(nitem);
+                                      $('#url').textContent       = src;
+                                      $('#values').textContent    = str;
+                                      
+                                      output.append(nitem);
+                                      
+                                      
+                                      console.log('🔍 New globals added by script:', added);
+                                      
+                                      
+                                }//onload
                                 
-                                var nitem   = item.cloneNode(true);
-                                var $   = nitem.querySelector.bind(nitem);
-                                $('#url').textContent       = src;
-                                $('#values').textContent    = str;
-                                
-                                output.append(nitem);
-                                
-                                
-                                console.log('🔍 New globals added by script:', added);
-                                
+                                doc.head.appendChild(script);
                                 
                           }//onload
                           
-                          document.head.appendChild(script);
-                          
                     }//process
                     
-                    
-                    
               </script>
+              
+              <div>
+                 the following can be used when the you want to find out what is returned from an ESM import statement
+              </div>
+              
               
       </body>
       
