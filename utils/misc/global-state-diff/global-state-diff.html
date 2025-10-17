@@ -1,29 +1,128 @@
+
+
+
 <!DOCTYPE html>
+
+
 <html>
-<head>
-  <title>Global State Diff</title>
-</head>
-<body>
-  <script>
-  
-    var src   = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.min.js';
-  
-    // Capture initial global state
-    const beforeKeys = new Set(Object.keys(window));
 
-    // Dynamically load external script
-    const script = document.createElement('script');
-    script.src = src;
-    script.onload = () => {
-      const afterKeys = new Set(Object.keys(window));
-      const added = [...afterKeys].filter(k => !beforeKeys.has(k));
+      <head>
+            <title>
+                  Global State Diff
+            </title>
+            
+            <style>
 
-      console.log('🔍 New globals added by script:', added);
-      added.forEach(key => {
-        console.log(`window.${key} =`, window[key]);
-      });
-    };
-    document.head.appendChild(script);
-  </script>
-</body>
+  html
+    {font-family:arial}
+  body
+    {display:flex;flex-direction:column;gap:20px}
+    
+  input
+    {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  input[type=button]
+    {cursor:pointer}
+
+  #output
+    {white-space:pre;font-family:monospace}
+  #item
+    {margin:20px 0;border:1px solid lightgray;padding:10px;overflow:auto}
+  #src
+    {}
+  #values
+    {}
+    
+            </style>
+            
+      </head>
+      
+      <body>
+      
+              <h3>
+                    global state diff
+              </h3>
+              
+              <div>
+                    when scripts are loaded via script src tag, this will display what got added, enter the script url
+              </div>
+              <input id=src value='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.min.js'>
+              <input id=go value=go type=button>
+              
+              <div id=output>
+                    <div id=item>
+                          <div id=url>
+                          </div>
+                          <div id=values>
+                          </div>
+                    </div>
+              </div>
+              
+              
+              <script>
+                                                                                console.clear();
+                    var item    = document.body.querySelector('#item');
+                    item.remove();
+                    
+                    go.onclick    = function(){
+                    
+                          process(src.value);
+      
+                    }//onclick
+                    
+                    
+                    function process(src){
+              
+                          
+                          const beforeKeys    = new Set(Object.keys(window));
+                      
+                          
+                          const script    = document.createElement('script');
+                          script.src      = src;
+                          
+                          script.onload   = ()=>{
+                          
+                                const afterKeys   = new Set(Object.keys(window));
+                                const added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
+
+                                var str   = '';                          
+                                added.forEach(key=>{
+                                
+                                      var s     = window[key].toString();
+                                      var s1    = s.slice(0,80);
+                                      if(s.length>s1.length){
+                                            s1   += ' ...';
+                                      }
+                                      str  += `window.${key}   [ ${typeof window[key]} ]   :   ${s1}`+'\n';
+                                      
+                                      console.log(`window.${key} =`,window[key]);
+                                      
+                                });
+                                
+                                var nitem   = item.cloneNode(true);
+                                var $   = nitem.querySelector.bind(nitem);
+                                $('#url').textContent       = src;
+                                $('#values').textContent    = str;
+                                
+                                output.append(nitem);
+                                
+                                
+                                console.log('🔍 New globals added by script:', added);
+                                
+                                
+                          }//onload
+                          
+                          document.head.appendChild(script);
+                          
+                    }//process
+                    
+                    
+                    
+              </script>
+              
+      </body>
+      
 </html>
+
+
+
+
