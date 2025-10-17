@@ -170,7 +170,18 @@
                     async function process2(src){
                     
                           var mod   = await import(src);
-                          var str   = JSON.stringify(mod,null,4);
+                          var str   = '';
+                          for(var key in mod){
+                          
+                                var s     = mod[key].toString();
+                                var s1    = s.slice(0,80);
+                                if(s.length>s1.length){
+                                      s1   += ' ...';
+                                }
+                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                                
+                          }//for
+                          
                           
                           var nitem   = item2.cloneNode(true);
                           
