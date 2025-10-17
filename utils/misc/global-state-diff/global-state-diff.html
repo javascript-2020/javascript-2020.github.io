@@ -29,7 +29,7 @@
     {cursor:pointer}
 
 
-  #output
+  #output, #output2
     {white-space:pre;font-family:monospace}
   #item
     {margin:20px 0;border:1px solid lightgray;padding:10px;overflow:auto}
@@ -70,72 +70,72 @@
               
               <script>
                                                                                 console.clear();
-                    var item    = document.body.querySelector('#item');
-                    item.remove();
-                    
-                    go.onclick    = function(){
-                    
-                          process(src.value);
-      
-                    }//onclick
-                    
-                    
-                    function process(src){
+        var item    = document.body.querySelector('#item');
+        item.remove();
+        
+        go.onclick    = function(){
+        
+              process(src.value);
+        
+        }//onclick
+        
+        
+        function process(src){
+        
               
+              var iframe    = document.createElement('iframe');
+              iframe.onload   = onload;
+              document.body.append(iframe);
+        
+              
+              function onload(){
+              
+                    var win   = iframe.contentWindow;
+                    var doc   = iframe.contentDocument;
+                    
+                    var beforeKeys    = new Set(Object.keys(win));
+                
+                    
+                    var script    = document.createElement('script');
+                    script.src    = src;
+                    
+                    script.onload   = ()=>{
+                    
+                          var afterKeys   = new Set(Object.keys(win));
+                          var added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
+        
+                          var str   = '';                          
+                          added.forEach(key=>{
                           
-                          var iframe    = document.createElement('iframe');
-                          iframe.onload   = onload;
-                          document.body.append(iframe);
-    
+                                var s     = win[key].toString();
+                                var s1    = s.slice(0,80);
+                                if(s.length>s1.length){
+                                      s1   += ' ...';
+                                }
+                                str  += `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
+                                
+                                console.log(`window.${key} =`,win[key]);
+                                
+                          });
                           
-                          function onload(){
+                          var nitem   = item.cloneNode(true);
+                          var $   = nitem.querySelector.bind(nitem);
+                          $('#url').textContent       = src;
+                          $('#values').textContent    = str;
                           
-                                var win   = iframe.contentWindow;
-                                var doc   = iframe.contentDocument;
-                                
-                                var beforeKeys    = new Set(Object.keys(win));
-                            
-                                
-                                var script    = document.createElement('script');
-                                script.src    = src;
-                                
-                                script.onload   = ()=>{
-                                
-                                      var afterKeys   = new Set(Object.keys(win));
-                                      var added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
-      
-                                      var str   = '';                          
-                                      added.forEach(key=>{
-                                      
-                                            var s     = win[key].toString();
-                                            var s1    = s.slice(0,80);
-                                            if(s.length>s1.length){
-                                                  s1   += ' ...';
-                                            }
-                                            str  += `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
-                                            
-                                            console.log(`window.${key} =`,win[key]);
-                                            
-                                      });
-                                      
-                                      var nitem   = item.cloneNode(true);
-                                      var $   = nitem.querySelector.bind(nitem);
-                                      $('#url').textContent       = src;
-                                      $('#values').textContent    = str;
-                                      
-                                      output.append(nitem);
-                                      
-                                      
-                                      console.log('🔍 New globals added by script:', added);
-                                      
-                                      
-                                }//onload
-                                
-                                doc.head.appendChild(script);
-                                
-                          }//onload
+                          output.append(nitem);
                           
-                    }//process
+                          
+                          console.log('🔍 New globals added by script:', added);
+                          
+                          
+                    }//onload
+                    
+                    doc.head.appendChild(script);
+                    
+              }//onload
+              
+        }//process
                     
               </script>
               
@@ -157,44 +157,83 @@
 
               <script>
               
-                    var item2    = document.body.querySelector('#item2');
-                    item2.remove();
+        var item2    = document.body.querySelector('#item2');
+        item2.remove();
+        
+        go2.onclick    = function(){
+        
+              process2(src2.value);
+  
+        }//onclick
+        
+        
+        async function process2(src){
+        
+              var mod   = await import(src);
+              var str   = '';
+              for(var key in mod){
+              
+                    var s1    = '[ null ]';
+                    if(mod[key]){
+                          var s     = mod[key].toString();
+                          s1        = s.slice(0,80);
+                          if(s.length>s1.length){
+                                s1   += ' ...';
+                          }
+                    }
+                    str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
                     
-                    go2.onclick    = function(){
-                    
-                          process2(src2.value);
-      
-                    }//onclick
-                    
-                    
-                    async function process2(src){
-                    
-                          var mod   = await import(src);
-                          var str   = '';
-                          for(var key in mod){
-                          
-                                var s     = mod[key].toString();
-                                var s1    = s.slice(0,80);
-                                if(s.length>s1.length){
-                                      s1   += ' ...';
-                                }
-                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
-                                
-                          }//for
-                          
-                          
-                          var nitem   = item2.cloneNode(true);
-                          
-                          var $   = nitem.querySelector.bind(nitem);
-                          $('#url').textContent       = src;
-                          $('#values').textContent    = str;
-                          
-                          output2.append(nitem);
-                          
-                    }//process
+              }//for
+              
+              
+              var nitem   = item2.cloneNode(true);
+              
+              var $   = nitem.querySelector.bind(nitem);
+              $('#url').textContent       = src;
+              $('#values').textContent    = str;
+              
+              output2.append(nitem);
+              
+        }//process
                     
               </script>
+
+              <script>
               
+        var {init,parse}    = await import('https://unpkg.com/es-module-lexer?module');
+        
+        async function detect(code){
+        
+              await init();
+          
+              var [imports,exports] = parse(code);
+          
+              var isESM         = imports.length>0 || exports.length>0;
+              var isCommonJS    = /require\(|module\.exports|exports\./.test(code);
+              
+              var isNode        = /process\.|__dirname|require\(/.test(code);
+              var isBrowser     = /window\.|document\.|navigator\./.test(code);
+          
+              var type      = 'Unknown';
+              if (isESM){
+                    type    = 'ESM';
+              }else if(isCommonJS){
+                    type    = 'CommonJS';
+              }
+          
+              if(isNode){
+                    type   += ' (Node.js)';
+              else if(isBrowser){
+                    type   += ' (Browser)';
+              }
+          
+              return type;
+              
+        }//detect
+              
+              </script>
+
+
       </body>
       
 </html>
