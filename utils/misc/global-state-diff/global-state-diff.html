@@ -341,18 +341,25 @@
         async function process2(src){
         
               var mod   = await import(src);
+console.log(inspect(mod));
               var str   = '';
               for(var key in mod){
+
               
                     var s1    = '[ null ]';
                     if(mod[key]){
                           var s     = mod[key].toString();
                           s1        = s.slice(0,80);
                           if(s.length>s1.length){
-                                s1   += ' ...';
+                                s1   += ` ... ( ${s.length} )`;
                           }
                     }
+                    
+                    
                     str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+
+
+
                     
               }//for
               
