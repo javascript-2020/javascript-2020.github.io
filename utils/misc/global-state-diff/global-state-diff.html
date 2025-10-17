@@ -138,6 +138,46 @@
                  the following can be used when the you want to find out what is returned from an ESM import statement
               </div>
               
+              <input id=src2 value='https://cdn.jsdelivr.net/npm/codemirror/+esm''>
+              <input id=go2 value=go type=button>
+              
+              <div id=output2>
+                    <div id=item2>
+                          <div id=url>
+                          </div>
+                          <div id=values>
+                          </div>
+                    </div>
+              </div>
+
+              <script>
+              
+                    var item2    = document.body.querySelector('#item2');
+                    item2.remove();
+                    
+                    go2.onclick    = function(){
+                    
+                          process2(src2.value);
+      
+                    }//onclick
+                    
+                    
+                    async function process2(src){
+                    
+                          var mod   = await import(src);
+                          var str   = JSON.stringify(mod,null,4);
+                          
+                          var nitem   = item2.cloneNode(true);
+                          
+                          var $   = nitem.querySelector.bind(nitem);
+                          $('#url').textContent       = src;
+                          $('#values').textContent    = str;
+                          
+                          output2.append(nitem);
+                          
+                    }//process
+                    
+              </script>
               
       </body>
       
