@@ -117,6 +117,21 @@
 
         }//resolve        
         
+
+  //:
+  
+  
+        function hello(req,res){
+          
+              res.writeHead(200,{'content-type':'text/html'});
+              res.end(`
+              
+                    <h3>hello</h3>
+                    
+              `);
+              
+        }//hello
+        
         
         function favicon(req,res){
         
@@ -127,6 +142,9 @@
               
         }//favicon
         
+        
+  //:
+  
         
         function mime(fn){
         
