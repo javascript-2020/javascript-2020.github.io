@@ -9,7 +9,7 @@
         
               if(req.url=='/index.html'){
                     res.writeHead(200,{'content-type':'text/html'});
-                    res.end(fs.readFileSync('index.html','utf'));
+                    res.end(fs.readFileSync('index.html','utf8'));
                     return;
               }
 
