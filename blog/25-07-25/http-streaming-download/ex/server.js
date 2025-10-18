@@ -6,6 +6,13 @@
         
         function request(req,res){
         
+              if(req.url=='/index.html'){
+                    res.writeHead(200,{'content-type':'text/html'});
+                    res.end(fs.readFileSync('index.html','utf'));
+                    return;
+              }
+
+              
               var c   = 0;
               fn();
               
