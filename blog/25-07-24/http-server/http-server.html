@@ -138,8 +138,17 @@
     {max-width:1400px;width:100%;padding:0 20px;}
 
 
+  #snippet-root
+    {border:1px solid lightblue;padding:10px}
+    
   iframe
     {height:500px;border:1px solid lightgray;box-sizing:border-box;margin:10px}
+
+
+  input
+    {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  input[type=button]
+    {cursor:pointer}
     
             </style>
             
@@ -164,8 +173,16 @@
             </p>
 
 
-            <snippet-terminal-console id=snippet type=nodejs component v2.0 src='ex/ex1.js'>
-            </snippet-terminal-console>
+            <div id=snippet-root>
+            
+                  <div id=btns>
+                        <input value=download type=button>
+                  </div>
+                  
+                  <snippet-terminal-console id=snippet type=nodejs component v2.0 src='ex/ex1.js'>
+                  </snippet-terminal-console>
+                  
+            </div>
 
             
             <iframe></iframe>
@@ -176,19 +193,40 @@
       <script>
       
 
+        var btn   = {};
         var on    = {};
+        
         
   //:
   
   
         function initdom(rootnode){
         
-        
+
+              $('[value=download]').onclick           = btn.download;
+              
+              
               snippet.initdom();
               
         
         }//initdom
-        
+
+
+  //:
+  
+  
+        btn.download    = function(){
+          
+              var txt       = snippet.editor.getvalue();
+              var blob      = new Blob([txt]);
+              var url       = window.URL.createObjectURL(blob);
+              
+              var a         = document.createElement('a');
+              a.download    = 'http-example-server.js';
+              a.href        = url;
+              a.click();
+              
+        }//download
         
   //:
   
