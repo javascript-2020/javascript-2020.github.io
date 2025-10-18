@@ -22,13 +22,6 @@
               }
               
               
-              var abs   = resolve(req.url);
-              if(!abs){
-                    badrequest(req,res);
-                    return;
-              }
-
-              
               var handled   = true;
               
               switch(req.url){
@@ -41,7 +34,13 @@
               }//switch
               
               if(handled)return;
-              
+
+
+              var abs   = resolve(req.url);
+              if(!abs){
+                    badrequest(req,res);
+                    return;
+              }
               
               if(!fs.existsSync(abs)){
                     notfound(req,res);
