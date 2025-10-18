@@ -1,6 +1,5 @@
             
-        var fs    = require('fs');
-        
+
         require('http').createServer(request).listen(3000);
                                                                                 console.log('http://localhost:3000');
 
@@ -36,10 +35,11 @@
               }
 
 
+
               if(req.url=='/setup'){
                                                                                 console.log(req.url);
                     res.writeHead(200,{'content-type':'text/html'});
-                    res.end(fs.readFileSync('setup','utf8'));
+                    res.end(require('fs').readFileSync('setup','utf8'));
                     return;
               }
 
