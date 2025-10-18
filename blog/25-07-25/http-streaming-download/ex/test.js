@@ -2,7 +2,7 @@
       <h3>test stream</h3>
       
       <style>
-        #output   {white-space:pre;font-family:monospace;font-size:16px}
+        #output   {white-space:pre;font-family:monospace;font-size:16px;padding:0 50px}
       </style>
       
       <div id=output>
@@ -10,6 +10,7 @@
       
       <script>
             
+            output.textContent    = '';
             var log   = (...args)=>((output.textContent+=args.join(' ')+'\n') && console.log.apply(console,args));
             
             (async()=>{
