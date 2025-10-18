@@ -127,7 +127,20 @@
             <link rel=stylesheet href='/blog/css/blog.css'>
 
             <style>
-            
+
+  html
+    {height:100%;font-family:arial}
+  body
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;margin:20px;align-items:center;
+      padding-bottom:200px;
+    }
+  body>*
+    {max-width:1400px;width:100%;padding:0 20px;}
+
+
+  iframe
+    {width:100%;height:500px}
+    
             </style>
             
       </head>
@@ -149,8 +162,10 @@
 
             <snippet-terminal-console id=snippet type=nodejs component v2.0 src='ex/ex1.js'>
             </snippet-terminal-console>
+
             
-            
+            <iframe></iframe>
+
       
       </body>
       
@@ -176,6 +191,8 @@
   
         on['server-ready']    = function(port,url){
                                                                                 console.log('server-ready',port,url);
+              $('iframe').src   = `${url}/hello`;
+              
         }//server-ready
         
         
