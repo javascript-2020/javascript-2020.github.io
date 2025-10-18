@@ -1,5 +1,6 @@
             
-            
+        var fs    = require('fs');
+        
         require('http').createServer(request).listen(3000);
         console.log('http://localhost:3000');
         
