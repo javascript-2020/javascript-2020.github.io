@@ -6,19 +6,22 @@
 
         function stream(req,res){
                                                                                 console.log(req.url);
-              var c   = 1;
+              var c       = 1;
+              var max     = 20;
+              var delay   = 1000;
+              
               fn();
               
               
               function fn(){
                                                                                 console.log('stream',c);
                     res.write('hello '+c);
-                    if(c==5){
+                    if(c==max){
                           res.end();
                           return;
                     }
                     c++;
-                    setTimeout(fn,500);
+                    setTimeout(fn,delay);
                     
               }//fn
               
