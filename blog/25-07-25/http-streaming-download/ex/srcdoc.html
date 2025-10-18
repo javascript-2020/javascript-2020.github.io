@@ -11,6 +11,35 @@
       
       </body>
       
+      <script>
+
+(()=>{
+  
+            var console   = {};
+            console.log   = (...args)=>{window.parent.postMessage({type:'log',args},'*');window.console.log.apply(window.console,args)};
+            
+            window.onmessage    = e=>{
+              
+                  var json    = e.data;
+                  switch(json.type){
+                    
+                    case 'run'    : run(json.js);       break;
+                    
+                  }//switch
+                  
+            }//onmessage
+            
+            
+            function run(js){
+              
+                  eval(js);
+                  
+            }//run
+            
+})();
+
+      </script>
+      
       
       
       
