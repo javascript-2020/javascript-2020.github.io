@@ -68,6 +68,7 @@
         var code;
         var debug;
 
+
         var ace;
         
         var menu;
@@ -75,6 +76,8 @@
         var server;
         var test;
 
+        var log;
+        
         
     //:
 
@@ -87,13 +90,16 @@
 
               server    = mod.server;
               test      = mod.test;
+              log       = mod.log;
               
               server.initmod({ext,$,menu,ace,on});
               test.initmod({ext,$,menu,ace});
+              log.initmod({ext,$});
               
               await Promise.all([
                     server.init(),
                     test.init(),
+                    log.init(),
               ]);
               
 
@@ -154,7 +160,16 @@
   #description
     {margin:0 0 20px}
     
+    
+  iframe
+    {width:100%;height:300px;box-sizing:border-box;border:1px solid lightgray}
+    
+  input
+    {font-size:16px;padding:5px 7px;box-sizing:border-box;}
+  input[type=button]
+    {cursor:pointer}
 
+    
             </style>            
             
       </head>
@@ -183,10 +198,21 @@
             <snippet-terminal-console id=server type=nodejs component v2.0 src='ex/server.js'>
             </snippet-terminal-console>
             
+            <div id=file>
             
-            <snippet-console id=test component v2.0 src='ex/test.js'>
-            </snippet-console>
+                  <editor id=test component v2.0 src='ex/test.js'>
+                  </editor>
+                  
+                  <div id=btns>
+                        <input value=run type=button>
+                  </div>
+                  
+                  <iframe></iframe>
+                  
+            </div>
             
+            
+            <log component v2.0></log>
             
       </body>
       
@@ -194,6 +220,16 @@
       <script>
 
 
+        var webcontainer;
+        var url;
+        
+        
+        var file;
+        var iframe;
+        
+        
+
+        var btn     = {};        
         var on      = {};
         on.before   = {};
         
@@ -203,21 +239,57 @@
   
         function initdom(rootnode){
           
-          
-              server.initdom({fullsize:true});
-              test.initdom({fullsize:true});
+              var root                              = rootnode;
+
               
+              server.initdom({fullsize:true});
+              server.terminal.height    = 100;
+
+              
+              file                                  = $(root,'#file');
+              test.initdom({fullsize:true});
+              $(file,'[value=run]').onclick         = btn.run;
+              iframe                                = $(root,'iframe');
+
+        
+              log.initdom(root);
+
               
         }//initdom
         
         
   //:
   
-  
-        on.init   = async function({webcontainer}){
+
+        btn.run   = function(){
           
-              console.log('init',webcontainer);
+              if(!webcontainer){
+                    log.red('web container instance unavailable');
+                    return;
+              }
               
+              var js      = test.getvalue();
+              
+              var html    = file['index.html'];
+              html       += `<script>${js}</scr`+`ipt>`;
+              
+              webcontainer.fs.writeFile('index.html',html);
+              
+              //iframe.remove();
+              //iframe        = iframe.cloneNode(true);
+              iframe.src    = `${url}/index.html`;
+              //file.append(iframe);
+              
+        }//run
+        
+        
+  //:
+  
+  
+        on.init   = async function({webcontainer:wc}){
+          
+              webcontainer    = wc;
+                                                                                console.log('init',webcontainer);
               var files   = {'index.html':{file:{contents:file['index.html']}}};
               await webcontainer.mount(files);
               
@@ -232,9 +304,11 @@
         }//on.run
         
         
-        on['server-ready']   = function({port,url}){
-          
-              console.log('server-ready',port,url);
+        on['server-ready']   = function({port,url:url2}){
+                                                                                console.log('server-ready',port,url);
+              url   = url2;
+              
+              iframe.src    = `${url}/index.html`;
               
         }//server-ready
         
