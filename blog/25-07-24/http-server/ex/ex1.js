@@ -85,7 +85,7 @@
   //:
   
   
-        request.bad   = function(req,res){
+        function badrequest(req,res){
         
               res.writeHead(400);
               res.end(`${req.url} bad request`);
@@ -93,7 +93,7 @@
         }//bad
         
         
-        request.notfound    = function(req,res){
+        function notfound(req,res){
         
               res.writeHEad(400);
               res.end(`${req.url} not found`);
