@@ -111,6 +111,7 @@
                                                                                 resolve.df && console.log('url :',url);
                                                                                 resolve.df && console.log('docroot :',docroot);
               url         = decodeURI(url);
+              url         = url.slice(1);
                                                                                 resolve.df && console.log('url :',url);
               var p2      = path.resolve(docroot);
                                                                                 resolve.df && console.log('p2 :',p2);
