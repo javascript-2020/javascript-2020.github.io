@@ -264,7 +264,7 @@
   
 
         btn.run   = async function(){
-          
+                                                                                console.log('btn.run');
               if(!webcontainer){
                     log.red('web container instance unavailable');
                     return;
@@ -274,13 +274,10 @@
               
               var html    = file['index.html'];
               html       += `<script>${js}</scr`+`ipt>`;
-              
-              await webcontainer.fs.writeFile('index.html',html);
-              
-              //iframe.remove();
-              //iframe        = iframe.cloneNode(true);
+                                                                                console.log('write');
+              await webcontainer.fs.writeFile('index.html',html); 
+                                                                                console.log('load');
               iframe.src    = `${url}/index.html`;
-              //file.append(iframe);
               
         }//run
         
@@ -326,12 +323,6 @@
   //:
   
   
-        var file    = {};
-        file['index.html']    = `
-        
-              <h3>index.html</h3>
-              
-        `;
         
       </script>
       
