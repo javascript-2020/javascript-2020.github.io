@@ -19,7 +19,7 @@
   window.console.log('srcdoc');
   
             var console   = {};
-            console.log   = (...args)=>{window.parent.postMessage({type:'log',args},'*');window.console.log.apply(window.console,args)};
+            console.log   = (...args)=>window.parent.postMessage({type:'log',args},'*');
             
             window.onmessage    = e=>{
                                                             window.console.log('rec',e.data);
