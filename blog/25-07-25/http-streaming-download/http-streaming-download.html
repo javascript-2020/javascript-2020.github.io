@@ -130,6 +130,8 @@
   
         code.initmod({ext,$,datatype,menumod});
         
+        [srcdoc]    = await ext.text.github('javascript-2020:javascript-2020.github.io:main:blog/25-07-25/http-streaming-download/ex/srcdoc.html');
+        
         mod.stack.complete;
               
 })();
@@ -192,18 +194,22 @@
             </blog-hdr>
 
       
-
-
             <p id=description>
                   Explore HTTP streaming downloads with this hands-on tutorial featuring editable, runnable code examples you can try directly in your browser.
             </p>
 
-            <div class=filename>
-                  server.js
-            </div>
 
-            <snippet-terminal-console id=server type=nodejs component v2.0 src='ex/server.js'>
-            </snippet-terminal-console>
+            <div id=server-root>
+            
+                  <div class=filename>
+                        server.js
+                  </div>
+      
+                  <snippet-terminal-console id=server type=nodejs component v2.0 src='ex/server.js'>
+                  </snippet-terminal-console>
+                  
+            </div>
+            
             
             <div id=file>
             
@@ -216,6 +222,7 @@
                   
                   <div id=btns>
                         <input value=run type=button>
+                        <input value=msg type=button>
                   </div>
                   
                   <iframe></iframe>
@@ -234,7 +241,7 @@
         var webcontainer;
         var url;
         
-        
+        var srcdoc;
         var file;
         var iframe;
         
@@ -258,11 +265,12 @@
 
               
               file                                  = $(root,'#file');
-              test.initdom({mode:'html',fullsize:true});
+              test.initdom({mode:'js',fullsize:true});
               $(file,'[value=run]').onclick         = btn.run;
               iframe                                = $(root,'iframe');
 
-        
+              $(file,'[value=msg]').onclick         = btn.msg;
+              
               log.initdom(root);
 
               
@@ -272,6 +280,18 @@
   //:
   
 
+        window.onmessage    = e=>{
+              
+              var json    = e.data;
+              switch(json.type){
+                
+                case 'log'    : console.log.apply(console,json.args);       break;
+                
+              }//switch
+              
+        }//onmessage
+        
+        
         btn.run   = async function(){
                                                                                 console.log('btn.run');
               if(!webcontainer){
@@ -279,14 +299,19 @@
                     return;
               }
               
-              var html    = test.getvalue();
+              var js    = test.getvalue();
               
                                                                                 console.log('write');
-              await webcontainer.fs.writeFile('index.html',html); 
+              iframe.contentWindow.postMessage({type:'run',js},'*');
                                                                                 console.log('load');
-              iframe.src    = `${url}/index.html`;
-              
         }//run
+        
+        
+        btn.msg   = function(){
+          
+              //iframe.contentWindow.postMessage(,'*');
+              
+        }//msg
         
         
   //:
@@ -296,7 +321,7 @@
           
               webcontainer    = wc;
                                                                                 console.log('init',webcontainer);
-              var files   = {'index.html':{file:{contents:file['index.html']}}};
+              var files   = {'index.html':{file:{contents:srcdoc}}};
               await webcontainer.mount(files);
               
               console.log('init complete');
@@ -313,7 +338,8 @@
         on['server-ready']   = function({port,url:url2}){
                                                                                 console.log('server-ready',port,url2);
               url   = url2;
-              btn.run();
+              
+              iframe.src    = `${url}/index.html`;
               
         }//server-ready
         
