@@ -1,3 +1,5 @@
+<script>
+
 (async()=>{
 
         var res       = await fetch('/');
@@ -15,3 +17,5 @@
         console.log('done');
         
 })();
+
+</script>
