@@ -359,7 +359,7 @@
                                                                                 console.log('server-ready',port,url2);
               url   = url2;
               
-              iframe.src    = `${url}/index.html`;
+              iframe.src    = `${url}/setup`;
               
         }//server-ready
         
@@ -380,7 +380,7 @@
   
               var fs        = require('fs');
               var http      = require('http');
-              var server    = http.createServer(request);
+              var server    = http.createServer(request)
               var list      = [];
               
               var emit      = server.emit;
@@ -395,6 +395,7 @@
               }//emit
 
               http.createServer   = function(opts,listener){
+                console.log('override');
                 
                     if(arguments.length==1){
                           listener    = opts;
@@ -410,7 +411,7 @@
               function request(req,res){
                                                                       console.log('sandbox',req.url);
                     if(req.url=='/setup'){
-                          var html    = fs.readFileSync('/index.html','utf8');
+                          var html    = fs.readFileSync('/setup','utf8');
                           res.writeHead(200,{'content-type':'text/html'});
                           res.end(html);
                           return;
