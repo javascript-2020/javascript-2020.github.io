@@ -31,8 +31,9 @@
               var handled   = true;
               
               switch(req.url){
-              
-                case '/favicon.ico'   : favicon(req,res);
+
+                case '/hello'         : hello(req,res);         break;              
+                case '/favicon.ico'   : favicon(req,res);       break;
                 
                 default               : handled   = false;
                 
