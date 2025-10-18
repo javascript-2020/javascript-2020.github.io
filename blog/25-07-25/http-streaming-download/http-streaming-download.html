@@ -75,6 +75,7 @@
             
         var server;
         var test;
+        var con;
 
         var log;
         
@@ -90,15 +91,18 @@
 
               server    = mod.server;
               test      = mod.test;
+              con       = mod.console;
               log       = mod.log;
               
               server.initmod({ext,$,menu,ace,on});
               test.initmod({ext,$,menu,ace});
+              con.initmod({ext,$,ace});
               log.initmod({ext,$});
               
               await Promise.all([
                     server.init(),
                     test.init(),
+                    con.init(),
                     log.init(),
               ]);
               
@@ -166,7 +170,7 @@
     {margin:20px 0;}
     
   iframe
-    {width:100%;height:300px;box-sizing:border-box;border:1px solid lightgray}
+    {display:none;width:100%;height:300px;box-sizing:border-box;border:1px solid lightgray}
     
   input
     {font-size:16px;padding:5px 7px;box-sizing:border-box;}
@@ -222,13 +226,13 @@
                   
                   <div id=btns>
                         <input value=run type=button>
-                        <input value=msg type=button>
                   </div>
                   
-                  <iframe></iframe>
+                  <console component v2.0 h=150>/console>
                   
             </div>
             
+            <iframe></iframe>
             
             <log component v2.0></log>
             
@@ -267,6 +271,8 @@
               file                                  = $(root,'#file');
               test.initdom({mode:'js',fullsize:true});
               $(file,'[value=run]').onclick         = btn.run;
+              con.initdom();
+              
               iframe                                = $(root,'iframe');
 
               $(file,'[value=msg]').onclick         = btn.msg;
@@ -285,8 +291,8 @@
               var json    = e.data;
               switch(json.type){
                 
-                case 'log'    : console.log.apply(console,json.args);       break;
-                
+                case 'log'    : con.log.apply(con,args);        break;
+                                
               }//switch
               
         }//onmessage
