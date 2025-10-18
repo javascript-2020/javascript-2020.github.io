@@ -69,8 +69,11 @@
         var keydown;
         var code;
         var debug;
+
+        
+        var menu;
             
-        var server;
+        var editor;
 
         
     //:
@@ -81,21 +84,14 @@
               
               menu    = menumod();
 
-              server    = mod.server;
-              
-              server.initmod({ext,$,menu,ace});
-              
-              await server.init();
 
-              /*
-              server.on['server-ready']   = function(port,url){
-                                                                                console.log(port,url);
-                    iframe.src    = url+'/test';
-                    
-              }//run
-              */
-
+              editor    = mod.editor;
               
+              editor.initmod({ext,$,menu,ace});
+              
+              await editor.init();
+
+
               initdom(document.body);
 
               
@@ -232,8 +228,9 @@
                         <input value=download type=button>
                   </div>
             
-                  <editor id=server type=nodejs component v2.0 src='ex/ex1.js'>
+                  <editor component v2.0 src='ex/ex1.js'>
                   </editor>
+                  
                   
             </div>
 
@@ -257,8 +254,10 @@
         function initdom(rootnode){
           
               $('[value=download]').onclick                 = btn.download;
+
               
-              server.initdom(rootnode,{fullsize:true});
+              editor.initdom({fullsize:true});
+
               
         }//initdom
         
