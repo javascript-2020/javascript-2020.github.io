@@ -2,7 +2,7 @@
 
 (async()=>{
 
-        var res       = await fetch('/');
+        var res       = await fetch('/stream');
         
         var stream    = new TextDecoderStream();
         var reader    = res.body.pipeThrough(stream).getReader();
