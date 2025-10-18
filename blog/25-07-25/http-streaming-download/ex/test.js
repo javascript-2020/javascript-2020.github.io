@@ -32,3 +32,14 @@
             })();
       
       </script>
+      
+      <script>
+      
+            window.onmessage    = e=>{
+            
+                  console.log('rec',e.data);
+                  
+            };
+            
+            
+      </script>
