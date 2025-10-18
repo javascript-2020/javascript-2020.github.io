@@ -10,7 +10,7 @@
       
       <script>
             
-            var log   = (...args)=>(output.textContent+=args.join(' ')+'\n' && console.log.apply(console,args));
+            var log   = (...args)=>((output.textContent+=args.join(' ')+'\n') && console.log.apply(console,args));
             
             (async()=>{
             
