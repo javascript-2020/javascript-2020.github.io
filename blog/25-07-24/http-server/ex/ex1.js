@@ -7,8 +7,11 @@
         var img   = {};
         
         
+        var host      = '127.0.0.1';
+        var port      = 3001;
+        
         var server    = require('http').createServer(request).listen({host,port});
-        console.log(`http://localhost:${port}`);
+                                                                                console.log(`http://${host}:${port}/`);
         
         
         function request(req,res){
@@ -25,19 +28,17 @@
               }
 
               
-              var f   = true;
+              var handled   = true;
               
               switch(req.url){
               
                 case '/favicon.ico'   : favicon(req,res);
                 
-                default               : f   = false;
+                default               : handled   = false;
                 
               }//switch
               
-              if(f){
-                    return;
-              }
+              if(handled)return;
               
               
               if(!fs.existsSync(abs)){
@@ -54,7 +55,10 @@
               
         }//request
         
-        
+
+  //:
+  
+  
         function cors(req,res){
         
               cors.headers(res);
@@ -75,7 +79,10 @@
               
         }//headers
         
-        
+  
+  //:
+  
+  
         request.bad   = function(req,res){
         
               res.writeHead(400);
@@ -91,7 +98,10 @@
               
         }//notfound
         
-        
+  
+  //:
+  
+  
         function resolve(url,docroot='.'){
 
               url         = decodeURI(url);
