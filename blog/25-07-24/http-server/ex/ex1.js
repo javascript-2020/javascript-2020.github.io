@@ -104,7 +104,7 @@
   //:
 
   
-        resolve.df    = true;
+        resolve.df    = false;
         
         function resolve(url,docroot='.'){
                                                                                 resolve.df && console.log('=== resolve ===');
@@ -134,21 +134,6 @@
 
         }//resolve
 
-/*  
-        function resolve(url,docroot='.'){
-
-              url         = decodeURI(url);
-              var p2      = path.resolve(docroot);
-              var file    = path.resolve(docroot,url);
-              var s       = file.substring(0,p2.length);
-              var p1      = path.resolve(s);
-              if(p1!==p2){
-                    return false;
-              }
-              return file;
-
-        }//resolve        
-*/        
 
   //:
   
