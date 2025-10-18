@@ -102,8 +102,38 @@
         
   
   //:
+
   
-  
+        resolve.df    = true;
+        
+        function resolve(url,docroot='.'){
+                                                                                resolve.df && console.log('=== resolve ===');
+                                                                                resolve.df && console.log('url :',url);
+                                                                                resolve.df && console.log('docroot :',docroot);
+              url         = decodeURI(url);
+                                                                                resolve.df && console.log('url :',url);
+              var p2      = path.resolve(docroot);
+                                                                                resolve.df && console.log('p2 :',p2);
+              var file    = path.resolve(docroot,url);
+                                                                                resolve.df && console.log('file :',file);
+              var s       = file.substring(0,p2.length);
+                                                                                resolve.df && console.log('s :',s);
+              var p1      = path.resolve(s);
+                                                                                resolve.df && console.log('p1 :',p1);
+              if(p1!==p2){
+                                                                                resolve.df && console.log('fail');
+                    return false;
+              }
+              
+              if(url.endsWith('/')){
+                    file   += '/';
+              }
+                                                                                resolve.df && console.log('ok',file);
+              return file;
+
+        }//resolve
+
+/*  
         function resolve(url,docroot='.'){
 
               url         = decodeURI(url);
@@ -117,7 +147,7 @@
               return file;
 
         }//resolve        
-        
+*/        
 
   //:
   
