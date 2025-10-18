@@ -376,6 +376,8 @@
   
         function instrument(){
         
+(()=>{
+  
               var fs        = require('fs');
               var http      = require('http');
               var server    = http.createServer(request);
@@ -406,7 +408,7 @@
               
               
               function request(req,res){
-                
+                                                                      console.log('sandbox',req.url);
                     if(req.url=='/setup'){
                           var html    = fs.readFileSync('/index.html','utf8');
                           res.writeHead(200,{'content-type':'text/html'});
@@ -425,7 +427,9 @@
                     }//for
                       
               }//request
-                                  
+              
+})();
+
         }//instrument
 
 
