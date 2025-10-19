@@ -208,15 +208,19 @@
         }//query
         
         
-        query.html    = function(fn){
+        query.html    = async function(fn){
           
               var dom   = document.createElement('snippet-html-console');
+              dom.setAttribute('id','test');
               dom.toggleAttribute('component',true);
               dom.toggleAttribute('v2.0',true);
               dom.setAttribute('src',fn);
               
               document.body.append(dom);
-              mod.build(mod,dom);
+              await mod.build({root:dom,mod});
+              mod.test.initmod({ext,$,menu,ace});
+              await mod.test.init();
+              mod.test.initdom();
               
         }//html
         
