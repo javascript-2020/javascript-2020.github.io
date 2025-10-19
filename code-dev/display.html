@@ -79,7 +79,10 @@
 
 
               initdom(document.body);
-              query();
+              
+              
+              var fn    = '25-10-19/webcontainer-service-worker/ex/webcontainer-service-worker.html';
+              query(fn);
 
               
         }//init
@@ -180,20 +183,42 @@
         }//initdom
         
         
-        async function query(){
+        async function query(fn){
           
-              var url   = window.location.toString();
-              var i     = url.lastIndexOf('?');
-              if(i==-1){
-                    return;
+              if(!fn){
+                    var url   = window.location.toString();
+                    var i     = url.lastIndexOf('?');
+                    if(i==-1){
+                          return;
+                    }
+                    var b64   = url.slice(i+1);
+                    fn        = atob(b64);
               }
-              var b64   = url.slice(i+1);
-              var fn    = atob(b64);
-                                                                                console.log(fn);
-              var [txt]    = await ext.load.github(`javascript-2020:javascript-2020.github.io:main:/code-dev/${fn}`);              
-              console.log(txt);
+              var i     = fn.lastIndexOf('.');
+              var ext   = fn.slice(i+1);
+                                                                                console.log(ext,fn);
+              var [txt]    = await ext.text.github(`javascript-2020:javascript-2020.github.io:main:/code-dev/${fn}`);              
+                                                                                //console.log(txt);
+              switch(ext){
+                
+                case 'html'   : query.html(fn,html);        break;
+                
+              }//switch
               
         }//query
+        
+        
+        query.html    = function(fn,html){
+          
+              var dom   = document.createElement('snippet-html-console');
+              dom.toggleAttrbiute('component',true);
+              dom.toggleAttrbiute('v2.0',true);
+              dom.setAttribute('src',fn);
+              
+              document.body.append(dom);
+              mod.build(mod,dom);
+              
+        }//html
         
         
   //:
