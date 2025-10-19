@@ -324,9 +324,8 @@
               var i1    = s.indexOf('{');
               var i2    = s.lastIndexOf('}');
               var pre   = s.slice(i1+1,i2);
-              console.clear();
-              console.log(pre);
-              
+                                                                                //console.clear();
+                                                                                //console.log(pre);
               var js    = server.editor.getvalue();
 
               js        = pre+js;
@@ -341,7 +340,8 @@
           
               webcontainer    = wc;
                                                                                 console.log('init',webcontainer);
-              var files   = {'setup':{file:{contents:srcdoc}}};
+                                                                                //console.log(srcdoc);
+              var files   = {'setup.html':{file:{contents:srcdoc}}};
               await webcontainer.mount(files);
               
               console.log('init complete');
@@ -359,7 +359,7 @@
                                                                                 console.log('server-ready',port,url2);
               url   = url2;
               
-              iframe.src    = `${url}/setup`;
+              iframe.src    = `${url}/setup.html`;
               
         }//server-ready
         
@@ -383,6 +383,18 @@
               var server    = http.createServer(request)
               var list      = [];
               
+              var on        = server.on;
+              server.on     = function(event,listener){
+                
+                    if(event==='request'){
+                          list.push(args[1]);
+                          return;
+                    }
+                    return on.apply(server,arguments);
+                    
+              }//on
+
+/*              
               var emit      = server.emit;
               server.emit   = function (event,...args){
                 
@@ -394,6 +406,7 @@
                     return emit.call(this,event,...args);
                     
               }//emit
+*/
 
               http.createServer   = function(opts,listener){
                 console.log('override');
@@ -411,8 +424,8 @@
               
               function request(req,res){
                                                                       console.log('sandbox',req.url);
-                    if(req.url=='/setup'){
-                          var html    = fs.readFileSync('/setup','utf8');
+                    if(req.url=='/setup.html'){
+                          var html    = fs.readFileSync('setup.html','utf8');
                           res.writeHead(200,{'content-type':'text/html'});
                           res.end(html);
                           return;
