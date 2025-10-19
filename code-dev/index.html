@@ -48,7 +48,9 @@
 
 
         var ace;
-
+        var jdenticon
+        
+        
         var menu;
 
 
@@ -65,7 +67,12 @@
               menu    = menumod();
 
 
+              log     = mod.log;
               
+              log.initmod({});
+              
+              await log.init();
+
 
               initdom(document.body);
 
@@ -93,9 +100,10 @@
         [$,datatype,menumod,keydown,code,debug]   = await promise;
   
         code.initmod({ext,$,datatype,menumod});
-        
-        [srcdoc]    = await ext.text.github('javascript-2020:javascript-2020.github.io:main:blog/25-07-25/http-streaming-download/ex/srcdoc.html');
-        
+
+
+        jdenticon   = await import('https://cdn.jsdelivr.net/npm/jdenticon/+esm');
+
         mod.stack.complete;
               
 })();
@@ -117,6 +125,13 @@
     }
   body>*
     {max-width:1400px;width:100%;padding:0 20px;}
+
+
+  a
+    {display:flex;align-items:center;cursor:pointer;gap:20px}
+  a>img
+    {width:20px;height:20px;margin-left:20px}
+
     
             </style>
             
@@ -125,7 +140,7 @@
             
       <body>
 
-
+<!--
             <blog-hdr component=grp1 v2.0>      
                   <h1 class=title>
                         code-dev
@@ -134,12 +149,22 @@
                         19 Oct 2025
                   </time>
             </blog-hdr>
+-->            
 
       
             <p id=description>
                   Dont expect explanations, tutorials — just raw, readable snippets. Think of it as a scratchpad, a stream, a place to muse through ideas in motion. Every listing is runnable and editable, so you can poke around, learn something new, or take it somewhere else.
             </p>
 
+
+
+            <a href='25-10-19/webcontainer-service-worker/webcontainer-service-worker.html'>
+                  <span class=date>
+                  </span>
+                  <img>
+                  <span class=title>
+                  </span>
+            </a>
 
 
 
@@ -155,6 +180,34 @@
   
   
         function initdom(rootnode){
+          
+          
+          
+              var list    = rootnode.querySelectorAll('a');
+              list.forEach(a=>{
+                
+                      var href    = a.getAttribute('href');
+                      var b64     = btoa(href);
+                      var i       = href.indexOf('/');
+                      var date    = href.slice(0,i);
+                      $(a,'.date').textContent    = date;
+                      var i       = href.lastIndexOf('/');
+                      var fn      = href.slice(i+1);
+                      $(a,'.title').textContent   = fn;
+                      
+                      var svg       = jdenticon.toSvg(href,30);
+                      var dataurl   = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+                      $(a,'img').src    = dataurl;
+                      
+                      a.onclick   = e=>{
+                        
+                            e.preventDefault();
+                            //window.location   = `display.html?${b64}`;
+                            
+                      }//onclick
+                      
+              });
+          
         }//initdom
         
         
