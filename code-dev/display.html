@@ -73,7 +73,7 @@
 
               log     = mod.log;
               
-              log.initmod({});
+              log.initmod({ext,$});
               
               await log.init();
 
@@ -170,13 +170,27 @@
         function initdom(rootnode){
           
 
-
+              
           
               log.initdom();
               log.ok('ok');
         
           
         }//initdom
+        
+        
+        function query(){
+          
+              var url   = window.location.toString();
+              var i     = url.lastIndexOf('?');
+              if(i==-1){
+                    return;
+              }
+              var b64   = url.slice(i+1);
+              var fn    = atob(b64);
+              console.log(fn);
+              
+        }//query
         
         
   //:
