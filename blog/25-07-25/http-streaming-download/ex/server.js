@@ -34,15 +34,6 @@
                     return;
               }
 
-
-
-              if(req.url=='/setup'){
-                                                                                console.log(req.url);
-                    res.writeHead(200,{'content-type':'text/html'});
-                    res.end(require('fs').readFileSync('setup','utf8'));
-                    return;
-              }
-
               res.end('[ not found ]');
               
         }//request
