@@ -1,0 +1,214 @@
+
+<div id=root>
+
+      <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+
+
+      <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+      <script src='https://libs.ext-code.com/js/dom/init-hdr/init-hdr.js'></script>
+      
+      <style>
+      
+            html {height:100%}
+            body {height:calc(100% - 40px);margin:20px}
+            #root {display:flex;flex-direction:column;gap:20px;height:100%}
+            #view {display:flex;gap:20px}
+            iframe {flex:1}
+            terminal-root {flex:1}
+            terminal-root::part(root) {height:100%}
+            terminal-root::part(terminal) {height:100%}
+      
+      </style>
+            
+      <div id=view>
+      
+            <iframe id=iframe-3000></iframe>
+            <iframe id=iframe-3001></iframe>
+            
+      </div>
+      
+      
+      <terminal component v2.0></terminal>
+      
+
+      <script>
+      
+      
+(()=>{
+  
+        var console;
+      
+        window['iframe-3001'].onload    = e=>{
+          
+            var js    = `
+                  (async()=>{
+                  
+                          var res       = await fetch('${urls['3000']}/stream');
+                          
+                          var stream    = new TextDecoderStream();
+                          var reader    = res.body.pipeThrough(stream).getReader();
+                                                                                console.log('response stream aquired');
+                          while(true){
+                          
+                                const {value,done}    = await reader.read();
+                                                                                console.log('fetch',value);                                                                          
+                                if(done)break;
+                                
+                          }//while
+                          
+                          console.log('done');
+                          
+                  })();
+            `;
+                                                                                //console.log(js);
+            window['iframe-3001'].contentWindow.postMessage({type:'run',js},'*');
+            
+        }//onload
+        
+        
+        var webcontainer;
+        var urls    = {};
+        
+        
+        window.start    = async function(){
+          
+              console   = mod.terminal;
+
+                                                                                console.clear();
+                                                                                console.log('webcontainer example');
+                                                                                console.log();
+              
+        
+                                                                                console.log('loading ...');
+              var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
+                                                                                console.log('booting ...');
+              webcontainer          = await WebContainer.boot();
+                                                                                console.log('mounting file system ...');
+              await webcontainer.mount(files);
+      
+              webcontainer.on('server-ready',ready);
+                                                                                console.log('launching server ...');
+              spawn('server.js');
+              spawn('test.js');
+              
+        }//start
+
+        
+        window.onmessage    = e=>{
+          
+              var json    = e.data;
+              switch(json.type){
+                
+                case 'log'    : console.log.apply(null,json.args);        break;
+                
+              }//switch
+              
+        }//onmessage
+        
+        
+        async function spawn(fn){
+          
+              var process   = await webcontainer.spawn('node',[fn]);
+              
+              var stream    = new WritableStream({write(data){console.log(data)}});
+              process.output.pipeTo(stream);
+              
+              var code      = await process.exit;
+              if(code!=0){
+                                                                                console.log('an error occurred');
+              }
+              
+        }//spawn
+        
+        
+        function ready(port,url){
+                                                                                console.log('server-ready',port,url);
+            urls[port]    = url;
+            window[`iframe-${port}`].src    = url;
+            
+        }//ready
+
+
+        function fnstr(fn){
+          
+              var s     = fn.toString();
+              var i1    = s.indexOf('{');
+              var i2    = s.lastIndexOf('}');
+              var str   = s.slice(i1+1,i2);
+              return str;
+              
+        }//fnstr
+
+
+
+        var files    = {};
+        
+        files['server.js']   = function(){
+          
+              require('http').createServer(request).listen(3000);
+                                                                                console.log('listening',3000)
+              function request(req,res){
+                                                                                console.log('server.js',req.method,req.url);
+                    res.end('helloworld');
+          
+              }//request
+              
+        }//server.js
+        
+        
+        files['test.js']    = function(){
+          
+              require('http').createServer(request).listen(3001);
+                                                                                console.log('listening',3001)
+              function request(req,res){
+                                                                                console.log('test.js',req.method,req.url);
+                    res.writeHead(200,{'content-type':'text/html'});
+                    res.end(`
+                          <h3>test.js</h3>
+                          <script>                    
+                          (()=>{  
+                            
+                                      var console   = {};
+                                      console.log   = (...args)=>window.parent.postMessage({type:'log',args},'*');
+                                      
+                                      window.onmessage    = e=>{
+                                                                                      window.console.log('rec',e.data);
+                                            var json    = e.data;
+                                            switch(json.type){
+                                              
+                                              case 'run'    : run(json.js);       break;
+                                              
+                                            }//switch
+                                            
+                                      }//onmessage
+                                      
+                                      
+                                      function run(js){
+                                        
+                                            eval(js);
+                                            
+                                      }//run
+                                      
+                          })();
+                          </scr`+`ipt>                    
+                    `);
+          
+              }//request
+              
+        }//test.js
+        
+
+        for(var[key,fn] of Object.entries(files))files[key]={file:{contents:fnstr(fn)}};
+
+
+})();
+
+
+      </script>
+
+</div root>
+
+
+
+
