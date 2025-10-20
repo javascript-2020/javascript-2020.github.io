@@ -134,6 +134,8 @@
   body>*
     {max-width:1400px;width:100%;padding:0 20px;}
 
+  #info
+    {display:flex;gap:20px}
 
             </style>
             
@@ -142,16 +144,24 @@
             
       <body>
 
-<!--
-            <blog-hdr component=grp1 v2.0>      
+
+            <display-hdr component=page v2.0>      
                   <h1 class=title>
                         code-dev
                   </h1>
                   <time slot=date datetime=2025-10-19>
                         19 Oct 2025
                   </time>
-            </blog-hdr>
--->            
+            </display-hdr>
+            
+            
+            <div id=info>
+                  <div id=date>
+                  </div>
+                  <div id=file>
+                  </div>
+            </div>
+            
 
       
 
@@ -177,7 +187,6 @@
               
           
               log.initdom();
-              log.ok('ok');
         
           
         }//initdom
@@ -185,16 +194,28 @@
         
         async function query(rel){
           
+              var date;
+              var fn;
+              
               if(!rel){
-                    var url   = new URL(window.location.toString());
-                    var date    = url.searchParams.get('date');
-                    var fn      = url.searchParams.get('file');
+                    var url     = new URL(window.location.toString());
+                    date        = url.searchParams.get('date');
+                    fn          = url.searchParams.get('file');
                     var i       = fn.lastIndexOf('.');
                     var dir     = fn.slice(0,i);
                     rel         = `${date}/${dir}/${fn}`;
+              }else{
+                    var i   = rel.indexOf('/');
+                    date    = rel.slice(0,i);
+                    var i   = rel.lastIndexOf('/');
+                    fn      = rel.slice(i+1);
               }
+              
               var i     = rel.lastIndexOf('.');
               var ext   = rel.slice(i+1);
+              
+              $('#date').textContent    = date;
+              $('#file').textContent    = fn;
                                                                                 console.log(ext,fn);
               switch(ext){
                 
