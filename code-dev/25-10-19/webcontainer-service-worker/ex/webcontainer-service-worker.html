@@ -31,6 +31,8 @@
       
       <terminal component v2.0></terminal>
       
+      <console component v2.0></console>
+      
       <log component v2.0></log>
       
 
@@ -41,6 +43,7 @@
 (()=>{
   
         var console;
+        var terminal;
       
         window['iframe-3001'].onload    = e=>{
           
@@ -76,7 +79,8 @@
         
         window.start    = async function(){
           
-              console   = mod.terminal;
+              console     = mod.console;
+              terminal    = mod.terminal;
 
                                                                                 console.clear();
                                                                                 console.log('webcontainer example');
@@ -114,7 +118,7 @@
           
               var process   = await webcontainer.spawn('node',[fn]);
               
-              var stream    = new WritableStream({write(data){console.log(data)}});
+              var stream    = new WritableStream({write(data){terminal.write(data)}});
               process.output.pipeTo(stream);
               
               var code      = await process.exit;
