@@ -16,6 +16,7 @@
                                                                                 console.log('stream',c);
                     res.write('hello '+c);
                     if(c==max){
+                                                                                console.log('stream','done');
                           res.end();
                           return;
                     }
