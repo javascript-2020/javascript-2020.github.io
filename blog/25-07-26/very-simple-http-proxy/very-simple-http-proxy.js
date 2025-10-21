@@ -18,8 +18,10 @@
               }
               
               var req2   = https.request('https://localhost:8006'+req.url,{ca:cert,method:req.method},res2=>{
+                
                     res2.on('data',data=>res.write(data));
                     res2.on('end',()=>res.end());
+                    
               });
               
               req.on('data',data=>req2.write(data));
