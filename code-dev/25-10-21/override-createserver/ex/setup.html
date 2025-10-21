@@ -1,0 +1,48 @@
+
+
+      <style>
+      
+  html
+    {font-family:arial}
+    
+      </style>
+      
+      <body>
+      
+            <h3>srcdoc.html</h3>
+            
+      </body>
+
+      
+      <script>
+
+(()=>{  
+  
+            var console   = {};
+            console.log   = (...args)=>window.parent.postMessage({type:'log',args},'*');
+            
+            window.onmessage    = e=>{
+                                                            //window.console.log('rec',e.data);
+                  var json    = e.data;
+                  switch(json.type){
+                    
+                    case 'run'    : run(json.js);       break;
+                    
+                  }//switch
+                  
+            }//onmessage
+            
+            
+            function run(js){
+              
+                  eval(js);
+                  
+            }//run
+            
+})();
+
+      </script>
+      
+      
+      
+      
