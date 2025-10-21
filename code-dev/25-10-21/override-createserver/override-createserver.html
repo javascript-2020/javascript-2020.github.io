@@ -1,0 +1,215 @@
+
+
+
+<div id=root>
+
+
+      <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+
+
+      <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+      <script src='https://libs.ext-code.com/js/dom/init-hdr/init-hdr.js'></script>
+      
+      <style>
+      
+            html {height:700px}
+            body {height:calc(100% - 40px);margin:20px}
+            #root {display:flex;flex-direction:column;gap:20px;height:100%}
+
+
+      </style>
+      
+
+
+            <div id=server-root>
+            
+                  <div class=filename>
+                        server.js
+                  </div>
+      
+                  <snippet-terminal-console id=server type=nodejs component v2.0 src='ex/server.js'>
+                  </snippet-terminal-console>
+                  
+            </div>
+            
+            
+            <div id=file>
+            
+                  <div class=filename>
+                        index.html
+                  </div>
+                  
+                  <editor id=test component v2.0 src='ex/test.js'>
+                  </editor>
+                  
+                  <div id=btns>
+                        <input value=run type=button>
+                  </div>
+                  
+                  <console component v2.0 h=150>/console>
+                  
+            </div>
+            
+            <iframe></iframe>
+            
+            <log component v2.0></log>
+      
+      
+      <script>
+      
+
+        var srcdoc;
+        
+        var server;
+        var test;
+        var con;
+        var log;
+        
+
+        window.start    = async function(){
+          
+              [srcdoc]    = await ext.text.github('javascript-2020:javascript-2020.github.io:main:blog/25-07-25/http-streaming-download/ex/srcdoc.html');
+
+              server    = mod.server;
+              test      = mod.test;
+              con       = mod.console;
+              log       = mod.log;
+
+              server.on         = on;              
+              server.btn.run    = run;
+          
+        }//start
+
+
+      
+  //:
+  
+  
+        function run(){
+          
+              var s     = instrument.toString();
+              var i1    = s.indexOf('{');
+              var i2    = s.lastIndexOf('}');
+              var pre   = s.slice(i1+1,i2);
+                                                                                //console.clear();
+                                                                                //console.log(pre);
+              var js    = server.editor.getvalue();
+
+              js        = pre+js;
+              
+              server.run.nodejs({js});
+          
+          
+        }//run
+        
+        
+        on.init   = async function({webcontainer:wc}){
+          
+              webcontainer    = wc;
+                                                                                console.log('init',webcontainer);
+                                                                                //console.log(srcdoc);
+              var files   = {'setup.html':{file:{contents:srcdoc}}};
+              await webcontainer.mount(files);
+              
+              console.log('init complete');
+              
+        }//init
+  
+        on.run    = function({process}){
+          
+              console.log('on.run',process);
+              
+        }//on.run
+        
+        
+        on['server-ready']   = function({port,url:url2}){
+                                                                                console.log('server-ready',port,url2);
+              url   = url2;
+              
+              iframe.src    = `${url}/setup.html`;
+              
+        }//server-ready
+        
+        
+        on.complete   = function({code}){
+          
+              console.log('complete',code);
+              
+        }//complete
+
+
+  //:
+  
+  
+        function instrument(){
+        
+(()=>{
+  
+              var fs        = require('fs');
+              var http      = require('http');
+              //var server    = http.createServer(request)
+              var list      = [];
+              
+              var createServer    = http.createServer;
+              var on              = server.on;
+              
+              server.on           = function(event,listener){
+                
+                    if(event==='request'){
+                          list.push(args[1]);
+                          return;
+                    }
+                    return on.apply(server,arguments);
+                    
+              }//on
+
+
+              http.createServer   = function(opts,listener){
+                                                                                console.log('override');                
+                    if(arguments.length==1){
+                          listener    = opts;
+                          opts        = undefined;
+                    }
+                    
+                    if(listener){
+                          list.push(listener);
+                    }
+                    
+                    var server    = createServer.call(server,opts,request);
+                    return server;
+                    
+              }//createServer
+              
+              
+              function request(req,res){
+                                                                                console.log('sandbox',req.url);
+                    if(req.url=='/setup'){
+                          var html    = fs.readFileSync('setup','utf8');
+                          res.writeHead(200,{'content-type':'text/html'});
+                          res.end(html);
+                          return;
+                    }
+                    
+                    var n   = list.length;
+                    for(var i=0;i<n;i++){
+                      
+                          var fn        = list[i];
+                          var result    = fn(req,res);
+                          if(result===false){
+                                return;
+                          }
+                          
+                    }//for
+                      
+              }//request
+              
+})();
+
+        }//instrument
+
+
+      
+      </script>
+
+</div root>
