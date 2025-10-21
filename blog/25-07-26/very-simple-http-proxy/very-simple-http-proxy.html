@@ -64,7 +64,7 @@
 
               example   = mod.example;
               
-              example.initmod({ext,$,menu,ace});
+              example.initmod({ext,$,menu,ace,on});
               
               await example.init();
 
@@ -156,22 +156,43 @@
             <snippet-terminal-console id=example type=nodejs component v2.0 src='very-simple-http-proxy.js'></snippet-terminal-console>
 
 
+            <iframe id=iframe></iframe>
+
+
       </body>
 
 
       <script>
       
+      
+        var on    = {};
+        
 
   //:
   
   
-            function initdom(rootnode){
+        function initdom(rootnode){
+          
+              example.initdom();
               
-                  example.initdom();
-                  
-            }//initdom
+        }//initdom
             
-            
+
+  //:
+
+
+        on['server-ready']   = function({port,url:url2}){
+                                                                                console.log('server-ready',port,url2);
+              url   = url2;
+              
+              if(port==8005){
+                    iframe.src    = `${url}/`;
+              }
+              
+        }//server-ready
+  
+  
+  
       </script>
       
 </html>
