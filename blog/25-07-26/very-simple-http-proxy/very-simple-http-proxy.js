@@ -8,10 +8,9 @@
 
         
         https.createServer({key,cert},request).listen(8005);
-        console.log('listening 8005');
-        
+                                                                                console.log('listening 8005');
         function request(req,res){
-        
+                                                                                console.log('8005 :',req.url);
               if(req.url=='/'){
                     res.writeHead(200,{'content-type':'text/html'});
                     res.end(html);
@@ -30,10 +29,9 @@
         
         
         https.createServer({key,cert},request2).listen(8006);
-        console.log('listening 8006');
-        
+                                                                              console.log('listening 8006');
         function request2(req,res){
-        
+                                                                              console.log('8006 :',req.url);
               var body    = '';
               req.on('data',data=>body+=data);
               req.on('end',()=>{
