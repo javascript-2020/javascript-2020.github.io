@@ -14,10 +14,12 @@
       
       <style>
       
-            html {height:700px}
-            body {height:calc(100% - 40px);margin:20px}
-            #root {display:flex;flex-direction:column;gap:20px;height:100%}
+  html {}
+  body {margin:20px;padding-bottom:200px}
+  #root {display:flex;flex-direction:column;gap:20px;height:100%}
 
+  input {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  input[typebutton] {cursor:pointer}
 
       </style>
       
@@ -67,6 +69,8 @@
         var con;
         var log;
         
+        
+        var btn   = {};
         var on    = {};
         
 
@@ -81,10 +85,31 @@
 
               server.on         = on;              
               server.btn.run    = run;
+              
+              $('#file [value=run]').onclick    = btn.run;
           
         }//start
 
 
+  //:
+  
+  
+        btn.run   = function(){
+
+                                                                                console.log('btn.run');
+              if(!webcontainer){
+                    log.red('web container instance unavailable');
+                    return;
+              }
+              
+              var js    = test.getvalue();
+              
+                                                                                console.log('write');
+              iframe.contentWindow.postMessage({type:'run',js},'*');
+                                                                                console.log('load');
+          
+        }//run
+        
       
   //:
   
