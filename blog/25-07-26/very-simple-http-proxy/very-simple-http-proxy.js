@@ -64,7 +64,7 @@
 
 function setup(){
 
-        var key   = `
+        key   = `
 -----BEGIN PRIVATE KEY-----
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCa8SM60MEabNel
 k9rwWp2Rg0C0UNQEqRLnKWWVKZt/s0/Jj6B9bRKMFjTWwWQwgupEV2TEfy8ULCCv
@@ -94,7 +94,7 @@ xHwMAmUFE7XzB8L4sfc8bRI0RmqdHZfh8Qa0FcmFJfRfgpKwfXg6WFC2krGUZmcS
 Gxs6VHKB4HcBOtYjuKXzIg==
 -----END PRIVATE KEY-----`;
 
-        var cert    = `
+        cert    = `
 -----BEGIN CERTIFICATE-----
 MIIDcjCCAlqgAwIBAgIBATANBgkqhkiG9w0BAQUFADAlMSMwIQYDVQQDExpsb2Nh
 bGhvc3QgdGVzdCBjZXJ0aWZpY2F0ZTAeFw0yNTEwMjExNzUxMDBaFw0yNjEwMjEx
