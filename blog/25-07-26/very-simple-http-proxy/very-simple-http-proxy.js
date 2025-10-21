@@ -28,7 +28,7 @@
                                                                                 console.log('8005 :',url);
               if(mode=='http'){                                                                                
                     var req2   = http.request(url,{ca:cert,method:req.method},result);
-              else{
+              }else{
                     var req2   = https.request(url,{ca:cert,method:req.method,rejectUnauthorized:false},result);
               }
               
