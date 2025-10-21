@@ -47,10 +47,8 @@
         
         var menu;
             
-        var server;
-        var test;
-        var con;
-
+        var example;
+        
         var log;
         
         
@@ -64,6 +62,11 @@
 
 
 
+              example   = mod.example;
+              
+              example.initmod({ext,$,menu,ace});
+              
+              await example.init();
 
 
 
@@ -113,6 +116,19 @@
 
             <style>
             
+  html
+    {height:100%;font-family:arial}
+  body
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;margin:20px;align-items:center;
+      padding-bottom:200px;
+    }
+  body>*
+    {max-width:1400px;width:100%;padding:0 20px;}
+    
+  [component]
+    {display:none}
+
+
             
             </style>
             
@@ -122,56 +138,41 @@
       <body>
 
 
+            <blog-hdr component=grp1 v2.0>      
+                  <h1 class=title>
+                        very simple proxy
+                  </h1>
+                  <time slot=date datetime=2025-10-18>
+                        21 Oct 2025
+                  </time>
+            </blog-hdr>
+
       
-            <h3>
-                  very simple proxy
-            </h3>
-
-
-            <div id=desc>
-
-a very simple http proxy
-            
+            <div id=description>
+                  Learn how to build a simple Node.js proxy server that intercepts and forwards HTTP requests using the hosts file. Explore editable, runnable code via web containers to inspect headers and relay responses seamlessly.
             </div>
 
 
-            <code>
-            </code>
+            <snippet-terminal-console id=example type=nodejs component v2.0 src='very-simple-http-proxy.js'></snippet-terminal-console>
 
-            
-            <script>
-                                                                                console.clear();
 
-(async()=>{
-
-        var url             = window.location.toString();
-        console.log(url);
-        if(url.includes('about:')){
-              var base    = document.querySelector('base');
-              url         = base.href;
-        }
-          
-        var i               = url.lastIndexOf('/');
-        var fn              = url.slice(i+1);
-        var i               = fn.lastIndexOf('.');
-        fn                  = fn.slice(0,i);
-        fn                 += '.js';
-        console.log(fn);
-        
-        var res             = await fetch(fn);
-        var txt             = await res.text();
-        
-        var code            = document.querySelector('code');
-        code.textContent    = txt;
-        
-})();
-
-            </script>
-      
-            
-      
       </body>
+
+
+      <script>
       
+
+  //:
+  
+  
+            function initdom(rootnode){
+              
+                  example.initdom();
+                  
+            }//initdom
+            
+            
+      </script>
       
 </html>
 
