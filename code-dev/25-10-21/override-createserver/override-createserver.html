@@ -87,19 +87,11 @@
   
   
         function run(){
-          
-              var s     = instrument.toString();
-              var i1    = s.indexOf('{');
-              var i2    = s.lastIndexOf('}');
-              var pre   = s.slice(i1+1,i2);
-                                                                                //console.clear();
-                                                                                //console.log(pre);
+                                                                                console.log('run');
+              var pre   = fnstr(instrument);
               var js    = server.editor.getvalue();
-
               js        = pre+js;
-              
               server.run.nodejs({js});
-          
           
         }//run
         
@@ -209,7 +201,25 @@
         }//instrument
 
 
+        function fnstr(fn){
+          
+              var s     = fn.toString();
+              var i1    = s.indexOf('{');
+              var i2    = s.lastIndexOf('}');
+              var str   = s.slice(i1+1,i2);
+              return str;
+              
+        }//fnstr
+
+
+
       
       </script>
 
 </div root>
+
+
+
+
+
+
