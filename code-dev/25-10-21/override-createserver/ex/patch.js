@@ -6,10 +6,9 @@
   
               var fs        = require('fs');
               var http      = require('http');
-              //var server    = http.createServer(request)
-              var list      = [];
               
               var createServer    = http.createServer;
+              var list      = [];
 
 
               http.createServer   = function(opts,listener){
