@@ -54,7 +54,7 @@
         
         var html    = `
         
-              <3>test</h3>
+              <h3>test</h3>
               
               <script type=module>
               
