@@ -7,8 +7,8 @@
         var cert;
         setup();
 
-        var mode    = 'http';
-
+        var mode    = 'https';
+                                                                                console.log(mode);
         
         if(mode=='https'){
               https.createServer({key,cert},request).listen(8005);
