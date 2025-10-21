@@ -66,6 +66,7 @@
         
         
         var srcdoc;
+        var patch;
         
         var server;
         var test;
@@ -79,7 +80,12 @@
 
         window.start    = async function(){
           
-              [srcdoc]    = await ext.text.github('javascript-2020:javascript-2020.github.io:main:blog/25-07-25/http-streaming-download/ex/srcdoc.html');
+              [srcdoc,patch]    = await ext.text.github(
+                    'javascript-2020:javascript-2020.github.io:main:blog/25-10-21/override-createserver/ex/srcdoc.html',
+                    'javascript-2020:javascript-2020.github.io:main:blog/25-10-21/override-createserver/ex/patch.js',
+              );
+console.log(patch);
+
 
               server    = mod.server;
               console.log(server);
@@ -121,9 +127,8 @@
   
         function run(){
                                                                                 console.log('run override');
-              var pre   = fnstr(instrument);
               var js    = server.editor.getvalue();
-              js        = pre+js;
+              js        = patch+js;
               server.run.nodejs({js});
           
         }//run
