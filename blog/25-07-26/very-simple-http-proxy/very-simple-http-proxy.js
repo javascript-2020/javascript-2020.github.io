@@ -1,13 +1,15 @@
 //  very-simple-proxy.js
 
         var https   = require('https');
+        var http    = require('http');
         
         var key;
         var cert;
         setup();
 
         
-        https.createServer({key,cert},request).listen(8005);
+        //https.createServer({key,cert},request).listen(8005);
+        http.createServer(request).listen(8005);
                                                                                 console.log('listening 8005');
         function request(req,res){
                                                                                 console.log('8005 :',req.url);
@@ -17,7 +19,7 @@
                     return;
               }
               
-              var req2   = https.request('https://localhost:8006'+req.url,{ca:cert,method:req.method},res2=>{
+              var req2   = http.request('http://localhost:8006'+req.url,{ca:cert,method:req.method},res2=>{
                 
                     res2.on('data',data=>res.write(data));
                     res2.on('end',()=>res.end());
@@ -30,7 +32,8 @@
         }//request
         
         
-        https.createServer({key,cert},request2).listen(8006);
+        //https.createServer({key,cert},request2).listen(8006);
+        http.createServer(request2).listen(8006);
                                                                               console.log('listening 8006');
         function request2(req,res){
                                                                               console.log('8006 :',req.url);
