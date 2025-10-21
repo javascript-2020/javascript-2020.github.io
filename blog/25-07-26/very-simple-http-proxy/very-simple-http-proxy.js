@@ -51,6 +51,8 @@
         
         var html    = `
         
+              <3>test</h3>
+              
               <script type=module>
               
                     var body    = JSON.stringify([1,2,3]);
