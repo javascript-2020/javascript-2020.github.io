@@ -10,17 +10,6 @@
               var list      = [];
               
               var createServer    = http.createServer;
-              var on              = server.on;
-              
-              server.on           = function(event,listener){
-                
-                    if(event==='request'){
-                          list.push(args[1]);
-                          return;
-                    }
-                    return on.apply(server,arguments);
-                    
-              }//on
 
 
               http.createServer   = function(opts,listener){
@@ -35,6 +24,18 @@
                     }
                     
                     var server    = createServer.call(server,opts,request);
+                    
+                    var on              = server.on;
+                    server.on           = function(event,listener){
+                      
+                          if(event==='request'){
+                                list.push(args[1]);
+                                return;
+                          }
+                          return on.apply(server,arguments);
+                          
+                    }//on
+                    
                     return server;
                     
               }//createServer
