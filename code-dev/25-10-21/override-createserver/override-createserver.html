@@ -23,7 +23,8 @@
 
   editor-root::part(root) {height:500px}
 
-
+  .filename {background:lightgray;padding:5px 10px}
+  
   #file {display:flex;flex-direction:column;gap:20px}  
       </style>
       
@@ -58,6 +59,10 @@
                   
             </div>
             
+            <editor id=srcdoc component v2.0 src='ex/srcdoc.html'></editor>
+            <editor id=path component v2.0 src='ex/patch.js'></editor>
+            
+            
             <iframe id=iframe></iframe>
             
             <log component v2.0></log>
@@ -89,12 +94,12 @@
               con       = mod.console;
               console   = con;
               
-              
+              /*
               [srcdoc,patch]    = await ext.text.github(
                     'javascript-2020:javascript-2020.github.io:main:code-dev/25-10-21/override-createserver/ex/srcdoc.html',
                     'javascript-2020:javascript-2020.github.io:main:code-dev/25-10-21/override-createserver/ex/patch.js',
               );
-
+              */
 
               server    = mod.server;
               console.log(server);
@@ -152,7 +157,8 @@
         function run(){
                                                                                 console.log('run override');
               var js    = server.editor.getvalue();
-              js        = patch+js;
+              var pre   = patch.getvalue();
+              js        = pre+js;
               server.run.nodejs({js});
           
         }//run
@@ -163,7 +169,8 @@
               webcontainer    = wc;
                                                                                 console.log('init',webcontainer);
                                                                                 //console.log(srcdoc);
-              var files   = {'setup':{file:{contents:srcdoc}}};
+              var txt     = srcdoc.getvalue();
+              var files   = {'setup':{file:{contents:txt}}};
               await webcontainer.mount(files);
               
               console.log('init complete');
