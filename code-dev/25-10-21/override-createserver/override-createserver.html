@@ -81,10 +81,9 @@
         window.start    = async function(){
           
               [srcdoc,patch]    = await ext.text.github(
-                    'javascript-2020:javascript-2020.github.io:main:blog/25-10-21/override-createserver/ex/srcdoc.html',
-                    'javascript-2020:javascript-2020.github.io:main:blog/25-10-21/override-createserver/ex/patch.js',
+                    'javascript-2020:javascript-2020.github.io:main:code-dev/25-10-21/override-createserver/ex/srcdoc.html',
+                    'javascript-2020:javascript-2020.github.io:main:code-dev/25-10-21/override-createserver/ex/patch.js',
               );
-console.log(patch);
 
 
               server    = mod.server;
@@ -102,6 +101,21 @@ console.log(patch);
         }//start
 
 
+  //:
+  
+
+        window.onmessage    = e=>{
+          
+              var json    = e.data;
+              switch(json.type){
+                
+                case 'log'    : console.log.apply(null,json.args);        break;
+                
+              }//switch
+              
+        }//onmessage
+
+  
   //:
   
   
