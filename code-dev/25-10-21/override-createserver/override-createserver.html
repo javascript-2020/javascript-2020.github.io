@@ -22,7 +22,9 @@
   input[typebutton] {cursor:pointer}
 
   editor-root::part(root) {height:500px}
-  
+
+
+  #file {display:flex;flex-direction:column;gap:20px}  
       </style>
       
 
@@ -42,7 +44,7 @@
             <div id=file>
             
                   <div class=filename>
-                        index.html
+                        test.js
                   </div>
                   
                   <editor id=test component v2.0 src='ex/test.js'>
@@ -63,7 +65,11 @@
       
       <script>
       
+(()=>{
+  
+        var webcontainer;
         
+        var console;
         
         var srcdoc;
         var patch;
@@ -80,6 +86,10 @@
 
         window.start    = async function(){
           
+              con       = mod.console;
+              console   = con;
+              
+              
               [srcdoc,patch]    = await ext.text.github(
                     'javascript-2020:javascript-2020.github.io:main:code-dev/25-10-21/override-createserver/ex/srcdoc.html',
                     'javascript-2020:javascript-2020.github.io:main:code-dev/25-10-21/override-createserver/ex/patch.js',
@@ -90,7 +100,7 @@
               console.log(server);
               
               test      = mod.test;
-              con       = mod.console;
+              
               log       = mod.log;
 
               server.on         = on;              
@@ -186,73 +196,6 @@
   //:
   
   
-        function instrument(){
-        
-(()=>{
-  
-              var fs        = require('fs');
-              var http      = require('http');
-              //var server    = http.createServer(request)
-              var list      = [];
-              
-              var createServer    = http.createServer;
-              var on              = server.on;
-              
-              server.on           = function(event,listener){
-                
-                    if(event==='request'){
-                          list.push(args[1]);
-                          return;
-                    }
-                    return on.apply(server,arguments);
-                    
-              }//on
-
-
-              http.createServer   = function(opts,listener){
-                                                                                console.log('override');                
-                    if(arguments.length==1){
-                          listener    = opts;
-                          opts        = undefined;
-                    }
-                    
-                    if(listener){
-                          list.push(listener);
-                    }
-                    
-                    var server    = createServer.call(server,opts,request);
-                    return server;
-                    
-              }//createServer
-              
-              
-              function request(req,res){
-                                                                                console.log('sandbox',req.url);
-                    if(req.url=='/setup'){
-                          var html    = fs.readFileSync('setup','utf8');
-                          res.writeHead(200,{'content-type':'text/html'});
-                          res.end(html);
-                          return;
-                    }
-                    
-                    var n   = list.length;
-                    for(var i=0;i<n;i++){
-                      
-                          var fn        = list[i];
-                          var result    = fn(req,res);
-                          if(result===false){
-                                return;
-                          }
-                          
-                    }//for
-                      
-              }//request
-              
-})();
-
-        }//instrument
-
-
         function fnstr(fn){
           
               var s     = fn.toString();
@@ -264,6 +207,7 @@
         }//fnstr
 
 
+})();
 
       
       </script>
