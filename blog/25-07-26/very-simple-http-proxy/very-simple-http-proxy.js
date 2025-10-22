@@ -19,9 +19,13 @@
         function request(req,res){
                                                                                 console.log('8005 :',req.url);
               var url   = req.url;
+              var query;
               var i     = url.indexOf('?');
               if(i!=-1){
                     url   = url.slice(0,i);
+                    var enc   = url.slice(i+1);
+                    var b64   = decodeURIComponent(enc);
+                    query     = atob(b64);
               }
                                                                                 console.log('8005 :',url);
               if(url=='/'){
@@ -30,7 +34,8 @@
                     return;
               }
          
-              var url   = `${mode}://localhost:8006${url}`;
+              //var url   = `${mode}://localhost:8006${url}`;
+              var url   = query+url;
                                                                                 console.log('8005 :',url);
               if(mode=='http'){                                                                                
                     var req2   = http.request(url,{ca:cert,method:req.method},result);
@@ -83,14 +88,11 @@
               <h3>test</h3>
               
               <script type=module>
-              
-                    var enc     = window.location.search.slice(1);
-                    var b64     = decodeURIComponent(enc);
-                    var url     = atob(b64);
-                    var url     = url+'/test';
-                                                                                console.log('test',url);
+
+                    var enc     = window.location.search;
+                    
                     var body    = JSON.stringify([1,2,3]);
-                    var res     = await fetch(url,{method:'post',body});
+                    var res     = await fetch('/test'+enc,{method:'post',body});
                     var txt     = await res.text();
                     document.body.append(txt);
                     
