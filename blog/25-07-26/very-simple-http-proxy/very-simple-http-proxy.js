@@ -17,9 +17,11 @@
                                                                                 Object.entries(hdrs).forEach(([key,value])=>console.log(`${key}:${value}`));
               var hdrs2;
               
+              /*
               var allowed   = ['user-agent','accept','content-type'];
               var sub       = Object.entries(hdrs).filter(([key])=>allowed.includes(key));
-              var hdrs2     = Object.fromEntries(sub);
+              hdrs2         = Object.fromEntries(sub);
+              */
               
               var remove    = ['connection'];
               Object.entries(hdrs).forEach(([key,value])=>!remove.includes(key) && (hdrs2[key]=value));
