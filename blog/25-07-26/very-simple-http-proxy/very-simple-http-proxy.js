@@ -73,12 +73,12 @@
         `;
 
 
-  //client
+  //server
   
         http.createServer(request2).listen(8006);
-                                                                              console.log('[ client ]','listening 8006');
+                                                                              console.log('[ server ]','listening 8006');
         function request2(req,res){
-                                                                              console.log('[ client ]',req.url);
+                                                                              console.log('[ server ]',req.url);
                                                                               
               var body    = '';
               req.on('data',data=>body+=data);
