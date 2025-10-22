@@ -78,7 +78,8 @@
               
               <script type=module>
               
-                    var b64     = window.location.search.slice(1);
+                    var enc     = window.location.search.slice(1);
+                    var b64     = decodeURIComponent(enc);
                     var url     = atob(b64);
                     var url     = url+'/test';
                                                                                 console.log('test',url);
