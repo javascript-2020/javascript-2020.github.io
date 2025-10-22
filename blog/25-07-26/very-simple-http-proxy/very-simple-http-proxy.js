@@ -2,19 +2,19 @@
         var http    = require('http');
 
 
-  //8005
+  //proxy
   
         http.createServer(request).listen(8005);
-                                                                                console.log('listening 8005');
+                                                                                console.log('[ proxy ]','listening 8005');
         function request(req,res){
-                                                                                console.log('8005 :',req.url);
+                                                                                console.log('[ proxy ]',req.url);
               if(req.url=='/'){
                     res.writeHead(200,{'content-type':'text/html'});
                     res.end(html);
                     return;
               }
-                                                                                console.log('8005 :','--  proxy  --');
-                                                                                console.log('8005 :','request headers');
+                                                                                console.log('[ proxy ]','--  proxy  --');
+                                                                                console.log('[ proxy ]','request headers');
               var headers    = {...req.headers};
                                                                                 hdrs.display(headers);
               //var allowed   = ['user-agent','accept','content-type'];
@@ -24,11 +24,11 @@
               hdrs.remove(headers,remove);
               var rewrite   = {};
               hdrs.rewrite(headers,rewrite);
-                                                                                console.log('8005 :','**  proxy request headers  **');
+                                                                                console.log('[ proxy ]','**  proxy request headers  **');
                                                                                 hdrs.display(headers);
                                                                                 
               var url     = `http://localhost:8006${req.url}`;
-                                                                                console.log('8005 :','proxy',url);
+                                                                                console.log('[ proxy ]','proxy',url);
               var req2    = http.request(url,{method:req.method,headers},response);
 
               req.on('data',data=>req2.write(data));
@@ -36,16 +36,16 @@
 
 
               function response(res2){
-                                                                                console.log('8005 :','proxy response');                
+                                                                                console.log('[ proxy ]','proxy response');                
                     var code      = res2.statusCode;
                     var headers   = {...res2.headers};
-                                                                                console.log('8005 :','response headers');
+                                                                                console.log('[ proxy ]','response headers');
                                                                                 hdrs.display(headers);
                     var remove    = ['connection'];
                     hdrs.remove(headers,remove);
                     var rewrite   = {};
                     hdrs.rewrite(headers,rewrite);
-                                                                                console.log('8005 :','**  proxy response headers  **');
+                                                                                console.log('[ proxy ]','**  proxy response headers  **');
                                                                                 hdrs.display(headers);
                     res.writeHead(code,headers);
                     
@@ -56,13 +56,29 @@
               
         }//request
 
+        var html    = `
+        
+              <h3>test</h3>
+              
+              <script type=module>
 
-  //8006
+                    var headers   = {authorization:'xyz'}
+                    var body      = JSON.stringify([1,2,3]);
+                    var res       = await fetch('/test',{method:'post',headers,body});
+                    var txt       = await res.text();
+                    document.body.append(txt);
+                    
+              </script>
+              
+        `;
+
+
+  //client
   
         http.createServer(request2).listen(8006);
-                                                                              console.log('listening 8006');
+                                                                              console.log('[ client ]','listening 8006');
         function request2(req,res){
-                                                                              console.log('8006 :',req.url);
+                                                                              console.log('[ client ]',req.url);
                                                                               
               var body    = '';
               req.on('data',data=>body+=data);
@@ -78,6 +94,9 @@
         }//request2
 
 
+  //:
+  
+  
         var hdrs    = {};
         
         hdrs.allow    = function(hdrs,allow=[]){
@@ -105,21 +124,6 @@
         }//display
         
         
-        var html    = `
-        
-              <h3>test</h3>
-              
-              <script type=module>
-
-                    var headers   = {authorization:'xyz'}
-                    var body      = JSON.stringify([1,2,3]);
-                    var res       = await fetch('/test',{method:'post',headers,body});
-                    var txt       = await res.text();
-                    document.body.append(txt);
-                    
-              </script>
-              
-        `;
 
 
 
