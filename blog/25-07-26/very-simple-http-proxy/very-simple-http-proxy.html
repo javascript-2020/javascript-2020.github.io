@@ -223,15 +223,9 @@
         
         on['server-ready']   = function({port,url}){
                                                                                 console.log('on.server-ready',port,url);
-              urls[port]    = url;
-              
-              if(Object.keys(urls).length!=2){
-                    return;
+              if(port==8005){
+                    iframe.src    = url;
               }
-              
-              var b64       = btoa(urls['8006']);
-              var enc       = encodeURIComponent(b64);
-              iframe.src    = `${urls['8005']}/?${enc}`;
               
         }//server-ready
   
