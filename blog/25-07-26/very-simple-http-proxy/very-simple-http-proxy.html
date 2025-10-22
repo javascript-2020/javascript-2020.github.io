@@ -129,9 +129,19 @@
   [component]
     {display:none}
 
+  #description
+    {margin:20px 0}
+  #description>div
+    {margin:10px 0}
+    
   iframe
     {width:100%}
 
+  code
+    {font-family:monospace;padding:5px 10px;background:whitesmoke;}
+  code.inline
+    {display:inline}
+    
             
             </style>
             
@@ -152,13 +162,55 @@
 
       
             <div id=description>
-                  Learn how to build a simple Node.js proxy server that intercepts and forwards HTTP requests using the hosts file.
-                  Explore editable, runnable code via web containers to inspect headers and relay responses seamlessly.
-            </div>
+            
+                  <div>
+                        Learn how to build a simple Node.js proxy server that intercepts and forwards HTTP requests using the hosts file.
+                        Explore editable, runnable code via web containers to inspect headers and relay responses seamlessly.
+                  </div>
 
-            <div>
-                  notes:
+                  <div>
+                        notes:
+                  </div>
+                  
+                  <div>
+                        this demo version uses webcontainers to run the code, the webcontainer runtime is limited in that at the time of writing
+                        it is not handling https correctly.  Therefore the demonstration code uses http.  The same logic applies for https,
+                        the 
+                        
+                        <a href='https://nodejs.org/api/http.html#httprequesturl-options-callback'>
+                              http.request
+                        </a>
+                        
+                        <a href='https://nodejs.org/api/https.html#httpsrequestoptions-callback'>
+                              https.request
+                        </a>
+                        
+                        call would typically require some modification either with <code class=inline>{ca:cert}</code> to supply the signing certificate
+                        the server responds with, or with 
+                        
+                        <code class=inline>{rejectUnauthorized:false}</code> to allow self-signed certificates.  server key/cert can be generated
+                        <a href=''></a>
+                  </div>
+                  
+                  <div>
+                        i typically use this code for when say an esp32 is not communicating properly with the internet, i can proxy the esp32
+                        request through a server like this.  maybe the esp32 network stack is not working 100% or something.  i think
+                        theoretically the host file could be modified for a domain such as example.com to point to the proxy server, then
+                        in the proxy server rewrite the host header and forward the request via the ip address of the server you want to contact
+                        this is untested at the moment, maybe i'll patch the fetch command to simulate the host file and include the deomstration
+                        code at some point
+                  </div>
+                  
+                  <div>
+                        a working version of the nodejs https proxy server will be available 
+                        <a href='/code/nodejs/servers/very-simple-proxy.nodejs.js'>
+                              /code/nodejs/servers/very-simple-proxy.nodejs.js
+                        </a>
+                  </div>
+                  
             </div>
+            
+            
             
 
             <snippet-terminal-console id=example type=nodejs component v2.0 src='very-simple-http-proxy.js'></snippet-terminal-console>
