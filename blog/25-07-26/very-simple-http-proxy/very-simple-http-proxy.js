@@ -23,7 +23,7 @@
               if(i!=-1){
                     url   = url.slice(i);
               }
-              
+                                                                                console.log('8005 :',url);
               if(url=='/'){
                     res.writeHead(200,{'content-type':'text/html'});
                     res.end(html);
