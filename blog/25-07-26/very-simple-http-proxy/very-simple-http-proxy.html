@@ -129,6 +129,8 @@
   [component]
     {display:none}
 
+  iframe
+    {width:100%}
 
             
             </style>
@@ -153,6 +155,10 @@
                   Learn how to build a simple Node.js proxy server that intercepts and forwards HTTP requests using the hosts file. Explore editable, runnable code via web containers to inspect headers and relay responses seamlessly.
             </div>
 
+            <div>
+                  notes:
+            </div>
+            
 
             <snippet-terminal-console id=example type=nodejs component v2.0 src='very-simple-http-proxy.js'></snippet-terminal-console>
 
@@ -166,8 +172,11 @@
       <script>
 
       
+        var webcontainer;
         var process;
 
+        var urls        = {};
+        
         
         var btn         = {};
         var on          = {};
@@ -192,9 +201,18 @@
                     await process.kill();
               }
               
+              urls    = {};
+              
         }//run
         
 
+        on.init   = function({webcontainer:ec}){
+          
+              webcontainer    = wc;
+              
+        }//init
+        
+        
         on.run    = function({process:p}){
                                                                                 console.log('on.run');
               process   = p;
@@ -203,11 +221,15 @@
         
         
         on['server-ready']   = function({port,url:url2}){
-                                                                                console.log('on.server-ready',port,url2);
-              url   = url2;
+                                                                                console.log('on.server-ready',port,url);
+              urls[port]    = url;
+              
+              if(Object.keys(urls).length!=2){
+                    return;
+              }
               
               if(port==8005){
-                    iframe.src    = `${url}/`;
+                    iframe.src    = `${urls['8005']}/?urls['8006']`;
               }
               
         }//server-ready
