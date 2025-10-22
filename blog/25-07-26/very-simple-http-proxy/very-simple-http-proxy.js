@@ -13,41 +13,44 @@
               }
                                                                                 console.log('8005 :','--  proxy  --');
                                                                                 console.log('8005 :','request headers');
-              var hdrs    = req.headers;
-                                                                                Object.entries(hdrs).forEach(([key,value])=>console.log(`   - ${key}:${value}`));
-              var hdrs2   = {};
+              var headers    = {...req.headers};
+                                                                                hdrs.display(headers);
+              //var allowed   = ['user-agent','accept','content-type'];
+              //hdrs.allow(headers,allowed);
               
-              /*
-              var allowed   = ['user-agent','accept','content-type'];
-              var sub       = Object.entries(hdrs).filter(([key])=>allowed.includes(key));
-              hdrs2         = Object.fromEntries(sub);
-              */
-              
-              var remove    = ['connection','host'];
-              Object.entries(hdrs).forEach(([key,value])=>!remove.includes(key) && (hdrs2[key]=value));
-                                                                                console.log('8005 :','proxy headers');
-                                                                                Object.entries(hdrs).forEach(([key,value])=>console.log(`   - ${key}:${value}`));
+              var remove    = ['connection','host','origin'];
+              hdrs.remove(headers,remove);
+              var rewrite   = {};
+              hdrs.rewrite(headers,rewrite);
+                                                                                console.log('8005 :','**  proxy request headers  **');
+                                                                                hdrs.display(headers);
                                                                                 
               var url     = `http://localhost:8006${req.url}`;
                                                                                 console.log('8005 :','proxy',url);
-              var req2   = http.request(url,{method:req.method},res2=>{
+              var req2    = http.request(url,{method:req.method,headers},response);
+
+              req.on('data',data=>req2.write(data));
+              req.on('end',()=>req2.end());
+
+
+              function response(res2){
                                                                                 console.log('8005 :','proxy response');                
-                    var code    = res2.statusCode;
-                    var hdrs    = res2.headers;
+                    var code      = res2.statusCode;
+                    var headers   = {...res2.headers};
                                                                                 console.log('8005 :','response headers');
-                                                                                Object.entries(hdrs).forEach(([key,value])=>console.log(`   - ${key}:${value}`));                    
-                    //res.writeHead(
+                                                                                hdrs.display(headers);
+                    var remove    = ['connection'];
+                    hdrs.remove(headers,remove);
+                    var rewrite   = {};
+                    hdrs.rewrite(headers,rewrite);
+                                                                                console.log('8005 :','**  proxy response headers  **');
+                                                                                hdrs.display(headers);
+                    res2.writeHead(code,hdrs);
+                    
                     res2.on('data',data=>res.write(data));
                     res2.on('end',()=>res.end());
                     
-              });
-
-              req.on('data',data=>req2.write(data));
-              req.on('end',()=>{
-                                                                                //console.log('8005 :','req end'); 
-                    req2.end()
-                    
-              });
+              }//response
               
         }//request
 
@@ -70,6 +73,33 @@
               
         }//request2
 
+
+        var hdrs    = {};
+        
+        hdrs.allow    = function(hdrs,allow=[]){
+          
+              Object.keys(hdrs).forEach(key=>!allowed.includes(key) && (delete hdrs[key]));
+          
+        }//allow
+        
+        hdrs.remove   = function(hdrs,remove=[]){
+          
+              Object.keys(hdrs).forEach(key=>remove.includes(key) && (delete hdrs[key]));          
+              
+        }//remove
+        
+        hdrs.rewrite    = function(hdrs,rewrite={}){
+          
+              Object.entries(rewrite).forEach(([key,value])=>hdrs[key]=value);
+              
+        }//rewrite
+
+        hdrs.display    = function(hdrs){
+          
+              Object.entries(hdrs).forEach(([key,value])=>console.log(`   - ${key}:${value}`));
+              
+        }//display
+        
         
         var html    = `
         
