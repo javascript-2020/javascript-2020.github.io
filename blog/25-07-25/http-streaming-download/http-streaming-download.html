@@ -50,6 +50,7 @@
 
 
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            
 
             <script init>            
                                                                                 console.clear();
@@ -132,7 +133,7 @@
               'js/dom/code/v2.0/code-v2.0.js.api',
               'js/debug/debug.js',
         );
-        [$,datatype,menumod,keydown,code]   = await promise;
+        [$,datatype,menumod,keydown,code,debug]   = await promise;
   
         code.initmod({ext,$,datatype,menumod});
         
@@ -164,6 +165,8 @@
   body>*
     {max-width:1400px;width:100%;padding:0 20px;}
     
+  [component]
+    {display:none}
     
   #description
     {margin:0 0 20px}
@@ -327,11 +330,8 @@
                                                                                 //console.clear();
                                                                                 //console.log(pre);
               var js    = server.editor.getvalue();
-
               js        = pre+js;
-              
-              server.run.nodejs({js});
-          
+              return js;
           
         }//run
         
@@ -394,19 +394,6 @@
                     
               }//on
 
-/*              
-              var emit      = server.emit;
-              server.emit   = function (event,...args){
-                
-                    if(event==='request'){
-                          list.push(args[1]);
-                          return;
-                    }
-                    console.log(event,args);
-                    return emit.call(this,event,...args);
-                    
-              }//emit
-*/
 
               http.createServer   = function(opts,listener){
                 console.log('override');
@@ -430,6 +417,7 @@
                           res.end(html);
                           return;
                     }
+                    
                     var n   = list.length;
                     for(var i=0;i<n;i++){
                       
