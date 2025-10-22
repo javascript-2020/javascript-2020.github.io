@@ -10,8 +10,9 @@
         server.on('connection',connection);
         server.on('error',err=>console.error);
         server.on('close',()=>console.log('proxy closed'));
+        
         server.listen({host,port});
-        console.log(`proxy ${host}:${port}`);
+                                                                                console.log(`proxy ${host}:${port}`);
         
         function connection(client){
                                                                                 console.log('client connected');
@@ -48,3 +49,6 @@
               });
               
         }//connection
+
+
+
