@@ -20,7 +20,7 @@
               //var allowed   = ['user-agent','accept','content-type'];
               //hdrs.allow(headers,allowed);
               
-              var remove    = ['connection','host','origin'];
+              var remove    = ['connection','host','origin','referrer'];
               hdrs.remove(headers,remove);
               var rewrite   = {};
               hdrs.rewrite(headers,rewrite);
