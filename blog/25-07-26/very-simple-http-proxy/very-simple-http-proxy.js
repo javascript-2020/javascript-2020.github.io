@@ -83,6 +83,7 @@
                     
                     var body    = JSON.stringify([1,2,3]);
                     var url     = url+'/test';
+                                                                                console.log('test',url);
                     var res     = await fetch(url,{method:'post',body});
                     var txt     = await res.text();
                     document.body.append(txt);
