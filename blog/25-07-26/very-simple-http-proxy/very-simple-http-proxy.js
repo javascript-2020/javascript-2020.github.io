@@ -26,6 +26,7 @@
                     var enc   = url.slice(i+1);
                     var b64   = decodeURIComponent(enc);
                     query     = atob(b64);
+                                                                                console.log('8005 :','query',query);
               }
                                                                                 console.log('8005 :',url);
               if(url=='/'){
