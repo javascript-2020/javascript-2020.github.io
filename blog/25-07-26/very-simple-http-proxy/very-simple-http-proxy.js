@@ -11,10 +11,24 @@
                     res.end(html);
                     return;
               }
+                                                                                console.log('8005 :','proxy');
+                                                                                console.log('8005 :','request headers');
+              var hdrs    = req.headers;
+                                                                                Object.entries(hdrs).forEach(([key,value])=>console.log(`${key}:${value}`));
+              var hdrs2;
+              
+              var allowed   = ['user-agent','accept','content-type'];
+              var sub       = Object.entries(hdrs).filter(([key])=>allowed.includes(key));
+              var hdrs2     = Object.fromEntries(sub);
+              
+              var remove    = ['connection'];
+              Object.entries(hdrs).forEach(([key,value])=>!remove.includes(key) && (hdrs2[key]=value));
+
+              
          
               var url     = `http://localhost:8006${req.url}`;
                                                                                 console.log('8005 :','proxy',url);
-              var req2   = http.request(url,{ca:cert,method:req.method},res2=>{
+              var req2   = http.request(url,{method:req.method},res2=>{
                 
                     res2.on('data',data=>res.write(data));
                     res2.on('end',()=>res.end());
@@ -23,7 +37,7 @@
 
               req.on('data',data=>req2.write(data));
               req.on('end',()=>{
-                                                                                console.log('8005 :','req end'); 
+                                                                                //console.log('8005 :','req end'); 
                     req2.end()
                     
               });
