@@ -59,13 +59,16 @@
                                                                               console.log('listening 8006');
         function request2(req,res){
                                                                               console.log('8006 :',req.url);
+                                                                              
               var body    = '';
               req.on('data',data=>body+=data);
               req.on('end',()=>{
-              
+                
+                    var headers    = {...req.headers};
+                                                                                hdrs.display(headers);
                     if(req.method=='POST'){
                           var json    = JSON.parse(body);
-                          console.log('post',json);
+                                                                                console.log('post',json);
                     }
                     res.end('it works!');
                     
@@ -107,9 +110,10 @@
               
               <script type=module>
 
-                    var body    = JSON.stringify([1,2,3]);
-                    var res     = await fetch('/test',{method:'post',body});
-                    var txt     = await res.text();
+                    var headers   = {authorisation:'xyz'}
+                    var body      = JSON.stringify([1,2,3]);
+                    var res       = await fetch('/test',{method:'post',headers,body});
+                    var txt       = await res.text();
                     document.body.append(txt);
                     
               </script>
