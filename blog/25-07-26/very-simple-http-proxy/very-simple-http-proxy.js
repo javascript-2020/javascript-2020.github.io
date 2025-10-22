@@ -66,10 +66,7 @@
                 
                     var headers    = {...req.headers};
                                                                                 hdrs.display(headers);
-                    if(req.method=='POST'){
-                                                                                console.log('   - body',body);
-                    }
-                    
+                                                                                body && console.log('   - body',body);
                     res.end('it works!');
                     
               });
