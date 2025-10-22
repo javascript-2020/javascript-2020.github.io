@@ -3,9 +3,7 @@
         var https   = require('https');
         var http    = require('http');
         
-        var key;
-        var cert;
-        setup();
+        var {key,cert}    = setup();
 
         var mode    = 'https';
                                                                                 console.log(mode);
@@ -107,7 +105,7 @@
 
 function setup(){
 
-        key   = `
+        var key   = `
 -----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCJqjhlLiDSk0Im
 cGgALaVtxbZ+jG/359e2AkXJH/3Y0q5eJB3UKr6vANr1D/Jg947Nsk1gcvGd8m5n
@@ -138,7 +136,7 @@ M+X5Mi2Er2HxEJ/JsA8zCKY=
 -----END PRIVATE KEY-----
 `;
 
-        cert    = `
+        var cert    = `
 -----BEGIN CERTIFICATE-----
 MIIDeDCCAmCgAwIBAgIBATANBgkqhkiG9w0BAQUFADAlMSMwIQYDVQQDExpsb2Nh
 bGhvc3QgdGVzdCBjZXJ0aWZpY2F0ZTAeFw0yNTEwMjExNzUxMDBaFw0yNjEwMjEx
@@ -161,5 +159,7 @@ bQbvzESakd4nVh97+LV0FefUQ3P4BaEdOcPXm+kuwgIp/rQln9n0he3ZUFd7UKNF
 +/Aig6NrbNLnZM6aB5loq8EHcCkXQhw+wrKqHA==
 -----END CERTIFICATE-----
 `;
+
+        return {key,cert};
         
 }        
