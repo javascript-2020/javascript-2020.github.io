@@ -67,7 +67,7 @@
                     var headers    = {...req.headers};
                                                                                 hdrs.display(headers);
                     if(req.method=='POST'){
-                                                                                console.log('   - post',body);
+                                                                                console.log('   - body',body);
                     }
                     
                     res.end('it works!');
@@ -110,7 +110,7 @@
               
               <script type=module>
 
-                    var headers   = {authorisation:'xyz'}
+                    var headers   = {authorization:'xyz'}
                     var body      = JSON.stringify([1,2,3]);
                     var res       = await fetch('/test',{method:'post',headers,body});
                     var txt       = await res.text();
