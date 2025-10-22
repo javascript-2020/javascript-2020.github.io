@@ -78,7 +78,8 @@
               
               <script type=module>
               
-                    var url     = window.location.search.slice(1);
+                    var b64     = window.location.search.slice(1);
+                    var url     = atob(b64);
                     var url     = url+'/test';
                                                                                 console.log('test',url);
                     var body    = JSON.stringify([1,2,3]);
