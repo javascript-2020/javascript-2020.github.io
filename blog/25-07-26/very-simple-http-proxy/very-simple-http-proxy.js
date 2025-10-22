@@ -30,7 +30,7 @@
                     return;
               }
          
-              var url   = `${mode}://localhost:8006${url}`;
+              var url   = `${mode}://localhost:8006/${url}`;
                                                                                 console.log('8005 :',url);
               if(mode=='http'){                                                                                
                     var req2   = http.request(url,{ca:cert,method:req.method},result);
