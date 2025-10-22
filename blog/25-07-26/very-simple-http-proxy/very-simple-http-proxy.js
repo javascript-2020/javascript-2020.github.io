@@ -14,7 +14,7 @@
                                                                                 console.log('8005 :','--  proxy  --');
                                                                                 console.log('8005 :','request headers');
               var hdrs    = req.headers;
-                                                                                Object.entries(hdrs).forEach(([key,value])=>console.log(`${key}:${value}`));
+                                                                                Object.entries(hdrs).forEach(([key,value])=>console.log(`   - ${key}:${value}`));
               var hdrs2   = {};
               
               /*
@@ -26,7 +26,7 @@
               var remove    = ['connection','host'];
               Object.entries(hdrs).forEach(([key,value])=>!remove.includes(key) && (hdrs2[key]=value));
                                                                                 console.log('8005 :','proxy headers');
-                                                                                Object.entries(hdrs).forEach(([key,value])=>console.log(`${key}:${value}`));
+                                                                                Object.entries(hdrs).forEach(([key,value])=>console.log(`   - ${key}:${value}`));
                                                                                 
               var url     = `http://localhost:8006${req.url}`;
                                                                                 console.log('8005 :','proxy',url);
@@ -35,7 +35,7 @@
                     var code    = res2.statusCode;
                     var hdrs    = res2.headers;
                                                                                 console.log('8005 :','response headers');
-                                                                                Object.entries(hdrs).forEach(([key,value])=>console.log(`${key}:${value}`));                    
+                                                                                Object.entries(hdrs).forEach(([key,value])=>console.log(`   - ${key}:${value}`));                    
                     //res.writeHead(
                     res2.on('data',data=>res.write(data));
                     res2.on('end',()=>res.end());
