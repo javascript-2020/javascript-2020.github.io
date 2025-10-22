@@ -67,8 +67,7 @@
                     var headers    = {...req.headers};
                                                                                 hdrs.display(headers);
                     if(req.method=='POST'){
-                          var json    = JSON.parse(body);
-                                                                                console.log('   - post',json);
+                                                                                console.log('   - post',body);
                     }
                     res.end('it works!');
                     
