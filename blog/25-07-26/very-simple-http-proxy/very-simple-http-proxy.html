@@ -65,6 +65,7 @@
               example   = mod.example;
               
               example.initmod({ext,$,menu,ace,on});
+              example.btn.run   = btn.run;
               
               await example.init();
 
@@ -163,9 +164,13 @@
 
 
       <script>
+
       
-      
-        var on    = {};
+        var process;
+
+        
+        var btn         = {};
+        var on          = {};
         
 
   //:
@@ -181,8 +186,24 @@
   //:
 
 
+        btn.run   = async function(){
+          
+              if(process){
+                    await process.kill();
+              }
+              
+        }//run
+        
+
+        on.run    = function({process:p}){
+                                                                                console.log('on.run');
+              process   = p;
+              
+        }//run
+        
+        
         on['server-ready']   = function({port,url:url2}){
-                                                                                console.log('server-ready',port,url2);
+                                                                                console.log('on.server-ready',port,url2);
               url   = url2;
               
               if(port==8005){
