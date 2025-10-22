@@ -162,7 +162,8 @@
               }
               
               var js    = test.getvalue();
-              return js;
+
+              iframe.contentWindow.postMessage({type:'run',js},'*');
           
         }//run
         
@@ -175,7 +176,7 @@
               var js    = server.editor.getvalue();
               var pre   = patch.getvalue();
               js        = pre+js;
-              server.run.nodejs({js});
+              return js;
           
         }//run
         
