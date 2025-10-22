@@ -45,7 +45,7 @@
                     hdrs.rewrite(headers,rewrite);
                                                                                 console.log('8005 :','**  proxy response headers  **');
                                                                                 hdrs.display(headers);
-                    res.writeHead(code,hdrs);
+                    res.writeHead(code,headers);
                     
                     res2.on('data',data=>res.write(data));
                     res2.on('end',()=>res.end());
