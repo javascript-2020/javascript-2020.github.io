@@ -1,7 +1,9 @@
-//  very-simple-proxy.js
 
         var http    = require('http');
-        
+
+
+  //8005
+  
         http.createServer(request).listen(8005);
                                                                                 console.log('listening 8005');
         function request(req,res){
@@ -54,7 +56,9 @@
               
         }//request
 
-        
+
+  //8006
+  
         http.createServer(request2).listen(8006);
                                                                               console.log('listening 8006');
         function request2(req,res){
