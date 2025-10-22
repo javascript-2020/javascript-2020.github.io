@@ -22,10 +22,10 @@
               var query;
               var i     = url.indexOf('?');
               if(i!=-1){
-                    url   = url.slice(0,i);
                     var enc   = url.slice(i+1);
                     var b64   = decodeURIComponent(enc);
                     query     = atob(b64);
+                    url       = url.slice(0,i);
                                                                                 console.log('8005 :','query',query);
               }
                                                                                 console.log('8005 :',url);
