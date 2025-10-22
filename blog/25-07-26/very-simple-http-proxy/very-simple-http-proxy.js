@@ -15,7 +15,7 @@
                                                                                 console.log('8005 :','request headers');
               var hdrs    = req.headers;
                                                                                 Object.entries(hdrs).forEach(([key,value])=>console.log(`${key}:${value}`));
-              var hdrs2;
+              var hdrs2   = {};
               
               /*
               var allowed   = ['user-agent','accept','content-type'];
