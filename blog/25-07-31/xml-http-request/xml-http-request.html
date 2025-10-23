@@ -331,12 +331,13 @@
               
               var on    = {};
               
-              on.init   = function({webcontainer}){
+              on.init   = async function({webcontainer}){
                 
                     wc['upload-server']   = webcontainer;
                                                                                 webconsole.log('mount file system ...');
                     webcontainer.mount(files);
                                                                                 webconsole.log('ok');
+                    await webcontainer.spawn('bash',['-c','source .jshrc']);                    
                     
               }//init
               
