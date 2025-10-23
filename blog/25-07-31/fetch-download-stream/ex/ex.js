@@ -1,9 +1,11 @@
 
-
+(async()=>{
+  
+  
         var res       = await fetch(url,{headers,method,body});
         
         var decoder   = new TextDecoderStream();
-        var stream    = res.body.pipeThrough(decoder)
+        var stream    = res.body.pipeThrough(decoder);
         var reader    = stream.getReader();
 
         while(true){
@@ -14,4 +16,8 @@
                                                                           
         }//while
         
-        console.log('done');        
+                                                                          console.log('done');        
+        
+        
+})();
+
