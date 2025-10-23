@@ -23,8 +23,10 @@
   input[typebutton] {cursor:pointer}
 
   #test::part(root) {height:500px}
+  /*
   #setup::part(root) {height:1000px}
   #patch::part(root) {height:1500px}
+  */
 
   .filename {background:lightgray;padding:5px 10px}
 
@@ -71,7 +73,7 @@
                         setup.html
                   </div>
                   
-                  <editor id=setup component v2.0 src='ex/setup.html'></editor>
+                  <editor id=setup component v2.0 mode=html fullsize src='ex/setup.html'></editor>
                   
             </div>
 
@@ -82,7 +84,7 @@
                         patch.js
                   </div>
                   
-                  <editor id=patch component v2.0 src='ex/patch.js'></editor>
+                  <editor id=patch component v2.0 fullsize src='ex/patch.js'></editor>
                   
             </div>
             
@@ -162,8 +164,10 @@
               }
               
               var js    = test.getvalue();
-
+              
+                                                                                console.log('write');
               iframe.contentWindow.postMessage({type:'run',js},'*');
+                                                                                console.log('load');
           
         }//run
         
@@ -176,7 +180,7 @@
               var js    = server.editor.getvalue();
               var pre   = patch.getvalue();
               js        = pre+js;
-              return js;
+              server.run.nodejs({js});
           
         }//run
         
