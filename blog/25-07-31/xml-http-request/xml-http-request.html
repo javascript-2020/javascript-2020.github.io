@@ -78,6 +78,13 @@
         var terminal;
         var webconsole;
 
+
+        var files   = {};
+        files['node_modules']   = {directory: {}};
+        files['.jshrc']         = {file:{contents:`
+                                        export NODE_PATH=./node_modules
+                                  `}};
+        
         
     //:
 
@@ -85,6 +92,7 @@
         async function init(){
                                                                                 //debug('init',version);
               
+
               menu    = menumod();
 
 
@@ -137,8 +145,14 @@
         );
         [$,datatype,menumod,keydown,debug]   = await promise;
   
-
-        [sandbox]       = await ext.load.libs('js/sandbox/sandbox.js.api');
+        await Promise.all([
+              ext.load.libs('js/sandbox/sandbox.js.api').then(result=>[sandbox]=result),
+              ext.text.libs('nodejs/server-cert/server-cert.js').then(result=>{
+                
+                    files['node_modules']['server-cert.js']   = {file:{contents:result[0]}};
+                    
+              })
+        ]);
 
 
         mod.stack.complete;
@@ -309,8 +323,10 @@
         btn['upload-server'].run    = async function(){
           
               if(process['upload-server']){
+                                                                                webconsole.log('kill existing process ...');
                     await process['upload-server'].kill();
-              }
+                                                                                webconsole.log('ok');
+              } 
 
               
               var on    = {};
@@ -318,6 +334,9 @@
               on.init   = function({webcontainer}){
                 
                     wc['upload-server']   = webcontainer;
+                                                                                webconsole.log('mount file system ...');
+                    webcontainer.mount(files);
+                                                                                webconsole.log('ok');
                     
               }//init
               
