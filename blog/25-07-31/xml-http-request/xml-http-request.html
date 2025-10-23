@@ -72,6 +72,7 @@
         var menu;
             
         var ex    = {};
+        var webconsole;
 
         
     //:
@@ -87,17 +88,20 @@
               ex['upload-server']       = mod['upload-server'];
               ex['xhr-download']        = mod['xhr-download'];
               ex['download-server']     = mod['download-server'];
+              webconsole                = mod.console;
               
               ex['xhr-upload'].initmod({ext,$,menu,ace});
               ex['upload-server'].initmod({ext,$,menu,ace});
               ex['xhr-download'].initmod({ext,$,menu,ace});
               ex['download-server'].initmod({ext,$,menu,ace});
+              webconsole.initmod({ext,$,menu,ace});
 
               await Promise.all([
                     ex['xhr-upload'].init(),
                     ex['upload-server'].init(),
                     ex['xhr-download'].init(),
                     ex['download-server'].init(),
+                    webconsole.init(),
               ]);
                 
 
@@ -211,7 +215,16 @@
                         
             <editor id=xhr-upload component v2.0 fullsize mode=html src='ex/xhr-upload.html'></editor>
       
+            <div id=xhr-upload-btns>
+                  <input value=run type=button>
+            </div>
+            
+            
             <editor id=upload-server component v2.0 fullsize src='ex/upload-server.js'></editor>
+
+            <div id=upload-server-btns>
+                  <input value=run type=button>
+            </div>
 
 
             
@@ -220,9 +233,20 @@
             </div>
             
             <editor id=xhr-download component v2.0 fullsize mode=html src='ex/xhr-download.html'></editor>
+
+            <div id=xhr-download-btns>
+                  <input value=run type=button>
+            </div>
+
       
             <editor id=download-server component v2.0 fullsize src='ex/download-server.js'></editor>            
             
+            <div id=download-server-btns>
+                  <input value=run type=button>
+            </div>
+            
+            
+            <console component v2.0></console>
 
       </body>
 
@@ -237,6 +261,7 @@
               ex['upload-server'].initdom();
               ex['xhr-download'].initdom();
               ex['download-server'].initdom();
+              webconsole.initdom();
           
           
         }//initdom
