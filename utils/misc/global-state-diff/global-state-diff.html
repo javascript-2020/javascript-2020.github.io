@@ -352,24 +352,30 @@
         
               var mod   = await import(src);
                                                                                 //console.log(inspect(mod));
+                                                                                
               var str   = '';
               for(var key in mod){
 
               
                     var s1    = '[ null ]';
-                    if(mod[key]){
-                          var s     = mod[key].toString();
-                          s1        = s.slice(0,80);
-                          if(s.length>s1.length){
-                                s1   += ` ... ( ${s.length} )`;
+                    
+                    if(!mod[key]){
+                          str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                    }else{
+                          if(datatype(mod[key])=='object'){
+                                s1    = tostring(mod[key]);
+                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                                for(var prop in mod[key]){
+                                      
+                                      var s2    = tostring(mod[key][prop]);                                  
+                                      str  += '      '+prop+`   [ ${typeof mod[key][prop]} ]      :   ${s2}`+'\n';
+                                      
+                                }//for
+                          }else{
+                                s1    = tostring(mod[key]);
+                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
                           }
                     }
-                    
-                    
-                    str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
-
-
-
                     
               }//for
               
@@ -381,10 +387,25 @@
               $('#values').textContent    = str;
               
               output2.append(nitem);
+
+
+              function tostring(v){
+                
+                    var s     = v.toString();
+                    var s1    = s.slice(0,80);
+                    if(s.length>s1.length){
+                          s1   += ` ... ( ${s.length} )`;
+                    }
+                    return s1;
+                    
+              }//tostring
               
         }//process
                     
 
+
+
+        
 
 (async()=>{
 
