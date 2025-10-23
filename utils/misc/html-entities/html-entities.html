@@ -141,10 +141,10 @@
   html
     {height:100%;font-family:arial}
   body
-    {min-height:calc(100% - 40px);margin:20px}
+    {min-height:calc(100% - 40px);margin:20px;display:flex;flex-direction:column;gap:20px;align-items:center}
     
   #center
-    {display:flex;flex-direction:column;gap:20px;align-items:center;
+    {display:flex;flex-direction:column;gap:20px;
       max-width:1400px;width:100%;padding:0 20px}
     
   [component]
@@ -194,7 +194,7 @@
     {width:32px;height:32px;border:1px solid gray;border-radius:3px;box-sizing:border-box;cursor:pointer}
     
   #hdr
-    {display:flex;align-items:center}
+    {display:flex;align-items:center;gap:20px}
     
   #view
     {flex:1;display:flex;gap:10px;width:100%}
@@ -272,8 +272,8 @@
 
               var view                              = $(root,'#view');
 
-              await editor.source.initdom('txt');
-              await editor.output.initdom('txt');
+              await editor.source.initdom({mode:'text'});
+              await editor.output.initdom({mode:'text'});
 
 
               log.initdom();
@@ -298,7 +298,7 @@
         btn.encode   = function(){
           
               var txt       = editor.source.getValue();
-              var encoded   = convert(txt);
+              var encoded   = encode(txt);
               editor.output.setValue(encoded,-1);
               
         }//encode
