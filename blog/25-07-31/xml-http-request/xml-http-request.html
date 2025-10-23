@@ -66,12 +66,16 @@
         var menumod;
         var keydown;
         var debug;
+        var sandbox;
 
         var ace;
         
         var menu;
+
             
-        var ex    = {};
+        var ex        = {};
+
+        var terminal;
         var webconsole;
 
         
@@ -88,12 +92,14 @@
               ex['upload-server']       = mod['upload-server'];
               ex['xhr-download']        = mod['xhr-download'];
               ex['download-server']     = mod['download-server'];
+              terminal                  = mod.terminal;
               webconsole                = mod.console;
               
               ex['xhr-upload'].initmod({ext,$,menu,ace});
               ex['upload-server'].initmod({ext,$,menu,ace});
               ex['xhr-download'].initmod({ext,$,menu,ace});
               ex['download-server'].initmod({ext,$,menu,ace});
+              terminal.initmod({ext,$,menu});
               webconsole.initmod({ext,$,menu,ace});
 
               await Promise.all([
@@ -101,6 +107,7 @@
                     ex['upload-server'].init(),
                     ex['xhr-download'].init(),
                     ex['download-server'].init(),
+                    terminal.init(),
                     webconsole.init(),
               ]);
                 
@@ -130,6 +137,10 @@
         );
         [$,datatype,menumod,keydown,debug]   = await promise;
   
+
+        [sandbox]       = await ext.load.libs('js/sandbox/sandbox.js.api');
+
+
         mod.stack.complete;
               
 })();
@@ -246,26 +257,85 @@
             </div>
             
             
+            <terminal component v2.0></terminal>
             <console component v2.0></console>
+            
 
       </body>
 
 
       <script>
       
+        var wc        = {};
+        var process   = {};
+        var urls      = {};
+        
       
+        var btn                     = {};
+        btn['upload-server']        = {};
+        
+
+  //:
+  
+  
         function initdom(rootnode){
 
 
               ex['xhr-upload'].initdom();
+              
+              $('#upload-server-btns [value=run]').onclick          = btn['upload-server'].run;
               ex['upload-server'].initdom();
+              
+
               ex['xhr-download'].initdom();
+
+              
               ex['download-server'].initdom();
+              
+              
+              terminal.initdom();
               webconsole.initdom();
           
           
         }//initdom
         
+        
+  //:
+  
+  
+        btn['upload-server'].run    = async function(){
+          
+              if(process['upload-server']){
+                    await process['upload-server'].kill();
+              }
+
+              
+              var on    = {};
+              
+              on.init   = function({webconstainer){
+                
+                    wc['upload-server']   = webcontainer;
+                    
+              }//init
+              
+              on['server-ready']    = function({port,url}){
+                
+                    urls['upload-server']   = url;
+                    
+              }//server-ready
+              
+              on.run    = function({process}){
+                
+                    process['upload-server']    = process;
+                    
+              }//run
+              
+              on.complete   - function({code}){
+              }//complete
+              
+              sandbox.nodejs(js,{console:webconsole,ctx:{terminal},on});
+              
+        }//run
         
         
       </script>
