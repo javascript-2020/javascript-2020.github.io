@@ -71,7 +71,7 @@
         
         var menu;
             
-        var editor;
+        var ex    = {};
 
         
     //:
@@ -82,12 +82,24 @@
               
               menu    = menumod();
 
+debugger;
+              ex['xhr-upload']          = mod['xhr-upload'];
+              ex['upload-server']       = mod['upload-server'];
+              ex['xhr-download']        = mod['xhr-download'];
+              ex['download-server']     = mod['download-server'];
+              
+              ex['xhr-upload'].initmod({ext,$,menu,ace});
+              ex['upload-server'].initmod({ext,$,menu,ace});
+              ex['xhr-download'].initmod({ext,$,menu,ace});
+              ex['download-server'].initmod({ext,$,menu,ace});
 
-              editor    = mod.editor;
-              
-              editor.initmod({ext,$,menu,ace});
-              
-              await editor.init();
+              await Promise.all([
+                    ex['xhr-upload'].init(),
+                    ex['upload-server'].init(),
+                    ex['xhr-download'].init(),
+                    ex['download-server'].init(),
+              ]);
+                
 
 
               initdom(document.body);
@@ -209,7 +221,7 @@
             
             <editor id=xhr-download component v2.0 fullsize mode=html src='ex/xhr-download.html'></editor>
       
-            <editor id=download-server componet v2.0 fullsize src='ex/download-server.js'></editor>            
+            <editor id=download-server component v2.0 fullsize src='ex/download-server.js'></editor>            
             
 
       </body>
@@ -218,7 +230,13 @@
       <script>
       
       
-        function initdom(){
+        function initdom(rootnode){
+
+
+              ex['xhr-upload'].initdom();
+              ex['upload-server'].initdom();
+              ex['xhr-download'].initdom();
+              ex['download-server'].initdom();
           
           
         }//initdom
