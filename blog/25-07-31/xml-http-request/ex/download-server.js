@@ -25,21 +25,24 @@
         
               var size    = 100;
               var mb      = 1024*1024;
-              var str     = 'x'.repeat(mb);
+              var str     = 'x'.repeat(mb).repeat(size);
+              
               var delay   = 1000;
               
               res.setHeader('content-length',size*mb);
               res.setHeader('access-control-allow-origin','*');
               res.setHeader('access-control-expose-headers','content-length');
               
+              /*
               for(var i=0;i<size;i++){
                                                                               console.log(i+1,mb,i+1*mb);
                     res.write(str);
                     await new Promise(res=>setTimeout(res,delay));
                     
               }//for
+              */
               
-              res.end();
+              res.end(str);
               
         }//download
         
