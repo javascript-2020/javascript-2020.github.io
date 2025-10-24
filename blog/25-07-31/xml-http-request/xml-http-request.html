@@ -216,6 +216,15 @@
   input[type=button]
     {cursor:pointer}
 
+  section
+    {border:2px solid #4a90e2;padding:10px}
+      
+  iframe
+    {width:100%;height:300px}
+    
+  .filename
+    {background:whitesmoke;padding:5px 10px}
+    
             </style>
             
       </head>
@@ -237,14 +246,28 @@
                         Learn how to use XMLHttpRequest to send and receive HTTP requests in JavaScript. This guide covers setup, request methods, response handling,
                         and practical examples for AJAX-style communication.
                   </p>
+                  <p>
+                        In the Browser (Dev Tools)<br>
+                        Most modern browsers let you throttle network speed:<br>
+                        Chrome / Edge / Firefox<br>
+                        1. 	Open DevTools (F12 or right-click → Inspect).<br>
+                        2. 	Go to the Network tab.<br>
+                        3. 	Find the Throttling dropdown (usually top-left).<br>
+                        4. 	Choose a preset like:<br>
+                        • 	Slow 3G<br>
+                        • 	Fast 3G<br>
+                        • 	Or create a custom profile<br>
+                        This affects all network requests, including , , and image loads.<br>
+                  </p>
+                  
             </div>
 
 
 
             <section xhr-upload-root>
                   
-                  <div>
-                        xhr upload progress
+                  <div class=filename>
+                        xhr-upload.html
                   </div>
                         
                   <editor id=xhr-upload component v2.0 fullsize mode=html src='ex/xhr-upload.html'></editor>
@@ -259,8 +282,8 @@
       
             
             <section upload-server-root>
-                  <div>
-                        upload server
+                  <div class=filename>
+                        upload-server.js
                   </div>
             
                   <editor id=upload-server component v2.0 fullsize src='ex/upload-server.js'></editor>
@@ -353,7 +376,7 @@
   //:
   
   
-        btn['xhr-upload']   = async function(){debugger;
+        btn['xhr-upload']   = async function(){
           
               if(!process['upload-server']){
                     var msg   = 'upload server not started';
@@ -410,6 +433,8 @@
               
         }//run
         
+
+
         
       </script>
       
