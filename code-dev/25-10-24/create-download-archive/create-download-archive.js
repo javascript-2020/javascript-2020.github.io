@@ -88,9 +88,8 @@
                                                                                 console.log('file',abs+key);
                                                                                 //console.log(owner,repo,branch,path);
                                       if(zip){
-                                            var res   = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`);
-                                            var txt   = await res.text();
-                                            zip.file(abs+key,txt);
+                                            fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`)
+                                              .then(res=>res.text().then(txt=>zip.file(abs+key,txt)));
                                       }
                                 }
                           }
