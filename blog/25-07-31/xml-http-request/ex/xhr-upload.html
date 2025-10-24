@@ -3,11 +3,14 @@
   #progress   {border:1px solid lightgray;padding:1px;height:20px}
   #bar        {background:lightblue;height:100%;width:0}
   
+  input       {font-size:16px;padding:5px 10px;display:block}
+
       </style>
 
       <h3>xhr upload</h3>
       
-      <input id=upload type=file>
+      <input id=url value='https://localhost:3010/upload'>
+      <input id=upload type=button>
 
       
       <div id=progress>
@@ -20,18 +23,25 @@
       
       <script>
                                                                                 console.clear();
-        var url   = 'https://localhost:3010/upload';
+        var xhr;
         
-        upload.onchange   = e=>{
+        upload.onclick    = e=>{
         
+              if(xhr){
+                    xh.abort();
+              }
+              
               result.textContent    = 'starting upload';
               bar.style.width       = 0;
               
-              var file    = upload.files[0];
+              var size      = 100;
+              var chunk     = new Uint8Array(1024*1024);
+              var chunks    = new Array(sizeInMB).fill(chunk);
+              var blob      = new Blob(chunks,{type:'application/octet-stream'});
               
-              var xhr   = new XMLHttpRequest();
+              xhr   = new XMLHttpRequest();
               
-              xhr.open('post',url);
+              xhr.open('post',url.value);
               
               xhr.upload.onprogress   = e=>{
                                                                                 console.log('upload.onprogress');
@@ -51,7 +61,7 @@
                     
               }//onload
                     
-              xhr.send(file);
+              xhr.send(blob);
               
         }//onchange
 
