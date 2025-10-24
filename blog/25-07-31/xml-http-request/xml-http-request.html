@@ -171,7 +171,7 @@
       padding-bottom:200px;
     }
   body>*
-    {max-width:1400px;width:100%;padding:0 20px;}
+    {max-width:1400px;width:100%}
     
   [component]
     {display:none}
@@ -208,7 +208,11 @@
     {cursor:pointer}
 
       
-    
+  .flex-col
+    {display:flex;flex-direction:column;gap:20px}
+  
+  #demo
+    {border:2px solid green;padding:20px}
     
   #view
     {display:flex;flex-direction:column;gap:20px}
@@ -252,6 +256,7 @@
                         Learn how to use XMLHttpRequest to send and receive HTTP requests in JavaScript. This guide covers setup, request methods, response handling,
                         and practical examples for AJAX-style communication.
                   </p>
+                  <br>
                   <p>
                         In the Browser (Dev Tools)<br>
                         Most modern browsers let you throttle network speed:<br>
@@ -265,64 +270,69 @@
                         • 	Or create a custom profile<br>
                         This affects all network requests, including XMLHttpRequest, fetch and image loads.<br>
                   </p>
-                  
+                  <br>
+                  <p>
+                        At the time of writing these examples are not working well in web containers, the onprogress events are not firing.
+                        The code can be downloaded and run locally to see them working
+                  </p>
             </div>
 
-
-            <div>
-                  demo
-            </div>
-            
-            <div id=view>
-            
-                  <div upload-server-root>
-                        <div>
-                              upload-server.js
-                        </div>
-                        <div>
-                              <input value=run type=button>
-                        </div>
-                        <div></div>
-                  </div>
-
-                  <div xhr-upload-root>
-                        <div>
-                              xhr-upload.html
-                        </div>
-                        <div>
-                              <input value=run type=button>
-                        </div>
-                        <div>
-                              <iframe></iframe>
-                        </div>
-                  </div>
-
-                  <div download-server-root>
-                        <div>
-                              download-server.js
-                        </div>
-                        <div>
-                              <input value=run type=button>
-                        </div>
-                        <div></div>
+            <div id=demo class=flex-col>
+                  <div>
+                        demo
                   </div>
                   
-                  <div xhr-download-root>
-                        <div>
-                              xhr-download.html
-                        </div>
-                        <div>
-                              <input value=run type=button>
-                        </div>
-                        <div>
-                              <iframe></iframe>
-                        </div>
-                  </div>
+                  <div id=view>
                   
-            </div view>
-
-            <terminal component v2.0></terminal>
-            <console component v2.0></console>
+                        <div upload-server-root>
+                              <div>
+                                    upload-server.js
+                              </div>
+                              <div>
+                                    <input value=run type=button>
+                              </div>
+                              <div></div>
+                        </div>
+      
+                        <div xhr-upload-root>
+                              <div>
+                                    xhr-upload.html
+                              </div>
+                              <div>
+                                    <input value=run type=button>
+                              </div>
+                              <div>
+                                    <iframe></iframe>
+                              </div>
+                        </div>
+      
+                        <div download-server-root>
+                              <div>
+                                    download-server.js
+                              </div>
+                              <div>
+                                    <input value=run type=button>
+                              </div>
+                              <div></div>
+                        </div>
+                        
+                        <div xhr-download-root>
+                              <div>
+                                    xhr-download.html
+                              </div>
+                              <div>
+                                    <input value=run type=button>
+                              </div>
+                              <div>
+                                    <iframe></iframe>
+                              </div>
+                        </div>
+                        
+                  </div view>
+      
+                  <terminal component v2.0></terminal>
+                  <console component v2.0></console>
+            </div demo>
 
 
             
@@ -330,12 +340,16 @@
                   files
             </div>
             
-            <section class=file>
+            <div xhr-upload class=file>
                   <div class=filename>
-                        xhr-upload.html
+                        <span>
+                              xhr-upload.html
+                        </span>
+                        <span id=hash>
+                        </span>
                   </div>
                   <editor id=xhr-upload component v2.0 fullsize mode=html src='ex/xhr-upload.html'></editor>
-            </section>
+            </div>
       
             
             <section class=file>
@@ -394,8 +408,18 @@
         function initdom(rootnode){
 
 
+              ex['upload-server'].initdom();
+              ex['xhr-upload'].initdom();
+              ex['download-server'].initdom();
+              ex['xhr-download'].initdom();
+              
+
+              
               $('[xhr-upload-root] [value=run]').onclick            = btn['xhr-upload'];
               iframe['xhr-upload']                                  = $('[xhr-upload-root] iframe');
+              var txt                                               = ex['xhr-upload'].getvalue();
+              console.log(txt);
+              $('[xhr-upload].file #hash').textContent              = sha256(txt);
               
               $('[upload-server-root] [value=run]').onclick         = btn['upload-server'];
               
@@ -405,10 +429,6 @@
               $('[download-server-root] [value=run]').onclick       = btn['download-server'];
 
               
-              ex['upload-server'].initdom();
-              ex['xhr-upload'].initdom();
-              ex['download-server'].initdom();
-              ex['xhr-download'].initdom();
               
               
               terminal.initdom();
@@ -580,7 +600,16 @@
               
         `;
         
-        
+        async function sha256(txt) {
+          
+              var msg   = new TextEncoder().encode(txt);
+              var buf   = await crypto.subtle.digest('SHA-256',msg);
+              var arr   = Array.from(new Uint8Array(buf));
+              var hex   = arr.map(b=>b.toString(16).padStart(2,'0')).join('');
+              return hex;
+              
+        }//sha256
+
         
       </script>
       
