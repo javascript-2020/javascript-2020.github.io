@@ -4,7 +4,7 @@
 
 
         var {key,cert}    = require('server-cert.js');
-        var getmime       = require('getmime.ks');
+        var getmime       = require('getmime.js');
         
         require('https').createServer({key,cert},request).listen(3010);
         
