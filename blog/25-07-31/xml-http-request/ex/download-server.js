@@ -1,9 +1,12 @@
 
   //  download-server.js
 
-        var fs    = require('fs');
+        var fs            = require('fs');
+        
+        var {key,cert}    = require('server-cert.js');
         
         require('http').createServer(request).listen(3011);
+        //require('https').createServer({key,cert},request).listen(3011);
         
         
         function request(req,res){
