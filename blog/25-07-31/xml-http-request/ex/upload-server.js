@@ -4,27 +4,23 @@
 
 
         var {key,cert}    = require('server-cert.js');
+        var getmime       = require('getmime.ks');
         
         require('https').createServer({key,cert},request).listen(3010);
         
         
         function request(req,res){
 
-              if(cors(req,res))return;
-              
-              var f   = true;
               switch(req.url){
               
-                case '/'          : res.end('helloworld');        break;
-                case '/upload'    : upload(req,res);              break;
-                
-                default           : f   = false;
+                case '/upload'    : upload(req,res);
+                                    return;
               
               }//switch
               
-              if(!f){
-                    res.end('not found');
-              }
+              var stream    = fs.createReadStream('xhr-upload.html');
+              res.writeHead(200,{'content-type':'text/html'});
+              stream.pipe(res);
               
         }//request
         
