@@ -37,8 +37,7 @@
                     await new Promise(res=>setTimeout(res,delay));
                     
               }//for
-              
-              
+                            
               res.end();
               
         }//download
