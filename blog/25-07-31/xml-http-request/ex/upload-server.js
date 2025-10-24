@@ -5,7 +5,8 @@
 
         var {key,cert}    = require('server-cert.js');
         
-        require('https').createServer({key,cert},request).listen(3010);
+        //require('https').createServer({key,cert},request).listen(3010);
+        require('http').createServer({key,cert},request).listen(3010);
         
         
         function request(req,res){
