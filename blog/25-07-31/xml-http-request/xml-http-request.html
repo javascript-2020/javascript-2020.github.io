@@ -233,7 +233,7 @@
     {border:2px solid #4a90e2;padding:10px}
 
   .filename
-    {background:whitesmoke;padding:5px 10px;margin-bottom:10px}
+    {background:whitesmoke;padding:5px 10px;margin-bottom:10px;display:flex;justify-content:space-between}
     
             </style>
             
@@ -418,8 +418,7 @@
               $('[xhr-upload-root] [value=run]').onclick            = btn['xhr-upload'];
               iframe['xhr-upload']                                  = $('[xhr-upload-root] iframe');
               var txt                                               = ex['xhr-upload'].getvalue();
-              console.log(txt);
-              $('[xhr-upload].file #hash').textContent              = sha256(txt);
+              sha256(txt).then(hex=>$('[xhr-upload].file #hash').textContent=`sha256 : ${hex}`);
               
               $('[upload-server-root] [value=run]').onclick         = btn['upload-server'];
               
@@ -605,7 +604,7 @@
               var msg   = new TextEncoder().encode(txt);
               var buf   = await crypto.subtle.digest('SHA-256',msg);
               var arr   = Array.from(new Uint8Array(buf));
-              var hex   = arr.map(b=>b.toString(16).padStart(2,'0')).join('');
+              var hex   = arr.map(b=>b.toString(16).padStart(2,'0').toUpperCase()).join('');
               return hex;
               
         }//sha256
