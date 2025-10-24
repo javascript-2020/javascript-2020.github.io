@@ -413,7 +413,10 @@
         window.onmessage    = e=>{
           
               var key   = Object.keys(obj).find(k=>iframe[k]===e.source);
-              if(!key)return;
+              if(!key){
+                    console.log('window.onmessage source not fouund');
+                    return;
+              }
               var {type,args}   = e.data;
               args.unshift(key);
               webconsole[type].apply(null,args);
@@ -491,7 +494,7 @@
                     window.console    = {
                           log     : (...args)=>window.parent.postMessage({type:'log',args}),
                           warn    : (...args)=>window.parent.postMessage({type:'warn',args}),
-                          error   : (...args){window.parent.postMessage({tyoe:'error',args}),
+                          error   : (...args)=>window.parent.postMessage({tyoe:'error',args}),
                     };
                     
               </scr`+`ipt>
