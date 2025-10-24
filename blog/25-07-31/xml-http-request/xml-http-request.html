@@ -410,7 +410,7 @@
         }//initdom
         
         
-        window.onmessage    = e=>{
+        window.addEventListener('message',e=>{console.log('window.onmessage');
           
               var key   = Object.keys(obj).find(k=>iframe[k]===e.source);
               if(!key){
@@ -421,7 +421,8 @@
               args.unshift(key);
               webconsole[type].apply(null,args);
 
-        }//onmessage
+        })//onmessage
+
         
   //:
   
@@ -490,11 +491,17 @@
         var inject    = `
         
               <script>
-              
+                    
+                    var con   = window.console;
                     window.console    = {
-                          log     : (...args)=>window.parent.postMessage({type:'log',args}),
-                          warn    : (...args)=>window.parent.postMessage({type:'warn',args}),
-                          error   : (...args)=>window.parent.postMessage({tyoe:'error',args}),
+                          log     : (...args)=>{
+                          
+                                con.log.apply(con,args);
+                                window.parent.postMessage({type:'log',args},'*')
+                                
+                          },
+                          warn    : (...args)=>window.parent.postMessage({type:'warn',args},'*'),
+                          error   : (...args)=>window.parent.postMessage({tyoe:'error',args},'*'),
                     };
                     
               </scr`+`ipt>
