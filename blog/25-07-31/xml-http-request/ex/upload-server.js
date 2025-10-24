@@ -19,6 +19,12 @@
               }//switch
               
               var stream    = fs.createReadStream('xhr-upload.html');
+stream.on('error', err => {
+  res.writeHead(500, { 'content-type': 'text/plain' });
+  res.end('Internal Server Error');
+});
+
+              
               res.writeHead(200,{'content-type':'text/html'});
               stream.pipe(res);
               
