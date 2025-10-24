@@ -34,7 +34,10 @@
                     zip   = new jszip();
               }
               
-              await add(dir);
+              var resolve,promise=new Promise(res=>resolve=res);
+              var ct=0,total=0;
+              add(dir);
+              await promise;
               
               var blob;
               if(zip){
@@ -55,6 +58,7 @@
                 
                     for(let key in dir){
                       
+                          ct++;
                           var o   = dir[key];
                           
                           if(o.directory){
@@ -90,8 +94,13 @@
                                       }
                                 }
                           }
+                          total++;
                           
                     }//for
+                    
+                    if(ct==total){
+                          resolve();
+                    }
                     
               }//add
 
