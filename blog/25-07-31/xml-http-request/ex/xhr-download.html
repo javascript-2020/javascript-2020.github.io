@@ -2,12 +2,11 @@
   body        {display:flex;flex-direction:column;gap:10px}
   #progress   {border:1px solid lightgray;padding:1px;height:20px}
   #bar        {background:lightblue;height:100%;width:0}
-  
+  input       {font-size:16px;padding:5px 10px}
       </style>
 
-      
+      <input id=url value='https://localhost:3010/download'>
       <input id=download value=download type=button>
-
       
       <div id=progress>
         <div id=bar></div>
@@ -19,7 +18,6 @@
       
       <script>
                                                                                 console.clear();
-        var url   = 'https://localhost:3010/download';
         
         download.onclick   = e=>{
         
@@ -41,10 +39,16 @@
               }//onprogress
               
               xhr.onload    = ()=>{
-                                                                                console.log("DONE",xhr.readyState);
-                    bar.style.width       = '100%';
-                    result.textContent    = 'done';
-                    
+
+                    var ok    = (xhr.status>=200 && xhr.status<300);
+                    if(ok){
+                                                                                console.log('download complete',xhr.status,xhr.statusText);
+                          bar.style.width       = '100%';
+                          result.textContent    = 'done';
+                          return;
+                    }
+                                                                                console.warn('download error:',xhr.status,xhr.statusText);
+                                                                                console.log(xhr.responseText);
               }//onload
                     
               xhr.send();
