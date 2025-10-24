@@ -77,6 +77,7 @@
 
         var terminal;
         var webconsole;
+        var log;
 
 
         var files   = {};
@@ -104,6 +105,7 @@
               ex['download-server']     = mod['download-server'];
               terminal                  = mod.terminal;
               webconsole                = mod.console;
+              log                       = mod.log;
               
               ex['xhr-upload'].initmod({ext,$,menu,ace});
               ex['upload-server'].initmod({ext,$,menu,ace});
@@ -111,6 +113,7 @@
               ex['download-server'].initmod({ext,$,menu,ace});
               terminal.initmod({ext,$,menu});
               webconsole.initmod({ext,$,menu,ace});
+              log.initmod({ext,$});
 
               await Promise.all([
                     ex['xhr-upload'].init(),
@@ -119,6 +122,7 @@
                     ex['download-server'].init(),
                     terminal.init(),
                     webconsole.init(),
+                    log.init(),
               ]);
                 
 
@@ -301,7 +305,7 @@
             
             <terminal component v2.0></terminal>
             <console component v2.0></console>
-            
+            <log component v2.0></log>
 
       </body>
 
@@ -340,6 +344,7 @@
               
               terminal.initdom();
               webconsole.initdom();
+              log.initdom();
           
           
         }//initdom
