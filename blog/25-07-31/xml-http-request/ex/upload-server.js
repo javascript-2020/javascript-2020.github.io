@@ -4,9 +4,10 @@
 
 
         var {key,cert}    = require('server-cert.js');
+        var fs            = require('fs');
         
-        //require('https').createServer({key,cert},request).listen(3010);
-        require('http').createServer({key,cert},request).listen(3010);
+        require('https').createServer({key,cert},request).listen(3010);
+        //require('http').createServer({key,cert},request).listen(3010);
         
         
         function request(req,res){
@@ -19,12 +20,6 @@
               }//switch
               
               var stream    = fs.createReadStream('xhr-upload.html');
-stream.on('error', err => {
-  res.writeHead(500, { 'content-type': 'text/plain' });
-  res.end('Internal Server Error');
-});
-
-              
               res.writeHead(200,{'content-type':'text/html'});
               stream.pipe(res);
               
