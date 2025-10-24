@@ -217,18 +217,31 @@
               $('#date').textContent    = date;
               $('#file').textContent    = fn;
                                                                                 console.log(ext,fn);
+              var dom;                                                                                
               switch(ext){
                 
-                case 'html'   : query.html(rel);        break;
+                case 'html'   : dom   = document.createElement('snippet-html-console');       break;
+                case 'js'     : dom   = document.createElement('snippet-console');            break;
                 
               }//switch
               
+              dom.setAttribute('id','test');
+              dom.toggleAttribute('component',true);
+              dom.toggleAttribute('v2.0',true);
+              dom.setAttribute('src',src);
+              
+              document.body.append(dom);
+              await mod.build({root:dom,mod});
+              mod.test.initmod({ext,$,menu,ace});
+              await mod.test.init();
+              mod.test.initdom();
+              
         }//query
         
-        
+/*        
         query.html    = async function(src){
           
-              var dom   = document.createElement('snippet-html-console');
+              var 
               dom.setAttribute('id','test');
               dom.toggleAttribute('component',true);
               dom.toggleAttribute('v2.0',true);
@@ -241,6 +254,11 @@
               mod.test.initdom();
               
         }//html
+        
+        
+        query.js    = async function(src){
+        }//js
+*/        
         
         
   //:
