@@ -52,13 +52,22 @@
                     
               }//onprogress
               
-              xhr.onload    = ()=>{
-                                                                                //  readyState will be 4
-                                                                                console.log("DONE",xhr.readyState);
-                    bar.style.width       = '100%';
-                    result.textContent    = 'done';
+              xhr.onload    = ()=>{              
+              
+                    var ok    = (xhr.status>=200 && xhr.status<300);
                     
+                    if(ok){
+                          bar.style.width       = '100%';
+                          result.textContent    = 'done';
+                          return;
+                    }
+                                                                                console.warn('HTTP error:',xhr.status);
               }//onload
+
+              xhr.onerror   = function(){
+                                                                                console.error('Network error — request failed');
+              }//onerror
+
                     
               xhr.send(blob);
               
