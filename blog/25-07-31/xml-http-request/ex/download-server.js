@@ -1,58 +1,39 @@
+
   //  download-server.js
 
-
-        var {key,cert}    = require('server-cert.js');
+        var fs    = require('fs');
         
-        require('https').createServer({key,cert},request).listen(3010);
+        require('http').createServer({key,cert},request).listen(3011);
         
         
         function request(req,res){
         
-              if(cors(req,res))return;
-              
-              var f   = true;
               switch(req.url){
                 
-                case '/'            : res.end('helloworld');        break;
-                case '/download'    : download(req,res);            break;
-                
-                default             : f   = false;
-                
+                case '/download'    : download(req,res);
+                                      return;
               }//switch
-              
-              if(!f){
-                    res.end('not found');
-              }
+
+              var stream    = fs.createReadStream('xhr-download.html');
+              res.writeHead(200,{'content-type':'text/html'});
+              stream.pipe(res);
               
         }//request
         
         
-        function cors(req,res){
-        
-              res.setHeader('access-control-allow-origin','*');
-              res.setHeader('access-control-allow-headers','content-length');
-              
-              if(req.method!='OPTIONS'){
-                    return;
-              }
-              
-              res.writeHead(200);
-              res.end();
-              
-              return true;
-              
-        }//cors
-        
-        
         async function download(req,res){
         
-              res.setHeader('content-length',100);
-              var str   = '0123456789';
+              var size    = 100;
+              var md      = 1024*1024;
+              var str     = 'x'.repeat(mb);
+              var delay   = 1000;
               
-              for(var i=0;i<10;i++){
+              res.setHeader('content-length',size*mb);
+              
+              for(var i=0;i<size;i++){
               
                     res.write(str);
-                    await new Promise(res=>setTimeout(res,1000));
+                    await new Promise(res=>setTimeout(res,delay));
                     
               }//for
               
