@@ -55,15 +55,15 @@
               xhr.onload    = ()=>{              
               
                     var ok    = (xhr.status>=200 && xhr.status<300);
-                    
                     if(ok){
-                                                                                console.log('upload complete');
+                                                                                console.log('upload complete',xhr.status,xhr.statusText);
+                                                                                console.log(xhr.responseText);
                           bar.style.width       = '100%';
                           result.textContent    = 'done';
                           return;
                     }
-                    
-                                                                                console.warn('upload error:',xhr.status);
+                                                                                console.warn('upload error:',xhr.status,xhr.statusText);
+                                                                                console.log(xhr.responseText);
               }//onload
 
               xhr.onerror   = function(){
