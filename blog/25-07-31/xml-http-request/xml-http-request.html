@@ -81,9 +81,11 @@
 
         var files   = {};
         files['node_modules']   = {directory: {}};
+        /*
         files['.jshrc']         = {file:{contents:`
                                         export NODE_PATH=./node_modules
                                   `}};
+        */                                  
         
         
     //:
@@ -149,7 +151,7 @@
               ext.load.libs('js/sandbox/sandbox.js.api').then(result=>[sandbox]=result),
               ext.text.libs('nodejs/server-cert/server-cert.js').then(result=>{
                 
-                    files['node_modules']['server-cert.js']   = {file:{contents:result[0]}};
+                    files['node_modules'].directory['server-cert.js']   = {file:{contents:result[0]}};
                     
               })
         ]);
@@ -235,39 +237,64 @@
 
 
 
-            <div id=xhr-upload-btns>
-                  xhr upload progress
-                  <input value=run type=button>
-            </div>
+            <div xhr-upload-root>
+                  
+                  <div>
+                        xhr upload progress
+                  </div>
                         
-            <editor id=xhr-upload component v2.0 fullsize mode=html src='ex/xhr-upload.html'></editor>
+                  <editor id=xhr-upload component v2.0 fullsize mode=html src='ex/xhr-upload.html'></editor>
+                  
+                  <div id=xhr-upload-btns>
+                        <input value=run type=button>
+                  </div>
+                  
+                  <iframe id=xhr-upload-iframe></iframe>
+                  
+            </div>
       
             
+            <div upload-server-root>
+                  <div>
+                        upload server
+                  </div>
             
-            <div id=upload-server-btns>
-                upload server
-                  <input value=run type=button>
+                  <editor id=upload-server component v2.0 fullsize src='ex/upload-server.js'></editor>
+                  
+                  <div id=upload-server-btns>
+                        <input value=run type=button>
+                  </div>
             </div>
+
+
+
+            <div xhr-download-root>
             
-            <editor id=upload-server component v2.0 fullsize src='ex/upload-server.js'></editor>
-
-
-
-            
-            <div id=xhr-download-btns>
-                  <span>
+                  <div>
                         download progress
-                  </span>
-                  <input value=run type=button>
-            </div>
+                  </div>
             
-            <editor id=xhr-download component v2.0 fullsize mode=html src='ex/xhr-download.html'></editor>
+                  <editor id=xhr-download component v2.0 fullsize mode=html src='ex/xhr-download.html'></editor>
+                  
+                  <div id=xhr-download-btns>
+                        <input value=run type=button>
+                  </div>
+                  
+                  <iframe id=xhr-download-iframe></iframe>
+                  
+            </div>
 
 
-      
-            <div id=download-server-btns>
-                  download server
+            <div download-server-root>
+                  <div>
+                        download server
+                  </div>
+                  
                   <input value=run type=button>
+                  
+                  <div id=download-server-btns>
+                        <input value=run type=button>
+                  </div>
             </div>
             
             <editor id=download-server component v2.0 fullsize src='ex/download-server.js'></editor>            
@@ -337,7 +364,13 @@
                                                                                 webconsole.log('mount file system ...');
                     webcontainer.mount(files);
                                                                                 webconsole.log('ok');
-                    await webcontainer.spawn('bash',['-c','source .jshrc']);                    
+                                                                                
+                                                                                webconsole.log('.jshrc');
+                    var process   = await webcontainer.spawn('bash',['-c','source .jshrc']);                    
+                    var code      = await process.exit;
+                    if(code!=0){
+                                                                                webconsole.warn('process exited with error code : ',code);
+                    }
                     
               }//init
               
