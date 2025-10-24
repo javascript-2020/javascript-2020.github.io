@@ -80,15 +80,6 @@
         var log;
 
 
-        var files   = {};
-        files['node_modules']   = {directory: {}};
-        /*
-        files['.jshrc']         = {file:{contents:`
-                                        export NODE_PATH=./node_modules
-                                  `}};
-        */                                  
-        
-        
     //:
 
               
@@ -234,7 +225,7 @@
     {width:100%;height:250px;border:1px solid gray}
 
 
-  section
+  .file
     {border:2px solid #4a90e2;padding:10px}
 
   .filename
@@ -306,8 +297,29 @@
                         </div>
                   </div>
 
+                  <div download-server-root>
+                        <div>
+                              download-server.js
+                        </div>
+                        <div>
+                              <input value=run type=button>
+                        </div>
+                        <div></div>
+                  </div>
                   
-            </div>
+                  <div xhr-download-root>
+                        <div>
+                              xhr-download.html
+                        </div>
+                        <div>
+                              <input value=run type=button>
+                        </div>
+                        <div>
+                              <iframe></iframe>
+                        </div>
+                  <div>
+                  
+            </div view>
 
             <terminal component v2.0></terminal>
             <console component v2.0></console>
@@ -318,56 +330,35 @@
                   files
             </div>
             
-            <section>
-                  
+            <section class=file>
                   <div class=filename>
                         xhr-upload.html
                   </div>
-                        
                   <editor id=xhr-upload component v2.0 fullsize mode=html src='ex/xhr-upload.html'></editor>
-                  
             </section>
       
             
-            <section>
-            
+            <section class=file>
                   <div class=filename>
                         upload-server.js
                   </div>
-            
                   <editor id=upload-server component v2.0 fullsize src='ex/upload-server.js'></editor>
-                  
             </section>
 
 
-
-            <section xhr-download-root>
-            
-                  <div>
-                        download progress
+            <section class=file>
+                  <div class=filename>
+                        xhr-download.html
                   </div>
-            
                   <editor id=xhr-download component v2.0 fullsize mode=html src='ex/xhr-download.html'></editor>
-                  
-                  <div class=btns>
-                        <input value=run type=button>
-                  </div>
-                  
-                  <iframe id=xhr-download-iframe></iframe>
-                  
             </section>
 
 
-            <section download-server-root>
-                  <div>
-                        download server
+            <section class=file>
+                  <div class=filename>
+                        download-server.js
                   </div>
-                  
                   <editor id=download-server component v2.0 fullsize src='ex/download-server.js'></editor>            
-                  
-                  <div class=btns>
-                        <input value=run type=button>
-                  </div>
             </section>
             
             
@@ -383,8 +374,17 @@
         var process   = {};
         var urls      = {};
         var iframe    = {};
+
         
-      
+        var files   = {};
+        files['node_modules']   = {directory: {}};
+        /*
+        files['.jshrc']         = {file:{contents:`
+                                        export NODE_PATH=./node_modules
+                                  `}};
+        */                                  
+
+        
         var btn                     = {};
         
 
@@ -394,19 +394,21 @@
         function initdom(rootnode){
 
 
-              ex['xhr-upload'].initdom();
-              
               $('[xhr-upload-root] [value=run]').onclick            = btn['xhr-upload'];
               iframe['xhr-upload']                                  = $('[xhr-upload-root] iframe');
               
               $('[upload-server-root] [value=run]').onclick         = btn['upload-server'];
+              
+              $('[xhr=download-root] [value=run]').onclick          = btn['xhr-download'];
+              iframe['xhr-download']                                = $('[xhr-download-root] iframe');
+              
+              $('[download-server-root] [value=run]').onclick       = btn['download-server'];
+
+              
               ex['upload-server'].initdom();
-              
-
-              ex['xhr-download'].initdom();
-
-              
+              ex['xhr-upload'].initdom();
               ex['download-server'].initdom();
+              ex['xhr-download'].initdom();
               
               
               terminal.initdom();
@@ -434,30 +436,10 @@
   //:
   
   
-        btn['xhr-upload']   = async function(){
-          
-              if(!process['upload-server']){
-                    var msg   = 'upload server not started';
-                                                                                webconsole.log(msg);
-                    log.red(msg);
-                    return;
-              }
-              
-              iframe['xhr-upload'].src    = 'about:blank';              
-              
-              var html    = ex['xhr-upload'].getvalue();
-              html        = inject+html;
-              await wc['upload-server'].fs.writeFile('xhr-upload.html',html);
-              
-              iframe['xhr-upload'].src    = `${urls['upload-server']}/xhr-upload.html`;
-              
-        }//run
-        
-        
         btn['upload-server']    = async function(){
           
               if(process['upload-server']){
-                                                                                webconsole.log('kill existing process ...');
+                                                                                webconsole.log('kill existing upload-server ...');
                     await process['upload-server'].kill();
                     process['upload-server']    = null;
                                                                                 webconsole.log('ok');
@@ -470,14 +452,13 @@
                 
                     wc['upload-server']   = webcontainer;
                                                                                 webconsole.log('mount file system ...');
-                    webcontainer.mount(files);
+                    await webcontainer.mount(files);
                                                                                 webconsole.log('ok');
               }//init
               
               on['server-ready']    = function({port,url}){
                                                                                 webconsole.log('upload-server ready',url);
                     urls['upload-server']   = url;
-                                                                                log.green('upload-server ready');
                     
               }//server-ready
               
@@ -489,14 +470,101 @@
               
               on.complete   - function({code}){
               }//complete
+
               
               var js    = ex['upload-server'].getvalue();
               sandbox.nodejs(js,{console:webconsole,ctx:{terminal},on});
               
-        }//run
+        }//upload-server
         
 
+        btn['xhr-upload']   = async function(){
+          
+              if(!process['upload-server']){
+                    var msg   = 'upload-server not started';
+                                                                                webconsole.log(msg);
+                    log.red(msg);
+                    return;
+              }
+              
+              iframe['xhr-upload'].src    = 'about:blank';              
+              
+              var html    = ex['xhr-upload'].getvalue();
+              html        = inject+html;
+              
+              await wc['upload-server'].fs.writeFile('xhr-upload.html',html);
+              
+              iframe['xhr-upload'].src    = `${urls['upload-server']}/xhr-upload.html`;
+              
+        }//run
+        
+  
+        btn['download-server']    = async function(){
+          
+              if(process['download-server']){
+                                                                                webconsole.log('kill existing download-server ...');
+                    await process['download-server'].kill();
+                    process['download-server']    = null;
+                                                                                webconsole.log('ok');
+              }
 
+              
+              var on    = {};
+              
+              on.init   = async function({webcontainer}){
+                
+                    wc['download-server']   = webcontainer;
+                                                                                webconsole.log('mount file system ...');
+                    await webcontainer.mount(files);
+                                                                                webconsole.log('ok');
+              }//init
+              
+              on['server-ready']    = function({port,url}){
+                                                                                webconsole.log('download-server ready',url);
+                    urls['download-server']   = url;
+                    
+              }//server-ready
+              
+              on.run    = function({process:p}){
+                
+                    process['download-server']    = p;
+                    
+              }//run
+              
+              on.complete   - function({code}){
+              }//complete
+
+              
+              var js    = ex['download-server'].getvalue();
+              sandbox.nodejs(js,{console:webconsole,ctx:{terminal},on});
+              
+        }//download-server
+        
+        
+        btn['xhr-download']   = async function(){
+          
+              if(!process['download-server']){
+                    var msg   = 'download-server not started';
+                                                                                webconsole.log(msg);
+                    log.red(msg);
+                    return;
+              }
+              
+              iframe['xhr-download'].src    = 'about:blank';              
+              
+              var html    = ex['xhr-download'].getvalue();
+              html        = inject+html;
+              
+              await wc['download-server'].fs.writeFile('xhr-download.html',html);
+              
+              iframe['xhr-download'].src    = `${urls['download-server']}/xhr-download.html`;
+              
+        }//xhr-download
+        
+        
+  //:
+  
+  
         var inject    = `
         
               <script>
