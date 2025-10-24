@@ -7,7 +7,7 @@
         
         
         function request(req,res){
-        
+                                                                                console.log(req.method,req.url);
               switch(req.url){
                 
                 case '/download'    : download(req,res);
@@ -31,7 +31,7 @@
               res.setHeader('content-length',size*mb);
               
               for(var i=0;i<size;i++){
-              
+                                                                              console.log(i+1,mb,i+1*mb);
                     res.write(str);
                     await new Promise(res=>setTimeout(res,delay));
                     
