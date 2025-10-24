@@ -410,13 +410,11 @@
         }//initdom
         
         
-        window.addEventListener('message',e=>{console.log('window.onmessage');
+        window.addEventListener('message',e=>{
           
               var key   = Object.keys(iframe).find(k=>iframe[k]===e.source);
-              if(!key){
-                    console.log('window.onmessage source not fouund');
-                    return;
-              }
+              if(!key)return;
+
               var {type,args}   = e.data;
               args.unshift(key);
               webconsole[type].apply(null,args);
