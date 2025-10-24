@@ -58,34 +58,36 @@
                           var o   = dir[key];
                           
                           if(o.directory){
-                                                                                      console.log('dir',abs+key);
+                                                                                console.log('dir',abs+key);
                                 if(zip){
                                       zip.folder(abs+key);
                                 }
                                 add(o.directory,abs+key+'/');
                           }
-                          
-                          if(o.file.contents){
-                                                                                      console.log('file-2',abs+key);
-                                if(zip){
-                                      zip.file(abs+key,o.file.contents);
+
+                          if(o.file){                          
+                                if(o.file.contents){
+                                                                                console.log('file-2',abs+key);
+                                      if(zip){
+                                            zip.file(abs+key,o.file.contents);
+                                      }
                                 }
-                          }
-                          
-                          if(o.file.github){
-                                var {owner,repo,branch,path}    = o.file.github;
-                                owner     ||= 'javascript-2020';
-                                repo      ||= 'javascript-2020.github.io';
-                                branch    ||= 'main';
-                                if(path.startsWith('/')){
-                                      path    = path.slice(1);
-                                }
-                                                                                      console.log('file',abs+key);
-                                                                                      //console.log(owner,repo,branch,path);
-                                if(zip){
-                                      var res   = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`);
-                                      var txt   = await res.text();
-                                      zip.file(abs+key,txt);
+                                
+                                if(o.file.github){
+                                      var {owner,repo,branch,path}    = o.file.github;
+                                      owner     ||= 'javascript-2020';
+                                      repo      ||= 'javascript-2020.github.io';
+                                      branch    ||= 'main';
+                                      if(path.startsWith('/')){
+                                            path    = path.slice(1);
+                                      }
+                                                                                console.log('file',abs+key);
+                                                                                //console.log(owner,repo,branch,path);
+                                      if(zip){
+                                            var res   = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`);
+                                            var txt   = await res.text();
+                                            zip.file(abs+key,txt);
+                                      }
                                 }
                           }
                           
