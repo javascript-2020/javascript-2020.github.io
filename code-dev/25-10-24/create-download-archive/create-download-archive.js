@@ -62,7 +62,7 @@
                                 if(zip){
                                       zip.folder(abs+key);
                                 }
-                                await add(o.directory,abs+key+'/');
+                                add(o.directory,abs+key+'/');
                           }
                           
                           if(o.file.contents){
