@@ -3,7 +3,7 @@
         var fs            = require('fs');
         
         require('http').createServer(request).listen(3010);
-        
+                                                                                console.log('http://localhost:3010/');
         
         function request(req,res){
                                                                                 console.log(req.method,req.url);
