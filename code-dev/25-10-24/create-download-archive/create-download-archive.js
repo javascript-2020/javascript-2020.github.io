@@ -67,6 +67,7 @@
                                       zip.folder(abs+key);
                                 }
                                 add(o.directory,abs+key+'/');
+                                total++;
                           }
 
                           if(o.file){                          
@@ -75,6 +76,7 @@
                                       if(zip){
                                             zip.file(abs+key,o.file.contents);
                                       }
+                                      total++;
                                 }
                                 
                                 if(o.file.github){
@@ -89,11 +91,16 @@
                                                                                 //console.log(owner,repo,branch,path);
                                       if(zip){
                                             fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`)
-                                              .then(res=>res.text().then(txt=>zip.file(abs+key,txt)));
+                                              .then(res=>res.text().then(txt=>{
+                                                
+                                                    zip.file(abs+key,txt);
+                                                    total++;     
+                                                    
+                                              }));
                                       }
                                 }
                           }
-                          total++;
+                          
                           
                     }//for
                     
