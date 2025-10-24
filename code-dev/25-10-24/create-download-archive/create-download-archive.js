@@ -6,15 +6,17 @@
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
 
-        var dir    = {'xml-http-request'   :{directory:{
-              'xhr-upload.html'       : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-upload.html'}}},
-              'upload-server.js'      : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/upload-server.js'}}},
-              'xhr-download.html'     : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-download.html'}}},
-              'download-server.js'    : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/download-server.js'}}},
-              test    : {directory:{
-                    'a.txt'   : {file:{contents:'a'}},
+        var dir    = {
+              'xml-http-request'   :{directory:{
+                    'xhr-upload.html'       : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-upload.html'}}},
+                    'upload-server.js'      : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/upload-server.js'}}},
+                    'xhr-download.html'     : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-download.html'}}},
+                    'download-server.js'    : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/download-server.js'}}},
+                    test    : {directory:{
+                          'a.txt'   : {file:{contents:'a'}},
+                    }}
               }}
-        }}};
+        };
 
 
         var jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
@@ -54,13 +56,13 @@
                     for(let key in dir){
                       
                           var o   = dir[key];
+                          
                           if(o.directory){
                                                                                       console.log('dir',abs+key);
                                 if(zip){
                                       zip.folder(abs+key);
                                 }
                                 await add(o.directory,abs+key+'/');
-                                return;
                           }
                           
                           if(o.file.contents){
@@ -69,6 +71,7 @@
                                       zip.file(abs+key,o.file.contents);
                                 }
                           }
+                          
                           if(o.file.github){
                                 var {owner,repo,branch,path}    = o.file.github;
                                 owner     ||= 'javascript-2020';
