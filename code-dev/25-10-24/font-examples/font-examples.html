@@ -17,16 +17,60 @@
   <p class="dancing-script">Dancing Script: Let's dance through the day!</p>
   <p class="satisfy">Satisfy: Satisfy your creative cravings.</p>
   <p class="allura">Allura: Elegance is the only beauty that never fades.</p>
+
+  
   <div>
     &#x3C;link href=&#x22;https://fonts.googleapis.com/css2?family=Pacifico&#x26;display=swap&#x22; rel=&#x22;stylesheet&#x22;&#x3E;
   </div>
+
+  
   <div style='white-space:pre'>
+    
+The display=swap parameter in a Google Fonts link tag controls how the font is loaded and displayed — specifically, it tells the browser to use a fallback font immediately, then swap in the custom font once it's ready.
+    
 Why  Matters
 Without it, the browser might wait to render text until the custom font loads — causing a blank space known as a flash of invisible text (FOIT).
 With , you get a flash of unstyled text (FOUT) instead:
 • 	Text appears instantly using a fallback font (like Arial or Times).
 • 	Once the custom font loads, it "swaps" in seamlessly.    
   </div>
+  
+  <div style='white-space:pre'>
+What display=swap Actually Does
+    
+The  display=swap parameter is a CSS  font-display directive passed to Google Fonts. It tells the browser:
+
+    “Use a fallback font immediately, and swap in the custom font once it’s ready.”
+
+But this only works if the font file itself supports it — and if the browser honors it correctly.
+
+Why It Might Not Work on Some Fonts
+• 	Non-Google Fonts: Fonts from other sources (e.g., Adobe Fonts, self-hosted) may not support font-display unless you manually configure it in your CSS or server.
+• 	Older Browsers: Some browsers ignore font-display or don’t support it consistently.
+• 	Font File Format: Only modern formats like .woff2 reliably support font-display.
+• 	Google Fonts Quirks: Some older Google Fonts may not fully honor font-display depending on how they were built.
+
+How to Make It Work Everywhere
+If you're self-hosting fonts, you can explicitly set font-display in your @font-face rule:
+
+    @font-face {
+      font-family: 'MyFont';
+      src: url('myfont.woff2') format('woff2');
+      font-display: swap;
+    }
+
+
+This gives you full control over how the font loads and displays.    
+
+    
+  </div>
+
+
+
+
+
+
+  
 </body>
 </html>
 
