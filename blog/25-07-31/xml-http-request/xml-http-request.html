@@ -237,7 +237,7 @@
 
 
 
-            <div xhr-upload-root>
+            <section xhr-upload-root>
                   
                   <div>
                         xhr upload progress
@@ -245,30 +245,30 @@
                         
                   <editor id=xhr-upload component v2.0 fullsize mode=html src='ex/xhr-upload.html'></editor>
                   
-                  <div id=xhr-upload-btns>
+                  <div class=btns>
                         <input value=run type=button>
                   </div>
                   
-                  <iframe id=xhr-upload-iframe></iframe>
+                  <iframe></iframe>
                   
-            </div>
+            </section>
       
             
-            <div upload-server-root>
+            <section upload-server-root>
                   <div>
                         upload server
                   </div>
             
                   <editor id=upload-server component v2.0 fullsize src='ex/upload-server.js'></editor>
                   
-                  <div id=upload-server-btns>
+                  <div class=btns>
                         <input value=run type=button>
                   </div>
-            </div>
+            </section>
 
 
 
-            <div xhr-download-root>
+            <section xhr-download-root>
             
                   <div>
                         download progress
@@ -276,28 +276,26 @@
             
                   <editor id=xhr-download component v2.0 fullsize mode=html src='ex/xhr-download.html'></editor>
                   
-                  <div id=xhr-download-btns>
+                  <div class=btns>
                         <input value=run type=button>
                   </div>
                   
                   <iframe id=xhr-download-iframe></iframe>
                   
-            </div>
+            </section>
 
 
-            <div download-server-root>
+            <section download-server-root>
                   <div>
                         download server
                   </div>
                   
-                  <input value=run type=button>
+                  <editor id=download-server component v2.0 fullsize src='ex/download-server.js'></editor>            
                   
-                  <div id=download-server-btns>
+                  <div class=btns>
                         <input value=run type=button>
                   </div>
-            </div>
-            
-            <editor id=download-server component v2.0 fullsize src='ex/download-server.js'></editor>            
+            </section>
             
             
             
@@ -313,10 +311,10 @@
         var wc        = {};
         var process   = {};
         var urls      = {};
+        var iframe    = {};
         
       
         var btn                     = {};
-        btn['upload-server']        = {};
         
 
   //:
@@ -327,7 +325,10 @@
 
               ex['xhr-upload'].initdom();
               
-              $('#upload-server-btns [value=run]').onclick          = btn['upload-server'].run;
+              $('[xhr-upload-root] [value=run]').onclick            = btn['xhr-upload'];
+              iframe['xhr-upload']                                  = $('[xhr-upload-root] iframe');
+              
+              $('[upload-server-root] [value=run]').onclick         = btn['upload-server'];
               ex['upload-server'].initdom();
               
 
@@ -347,13 +348,30 @@
   //:
   
   
-        btn['upload-server'].run    = async function(){
+        btn['xhr-upload']   = async function(){
+          
+              if(!process['upload-server']){
+                    var msg   = 'upload server not started';
+                                                                                webconsole.log(msg);
+                    log.red(msg);
+                    return;
+              }
+              
+              var html    = ex['xhr-upload'].getvalue();
+              await wc['upload-server'].fs.writeFile('xhr-upload.html',html);
+              
+              iframe['xhr-upload'].src    = `${urls['upload-server']}/xhr-upload.html`;
+              
+        }//run
+        
+        
+        btn['upload-server']    = async function(){
           
               if(process['upload-server']){
                                                                                 webconsole.log('kill existing process ...');
                     await process['upload-server'].kill();
                                                                                 webconsole.log('ok');
-              } 
+              }
 
               
               var on    = {};
@@ -364,14 +382,6 @@
                                                                                 webconsole.log('mount file system ...');
                     webcontainer.mount(files);
                                                                                 webconsole.log('ok');
-                                                                                
-                                                                                webconsole.log('.jshrc');
-                    var process   = await webcontainer.spawn('bash',['-c','source .jshrc']);                    
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                webconsole.warn('process exited with error code : ',code);
-                    }
-                    
               }//init
               
               on['server-ready']    = function({port,url}){
