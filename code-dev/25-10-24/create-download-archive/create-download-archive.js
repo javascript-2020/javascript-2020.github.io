@@ -1,7 +1,10 @@
 
 
 (async()=>{
-
+                                                                                console.clear();
+                                                                                console.log('create-download-archive');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
 
         var dir    = {'xml-http-request'   :{directory:{
               'xhr-upload.html'       : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-upload.html'}}},
@@ -22,7 +25,8 @@
         
         
         async function create(dir,{download=true,test}={}){
-                                                                                console.log(dir,download,test);
+                                                                                console.json(dir);
+                                                                                console.log(download,test);
               var zip;
               if(!test){
                     zip   = new jszip();
