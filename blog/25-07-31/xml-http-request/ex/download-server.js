@@ -3,11 +3,8 @@
 
         var fs            = require('fs');
         
-        var {key,cert}    = require('server-cert.js');
-        
         require('http').createServer(request).listen(3011);
-        //require('https').createServer({key,cert},request).listen(3011);
-        
+                                                                                console.log('http://localhost:3001/');        
         
         function request(req,res){
                                                                                 console.log(req.method,req.url);
