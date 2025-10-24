@@ -24,7 +24,7 @@
         async function download(req,res){
         
               var size    = 100;
-              var md      = 1024*1024;
+              var mb      = 1024*1024;
               var str     = 'x'.repeat(mb);
               var delay   = 1000;
               
