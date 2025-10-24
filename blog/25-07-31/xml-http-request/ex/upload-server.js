@@ -22,10 +22,13 @@
         
         
         function upload(req,res){
-        
-              req.on('data',data=>console.log(data.length));
+              
+              var ct      = 0;
+              var total   = 0;
+              
+              req.on('data',data=>console.log(ct,data.length,total+=data.length));
               req.on('end',()=>{
-                                                                                console.log('done');
+                                                                                console.log('done',total);
                     res.end('ok');
                     
               });
