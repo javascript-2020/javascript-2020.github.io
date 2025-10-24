@@ -67,46 +67,51 @@
                                       zip.folder(abs+key);
                                 }
                                 add(o.directory,abs+key+'/');
-                                total++;
+                                complete();
                           }
 
-                          if(o.file){                          
-                                if(o.file.contents){
+                          if(o.file?.contents){
                                                                                 console.log('file-2',abs+key);
-                                      if(zip){
-                                            zip.file(abs+key,o.file.contents);
-                                      }
-                                      total++;
+                                if(zip){
+                                      zip.file(abs+key,o.file.contents);
                                 }
-                                
-                                if(o.file.github){
-                                      var {owner,repo,branch,path}    = o.file.github;
-                                      owner     ||= 'javascript-2020';
-                                      repo      ||= 'javascript-2020.github.io';
-                                      branch    ||= 'main';
-                                      if(path.startsWith('/')){
-                                            path    = path.slice(1);
-                                      }
+                                complete();
+                          }
+                          
+                          if(o.file?.github){
+                                var {owner,repo,branch,path}    = o.file.github;
+                                owner     ||= 'javascript-2020';
+                                repo      ||= 'javascript-2020.github.io';
+                                branch    ||= 'main';
+                                if(path.startsWith('/')){
+                                      path    = path.slice(1);
+                                }
                                                                                 console.log('file',abs+key);
                                                                                 //console.log(owner,repo,branch,path);
-                                      if(zip){
-                                            fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`)
-                                              .then(res=>res.text().then(txt=>{
-                                                
-                                                    zip.file(abs+key,txt);
-                                                    total++;     
-                                                    
-                                              }));
-                                      }
+                                if(zip){
+                                      fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`)
+                                        .then(res=>res.text().then(txt=>{
+                                          
+                                              zip.file(abs+key,txt);
+                                              complete();
+                                              
+                                        }));
                                 }
+                          }
                           }
                           
                           
                     }//for
+
                     
-                    if(ct==total){
-                          resolve();
-                    }
+                    function complete(){
+                      
+                          total++;
+                          if(ct==total){
+                                resolve();
+                          }
+                          
+                    }//complete
                     
               }//add
 
