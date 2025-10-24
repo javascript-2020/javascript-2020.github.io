@@ -8,7 +8,7 @@
         
         
         function request(req,res){
-
+                                                                                console.log(req.method,req.url);
               switch(req.url){
               
                 case '/upload'    : upload(req,res);
