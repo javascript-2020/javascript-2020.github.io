@@ -401,6 +401,8 @@
               
               
               terminal.initdom();
+              terminal.height   = 200;
+              
               webconsole.initdom();
               log.initdom();
           
@@ -421,6 +423,7 @@
               }
               
               var html    = ex['xhr-upload'].getvalue();
+              html        = inject(html);
               await wc['upload-server'].fs.writeFile('xhr-upload.html',html);
               
               iframe['xhr-upload'].src    = `${urls['upload-server']}/xhr-upload.html`;
@@ -471,6 +474,21 @@
         
 
 
+        var inject    = `
+        
+              <script>
+              
+                    window.console    = {
+                          log     : function(){window.parent.postMessage({type:'log',arguments}),
+                          warn    : function(){window.parent.postMessage({type:'warn',arguments}),
+                          error   : function(){window.parent.postMessage({tyoe:'error',arguments})
+                    };
+                    
+              </scr`+`ipt>
+              
+        `;
+        
+        
         
       </script>
       
