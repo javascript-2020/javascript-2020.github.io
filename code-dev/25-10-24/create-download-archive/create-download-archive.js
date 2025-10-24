@@ -5,6 +5,9 @@
                                                                                 console.log('create-download-archive');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+        var jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
+        jszip       = jszip.default;
+
 
         var dir    = {
               'xml-http-request'   :{directory:{
@@ -18,11 +21,6 @@
               }}
         };
 
-
-        var jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
-        jszip       = jszip.default;
-
-        
         create(dir);
         
         
@@ -79,7 +77,12 @@
                           }
                           
                           if(o.file?.github){
-                                var {owner,repo,branch,path}    = o.file.github;
+                                var owner,repo,branch,path;
+                                if(typeof o.file.github=='string'){
+                                      path    = o.file.github;
+                                }else{
+                                      ({owner,repo,branch,path}    = o.file.github);
+                                }
                                 owner     ||= 'javascript-2020';
                                 repo      ||= 'javascript-2020.github.io';
                                 branch    ||= 'main';
