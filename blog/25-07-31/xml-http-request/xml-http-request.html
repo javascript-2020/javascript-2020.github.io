@@ -571,12 +571,7 @@
                     
                     var con   = window.console;
                     window.console    = {
-                          log     : (...args)=>{
-                          
-                                con.log.apply(con,args);
-                                window.parent.postMessage({type:'log',args},'*')
-                                
-                          },
+                          log     : (...args)=>window.parent.postMessage({type:'log',args},'*'),
                           warn    : (...args)=>window.parent.postMessage({type:'warn',args},'*'),
                           error   : (...args)=>window.parent.postMessage({tyoe:'error',args},'*'),
                     };
