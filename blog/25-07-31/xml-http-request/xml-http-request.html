@@ -230,8 +230,8 @@
   #view>div>div:last-of-type
     {flex:1}
 
-  iframe
-    {width:100%;height:300px;border:1px solid gray}
+  [xhr-upload-root] iframe
+    {width:100%;height:250px;border:1px solid gray}
 
 
   section
@@ -278,6 +278,10 @@
             </div>
 
 
+            <div>
+                  demo
+            </div>
+            
             <div id=view>
             
                   <div upload-server-root>
@@ -307,8 +311,13 @@
 
             <terminal component v2.0></terminal>
             <console component v2.0></console>
-            
 
+
+            
+            <div>
+                  files
+            </div>
+            
             <section>
                   
                   <div class=filename>
@@ -410,7 +419,7 @@
         }//initdom
         
         
-        window.addEventListener('message',e=>{debugger;
+        window.addEventListener('message',e=>{
           
               var key   = Object.keys(iframe).find(k=>iframe[k].contentWindow===e.source);
               if(!key)return;
@@ -433,6 +442,8 @@
                     log.red(msg);
                     return;
               }
+              
+              iframe['xhr-upload'].src    = 'about:blank';              
               
               var html    = ex['xhr-upload'].getvalue();
               html        = inject+html;
