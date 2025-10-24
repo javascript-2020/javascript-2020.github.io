@@ -1,13 +1,10 @@
 
 
-  //  upload-server.js
-
-
         var {key,cert}    = require('server-cert.js');
+        
         var fs            = require('fs');
         
         require('https').createServer({key,cert},request).listen(3010);
-        //require('http').createServer({key,cert},request).listen(3010);
         
         
         function request(req,res){
@@ -24,23 +21,6 @@
               stream.pipe(res);
               
         }//request
-        
-        
-        function cors(req,res){
-        
-              res.setHeader('access-control-allow-origin','*');
-              res.setHeader('access-control-allow-headers','content-type');
-              
-              if(req.method!='OPTIONS'){
-                    return;
-              }
-              
-              res.writeHead(200);
-              res.end();
-              
-              return true;
-              
-        }//cors
         
         
         function upload(req,res){
