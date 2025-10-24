@@ -410,6 +410,16 @@
         }//initdom
         
         
+        window.onmessage    = e=>{
+          
+              var key   = Object.keys(obj).find(k=>obj[k]===e.source);
+              if(!key)return;
+              var {type,args}   = e.data;
+              args.unshift(key);
+              webconsole[type].apply(null,args);
+
+        }//onmessage
+        
   //:
   
   
@@ -423,7 +433,7 @@
               }
               
               var html    = ex['xhr-upload'].getvalue();
-              html        = inject(html);
+              html        = inject+html;
               await wc['upload-server'].fs.writeFile('xhr-upload.html',html);
               
               iframe['xhr-upload'].src    = `${urls['upload-server']}/xhr-upload.html`;
@@ -479,9 +489,9 @@
               <script>
               
                     window.console    = {
-                          log     : function(){window.parent.postMessage({type:'log',arguments}),
-                          warn    : function(){window.parent.postMessage({type:'warn',arguments}),
-                          error   : function(){window.parent.postMessage({tyoe:'error',arguments})
+                          log     : (...args)=>window.parent.postMessage({type:'log',args}),
+                          warn    : (...args)=>window.parent.postMessage({type:'warn',args}),
+                          error   : (...args){window.parent.postMessage({tyoe:'error',args}),
                     };
                     
               </scr`+`ipt>
