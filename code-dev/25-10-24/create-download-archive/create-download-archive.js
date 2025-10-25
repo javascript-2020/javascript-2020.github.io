@@ -20,19 +20,19 @@
                     'upload-server.js'      : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/upload-server.js'}}},
                     'xhr-download.html'     : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-download.html'}}},
                     'download-server.js'    : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/download-server.js'}}},
-                    test    : {directory:{
+                    node_modules    : {directory:{
                           'a.txt'   : {file:{contents:'a'}},
                     }}
               }}
         };
 
+
+
         var blob    = await create(dir,{download:false});
-        console.log('zip',blob.type,blob.size);
-        
+                                                                                console.log('zip',blob.type,blob.size);
         
         var enc     = await encrypt.encrypt.password.blob('helloworld',blob);
         var blob    = await encrypt.decrypt.password.blob('helloworld',enc);
-        
 
         
         var zip     = await jszip.loadAsync(blob);
