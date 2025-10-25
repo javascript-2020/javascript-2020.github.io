@@ -27,28 +27,24 @@
         };
 
         var blob    = await create(dir,{download:false});
-
+        console.log('zip',blob.type,blob.size);
         
-        var buf     = await encrypt.to.buf(blob);
-        var enc     = encrypt.encrypt.password('helloworld',buf);
-        enc         = encrypt.to.blob(enc);
-
-
-        var buf     = await encrypt.to.buf(enc);
-        var dec     = encrypt.decrypt.password('helloworld',buf);
-        var blob    = encrypt.to.blob(dec);
+        
+        var enc     = await encrypt.encrypt.password.blob('helloworld',blob);
+        var blob    = await encrypt.decrypt.password.blob('helloworld',buf);
         
 
         
         var zip     = await jszip.loadAsync(blob);
-        
-        zip.forEach((relativePath,file)=>console.log("File:",relativePath));
+        zip.forEach((path,file)=>console.log('File:',path));
 
         
         
         async function create(dir,{download=true,test}={}){
+                                                                                console.log('download',!!download);
+                                                                                console.log('test',!!test);
                                                                                 console.json(dir);
-                                                                                console.log(download,test);
+                                                                                console.log();
               var zip;
               if(!test){
                     zip   = new jszip();
