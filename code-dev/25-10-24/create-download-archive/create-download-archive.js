@@ -36,7 +36,7 @@
 
         
         var zip     = await jszip.loadAsync(blob);
-        zip.forEach((path,file)=>console.log('File:',path));
+        zip.forEach((path,file)=>console.log(path));
 
         
         
