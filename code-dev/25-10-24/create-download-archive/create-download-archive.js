@@ -32,6 +32,7 @@
                                                                                 console.log('zip',blob.type,blob.size);
         
         var enc     = await encrypt.encrypt.password.blob('helloworld',blob);
+                                                                                console.log('enc',enc.type,enc.size);
         var blob    = await encrypt.decrypt.password.blob('helloworld',enc);
 
         
