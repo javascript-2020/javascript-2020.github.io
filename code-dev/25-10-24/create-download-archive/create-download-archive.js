@@ -102,7 +102,7 @@
                                       ({owner,repo,branch,path}    = o.file.github);
                                 }
                                 owner     ||= 'javascript-2020';
-                                repo      ||= 'javascript-2020.github.io';
+                                repo      ||= 'libs';
                                 branch    ||= 'main';
                                 if(path.startsWith('/')){
                                       path    = path.slice(1);
