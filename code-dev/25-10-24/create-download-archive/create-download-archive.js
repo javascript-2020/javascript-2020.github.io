@@ -31,7 +31,7 @@
         
         
         var enc     = await encrypt.encrypt.password.blob('helloworld',blob);
-        var blob    = await encrypt.decrypt.password.blob('helloworld',buf);
+        var blob    = await encrypt.decrypt.password.blob('helloworld',enc);
         
 
         
