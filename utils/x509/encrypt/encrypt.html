@@ -58,18 +58,18 @@
               editor.initmod({ext,$,menu,menumod});
               log.initmod({ext,$});
 
-
-              await encrypt.init();
-              
-              await filemod.init();
-              await editor.init();
-              await log.init();
+              await Promise.all([
+                    encrypt.init(),
+                    filemod.init(),
+                    editor.init(),
+                    log.init(),
+              ]);
 
 
               menu.on.close          = focus;
 
           
-              await initdom(document.body);
+              initdom(document.body);
 
 
         }//init
@@ -252,7 +252,7 @@
   //:
   
   
-        async function initdom(rootnode){
+        function initdom(rootnode){
           
               var root                                  = rootnode;
 
@@ -497,7 +497,7 @@
         
         fn.encrypt    = async function(key,txt){
           
-              txt             = encrypt.str_buf(txt);
+              txt   = encrypt.str_buf(txt);
               
               var err;
               try{
