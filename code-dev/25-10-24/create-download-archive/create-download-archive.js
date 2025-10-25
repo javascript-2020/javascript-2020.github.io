@@ -41,11 +41,11 @@
 
         
         
-        async function create(dir,{download=true,test}={}){
-                                                                                console.log('download',!!download);
-                                                                                console.log('test',!!test);
-                                                                                console.json(dir);
-                                                                                console.log();
+        async function create(dir,{download=true,test,df=false}={}){
+                                                                                df && console.log('download',!!download);
+                                                                                df && console.log('test',!!test);
+                                                                                df && console.json(dir);
+                                                                                df && console.log();
               var zip;
               if(!test){
                     zip   = new jszip();
@@ -79,7 +79,7 @@
                           var o   = dir[key];
                           
                           if(o.directory){
-                                                                                console.log('dir',abs+key);
+                                                                                df && console.log('dir :',abs+key);
                                 if(zip){
                                       zip.folder(abs+key);
                                 }
@@ -88,7 +88,7 @@
                           }
 
                           if(o.file?.contents){
-                                                                                console.log('file-2',abs+key);
+                                                                                df && console.log('file create :',abs+key);
                                 if(zip){
                                       zip.file(abs+key,o.file.contents);
                                 }
@@ -108,8 +108,8 @@
                                 if(path.startsWith('/')){
                                       path    = path.slice(1);
                                 }
-                                                                                console.log('file',abs+key);
-                                                                                //console.log(owner,repo,branch,path);
+                                                                                df && console.log('file github :',abs+key);
+                                                                                df && console.log(owner,repo,branch,path);
                                 if(zip){
                                       fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`)
                                         .then(res=>res.text().then(txt=>{
