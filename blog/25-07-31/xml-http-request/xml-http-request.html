@@ -60,6 +60,10 @@
         ;
 
 
+        var ace;
+        var jszip;
+
+
         var ext;
         var $;
         var datatype;
@@ -68,10 +72,7 @@
         var debug;
         var sandbox;
 
-        var ace;
-        
         var menu;
-
             
         var ex        = {};
 
@@ -79,6 +80,7 @@
         var webconsole;
         var log;
 
+        
 
     //:
 
@@ -143,12 +145,16 @@
         [$,datatype,menumod,keydown,debug]   = await promise;
   
         await Promise.all([
+              import('https://cdn.jsdelivr.net/npm/jszip/+esm').then(mod=>jszip=mod.default),
               ext.load.libs('js/sandbox/sandbox.js.api').then(result=>[sandbox]=result),
+              /*
               ext.text.libs('nodejs/server-cert/server-cert.js').then(result=>{
                 
                     files['node_modules'].directory['server-cert.js']   = {file:{contents:result[0]}};
                     
               })
+              */
+              
         ]);
 
 
@@ -213,6 +219,8 @@
   
   #demo
     {border:2px solid green;padding:20px;margin-bottom:50px}
+  #demo>div:first-of-type
+    {display:flex;justify-content:space-between}
     
   #view
     {display:flex;flex-direction:column;gap:20px}
@@ -282,6 +290,7 @@
             <div id=demo class=flex-col>
                   <div>
                         demo
+                        <input value=download type=button>
                   </div>
                   
                   <div id=view>
@@ -400,6 +409,14 @@
                                   `}};
         */                                  
 
+        var download    = {};
+        var dir         = {};
+        download['xml-http-request']    = {directory:dir};
+        dir['xhr-upload.html']          = {file:github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-upload.html'}}};
+        dir['upload-server.js']         = {file:github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/upload-server.js'}}};
+        dir['xhr-download.html']        = {file:github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-download.html'}}};
+        dir['download-server.js']       = {file:github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/download-server.js'}}};
+
         
         var btn                     = {};
         
@@ -415,6 +432,8 @@
               ex['download-server'].initdom();
               ex['xhr-download'].initdom();
               
+
+              $('#demo>div:first-of-type [value=download]').onclick   = btn.demo_download;
 
               
               $('[xhr-upload-root] [value=run]').onclick            = btn['xhr-upload'];
@@ -456,6 +475,13 @@
         
   //:
   
+  
+        btn.demo_download    = async function(){
+          
+              create_archive(download,{df:true});
+              
+        }//demo_download
+        
   
         btn['upload-server']    = async function(){
           
@@ -611,6 +637,107 @@
               
         }//sha256
 
+
+  //:
+
+  
+        async function create_archive(dir,{download=true,test,df=false}={}){
+                                                                                df && console.log('download',!!download);
+                                                                                df && console.log('test',!!test);
+                                                                                df && console.json(dir);
+                                                                                df && console.log();
+              var zip;
+              if(!test){
+                    zip   = new jszip();
+              }
+              
+              var resolve,promise=new Promise(res=>resolve=res);
+              var ct=0,total=0;
+              add(dir);
+              await promise;
+              
+              var blob;
+              if(zip){
+                    blob      = await zip.generateAsync({type:'blob'});
+                    
+                    if(download){
+                          var url       = window.URL.createObjectURL(blob);
+                          var a         = document.createElement('a');
+                          a.download    = 'https-file-server';
+                          a.href        = url;
+                          a.click();
+                    }
+              }
+              return blob;
+              
+        
+              async function add(dir,abs=''){
+                
+                    for(let key in dir){
+                      
+                          ct++;
+                          var o   = dir[key];
+                          
+                          if(o.directory){
+                                                                                df && console.log('dir :',abs+key);
+                                if(zip){
+                                      zip.folder(abs+key);
+                                }
+                                add(o.directory,abs+key+'/');
+                                complete();
+                          }
+
+                          if(o.file?.contents){
+                                                                                df && console.log('file create :',abs+key);
+                                if(zip){
+                                      zip.file(abs+key,o.file.contents);
+                                }
+                                complete();
+                          }
+                          
+                          if(o.file?.github){
+                                var owner,repo,branch,path;
+                                if(typeof o.file.github=='string'){
+                                      path    = o.file.github;
+                                }else{
+                                      ({owner,repo,branch,path}    = o.file.github);
+                                }
+                                owner     ||= 'javascript-2020';
+                                repo      ||= 'libs';
+                                branch    ||= 'main';
+                                if(path.startsWith('/')){
+                                      path    = path.slice(1);
+                                }
+                                                                                df && console.log('file github :',abs+key);
+                                                                                df && console.log(owner,repo,branch,path);
+                                if(zip){
+                                      fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`)
+                                        .then(res=>res.text().then(txt=>{
+                                          
+                                              zip.file(abs+key,txt);
+                                              complete();
+                                              
+                                        }));
+                                }
+                          }
+                          
+                          
+                    }//for
+
+                    
+                    function complete(){
+                      
+                          total++;
+                          if(ct==total){
+                                resolve();
+                          }
+                          
+                    }//complete
+                    
+              }//add
+
+        }//create
+  
         
       </script>
       
