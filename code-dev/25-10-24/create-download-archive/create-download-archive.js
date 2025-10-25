@@ -5,8 +5,13 @@
                                                                                 console.log('create-download-archive');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
-        jszip       = jszip.default;
+        var jszip       = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
+        jszip           = jszip.default;
+
+        var {ext}       = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js');
+        var [encrypt]   = await ext.load.libs('js/crypto/encrypt/encrypt.js.api');
+        encrypt         = encrypt();
+        
 
 
         var dir    = {
@@ -21,7 +26,24 @@
               }}
         };
 
-        create(dir);
+        var blob    = await create(dir,{download:false});
+
+        
+        var buf     = await encrypt.to.buf(blob);
+        var enc     = encrypt.encrypt.password('helloworld',buf);
+        enc         = encrypt.to.blob(enc);
+
+
+        var buf     = await encrypt.to.buf(enc);
+        var dec     = encrypt.decrypt.password('helloworld',buf);
+        var blob    = encrypt.to.blob(dec);
+        
+
+        
+        var zip     = await jszip.loadAsync(blob);
+        
+        zip.forEach((relativePath,file)=>console.log("File:",relativePath));
+
         
         
         async function create(dir,{download=true,test}={}){
