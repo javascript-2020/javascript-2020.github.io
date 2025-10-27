@@ -64,6 +64,8 @@ see bottom for name constraints
         var menu;
         
         
+        var hdr;
+        
   //:
   
             
@@ -71,6 +73,17 @@ see bottom for name constraints
         
         
               await load();
+              
+              
+              menu    = menumod();
+              
+              
+              hdr   = mod['x509-hdr'];
+              
+              hdr.initmod({ext,$,menu});
+              
+              await hdr.init();
+              
               
               
               initdom(document.body);
@@ -234,7 +247,7 @@ see bottom for name constraints
    
    
                         <x509-hdr component=grp v2.0>
-                              <img class=title src='images/generate-https-certificate.png' style='top:-15px;height:80px'>
+                              <img class=title src='images/generate-https-certificate.png' style='top:-35px;height:100px'>
                               <span slot=date>27 Oct 2025</span>
                         </x509-hdr>
 
@@ -509,6 +522,8 @@ see bottom for name constraints
         
         function initdom(){
           
+              hdr.initdom();
+              
         
               $('#tab-config').onclick                                    = e=>show('config');
               $('#tab-cert').onclick                                      = e=>show('cert');
