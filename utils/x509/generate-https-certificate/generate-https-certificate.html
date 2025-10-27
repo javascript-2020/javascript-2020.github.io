@@ -937,8 +937,12 @@ see bottom for name constraints
                     signing_cert    = pki.certificateFromPem(signing.cert);
               }
 
+
+              var bytes                 = forge.random.getBytesSync(8);
+              var hex                   = forge.util.bytesToHex(bytes);
+              var serialNumber          = new nodeforge.jsbn.BigInteger(hex,16);
+              cert.serialNumber         = serialNumber;
               
-              cert.serialNumber         = '01';
               cert.validity.notBefore   = config.from;
               cert.validity.notAfter    = config.to;
               
