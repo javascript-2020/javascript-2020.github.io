@@ -11,7 +11,7 @@
             var url     = window.URL.createObjectURL(blob);
             var audio   = new Audio(url);
             audio.play();
-            audio.onended   = e=>resolve();
+            audio.onended   = resolve;
             
             await promise;
             await new Promise(res=>setTimeout(res,1000));
