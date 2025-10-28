@@ -208,6 +208,10 @@
   #spinner
     {width:20px;height:20px;margin-left:10px}
     
+  #password-root
+    {display:flex;align-items:center;gap:20px;margin-bottom:20px}
+  #password
+    {flex:1}
     
   #backup-root
     {margin:20px 0;display:flex;gap:10px;align-items:center}              
@@ -339,7 +343,7 @@
                                     <img id=spinner src='images/spinner.gif' style='display:none'>
                               </div>
 
-
+                              
                               <div id=backup-root>
                             
                                     <input value=backup type=button>
@@ -356,6 +360,12 @@
                                           <input id=api type=checkbox>
                                     </span>
 -->                                    
+                              </div>
+
+                              <div id=password-root>
+                                    password
+                                    <input type=checkbox>
+                                    <input id=password>
                               </div>
 
 
@@ -427,6 +437,9 @@
               ui.spinner                                      = $('#spinner');
               
               $('[value=backup]').onclick                     = btn.backup;
+              
+              ui.password                                     = ${'#password');
+              ui.password.chk                                 = $('#password-root [type=checkbox]');
               
               $('#btns [value=clear]').onclick                = btn.clear; 
               $('#btns [value="select all"]').onclick         = btn.all;
@@ -532,7 +545,15 @@
 
               var ts        = date();
               var archive   = `github-${ts}.zip`;
-              js7z.callMain(['a',`/${archive}`,'/in/*']);        
+              
+              var args      = ['a'];
+              if(ui.password.chk.checked){
+                    args.push(`-p${ui.password.value}`);
+              }
+              args.push('-mhe',`/${archive}`,'/in/*');
+              
+              js7z.callMain(args);        
+
                       
               function date(){
               
