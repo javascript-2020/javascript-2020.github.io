@@ -191,6 +191,8 @@
         
   [value='list repositories']
     {width:150px}
+  #spinner
+    {width:20px;height:20px;margin-left:10px}
     
     
   #backup-root
@@ -203,8 +205,13 @@
     {background:lightblue;width:0;height:100%}
         
   
-  #list
-    {}
+  #list-root
+    {border:1px solid lightgray;padding:10px;border-radius:10px}
+  #all
+    {display:flex;align-items:center;margin-bottom:10px}
+  #all [value]
+    {margin-left:10px}
+    
   .repo
     {display:flex;align-items:center;gap:20px;cursor:pointer;padding:5px 10px}
   .repo .selected
@@ -298,18 +305,19 @@
                               </div>
 
 
-                              <div id=list>
+                              <div id=list-root>
                               
                                     <div id=all>
-                                          select all
-                                          <input type=checkbox>
+                                          <input value='select all' type=button>
                                     </div>
                                     
-                                    <div class=repo style=display:none>
-                                          <input class=selected type=checkbox>
-                                          <div class=name></div>
-                                          <div class=type></div>
-                                          <div class=size></div>
+                                    <div id=list>
+                                          <div class=repo style=display:none>
+                                                <input class=selected type=checkbox>
+                                                <div class=name></div>
+                                                <div class=type></div>
+                                                <div class=size></div>
+                                          </div>
                                     </div>
                                     
                               </div>
@@ -354,6 +362,8 @@
               ui.spinner                                      = $('#spinner');
               
               $('[value=backup]').onclick                     = btn.backup;
+              
+              $('#all [value]').onclick                       = btn.all;
               
               ui.list                                         = $('#list');
               ui.repo                                         = $(list,'.repo');
@@ -400,6 +410,14 @@
               console.log(list);
               
         }//backup
+        
+        
+        btn.all   = function(){
+          
+              var list    = $.all(ui.list,'.repo');
+              list.forEach(root=>$(root,'[type=checkbox]').checked=true);
+          
+        }//all
         
   
   
