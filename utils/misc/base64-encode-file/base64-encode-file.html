@@ -427,8 +427,7 @@
                     return;
               }
 
-              var dataurl   = preview.dataurl.checked;
-              cur.b64       = await encode(cur.blob,dataurl);
+              cur.b64       = await encode(cur.blob);
 
               b64.display();
 
@@ -503,15 +502,9 @@
   //:
   
 
-        async function encode(blob,dataurl){
+        async function encode(blob){
           
               var b64   = await blob_b64(blob);
-              if(dataurl){
-              
-                    //var mime    = getmime(blob.name);
-                    var mime    = blob.type;
-                    b64         = `data:${mime};base64,${b64}`;
-              }
               return b64;
               
         }//encode
@@ -545,57 +538,78 @@
         b64.display   = async function(){
           
               var str   = '---';
+              
               if(cur.b64){
                     str   = cur.b64;
-              }
-              
-              if($('#pretty-js').checked){
-                    var txt       = str;
-                    var len       = 140;
+
+                    var dataurl   = preview.dataurl.checked;
+                    if(dataurl){
                     
-                    var lines     = [];
-                    var n         = txt.length;
-                    for(var i=0;i<n;i+=len){
-                      
-                          var line    = txt.slice(i,i+len);
-                          lines.push(line);
-                          
-                    }//for
-                    lines   = lines.map((line,i)=>{
-                      
-                          line    = "'"+line+"'";
-                          if(i+1<lines.length){
-                                line    = line.padEnd(len+5);
-                                line   += '+';
-                          }else{
-                                line   += ';';
+                          var mime    = 'application/octet-stream';
+                          if(cur.blob){
+                                if(cur.blob.type){
+                                      mime    = cur.blob.type;
+                                }else{
+                                      if(blob.name){
+                                            mime    = getmime(blob.name);
+                                      }
+                                }
                           }
-                          return line;
+                          str         = `data:${mime};base64,${str}`;
+                    }
+      
+                    var pretty    = $('#pretty-js').checked;
+                    if(pretty){
+                          var txt       = str;
+                          var len       = 140;
                           
-                    });
-                    //lines.forEach(line=>console.log(line));
-                    str   = lines.join('\n');
+                          var lines     = [];
+                          var n         = txt.length;
+                          for(var i=0;i<n;i+=len){
+                            
+                                var line    = txt.slice(i,i+len);
+                                lines.push(line);
+                                
+                          }//for
+                          lines   = lines.map((line,i)=>{
+                            
+                                line    = "'"+line+"'";
+                                if(i+1<lines.length){
+                                      line    = line.padEnd(len+5);
+                                      line   += '+';
+                                }else{
+                                      line   += ';';
+                                }
+                                return line;
+                                
+                          });
+                          //lines.forEach(line=>console.log(line));
+                          str   = lines.join('\n');
+                    }
+                    
               }
               
               $(b64.root,'#text').textContent    = str;
               
-              var err;
-              try{
-                
-                    await navigator.clipboard.writeText(str);
+              if(str!='---'){
+                    var err;
+                    try{
+                      
+                          await navigator.clipboard.writeText(str);
+                          
+                    }
+                    catch(err2){
+                      
+                          err   = err2;
                     
+                    }//catch
+                    if(err){
+                          log.red(err.message);
+                          return;
+                    }
+                    
+                    log.green('copied to clipboard');
               }
-              catch(err2){
-                
-                    err   = err2;
-              
-              }//catch
-              if(err){
-                    log.red(err.message);
-                    return;
-              }
-              
-              log.green('copied to clipboard');
               
         }//display
         
