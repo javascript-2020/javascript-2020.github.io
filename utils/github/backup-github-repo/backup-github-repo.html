@@ -390,7 +390,8 @@
               $.show(ui.spinner);
               ui.list.replaceChildren();
               
-              var json        = await github.user.repolist.all();
+              var token       = ui.token.value;
+              var json        = await github.user.repolist.all({token});
                                                                                 console.log(json);
               var list        = [];
               json.forEach(repo=>{
@@ -420,12 +421,34 @@
           
               var list    = $.all(ui.list,'.repo');
               list        = list.filter(root=>$(root,'[type=checkbox]').checked);
-              list        = list.map(root=>$(root,'.name').textContent);
-              console.log(list);
+              list        = list.map(root=>{
+                
+                    var name      = $(root,'.name').textContent;
+                    var branch    = $(root,'.branch').textContent;
+                    return {name,branch}
+                    
+              });
+                                                                                console.log(list);
+              await Promise.all(
+                    list.map(async repo=>{
               
-              
-              
-              var url   = `https://github.com/{owner}/{repo}/archive/refs/heads/{branch}.zip`;
+                          var token     = ui.token.value;
+                          var owner     = ui.owner.value;
+                          var repo      = repo.name;
+                          var branch    = repo.branch;
+                          
+                          var {blob,error}    = await github.repo.zip({owner,repo,branch,token});
+                          if(error){
+                                log.red(error.message);
+                                return;
+                          }
+      
+                          console.log(blob);
+                    
+                    })
+              );
+                      
+                    
               
         }//backup
         
