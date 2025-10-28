@@ -41,6 +41,9 @@
             </script>
 
 
+            <script src='https://javascript-2020.github.io/libs/js/external/js7zip/js7z-st-fs-ec.js'></script>
+
+            
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
 
             <script init>
@@ -270,7 +273,7 @@
                         will need to be used
                         
                         <span>chrome://extensions</span>
-                        <img class='copy icon'>
+                        <img class='copy icon' style='width:15px;height:15px;vertical-align:middle'>
                         
                   </p>
             </div>
@@ -457,6 +460,11 @@
                     
               });
                                                                                 console.log(list);
+                                                                                
+              var js7z        = await JS7z({print,printErr,onAbort,onExit});
+              js7z.FS.mkdir('/in');
+              
+                                                                                
               await Promise.all(
                     list.map(async ({branch,name,type})=>{
               
@@ -473,13 +481,66 @@
                                 log.red(error.message);
                                 return;
                           }
-      
-                          console.log(blob);
+                                                                                //console.log(blob);
+                          var buf     = await blob.arrayBuffer();
+                          var uint8   = new Uint8Array(buf);
+                          js7z.FS.writeFile(`/in/${repo}.zip`,uint8);
                     
                     })
               );
+
+              var archive   = `github-${ts}.zip`;
+              js7z.callMain(['a',`/${archive}`,'/in/*']);        
                       
+              function ts(){
+              
+                    var now   = new Date();
+                    var yy    = String(now.getFullYear()).slice(-2);
+                    var mm    = String(now.getMonth()+1).padStart(2,'0');
+                    var dd    = String(now.getDate()).padStart(2,'0');
+                    var hh    = String(now.getHours()).padStart(2,'0');
+                    var min   = String(now.getMinutes()).padStart(2,'0');
+                    var ss    = String(now.getSeconds()).padStart(2,'0');
+                  
+                    var ts    = `${yy}-${mm}-${dd}---${hh}-${min}-${ss}`;
+                    return ts;
                     
+              }//ts
+
+
+              function print(str){
+                                                                                      //console.log('[ print ]',arguments);
+                                                                                      console.log('[ print ]',str);
+              }//print
+
+              
+              function printErr(str){
+                                                                                      //console.log('[ printErr ]',arguments);
+                                                                                      console.log('[ printErr ]',str);
+              }//printErr
+
+              
+              function onAbort(str){
+                                                                                      //console.log('[ onAbort ]',arguments);
+                                                                                      console.log('[ onAbort ]',str);
+              }//onAbort
+
+              
+              function onExit(code){
+                                                                                      console.log('[ onExit ]',code);
+                    if(code!==0)return;
+                    
+                    var data      = js7z.FS.readFile(`/${archive}`,{encoding:'binary'});
+                                                                                      //console.log(data);
+                    var blob      = new Blob([data],{type:'application/octet-stream'});
+                    
+                    var url       = window.URL.createObjectURL(blob);
+                    var a         = document.createElement('a');
+                    a.href        = url;
+                    a.download    = 'test.zip';
+                    a.click();
+                    
+              }//onExit
               
         }//backup
         
