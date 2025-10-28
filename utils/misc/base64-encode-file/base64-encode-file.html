@@ -174,9 +174,15 @@
 
   #dataurl-root
     {margin-left:20px;display:inline-flex;align-items:center}
-    
   #dataurl
     {width:20px;height:20px;margin:0;margin-left:10px}
+  #pretty-js-root
+    {margin-left:20px;display:inline-flex;align-items:center}
+  #pretty-js-len
+    {width:50px;margin-left:10px}
+  #pretty-js
+    {width:20px;height:20px;margin:0;margin-left:10px}
+    
     
   #b64
     {border:1px solid lightgray;padding:10px;flex:1;}
@@ -275,6 +281,11 @@
                   <span id=dataurl-root>
                         dataurl
                         <input id=dataurl type=checkbox>
+                  </span>
+                  <span id=pretty-js-root>
+                        pretty js
+                        <input id=pretty-js-len value=140>
+                        <input id=pretty-js type=checkbox>
                   </span>
             </div>
 
@@ -529,14 +540,60 @@
         
         
         
-        b64.display   = function(){
+        b64.display   = async function(){
           
               var str   = '---';
               if(cur.b64){
                     str   = cur.b64;
               }
               
+              if($('#pretty-js').checked){
+                    var txt       = dataurl;
+                    var len       = 140;
+                    
+                    var lines     = [];
+                    var n         = txt.length;
+                    for(var i=0;i<n;i+=len){
+                      
+                          var line    = txt.slice(i,i+len);
+                          lines.push(line);
+                          
+                    }//for
+                    lines   = lines.map((line,i)=>{
+                      
+                          line    = "'"+line+"'";
+                          if(i+1<lines.length){
+                                line    = line.padEnd(len+5);
+                                line   += '+';
+                          }else{
+                                line   += ';';
+                          }
+                          return line;
+                          
+                    });
+                    //lines.forEach(line=>console.log(line));
+                    str   = lines.join('\n');
+              }
+              
               $(b64.root,'#text').textContent    = str;
+              
+              var err;
+              try{
+                
+                    await navigator.clipboard.writeText(str);
+                    
+              }
+              catch(err2){
+                
+                    err   = err2;
+              
+              }//catch
+              if(err){
+                    log.red(err.message);
+                    return;
+              }
+              
+              log.green('copied to clipboard');
               
         }//display
         
