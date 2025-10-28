@@ -214,14 +214,18 @@
     
   .repo
     {display:flex;align-items:center;gap:20px;cursor:pointer;padding:5px 10px}
+  .repo:hover
+    {background:lightyellow}
   .repo .selected
     {width:20px;height:20px;margin:0}
   .repo .name
     {flex:1}
+  .repo .branch
+    {}
   .repo .type
-    {width:100px}
+    {width:60px}
   .repo .size
-    {width:150px;text-align:right}
+    {width:100px;text-align:right}
     
   .icon-root
     {display:flex;align-items:center;gap:5px}
@@ -315,6 +319,7 @@
                                           <div class=repo style=display:none>
                                                 <input class=selected type=checkbox>
                                                 <div class=name></div>
+                                                <div class=branch></div>
                                                 <div class=type></div>
                                                 <div class=size></div>
                                           </div>
@@ -386,14 +391,23 @@
               ui.list.replaceChildren();
               
               var json        = await github.user.repolist.all();
+                                                                                console.log(json);
               var list        = [];
               json.forEach(repo=>{
                 
                     var nrepo   = ui.repo.cloneNode(true);
-                    $(nrepo,'.name').textContent    = repo.name;
-                    $(nrepo,'.type').textContent    = repo.private ? 'private' : 'public';
-                    $(nrepo,'.size').textContent    = hs(repo.size*1024);
+                    $(nrepo,'.name').textContent        = repo.name;
+                    $(nrepo,'.branch').textContent      = repo.default_branch;
+                    $(nrepo,'.type').textContent        = repo.private ? 'private' : 'public';
+                    $(nrepo,'.size').textContent        = hs(repo.size*1024);
                     ui.list.append(nrepo);
+                    
+                    nrepo.onclick   = e=>{
+                      
+                          var chk       = $(nrepo,'[type]');
+                          chk.checked   = !chk.checked;
+                          
+                    }//onclick
                     
               });
                                                                                 console.log(list);
@@ -408,6 +422,10 @@
               list        = list.filter(root=>$(root,'[type=checkbox]').checked);
               list        = list.map(root=>$(root,'.name').textContent);
               console.log(list);
+              
+              
+              
+              var url   = `https://github.com/{owner}/{repo}/archive/refs/heads/{branch}.zip`;
               
         }//backup
         
