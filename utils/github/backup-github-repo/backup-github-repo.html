@@ -393,7 +393,6 @@
               var token       = ui.token.value;
               var json        = await github.user.repolist.all({token});
                                                                                 console.log(json);
-              var list        = [];
               json.forEach(repo=>{
                 
                     var nrepo   = ui.repo.cloneNode(true);
@@ -406,12 +405,13 @@
                     nrepo.onclick   = e=>{
                       
                           var chk       = $(nrepo,'[type]');
+                          if(e.target===chk)return;
                           chk.checked   = !chk.checked;
                           
                     }//onclick
                     
               });
-                                                                                console.log(list);
+
               $.hide(ui.spinner);
         
         }//list
@@ -434,9 +434,9 @@
               
                           var token     = ui.token.value;
                           var owner     = ui.owner.value;
-                          var repo      = repo.name;
                           var branch    = repo.branch;
-                          
+                          var repo      = repo.name;
+
                           var {blob,error}    = await github.repo.zip({owner,repo,branch,token});
                           if(error){
                                 log.red(error.message);
