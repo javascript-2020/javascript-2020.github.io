@@ -1,0 +1,110 @@
+
+
+<!--
+https://7z.m-h.org.uk/
+https://github.com/GMH-Code/JS7z/tree/main
+https://www.npmjs.com/package/js7z-tools
+https://github.com/GMH-Code/JS7z/releases
+
+-->
+
+
+
+      <h3>
+            7zip test
+      </h3>
+
+
+
+<script src='https://javascript-2020.github.io/libs/js/external/js7zip/js7z-st-fs-ec.js'></script>
+
+<!--
+<script src='https://cdn.jsdelivr.net/npm/js7z-tools@2.5.0/js7z.js'></script>
+-->
+
+
+
+<script>
+
+
+console.clear();
+
+        
+(async()=>{
+
+        
+        //var mod     = await import('https://cdn.jsdelivr.net/npm/js7z-tools/+esm');
+        //var JS7z    = mod.default;
+        //console.log(js7z);
+
+
+
+  
+  
+
+
+
+        
+        var js7z        = await JS7z({print,printErr,onAbort,onExit});
+                                                                                //console.log(js7z);
+                                                                                //console.info(Object.keys(js7z.FS));        
+        //Object.assign(js7z,{print,printErr,onAbort,onExit);
+
+                                                                                console.log(1);
+
+        js7z.FS.mkdir('/in');
+                                                                                console.log(2);        
+        var blob    = new Blob(['helloworld']);
+        var buf     = await blob.arrayBuffer();
+        var uint8   = new Uint8Array(buf);
+        var result    = js7z.FS.writeFile('/in/test.txt',uint8);
+                                                                                console.log(3,result);
+        var result    = js7z.FS.readFile('/in/test.txt');
+                                                                                console.log(4,result);
+                                                                                //debugger;
+        
+        js7z.callMain(['a','/archive.zip','/in/*']);        
+                                                                                console.log(5);
+
+        
+
+        
+        
+        function print(){
+                                                                                console.log('[ print ]',arguments);
+        }//print
+        
+        function printErr(){
+                                                                                console.log('[ printErr ]',arguments);
+        }//printErr
+        
+        function onAbort(){
+                                                                                console.log('[ onAbort ]',arguments);
+        }//onAbort
+        
+        function onExit(code){
+                                                                                console.log('[ onExit ]',code);
+              if(code!==0)return;
+              
+              var data      = js7z.FS.readFile('/archive.zip',{encoding:'binary'});
+              console.log(data);
+              var blob      = new Blob([data],{type:'application/octet-stream'});
+              
+              var url       = window.URL.createObjectURL(blob);
+              var a         = document.createElement('a');
+              a.href        = url;
+              a.download    = 'test.zip';
+              a.click();
+              
+        }//onExit
+        
+        
+        
+})();
+
+
+
+        
+        
+</script>
+
