@@ -460,7 +460,10 @@
                     
               });
                                                                                 console.log(list);
-                                                                                
+              track.style.width   = 0;
+              var ct              = 0;
+              var total           = list.length+1;
+              
               var js7z        = await JS7z({print,printErr,onAbort,onExit});
               js7z.FS.mkdir('/in');
 
@@ -485,6 +488,9 @@
                           var buf     = await blob.arrayBuffer();
                           var uint8   = new Uint8Array(buf);
                           js7z.FS.writeFile(`/in/${repo}.zip`,uint8);
+                          
+                          ct++;
+                          track.style.width   = (ct/total)*100+'px';
                     
                     })
               );
@@ -530,6 +536,8 @@
               function onExit(code){
                                                                                       console.log('[ onExit ]',code);
                     if(code!==0)return;
+                    
+                    track.style.width   = '100%';
                     
                     var data      = js7z.FS.readFile(`/${archive}`,{encoding:'binary'});
                                                                                       //console.log(data);
