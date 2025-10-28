@@ -200,6 +200,9 @@
   .value input
     {flex:1}
         
+  #owner-root
+    {margin-bottom:20px}
+    
   [value='list repositories']
     {width:150px}
   #spinner
@@ -342,8 +345,11 @@
 
                               <div id=list-root>
                               
-                                    <div id=all>
+                                    <div id=btns>
+                                          <input value=clear type=button>
                                           <input value='select all' type=button>
+                                          <input value=public type=button>
+                                          <input value=private type=button>
                                     </div>
                                     
                                     <div id=list>
@@ -406,7 +412,10 @@
               
               $('[value=backup]').onclick                     = btn.backup;
               
-              $('#all [value]').onclick                       = btn.all;
+              $('#btns [value=clear]').onclick                = btn.clear; 
+              $('#btns [value="select all"]').onclick         = btn.all;
+              $('#btns [value=public]').onclick               = btn.public;
+              $('#btns [value=private]').onclick              = btn.private;
               
               ui.list                                         = $('#list');
               ui.repo                                         = $(list,'.repo');
@@ -563,6 +572,19 @@
         }//backup
         
         
+        btn.clear   = functino(){
+          
+              var list    = $.all(ui.list,'.repo');
+              list.forEach(root=>{
+                
+                    var chk       = $(root,'[type=checkbox]')
+                    chk.checked   = false;
+                    
+              });
+          
+        }//clear
+        
+        
         btn.all   = function(){
           
               var list    = $.all(ui.list,'.repo');
@@ -576,7 +598,36 @@
         }//all
         
   
-  
+        btn.public    = function(){
+          
+              var list    = $.all(ui.list,'.repo');
+              list.forEach(root=>{
+              
+                    var type      = $(root,'.type').textContent;
+                    if(type==='public'){
+                          var chk       = $(root,'[type=checkbox]')
+                          chk.checked   = !chk.checked
+                    }
+                    
+              });
+              
+        }//public
+        
+        
+        btn.private   = function(){
+          
+              var list    = $.all(ui.list,'.repo');
+              list.forEach(root=>{
+              
+                    var type      = $(root,'.type').textContent;
+                    if(type==='private'){
+                          var chk       = $(root,'[type=checkbox]')
+                          chk.checked   = !chk.checked
+                    }
+                    
+              });
+              
+        }//private
   
       </script>
       
