@@ -255,6 +255,24 @@
                   <p>
                         Securely back up your GitHub repositories with our online tool. Zip multiple repos into a single password-protected archive—no installation required.
                   </p>
+                  <br>
+                  <p>
+                        Well at the time of writing, response from github for the zip archive does not contain access-control-allow-origin
+                        headers, so the 
+                        <br>
+                        <a href='#'>
+                              cors extension
+                              <span class=link-domain>
+                                    ext-code.com
+                              </span>
+                        </a>
+                        <br>
+                        will need to be used
+                        
+                        <span>chrome://extensions</span>
+                        <img class='copy icon'>
+                        
+                  </p>
             </div>
 
 
@@ -270,7 +288,8 @@
                                     <label>
                                           token
                                     </label>
-                                    <img id=token-paste class='paste icon'>
+                                    <img class='paste icon'>
+                                    <img class='copy icon'>
                                     <input class=token>
                               </div>
 
@@ -280,7 +299,8 @@
                                     <label>
                                           owner
                                     </label>
-                                    <img id=owner-paste class='paste icon' title=paste>
+                                    <img class='paste icon'>
+                                    <img class='copy icon'>
                                     <input class=owner>
                               </div>
                               
@@ -357,11 +377,18 @@
           
               hdr.initdom();
               
+              var r                                           = $('#token-root');
               ui.token                                        = $('.token');
               ui.token.value                                  = localStorage['github-token']||'';
-              
+              $.icon.paste(r,'.paste');
+              $.icon.copy(r,'.copy');
+
+              var r                                           = $('#owner-root');
               ui.owner                                        = $('.owner');
               ui.owner.value                                  = localStorage['github-owner']||'';
+              $.icon.paste(r,'.paste');
+              $.icon.copy(r,'.copy');
+
               
               $('[value="list repositories"]').onclick        = btn.list;
               ui.spinner                                      = $('#spinner');
@@ -425,17 +452,21 @@
                 
                     var name      = $(root,'.name').textContent;
                     var branch    = $(root,'.branch').textContent;
-                    return {name,branch}
+                    var type      = $(root,'.type').textContent;
+                    return {name,branch,type}
                     
               });
                                                                                 console.log(list);
               await Promise.all(
-                    list.map(async repo=>{
+                    list.map(async ({branch,name,type})=>{
               
                           var token     = ui.token.value;
                           var owner     = ui.owner.value;
-                          var branch    = repo.branch;
-                          var repo      = repo.name;
+                          var repo      = name;
+                          
+                          if(type==='public'){
+                                token   = false;
+                          }
 
                           var {blob,error}    = await github.repo.zip({owner,repo,branch,token});
                           if(error){
