@@ -474,6 +474,8 @@
                           
                           if(type==='public'){
                                 token   = false;
+                          }else{
+                                debugger;
                           }
 
                           var {blob,error}    = await github.repo.zip({owner,repo,branch,token});
@@ -481,7 +483,7 @@
                                 log.red(error.message);
                                 return;
                           }
-                                                                                console.log(repo,blob.size);
+                                                                                console.log(repo,type,blob.size);
                           var buf     = await blob.arrayBuffer();
                           var uint8   = new Uint8Array(buf);
                           js7z.FS.writeFile(`/in/${repo}.zip`,uint8);
@@ -537,7 +539,7 @@
                     var url       = window.URL.createObjectURL(blob);
                     var a         = document.createElement('a');
                     a.href        = url;
-                    a.download    = 'test.zip';
+                    a.download    = archive;
                     a.click();
                     
               }//onExit
