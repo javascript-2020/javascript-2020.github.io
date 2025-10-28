@@ -41,6 +41,7 @@
             </script>
 
 
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
             <script src='https://javascript-2020.github.io/libs/js/external/js7zip/js7z-st-fs-ec.js'></script>
 
             
@@ -54,12 +55,16 @@
         var df=true,version='v2.0'
         ;
         
+        var ace;
+        var JSZip;
+        
         var ext,$,datatype,menumod,keydown,github,hs
         ;
 
         var menu;
         
         var hdr;
+        var con;
         var log;
 
 
@@ -72,13 +77,16 @@
               menu                      = menumod();
               
               hdr                       = mod.hdr;
+              con                       = mod.console;
               log                       = mod.log;
               
               hdr.initmod({ext,$,menu});
+              con.initmod({ext,$,menu,ace});
               log.initmod({ext,$});
         
               await Promise.all([      
                     hdr.init(),
+                    con.init(),
                     log.init(),
               ]);
 
@@ -183,7 +191,7 @@
     {display:inline-block;width:100px;text-align:right}
     
   #token-root
-    {padding-bottom:20px;border-bottom:1px solid lightgray}
+    {padding-bottom:20px;/*border-bottom:1px solid lightgray*/}
         
   #values 
     {padding-bottom:20px;margin:bottom:20px;border-bottom:1px solid lightgray}
@@ -209,7 +217,7 @@
         
   
   #list-root
-    {border:1px solid lightgray;padding:10px;border-radius:10px}
+    {border:1px solid lightgray;padding:10px;border-radius:10px;margin-bottom:20px}
   #all
     {display:flex;align-items:center;margin-bottom:10px}
   #all [value]
@@ -350,7 +358,7 @@
                                     
                               </div>
 
-
+                              <console component v2.0></console>
 
                   </div center>
                   
@@ -406,6 +414,7 @@
               ui.repo.style.display   = '';
               
               
+              con.initdom();
               log.initdom();
               
               
@@ -422,7 +431,7 @@
               
               var token       = ui.token.value;
               var json        = await github.user.repolist.all({token});
-                                                                                console.log(json);
+                                                                                //console.log(json);
               json.forEach(repo=>{
                 
                     var nrepo   = ui.repo.cloneNode(true);
@@ -517,24 +526,24 @@
 
               function print(str){
                                                                                       //console.log('[ print ]',arguments);
-                                                                                      console.log('[ print ]',str);
+                                                                                      con.log('[ print ]',str);
               }//print
 
               
               function printErr(str){
                                                                                       //console.log('[ printErr ]',arguments);
-                                                                                      console.log('[ printErr ]',str);
+                                                                                      con.log('[ printErr ]',str);
               }//printErr
 
               
               function onAbort(str){
                                                                                       //console.log('[ onAbort ]',arguments);
-                                                                                      console.log('[ onAbort ]',str);
+                                                                                      con.log('[ onAbort ]',str);
               }//onAbort
 
               
               function onExit(code){
-                                                                                      console.log('[ onExit ]',code);
+                                                                                      con.log('[ onExit ]',code);
                     if(code!==0)return;
                     
                     track.style.width   = '100%';
