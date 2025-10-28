@@ -463,15 +463,15 @@
                                                                                 
               var js7z        = await JS7z({print,printErr,onAbort,onExit});
               js7z.FS.mkdir('/in');
+
               
-                                                                                
               await Promise.all(
                     list.map(async ({branch,name,type})=>{
               
                           var token     = ui.token.value;
                           var owner     = ui.owner.value;
                           var repo      = name;
-                          
+                                                                                console.log(repo,type,type==='public');
                           if(type==='public'){
                                 token   = false;
                           }
@@ -489,10 +489,11 @@
                     })
               );
 
+              var ts        = date();
               var archive   = `github-${ts}.zip`;
               js7z.callMain(['a',`/${archive}`,'/in/*']);        
                       
-              function ts(){
+              function date(){
               
                     var now   = new Date();
                     var yy    = String(now.getFullYear()).slice(-2);
