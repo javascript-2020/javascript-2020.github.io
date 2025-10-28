@@ -545,14 +545,14 @@
               );
 
               var ts        = date();
-              var archive   = `github-${ts}.zip`;
+              var archive   = `github-${ts}.7z`;
               
               var args      = ['a'];
               if(ui.password.chk.checked){
                                                                                 con.log('password',ui.password.value);
                     args.push(`-p${ui.password.value}`);
               }
-              args.push(`/${archive}`,'/in/*');//,'-mhe');
+              args.push('-t7z','-mhe=on',`/${archive}`,'/in/*');//,'-mhe');
                                                                                 console.log(args);
               js7z.callMain(args);        
 
