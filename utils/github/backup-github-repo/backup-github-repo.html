@@ -207,6 +207,12 @@
     {display:flex;align-items:center;gap:20px;cursor:pointer;padding:5px 10px}
   .repo .selected
     {width:20px;height:20px;margin:0}
+  .repo .name
+    {flex:1}
+  .repo .type
+    {width:100px}
+  .repo .size
+    {width:150px;text-align:right}
     
   .icon-root
     {display:flex;align-items:center;gap:5px}
@@ -267,6 +273,7 @@
                               
                               <div>
                                     <input value='list repositories' type=button>
+                                    <img id=spinner src='images/spinner.gif' style='display:none'>
                               </div>
 
 
@@ -337,6 +344,7 @@
               ui.owner.value                                  = localStorage['github-owner']||'';
               
               $('[value="list repositories"]').onclick        = btn.list;
+              ui.spinner                                      = $('#spinner');
               
               $('[value=backup]').onclick                     = btn.backup;
               
@@ -357,6 +365,7 @@
   
         btn.list    = async function(){
           
+              $.show(ui.spinner);
               ui.list.replaceChildren();
               
               var json        = await github.user.repolist.all();
@@ -370,8 +379,8 @@
                     ui.list.append(nrepo);
                     
               });
-              
-              console.log(list);
+                                                                                console.log(list);
+              $.hide(ui.spinner);
         
         }//list
         
