@@ -8,6 +8,8 @@
         var js7z;
         var archive;
 
+        var console   = {};
+        console.log   = (...args)=>self.postMessage({type:'log',args});
         
         self.onmessage    = async function({data}){
           
