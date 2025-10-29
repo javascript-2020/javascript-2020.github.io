@@ -1,85 +1,97 @@
 
 
+<!DOCTYPE html>
+
 
 <html>
 
       <head>
-      
-            <title>name constraints in x509 certificate</title>
+            <meta charset=utf-8>
+            
+            <title>
+                  Name Constraints In x509 Certificate
+            </title>
 
-            <base href='https://javascript-2020.github.io/blog/25-09-29/name-constraints-in-x509-certificate/name-constraints-in-x509-certificate.html'>
+            <meta name=description content='Learn how to configure name constraints in an X.509 certificate using OpenSSL. This hands-on guide features editable, runnable code directly in the browser, allowing you to generate and download custom certificates with ease.'>
+
+            <base href='https://ext-code.com/blog/25-09-29/name-constraints-in-x509-certificate/'>
             <link rel=canonical href='https://ext-code.com/blog/25-09-29/name-constraints-in-x509-certificate/name-constraints-in-x509-certificate.html'>
             
-            <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+
             
-            <meta charset=UTF-8>
-            <link rel=stylesheet href='/blog/css/blog.css'>
             
 
 
             
             <script src='https://www.cryptool.org/wasm/openssl.js'></script>
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            
 
             <script init>
                                                                                 console.clear();
                                                                                 console.log('name-constraints-in-x509-certificate');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var mod     = {};
-
+        var df=true,version='v2.0'
+        ;
+        
+        var opensslmod;
+        var ace;
+        
         var ext;
         var $;
         var datatype;
         var menumod;
         var keydown;
-        var opensslmod;
-
+        
         var menu;
 
+        var config;
+        var cmd;
+        
+        var log;
+
+
+  //:
+  
+  
         async function init(){
 
 
               menu                = mod.menumod();
               
-              config              = mod['code-block']();
-              cmd                 = mod['code-block']();
+              config              = mod['code-block'];
+              cmd                 = mod['code-block'];
+              log                 = mod.log;
+              
               
               config.initmod({ext,$,datatype,menu});
               cmd.initmod({ext,$,datatype,menu});
+              log.initmod({ext,$});
               
-              await config.init();
-              await cmd.init();
+              await Promise.all([
+                    config.init(),
+                    cmd.init(),
+                    log.init(),
+              ]);
               
               
               initdom(document.body);
+
               
         }//init
 
 
-        init.stack            = [init];
-        init.stack.ct         = 0;
-        init.stack.total      = 1;
-        Object.defineProperty(init.stack,'add',{get:()=>{init.stack.total++}});
-        Object.defineProperty(init.stack,'complete',{get:()=>{
-        
-              init.stack.ct++;
-              if(init.stack.ct>=init.stack.total){
-                                                                                //console.log('*** complete');
-                    init.stack.ct       = 0;
-                    init.stack.total    = 0;
-                    var list    = [...init.stack];
-                    init.stack.length   = 0;
-                    list.forEach(fn=>fn());
-              }
-              
-        }});
-
-        
 (async()=>{
 
-        init.stack.add;
-
+        mod.stack.add;
+        
         ({ext}   = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
         
         var promise   = ext.load.libs(
@@ -88,22 +100,67 @@
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
               'js/crypto/openssl/openssl.js'
-              
         );
+        
         [$,datatype,menumod,keydown,opensslmod]    = await promise;
         
-        init.stack.complete;
+        mod.stack.complete;
 
 })();
 
             </script init>
             
-            <style>
             
-  #center-hldr
-    {display:flex;justify-content:center}
-  #center
-    {width:1200px}
+            <link rel=stylesheet href='/blog/css/blog.css'>
+            
+            <style>
+
+
+  html
+    {height:100%;font-family:arial}
+  body
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:20px;margin:20px;align-items:center;
+      padding-bottom:200px;
+    }
+  body>*
+    {max-width:1400px;width:100%}
+    
+  [component]
+    {display:none}
+    
+  .description 
+    {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
+      background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
+  .description>p
+    {margin:0}
+  .description > p+p
+    {margin:10px 0}
+
+  code
+    {font-family:monospace;background:whitesmoke}
+  code.inline
+    {display:inline;padding:5px 10px}
+
+  a
+    {color:#4a90e2;text-decoration:none;font-weight:500}
+  a:hover 
+    {text-decoration:underline}
+  .link-domain
+    {font-size:0.85rem;color:#777;margin-left:0.25rem}
+  .link-domain::before 
+    {content:'['}
+  .link-domain::after
+    {content:']'}
+  .link-txt
+    {}
+
+  input
+    {font-size:16px;padding:5px 7px;box-sizing:border-box;}
+  input[type=button]
+    {cursor:pointer}
+
+
+
 
           
   #desc
@@ -147,33 +204,43 @@
       
       <body>
 
-      <div id=center-hldr><div id=center>
+
+            <blog-hdr component=grp1 v2.0>      
+                  <h1 class=title>
+                        Add Name Constraints To A x509 Certificate
+                  </h1>
+                  <time slot=date datetime="2025-10-29">
+                        29 Oct 2025
+                  </time>
+            </blog-hdr>
+
             
             <h3>
-                  add name constraints to a x509 certificate
+                  
             </h3>
 
               
-            <div id=desc>
-                  <div class=sub-desc>
+            <div class=description>
+            
+                  <p class=sub-desc>
                         <h4>
                               Understanding X.509 Name Constraints: Locking Down Your Personal Root CA
                         </h4>
                         <div>
                               When installing a personal root certificate, it's easy to overlook the risks of unintended trust. Without proper restrictions, your root could be misused to issue rogue certificates for domains like google.com. This post explores the power of X.509 Name Constraints—an extension that lets you define exactly which domains and IPs your CA can vouch for.
                         </div>
-                  </div>
-                  <div class=sub-desc>
+                  </p>
+                  <p class=sub-desc>
                         <div>
                               Name Constraints are one of the most underused but powerful tools in X.509 for limiting the scope of trust. Beyond the personal root CA scenario you mentioned, here are several other practical use cases where they shine:
                         </div>
-                  </div>
+                  </p>
                   <h4>
                         🔐 1. Enterprise Internal PKI
                   </h4>
-                  <div>
+                  <p>
                         In large organizations with internal CAs, you can use Name Constraints to restrict subordinate CAs to only issue certificates for internal domains like
-                  </div>
+                  </p>
                   <ul>
                         <li>
                               *.corp.example.com
@@ -182,15 +249,15 @@
                               *.internal.local
                         </li>
                   </ul>
-                  <div>
+                  <p>
                         This prevents accidental or malicious issuance for public domains like google.com or microsoft.com.
-                  </div>
+                  </p>
                   <h4>
                         🧪 2. Testing and Development Environments
                   </h4>
-                  <div>
+                  <p>
                         When setting up a test CA for staging or dev environments, you can constrain it to:
-                  </div>
+                  </p>
                   <ul>
                         <li>
                               *.dev.example.com
@@ -199,15 +266,15 @@
                               192.168.0.0/16
                         </li>
                   </ul>
-                  <div>
+                  <p>
                         This ensures test certificates can't be misused in production or public-facing systems.
-                  </div>
+                  </p>
                   <h4>
                         🧭 3. Delegated Subordinate CA
                   </h4>
-                  <div>
+                  <p>
                         If you delegate certificate issuance to a third party (e.g., a partner or vendor), you can constrain their CA to only issue for:
-                  </div>
+                  </p>
                   <ul>
                         <li>
                               Their own domain space
@@ -219,15 +286,15 @@
                               Exclude sensitive zones like .gov or .mil
                         </li>
                   </ul>
-                  <div>
+                  <p>
                         This is especially useful in federated identity systems or multi-tenant infrastructure.
-                  </div>
+                  </p>
                   <h4>
                         🛡️ 4. IoT Device Identity
                   </h4>
-                  <div>
+                  <p>
                         For IoT deployments, constrain device certificates to:
-                  </div>
+                  </p>
                   <ul>
                         <li>
                               Specific device naming patterns (device123.iot.example.com)
@@ -236,15 +303,15 @@
                               Specific IP ranges used in the field
                         </li>
                   </ul>
-                  <div>
+                  <p>
                         This helps prevent rogue devices from impersonating others or accessing unauthorized networks.
-                  </div>
+                  </p>
                   <h4>
                         📜 5. Regulatory Compliance
                   </h4>
-                  <div>
+                  <p>
                         In sectors like finance or healthcare, constraints can enforce strict boundaries:
-                  </div>
+                  </p>
                   <ul>
                         <li>
                               Only allow issuance for approved domains
@@ -253,17 +320,19 @@
                               Prevent cross-organizational leakage of trust
                         </li>
                   </ul>
-                  <div>
+                  <p>
                         This supports auditability and reduces risk in tightly regulated environments.
-                  </div>
+                  </p>
                   <h4>
                         🧠 Summary
                   </h4>
-                  <div>
+                  <p>
                         Name Constraints are like a firewall for your CA’s identity scope. They don’t just say “this CA can issue certificates”—they say “only for these names, and never for those.” Whether you're building a personal PKI, securing enterprise infrastructure, or sandboxing a delegated CA, they’re a powerful tool for trust hygiene.
-                  </div>
+                  </p>
             </div>
+            
             <div class=hr></div>
+            
             <div class=sub-desc>
                   <h4>
                         certificate builder tool
@@ -281,40 +350,11 @@
             </div>
 
             
-            <code-block api id=config>
-                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-[ req ]
-distinguished_name = req_distinguished_name
-x509_extensions = v3_ca
-prompt = no
-
-[ req_distinguished_name ]
-CN = My Test CA
-
-[ v3_ca ]
-basicConstraints = critical, CA:TRUE
-keyUsage = critical, keyCertSign, cRLSign
-subjectKeyIdentifier = hash
-nameConstraints = critical, @nc
-
-[ nc ]
-permitted;DNS.1 = .example.com
-permitted;DNS.2 = .internal.local
-excluded;DNS.1 = .malicious.com
-permitted;IP.1 = 192.168.0.0/255.255.0.0
+            <editor id=config component v2.0 src='ex/config.txt'></editor>
+            
+            <edit id=cmd component v2.0 src='ex/cmd.txt'></editor>
             
             
-            </code-block>
-            
-            <code-block id=cmd>
-                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  
-openssl genrsa -out ca.key.pem 1024
-openssl req -new -x509 -key ca.key.pem -out ca.crt -days 365 -config ca-ext.ini -extensions v3_ca
-openssl x509 -in ca.crt -text -noout
-
-            </code-block>
-
 <!--
 openssl req -new -key ca.key.pem -out ca.csr -extensions v3_ca -config ca-ext.ini
 openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions v3_ca -out ca.crt
@@ -331,11 +371,13 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
             
 
 
-      </div center-hldr></div center>            
-      
-      <div id=ftr-hldr>
-            <div id=ftr></div>
-      </div>
+            <div id=ftr-hldr>
+                  <div id=ftr></div>
+            </div>
+            
+            
+            <log component v2.0></log>
+            
       
       </body>
 
@@ -343,19 +385,17 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
       <script>
 
 
-        var mod   = {};
-
         var openssl;
         
         var root;
-        var config;
-        var cmd;
         var output    = {};
         
         
         var btn   = {};
         
-        
+
+  //:
+  
         
         function initdom(rootnode){
         
@@ -379,7 +419,6 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               config.focus();
               
         }//initdom
-
 
 
   //:
@@ -482,9 +521,6 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         }//stderr
 
 
-  //:
-  
-  init.stack.complete;
   
   
       </script>      
