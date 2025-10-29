@@ -30,7 +30,7 @@
         
         
         async function create(){
-          
+                                                                                console.log('create');
               js7z    = await JS7z({print,printErr,onAbort,onExit},'https://javascript-2020.github.io/libs/js/external/js7zip/js7z-st-fs-ec.js');
               js7z.FS.mkdir('/in');
               
