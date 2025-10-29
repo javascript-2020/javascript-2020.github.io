@@ -25,8 +25,10 @@
             
 
 
-            
+            <!--
             <script src='https://www.cryptool.org/wasm/openssl.js'></script>
+            -->
+            <script src='https://javascript-2020.github.io/libs/js/external/openssl/openssl.js'></script>
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
 
 
@@ -428,8 +430,9 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         
               output.clear();
               
-              //openssl       = mod.openssl(output);
-              openssl   = opensslmod(output);
+              var params    = {EmscrJSR_openssl,stdout:output.stdout,stderr:output.stderr};
+              openssl       = opensslmod(output);
+              
               openssl.fs.clear();
               var Module    = await openssl.init();
                                                                                 console.log(Module);
