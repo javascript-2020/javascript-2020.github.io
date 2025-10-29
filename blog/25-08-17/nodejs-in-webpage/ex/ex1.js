@@ -6,6 +6,7 @@
                                                                                 console.clear();
                                                                                 console.log('nodejs-in-webpage');
                                                                                 console.log();
+                                                                                (typeof terminal=='undefined') && (terminal={write:console.log.bind(console)});
         var nodejs    = `
         
               import fs from 'fs';
