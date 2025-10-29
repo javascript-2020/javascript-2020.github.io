@@ -8,7 +8,7 @@
         var console     = {};
         console.log     = (...args)=>self.postMessage({type:'log',args});
         console.error   = (...args)=>self.postMessage({type:'error',args});
-                                                                                console.log('[ worker ]');
+                                                                                self.console.log('[ worker ]');
 
         importScripts('https://javascript-2020.github.io/libs/js/external/js7zip/js7z-st-fs-ec.js');
         //importScripts('https://ext-code.com/libs/js/external/js7zip/js7z-st-fs-ec.js');
