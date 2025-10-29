@@ -15,7 +15,7 @@
                 
                 case 'create'       : create(data);               break;
                 case 'add'          : add(data);                  break;
-                case 'compress'     : comrpess(data);             break;
+                case 'compress'     : compress(data);             break;
                 
               }//switch
                 
