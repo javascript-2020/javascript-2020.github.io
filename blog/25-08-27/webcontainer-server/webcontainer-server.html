@@ -5,139 +5,118 @@
       cross-origin-isolate
 -->
 
+
+<!DOCTYPE html>
+
+
 <html>
 
-
       <head>
-
+            <meta charset=utf-8>
       
-            <title>webcontainer server</title>
+            <title>
+                  WebContainer Server
+            </title>
 
-            <base href='https://javascript-2020.github.io/blog/25-08-27/webcontainer-server/webcontainer-server.html'>
+            <meta name=description content='Learn how to set up a Node.js server inside a WebContainer—right in the browser. This hands-on guide includes editable, runnable demo code so you can experiment with server-side logic instantly, without installing anything locally.'>
+
+            <base href='https://ext-code.com/blog/25-08-27/webcontainer-server/'>
             <link rel=canonical href='https://ext-code.com/blog/25-08-27/webcontainer-server/webcontainer-server.html'>
             
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"            : "https://schema.org",
+                        "@type"               : "TechArticle",
+                        "headline"            : "WebContainer Server",
+                        "description"         : "Learn how to set up a Node.js server inside a WebContainer—right in the browser. This hands-on guide includes editable, runnable demo code so you can experiment with server-side logic instantly, without installing anything locally.",
+                        "author"              : {"@type":"Person","name":"Matthew Richards"},
+                        "datePublished"       : "2025-08-27",
+                        "dateModified"        : "2025-10-15",
+                        "mainEntityOfPage"    : {"@type":"WebPage","@id":"https://ext-code.com/blog/25-08-27/webcontainer-server/webcontainer-server.html"},
+                        "publisher"           : {"@type":"Organization","name":"ext-code.com","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
+                  }
+            </script>
+            
+
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
 
             
             <script init>
                                                                                 console.clear();
+                                                                                console.log('webcontainer-server.html');
+                                                                                console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var version       = 'v1.0';
-            
-        var df            = true;
+        var df=true,version='v1.0'
+        ;
 
-
+        var ace;
+        
         var ext;
         var $;
         var datatype;
         var menumod;
-        var code;
+        var keydown;
         
-        var mod           = {};
+        var ex;
         
-        //var codeblock;
+        var log;
+        
         
 
   //:
 
               
         async function init(){
-                                                                                //debug('init',version);
+                                                                                debug('init',version);
               menu    = menumod();
+
               
-              await initdom(document.body);
+              ex      = mod.ex;
+              log     = mod.log;
+              
+              ex.initmod({ext,$,menu,ace});
+              log.initmod({ext,$});
+              
+              
+              
+              await Promise.all([
+                    ex.init(),
+                    log.init(),
+              ]);
 
 
-              init.complete();
+              
+              initdom(document.body);
+
 
         }//init
 
 
-        init.stack            = [init];
-        init.stack.ct         = 0;
-        init.stack.total      = 1;
-        init.stack.mode       = '';
-        init.stack.complete   = false;
-        Object.defineProperty(init.stack,'add',{get:()=>{
-              init.stack.total++;
-              if(init.stack.mode){
-                    console[init.stack.mode]('add',init.stack.ct,init.stack.total);
-                                                                                //console.trace();
-              }
-        }});
-        Object.defineProperty(init.stack,'complete',{get:()=>{
-              init.stack.ct++;
-              if(init.stack.mode){
-                    console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
-                                                                                //console.trace();
-              }
-              if(init.stack.ct>=init.stack.total){
-                                                                                //console.log('*** complete');
-                    init.stack.ct       = 0;
-                    init.stack.total    = 0;
-                    var list    = [...init.stack];
-                    init.stack.length   = 0;
-                    list.forEach(fn=>fn());
-              }
-        }});
-        
-        //  (typeof init!='undefined' && init?.stack && init.stack.add)
-        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
-
-        
-        init.complete   = function(){
-          
-              init.complete.stack.forEach(fn=>fn());
-              
-              
-        }//complete
-        
-        init.complete.stack   = [];
-        init.complete.add     = fn=>init.complete.stack.push(fn);
-
-                  
-
+  //:
+  
+  
 (async()=>{
   
-        init.stack.add;
-
+        mod.stack.add;
         
-        var url;
-        var headers;
-        var token       = localStorage['github-token'];
-        if(token){
-              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
-              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
-        }else{
-              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
-        }
-        
-        var res   = await fetch(url,{headers});
-        var txt   = await res.text();
-
-        if(res.headers.get('content-type').includes('json')){
-                                                                                console.log('*** ext : json');
-              var json    = JSON.parse(txt);
-              var b64     = json.content;
-              txt         = atob(b64);
-        }else{
-                                                                                console.log('*** ext : text');
-        }
-        
-        ext   = eval(txt);
-
-        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
         var promise   = ext.load.libs(
-              'js/dom/$.js.api',
+              'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
-              'js/dom/code/code.js.api',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
         );
-        [$,datatype,menumod,code]   = await promise;
-
-        code.initmod({ext,$,datatype,menumod});
-        
-        init.stack.complete;
+        [$,datatype,menumod,keydown,debug]   = await promise;
+  
+        mod.stack.complete;
 
 })();
 
@@ -146,15 +125,53 @@
 
             
             <link rel=stylesheet href='/blog/css/blog.css'>
+            
             <style>
             
   html
-    {height:100%}
+    {height:100%;font-family:arial}
   body
-    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;margin:20px;
-      font-family:arial
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:20px;margin:20px;align-items:center;
+      padding-bottom:200px;
     }
-            
+  body>*
+    {max-width:1400px;width:100%}
+    
+  [component]
+    {display:none}
+    
+  .description 
+    {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
+      background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
+  .description>p
+    {margin:0}
+  .description > p+p
+    {margin:10px 0}
+
+  code
+    {font-family:monospace;background:whitesmoke}
+  code.inline
+    {display:inline;padding:5px 10px}
+
+  a
+    {color:#4a90e2;text-decoration:none;font-weight:500}
+  a:hover 
+    {text-decoration:underline}
+  .link-domain
+    {font-size:0.85rem;color:#777;margin-left:0.25rem}
+  .link-domain::before 
+    {content:'['}
+  .link-domain::after
+    {content:']'}
+  .link-txt
+    {}
+
+  input
+    {font-size:16px;padding:5px 7px;box-sizing:border-box;}
+  input[type=button]
+    {cursor:pointer}
+
+
             </style>
             
 
@@ -164,22 +181,30 @@
       
       <body>
 
+            <blog-hdr component=grp1 v2.0>      
+                  <h1 class=title>
+                        WebContainer Server
+                  </h1>
+                  <time slot=date datetime=2025-10-29>
+                        29 Oct 2025
+                  </time>
+            </blog-hdr>
 
-      
-            <h3>
-                  webcontainer server
-            </h3>
 
+            <div class=description>
 
-            <div id=desc>
-
-webcontainer server
-            
+                  <p>
+                        Learn how to set up a Node.js server inside a WebContainer—right in the browser.
+                        This hands-on guide includes editable, runnable demo code so you can experiment with server-side logic instantly, without installing anything locally.
+                  </p>
+                  
             </div>
+      
+            <snippet-html-console id=ex component v2.0 src='ex/ex.html' api></snippet-html-console>
 
-
-            <code-block snippet-html src='ex.html' api></code-block>
             
+            <log component v2.0></log>
+
       
       </body>
       
@@ -187,37 +212,24 @@ webcontainer server
       <script>
 
 
-        var code_block;
-
-        var menu;
-        
         var root;
         
 
-
-        async function initdom(rootnode){
+  //:
+  
+  
+        function initdom(rootnode){
 
               root    = rootnode;
               
 
-
-              var node        = $(root,'code-block');
-              ({code_block}   = await code.code_block(node,{menu}));
-
-
-
-              //test();
-
-
-
+              ex.initdom();
+              
+              
               
         }//initdom      
 
-
-  //:
   
-
-  init.stack.complete;        
 
       </script>
       
