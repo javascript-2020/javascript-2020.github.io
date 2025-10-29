@@ -11,15 +11,34 @@
       <head>
 
             <title>
-                  nodejs in webpage
+                  Node.js In Webpage
             </title>
 
-            <base href='https://ext-code.com/blog/25-08-17/nodejs-in-webpage/'>
-            <base href='https://javascript-2020.github.io/blog/25-08-17/nodejs-in-webpage/'>
-            
-            <link rel=canonical href='https://ext-code.com/blog/25-08-17/nodejs-in-webpage/nodejs-in-webpage.html'>
+            <meta name=desctiption content='Discover how to run Node.js-like code directly in the browser using WebContainers and other tools. This guide includes a live, editable demo so you can experiment with server-side JavaScript in a webpage—no local setup required.'>
             
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            
+            <base href='https://ext-code.com/blog/25-08-17/nodejs-in-webpage/'>
+            <link rel=canonical href='https://ext-code.com/blog/25-08-17/nodejs-in-webpage/nodejs-in-webpage.html'>
+            
+
+            <script type='application/ld+json'>            
+                  {
+                        "@context"            : "https://schema.org",
+                        "@type"               : "TechArticle",
+                        "headline"            : "Node.js In Webpage",
+                        "description"         : "Discover how to run Node.js-like code directly in the browser using WebContainers and other tools. This guide includes a live, editable demo so you can experiment with server-side JavaScript in a webpage—no local setup required.",
+                        "author"              : {"@type":"Person","name":"Matthew Richards"},
+                        "datePublished"       : "2025-08-17",
+                        "dateModified"        : "2025-10-29",
+                        "mainEntityOfPage"    : {"@type":"WebPage","@id":"https://ext-code.com/blog/25-08-17/nodejs-in-webpage/nodejs-in-webpage.html"},
+                        "publisher"           : {"@type":"Organization","name":"Your Blog or Company Name","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
+                  }            
+            </script>
+<!--
+                        "image"               : "https://yourdomain.com/images/http2-nodejs-demo.png"
+-->
 
             
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
@@ -35,33 +54,46 @@
                                                                                 
         var df=true,version='v1.0'
         ;
-            
 
+            
+        var ace;
+        
         var ext;
         var $;
         var datatype;
         var menumod;
-        var code;
+        var keydown;
+        var debug;
+
+        var menu;
         
         var snippet;
+        
+        
+        var log;
         
 
   //:
 
 
         async function init(){
-                                                                                //debug('init',version);
+                                                                                debug('init',version);
               menu    = menumod();
               
               
               snippet   = mod.ex1;
+              log       = mod.log;
               
               snippet.initmod({ext,$,menu,ace});
+              log.initmod({ext,$});
               
-              await snippet.init();
+              await Promise.all([
+                    snippet.init(),
+                    log.init(),
+              ]);
               
               
-              await initdom(document.body);
+              initdom(document.body);
 
 
         }//init
@@ -81,13 +113,10 @@
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
-              'js/dom/code/v2.0/code-v2.0.js.api',
               'js/debug/debug.js',
         );
-        [$,datatype,menumod,keydown,code]   = await promise;
+        [$,datatype,menumod,keydown,debug]   = await promise;
   
-        code.initmod({ext,$,datatype,menumod});
-        
         mod.stack.complete;
               
 })();
@@ -159,6 +188,9 @@
             <snippet-terminal-console id=ex1 component v2.0 src='ex/ex1.js'></snippet-terminal-console>
 
       
+            <log component v2.0></log>
+            
+            
       </body>
 
 
@@ -175,32 +207,25 @@
         var root;
         
 
-
-        async function initdom(rootnode){
+  //:
+  
+  
+        function initdom(rootnode){
 
               root    = rootnode;
               
 
-/*
-              var node        = $(root,'code-block');
-              ({code_block}   = await code.code_block(mod,node,{menu,ace}));
-              console.log(code_block);
-              code_block.snippet_console.snippet.console.height('200px');
-*/
-
               snippet.initdom(root);
-
-
-
-              //test();
-
-
-
               
+              
+              log.initdom();
+
         }//initdom      
 
 
-            
+  //:
+  
+  
       </script>
       
 </html>
