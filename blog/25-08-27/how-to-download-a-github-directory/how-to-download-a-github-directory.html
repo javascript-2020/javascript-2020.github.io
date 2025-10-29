@@ -16,19 +16,16 @@
             <title>
                   how to download a github directory
             </title>
+            
             <meta name=description content='Learn how to download a specific directory from any GitHub repository without cloning the entire project. This guide walks developers through fast, efficient methods using browser tools and custom scripts.'>
-
-
-            <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
-            <meta name=viewport content='width=device-width, initial-scale=1'>
-
 
             <base href='https://ext-code.com/blog/25-08-27/how-to-download-a-github-directory/'>
             <link rel=canonical href='https://ext-code.com/blog/25-08-27/how-to-download-a-github-directory/how-to-download-a-github-directory.html'>
-
+            
+            <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
 
             <script type='application/ld+json'>
-            
                   {
                         "@context"            : "https://schema.org",
                         "@type"               : "TechArticle",
@@ -40,7 +37,6 @@
                         "mainEntityOfPage"    : {"@type":"WebPage","@id":"https://ext-code.com/blog/25-08-27/how-to-download-a-github-directory/how-to-download-a-github-directory.html"},
                         "publisher"           : {"@type":"Organization","name":"ext-code.com","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
                   }
-            
             </script>
 
 
@@ -59,17 +55,16 @@
                                                                                 console.log('how-to-download-a-github-directory.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var version       = 'v1.0';
-            
-        var df=true
+        var df=true,version='v2.0'
         ;
 
-
+        var ace;
+        
         var ext;
         var $;
         var datatype;
         var menumod;
-        var code;
+        var keydown;
         var debug;
         
         
@@ -81,6 +76,7 @@
         snippet['node-1']               = null;
         snippet['node-2']               = null;
         
+        var log;
         
         
   //:
@@ -97,6 +93,7 @@
               snippet['node-1']               = mod['node-1'];
               snippet['node-2']               = mod['node-2'];
               
+              log                             = mod.log;
               
               
               snippet['full-ex'].initmod({ext,$,menu,ace});
@@ -104,6 +101,7 @@
               snippet.zip.initmod({ext,$,menu,ace});
               snippet['node-1'].initmod({ext,$,menu,ace});
               snippet['node-2'].initmod({ext,$,menu,ace});
+              log.initmod({ext,$});
 
               
               await Promise.all([
@@ -112,6 +110,7 @@
                     snippet.zip.init(),
                     snippet['node-1'].init(),
                     snippet['node-2'].init(),
+                    log.init(),
               ]);
               
               
@@ -136,13 +135,10 @@
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
-              'js/dom/code/v2.0/code-v2.0.js.api',
               'js/debug/debug.js',
         );
-        [$,datatype,menumod,keydown,code,debug]   = await promise;
+        [$,datatype,menumod,keydown,debug]   = await promise;
   
-        code.initmod({ext,$,datatype,menumod});
-        
         mod.stack.complete;
               
 })();
@@ -238,8 +234,7 @@ blog-hdr[component]
             </p>
 
 
-            <snippet-html-console id=full-ex component v2.0 h=100 src='ex/full-ex.html'>
-            </snippet-html-console>
+            <snippet-html-console id=full-ex component v2.0 h=100 src='ex/full-ex.html'></snippet-html-console>
 
             
             <p>
@@ -306,8 +301,7 @@ blog-hdr[component]
             
             </p>
             
-            <snippet-console id=data-structure component v2.0 src='ex/data-structure.js'>
-            </snippet-console>
+            <snippet-console id=data-structure component v2.0 src='ex/data-structure.js'></snippet-console>
             
             <p>
     
@@ -321,8 +315,7 @@ blog-hdr[component]
             
             </p>
       
-            <snippet-html-console id=zip component v2.0 src='ex/zip.html'>
-            </snippet-html-console>
+            <snippet-html-console id=zip component v2.0 src='ex/zip.html'></snippet-html-console>
             
             <p>
             
@@ -330,8 +323,7 @@ blog-hdr[component]
 
             </p>
             
-            <snippet-terminal-console id=node-1 type=nodejs component v2.0 src='ex/download-repo-dir.node.mjs'>
-            </snippet-terminal-console>
+            <snippet-terminal-console id=node-1 type=nodejs component v2.0 src='ex/download-repo-dir.node.mjs'></snippet-terminal-console>
             
             <p>
             
@@ -339,8 +331,7 @@ blog-hdr[component]
 
             </p>
 
-            <snippet-terminal-console id=node-2 type=nodejs component v2.0 src='ex/nodejs-zip.js'>
-            </snippet-terminal-console>
+            <snippet-terminal-console id=node-2 type=nodejs component v2.0 src='ex/nodejs-zip.js'></snippet-terminal-console>
             
             <p>
                 
@@ -386,7 +377,7 @@ node --experimental-network-imports --no-warnings .\test.node.mjs
   //:
   
   
-        async function initdom(rootnode){
+        function initdom(rootnode){
 
               root            = rootnode;
 
@@ -426,8 +417,7 @@ node --experimental-network-imports --no-warnings .\test.node.mjs
 
 
       </script>
-      
-            
+                  
 </html>
 
 
