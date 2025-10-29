@@ -1,39 +1,213 @@
+
+
+
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>CodeMirror 5</title>
+
+
+<html lang=en>
+
+      <head>
+            <meta charset=utf-8>
+            
+            <title>
+                  CodeMirror In The Browser
+            </title>
+            
+            <meta name=description content='Learn how to set up CodeMirror in your browser to create a powerful, customizable code editor. This guide includes editable, runnable examples so you can explore syntax highlighting, themes, and extensions in real time.'>
+
+            <base href='https://ext-code.com/blog/25-10-17/codemirror-in-the-browser/'>
+            <link rel=canonical href='https://ext-code.com/blog/25-10-17/codemirror-in-the-browser/codemirror-in-the-browser.html'>
+            
+            <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"            : "https://schema.org",
+                        "@type"               : "TechArticle",
+                        "headline"            : "CodeMirror In The Browser",
+                        "description"         : "Learn how to set up CodeMirror in your browser to create a powerful, customizable code editor. This guide includes editable, runnable examples so you can explore syntax highlighting, themes, and extensions in real time.",
+                        "author"              : {"@type":"Person","name":"Matthew Richards"},
+                        "datePublished"       : "2025-10-17",
+                        "dateModified"        : "2025-10-29",
+                        "mainEntityOfPage"    : {"@type":"WebPage","@id":"https://ext-code.com/blog/25-10-17/codemirror-in-the-browser/codemirror-in-the-browser.html"},
+                        "publisher"           : {"@type":"Organization","name":"ext-code.com","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
+                  }
+            </script>
+            
+            
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('codemirror-in-the-browser.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,version='v2.0'
+        ;
+        
+        var ace;
+        
+        var ext,$,datatype,menumod,keydown,debug;
+        
+        var menu;
+        
+        var ex;
+        
+        var log;
+        
+        
+  //:
   
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.min.css" rel="stylesheet">
-  <style>
-    #editor {
-      border: 1px solid #ccc;
-      height: 300px;
+  
+        async function init(){
+          
+              menu    = menumod();
+              
+              ex      = mod.ex;
+              log     = mod.log;
+              
+              ex.initmod({ext,$,menu,ace});
+              log.initmod({ext,$});
+              
+              await Promise.all([
+                    ex.init(),
+                    log.init(),
+              ]);
+              
+              
+              initdom(document.body);
+              
+              
+        }//init
+        
+        
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}   = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+        
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
+        );
+        
+        [$,datatype,menumod,keydown,debug]    = await promise;
+        
+        mod.stack.complete;
+
+})();
+  
+            </script init>
+
+            
+            <link rel=stylesheet href='/blog/css/blog.css'>
+            
+            <style>
+
+  html
+    {height:100%;font-family:arial}
+  body
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:20px;margin:20px;align-items:center;
+      padding-bottom:200px;
     }
-  </style>
-</head>
+  body>*
+    {max-width:1400px;width:100%}
+    
+  [component]
+    {display:none}
+    
+  .description 
+    {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
+      background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
+  .description>p
+    {margin:0}
+  .description > p+p
+    {margin:10px 0}
 
-<body>
-  <h2>CodeMirror 6 Editor</h2>
-  <div id="editor">
-  </div>
+  code
+    {font-family:monospace;background:whitesmoke}
+  code.inline
+    {display:inline;padding:5px 10px}
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/mode/javascript/javascript.min.js"></script>
+  a
+    {color:#4a90e2;text-decoration:none;font-weight:500}
+  a:hover 
+    {text-decoration:underline}
+  .link-domain
+    {font-size:0.85rem;color:#777;margin-left:0.25rem}
+  .link-domain::before 
+    {content:'['}
+  .link-domain::after
+    {content:']'}
+  .link-txt
+    {}
 
+  input
+    {font-size:16px;padding:5px 7px;box-sizing:border-box;}
+  input[type=button]
+    {cursor:pointer}
 
-  <script>
-  console.clear();
+            
+  #editor
+    {border:1px solid #ccc;height:300px}
+    
+            </style>
+            
+      </head>
+
+      <body>
+
+            <blog-hdr component=grp1 v2.0>      
+                  <h1 class=title>
+                        CodeMirror In The Browser
+                  </h1>
+                  <time slot=date datetime=2025-10-29>
+                        29 Oct 2025
+                  </time>
+            </blog-hdr>
+      
+            <div class=description>
+                  <p>
+                        Learn how to set up CodeMirror in your browser to create a powerful, customizable code editor.
+                        This guide includes editable, runnable examples so you can explore syntax highlighting, themes, and extensions in real time.
+                  </p>
+            </div>
+                  
+
+            <snippet-html-console id=ex component v2.0 src='ex/ex.html'></snippet-html-console>
+
+      
+            <log component v2.0></log>
+
+            
+      </body>
+
+      
+      <script>
+      
+
+        function initdom(rootnode){
+
+          
+              ex.initdom();
+              log.initdom();
+              
+              
+        }//initdom
+        
+
+  //:
   
-var myCodeMirror = CodeMirror(editor,{
-
-  value: "function myScript(){return 100;}\n",
-  mode:  "javascript",
-    lineNumbers: true,
-});
-
-
-
-  </script>
-</body>
+  
+      </script>
+      
 </html>
