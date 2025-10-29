@@ -1,10 +1,13 @@
 
 
 
-        
+(()=>{
+  
         var js7z;
         var archive;
 
+        var con         = self.console;
+        
         var console     = {};
         console.log     = (...args)=>self.postMessage({type:'log',args});
         console.error   = (...args)=>self.postMessage({type:'error',args});
@@ -124,6 +127,8 @@
         }//onExit
   
   
+})();
+
 
 
 
