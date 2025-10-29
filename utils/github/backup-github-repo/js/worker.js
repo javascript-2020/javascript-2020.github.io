@@ -55,7 +55,7 @@
                     args.push(`-p${password}`);
               }
               args.push('-t7z','-mhe=on',`/${archive}`,'/in/*');
-                                                                                console.log(args);
+                                                                                //console.log(args);
               js7z.callMain(args);        
 
         }//compress
@@ -103,9 +103,9 @@
               }
               
               var uint8   = js7z.FS.readFile(`/${archive}`,{encoding:'binary'});
-                                                                                console.log(uint8);
+                                                                                //console.log(uint8);
               var buf     = uint8.buffer;
-                                                                                console.log(buf);
+                                                                                //console.log(buf);
               self.postMessage({type:'complete',buf,archive},[buf]);
               
               
