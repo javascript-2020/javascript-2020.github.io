@@ -66,6 +66,10 @@
         var hdr;
         var con;
         var log;
+        
+        
+        //var worker    = new Worker('js/worker.js');        
+        var worker    = new Worker('https://javascript-2020.github.io/libs/js/external/js7zip/worker.js');
 
 
   //:
@@ -499,6 +503,8 @@
         
         btn.backup    = async function(){
           
+              await setup();
+              
               var list    = $.all(ui.list,'.repo');
               list        = list.filter(root=>$(root,'[type=checkbox]').checked);
               list        = list.map(root=>{
@@ -515,8 +521,9 @@
               var total           = list.length+2;
               track.style.width   = ((ct/total)*100)+'%';
               
-              var js7z        = await JS7z({print,printErr,onAbort,onExit});
-              js7z.FS.mkdir('/in');
+              
+              //var js7z        = await JS7z({print,printErr,onAbort,onExit});
+              //js7z.FS.mkdir('/in');
 
               
               await Promise.all(
@@ -537,8 +544,9 @@
                           }
                                                                                 //console.log(repo,type,blob.size);
                           var buf     = await blob.arrayBuffer();
-                          var uint8   = new Uint8Array(buf);
-                          js7z.FS.writeFile(`/in/${repo}.zip`,uint8);
+                          worker.postMessage({type:'add',repo,buf},[buf]);
+                          //var uint8   = new Uint8Array(buf);
+                          //js7z.FS.writeFile(`/in/${repo}.zip`,uint8);
                           
                           ct++;
                           track.style.width   = ((ct/total)*100)+'%';
@@ -546,6 +554,51 @@
                     })
               );
 
+              var password;
+              if(ui.password.chk.checked){
+                                                                                con.log('password',ui.password.value);
+                    password    = ui.password.value;
+              }
+              
+              worker.postMessage({type:'compress',password});
+
+
+              async function setup(){
+                
+                    var resolve,promise=new Promise(res=>resolve=res);
+                    
+                    worker.onmessage    = ({data})=>{
+                      
+                          switch(data.type){
+                            
+                            case 'create'     : resolve();            break;
+                            case 'complete'   : complete(data);       break;
+                            
+                          }//switch
+                          
+                    }//onmessage
+                    
+                    worker.postMessage({type:'create'});
+                    await promise;
+      
+              }//setup
+              
+              
+              function complete({buf}){
+
+                    var blob      = new Blob([data],{type:'application/octet-stream'});
+                    
+                    var url       = window.URL.createObjectURL(blob);
+                    var a         = document.createElement('a');
+                    a.href        = url;
+                    a.download    = archive;
+                    a.click();
+                
+              }//complete
+              
+              
+              /*
+              
               var ts        = date();
               var archive   = `github-${ts}.7z`;
               
@@ -610,6 +663,8 @@
                     a.click();
                     
               }//onExit
+
+              */              
               
         }//backup
         
@@ -671,6 +726,12 @@
               });
               
         }//private
+
+
+
+  //:
+  
+  
   
       </script>
       
