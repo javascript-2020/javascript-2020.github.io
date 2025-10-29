@@ -100,8 +100,9 @@
                     return;
               }
               
-              var buf   = js7z.FS.readFile(`/${archive}`,{encoding:'binary'});
-                                                                                //console.log(data);
+              var uint8   = js7z.FS.readFile(`/${archive}`,{encoding:'binary'});
+              var buf     = uint8.arrayBuffer;
+                                                                                console.log(buf);
               self.postMessage({type:'complete',buf},[buf]);
               
               
