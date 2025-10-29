@@ -103,7 +103,7 @@
                                                                                 console.log(uint8);
               var buf     = uint8.buffer;
                                                                                 console.log(buf);
-              self.postMessage({type:'complete',buf},[buf]);
+              self.postMessage({type:'complete',buf,archive},[buf]);
               
               
               /*
