@@ -3,69 +3,103 @@
 
 <html>
 
-
       <head>
-
+            <meta charset=utf-8>
       
             <title>
-                  determine datatypes in javascript
+                  Determine Datatypes In Javascript
             </title>
 
-
-            <base href='https://ext-code.com/blog/25-08-07/determine-datatypes-in-javascript/'>
-            <base href='https://javascript-2020.github.io/blog/25-08-07/determine-datatypes-in-javascript/'>
-
-            
-            <link rel=canonical href='https://ext-code.com/blog/25-08-07/determine-datatypes-in-javascript/determine-datatypes-in-javascript.html'>
-            
+            <meta name=description content='Learn how to determine data types in JavaScript. Explore interactive, editable code examples that let you test and understand type detection in real time.'>
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+
+            <base href='https://ext-code.com/blog/25-08-29/determine-datatypes-in-javascript/'>
+            <link rel=canonical href='https://ext-code.com/blog/25-08-29/determine-datatypes-in-javascript/determine-datatypes-in-javascript.html'>
             
-            <link rel=stylesheet href='/blog/css/blog.css'>
+
+            <script type='application/ld+json'>            
+                  {
+                        "@context"            : "https://schema.org",
+                        "@type"               : "TechArticle",
+                        "headline"            : "Determine Datatypes In Javascript",
+                        "description"         : "Learn how to determine data types in JavaScript. Explore interactive, editable code examples that let you test and understand type detection in real time.",
+                        "author"              : {"@type":"Person","name":"Matthew Richards"},
+                        "datePublished"       : "2025-07-31",
+                        "dateModified"        : "2025-10-22",
+                        "mainEntityOfPage"    : {"@type":"WebPage","@id":"https://ext-code.com/blog/25-08-29/determine-datatypes-in-javascript/determine-datatypes-in-javascript.html"},
+                        "publisher"           : {"@type":"Organization","name":"Your Blog or Company Name","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
+                  }            
+            </script>
+<!--
+                        "image"               : "https://yourdomain.com/images/http2-nodejs-demo.png"
+-->
+
+
+<!--
+  //:
+-->
 
 
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
 
 
-
-
-
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
 
             <script init>
                                                                                 console.clear();
                                                                                 console.log('determine-datatypes-in-javascript.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,did='page'
+        var df=true,version='v2.0'
         ;
+
+
+        var ace;
 
         var ext;
         var $;
         var datatype;
         var menumod;
-        var code;
         
+        var menu;
         
-        //var codeblock;
+        var ex1;
+        var ex2;
+        var ex3;
         
+        var log;
 
+        
   //:
 
 
-        mod.stack.add   = init;
-              
         async function init(){
-                                                                                //debug('init',version);
-              //codeblock   = mod['code-block']();
-              
-              //codeblock.initmod({ext,$,code});
+                                                                                debug('init',version);
+              menu    = menumod();
 
               
-              //await codeblock.init();
+              ex1     = mod.ex1;
+              ex2     = mod.ex2;
+              ex3     = mod.ex3;
+              log     = mod.log;
               
-              menu    = menumod();
+              ex1.initmod({ext,$,menu,ace});
+              ex2.initmod({ext,$,menu,ace});
+              ex3.initmod({ext,$,menu,ace});
+              log.initmod({ext,$});
               
-              await initdom(document.body);
+              await Promise.all([
+                    ex1.init(),
+                    ex2.init(),
+                    ex3.init(),
+                    log.init(),
+              ]);
+              
+              
+              initdom(document.body);
 
 
         }//init
@@ -82,14 +116,10 @@
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
-              'js/dom/code/v2.0/code-v2.0.js.api',
+              'js/debug/debug.js',
         );
-        [$,datatype,menumod,keydown,code]   = await promise;
+        [$,datatype,menumod,keydown,debug]   = await promise;
 
-  
-        code.initmod({ext,$,datatype,menumod});
-
-        
         mod.stack.complete;
               
 })();
@@ -101,11 +131,51 @@
             <style>
             
   html
-    {height:100%}
+    {height:100%;font-family:arial}
   body
-    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;
-      font-family:arial
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:20px;margin:20px;align-items:center;
+      padding-bottom:200px;
     }
+  body>*
+    {max-width:1400px;width:100%}
+    
+  [component]
+    {display:none}
+    
+  .description 
+    {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
+      background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
+  .description>p
+    {margin:0}
+  .description > p+p
+    {margin:10px 0}
+
+  code
+    {font-family:monospace;background:whitesmoke}
+  code.inline
+    {display:inline;padding:5px 10px}
+
+  a
+    {color:#4a90e2;text-decoration:none;font-weight:500}
+  a:hover 
+    {text-decoration:underline}
+  .link-domain
+    {font-size:0.85rem;color:#777;margin-left:0.25rem}
+  .link-domain::before 
+    {content:'['}
+  .link-domain::after
+    {content:']'}
+  .link-txt
+    {}
+
+  input
+    {font-size:16px;padding:5px 7px;box-sizing:border-box;}
+  input[type=button]
+    {cursor:pointer}
+
+
+
+
     
   h3
     {text-align:center;color:blue}
@@ -131,44 +201,55 @@
       
       
       <body>
-      
-            <h3>
-                  determine datatypes in javascript
-            </h3>
 
 
-            <div id=desc>
+            <blog-hdr component=grp1 v2.0>      
+                  <h1 class=title>
+                        Determine Datatypes In Javascript
+                  </h1>
+                  <time slot=date datetime=2025-10-29>
+                        29 Oct 2025
+                  </time>
+            </blog-hdr>
 
-Determining datatypes in javascript always seemed to be a bit of a mystery, I've seen hundreds
-of incarnations over the years, some work in some circumstances, until the code starts to get more 
-complex and then just mysteriously stop working, my go to for datatype has always been the following :
-            
+            <div class=description>
+                  <p>
+                        Learn how to determine data types in JavaScript. Explore interactive, editable code examples that let you test and understand type detection in real time.
+                  </p>
             </div>
 
-            <code-block snippet-console src=ex1></code-block>
+            <div class=description>
+                  Determining datatypes in javascript always seemed to be a bit of a mystery, I've seen hundreds
+                  of incarnations over the years, some work in some circumstances, until the code starts to get more 
+                  complex and then just mysteriously stop working, my go to for datatype has always been the following :
+            </div>
 
+            <snippet-console id=ex1 component v2.0 src='ex/ex1.js'></snippet-console>
+
+
+            <div class=break></div>
+            
+            
+            <div>
+                  This can be extended further through the use of
+            </div>
+            
+            <snippet-console id=ex2 component v2.0 src='ex/ex2.js'></snippet-console>
+            
 
             <div class=break></div>            
 
-            <div>
-
-This can be extended further through the use of
-
-            </div>
-            
-            <code snippet-console src=ex2></code>
-            
-
-            <div class=break></div>            
 
             <div>
-
-There have been many a bug created by using 
-
+                  There have been many a bug created by using 
             </div>
             
-            <code snippet-console src=ex3></code>
+            <snippet-console id=ex3 component v2.0 src='ex/ex3.js'></snippet-console>
 
+
+            <log component v2.0></log>
+            
+            
       </body>      
       
       
@@ -178,34 +259,29 @@ There have been many a bug created by using
       <script>
 
 
-        var menu;
-  
-        var snippets    = [];
-
 
   //:
   
   
-        async function initdom(rootnode){
+        function initdom(rootnode){
           
           
               root                                  = rootnode;
 
 
-
-              var node    = $(root,'code-block');
-              code.code_block(mod,node,{menu,ace});
-
-
-
-              
-              await code.snippet_console.all(mod,root,{menu,ace});
+            ex1.initdom();
+            ex2.initdom();
+            ex3.initdom();
+            
+            
+            log.initdom();
 
 
-
-              
         }//initdom
             
+  
+  //:
+  
   
   
   
