@@ -1,7 +1,8 @@
 
 
 
-        importScripts('https://javascript-2020.github.io/libs/js/external/js7zip/js7z-st-fs-ec.js');
+        //importScripts('https://javascript-2020.github.io/libs/js/external/js7zip/js7z-st-fs-ec.js');
+        importScripts('https://ext-code.com/libs/js/external/js7zip/js7z-st-fs-ec.js');
         
         
         var js7z;
@@ -24,6 +25,7 @@
         
         async function create(){
           
+              debugger;
               js7z    = await JS7z({print,printErr,onAbort,onExit});
               js7z.FS.mkdir('/in');
               
