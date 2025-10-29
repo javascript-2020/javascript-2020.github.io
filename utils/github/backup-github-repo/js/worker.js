@@ -8,8 +8,9 @@
         var js7z;
         var archive;
 
-        var console   = {};
-        console.log   = (...args)=>self.postMessage({type:'log',args});
+        var console     = {};
+        console.log     = (...args)=>self.postMessage({type:'log',args});
+        console.error   = (...args)=>self.postMessage({type:'error',args});
         
         self.onmessage    = async function({data}){
           
