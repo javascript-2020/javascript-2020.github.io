@@ -8,14 +8,13 @@
         var archive;
 
         
-        self.onmessage    = async function(e){
+        self.onmessage    = async function({data}){
           
-              var data    = e.data;
               switch(data.type){
                 
-                case 'create'       : create(data);         break;
-                case 'add'          : add(data);            break;
-                case 'compress'     : comrpess(data);       break;
+                case 'create'       : create(data);               break;
+                case 'add'          : add(data);                  break;
+                case 'compress'     : comrpess(data);             break;
                 
               }//switch
                 
@@ -23,10 +22,12 @@
         
         
         
-        function create(){
+        async function create(){
           
               js7z    = await JS7z({print,printErr,onAbort,onExit});
               js7z.FS.mkdir('/in');
+              
+              self.postMessage({type:'create'});
           
         }//create
         
@@ -74,31 +75,35 @@
 
 
         async function print(str){
-                                                                          //console.log('[ print ]',arguments);
-                                                                          console.log('[ print ]',str);
+                                                                                //console.log('[ print ]',arguments);
+                                                                                console.log('[ print ]',str);
         }//print
 
         
         function printErr(str){
-                                                                          //console.log('[ printErr ]',arguments);
-                                                                          console.log('[ printErr ]',str);
+                                                                                //console.log('[ printErr ]',arguments);
+                                                                                console.log('[ printErr ]',str);
         }//printErr
 
         
         function onAbort(str){
-                                                                          //console.log('[ onAbort ]',arguments);
-                                                                          console.log('[ onAbort ]',str);
+                                                                                //console.log('[ onAbort ]',arguments);
+                                                                                console.log('[ onAbort ]',str);
         }//onAbort
 
         
         function onExit(code){
-                                                                          console.log('[ onExit ]',code);
-              if(code!==0)return;
+                                                                                console.log('[ onExit ]',code);
+              if(code!==0){
+                    return;
+              }
               
-              track.style.width   = '100%';
-              
-              var data      = js7z.FS.readFile(`/${archive}`,{encoding:'binary'});
+              var buf   = js7z.FS.readFile(`/${archive}`,{encoding:'binary'});
                                                                                 //console.log(data);
+              self.postMessage({type:'complete',buf},[buf]);
+              
+              
+              /*
               var blob      = new Blob([data],{type:'application/octet-stream'});
               
               var url       = window.URL.createObjectURL(blob);
@@ -106,6 +111,7 @@
               a.href        = url;
               a.download    = archive;
               a.click();
+              */
               
         }//onExit
   
