@@ -78,7 +78,9 @@
       var shadow;
       
       var output;
-      
+      var iframe;
+
+
       
       var chk             = {};
       var btn             = {};
@@ -199,7 +201,11 @@
                                                                     console.log('run.iframe');
             var resolve,promise=new Promise(res=>resolve=res);
             
-            var iframe      = document.createElement('iframe');
+            if(iframe){
+                  iframe.remove();
+            }
+            
+            iframe          = document.createElement('iframe');
             iframe.srcdoc   = '';
             iframe.onload   = onload;
             root.append(iframe);
@@ -234,6 +240,7 @@
       
       obj.kill    = function(){
         
+            iframe.remove();
             
       }//kill
       
