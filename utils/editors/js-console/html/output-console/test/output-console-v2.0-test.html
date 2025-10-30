@@ -16,21 +16,34 @@
             <script init>
                                                                                 console.clear();
 
+        var ext,$,datatype,menumod,keydown;
+        
+
+        var output;
+        
             
-                  function init(){
+        function init(){
                                                                                 console.log('init');
 
-                        //keydown.add(kd);
-                        
-                        menumod                   = menumod();
-                        menumod.add.style();
-                        menumod.on.close          = ()=>editor.focus();
+              //keydown.add(kd);
+              
+              output    = mod['output-console'];
+              
+              output.initmod({ext,$});
+              
+              
+              await Promise.all([
+                    output.init(),
+              ]);
+              
+              
+              initdom();
 
-                        
-                        initdom();
+              test();
+              
 
+        }//init
 
-                  }//init
 
 (async()=>{
 
@@ -67,7 +80,7 @@
       
       <body>
             
-            <output-console component=page></output-console>
+            <output-console component=page v2.0></output-console>
             
       </body>
 
