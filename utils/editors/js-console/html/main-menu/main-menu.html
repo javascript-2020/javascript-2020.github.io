@@ -1,7 +1,7 @@
 
 
 
-<main-menu style='position:relative'>
+<main-menu v2.0 style='position:relative'>
 
       <template shadowrootmode=open>
       
@@ -33,35 +33,39 @@
 
       <script>
             
-mod.menu.main   = function(){
+(function main_menu({mod,dom,host}){
 
   var obj   = {};
   
-      var menu,menumod,editor,filemod
+      var $,menu,editor,filemod
       ;
       
       obj.initmod   = function(params){
-        
+            
+            $         = params.$;
             menu      = params.menu;
-            menumod   = params.menumod;
             editor    = params.editor;
             filemod   = params.filemod;
             
       }//initmod
+
       
   //vars:-
+
   
   //:
+
   
       obj.init    = function(){
       }//init
+
       
   //:
+
   
       obj.initdom   = function(rootnode){
       
-            var root                      = $.$(rootnode,'main-menu');
-            var shadow                    = root.shadowRoot;
+            var shadow                    = host.shadowRoot;
 
             var style                     = $(shadow,'style');
             $.stylesheet.copyrule('#page-inline','.icon',style);
@@ -75,7 +79,9 @@ mod.menu.main   = function(){
 
       }//initdom
 
+
   //:
+
 
       function click(type,opt){
 
@@ -122,7 +128,7 @@ mod.menu.main   = function(){
       
   return obj;
   
-}//main
+})//main_menu
                   
       </script>
 
