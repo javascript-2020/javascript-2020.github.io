@@ -1,6 +1,6 @@
 
 
-<output-console>
+<output-console v2.0>
 
       <template shadowrootmode=open>
       
@@ -53,7 +53,7 @@
       
       <script>
       
-(function output_console({mod,dom,node}){
+(function output_console({mod,dom,host}){
                                                                                 //console.log('output');
   var obj   = {
         version   : 'v2.0',
@@ -85,7 +85,10 @@
       var shadow;
       
       var output;
+      var cur             = {};
+      
       var iframe;
+      obj.iframe;
 
 
       
@@ -98,7 +101,7 @@
   
       obj.init    = async function(){
       
-            libs();
+            await libs();
             
       }//init
 
@@ -106,6 +109,7 @@
       async function libs(){
         
             [inspect]   = await ext.load.libs('js/string/inspect.js');
+            console.log(inspect);
             
       }//libs
 
@@ -115,7 +119,7 @@
   
       obj.initdom   = function(rootnode){
       
-            shadow                          = node.shadowRoot;
+            shadow                          = host.shadowRoot;
             
             chk.persist                     = $.chkbox(shadow,'#console-persist',false);
             chk.log                         = $.chkbox(shadow,'#console-log',false);
@@ -126,6 +130,7 @@
             
             
             output                          = $(shadow,'#output');
+            cur.root                        = output;
 
 
             wrap(chk.wrap.checked);
@@ -159,13 +164,15 @@
       }//wrap
 
       
-      obj.run   = async function(js,params){
+      obj.run   = async function(js,params={}){
                                                                     console.log('run');
             var sandbox   = (()=>{
             
+                  var console     = {};
                   console.log     = log;
                   console.clear   = clear;
                   console.error   = error;
+                  console.write   = write;
 
                   
                   async function run(js){
@@ -198,15 +205,16 @@
                   console.log(result);
             }
             
-            console.log     = con.log;
-            console.clear   = con.clear;
-            console.error   = con.error;
+            //console.log     = con.log;
+            //console.clear   = con.clear;
+            //console.error   = con.error;
+            
             
         
       }//run
       
       
-      obj.run.iframe    = async function(js,params){
+      obj.run.iframe    = async function(js,params={}){
                                                                     console.log('run.iframe');
             var resolve,promise=new Promise(res=>resolve=res);
             
@@ -215,6 +223,7 @@
             }
             
             iframe          = document.createElement('iframe');
+            obj.iframe      = iframe;
             iframe.srcdoc   = '';
             iframe.onload   = onload;
             root.append(iframe);
@@ -229,6 +238,7 @@
                   win.console.log     = log;
                   win.console.clear   = clear;
                   win.console.error   = error;
+                  win.console.write   = write;
                   
                   if(!chk.persist){
                         clear();
@@ -258,6 +268,17 @@
 
 
 
+      obj.set   = function(root){
+        
+            if(root){
+                  cur.root    = root;
+            }else{
+                  cur.root    = output;
+            }
+            
+      }//set
+      
+
   //:
   
   
@@ -270,7 +291,7 @@
                   con.clear.call(window.console);
             }
             
-            output.replaceChildren();
+            cur.root.replaceChildren();
             
       }//clear
       
@@ -283,29 +304,18 @@
                   con.log.apply(window.console,arguments);
             }
 
-            var str     = '';
-            var args    = [...arguments];
-            args        = args.map(v=>{
-            
-                  var type    = datatype(v);
-                  switch(type){
-                  
-                    case 'function'         :
-                    case 'asyncfunction'    : str   = v.toString();       break;
-                    case 'string'           : str   = v;                  break;
-                    default                 : str   = inspect(v);         break;
-                    
-                  }//switch
-                  return str;
-                  
-            });
-            
-            var txt           = args.join(' ');
+            var txt           = build(arguments);
             var div           = document.createElement('div');
             div.textContent   = txt;
-            output.append(div);
+            cur.root.append(div);
             
-            output.scrollTop    = 999999999;
+            cur.node    = div;
+
+            if(txt==''){
+                  div.style.height    = '16px';
+            }
+            
+            cur.root.scrollTop    = 999999999;
             
             return div;
         
@@ -325,6 +335,89 @@
             
       }//error
       
+      
+      
+      
+      obj.node    = function(){return node.apply(null,arguments)}
+      
+      function node(node){
+        
+            node    = create(node);
+            
+            cur.root.append(node);
+            
+            return node;
+            
+      }//node
+      
+      
+      
+      obj.write    = function(){return write.apply(null,arguments)}
+      
+      function write(){
+        
+            var txt   = build(arguments);
+            
+            var span            = document.createElement('span');
+            span.textContent    = txt;
+            
+            if(cur.node){
+                  cur.node.append(span);
+            }else{
+                  cur.root.append(span);
+            }
+            return span;
+            
+      }//write
+      
+
+  //:
+  
+  
+      function build(args){
+        
+            var str     = '';
+            var args    = [...args];
+            args        = args.map(v=>{
+            
+                  var type    = datatype(v);
+                  switch(type){
+                  
+                    case 'function'         :
+                    case 'asyncfunction'    : str   = v.toString();       break;
+                    case 'string'           : str   = v;                  break;
+                    default                 : str   = inspect(v);         break;
+                    
+                  }//switch
+                  return str;
+                  
+            });
+            
+            var txt   = args.join(' ');
+            return txt;
+        
+      }//build
+  
+  
+      function create(node){
+        
+            var type    = datatype(node);
+            switch(type){
+              
+              case 'string'   : node    = create.string(node);        break;
+              
+            }//switch
+            return node;        
+            
+      }//create
+      
+      
+      create.string   = function(str){
+        
+            var node    = document.createElement(str);
+            return node;
+            
+      }//string
       
       
       
