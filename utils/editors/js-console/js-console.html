@@ -1,17 +1,27 @@
 
 
-<html>
-      <head>
+<!DOCTYPE html>
 
-            <title>js-console</title>
+<html>
+
+      <head>
+            <meta charset=utf-8>
+            
+            <title>
+                  js-console
+            </title>
+            
             <meta name=description content='Run, test, and debug JavaScript instantly in your browser. A fast, lightweight online JS console built for developers who value speed and simplicity'>
             
-            <base href='https://javascript-2020.github.io/utils/editors/js-console/'>
+            <base href='https://ext-code.com/utils/editors/js-console/'>
             <link rel=canonical href='https://ext-code.com/utils/editors/js-console/js-console.html'>
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='images/js-console-favicon.png'>
 
+
+
+            <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
             <script src="https://cdn.jsdelivr.net/npm/prettier@2.8.8/standalone.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/prettier@2.8.8/parser-babel.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/terser/dist/bundle.min.js"></script>
@@ -24,6 +34,10 @@
                                                                                 console.log('js-console-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,version='v2.0'
+        ;
+        
+        var ace;
         var obfuscator;
         var espree;
         
@@ -32,6 +46,7 @@
         var datatype;
         var menumod;
         var keydown;
+        var debug;
         
         var menu;
         
@@ -50,14 +65,14 @@
         mod.stack.add   = init;
   
         async function init(){
-                                                                                console.log('init');
+                                                                                debug('init',version);
               //keydown                   = keydown();
               menu                      = menumod();
               
               hdr                       = mod.hdr;
               mainmenu                  = mod['main-menu'];
               filemod                   = mod.filemod;
-              publish                   = mod.publish;
+              publish                   = mod['publish-ui'];
               editor                    = mod.editor;
               output                    = mod.output;
               log                       = mod.log;
@@ -68,17 +83,19 @@
               mainmenu.initmod({ext,$,menu,editor,filemod});
               filemod.initmod({ext,$,menu,menumod,complete,source,focus,log});
               publish.initmod({ext,$,ui,menu,source,complete,log});
-              editor.initmod({ext,$,menu});
+              editor.initmod({ext,$,menu,ace});
               output.initmod({ext,$});
               log.initmod({ext,$});
               
-              await mainmenu.init();
-              await hdr.init();
-              await filemod.init();
-              await publish.init();
-              await editor.init();
-              await output.init();
-              await log.init();
+              await Promise.all([
+                    mainmenu.init(),
+                    hdr.init(),
+                    filemod.init(),
+                    publish.init(),
+                    editor.init(),
+                    output.init(),
+                    log.init(),
+              ]);
 
   
   //:
@@ -108,9 +125,10 @@
               'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js'
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js'
         );
-        [$,datatype,menumod,keydown]   = await promise;
+        [$,datatype,menumod,keydown,debug]   = await promise;
   
         mod.stack.complete;
               
@@ -221,7 +239,7 @@
                         </div>
                   </div>
 
-                  <publish component v2.0></publish>
+                  <publish-ui component v2.0></publish-ui>
 
                   <button id=run>run</button>
                   
@@ -229,14 +247,14 @@
                         <span>
                               iframe
                         </span>
-                        <input id=iframe type=checkbox>
+                        <input id=iframe type=checkbox checked>
                   </div>
                   
                   <div id=async-root>
                         <span>
                               async
                         </span>
-                        <input id=async type=checkbox>
+                        <input id=async type=checkbox checked>
                   </div>
 
                   <img id=syntax-chk class=icon title=syntax>
