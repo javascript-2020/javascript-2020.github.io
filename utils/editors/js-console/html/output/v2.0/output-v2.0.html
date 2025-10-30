@@ -53,7 +53,7 @@
       
       <script>
       
-(function(){
+(function output({mod,root,node}){
                                                                                 console.log('output');
   var obj   = {};
 
@@ -83,6 +83,8 @@
       var shadow;
       
       var output;
+      var cur             = {};
+      
       var iframe;
       obj.iframe;
 
@@ -126,6 +128,7 @@
             
             
             output                          = $(shadow,'#output');
+            cur.root                        = output;
 
 
             wrap(chk.wrap.checked);
@@ -271,7 +274,7 @@
                   con.clear.call(window.console);
             }
             
-            output.replaceChildren();
+            cur.root.replaceChildren();
             
       }//clear
       
@@ -307,9 +310,9 @@
             if(txt==''){
                   div.style.height    = '16px';
             }
-            output.append(div);
+            cur.root.append(div);
             
-            output.scrollTop    = 999999999;
+            cur.root.scrollTop    = 999999999;
             
             return div;
         
@@ -341,7 +344,7 @@
                   node      = document.createElement(str);
             }
             
-            output.append(node);
+            cur.root.append(node);
             
             return node;
             
@@ -356,7 +359,7 @@
       
   return obj;
   
-});
+})//output
             
       </script>
       
