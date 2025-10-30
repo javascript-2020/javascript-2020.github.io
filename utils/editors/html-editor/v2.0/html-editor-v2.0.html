@@ -117,11 +117,11 @@
               
               hdr                       = mod['editors-hdr'];
               mainmenu                  = mod['main-menu'];
-              filemod                   = mod.filemod;
-              publish                   = mod.publish;
-              editor                    = mod.editor;
+              filemod                   = mod['file-mod'];
+              publish                   = mod['publish-ui'];
+              editor                    = mod['web-editor'];
               output                    = mod.output;
-              log                       = mod.log;
+              log                       = mod['log-mod'];
               
               menu.initmod({keydown});
               mainmenu.initmod({ext,$,menu,editor,filemod});
@@ -217,10 +217,11 @@
   #view
     {display:none;flex:1}
   
-  publish-root
+  publish-ui
     {z-index:1;position:relative}
-  editor-root
+  web-editor
     {width:50%}
+    
   output-root
     {flex:1}
         
@@ -250,7 +251,7 @@
                         
                   <main-menu component=page></main-menu>
 
-                  <filemod component v2.0></filemod>
+                  <file-mod component></file-mod>
 
                   <div id=save-root>
                         <button id=save>save</button>
@@ -262,7 +263,7 @@
                         </div>
                   </div>
 
-                  <publish component v2.0></publish>
+                  <publish-ui component></publish-ui>
 
                   <button id=run>run</button>
                   <img id=prettier class=icon title=prettier>
@@ -276,7 +277,7 @@
             
             <div id=view>
             
-                  <editor component v2.0></editor>
+                  <web-editor component></web-editor>
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
@@ -288,7 +289,7 @@
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
             </checkbox-one-template>
             
-            <log component v2.0></log>
+            <log-mod component></log-mod>
 
       </body>
 
