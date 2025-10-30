@@ -166,9 +166,11 @@
                                                                     console.log('run');
             var sandbox   = (()=>{
             
+                  var console     = {};
                   console.log     = log;
                   console.clear   = clear;
                   console.error   = error;
+                  console.write   = write;
 
                   
                   async function run(js){
@@ -201,9 +203,10 @@
                   console.log(result);
             }
             
-            console.log     = con.log;
-            console.clear   = con.clear;
-            console.error   = con.error;
+            //console.log     = con.log;
+            //console.clear   = con.clear;
+            //console.error   = con.error;
+            
             
         
       }//run
@@ -233,6 +236,7 @@
                   win.console.log     = log;
                   win.console.clear   = clear;
                   win.console.error   = error;
+                  win.console.write   = write;
                   
                   if(!chk.persist){
                         clear();
@@ -346,7 +350,9 @@
       
       
       
-      obj.write    = function(){
+      obj.write    = function(){return write.apply(null,arguments)}
+      
+      function write(){
         
             var txt   = build(arguments);
             
