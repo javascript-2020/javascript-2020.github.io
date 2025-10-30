@@ -262,10 +262,11 @@
 
 
 
-      obj.set   = function(node){
+      obj.set   = function(root){
         
-            if(node){
-                  cur.root    = node;
+            if(root){
+                  root        = create(root);
+                  cur.root    = root;
             }else{
                   cur.root    = output;
             }
@@ -350,10 +351,7 @@
       
       function node(node){
         
-            if(typeof node=='string'){
-                  var str   = node;
-                  node      = document.createElement(str);
-            }
+            node    = create(node);
             
             cur.root.append(node);
             
@@ -362,7 +360,29 @@
       }//node
       
       
+
+  //:
+  
+  
+      function create(node){
+        
+            var type    = datatype(node);
+            switch(type){
+              
+              case 'string'   : node    = create.string(node);        break;
+              
+            }//switch
+            return node;        
+            
+      }//create
       
+      
+      create.string   = function(str){
+        
+            var node    = document.createElement(str);
+            return node;
+            
+      }//string
       
       
       
