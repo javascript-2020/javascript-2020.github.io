@@ -354,6 +354,8 @@
   
               publish.query();
               editor.focus();
+              
+              query();
   
         }//initdom
 
@@ -366,6 +368,17 @@
               editor.focus();
               
         }//focus
+
+
+        function query(){
+          
+              var url       = new URL(window.location);
+              var params    = url.searchParams;
+              
+              mode.iframe.checked   = params.has('iframe');
+              mode.async.checked    = params.has('async');
+              
+        }//query
 
 
   //:
