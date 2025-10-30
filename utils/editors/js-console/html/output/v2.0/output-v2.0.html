@@ -298,30 +298,16 @@
                   con.log.apply(window.console,arguments);
             }
 
-            var str     = '';
-            var args    = [...arguments];
-            args        = args.map(v=>{
-            
-                  var type    = datatype(v);
-                  switch(type){
-                  
-                    case 'function'         :
-                    case 'asyncfunction'    : str   = v.toString();       break;
-                    case 'string'           : str   = v;                  break;
-                    default                 : str   = inspect(v);         break;
-                    
-                  }//switch
-                  return str;
-                  
-            });
-            
-            var txt           = args.join(' ');
+            var txt           = build(arguments);
             var div           = document.createElement('div');
             div.textContent   = txt;
+            cur.root.append(div);
+            
+            cur.node    = div;
+
             if(txt==''){
                   div.style.height    = '16px';
             }
-            cur.root.append(div);
             
             cur.root.scrollTop    = 999999999;
             
@@ -359,8 +345,50 @@
       }//node
       
       
+      
+      obj.write    = function(){
+        
+            var txt   = build(arguments);
+            
+            var span            = document.createElement('span');
+            span.textContent    = txt;
+            
+            if(cur.node){
+                  cur.node.append(span);
+            }else{
+                  cur.root.append(span);
+            }
+            return span;
+            
+      }//append
+      
 
   //:
+  
+  
+      function build(args){
+        
+            var str     = '';
+            var args    = [...args];
+            args        = args.map(v=>{
+            
+                  var type    = datatype(v);
+                  switch(type){
+                  
+                    case 'function'         :
+                    case 'asyncfunction'    : str   = v.toString();       break;
+                    case 'string'           : str   = v;                  break;
+                    default                 : str   = inspect(v);         break;
+                    
+                  }//switch
+                  return str;
+                  
+            });
+            
+            var txt   = args.join(' ');
+            return txt;
+        
+      }//build
   
   
       function create(node){
