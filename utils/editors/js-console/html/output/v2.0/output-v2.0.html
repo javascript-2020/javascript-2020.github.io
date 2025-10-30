@@ -71,6 +71,7 @@
       var con             = {};
       con.log             = console.log;
       con.clear           = console.clear;
+      con.error           = console.error;
       
       
       var root;
@@ -153,6 +154,7 @@
             
                   console.log     = log;
                   console.clear   = clear;
+                  console.error   = error;
 
                   
                   async function run(js){
@@ -187,6 +189,8 @@
             
             console.log     = con.log;
             console.clear   = con.clear;
+            console.error   = con.error;
+            
         
       }//run
       
@@ -209,6 +213,7 @@
                   win.focus();
                   win.console.log     = log;
                   win.console.clear   = clear;
+                  win.console.error   = error;
                   
                   if(!chk.persist){
                         clear();
@@ -276,10 +281,28 @@
             div.textContent   = txt;
             output.append(div);
             output.scrollTop    = 999999999;
+            return div;
         
       }//log
 
 
+      obj.error   = function(){return error.apply(null,arguments)}
+      
+      function error(){
+        
+            if(chk.log.checked){
+                  con.error.apply(window.console,arguments);
+            }
+            var node            = log.apply(null,arguments);
+            node.style.color    = 'red';
+            return node;
+            
+      }//error
+      
+      
+      
+      
+      
       
   return obj;
   
