@@ -77,10 +77,10 @@
               
               hdr                       = mod['editors-hdr'];
               mainmenu                  = mod['main-menu'];
-              filemod                   = mod.filemod;
-              publish                   = mod.publish;
-              editor                    = mod.editor;
-              log                       = mod.log;
+              filemod                   = mod['file-mod']
+              publish                   = mod['publish-ui'];
+              editor                    = mod['web-editor'];
+              log                       = mod['log-mod'];
               
               menu.initmod({keydown});
               hdr.initmod({ext,$,menu});
@@ -177,6 +177,7 @@
             </style>
             
       </head>
+
       
       <body>
 
@@ -191,7 +192,7 @@
                                           
                   <main-menu component=page v2.0></main-menu>
                                     
-                  <filemod component v2.0></filemod>
+                  <file-mod component></file-mod>
 
                   <div id=save-root>
                         <button id=save>save</button>
@@ -203,18 +204,18 @@
                         </div>
                   </div>
 
-                  <publish component v2.0></publish>
+                  <publish-ui component></publish-ui>
 
             </div>
             
             <div id=view>
             
-                  <editor component v2.0></editor>
+                  <web-editor component></web-editor>
                   
             </div>
 
 
-            <log component v2.0></log>
+            <log-mod component></log-mod>
 
 
 
@@ -386,18 +387,14 @@
 
   
         window.onmessage    = function(e){
-                                                                                console.log('window.onmessage',e);
+                                                                                //console.log('window.onmessage',e);
+                                                                                //console.trace();
               var json    = JSON.parse(e.data);
   
               var txt   = json.code||json.text||json.txt;
               if(txt){
                     editor.setValue(txt,-1);
               }
-  
-              if(json.run){
-                    run();
-              }
-  
   
         }//onmessage
 
