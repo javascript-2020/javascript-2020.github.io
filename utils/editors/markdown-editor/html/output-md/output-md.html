@@ -1,0 +1,114 @@
+
+
+<output-md v2.0>
+
+      <template shadowrootmode=open>
+      
+            <link rel=stylesheet href='css/github-markdown-light.css'>
+            <style>
+            
+                  #output {height:100%;border:2px solid lightgray;box-sizing:border-box;padding:10px}
+                  
+            </style>
+            
+            <div id=output class=markdown-body>
+            </div>
+            
+      </template>
+      
+      <script>
+      
+(function output_md({mod,dom,host}){
+                                                                    console.log('output');
+  var obj   = {
+        version   : 'v2.0',
+  };
+
+      var $
+      ;
+      
+      obj.initmod   = function(params){
+        
+            $       = params.$;
+            
+      }//initmod
+
+      
+  //vars:-
+                
+      var md;
+      
+      var shadow;
+      
+      var output;
+
+      
+  //:
+
+  
+      obj.init    = async function(){
+        
+            await libs();
+            
+      }//init
+
+
+
+      function libs(){
+        
+            var resolve,promise=new Promise(res=>resolve=res);
+            
+            var script      = document.createElement('script');
+            script.src      = 'https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js';
+            script.onload   = onload;
+            document.head.append(script);
+            
+            return promise;
+            
+            
+            function onload(){
+              
+                  md    = markdownit();
+                  resolve();
+                  
+            }//onload
+            
+      }//libs
+
+      
+  //:
+
+  
+      obj.initdom   = function(rootnode){
+      
+            shadow              = host.shadowRoot;
+            
+            output              = $(shadow,'#output');
+
+            
+      }//initdom
+
+
+  //:
+  
+      
+      
+      obj.display   = async function(txt){
+
+            await libs;
+            
+            var html            = md.render(txt);
+            output.innerHTML    = html;
+            
+      }//show
+      
+
+      
+  return obj;
+  
+})//output_md
+            
+      </script>
+      
+</output-md>
+
