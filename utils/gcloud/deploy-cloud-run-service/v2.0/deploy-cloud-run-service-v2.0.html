@@ -54,8 +54,9 @@
         var keydown;
         var debug;
         
-
-
+        var menu;
+        
+        var hdr;
         var log;
         
 
@@ -67,11 +68,17 @@
         async function init(){
                                                                                 debug('init',version);
 
-              log                       = mod['log-mod'];
+              menu        = menumod();
               
+              
+              hdr         = mod['gcloud-hdr'];
+              log         = mod['log-mod'];
+              
+              hdr.initmod({ext,$,menu});
               log.initmod({ext,$});
               
               await Promise.all([
+                    hdr.init(),
                     log.init(),
               ]);
 
@@ -95,8 +102,9 @@
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
         );
-        [$,datatype,menumod,keydown]   = await promise;
+        [$,datatype,menumod,keydown,debug]   = await promise;
 
   
         //JSZip   = (await import('https://cdn.jsdelivr.net/npm/jszip/+esm')).default;
@@ -156,12 +164,14 @@
     {cursor:pointer}
   
             </style>
+
+
+            <gcloud-hdr component=grp>
+                  <img class=title src='images/deploy-cloud-run-service.png' style='top:0px;height:80px' alt='deploy cloud run service'>
+                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+            </gcloud-hdr>
             
       
-            <h3>
-                  deploy cloud run service
-            </h3>
-            
             <div>
             
                   <section id=token-root>
@@ -290,9 +300,7 @@
             </pre>
             
             
-<log api>
-      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-</log>
+            <log-mod component></log-mod>
 
             
       </body>
@@ -318,7 +326,7 @@
               var root                                = rootnode;
               ui.root                                 = root;
               
-              
+              hdr.initdom();
               
               ui.token                                = $(root,'#token');
               ui.email                                = $(root,'#email');
@@ -410,6 +418,8 @@
               
               
               
+              log.initdom();
+              
               
               
           
@@ -481,11 +491,6 @@
         
         
 
-  //:
-  
-  
-  
-  init.stack.complete;
   
   
       </script>
