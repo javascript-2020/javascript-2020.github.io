@@ -54,14 +54,31 @@
         var keydown;
         var github;
 
-
+        var menu;
+        
+        var hdr;
+        var log;
+        
+        
   //:
   
   
-        mod.stack.add   = init;
-        
         async function init(){
         
+        
+              menu    = menumod();
+              
+              hdr     = mod['github-hdr'];
+              log     = mod['log-mod'];
+              
+              hdr.initmod({ext,$,menu});
+              log.initmod({ext,$});
+              
+              await Promise.all([
+                    hdr.init(),
+                    log.init(),
+              ]);
+              
         
               initdom(document.body);
               
@@ -191,25 +208,14 @@
 
       
       <body>
+
+
+            <github-hdr component=grp>
+                  <img style='top:0px;height:50px' class=title src='images/github-file-search-2.png'>
+                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+            </github-hdr>
     
     
-            <div id=hdr>
-            
-                  <div>
-                        <a href='/'>
-                              home
-                        </a>
-                  </div>
-                  
-                  <div id=title>
-                        <img src='images/github-file-search-2.png'>
-                  </div>
-                  
-                  <div>
-                        26 Sep 25
-                  </div>
-                  
-            </div>
 
 
             <div id=desc>
@@ -316,6 +322,9 @@
                   
             </div>
             
+            
+            <log-mod component></log-mod>
+            
                   
       </body>
 
@@ -349,6 +358,8 @@
         
               var root                          = rootnode;
               
+              hdr.initdom();
+              
               var icon;
               
               ui.token                          = $(root,'#token');
@@ -356,7 +367,7 @@
               icon                              = $(root,'#token-copy');
               $.icon.copy2(icon,ui.token);
               icon                              = $(root,'#token-paste');
-              $.icon.paste(icon,ui.token);
+              $.icon.paste2(icon,ui.token);
               
               username                          = $(root,'#username');
               username.value                    = 'octocat';
@@ -397,6 +408,10 @@
               
               progress                          = $(root,'#progress');
               progress.remove();
+              
+              
+              log.initdom();
+              
               
         }//initdom
         
