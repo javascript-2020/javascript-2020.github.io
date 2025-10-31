@@ -1,27 +1,51 @@
 
 
+
+<!DOCTYPE html>
+
+
 <html>
 
       <head>
-
-            <title>deploy cloud run service</title>
-
-            <base href='https://javascript-2020.github.io/utils/gcloud/deploy-cloud-run-service/deploy-cloud-run-service.html'>
+            <meta charset=utf-8>
             
-            <link rel=icon type='image/png' href='image/cloud-run-30.png'>
+            <title>
+                  Deploy Cloud Run Service
+            </title>
 
+            <base href='https://ext-code.com/utils/gcloud/deploy-cloud-run-service/'>
+            <link rel=canonical href='https://ext-code.com/utils/gcloud/deploy-cloud-run-service/deploy-cloud-run-service.html'>
+            
+            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAtFBMVEVHcEyfrsVHh/FKifBChvQ/fONHgOFGh/BXh9xEhvNMh+dajONLh+1DhvNOietFhvJSiepIh/BQhuJKiO9DhvM/fOJJguVCfd9Ih/BFhvNFh/JHh/FQiupEfd5Hft5CfeFBfOBChvU+fONBgu7///8/feRBhfWfvvE/hPXR4fjt8/xun+/0+P3E2PZFiPVRj/SkxPZPh+VdkOZ5qPOKsvGTtu9GgePe6fhdlvNqmedjleevye+zJ1q4AAAAIXRSTlMAAqdW+vpUjQfaJQk87CnKF3YTT+XlNpBuwbSfHnRAscYJXw9WAAABTElEQVQoz62T2WKCMBBFEbSgKO5btQsBCQkEEHHt//9XyQRI0Jc+9L6Fk8zMTS6a9kd1FL3AyVRXZDptau3clsb7Fp5329g1VTrbPlF3sVLwxn2RbjV00OcfghbuzhtLJl8naRCkidyznVV4OILDuEhOWRo2fCOo/Q6rsKDRjZJT06Q/AGwIU8GNYo/9MFkAzE3G1Sph5FJkR8zqAqNhiad1r/BMHw92z8/XLBVct+vOHEfx+cJiSmOf3IAvHK2zU3BxIX6pGB89GG5f2+KzZTS/xyUlEUIHzqf8scx6NMIO2PcpPiIEfDzhozt92ZrAUSS4Ie5FzB7ia/64iqOgL7tKCjhPTjm6R4eGLj/rNxH35pUFkdS6SZytQ3lPpcuBjENlTuG9DzXElTnJv2dq2EReJO+9tZNsLLogrwdaW0//gTM3QG9cK0v7D/0CM2JIZjtg+k4AAAAASUVORK5CYII='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Deploy Cloud Run Service",
+                        "url"                   : "https://ext-code.com/utils/gcloud/deploy-cloud-run-service/deploy-cloud-run-service.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Deploy a cloud run service.",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
 
 
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
 
             <script init>
                                                                                 console.clear();
+                                                                                console.log('deploy-cloud-run-service-v2.0.html');
+                                                                                console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var version       = 'v1.0';
+        var df=true,version='v1.0'
+        ;
             
-        var df            = true;
-        var debug_id      = 'deploy';
-
 
         var ext;
         var $;
@@ -30,8 +54,9 @@
         var keydown;
         var debug;
         
-        var mod           = {};
+        var menu;
         
+        var hdr;
         var log;
         
 
@@ -43,99 +68,49 @@
         async function init(){
                                                                                 debug('init',version);
 
-              log                       = log();
+              menu        = menumod();
               
+              
+              hdr         = mod['gcloud-hdr'];
+              log         = mod['log-mod'];
+              
+              hdr.initmod({ext,$,menu});
               log.initmod({ext,$});
               
-              log.init();
+              await Promise.all([
+                    hdr.init(),
+                    log.init(),
+              ]);
 
-  //:
-          
 
               
-              await initdom(document.body);
+              initdom(document.body);
 
-
-              init.complete();
 
               
         }//init
 
 
-        init.stack            = [];
-        init.stack.ct         = 0;
-        init.stack.total      = 1;
-        init.stack.mode       = '';
-        init.stack.complete   = false;
-        Object.defineProperty(init.stack,'add',{get:()=>{
-              init.stack.total++;
-              init.stack.mode && console[init.stack.mode]('add',init.stack.ct,init.stack.total);
-        }});
-        Object.defineProperty(init.stack,'complete',{get:()=>{
-              init.stack.ct++;
-              init.stack.mode && console[init.stack.mode]('complete',init.stack.ct,init.stack.total);
-              init.stack.ct>=init.stack.total && init();
-        }});
-        
-        //  (typeof init!='undefined' && init?.stack && init.stack.add)
-        //  (typeof init!='undefined' && init?.stack && init.stack.complete)
-
-        
-        init.complete   = function(){
-          
-              init.complete.stack.forEach(fn=>fn());
-              
-        }//complete
-        
-        init.complete.stack   = [];
-        init.complete.add     = fn=>init.complete.stack.push(fn);
-
-                  
-
 (async()=>{
-  
-        init.stack.add;
-        
-        
-        var url;
-        var headers;
-        var token       = localStorage['github-token'];
-        if(token){
-              url       = 'https://api.github.com/repos/javascript-2020/ext-code/contents/ext-loader.js';
-              headers   = {accept:'application/vnd.github.raw',authorization:`bearer ${token}`};
-        }else{
-              url       = 'https://raw.githubusercontent.com/javascript-2020/ext-code/main/ext-loader.js';
-        }
-        
-        var res   = await fetch(url,{headers});
-        var txt   = await res.text();
 
-        if(res.headers.get('content-type').includes('json')){
-                                                                                console.log('*** ext : json');
-              var json    = JSON.parse(txt);
-              var b64     = json.content;
-              txt         = atob(b64);
-        }else{
-                                                                                console.log('*** ext : text');
-        }
+        mod.stack.add;
         
-        ext   = eval(txt);
-
-
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
         var promise   = ext.load.libs(
-              'js/dom/$.js.api',
+              'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
-              'google/google-storage/google-storage.js.api',
+              'js/debug/debug.js',
         );
-        [$,datatype,menumod,keydown,gs]   = await promise;
+        [$,datatype,menumod,keydown,debug]   = await promise;
 
+  
+        //JSZip   = (await import('https://cdn.jsdelivr.net/npm/jszip/+esm')).default;
 
-        debug   = await ext.load.libs['js/debug.js'];
+        mod.stack.complete;
               
-        init.stack.complete;
-
 })();
 
             </script init>      
@@ -189,12 +164,14 @@
     {cursor:pointer}
   
             </style>
+
+
+            <gcloud-hdr component=grp>
+                  <img class=title src='images/deploy-cloud-run-service.png' style='top:-15px;height:80px' alt='deploy cloud run service'>
+                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+            </gcloud-hdr>
             
       
-            <h3>
-                  deploy cloud run service
-            </h3>
-            
             <div>
             
                   <section id=token-root>
@@ -323,9 +300,7 @@
             </pre>
             
             
-<log api>
-      <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-</log>
+            <log-mod component></log-mod>
 
             
       </body>
@@ -351,7 +326,7 @@
               var root                                = rootnode;
               ui.root                                 = root;
               
-              
+              hdr.initdom();
               
               ui.token                                = $(root,'#token');
               ui.email                                = $(root,'#email');
@@ -443,6 +418,8 @@
               
               
               
+              log.initdom();
+              
               
               
           
@@ -514,11 +491,6 @@
         
         
 
-  //:
-  
-  
-  
-  init.stack.complete;
   
   
       </script>
