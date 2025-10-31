@@ -1,18 +1,41 @@
 
 
+<!DOCTYPE html>
 
 <html>
 
       <head>
-      
-            <title>zip</title>
+            <meta charset=utf-8>
+            
+            <title>
+                  zip
+            </title>
+            
+            <meta name=description content='Use this tool to build a zip archive directly in the browser.'>
 
             <base href='https://ext-code.com/utils/misc/zip/'>
-            <base href='https://javascript-2020.github.io/utils/misc/zip/'>
-            
-            <link rel=icon type='image/png' href='images/zip-30.png'>
+            <link rel=canonical href='https://ext-code.com/utils/misc/zip/zip.html'>
 
-      
+            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABIFBMVEVHcEwLCQc7MxwAAQEeHh4jHhUuJhIAAAAGBQUCAgIBAQIHBwcBAQILCwsODQwAAAAdGxVXSCM8PD0VEQoAAAMAAADs6u3u7O9fTyr/4HWniT2mpakvLi/r6ezRz9LHxchPRSpbUTHu6+/Ny87w7vG1tLj/4ndUUUywr7NGRUX623Pvxlv01nHl4+eXg0asllD/5Hjx7/Lo5unW1Ne4oVSqjUDt0G3702RUSCVXVla6ubxIPyT50GLlymuTkpQzMjG5o1XfxWjDwsS+vL9gX2CHd0BLSkza2Nvg3+LDq1uqqazZvmXmvVTKycxqaWuBbjc9PT6ZmJr/3m85ODNsXzLRtmZkVi93dXbHr1wmJymGhYh+b0y5pHPFoEbFoUhWTCumkv3wAAAAFnRSTlMAkv8KxfziBXUVJIk4o71D0vTzsDAdMqg2MwAAAa1JREFUKM9104lymkAAgGFTqzVHczQJK9HYzS5iCYcWGoMcIirexHjmaJO8/1t0F2MigfzMLDvzzS7DLCQSQcn9L9FSmRUmtg/S5cYfWoPeGvdVmrK10m/ffwilVc6MDLOUwvL89OqVk1+bqkxTcamtyWpdEIhv8E/A0IDh3PqAq9+0iMcwFmoaItwjHsPN2w4G3KTWbOacs1guAFCoCULnQT+LsE83Z5CsadokG+WWI/hkihBiclFGhU67i4LpeQyDQX5mgM/5Zjx/5D7l83bj6u7D6uT2zprV0n25HX72znE6nXpl5u4F1sOrM2Nx9Ff7DWicnBuoHADonbeyz0//iusMgw7k5d7YvMhehIO1HnrjMntJkiTpklwSnY9MDN65wrK8u4RL17PH0JNYVoR+mFlp8TK34VBXzH4lhit9aFfhEJq6y0dYkqqm5warbTayOd/vL0w4H3q255KtpgEPlgHvKtNry7JEUby2yEWyRhADFS+Cj2nv8OhIz4bSyXvLLWV1JKd7B4f14q+Nil1G7eVS6cz6QI1uYTOMfTzZP0muf6K8k/+Q87BL5D8NUW1MDvRgFwAAAABJRU5ErkJggg=='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "zip",
+                        "url"                   : "https://ext-code.com/utils/misc/zip/zip.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Use this tool to build a zip archive directly in the browser.",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>            
+
+
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
 
             <script init>
@@ -21,7 +44,8 @@
                                                                                 console.log('zip-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df            = true;
+        var df=true,version='v2.0'
+        ;
 
         var jszip;
         
@@ -47,20 +71,18 @@
   //:
 
   
-        mod.stack.add   = init;
-
         async function init(){
 
 
               //keydown                   = keydown();
               menu                      = menumod();
               
-              hdr                       = mod.hdr;
+              hdr                       = mod['misc-hdr'];
               //mod.menu.main             = mod.menu.main();
-              filemod                   = mod.filemod;
-              add.file                  = mod['filemod[add]'];
+              filemod                   = mod['file-mod'];
+              add.file                  = mod['file-add'];
               filenav                   = mod['file-nav'];
-              log                       = mod.log;
+              log                       = mod['log-mod'];
               
               hdr.initmod({$,menumod,menu});
               //mod.menu.main.initmod({ext,$,menu,editor,filemod});
@@ -71,12 +93,14 @@
               filenav.dir     = dir;
               log.initmod({ext,$});
               
-              await hdr.init();
-              //mod.menu.main.init();
-              await filemod.init();
-              await add.file.init();
-              await filenav.init();
-              await log.init();
+              await Promise.all([
+                    hdr.init(),
+                    //mod.menu.main.init(),
+                    filemod.init(),
+                    add.file.init(),
+                    filenav.init(),
+                    log.init(),
+              ]);
 
   //:
           
@@ -90,7 +114,7 @@
               
 
               
-              await initdom(document.body);
+              initdom(document.body);
 
               
 
@@ -186,15 +210,15 @@
             </style>
 
       
-            <hdr component=grp v2.0>
-                  <img class=title src='image/zip-title.png' style='top:5px;height:55px'>
-                  <span slot=date>28 Jul 2025</span>
-            </hdr>
+            <misc-hdr component=grp>
+                  <img class=title src='image/zip.png' style='top:-15px;height:55px'>
+                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+            </misc-hdr>
             
             
             <div id=hdr>
             
-                  <filemod component v2.0></filemod>
+                  <file-mod component></file-mod>
             
                   <input value=save type=button>
                   <input value='list files' type=button>
@@ -233,19 +257,19 @@
                         add file
                   </div>
                   
-                  <filemod inst=add component v2.0></filemod>
+                  <file-mod id=file-add component></file-mod>
                   
             </div>
 
             
             <div id=view>
             
-                  <file-nav component v2.0></file-nav>
+                  <file-nav component></file-nav>
             
             </div>
 
 
-            <log component v2.0></log>
+            <log-mod component></log-mod>
 
             
             <script>
@@ -276,10 +300,10 @@
               root                                          = rootnode;
 
               
-              hdr.initdom(root);
+              hdr.initdom();
 
 
-              filemod.initdom(root);
+              filemod.initdom();
               
               
               info                                          = $(root,'#info');
@@ -287,7 +311,7 @@
               
               
               add.root                                      = $(root,'#add');
-              add.file.initdom(add.root);
+              add.file.initdom();
               
               $(root,'[value=save]').onclick                = btn.save;
               $(root,'[value="list files"]').onclick        = btn['list-files'];
@@ -295,7 +319,7 @@
 
               view                                          = $(root,'#view');
 
-              filenav.initdom(view);
+              filenav.initdom();
 
               
               log.initdom();
