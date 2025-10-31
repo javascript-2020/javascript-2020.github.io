@@ -1,19 +1,41 @@
 
 
+<!DOCTYPE html>
+
 
 <html>
 
       <head>
+            <meta charset=utf-8>      
       
-      
-            <title>html-editor</title>
+            <title>
+                  Fetch
+            </title>
+            
+            <meta name=description content='A lightweight utility for fetching resources from the internet, similar to wget. Easily download files, inspect responses, and test endpoints directly from your browser or app.'>
 
             <base href='https://ext-code.com/utils/misc/fetch/'>
-            <base href='https://javascript-2020.github.io/utils/misc/fetch/'>
+            <link rel=canonical href='https://ext-code.com/utils/misc/fetch/fetch.html'>
             
-            <link rel=icon type='image/png' href='images/html-editor-favicon.png'>
-            <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymous>
+            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAVFBMVEVHcEwBAQEBAQEAAAACAgIBAQEBAQEBAQEBAQEBAQECAgIBAQEBAQEAAAABAQEBAQEBAQEBAQEAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQFU2+9pAAAAHHRSTlMAHCTfBMPio3dGCRGVi9tK1VD+5Vxrr7NXLuk8uqRECAAAAOlJREFUKM+9ktlywyAMRc0iRNgMBry0//+fBZKYdIrTt9wHRnDQ6AoxTR+SnvNOL2kA4Z2TWvERnYU5NMkCYJ3/QK4BVQ3SJlGEX4xk3Lav7/s9NXGMG2ZyFvUe7QrnfrqhRe/DWbQQTrqjGhEjmgUNRo2sKgTdko9xo0dLl6DGWIH8HyfXLWtrdW/XpbJSJ/uJEP2udG0AMu7PnghjT8z3eE9TNmK6VZGKaQsTRvvwxMNaRuUcyxVLwRhzfg0vz0Rola5Yt5CMpvpSeyBKGaPX/8VYIay5xkvRNaawLEDfFId3tFgn0+f0A0H+CN0Zwf8NAAAAAElFTkSuQmCC'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
 
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Fetch",
+                        "url"                   : "https://ext-code.com/utils/misc/fetch/fetch.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "A lightweight utility for fetching resources from the internet, similar to wget. Easily download files, inspect responses, and test endpoints directly from your browser or app.",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+            
             
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
 
@@ -22,8 +44,8 @@
                                                                                 console.log('fetch-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,did='fetch.html';
-
+        var df=true,version='v2.0'
+        ;
 
         var ext;
         var $;
@@ -34,6 +56,7 @@
         
         var menu;
         
+        var hdr;
         var filemod;                                                                                
         var log;
         
@@ -45,23 +68,25 @@
         async function init(){
 
               //keydown                   = keydown();
-              menu                        = mod.menumod();
+              menu                        = menumod();
               
               hdr                         = mod['hdr-network'];
               //mod.menu.main             = mod.menu.main();
-              filemod                     = mod.filemod;
+              filemod                     = mod['file-mod'];
               //publish                   = publish();
               //editor                    = editor();
               //output                    = output();
-              log                         = mod.log;
+              log                         = mod['log-mod'];
               
               hdr.initmod({ext,$,menu});
               filemod.initmod({ext,$,menumod,menu,source,complete,log});
               log.initmod({ext,$});
               
-              await hdr.init();
-              await filemod.init();
-              await log.init();
+              await Promise.all([
+                    hdr.init(),
+                    filemod.init(),
+                    log.init(),
+              ]);
 
   //:
           
@@ -70,7 +95,7 @@
               //menumod.on.close          = focus;
 
               
-              await initdom(document.body);
+              initdom(document.body);
 
 
         }//init
@@ -98,6 +123,9 @@
 
             </script init>
 
+
+
+            <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymous>
             
             <style>
   :root
@@ -164,11 +192,10 @@
       
             
             
-            <hdr-network component=grp v2.0>
+            <hdr-network component=grp>
                   <img class=title src='image/fetch-title-50.png' style='top:5px;height:40px'>
-                  <span slot=date>03 Aug 2025</span>
+                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
             </hdr-network>
-            
             
             
             <div id=url-root>
@@ -190,7 +217,7 @@
             
             <div>
 
-                  <filemod component v2.0></filemod>
+                  <file-mod component></file-mod>
 
             </div>
             
@@ -240,7 +267,7 @@
             </div>
 
             
-            <log component v2.0></log>
+            <log-mod component></log-mod>
 
 
       </body>
@@ -271,7 +298,7 @@
               root                                  = rootnode;
 
               
-              hdr.initdom(root);
+              hdr.initdom();
               
               
               $(root,'.copy').onclick               = btn.copy;
