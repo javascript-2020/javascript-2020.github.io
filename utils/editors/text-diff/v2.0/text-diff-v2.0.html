@@ -4,16 +4,35 @@
 <html>
 
       <head>
+            <meta charset=utf-8>
       
-            <title>text diff</title>
+            <title>
+                  Text Diff
+            </title>
+            
             <meta name=description content='Compare and highlight differences between two text files instantly with this free online text-diff tool. Fast, secure, and easy to use—no downloads required'>
             
             <base href='https://ext-code.com/utils/editors/text-diff/'>
-            <base href='https://javascript-2020.github.io/utils/editors/text-diff/'>
             <link rel=canonical href='https://ext-code.com/utils/editors/text-diff/text-diff.html'>
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
-            <link rel=icon type='image/png' href='images/text-diff-favicon.png'>
+            <link rel=icon type='image/png' href='iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAnFBMVEVHcEwAAAEHBg9gNqsEAwlXMZwUCyMAAAA1RJkAAAAAAAAAAAAfKFsAAAAdEDQAAAAAAAAAAAAKCRgkFEAAAABlObUVGz04SKIAAABBJHM+UbUAAAAAAAAAAAAvPYk0HV0AAAARFjIAAABPLI0AAAAAAAAmMW4aIUwAAAApNHYAAAAAAABnOrg/UbUAAAFAUrdoO7k7TKsMECVpO7uPyrl7AAAALHRSTlMA/P39//z95vzdQPb64fsWsCT9+17+/f3S+v41ju7++pz7UfsKd/r7KvzFaJeOgx8AAAGbSURBVCjPXZPttmswEEATgqqPolUUpUV7eq474tz3f7c7I47S/SPWshMzGTOMsbxO7Zm03rMP7h4IbUaAddravSXc3YIryu35ANzL8OYBwfT68KV0GSXDX+JCy5BE9oFs4OWT5j/jZJPnizaMP1bIWFvD92Gth52mPS6zbgtI54//nr48Jj/pjts5W/RwPRMRaK+B9MmxlvRJuzDzJN2V5fvypMcr8orglqDmjvOHrTUmNgzjmSzGBgj2RH7YZB6RxQeAM1GmXfvOfNyRTW7gHxW+4EXLbHFVVcOVIvh6r4gbE5Po+G33W/DxCb4h+16qDY1IsboQPV3FGUyyuhFPWjcdrH5h8enSuGqN7KV+jAypNKfkv+4nIgAwY7IY/5+Ui567xuLc1Hu0UWYg+kbvPaewUFeAvcWRSq50nvIuRC0zDpqPHLOVDr+hYKT7OONaFiOr2GEAdas0eqFtMmesgAB/gNLoj0a/0fcipP6zI1VRVRVpROVHU1e9XMBLBNuRKEXVGDNNJayPkTptBsq7fw4cjqM3k9bYrf8B50dH+JJaGO8AAAAASUVORK5CYII='>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Text Diff",
+                        "url"                   : "https://ext-code.com/utils/editors/text-diff/text-diff.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Compare and highlight differences between two text files instantly with this free online text-diff tool. Fast, secure, and easy to use—no downloads required",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
 
         
             <script src="https://cdn.jsdelivr.net/npm/diff@latest/dist/diff.min.js"></script>
@@ -26,11 +45,15 @@
                                                                                 console.log('text-diff-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,version='v2.0'
+        ;
+        
         var ext;
         var $;
         var datatype;
         var menumod;
         var keydown;
+        var debug;
         
         var menu;
         
@@ -46,26 +69,24 @@
   //:
 
 
-        mod.stack.add   = init;
-        
         async function init(){
-                                                                                  console.log('init');
+                                                                                  debug('init',version);
                                                                       
           
               //keydown                   = keydown();
               menu                      = menumod();
               
-              hdr                       = mod.hdr;
+              hdr                       = mod['editors-hdr'];
               //mod.menu.main             = mod.menu.main();
               //debugger;
-              primary.filemod           = mod['filemod[1]'];
-              primary.editor            = mod['editor[1]'];
+              primary.filemod           = mod.file1;
+              primary.editor            = mod.editor1;
               
-              secondary.filemod         = mod['filemod[2]'];
-              secondary.editor          = mod['editor[2]'];
+              secondary.filemod         = mod.file2;
+              secondary.editor          = mod.editor2;
               
-              output                    = mod['editor[output]'];
-              log                       = mod.log;
+              output                    = mod.output;
+              log                       = mod['log-mod'];
   
           
               hdr.initmod({ext,$,menu,menumod});
@@ -80,21 +101,22 @@
               output.initmod({ext,$,menu});
               log.initmod({ext,$});
   
+              await Promise.all([
+                    hdr.init(),
+                    //mod.menu.main.init(),
+                    primary.filemod.init(),
+                    primary.editor.init(),
+              
+                    secondary.filemod.init(),
+                    secondary.editor.init(),
+              
+                    //publish.init(),
+              
+                    output.init(),
+                    log.init(),
+              ]);
+              
   
-              await hdr.init();
-              //await mod.menu.main.init();
-              await primary.filemod.init();
-              await primary.editor.init();
-              
-              await secondary.filemod.init();
-              await secondary.editor.init();
-              
-              //publish.init();
-              
-              await output.init();
-              await log.init();
-  
-          //:
           
               window.onfocus            = ()=>primary.editor && primary.editor.focus();
               keydown.add(kd);
@@ -117,9 +139,10 @@
               'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js'
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
         );
-        [$,datatype,menumod,keydown]   = await promise;
+        [$,datatype,menumod,keydown,debug]   = await promise;
   
         mod.stack.complete;
               
@@ -139,8 +162,16 @@
   html
     {height:100%;font-family:arial}
   body
-    {display:flex;flex-direction:column;height:calc(100% - 40px);margin:20px}
+    {display:flex;flex-direction:column;height:calc(100% - 40px);margin:20px;gap:10px}
 
+  #output-hdr
+    {display:flex;gap:10px;}
+  #output-hdr>div    
+    {display:flex;gap:10px;align-items:center;border:1px solid lightgray;border-radius:5px;padding:3px 5px}
+  [type=checkbox]
+    {width:20px;height:20px;margin:0}
+  [value=check]
+    {flex:1}
     
   input
     {font-size:16px;padding:5px;cursor:pointer}
@@ -179,7 +210,7 @@
   #label
     {flex:1;text-align-center}
     
-  editor-root
+  web-editor
     {flex:1;border-top:1px solid lightgray}
     
   #output
@@ -199,37 +230,42 @@
       
       <body>
 
-            <hdr component=grp v2.0>
-                  <img class=title src='images/text-diff.png' style='top:5px;height:35px'>
-                  <span slot=date>24 Aug 2025</span>
-            </hdr>
+            <editors-hdr component=grp>
+                  <img class=title src='images/text-diff.png' style='top:5px;height:45px'>
+                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+            </editors-hdr>
 
-            
-            <input type=button value=check>
+            <div id=output-hdr>
+                  <div>
+                        show output
+                        <input type=checkbox checked>
+                  </div>
+                  <input type=button value=check>
+            </div>
             
             <div id=main>
                   <div id=view1>
                         <div id=hdr>
-                              <filemod inst=1 component v2.0></filemod>
+                              <file-mod id=file1 component></file-mod>
                               <div id=label>primary</div>
                         </div>
-                        <editor inst=1 component v2.0></editor>
+                        <web-editor id=editor1 component></web-editor>
                   </div>
                   <div id=view2>
                         <div id=hdr>
-                              <filemod inst=2 component v2.0></filemod>
+                              <file-mod id=file2 component></file-mod>
                               <div id=label>secondary</div>
                         </div>
-                        <editor inst=2 component v2.0></editor>
+                        <web-editor id=editor2 component></web-editor>
                   </div>
             </div>
             
             <div id=output>
-                  <editor inst=output component v2.0></editor>
+                  <web-editor id=output component v2.0></web-editor>
             </div>
 
             
-            <log component v2.0></log>
+            <log-mod component></log-mod>
 
 
 
@@ -257,7 +293,7 @@
   
   
         async function initdom(rootnode){
-                                                                                console.log('initdom');
+                                                                                debug('initdom');
               var root                      = rootnode;
               
               keydown.initdom();
@@ -267,23 +303,25 @@
         
               //mod.menu.main.initdom();
 
-
-              $('[value=check]').onclick    = btn.check;
+              $('#output-hdr [type=checkbox]').onclick        = btn['output-chk'];
+              $('[value=check]').onclick                      = btn.check;
               
         
               
-              var view1                     = $('#view1');
+              var view1                                       = $('#view1');
               primary.filemod.initdom(view1);
               primary.editor.initdom(view1,{mode:'text'});
               
-              var view2                     = $('#view2');
+              var view2                                       = $('#view2');
               secondary.filemod.initdom(view2);
               secondary.editor.initdom(view2,{mode:'text'});
               
-              var node    = $('#output');
+              var node                                        = $('#output');
               await output.initdom(node,{mode:'text'});
+
+
   
-              var style   = document.createElement('style');
+              var style                                       = document.createElement('style');
               style.textContent   = `
   .red
     {position:absolute;background:var(--red);z-index:20}
@@ -291,13 +329,32 @@
     {position:absolute;background:var(--green);z-index:20}
               `;
               
-              output.root.shadowRoot.append(style);
+              output.shadowRoot.append(style);
+
+
+
+
+
+
               
         }//initdom
 
 
   //:
   
+  
+        btn['output-chk']   = function(){
+          
+              var output    = $('#output');
+              var chk       = $('#output-hdr [type=checkbox]');
+              if(chk.checked){
+                    output.style.display    = '';
+              }else{
+                    output.style.display    = 'none';
+              }
+              
+        }//output-chk
+        
   
         btn.check   = function(){
           
