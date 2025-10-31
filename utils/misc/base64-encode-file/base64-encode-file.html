@@ -1,11 +1,16 @@
 
 
+<!DOCTYPE html>
 
 <html>
 
       <head>
+            <meta charset=utf-8>
       
-            <title>base64 encode file</title>
+            <title>
+                  Base64 Encode File
+            </title>
+            
             <meta name=description content='base64 encode files, optional dataurl'>
 
             <link rel=icon type='image/png' href='image/base64-30.png'>
@@ -13,7 +18,6 @@
             
             <base href='https://ext-code.com/utils/misc/base64-encode-file/'>
             <link rel=canonical href='https://ext-code.com/utils/misc/base64-encode-file/base64-encode-file.html'>
-            
             
             <script type='application/ld+json'>
                   {
@@ -31,7 +35,6 @@
                   }
             </script>
 
-
             
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
 
@@ -40,7 +43,7 @@
                                                                                 console.log('base64-encode-file-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,did='base64-encode-file'
+        var df=true,version='v2.0'
         ;
         
         var ext;
@@ -53,8 +56,6 @@
         var preview       = {};
         var output        = {};
         
-        var filemod;                                                                                
-        var publish;
         var log;
         
 
@@ -66,15 +67,15 @@
         async function init(){
 
               //keydown                   = keydown();
-              menu                      = mod.menumod();
+              menu                      = menumod();
               
               hdr                       = mod['hdr-base64'];
               //mod.menu.main             = mod.menu.main();
-              preview.filemod           = mod['filemod[preview]'];
-              preview.filename          = mod['filename-ui[preview]'];
-              output.filemod            = mod['filemod[output]']
-              output.filename           = mod['filename-ui[output]'];
-              log                       = mod.log;
+              preview.filemod           = mod['file-preview'];
+              preview.filename          = mod['fn-preview'];
+              output.filemod            = mod['file-output']
+              output.filename           = mod['fn-output'];
+              log                       = mod['log-mod'];
               
               hdr.initmod({ext,$,menu,menumod});
               //mod.menu.main.initmod({ext,$,menumod,editor,filemod});
@@ -97,7 +98,7 @@
               menu.on.close          = null;
 
               
-              await initdom(document.body);
+              initdom(document.body);
 
 
         }//init
@@ -216,7 +217,7 @@
       <body>
       
 
-            <hdr-base64 component=grp v2.0>
+            <hdr-base64 component=grp>
                   <img class=title src='image/base64-file-50.png' style='top:5px;height:40px'>
                   <time slot=date datetime=2025-10-18>18 Oct 2025</time>
             </hdr-base64>
@@ -231,18 +232,16 @@
                   
                   <div class=user>
                   
-                        <filemod inst=preview component v2.0></filemod>
+                        <file-mod id=file-preview component v2.0></file-mod>
       
                         <div id=btns>
-                        
                               <input value=save type=button>
                               <div class=spc></div>
-                              
                         </div>
                         
                   </div>
 
-                  <filename-ui inst=preview component v2.0></filename-ui>
+                  <filename-ui id=fn-preview component></filename-ui>
                   
             </div>
             
@@ -289,7 +288,7 @@
                         
                   <div class=user>
                   
-                        <filemod inst=output component v2.0></filemod>
+                        <file-mod id=file-output component></file-mod>
                         
                         <div id=btns>
                         
@@ -302,7 +301,7 @@
                         
                   </div>
                         
-                  <filename-ui inst=output component v2.0></filename-ui>
+                  <filename-ui id=fn-output component v2.0></filename-ui>
                   
             </div output>
                   
@@ -325,7 +324,7 @@
       </body>
 
 
-      <log component v2.0></log>
+      <log-mod component></log-mod>
       
       
       <script>
