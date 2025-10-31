@@ -12,12 +12,12 @@
             </title>
 
             <meta name=description content='Use this tool to easily encode and decode text to and from HTML entities. Perfect for escaping special characters, preserving formatting, and ensuring safe rendering in web pages and emails.'>
-            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAUVBMVEVHcEwBv/4Bv/0avvMCv/0TvvcCv/0Kv/oOvvgHv/sIvvsQvvcHv/sFv/xIvOEIv/sKvvoDv/wIvvoGv/sMv/kCv/0Dv/0Ev/wFv/wGv/sAv/7CmpJ5AAAAGnRSTlMA+fII1hDpQyJ7TxhylAFnN79dhC7hzLapoVwT8hEAAAE8SURBVCjPvVJZbsUgDCRhC2uA7Nz/oB3Da5uqeV+VihQpYhaPjRn7+5Gp+Nm6ZzDaPNZaB+H5E2wJbGeJD84ZwOEDSGr9DU+q1h11A/wt2M7Jm0kkOKPqAlgzZoTIEwG8k/hR62hZEt0ErDHBxB+XbnIN+XZtKA3vT9ggkGgubO7Rc2MjgppYPGuPwmI6B0KHi8gcfewSEtztuOBe0UgUmUG+4icQrYSF2iTaaFyz2HQrrW9dI3A1RDdIIAoSHrfZFhK1hNGTD4LdxL0B2QcQWkJzHymVVun7v54/ni1R5CNx7nRo7Ysi+TQxqa1N8eWochbtzenb82aYHYa6QO6O+nXEfL0enjK1oTFnmrCOu4Gn2cjAMwxVvLbL6eJ9ST3/hLXTUu4IGd8uJ812fr+7FsXW97AO4Xlv/+98ANkDGdLwxnVSAAAAAElFTkSuQmCC'>
-            <meta name=viewport content='width=device-width, initial-scale=1'>
             
             <base href='https://ext-code.com/utils/misc/html-entities/'>
             <link rel=canonical href='https://ext-code.com/utils/misc/html-entities/html-entities.html'>
-
+            
+            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAUVBMVEVHcEwBv/4Bv/0avvMCv/0TvvcCv/0Kv/oOvvgHv/sIvvsQvvcHv/sFv/xIvOEIv/sKvvoDv/wIvvoGv/sMv/kCv/0Dv/0Ev/wFv/wGv/sAv/7CmpJ5AAAAGnRSTlMA+fII1hDpQyJ7TxhylAFnN79dhC7hzLapoVwT8hEAAAE8SURBVCjPvVJZbsUgDCRhC2uA7Nz/oB3Da5uqeV+VihQpYhaPjRn7+5Gp+Nm6ZzDaPNZaB+H5E2wJbGeJD84ZwOEDSGr9DU+q1h11A/wt2M7Jm0kkOKPqAlgzZoTIEwG8k/hR62hZEt0ErDHBxB+XbnIN+XZtKA3vT9ggkGgubO7Rc2MjgppYPGuPwmI6B0KHi8gcfewSEtztuOBe0UgUmUG+4icQrYSF2iTaaFyz2HQrrW9dI3A1RDdIIAoSHrfZFhK1hNGTD4LdxL0B2QcQWkJzHymVVun7v54/ni1R5CNx7nRo7Ysi+TQxqa1N8eWochbtzenb82aYHYa6QO6O+nXEfL0enjK1oTFnmrCOu4Gn2cjAMwxVvLbL6eJ9ST3/hLXTUu4IGd8uJ812fr+7FsXW97AO4Xlv/+98ANkDGdLwxnVSAAAAAElFTkSuQmCC'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
 
             <script type='application/ld+json'>
             
@@ -58,6 +58,7 @@
         var menumod;
         var keydown;
         
+        var hdr;
         var filemod;                                                                                
         var editor        = {};
         editor.source     = null;
@@ -76,22 +77,27 @@
         async function init(){
 
               //keydown                   = keydown();
-              menu                      = mod.menumod();
+              menu                      = menumod();
               
-              filemod                   = mod.filemod;
-              editor.source             = mod['editor[source]'];
-              editor.output             = mod['editor[output]'];
-              log                       = mod.log;
+              hdr                       = mod['misc-hdr'];
+              filemod                   = mod['file-mod'];
+              editor.source             = mod.source;
+              editor.output             = mod.output;
+              log                       = mod['log-mod'];
               
+              hdr.initmod({ext,$});
               filemod.initmod({ext,$,menumod,menu,complete,source,focus,log});
               editor.source.initmod({ext,$,menumod,menu});
               editor.output.initmod({ext,$,menumod,menu});
               log.initmod({ext,$});
               
-              await filemod.init();
-              await editor.source.init();
-              await editor.output.init();
-              await log.init();
+              await Promise.all([
+                    hdr.init(),
+                    filemod.init(),
+                    editor.source.init(),
+                    editor.output.init(),
+                    log.init(),
+              ]);
 
   //:
           
@@ -100,7 +106,7 @@
               menu.on.close             = focus;
 
               
-              await initdom(document.body);
+              initdom(document.body);
 
 
         }//init
@@ -199,7 +205,7 @@
   #view
     {flex:1;display:flex;gap:10px;width:100%}
 
-  editor-root
+  web-editor
     {flex:1}
     
     
@@ -212,34 +218,30 @@
 
             <div id=center>
 
-                  <hdr component=grp v2.0>
+                  <misc-hdr component=grp>
                         <img class=title src='images/html-entities.png' style='top:-20px;height:80px' alt=html-entities>
-                        <time slot=date datetime=2025-10-23>23 Oct 2025</time>
-                  </hdr>
+                        <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+                  </misc-hdr>
       
       
       
                   
                   <div id=hdr>
-                  
-                        <filemod component v2.0></filemod>
+                        <file-mod component></file-mod>
                         <input value=encode type=button>
                         <input value=decode type=button>
-                        
                   </div>
                   
             </div center>
 
             
             <div id=view>
-            
-                  <editor id=source component v2.0></editor>
-                  <editor id=output component v2.0></editor>
-                  
+                  <web-editor id=source component v2.0></web-editor>
+                  <web-editor id=output component v2.0></web-editor>
             </div>
 
 
-            <log component v2.0></log>
+            <log-mod component></log-mod>
 
             
       </body>
@@ -257,7 +259,7 @@
   //:
   
   
-        async function initdom(rootnode){
+        function initdom(rootnode){
           
               root                                  = rootnode;
               
@@ -272,8 +274,8 @@
 
               var view                              = $(root,'#view');
 
-              await editor.source.initdom({mode:'text'});
-              await editor.output.initdom({mode:'text'});
+              editor.source.initdom({mode:'text'});
+              editor.output.initdom({mode:'text'});
 
 
               log.initdom();
