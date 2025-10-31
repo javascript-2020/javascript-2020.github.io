@@ -1,6 +1,6 @@
 
 
-<output-root>
+<output-md v2.0>
 
       <template shadowrootmode=open>
       
@@ -18,11 +18,14 @@
       
       <script>
       
-(function output({mod,root,node}){
+(function output_md({mod,dom,host}){
                                                                     console.log('output');
-  var obj   = {};
+  var obj   = {
+        version   : 'v2.0',
+  };
 
-      var $;
+      var $
+      ;
       
       obj.initmod   = function(params){
         
@@ -44,32 +47,32 @@
   //:
 
   
-      obj.init    = function(){
+      obj.init    = async function(){
         
+            await libs();
             
       }//init
 
 
-      libs();
 
       function libs(){
         
-            libs    = new Promise(resolve=>{
+            var resolve,promise=new Promise(res=>resolve=res);
+            
+            var script      = document.createElement('script');
+            script.src      = 'https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js';
+            script.onload   = onload;
+            document.head.append(script);
+            
+            return promise;
+            
+            
+            function onload(){
               
-                  var script      = document.createElement('script');
-                  script.src      = 'https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js';
-                  script.onload   = onload;
-                  document.head.append(script);
+                  md    = markdownit();
+                  resolve();
                   
-                  
-                  function onload(){
-                    
-                        md    = markdownit();
-                        resolve();
-                        
-                  }//onload
-                  
-            });
+            }//onload
             
       }//libs
 
@@ -105,9 +108,9 @@
       
   return obj;
   
-});//output
+})//output_md
             
       </script>
       
-</output-root>
+</output-md>
 
