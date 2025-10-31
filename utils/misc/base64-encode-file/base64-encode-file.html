@@ -13,11 +13,11 @@
             
             <meta name=description content='base64 encode files, optional dataurl'>
 
-            <link rel=icon type='image/png' href='image/base64-30.png'>
-            <meta name=viewport content='width=device-width, initial-scale=1'>
-            
             <base href='https://ext-code.com/utils/misc/base64-encode-file/'>
             <link rel=canonical href='https://ext-code.com/utils/misc/base64-encode-file/base64-encode-file.html'>
+            
+            <link rel=icon type='image/png' href='image/base64-30.png'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
             
             <script type='application/ld+json'>
                   {
@@ -85,15 +85,17 @@
               output.filename.initmod({ext,$});
               log.initmod({ext,$});
               
-              await hdr.init();
-              await //mod.menu.main.init();
-              await preview.filemod.init();
-              await preview.filename.init();
-              await output.filemod.init();
-              await output.filename.init();
-              await log.init();
+              await Promise.all([
+                    hdr.init(),
+                    //await mod.menu.main.init(),
+                    preview.filemod.init(),
+                    preview.filename.init(),
+                    output.filemod.init(),
+                    output.filename.init(),
+                    log.init(),
+              ]);
 
-  //:
+
           
               menu.on.close          = null;
 
