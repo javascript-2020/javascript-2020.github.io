@@ -1,19 +1,43 @@
 
 
+<!DOCTYPE html>
+
+
 <html>
 
       <head>
-
-            <title>markdown-editor</title>
-            <meta name=description content='Write and preview Markdown instantly in your browser. A clean, fast, and distraction-free editor built for developers, writers, and technical bloggers'>
+            <meta charset=utf-8>
+            
+            <title>
+                  Markdown Editor
+            </title>
+            
+            <meta name=description content='Write and preview Markdown instantly in your browser. A clean, fast, and distraction-free editor built for developers, writers, and technical bloggers.'>
             
             <base href='https://ext-code.com/utils/editors/markdown-editor/'>
-            <base href='https://javascript-2020.github.io/utils/editors/markdown-editor/'>
-            
             <link rel=canonical href='https://ext-code.com/utils/editors/markdown-editor/markdown-editor.html'>
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='images/markdown-editor-favicon.png'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Markdown Editor",
+                        "url"                   : "https://ext-code.com/utils/editors/markdown-editor/markdown-editor.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Write and preview Markdown instantly in your browser. A clean, fast, and distraction-free editor built for developers, writers, and technical bloggers",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+
+            <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
 
             
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
@@ -23,11 +47,17 @@
                                                                                 console.log('markdown-editor-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,version='v2.0'
+        ;
+        
+        var ace;
+        
         var ext;
         var $;
         var datatype;
         var menumod;
         var keydown;
+        var debug;
         
         var menu;
         
@@ -44,20 +74,18 @@
   //:
   
   
-        mod.stack.add   = init;
-        
         async function init(){
-                                                                                console.log('init');
+                                                                                debug('init',version);
               //keydown                   = keydown();
               menu                      = menumod();
               
-              hdr                       = mod.hdr;
+              hdr                       = mod['editors-hdr'];
               mainmenu                  = mod['main-menu']
-              filemod                   = mod.filemod;
-              publish                   = mod.publish;
-              editor                    = mod.editor;
+              filemod                   = mod['file-mod'];
+              publish                   = mod['publish-ui'];
+              editor                    = mod['web-editor'];
               output                    = mod.output;
-              log                       = mod.log;
+              log                       = mod['log-mod'];
               
               menu.initmod({keydown});
               
@@ -69,13 +97,15 @@
               output.initmod({ext,$,editor});
               log.initmod({ext,$});
               
-              await hdr.init();
-              await mainmenu.init();
-              await filemod.init();
-              await publish.init();
-              await editor.init();
-              await output.init();
-              await log.init();
+              await Promise.all([
+                    hdr.init(),
+                    mainmenu.init(),
+                    filemod.init(),
+                    publish.init(),
+                    editor.init(),
+                    output.init(),
+                    log.init(),
+              ]);
 
         
   //:
@@ -105,9 +135,10 @@
               'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js'
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
         );
-        [$,datatype,menumod,keydown]   = await promise;
+        [$,datatype,menumod,keydown,debug]   = await promise;
   
         mod.stack.complete;
               
@@ -156,7 +187,7 @@
   #view
     {display:none;flex:1}
 
-  editor-root
+  web-editor
     {width:50%}
     
   output-root
@@ -168,20 +199,21 @@
             </style>
             
       </head>
+
       
       <body>
 
-            <hdr component=grp v2.0>
+            <editors-hdr component=grp>
                   <img class=title src='images/markdown-editor.png' style='top:-5px;height:55px'>
-                  <span slot=date>24 Aug 2025</span>
-            </hdr>
+                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+            </editors-hdr>
 
 
             <div id=hdr>
                         
-                  <main-menu component=page v2.0></main-menu>
+                  <main-menu component=page></main-menu>
                   
-                  <filemod component v2.0></filemod>
+                  <file-mod component></file-mod>
 
                   <div id=save-root>
                         <button id=save>save</button>
@@ -193,7 +225,7 @@
                         </div>
                   </div>
 
-                  <publish component v2.0></publish>
+                  <publish-ui component></publish-ui>
 
                   <button id=run>run</button>
 
@@ -206,7 +238,7 @@
             
             <div id=view>
             
-                  <editor component v2.0></editor>
+                  <web-editor component></web-editor>
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
@@ -215,7 +247,7 @@
             </div>
 
             
-            <log component v2.0></log>
+            <log-mod component v2.0></log-mod>
 
 
             <checkbox-one-template>
@@ -415,10 +447,6 @@
               var txt   = json.code||json.text||json.txt;
               if(txt){
                     editor.setValue(txt,-1);
-              }
-  
-              if(json.run){
-                    run();
               }
   
   
