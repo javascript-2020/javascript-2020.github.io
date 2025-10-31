@@ -1,45 +1,121 @@
 
+
+<!DOCTYPE html>
+
+
 <html>
+
       <head>
+            <meta charset=utf-8>
 
-        <title>stackblitz</title>
+            <title>
+                  stackblitz
+            </title>
 
-        <base href='https://javascript-2020.github.io/utils/editors/stackblitz/stackblitz.html'>
-        <link rel="shortcut icon" type="image/x-icon" href="images/stackblitz.png">
+            <base href='https://ext-code.com/utils/misc/stackblitz/'>
+            <link rel=canonical href='https://ext-code.com/utils/misc/stackblitz/stackblitz.html'>
+            
+            <link rel='shortcut icon' type='image/x-icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAcCAMAAABBJv+bAAAAQlBMVEVHcEwyODg0ODkzNzgxNzc0ODk0ODkzODgzODgzNzgyNzgzODg0ODkzODgyNzgzODgzODgzODk0ODk0ODkyNzg0ODmObyvDAAAAFXRSTlMABvaSDbPHe15GL5u9hRxvO6rn2VJXM6DpAAAAxElEQVQoz71TyRbDIAh0Ie6J2fz/Xy3Y2pDktZ5aTiODCAMK0QxAPoFsgNk0JrMEQmEwyU5ndt4K2khQEzLhdNeQTznCWREegNEOOe18fRO8i6ooz+gRw1k9gMkyo/E9zY5yKMX+ihbLq8mjFB5N4UepYLGRmdM7OnLlpYtJXWQQkFCIpHcpfBVpCxeRV/KuodHzmfaNxuTmlpxmoEzc5bs0rnGdQQZeybWxRX6Vxf5rJJ116CxTZxX5Isf7Ive+wadP9AAuFg97y3bd7gAAAABJRU5ErkJggg=='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Stackblitz",
+                        "url"                   : "https://ext-code.com/utils/misc/stackblitz/stackblitz.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Use this tool to quickly setup nodejs environments and experiment without touching the local disk.",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>            
 
 
-        <style>
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('stackblitz-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,version='v2.0'
+        ;
         
-        html 
-              {height:100%}
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var debug;
         
-        body 
-              {
-                    font-family                 : arial;
-                    /*margin                      : 20px;*/
-                    height                      : calc(100% - 16px);
-                    display                     : flex;
-                    flex-direction              : column;
-              }
+        var menu;
+        
+        var hdr;
         
         
-        .hdr 
-              {
-                    position                    : relative;
-                    display:flex;
-                    justify-content:space-between;
-                    align-items:center;
-                    /*padding-bottom              : 10px;
-                    border-bottom               : 1px solid lightblue;
-                    margin-bottom               : 20px;*/
-                    margin-top                  : 0;
-                    font-family                 : arial;
-              }
+
+        async function init(){
+                                                                                debug('init',version);
+
+              menu    = menumod();
+              
+              hdr     = mod['misc-hdr'];
+              
+              hdr.initmod({ext,$});
+              
+              await Promise.all([
+                    hdr.init(),
+              ]);
+              
+              
+              initdom();
+              
+              
+        }//init
+
+
+(async()=>{
+
+        mod.stack.add;
         
-        .hdr-icon 
-              {
-                    display                     : inline-block;
-                    text-align                  : center;
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
+        );
+        [$,datatype,menumod,keydown,debug]   = await promise;
+  
+        mod.stack.complete;
+              
+})();
+
+
+            </script>
+
+
+            <style>
+        
+  html 
+    {height:100%}
+        
+  body 
+    {font-family:arial;/*margin:20px;*/height:calc(100% - 16px);display:flex;flex-direction:column;}
+        
+  .hdr 
+    {position:relative;display:flex;justify-content:space-between;align-items:center;/*padding-bottom:10px;border-bottom:1px solid lightblue;margin-bottom:20px;*/
+      margin-top:0;font-family:arial;
+    }
+        
+  .hdr-icon 
+    {display:inline-block;text-align:center;
                     background                  : whitesmoke;
                     border-radius               : 5px;
                     border                      : 1px solid lightgray;
@@ -49,100 +125,74 @@
                     min-width                   : 50px;
               }
         
-        .hdr-icon-img 
-              {
-              }
-        
-        .hdr-icon-label
-              {
-                    margin                      : 2px 0 0;              
-              }
-        
-        .hdr-title 
-              {
-              /*
-                    text-align                  : center;
-                    position                    : absolute;
-                    left                        : 0;
-                    right                       : 0;
-                    top                         : 5px;
-                    z-index                     : -1;
-              */
-                    margin                      : 0;
-              }
-        
-        .hdr-date
-              {
-                    float                       : right;
-              }
-        
-        .ftr 
-              {
-                    background-color            : rgb(238, 232, 170);
-                    height                      : 50px;
-                    margin-top                  : 70px;
-              }
-        
-        
-        #center 
-              {
-                    width                       : 100%;
-                    max-width                   : 1000px;
-                    margin                      : auto;
-                    flex                        : 1;
-              }
-        
-        
-        .heading
-              {
-                    border-left                 : 5px solid rgba(238,232,170,1);
-                    background                  : rgba(239,247,250,1);
-                    padding                     : 20px 20px;
-              }
-        
-        
-        a 
-              {
-                    color                       : blue;
-              }
-        a:visited
-              {
-                    color                       : blue;
-              }
+  .hdr-icon-img 
+    {}
+  
+  .hdr-icon-label
+    {margin:2px 0 0;}
+  
+  .hdr-title 
+    {/*text-align:center;position:absolute;left:0;right:0;top:5px;z-index:-1;*/
+      margin:0;}
+  
+  .hdr-date
+    {float:right;}
+  
+  .ftr 
+    {background-color:rgb(238, 232, 170);height:50px;margin-top:70px;}
+  
+  #center 
+    {width:100%;max-width:1000px;margin:auto;flex:1;}
+  
+  .heading
+    {border-left:5px solid rgba(238,232,170,1);background:rgba(239,247,250,1);padding:20px 20px;}
+                
+  a 
+    {color:blue}    
+  a:visited
+    {color:blue}
               
-        embed
-              {height:100%}
+  embed
+  {height:100%}
 
-      </style>
+            </style>
+            
+      </head>
+
+
+      <body>
       
-</head>
+      
+            <misc-hdr component=grp>
+                  <img class=title src='images/stackblitz.png' style='top:-15px;height:60px' alt=stackblitz>
+                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+            </misc-hdr>
 
-<body>
-
-        <section style="box-sizing:border-box" class="hdr">
-            <a id="home" href='https://javascript-2020.github.io/'>
-                <div class="hdr-icon-label">
-                      home
-                </div>
-            </a>
-            <h3 style="color: blue; font-weight: bold;" class="hdr-title">
-                  stackblitz
-            </h3>
-            <div style="" class="hdr-date">
-                  22 Nov 2024
-            </div>
-        </section>
+      
+            <div id=embed></div>
 
 
-        <div id=embed></div>
+      </body>
+      
+      
+      <script>
 
-        <script type=module>
-                                                                                console.clear();
-                                                                                console.log('stackblitz');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+      
+        function initdom(){
 
-      var $   = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+          
+              hdr.initdom();
+              
+              
+        }//initdom
+        
+        
+      </script>
+
+
+      
+      <script type=module>
+
 
 /*
       var hdr                   = $('.hdr');
@@ -160,12 +210,7 @@ https://developer.stackblitz.com/platform/api/javascript-sdk-options
 https://webcontainers.io/api
 */
 
-        import sdk from 'https://cdn.jsdelivr.net/npm/@stackblitz/sdk/+esm';
-        
-        var project   = {
-              title         : 'dynamically generated project',
-              description   : 'created with <3',
-              template      : 'node',
+/*              
               files         : {
                   'settings.json':`
         {
@@ -192,7 +237,19 @@ https://webcontainers.io/api
               `
                     
               }
+*/
+
+
+
+        import sdk from 'https://cdn.jsdelivr.net/npm/@stackblitz/sdk/+esm';
+        
+        var project   = {
+              title         : 'dynamically generated project',
+              description   : 'created with <3',
+              template      : 'node',
+              files:{},
         };
+
         
         var vm    = await sdk.embedProject('embed',project,{
               forceEmbedLayout    : true,
@@ -206,10 +263,8 @@ https://webcontainers.io/api
               view                : 'default'
         });
 
-</script>
 
-
-</body>
+      </script>
 
 </html>
 
