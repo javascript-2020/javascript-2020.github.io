@@ -1,22 +1,24 @@
 
 
+<!DOCTYPE html>
 
 <html>
 
       <head>
+            <meta charset=utf-8>
       
-            <title>base64 encode file</title>
+            <title>
+                  Base64 Encode File
+            </title>
+            
             <meta name=description content='base64 encode files, optional dataurl'>
 
+            <link rel=icon type='image/png' href='image/base64-30.png'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            
             <base href='https://ext-code.com/utils/misc/base64-encode-file/'>
-            <base href='https://javascript-2020.github.io/utils/misc/base64-encode-file/base64-encode-file.html'>
             <link rel=canonical href='https://ext-code.com/utils/misc/base64-encode-file/base64-encode-file.html'>
             
-            <meta name=viewport content='width=device-width, initial-scale=1'>
-            <link rel=icon type='image/png' href='image/base64-30.png'>
-            
-            
-
             <script type='application/ld+json'>
                   {
                         "@context"              : "https://schema.org",
@@ -33,7 +35,6 @@
                   }
             </script>
 
-
             
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
 
@@ -42,7 +43,7 @@
                                                                                 console.log('base64-encode-file-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,did='base64-encode-file'
+        var df=true,version='v2.0'
         ;
         
         var ext;
@@ -68,15 +69,15 @@
         async function init(){
 
               //keydown                   = keydown();
-              menu                      = mod.menumod();
+              menu                      = menumod();
               
               hdr                       = mod['hdr-base64'];
               //mod.menu.main             = mod.menu.main();
-              preview.filemod           = mod['filemod[preview]'];
-              preview.filename          = mod['filename-ui[preview]'];
-              output.filemod            = mod['filemod[output]']
-              output.filename           = mod['filename-ui[output]'];
-              log                       = mod.log;
+              preview.filemod           = mod['file-preview'];
+              preview.filename          = mod['fn-preview'];
+              output.filemod            = mod['file-output']
+              output.filename           = mod['fn-output'];
+              log                       = mod['log-mod'];
               
               hdr.initmod({ext,$,menu,menumod});
               //mod.menu.main.initmod({ext,$,menumod,editor,filemod});
@@ -135,9 +136,13 @@
             <style id=page-inline>
             
   html
-    {height:100%}
+    {height:100%;font-family:arial}
   body
-    {height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px}
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:20px;margin:20px;align-items:center;
+      padding-bottom:200px;
+    }
+  body>*
+    {max-width:1400px;width:100%;padding:0 20px;}
 
 
   .icon
@@ -170,11 +175,19 @@
   #blob label
     {width:100px;text-align:right;margin-right:20px}
 
+  #encode-root
+    {display:flex}
   #dataurl-root
-    {margin-left:20px;display:inline-flex;align-items:center}
-    
+    {margin-left:20px;display:inline-flex;align-items:center;border:1px solid lightgray;border-radius:5px;padding:5px 10px}
   #dataurl
     {width:20px;height:20px;margin:0;margin-left:10px}
+  #pretty-root
+    {margin-left:20px;display:inline-flex;align-items:center;border:1px solid lightgray;border-radius:5px;padding:5px 10px}
+  #pretty-len
+    {width:50px;margin-left:10px}
+  #pretty
+    {width:20px;height:20px;margin:0;margin-left:10px}
+    
     
   #b64
     {border:1px solid lightgray;padding:10px;flex:1;}
@@ -183,7 +196,7 @@
 
   
   #output
-    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px;margin-top:50px}
   #output-hdr
     {display:flex;align-items:center}
   #output .user
@@ -208,22 +221,11 @@
 
             <hdr-base64 component=grp v2.0>
                   <img class=title src='image/base64-file-50.png' style='top:5px;height:40px'>
-                  <span slot=date>03 Aug 2025</span>
+                  <time slot=date datetime=2025-10-18>18 Oct 2025</time>
             </hdr-base64>
 
 
             
-            <div id=hdr>
-
-<!--                        
-                  <main-menu-page>
-                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  </main-menu-page>
--->                  
-
-            </div>
-            
-
             <div id=preview>
 
                   <div>
@@ -268,11 +270,16 @@
             </div>
 
 
-            <div>
+            <div id=encode-root>
                   <input value=encode type=button>
                   <span id=dataurl-root>
                         dataurl
                         <input id=dataurl type=checkbox>
+                  </span>
+                  <span id=pretty-root>
+                        pretty string
+                        <input id=pretty-len value=140>
+                        <input id=pretty type=checkbox>
                   </span>
             </div>
 
@@ -412,8 +419,7 @@
                     return;
               }
 
-              var dataurl   = preview.dataurl.checked;
-              cur.b64       = await encode(cur.blob,dataurl);
+              cur.b64       = await encode(cur.blob);
 
               b64.display();
 
@@ -488,15 +494,9 @@
   //:
   
 
-        async function encode(blob,dataurl){
+        async function encode(blob){
           
               var b64   = await blob_b64(blob);
-              if(dataurl){
-              
-                    //var mime    = getmime(blob.name);
-                    var mime    = blob.type;
-                    b64         = `data:${mime};base64,${b64}`;
-              }
               return b64;
               
         }//encode
@@ -527,14 +527,86 @@
         
         
         
-        b64.display   = function(){
+        b64.display   = async function(){
           
               var str   = '---';
+              
               if(cur.b64){
                     str   = cur.b64;
+
+                    var dataurl   = preview.dataurl.checked;
+                    if(dataurl){
+                    
+                          var mime    = 'application/octet-stream';
+                          if(cur.blob){
+                                if(cur.blob.type){
+                                      mime    = cur.blob.type;
+                                }else{
+                                      if(blob.name){
+                                            mime    = getmime(blob.name);
+                                      }
+                                }
+                          }
+                          str         = `data:${mime};base64,${str}`;
+                    }
+      
+                    var pretty    = $('#pretty').checked;
+                    if(pretty){
+                          var txt       = str;
+                          var s         = $('#pretty-len').value;
+                          var len       = Number(s);
+                          if(isNaN(len)){
+                                log.red('invalid pretty lenth');
+                                return;
+                          }
+                          
+                          var lines     = [];
+                          var n         = txt.length;
+                          for(var i=0;i<n;i+=len){
+                            
+                                var line    = txt.slice(i,i+len);
+                                lines.push(line);
+                                
+                          }//for
+                          lines   = lines.map((line,i)=>{
+                            
+                                line    = "'"+line+"'";
+                                if(i+1<lines.length){
+                                      line    = line.padEnd(len+5);
+                                      line   += '+';
+                                }else{
+                                      line   += ';';
+                                }
+                                return line;
+                                
+                          });
+                          //lines.forEach(line=>console.log(line));
+                          str   = lines.join('\n');
+                    }
+                    
               }
               
               $(b64.root,'#text').textContent    = str;
+              
+              if(str!='---'){
+                    var err;
+                    try{
+                      
+                          await navigator.clipboard.writeText(str);
+                          
+                    }
+                    catch(err2){
+                      
+                          err   = err2;
+                    
+                    }//catch
+                    if(err){
+                          log.red(err.message);
+                          return;
+                    }
+                    
+                    log.green('copied to clipboard');
+              }
               
         }//display
         
