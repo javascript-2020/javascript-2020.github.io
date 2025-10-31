@@ -1,0 +1,465 @@
+
+
+
+<!DOCTYPE html>
+
+
+<html>
+
+      <head>
+            <meta charset=utf8>
+            
+            <title>
+                  Global State Diff
+            </title>
+            
+            <meta name=description content='Inspect what scripts and modules really expose. Enter a url and see global changes from script tags and explore actual exports from imports.'>
+            
+            <base href='https://ext-code.com/utils/misc/global-state-diff/'>
+            <link rel=canonical href='https://ext-code.com/utils/misc/global-state-diff/global-state-diff.html'>
+            
+            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAB41BMVEVHcExEPzkoWIEtobIxrLcud5M+cYQtfJUrjKIqe5grgZ0upLMmTHsmS3cpu8MvpbMqZ4o4ZXwzkaQveJMsn7Aob48nf50qhZ8qnLAlVYIppLUsma0mW4YspLUlN2coYIYxo7EqgJwohKEoSnciGVMjKWMyoK8kMmQumaoytLstj6Q1mqg0sLoyr7kuiqAzq7coOGUqNmAmOmc6oqwqWYE2lacwrbcqc5IoiKItjKMvlqgpobIsZoQrhJsqhZ8pcpIoiKIqgJkqSHElPG0vjqMnYYguqrcoYIcnS3cndZcsaYgpjKQmWoQpgZwuobImOm8ogp8qe5ktqbcnWIImVH4ro7QlOGwrmq0tq7glOW0odpUlS3omQnQpaowqpbYnUXwrpbUkJV4gFE8iG1wjHFskMWgiG1gvtsAru8Mus7wttL4rYIcqf50raIswlKgrkKcpf5wtlqsvl6otjKEpaYkplKopZYUuZIImQ3Aqk6k1iJ0mQXErqLYrYIMpi6I0qbYlX4gkQ3EspLQslKkojKYlOGsskacrmKsrYoUmWoQpeJcnY4spgZ0xh54ro7UocpUofp0lU34sa4glWYYmaJAnpbcnm7Amf54ngqAniKMnjacnhaEleJojJ2YniaQoobQlXogCX05qAAAAk3RSTlMAAc3TZSwJVLbC0sveOf44OQMoFte59sXm7PjG9t6ruK7C92lApmg6OUFpF3hSNTAZDmoOayCEZ+hkcvojisuw9Ycpe6TW08zI9YTd2dq63fTO4Oi939De3NvQ2NKe8cPZZUz668x5neuix2fjZJa7yZ5NQnD6j0xP6E9h1aXNsfqm4sz2xr23SODZ6NN97OXs1pCs7VkWAAABjElEQVQoz2NgoBdgMxZyMmTDISls2dvO7SHvZS6MRZJRQFExcJps9BQuTvFiTOmO/gnyc6YlRE+Z1W5RWYQuaxMbZT8RIh3K4e1iiiorGKskMimEU1qh0V3cz5FJrFAQRdqpe2Zf/GSlOO5WyQApacnpEvoo0tULZobHTJ49Nch/8oypNT7T57OgSDvLODSHyShJuYXJBEi5uYtZm6FIGzHZucgxcTErgIj62kARHVTdC+aFRwINj4gEGh7hOn0+qu6KhpkSYLtB0syd0611UaQNXGfGyQf7igAN7wnlkJwugubxEt82r/guCW6Pbm9uW1EuK/TIKvOM8pkzTZZnyiyRutI8jGizERUT9QRJt3A45AthiU9HccVpTTxTODlttbHFN6NQlZV0iEk5KyPO9MLOjlUjPmnDNFV1CIu1wE4PwtJP1zGGSiclz001UlY2yc61nzGPw1JLTY2FJYuPDxZwKilzVdV5eXkFBMxzLLT0NDT4+fkz+TI0YUlFJdEA6gZWmLO1WTQFaZ1vAIUhYF6nuTxlAAAAAElFTkSuQmCC'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Global State Diff",
+                        "url"                   : "https://ext-code.com/utils/misc/global-state-diff/global-state-diff.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Inspect what scripts and modules really expose. Enter a url and see global changes from script tags and explore actual exports from imports.",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "2.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+            
+            <script src='https://javascript-2020.github.io/stackoverflow/libs/stringify.js'></script>            
+
+            
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('global-state-diff.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,version='v2.0'
+        ;
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var debug;
+        var inspect;
+
+        var hdr;
+        
+        
+        
+        var detect;
+
+
+
+  //:
+  
+  
+        async function init(){
+                                                                                debug('init',version);
+        
+              hdr   = mod['misc-hdr'];
+              
+              hdr.initmod({ext,$});
+              
+              await Promise.all([
+                    hdr.init(),
+              ]);
+              
+              
+              initdom();
+              
+              
+        }//init
+        
+        
+  //:
+  
+            
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js.api',
+              'js/string/inspect/inspect.js'
+        );
+        [$,datatype,menumod,keydown,debug,inspect]   = await promise;
+  
+        mod.stack.complete;
+              
+})();
+      
+      
+            </script>
+            
+                        
+            <style>
+
+
+  html
+    {height:100%;font-family:arial}
+  body
+    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:50px;margin:20px;align-items:center;
+      padding-bottom:200px;
+    }
+  body>*
+    {max-width:1400px;width:100%;padding:0 20px;}
+
+    
+  section
+    {border:1px solid lightblue;padding:10px;border-radius:10px;display:flex;flex-direction:column;gap:20px}
+    
+  h3
+    {text-align:center;color:blue}
+    
+  input
+    {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  input[type=button]
+    {cursor:pointer}
+
+
+  .input
+    {display:flex;align-items:center;gap:10px}
+  .input > input
+    {flex:1}
+    
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+    
+  .paste
+    {padding:2px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==);
+    }
+  .copy
+    {padding:2px;
+      content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAABSlBMVEVHcEwnz/4C8P4g1P4L6P43wf5Mr/4a2v4Y3P4/uv5PrP4+vf5Auv4ozv5KsP4vyv45wP5Jsf5Auf49vP5Mrv4zxf44wf5Lr/46wP4h1P5Lr/46vv5Jsv4R5P5Hs/5Etv44wf5Hs/41w/4uyv47vv49vP5Ftf5GtP4c2f4rzP4tyv4m0f5Etv5Nrv4xxv4xxv4xx/4W3/5KsP5Mr/4/u/4uyv5Isv4K6f4l0f4qzv4W3/4V3/5Nrv5Mrv5Mrv5Mr/4W3v4e2P5BuP5Hsv4N5v4K6f4O5v42w/5Dt/4E7/4uyf4C8P4nz/4M5/4K6v4oz/4P5f4k0v4b2v5Gs/4E7v4I6/5Nrf4e1/4H7P4E7v5Auv5Dtv4sy/5Isv5GtP4wx/49vP4zxf47vv44wP42w/5LsP5Jsf4i1P4n0P4N5v4k0v4a2v4S4v4X3v6OfcqkAAAAVnRSTlMACo7CjQWN/VczjgIJMfIXJzHtjj5iVekR71Hvtz7CjelXjre2wiJj2PCFIWbR7+fEnXaodz3544/USfOC22Tm7CXOnqfUZ+/3VTV9bsTzqGDahpb2tyRB6bIAAAIDSURBVDjLrZVpV9pAFIYntdFiQkZsLCQECtJSlqAsFRBU3Kuta1sncYGuJEDt///aISkkkyHo6enzLTlP5s5758wNAC526pd3d1++/fzx/evNze1tp210wxURUMTWBz2v2EWtLc7jBTPmoJfNrqy8i0ajixgB00VISJIeW9JMKbcWDAYDNiFMQN1EqAAJcUfSBif0fsQWQjLxpjGnXUJa5CoIbTiP8KJ0OqfNMLQIZhGad/Ke3t///vWwGKv1+yPxfW55+TnmJWZW5ggxcqX3m6WSVTpSdPcxHCLExmf97AI8e1j8cK1f8X9Fq/Sotrf0k2v9KRiJ08L8mwhf2CQx8oK/yJyPw3Q67ULaV4Tr7tRCwFfkllLF4ushccwGPyUMzwzhMQz/X1Kz+QVMmh2LcjgsTxDZ3OpqIpFYfDu+KGwoxE5JvTtpF9NX9BEB792jn0gD4eNEsVAQHyXOO7fQFmNNLZOnPV5BqEyI+Yxm1qkluS0BCWRp8FEze6mTJQtVVd8MUfcEhBSGFOGMOWmaoc0AmRoXP5cmiHEReEXANOopzCsLRYlXjWolGXE2jK/r/ujEWAdOFIxWGrjO8ljXazG6MeynthEn2gAP9P7B4XCE2thzdG2v2jbK5LfHZ3hINbclSco6o/kIh1Einq4e1qxp5m2PkqZ/CPvbXvFot+xe7w/EpaiUrJ24NAAAAABJRU5ErkJggg==);
+    }
+
+
+  #output, #output2
+    {white-space:pre;font-family:monospace;font-size:16px}
+  #item, #item2
+    {margin:20px 0;border:1px solid lightgray;padding:10px;overflow:auto}
+  #src
+    {}
+  #values
+    {}
+
+
+  iframe
+    {display:none}
+    
+            </style>
+            
+      </head>
+      
+      <body>
+
+            <misc-hdr component=grp style='position:relative'>
+                  <img class=title src='images/global-state-diff.png' style='top:-5px;height:40px' alt=global-state-diff>
+                  <time slot=date datetime=2025-10-18>18 Oct 2025</time>
+            </misc-hdr>
+      
+            <section id=script>
+            
+                  <h3>
+                        global state diff
+                  </h3>
+                  
+                  <div>
+                        Global State Diff is a browser-based utility that analyzes the impact of loading external JavaScript resources.
+                        When a  tag is injected, the tool compares the  object before and after execution to identify newly added globals
+                        — including functions, variables, and namespaces. This helps developers understand what a script exposes to the
+                        global scope.
+                  </div>
+                  
+                  <div class=input>
+                        <img class='paste icon'>
+                        <img class='copy icon'>
+                        <input id=src value='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.min.js'>
+                  </div>
+                  
+                  <input id=go value=fetch type=button>
+                  
+                  <div id=output>
+                        <div id=item>
+                              <div id=url>
+                              </div>
+                              <div id=values>
+                              </div>
+                        </div>
+                  </div>
+                  
+            </section>
+
+              
+            <section id=import>
+            
+                  <h3>
+                        Import Inspector
+                  </h3>
+                  
+                  <div>
+                     Import Inspector complements global state diff by allowing users to specify a module URL and inspecting its
+                     exported bindings. It dynamically imports the module and lists all named and default exports, giving a
+                     clear view of what’s available for consumption.
+                  </div>
+                  
+                  <div class=input>
+                        <img class='paste icon'>
+                        <img class='copy icon'>
+                        <input id=src2 value='https://cdn.jsdelivr.net/npm/codemirror/+esm'>
+                  </div>
+                  
+                  
+                  <input id=go2 value=fetch type=button>
+                  
+                  <div id=output2>
+                        <div id=item2>
+                              <div id=url>
+                              </div>
+                              <div id=values>
+                              </div>
+                        </div>
+                  </div>
+                  
+            </section>
+
+              
+      </body>
+
+              
+      <script>
+
+
+        var item;
+        var item2;
+        
+        
+  //:
+  
+  
+        function initdom(){
+
+
+        
+              $('#script .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src.value=txt};
+              $('#script .copy').onclick    = e=>navigator.clipboard.writeText(src.value);
+                                                                                      
+              item    = $('#item');
+              item.remove();
+              
+              go.onclick    = function(){
+              
+                    process(src.value);
+              
+              }//onclick
+
+
+
+              $('#import .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src2.value=txt};
+              $('#import .copy').onclick    = e=>navigator.clipboard.writeText(src2.value);
+              
+              item2    = $('#item2');
+              item2.remove();
+              
+              go2.onclick    = function(){
+              
+                    process2(src2.value);
+        
+              }//onclick
+
+
+              
+        }//initdom
+        
+
+  //:        
+        
+        
+        function process(src){
+        
+              
+              var iframe    = document.createElement('iframe');
+              iframe.onload   = onload;
+              document.body.append(iframe);
+        
+              
+              function onload(){
+              
+                    var win   = iframe.contentWindow;
+                    var doc   = iframe.contentDocument;
+                    
+                    var beforeKeys    = new Set(Object.keys(win));
+                
+                    
+                    var script    = document.createElement('script');
+                    script.src    = src;
+                    
+                    script.onload   = ()=>{
+                    
+                          var afterKeys   = new Set(Object.keys(win));
+                          var added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
+        
+                          var str   = '';                          
+                          added.forEach(key=>{
+                          
+                                var s     = win[key].toString();
+                                var s1    = s.slice(0,80);
+                                if(s.length>s1.length){
+                                      s1   += ` ... ( ${s.length} )`;
+                                }
+                                str  += `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
+                                
+                                                                                console.log(`window.${key} =`,win[key]);
+                                
+                          });
+                          
+                          var nitem   = item.cloneNode(true);
+                          var $   = nitem.querySelector.bind(nitem);
+                          $('#url').textContent       = src;
+                          $('#values').textContent    = str;
+                          
+                          output.append(nitem);
+                          
+                          
+                          console.log('🔍 New globals added by script:', added);
+                          
+                          
+                    }//onload
+                    
+                    doc.head.appendChild(script);
+                    
+              }//onload
+              
+        }//process
+                    
+              
+        
+        
+        async function process2(src){
+        
+              var mod   = await import(src);
+                                                                                //console.log(inspect(mod));
+                                                                                
+              var str   = '';
+              for(var key in mod){
+
+              
+                    var s1    = '[ null ]';
+                    
+                    if(!mod[key]){
+                          str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                    }else{
+                          if(datatype(mod[key])=='object'){
+                                s1    = tostring(mod[key]);
+                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                                for(var prop in mod[key]){
+                                      
+                                      var s2    = tostring(mod[key][prop]);                                  
+                                      str  += '      '+prop+`   [ ${typeof mod[key][prop]} ]      :   ${s2}`+'\n';
+                                      
+                                }//for
+                          }else{
+                                s1    = tostring(mod[key]);
+                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                          }
+                    }
+                    
+              }//for
+              
+              
+              var nitem   = item2.cloneNode(true);
+              
+              var $   = nitem.querySelector.bind(nitem);
+              $('#url').textContent       = src;
+              $('#values').textContent    = str;
+              
+              output2.append(nitem);
+
+
+              function tostring(v){
+                
+                    var s     = v.toString();
+                    var s1    = s.slice(0,80);
+                    if(s.length>s1.length){
+                          s1   += ` ... ( ${s.length} )`;
+                    }
+                    return s1;
+                    
+              }//tostring
+              
+        }//process
+                    
+
+
+
+        
+
+(async()=>{
+
+        var {init,parse}    = await import('https://unpkg.com/es-module-lexer?module');
+        
+        detect    = async function(code){
+        
+              await init();
+          
+              var [imports,exports] = parse(code);
+          
+              var isESM         = imports.length>0 || exports.length>0;
+              var isCommonJS    = /require\(|module\.exports|exports\./.test(code);
+              
+              var isNode        = /process\.|__dirname|require\(/.test(code);
+              var isBrowser     = /window\.|document\.|navigator\./.test(code);
+          
+              var type      = 'Unknown';
+              if (isESM){
+                    type    = 'ESM';
+              }else if(isCommonJS){
+                    type    = 'CommonJS';
+              }
+          
+              if(isNode){
+                    type   += ' (Node.js)';
+              }else if(isBrowser){
+                    type   += ' (Browser)';
+              }
+          
+              return type;
+              
+        }//detect
+
+})();              
+
+
+      </script>
+
+
+      
+</html>
+
+
+
+
