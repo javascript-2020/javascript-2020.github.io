@@ -68,14 +68,19 @@
         
               menu                      = menumod();
               
-              hdr                       = mod.hdr;
-              log                       = mod.log;
+              hdr                       = mod['github-hdr'];
+              log                       = mod['log-mod'];
+
               
               hdr.initmod({ext,$,menu});
               log.initmod({ext,$});
+
               
-              await hdr.init();
-              await log.init();
+              await Promise.all([
+                    hdr.init(),
+                    log.init(),
+              ]);
+              
         
   //:
           
@@ -213,10 +218,10 @@
     
       <body>
     
-            <hdr component=grp v2.0>
+            <github-hdr component=grp>
                   <img style='top:0px;height:50px' class=title src='images/download-a-directory-from-a-github-repository.png'>
                   <span slot=date>27 Aug 2025</span>
-            </hdr>
+            </github-hdr>
 
         
             <div id=scroll>
@@ -356,7 +361,7 @@ also check out the blog post on
                 
             </div scroll>
 
-            <log component v2.0></log>
+            <log-mod component></log-mod>
 
       </body>
 
