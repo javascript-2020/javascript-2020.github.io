@@ -12,12 +12,11 @@
               
               var assertion         = await buildJwtAssertion({clientEmail,privateKeyPem,scope});
               var {json,error}      = await exchangeForAccessToken(assertion);
+              
               if(error){
                     return {error};
               }
-              
-              var token             = json.access_token;
-              return {json,token};
+              return {json};
               
       
               async function buildJwtAssertion({clientEmail,privateKeyPem,scope,aud}){
