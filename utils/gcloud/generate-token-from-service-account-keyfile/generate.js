@@ -1,13 +1,12 @@
 
 
 
-        async function generate(keyfile){
+        async function generate(keyfile,scope){
               
 
 
               var clientEmail       = keyfile.client_email;
               var privateKeyPem     = keyfile.private_key.replace(/\\n/g,'\n');
-              var scope             = 'https://www.googleapis.com/auth/devstorage.read_write';
               
               var assertion         = await buildJwtAssertion({clientEmail,privateKeyPem,scope});
               var json              = await exchangeForAccessToken(assertion);
@@ -83,24 +82,24 @@
               }//sign
       
             
-              async function buildJwtAssertion({clientEmail,privateKeyPem,scope,aud='https://oauth2.googleapis.com/token'}){
+              async function buildJwtAssertion({clientEmail,privateKeyPem,scope,aud}){
               
-                    var key               = await importPkcs8PrivateKey(privateKeyPem);
-                
+                    scope                 = Array.isArray(scope) ? scope.join(' ') : scope;
+                    aud                 ||= 'https://oauth2.googleapis.com/token';
+                    
                     var now               = Math.floor(Date.now()/1000);
-                    var header            = {alg:'RS256',typ:'JWT'};
-                    var payload           = {
-                                                  iss     : clientEmail,
-                                                  scope   : Array.isArray(scope) ? scope.join(' ') : scope,
-                                                  aud     : aud,
-                                                  iat     : now,
-                                                  exp     : now+3600, // 1 hour max
-                                            };
+                    
+                    var iss               = clientEmail;
+                    var iat               = now;
+                    var exp               = now+3600;
+                    var payload           = {iss,scope,aud,iat,exp};
                 
+                    var header            = {alg:'RS256',typ:'JWT'};
                     var encodedHeader     = base64url(JSON.stringify(header));
                     var encodedPayload    = base64url(JSON.stringify(payload));
                     var unsigned          = `${encodedHeader}.${encodedPayload}`;
                 
+                    var key               = await importPkcs8PrivateKey(privateKeyPem);
                     var sig               = await signRS256(key,unsigned);
                     var encodedSig        = base64url(sig);
                     var str               = `${unsigned}.${encodedSig}`;
