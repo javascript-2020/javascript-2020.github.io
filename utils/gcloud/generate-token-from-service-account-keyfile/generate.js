@@ -155,7 +155,7 @@
               }//to_uint8
 
               
-              function pem_buf(pem){
+              function pem_buf(pem){debugger;
               
                     var i1    = pem.indexOf('\n');
                     var i2    = pem.lastIndexOf('\n');
