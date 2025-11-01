@@ -161,7 +161,7 @@
                     pem         = pem.replace(/-----END [^-]+-----/,'');
                     pem         = pem.replace(/\s+/g,'');
                     
-                    var bin     = atob(b64);
+                    var bin     = atob(pem);
                     
                     var n       = bin.length;
                     var uint8   = new Uint8Array(n);                    
