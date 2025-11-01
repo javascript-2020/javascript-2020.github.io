@@ -155,26 +155,21 @@
               }//to_uint8
 
               
-              function pem_buf(pem){debugger;
+              function pem_buf(pem){
               
-                    var i1    = pem.indexOf('\n');
-                    var i2    = pem.lastIndexOf('\n');
-                    var s     = pem.slice(i1+1,i2);
-                    var b64   = pem.replaceAll('\n','');
-                    /*
-                    var b64   = pem.replace(/-----BEGIN [^-]+-----/g,'')
-                                        .replace(/-----END [^-]+-----/g,'')
-                                        .replace(/\s+/g,'');
-                    */
-                    var bin     = atob(b64);
-                    var n       = bin.length;
-                    var uint8   = new Uint8Array(n);
+                    pem         = pem.replace(/-----BEGIN [^-]+-----/,'');
+                    pem         = pem.replace(/-----END [^-]+-----/,'');
+                    pem         = pem.replace(/\s+/g,'');
                     
+                    var bin     = atob(b64);
+                    
+                    var n       = bin.length;
+                    var uint8   = new Uint8Array(n);                    
                     for(var i=0;i<n;i++){
                       
                           uint8[i]    = bin.charCodeAt(i);
                             
-                    }//fpr
+                    }//for
                     
                     var buf   = uint8.buffer;
                     return buf;
