@@ -1,17 +1,42 @@
 
 
+<!DOCTYPE html>
 
 <html>
 
       <head>
-      
-            <title>gcloud file-browser</title>
-
-            <base href='https://ext-code.com/utils/gcloud/file-browser/'>
-            <base href='https://javascript-2020.github.io/utils/gcloud/file-browser/'>
+            <meta charset=utf-8>
             
-            <link rel=icon type='image/png' href='image/file-browser-30.png'>
+            <title>
+                  gcloud Storage Bucket File Browser
+            </title>
 
+            <meta name=description content='file browser for google storage bucket'>
+            
+            <base href='https://ext-code.com/utils/gcloud/file-browser/'>
+            <link rel=canonical href='https://ext-code.com/utils/gcloud/file-browser/file-browser.html'>
+            
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABNVBMVEVHcEwdJTE6OTdCPjd1YkF1YkEqLzc7Ojd2XTYcKUFVSjdEQDpIQjdJRDsuMDY4Nzc+PDiJbkBHQzwyNDccHU1hUTdAQEBpWT4oLDI5ODg3NzcAAIyadTk3Nzo0NDT7wFz6sD39wl363LD1vFv9sj3837K1hTqObTjLnlLCjTrzrDywjEz8wVyGhoZ3b2Oio6X+sz34v1tvbWqigkqIb0SLi4t1cmx2aFBrXUTGm1H/w11UVFTFsI7jr1Z6d3PvuFmdnqCDg4KTlJXlslejejm9lE59fHqOkJHanDleX1/pzqVoZ2V3Y0NgUj2VeUnopTuYinTOlTrFjzvenzyzoIPOt5Tv06nUmTqNgGyCZjnbqlWnlnvUplRsYk6ysrPdxJ6XmJrcnjyVh3GCgH6/v79gXFarmn+QdQ72AAAAH3RSTlMAIYKG4uMXdeUFtq2h+w9Rj/LiHwLVy9U+YDoB/i9YLV2dlQAAAcpJREFUKM+lk+dy2kAQgIViwFRjXNIjTkggq6Nuiw42ppjm3u04yfs/QnYRTsIEOz/yzdzM7n663Zs5HUX9H7EQEnnBRpKryNbach39JCKPW6Glmi5wOYArZD6+onPievLNAu/Tf+rcaLIDTKfTnYBidEHnOE7XxcPJoajrHMSP8diChgZtV62qbnuEyfEvPf/gfKBoTbupKYNz6HUc35xpXSwUZ3h1Wx3/GKt23YPsMpuJbuDutrWLeB3losfzfO9C6XiQC4KZBD0atPYI2auodfWMZ1mWP4OogiUhAXpilRiGIftPygla8CeNp30CJSkKumAS1JJdPZ3r06otYW39HeiiEGjloDzX5QPUcu1thKLbly0ZteA0v7KBHneqsIXcJDcpujgbzTA1VzPKPM/yfNnQ3FowmqK92Wg8m6MZ1/e9+2vjrmnloQCjKTq1G2imZDqa4jiOot19+w5FHA26IjNzL7mNh/pDw701urc35CoRw+Z55hm5JQ2todS6svqNI8vEG6WHhPntiYyLlEzf91P4+9FmKf83laOu4Sdg9uf4ChIOh1eeAwyzqb7hZ+BK06FlbHzJ9rt4tpdY297+8NrziaT/+cJ+AjXxYZixMOsKAAAAAElFTkSuQmCC'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "gcloud Storage Bucket File Browser",
+                        "url"                   : "https://ext-code.com/utils/gcloud/file-browser/file-browser.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "file browser for google storage bucket",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
 
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
 
@@ -20,18 +45,25 @@
                                                                                 console.log('file-browser-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,did='file-browser';
+        var df=true,version='v2.0'
+        ;
 
+        var ace;
+        
         var ext;
         var $;
         var datatype;
         var menumod;
         var keydown;
+        var debug;
+        var gs;
+        var getmime;
         
         var menu;
         
+        var hdr;
         var filenav;
-        var filemod;
+        //var filemod;
         var log;
 
 
@@ -43,34 +75,33 @@
   //:
 
               
-        mod.stack.add   = init;
-        
         async function init(){
 
 
               //keydown                   = keydown();
               menu                      = menumod();
-              
+          
+              hdr                       = mod['gcloud-hdr'];    
               filenav                   = mod['file-nav'];
               //filemod                   = mod.filemod();
-              log                       = mod.log;
+              log                       = mod['log-mod'];
               
+              hdr.initmod({ext,$,menu});
               //filemod.initmod({ext,$,menumod,complete,source,focus,editor});
               filenav.initmod({ext,$,datatype});
               filenav.file    = file;
               filenav.dir     = dir;
               log.initmod({ext,$});
               
-              await filenav.init();
-              //filemod.init();
-              await log.init();
-
-  //:
+              await Promise.all([
+                    hdr.init(),
+                    filenav.init(),
+                    //filemod.init();
+                    log.init(),
+              ]);
 
               
-              await initdom(document.body);
-
-
+              initdom(document.body);
 
               
         }//init
@@ -88,23 +119,13 @@
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
               'google/google-storage/google-storage.js.api',
               '/js/string/getmime.js',
         );
-        [$,datatype,menumod,keydown,gs,getmime]   = await promise;
+        [$,datatype,menumod,keydown,debug,gs,getmime]   = await promise;
   
-      
-        var script      = document.createElement('script');
-        script.src      = 'https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js';
-        script.onload   = onload;
-        document.head.append(script);
-      
-      
-        function onload(){
-          
-              mod.stack.complete;
-              
-        }//onload
+        mod.stack.complete;
       
 })();
 
@@ -222,6 +243,10 @@
       
       <body>
       
+            <gcloud-hdr component=grp>
+                  <img class=title src='images/gcloud-file-browser.png' style='top:5px;height:60px' alt='gcloud file browser'>
+                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+            </gcloud-hdr>
 
             
             <div id=hdr>
@@ -355,7 +380,7 @@
                   </filemod>
                   -->
                   
-                  <file-nav component v2.0></file-nav>
+                  <file-nav component></file-nav>
                   
             </div file-browser>
 
@@ -394,7 +419,7 @@
             </div preview>
 
 
-            <log component v2.0></log>
+            <log-mod component></log-mod>
             
       </body>
 
@@ -436,6 +461,9 @@
         async function initdom(rootnode){   //c
                                                                                 debug('initdom');
               root                                  = rootnode;
+              
+              
+              hdr.initdom();
               
               keydown.initdom();
 
