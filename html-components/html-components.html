@@ -19,15 +19,20 @@
         
         
         <style>
-              /*
-              @font-face {
-                  font-family: "street-eagle";
-                  src: url(/fonts/street-eagle.ttf) format('truetype');
-              }
-              */
+        
+  /*
+  @font-face {
+      font-family: "street-eagle";
+      src: url(/fonts/street-eagle.ttf) format('truetype');
+  }
+  */
 
-              #links a {display:block}
-            
+  #links a {display:block}
+        
+        
+  .hr2
+    {border-top:1px solid blue;margin:30px}
+    
         </style>
         
         
@@ -59,6 +64,10 @@ github
         </div>
 
 
+
+
+
+
         <div id="scroll">
             <div id="center" style="">
 
@@ -66,35 +75,83 @@ github
 
 
         <div style="margin-bottom: 20px;">
-this is a work in progress, i intend to build up here a collection of reusable html components
+              i include here a standard example of web components, which i feel went some way as to introducing the ability to include complex functionality
+              into web pages, i feel however it fell short on a number of issues i have solved with my component.js library, these are
+              <ul>
+                    <li>
+                          elements were scoped to the global namespace, always a problem when functionality gets ever more complex its only a matter
+                          of time before clashes occur
+                    </li>
+                    <li>
+                          methods and properties associated with the component were added to the host node of the element, again thats ok for simple
+                          components, but when components get ever more complex its going to be a problem
+                    </li>
+              </ul>
+        </div>
+        
+        <div>
+              <p>
+                    to me a component / module should have a standard lifecycle that is
+              </p>
+              <ul>
+                    <li>
+                          initmod, this is where local depencies are passed to the component, they fundamentally should not be relying on global
+                          state to receive their local depencies
+                    </li>
+                    <li>
+                          init, this is where the component first get executed, its an asynchronous function that allows the component to check
+                          that it has everything it needs to run, including access to the network to load resources it may need
+                    </li>
+                    <li>
+                          initdom, this is where the component is able to set up its ui, internally build the references it needs to run effeiciently
+                          in code
+                    </li>
+              </ul>
+              <p>
+                    components should also be effectively namespaced so they are free to load any other components that they may need without having to
+                    worry that there will ever be a clash
+              </p>
+        </div>
+        <div>
+              <p>
+                    my component library just needs to be included as a script tag, it runs on window.onload, it has a fundatmental loading stack that allows
+                    init runs to be delayed until the loading stack is complete
+              </p>
+        </div>
+        
+        
+        
+        
+        <div class=hr2></div>
+        
+        
+        <div style="margin-bottom: 20px;">
+              users are able to supply their own components and therefore build up a rich selection of components
         </div>
         <div style="margin-bottom: 20px;">
-users are able to supply their own components and therefore build up a rich selection of components
-        </div>
-        <div style="margin-bottom: 20px;">
-to get the whole thing started and supply and example, i have created the first, simple, example
+              to get the whole thing started and supply and example, i have created the first, simple, example
         </div>
         
         <div style="margin-bottom: 20px;">
             <a href="select/select.html">
-custom select
+                  custom select
             </a>
         </div>
         
         <div style="margin-bottom: 20px;">
             <a href="checkbox-one/checkbox-one.html">
-checkbox-one
+                  checkbox-one
             </a>
         </div>
         
         <div style="margin-bottom: 20px;">
             <a href="log/log.html">
-log
+                  log
             </a>
         </div>
         
         <div style="margin-bottom: 20px;">
-keep checking back for more examples and an interface for user supplied examples
+              keep checking back for more examples and an interface for user supplied examples
         </div>
 
 
