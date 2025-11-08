@@ -4,7 +4,11 @@
       
       
       <script init>
-      
+
+            var ext;          //  ext here is a convenience library for easily loading modules
+            var $;            //  $ here is a simple library that contains some common dom operations
+            var datatype;     //  a simple function for determining datatypes, $ relies on it
+            
             var log;
             
             async function init(){
@@ -12,23 +16,36 @@
               
                   log   = mod['log-mod'];
                   
-                  log.initmod({});
+                  log.initmod({$});
                   
                   await log.init();
 
                   
+                  initdom();
+
+                  
             }//init
+
+(async()=>{
+
+        mod.stack.add;    //  this adds to the asynchronous counter
+        
+        ({ext}        = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+        $,datatype    = await ext.load.libs('js/dom/$.js','js/core/datatype.js');
+  
+        mod.stack.complete;   // this tells the component library the asynchonous work here is done
+              
+})();
             
             
             function initdom(){
               
                   log.initdom();
                   log.green('helloworld');
-
                   
             }//initdom
             
-            
+
       </script>
       
       
