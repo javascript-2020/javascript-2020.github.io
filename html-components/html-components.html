@@ -4,21 +4,84 @@
 
 <html>
 
-    <head>
-          <meta charset=utf-8>
-    
-          <meta style="display: block;" name="viewport" content="width=device-width, initial-scale=1">
+      <head>
+            <meta charset=utf-8>
+      
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+          
+            <link rel=icon type='image/x-icon' href='/favicon.ico'>
+
+
+            <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
+
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
         
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" style="display: block;">
-        <link href="/css/website.css" id="website-css" rel="stylesheet">
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('html-editor-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,version='v1.0'
+        ;
         
-        <style id="page-css">
-        </style>
-        <script id="page-js"></script>
+        var ace;
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var debug;
+
+        var menu;
+        
+        var ex1;
+        
+        
+        async function init(){
+        
+              menu    = menumod();
+              
+              ex1   = mod.ex1;
+              
+              ex1.initmod({ext,$,menu,ace});
+              
+              await Promise.all([
+                    ex1.init(),
+              ]);
+              
+              innitdom();
+              
+        }//init
+
+        
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
+        );
+        [$,datatype,menumod,keydown,debug]   = await promise;
+  
+        mod.stack.complete;
+              
+})();
+        
+            </script>
         
         
         
-        <style>
+            <link href="/css/website.css" id="website-css" rel="stylesheet">
+          
+            <style>
         
   /*
   @font-face {
@@ -33,13 +96,16 @@
   .hr2
     {border-top:1px solid blue;margin:30px}
     
-        </style>
+            </style>
         
         
         
-    </head>
+      </head>
+
     
-    <body>
+      <body>
+    
+    
         <div id="hdr" style="">
             <a id="home" class="hdr-icon" href="https://javascript-2020.github.io/">
                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAABA5JREFUOE+lkVtsVEUYx//fnDnn7KW73XZ7peVSWtvSC5duGrXGkBLFUH1AfdD0DWNMn3zwwURJZA2++CKJvtCoSBMkaoLEBDEYpBQCldRSUnq11La4lF7YstfuntuM2cIjKLGTTDLJN//f9/1mCE+womdP+Ae+u1V/99Ls8IHZ49l/i9AT8JA+czx06du5nxam459t8fg/b78Yth+X+09gODyqdW3ua5mfSLQOXkrEa3Tt5PqA3yx3FmXvvMiFzRY8G/vDB0qPrkv542NLB+Pp1GEpBAV8viOH3ip9b13Aj75cOBhLxg8LIagoUHAk/HbZ/wNeGZNvKhyha8MxNRhQ3yUiWloxjz2zI3BXEmbanqKvHzXpYz/l6qT8ghG6LEcmGENh7qJty5imMo8ATrXVUucjgVJKdusW1EgEjs8HcrtBo6NwCqozrddGFrozhrMdkA+zBE1lU60NJV2puby+xkYomQxkMglZWQmlpgYWXR6XtZyjUzgYAUMeAUVk48K5y3cnLMJpAHsXlhfhOAIVZWUgQr8lsvv2P7+1WnLskcA9CKSYgibbxknqH5MtNomfpZRuAIyIDEHijd6+5d+hKaelkHvHpqYghIOG2joojPVnLHVfx25fiEn2vZRSByCIKMMle5l6zieCI5ORU5msuTvn5dKVyYYtJR2BAk9qas74wTDFbkA8VGY55cHKDZ79mWRCnZxd/iVrOXW5otul9TXVVb5O73TPewoc+0eAXsoVfB7FeHpn8Sd5bt5sOeLVmb9X1fISV04VkYUsqio9tsbpt9Ws82v/jXuHU6u250E3ee6+wl+j8ImonyznrBDiOSEEdE2Bx21mGZMKAFVKrMHWIgIgljvAEZLM1YzmNkwHjLHcviJVpYM+6IkEdaGdvxeN7lyJx1BfXY2Az4KSCxIgpIRh2CAiqJzl3nAN7gggnlQxPj2NwvwAioLBGwYzX6APu2fLdc17wTSNesu2EfDnobU5kFNHxrQw8ucSlu+n4XVpcOkcVRsLUFLoRTLtYOBmDLFECirn0DR9wjDTe+hQz8omJuxeIcRWKSU0jSPUmA+vm2E2ch9/jM5DVRn8XhdSqybKi33YUV8G0wIGR+MwzQfTM8b+Eoy3U/irpRri1Dtze64ylkhge/02tDYXQkoLt+djWFpJQ1EYvG4NGcOCW+fYUOKHz+vFwM0VDE+MI+D3o2rT5oi0ZTuFj841kO4+MzQyUhxLxvHsrhBam0ugKBZiySySaRMKI+g6X5uGc2UN6nZ5MTC8hP6hQQR8+djV1LQsjcwr9P6nEz5P0L9rcGKcx2NxtIVa0NJQilQ2jTuLMUSjaXDOkefVkU0b4C4FwXwXKipKcX14EVcHryM/kI9Q/TZ7NZoY+gdEZNOa/2ZSPwAAAABJRU5ErkJggg==" class="hdr-icon-img" />
@@ -68,57 +134,69 @@ github
 
 
 
-        <div id="scroll">
-            <div id="center" style="">
-
-<!-- page html -->
-
-
-        <div style="margin-bottom: 20px;">
-              i include here a standard example of web components, which i feel went some way as to introducing the ability to include complex functionality
-              into web pages, i feel however it fell short on a number of issues i have solved with my component.js library, these are
-              <ul>
-                    <li>
-                          elements were scoped to the global namespace, always a problem when functionality gets ever more complex its only a matter
-                          of time before clashes occur
-                    </li>
-                    <li>
-                          methods and properties associated with the component were added to the host node of the element, again thats ok for simple
-                          components, but when components get ever more complex its going to be a problem
-                    </li>
-              </ul>
-        </div>
+        <div id=scroll>
         
-        <div>
-              <p>
-                    to me a component / module should have a standard lifecycle that is
-              </p>
-              <ul>
-                    <li>
-                          initmod, this is where local depencies are passed to the component, they fundamentally should not be relying on global
-                          state to receive their local depencies
-                    </li>
-                    <li>
-                          init, this is where the component first get executed, its an asynchronous function that allows the component to check
-                          that it has everything it needs to run, including access to the network to load resources it may need
-                    </li>
-                    <li>
-                          initdom, this is where the component is able to set up its ui, internally build the references it needs to run effeiciently
-                          in code
-                    </li>
-              </ul>
-              <p>
-                    components should also be effectively namespaced so they are free to load any other components that they may need without having to
-                    worry that there will ever be a clash
-              </p>
-        </div>
-        <div>
-              <p>
-                    my component library just needs to be included as a script tag, it runs on window.onload, it has a fundatmental loading stack that allows
-                    init runs to be delayed until the loading stack is complete
-              </p>
-        </div>
+              <div id=center>
+
+
+
+                    <div style="margin-bottom: 20px;">
+                          i include here a standard example of web components, which i feel went some way as to introducing the ability to include complex functionality
+                          into web pages, i feel however it fell short on a number of issues i have solved with my component.js library, these are
+                          <ul>
+                                <li>
+                                      elements were scoped to the global namespace, always a problem when functionality gets ever more complex its only a matter
+                                      of time before clashes occur
+                                </li>
+                                <li>
+                                      methods and properties associated with the component were added to the host node of the element, again thats ok for simple
+                                      components, but when components get ever more complex its going to be a problem
+                                </li>
+                          </ul>
+                    </div>
         
+                    <div>
+                          <p>
+                                to me a component / module should have a standard lifecycle that is
+                          </p>
+                          <ul>
+                                <li>
+                                      initmod, this is where local depencies are passed to the component, they fundamentally should not be relying on global
+                                      state to receive their local depencies
+                                </li>
+                                <li>
+                                      init, this is where the component first get executed, its an asynchronous function that allows the component to check
+                                      that it has everything it needs to run, including access to the network to load resources it may need
+                                </li>
+                                <li>
+                                      initdom, this is where the component is able to set up its ui, internally build the references it needs to run effeiciently
+                                      in code
+                                </li>
+                          </ul>
+                          <p>
+                                components should also be effectively namespaced so they are free to load any other components that they may need without having to
+                                worry that there will ever be a clash
+                          </p>
+                    </div>
+        
+                    <div>
+                          <p>
+                                my component library just needs to be included as a script tag, it runs on window.onload, it has a fundatmental loading stack that allows
+                                init runs to be delayed until the loading stack is complete
+                          </p>
+                    </div>
+        
+                    <div>
+                          <p>
+                                i demonstrate here the simplest form i can come up with at the moment
+                          </p>
+                          <snippet-html-console id=ex1 component v2.0 src='ex/log-ex.html'></snippet-html-console>
+                    </div>
+                    
+                    <div>
+                    </div>
+        
+              
         
         
         
@@ -153,6 +231,12 @@ github
         <div style="margin-bottom: 20px;">
               keep checking back for more examples and an interface for user supplied examples
         </div>
+
+
+
+
+
+
 
 
         <code class=code>
@@ -192,39 +276,40 @@ github
                     
         </code>
 
-        <br>
+                        <br>
         
-        <div id=links>        
-              <a href='https://web.dev/articles/custom-elements-v1'>Custom Elements v1 - Reusable Web Components<a>
-              <a href='https://syntackle.com/blog/web-components-and-custom-elements-5LuzI/'>Web Components & Custom Elements</a>
-              <a href='https://javascript.info/custom-elements'>Custom elements</a>
-              <a href='https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements'>Using custom elements</a>
-              <a href='https://blog.jim-nielsen.com/2023/html-web-components-an-example/'>HTML Web Components: An Example</a>
-              <a href='https://web.archive.org/web/20140118032429/http://www.html5rocks.com/en/tutorials/webcomponents/customelements/'>Custom Element : Defining new elements in html</a>
-        </div>
+                        <div id=links>        
+                              <a href='https://web.dev/articles/custom-elements-v1'>Custom Elements v1 - Reusable Web Components<a>
+                              <a href='https://syntackle.com/blog/web-components-and-custom-elements-5LuzI/'>Web Components & Custom Elements</a>
+                              <a href='https://javascript.info/custom-elements'>Custom elements</a>
+                              <a href='https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements'>Using custom elements</a>
+                              <a href='https://blog.jim-nielsen.com/2023/html-web-components-an-example/'>HTML Web Components: An Example</a>
+                              <a href='https://web.archive.org/web/20140118032429/http://www.html5rocks.com/en/tutorials/webcomponents/customelements/'>Custom Element : Defining new elements in html</a>
+                        </div>
         
-        
-        
-<!-- page html -->
 
+                  </div>
             </div>
-        </div>
 
 
-        <div id="ftr" style="margin-top: 20px; background-color: rgb(0, 103, 165); display: flex; padding-bottom: 10px;">
-            <img src="/javascript-2020.png" style="height: 40px;" />
-            <div id="spc" style="flex: 1 1 0%;">
-            </div>
-            <a href="https://www.textstudio.com/" style="margin-right: 30px; margin-top: 10px; color: white; text-decoration: none; text-align: right;">
-                <div>
-page title designed with
-                </div>
-                <div style="text-decoration: underline;">
-textstudio.com
-                </div>
-            </a>
-        </div>
-    </body>
-    <script style="display: block;" src="/js/website.js" id="website-js">
-    </script>
+        
+      </body>
+    
+      <script>
+
+      
+        function initdom(){
+          
+              ex1.initdom();
+              
+        }//initdom
+        
+        
+      </script>
+    
 </html>
+
+
+
+
+
