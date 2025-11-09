@@ -43,18 +43,21 @@
         var menu;
         
         var ex1;
-        
+        var ex2;
         
         async function init(){
         
               menu    = menumod();
               
               ex1   = mod.ex1;
+              ex2   = mod.ex2;
               
               ex1.initmod({ext,$,menu,ace});
+              ex2.initmod({ext,$,menu,ace});
               
               await Promise.all([
                     ex1.init(),
+                    ex2.init(),
               ]);
               
               initdom();
@@ -146,7 +149,7 @@
 
 
             <html-components-hdr component=page>
-                  <img class=title src='images/html-components.png' style='top:-15px;height:80px' alt='deploy cloud run service'>
+                  <img class=title src='images/html-components.png' style='top:-5px;height:80px' alt='deploy cloud run service'>
                   <time slot=date datetime=2025-11-08>08 Nov 2025</time>
             </html-components-hdr>
     
@@ -220,6 +223,10 @@
                     </div>
                     
                     <div>
+                          <p>
+                                this is the code for the log-mod component
+                          </p>
+                          <web-editor id=ex2 component fullsize src='https://libs.ext-code.com/html/log-mod/log-mod.html'></web-editor>
                     </div>
         
               
@@ -325,8 +332,12 @@
 
       
         function initdom(){
+
           
               ex1.initdom();
+              ex2.initdom();
+              
+              
               
         }//initdom
         
