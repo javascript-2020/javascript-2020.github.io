@@ -1,12 +1,18 @@
 
 <input id=input type=file><br><br>
 <script type=module>
-      import MP4Box from 'https://cdn.jsdelivr.net/npm/mp4box/+esm';
+
+      import * as MP4Box from 'https://cdn.jsdelivr.net/npm/mp4box/+esm';
+      
       input.onchange    = async e=>{
+        
             var buf         = await input.files[0].arrayBuffer();
             buf.fileStart   = 0;
             mp4.appendBuffer(buf);
+            
       }//onchange
+      
       var mp4       = MP4Box.createFile();
       mp4.onReady   = info=>document.body.append(info.mime+' , '+MediaSource.isTypeSupported(info.mime));
+      
 </script>
