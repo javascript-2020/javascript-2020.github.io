@@ -1,14 +1,41 @@
 
 
 
+<!DOCTYPE html>
+
 <html>
 
       <head>
+            <meta charset=utf-8>
       
-            <title>encrypt</title>
+            <title>
+                  Encrypt / Decrypt File Or Text
+            </title>
+            
+            <meta name=description content='encrypt or decrypt a file or text with password or rsa key'>
             
             <base href='https://ext-code.com/utils/x509/encrypt/'>
-            <base href='https://javascript-2020.github.io/utils/x509/encrypt/'>
+            <link rel=canonical href='https://ext-code.com/utils/x509/encrypt/encrypt.html'>
+            
+            <link rel=icon type='image/x-icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABKVBMVEVHcEzSc2Dgd0/lpD/Nhl7hkkjorTbopzjihkvji0TptzXfcFPea1bhfkzosznllj/npDrYilbnsDrorjflmT/psjXmnzzmozvlqT7mnD7mozvnqjndYVfgeE/qsjThgUrprTTqsjXosDXjiUbmnD3ij0bklkHnnzzqrzXpqjbdYFneZlfeb1XjikXig0nprDbnnj3nqznlkj/kkUPlkEHnoDvqtjHqtTPpszLlkkHopTnoqzjqtjLbZ1bdZFfjhUffdE/kkUPjhkfnoTzllz/jjUXji0bprDblkUHjkULqsTTkkULkjULklD/opzfnmzznnTvfb1HcXVzdXVvkjkPifEvhe03mnjzqsjXquzPopTfquTDcjkvhfEzhf0vquDLqujHpqjbopDmLy+L0AAAAY3RSTlMAAjcSAQs4lDkmIZk4mRtHZAIWKpFVWTEGUkc/NZl6LYlaSH92IyqLppyYmBuXk6OjDnBUdX2VS42poyWkEk+jIpCKkZZjp4OXQq1svmSzx7JkQa23kVxCbl6qggWtfGWb3ctRuHp/AAABeklEQVQoz62TV3eCQBCFVwUEKwKCYC80e+/RqLHHkt7r//8RWR4QTYhP3pc5Z75zZ3fnngXgxPIdg9hLvRm3/QNLnP/DH48VOubY8YTVlQJJtk39VIJeNChaJWXWDDeakUdY6CIrm+F4JJaAxVbkL3zHcMUU+yNTARY05Z2Z7IOOFZ5rD16o8i2O/vEu7Hb7aMQwzGCQ6w8NHvBAORQ/ZbTQftTYxme3qyhf67ZgnOS26t4O7XBgWHCNlQIAEOP56wH21LsNTFXb39qmpVZyMtZwWMdIgILeoLDFOAosqyCaD+xj6G+q8NIbnpmDSg4lRARip47RYKLjEQR+KwEEoBM8T8Cm5epcz2lqD3KyzGy0ti+Hu7UnIa6z3XAbz7K82KpWRIDk3980H9LLGjmnarWU1JolcQCid/daHEhId5dYkhNXq+UlsbdhSzqkjyZTnFQuVw8w2GFdwySOW6FcUKHeTfYXzibd7nDYCZXJpNPXJonrsliQE3yoHxMyLW60QFkPAAAAAElFTkSuQmCC'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Encrypt / Decrypt File Or Text",
+                        "url"                   : "https://ext-code.com/utils/x509/certificate-info/certificate-info.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Encrypt or Decrypt a file or text using password or rsa private key",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
 
 
             
@@ -29,7 +56,7 @@
         var keydown;
         var encrypt;
 
-
+        var hdrl
         var filemod;
         var editor;
         var log;
@@ -40,26 +67,27 @@
   //:
   
   
-        mod.stack.add   = init;
-        
         async function init(){
 
               menu                      = menumod();
               encrypt                   = encrypt();
           
-              filemod                   = mod.filemod;
-              editor                    = mod.editor;
-              log                       = mod.log;
+              hdr                       = mod['x509-hdr'];
+              filemod                   = mod['file-mod'];
+              editor                    = mod['web-editor'];
+              log                       = mod['log-mod'];
 
 
               encrypt.initmod({ext});
               
+              hdr.initmod({ext,$,menu});
               filemod.initmod({ext,$,menu,menumod,complete,focus,source,editor,log});
               editor.initmod({ext,$,menu,menumod});
               log.initmod({ext,$});
 
               await Promise.all([
                     encrypt.init(),
+                    hdr.init(),
                     filemod.init(),
                     editor.init(),
                     log.init(),
@@ -107,8 +135,8 @@
       font-family:arial;
     }
   
-  #hdr
-    {}
+  x509-hdr
+    {margin-bottom:20px}
 
   #encrypt-root
     {margin-bottom:10px;display:flex;gap:10px}
@@ -157,6 +185,12 @@
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
   .spc
     {flex:1}
+
+
+  .visually-hidden
+    {position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;
+      clip:rect(0 0 0 0) !important;white-space:nowrap !important;border:0 !important}
+
             
             </style>
 
@@ -164,12 +198,25 @@
       
       <body>
       
+      
+            <x509-hdr component=grp>
+                  <h1 class=visually-hidden>
+                        encrypt or decrypt a file or text
+                  </h1>
+                  <img class=title src='images/encrypt-decrypt.png' style='top:-5px;height:90px'>
+                  <time slot=date datetime=2025-11-15>
+                        15 Nov 2025
+                  </time>
+            </x509-hdr>
+
+<!--      
             <div>
                   <h3>encrypt</h3>
                   <div>
                         note : encrypt before save
                   </div>
             </div>
+-->            
             
             <div id=hdr>
             
@@ -217,17 +264,17 @@
                         
                   </div>
                         
-                  <filemod component v2.0></filemod>
+                  <file-mod component></file-mod>
                   
             </div>
             
             <div id=view>
 
-                  <editor component v2.0></editor>
+                  <web-editor component></web-editor>
             
             </div>
 
-            <log component v2.0></log>
+            <log-mod component></log-mod>
             
       </body>
       
@@ -256,7 +303,7 @@
           
               var root                                  = rootnode;
 
-              var hdr                                   = $(root,'#hdr');
+              hdr.initdom();
               
               
               ui.password.root                          = $(root,'#password-root');
