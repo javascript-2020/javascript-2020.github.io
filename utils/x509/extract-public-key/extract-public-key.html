@@ -1,20 +1,142 @@
 
 
+
+<!DOCTYPE html>
+
 <html>
 
       <head>
+            <meta charset=utf-8>
     
-            <title>extract public key</title>
+            <title>
+                  Extract Public Key
+            </title>
+            
+            <meta name=description content='extract public key from x509 certificate'>
             
             <base href='https://ext-code.com/utils/x509/extract-public-key/'>
-            <base href='https://javascript-2020.github.io/utils/x509/extract-public-key/'>
+            <link rel=canonical href='https://ext-code.com/utils/x509/extract-public-key/extract-public-key.html'>
             
-            <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico'>
+            <link rel=icon type='image/x-icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAz1BMVEVHcExFjOkWsvNGjug9jOxBhesulvAMtfsqofAvoO4pn+8hqPA0j+4WtvQhoPQfuvENuPkYrPchsfMYrPcepfVFiOgqnPE5jO1CguofrfEbrPULufoLu/kIu/sUtfMRsfljr/Q+h+0tl/JmufcJuPwVrfiTz/kZqvcknPNRoPKky/um0vobp/YcpfZmo/NltfY1nvKUxvl7vvdJtPYtqPVDvfms1/o3q/VEku9Ki+09mfFZlfCb1/mfxPu54PmEx/q64/lsw/dTqvOUvflcsvflva1XAAAAH3RSTlMAKFwUi9XO/jUfW1zpJf4KqOcY1+1BrNHsPaPJhNJObHCDBwAAAM1JREFUKM/lkUcSgkAURAEJIyoK5sjA4ICggBJMiPH+Z5IRq3SBxQHs7avf1d2fov5aFZqu/IQ026/XebZaTLuctlssDjoPCm85zV3bsQN1vuie1fwguME49fSeKAIFAGrINJqzRp6K22/O5zVEaeJbltRpd+SRrLZbwvjF6cHxhCIHh9fLxvO87WppzueqKhhGq/nGjxDHUYYRQl94quTmdxtCjBNMzKUMmwQLxuQdzbVteAuikEQTa0QMUfVTzHHwj2Ils5SNWvaSP9QTHZEaQktZsJwAAAAASUVORK5CYII='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
 
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Extract Public Key From X509 Certificate",
+                        "url"                   : "https://ext-code.com/utils/x509/certificate-info/certificate-info.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Extract public key from x509 certificate",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
 
             <script init>
-            
-            </script>
+                                                                                console.clear();
+                                                                                console.log('extract-public-key-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,did='html'
+        ;
+
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+
+        var hdr;
+        var filemod;
+        var log;
+        
+
+
+        
+  //:
+  
+  
+        async function init(){
+
+
+              await load();
+
+
+              menu                      = menumod();
+          
+              hdr                       = mod['x509-hdr'];
+              //filemod                   = mod['file-mod'];
+              log                       = mod['log-mod'];
+
+
+              hdr.initmod({ext,$,menu});
+              //filemod.initmod({ext,$,menu,menumod,complete,focus,source,editor,log});
+              log.initmod({ext,$});
+
+              await Promise.all([
+                    hdr.init(),
+                    //filemod.init(),
+                    log.init(),
+              ]);
+
+
+          
+              initdom(document.body);
+
+
+        }//init
+
+      
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+        );
+        [$,datatype,menumod,keydown]   = await promise;
+  
+        mod.stack.complete;
+              
+})();
+
+
+
+  
+        async function load(){
+
+              //var nodeForge   = await import('https://cdn.jsdelivr.net/npm/node-forge/+esm');              
+              var txt         = localStorage['node-forge'];
+                            
+              if(!txt){
+                    var url   = 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
+                                                                                console.log(url);
+                    var res   = await fetch(url);
+                    txt       = await res.text();
+                    localStorage['node-forge']    = txt;
+              }
+              
+              var blob        = new Blob([txt],{type:'text/javascript'});
+              var url         = window.URL.createObjectURL(blob);
+              var nodeforge   = await import(url);
+              pki             = nodeforge.default.pki;
+                                                                                console.log(pki);
+        }//load
+      
+
+            </script init>
             
 
             <style>
@@ -56,6 +178,12 @@
                           {flex:1}
     pre
                           {border:1px solid lightgray;font-size:16px;font-family:monospace}
+
+
+  .visually-hidden
+    {position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;
+      clip:rect(0 0 0 0) !important;white-space:nowrap !important;border:0 !important}
+
                           
             </style>
                 
@@ -64,6 +192,18 @@
     
       <body>
 
+            <x509-hdr component=grp>
+                  <h1 class=visually-hidden>
+                        extract public key
+                  </h1>
+                  <img class=title src='images/extract-public-key.png' style='top:-5px;height:55px'>
+                  <time slot=date datetime=2025-11-15>
+                        15 Nov 2025
+                  </time>
+            </x509-hdr>
+
+
+<!--
         <div class=hdr>
             <a class=hdr-icon href='https://javascript-2020.github.io/'>
                 <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAqFBMVEVHcEwjmpckopg9f3YxpJM6r5kjq58Nmp0Nn6QRoKExrpshnpgtoJUdoZwYnZ02spwYpaEmrZ8djpINn6Qtrp4inpcjqZ8SoqM3s5w0sp01spwrr58vr50oqpwdnpo0sZwtrJwUpKMMoaUtq50op5ssqpopppseqaM1sJwgpJ0NoaUSoaI3kYobqaMSpKQrr58PoaMVpaIOoKMLpKcXpaEkqp8Rm58YrKUL0CR4AAAAOHRSTlMACBkBCyinK59CQhUOLyKjqbUGpZgSYn6rp5WsekcmgkyWmCkmNB7AYTiuVgKuuo91i2PLn2lJ7kISMf4AAAElSURBVCjPrdPXloIwEAbgBDFKCRo6SO8lYEHd93+zxV7Zm2WuSL6Tk/MPEwBGLFH8SzFCeFiDXNeJ+7GtGds1D+ghDzzPzXX6xlJbq75s5KVLiJsSB76xIhd22Mz0pkyRnqzW2htD/SeUjL0EQKY60nqRvTLXGl64PR/SfDVxVvETZ123w8vN9Ur5YKUF4R9cd/WxqiePgCs3IMF1QXcVt6vK59tSqyjN4hwQbhS8mUuvWTLbwYtTQGhEjLHVPprv+4ztQ8AeRVn50uipBcXg/IPgfPaFF+z1axyeMEkcJwwdYHHZINQ02gALS49lJcQMci/COGzdue8apRQwNz4tYvM207JSRVEUhvtW6KeBIFVVbds07xPncZfCfWSK+UtNJ/9+VL/nTBuX7xjDZwAAAABJRU5ErkJggg==' />
@@ -84,7 +224,7 @@
                   22 Apr 2025
             </div>
         </div hdr>
-
+-->
 
         <div id=view>
         
@@ -124,26 +264,6 @@
     
     
       <script>
-                                                                                console.clear();
-                                                                                console.log('extract-public-key');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-                                                                                
-        var $   = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
-        $.mousetext   = function(e,text){
-        
-              var left            = e.pageX+'px';
-              var top             = e.pageY+'px';
-              var style           = {position:'absolute',left,top,padding:'10px',border:'1px solid dimgray',borderRadius:'3px',zIndex:999999,background:'white'};
-              var append          = document.body;
-              var div             = $.create.div({style,text,append});
-              var rem             = ()=>div.remove();
-              div.onmouseleave    = rem;
-              div.onclick         = rem;
-              var time            = 700;
-              setTimeout(rem,time);
-              
-        }//mousetext
 
 
         var pki;
@@ -157,46 +277,17 @@
         btn.key     = {};
 
 
-        setTimeout(init,50);
-        
-        async function init(){
-          
-              await load();
-              
-              initdom();
-              
-        }//init
-
-  //:
-  
-        async function load(){
-
-              //var nodeForge   = await import('https://cdn.jsdelivr.net/npm/node-forge/+esm');              
-              var txt         = localStorage['node-forge'];
-                            
-              if(!txt){
-                    var url   = 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
-                                                                                console.log(url);
-                    var res   = await fetch(url);
-                    txt       = await res.text();
-                    localStorage['node-forge']    = txt;
-              }
-              
-              var blob        = new Blob([txt],{type:'text/javascript'});
-              var url         = window.URL.createObjectURL(blob);
-              var nodeforge   = await import(url);
-              pki             = nodeforge.default.pki;
-                                                                                console.log(pki);
-        }//load
-
   //:  
         
         function initdom(){
           
               var rootnode                              = document.body;
               
-              var root                                  = {};
 
+              hdr.initdom(rootnode);
+
+
+              var root                                  = {};
               
               root.cert                                 = $(rootnode,'#cert-root');
               
@@ -214,6 +305,9 @@
               
               key                                       = $(root.key,'#key');
 
+
+
+              log.initdom();
               
         }//initdom
 
