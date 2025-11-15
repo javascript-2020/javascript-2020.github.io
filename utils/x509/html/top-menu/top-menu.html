@@ -1,6 +1,6 @@
 
 
-<top-menu style='position:relative'>
+<top-menu style='position:relative' v2.0>
 
       <template shadowrootmode=open>
 
@@ -66,15 +66,18 @@
       
       <script>
       
-mod['top-menu']   = function(){
-                                                                                true && console.log('top-menu');      
-  var obj   = {};
+(function top_menu({mod,dom,host}){
+
+  var obj   = {
+        version   : 'v2.0',
+  };
               
-        var menu
+        var $,menu
         ;
                   
         obj.initmod   = function(params){
           
+              $         = params.$;
               menu      = params.menu;
               
         }//initmod
@@ -95,8 +98,7 @@ mod['top-menu']   = function(){
               
         obj.initdom   = function(rootnode){
         
-              var root                        = $.$(rootnode,'top-menu');
-              var shadow                      = root.shadowRoot;
+              var shadow                      = host.shadowRoot;
 
               menu.add.style(shadow);
               
@@ -123,7 +125,7 @@ mod['top-menu']   = function(){
 
   return obj;
   
-}//mod
+})//top_menu
                   
       </script>
       
