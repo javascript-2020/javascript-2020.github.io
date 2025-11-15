@@ -1,0 +1,464 @@
+
+
+<!DOCTYPE html>
+
+
+<html>
+
+      <head>
+            <meta charset=utf-8>
+    
+            <title>
+                  Generate Key Pair
+            </title>
+            
+            <meta name=description content='generate rsa key pair'>
+            
+            <base href='https://ext-code.com/utils/x509/generate-key-pair/'>
+            <link rel=canonical href='https://ext-code.com/utils/x509/generate-key-pair/generate-key-pair.html'>
+            
+            <link rel=icon type='image/x-icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAVFBMVEVHcEwAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEAAAABAQEBAQEBAQEBAQEAAAABAQEBAQEAAAABAQEBAQEBAQEBAQEBAQEAAAABAQEAAACsl1DQAAAAG3RSTlMA+Nbo8C8MBGaeFKt9TBx0ijlZy5XAUkQi4Lb6C8LjAAABM0lEQVQoz31TibKDIAzkkBsqBbXV/f//fMHOq9IrMw6jmw2bTWSsC6PZ19Bp2ja3fMm4Bw4KHu6f0MtMkBCUsnnzDkegJu9TBeISXyt4gfVKRx5XiDKI1MPXAY6UTwgOQ1n33FPcODJjC8eWwZMjBV0HSiIYE8BtwKD8jKGja/qwkIBqB1TNLGC76pZD2hXztgPlFdYT4CqE445uJQHLm/YaKMUSepMQlx5u7EWSqSXFlbzpUbUTSBh5S0/wzykq9SCPdKS5gTz7wxEpJ3X9v82nKCBPnlMTkOJB3qP5dmppFG3Qh9TyIuwShxO5qdzMu+xnudp3baYzmTHXD+RMNqpk0WeTn89XK5vOthtH8cXqozD4Svb7z/uscrzd20p8/yHYCJQfMG1e/AHrHH4VZ+bh2h/qTRXn16T2TQAAAABJRU5ErkJggg=='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Generate Key Pair",
+                        "url"                   : "https://ext-code.com/utils/x509/generate-https-certificate/generate-https-certificate.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Generate rsa keypair",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('generate-key-pair-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+            
+        var df=true,did='gen-https-cert'
+        ;
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var debug;
+
+
+        var menu;
+        
+        
+        var hdr;
+        
+  //:
+  
+            
+        async function init(){
+        
+        
+              menu    = menumod();
+              
+              
+              hdr   = mod['x509-hdr'];
+              
+              hdr.initmod({ext,$,menu});
+              
+              await Promise.all([
+                    hdr.init(),
+              ]);
+              
+              
+              
+              initdom(document.body);
+
+
+                                                                                console.log('ready');
+        }//init
+        
+        
+        
+        
+(async()=>{
+  
+        mod.stack.add;
+
+        var {ext}   = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js');
+        
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
+        );
+        [$,datatype,menumod,keydown,debug]   = await promise;
+
+
+        mod.stack.complete;
+
+})();
+        
+            </script init>
+
+
+            
+            
+            <style>
+        
+  html
+    {height:100%}
+  body
+    {height:calc(100% - 42px);margin:20px;display:flex;flex-direction:column;font-family:arial}
+    
+  x509-hdr
+    {margin-bottom:20px}
+    
+  .hdr                  
+    {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
+      padding-bottom:10px;border-bottom:3px solid lightblue}
+  .hdr-icon             
+    {display:inline-block;text-align:center;background:whitesmoke;border-radius:5px;
+      border:1px solid lightgray;padding:5px 3px 0px;cursor:pointer;margin-right:10px;
+      min-width:50px}
+  .hdr-icon-img         
+    {width:25px;height:25px}
+  .hdr-icon-label       
+    {margin:2px 0 0}
+  .hdr-title            
+    {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
+  .hdr-date
+    {float:right}
+
+  input
+    {padding:5px 10px;font-size:16px}
+  input[type=button]
+    {cursor:pointer}
+
+  #btns
+    {margin-bottom:20px}
+  #view
+    {display:flex;flex:1;gap:20px}
+  #private-root
+    {flex:1;display:flex;flex-direction:column}
+  #private
+    {flex:1}
+  #public-root
+    {flex:1;display:flex;flex-direction:column}
+  #public
+    {flex:1}
+  pre
+    {border:1px solid lightgray;padding:10px;font-family:monospace}
+
+
+  .visually-hidden
+    {position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;
+      clip:rect(0 0 0 0) !important;white-space:nowrap !important;border:0 !important}
+
+                          
+            </style>
+        
+        
+      </head>
+    
+    
+      <body>
+
+
+            <x509-hdr component=grp v2.0>
+                  <h1 class=visually-hidden>
+                        Generate Key Pair
+                  </h1>
+                  <img class=title src='images/generate-key-pair.png' style='top:0px;height:65px' alt='generate key pair'>
+                  <time slot=date datetime=2025-11-15>
+                        15 Nov 2025
+                  </time>
+            </x509-hdr>
+
+
+
+
+<!--    
+        <div class=hdr>
+            <a class=hdr-icon href='https://javascript-2020.github.io/'>
+                <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAqFBMVEVHcEwjmpckopg9f3YxpJM6r5kjq58Nmp0Nn6QRoKExrpshnpgtoJUdoZwYnZ02spwYpaEmrZ8djpINn6Qtrp4inpcjqZ8SoqM3s5w0sp01spwrr58vr50oqpwdnpo0sZwtrJwUpKMMoaUtq50op5ssqpopppseqaM1sJwgpJ0NoaUSoaI3kYobqaMSpKQrr58PoaMVpaIOoKMLpKcXpaEkqp8Rm58YrKUL0CR4AAAAOHRSTlMACBkBCyinK59CQhUOLyKjqbUGpZgSYn6rp5WsekcmgkyWmCkmNB7AYTiuVgKuuo91i2PLn2lJ7kISMf4AAAElSURBVCjPrdPXloIwEAbgBDFKCRo6SO8lYEHd93+zxV7Zm2WuSL6Tk/MPEwBGLFH8SzFCeFiDXNeJ+7GtGds1D+ghDzzPzXX6xlJbq75s5KVLiJsSB76xIhd22Mz0pkyRnqzW2htD/SeUjL0EQKY60nqRvTLXGl64PR/SfDVxVvETZ123w8vN9Ur5YKUF4R9cd/WxqiePgCs3IMF1QXcVt6vK59tSqyjN4hwQbhS8mUuvWTLbwYtTQGhEjLHVPprv+4ztQ8AeRVn50uipBcXg/IPgfPaFF+z1axyeMEkcJwwdYHHZINQ02gALS49lJcQMci/COGzdue8apRQwNz4tYvM207JSRVEUhvtW6KeBIFVVbds07xPncZfCfWSK+UtNJ/9+VL/nTBuX7xjDZwAAAABJRU5ErkJggg==' />
+                <div class=icon-label>
+                    home
+                </div>
+            </a>
+            <a id=github class=hdr-icon href='https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/x509/generate-certificate-chain/generate-certificate-chain.html'>
+                <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAbFJREFUOE/l1E2IT2EUx/HPIFI2lJfGwmYsxFZKEUWjKWM3pZSpKcqeBcpLZsNeUeNlZWdBSVFmkAXbmRWbWRCRjYW8jv+pc/V4utff3q3bvfc5z/k+557zO2dA97UHy7ERx3LbZbzEZzxscx3o4L3GWizusP/AO6yv7TXwAo5g9V8iL03vcRWnm8USeBHH/xFUb7uEE7HYAOMZeVmGm7iN61jVccBHjOMQxvAl870QoIDMZ87CfxR3E7QDTyroTjzOtf24k++R0w0BHMY9LEpDCeyXgRL4EyMBjEKcSs+o3r4uSbTQQ1r3CzVMBnCh2PimTQp9wgyJDZZV/g+Bz7E1c/AdezHdr7xp34UHvcIuye8XUZSy9A1nDT5UBSvPCL9oz9BeeY2GYR3msBIHsi834WlPTt9yrXQKIUdEIfoVhSG6Z3PTejdwGG+xDc9SPud7UZ6popjEyZaURMuOl8NhKvtzpKf4yGvMwk95l/5xwNkKeA0T5XCI96EcRbsLh5mWAtXARznyXtXA5tD4/YNYmuBzVTQN8Ctu5V/93tI1sbdjS463KxXwaFZ/NnP9h/kXPcNYElddRc0AAAAASUVORK5CYII='>
+                <div class=hdr-icon-label>
+                      github
+                </div>
+            </a>
+            
+            <img class=hdr-title src='images/generate-key-pair.png' style='height:60px;top:-15px'>
+            
+            <div class=hdr-date>
+                  22 Apr 2025
+            </div>
+        </div hdr>
+-->
+
+
+
+
+        <div id=btns>
+              <input value=generate type=button>
+        </div>
+        
+        <div id=view>
+        
+              <div id=private-root>
+                    <div>private key</div>
+                    <div>
+                          <input value=copy type=button>
+                          <input value=save type=button>
+                    </div>
+                    <pre id=private></pre>
+              </div>
+              
+              <div id=public-root>
+                    <div>public key</div>
+                    <div>
+                          <input value=copy type=button>
+                          <input value=save type=button>
+                    </div>
+                    <pre id=public></pre>
+              </div>
+              
+        </div>
+
+    
+      </body>
+      
+      
+      <script>
+                                                                                console.clear();
+                                                                                console.log('generate-key-pair.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+
+
+        var $   = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+        $.mousetext   = function(e,text){
+        
+              var left            = e.pageX+'px';
+              var top             = e.pageY+'px';
+              var style           = {position:'absolute',left,top,padding:'10px',border:'1px solid dimgray',borderRadius:'3px',zIndex:999999,background:'white'};
+              var append          = document.body;
+              var div             = $.create.div({style,text,append});
+              var rem             = ()=>div.remove();
+              div.onmouseleave    = rem;
+              div.onclick         = rem;
+              var time            = 700;
+              setTimeout(rem,time);
+              
+        }//mousetext
+
+
+        var keys;
+        var pem       = {};
+        
+        
+        
+        var btn       = {};
+        btn.private   = {};
+        btn.public    = {};
+        var fn        = {};
+        var pretty    = {};
+
+        
+  //:
+  
+  
+
+        function initdom(rootnode){
+        
+              var root                                  = document.body;  
+              
+              hdr.initdom(root);
+              
+              $('[value=generate]').onclick             = btn.generate;
+              
+              
+              var priv_root                             = $('#private-root');
+              $(priv_root,'[value=copy]').onclick       = btn.private.copy;
+              $(priv_root,'[value=save]').onclick       = btn.private.save;
+              
+              var pub_root                              = $('#public-root');
+              $(pub_root,'[value=copy]').onclick        = btn.public.copy;
+              $(pub_root,'[value=save]').onclick        = btn.public.save;
+              
+        }//initdom
+
+
+  //:
+  
+
+        btn.generate    = async function(){        
+        
+              var params                  = {name:'RSA-OAEP',modulusLength:1024,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'};
+              keys                        = await window.crypto.subtle.generateKey(params,true,['encrypt','decrypt']);
+              
+              pem.private                 = await fn.export.private(keys.privateKey);
+              $('#private').textContent   = pem.private
+              
+              pem.public                  = await fn.export.public(keys.publicKey);
+              $('#public').textContent    = pem.public;
+
+
+              
+        }//generate
+
+
+        btn.private.copy    = async function(e){
+          
+              var err;
+              try{
+                
+                    await navigator.clipboard.writeText(pem.private);
+                    
+              }
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }
+              if(err){
+                     return;
+              }
+              $.mousetext(e,'copied');
+              
+        }//copy
+        
+        
+        btn.private.save    = function(){
+          
+              save('private.key.pem',pem.private);
+          
+        }//save
+        
+        
+        btn.public.copy   = async function(){
+
+              var err;  
+              try{  
+                
+                    await navigator.clipboard.writeText(pem.public);
+                    
+              }
+              catch(err2){
+                
+                    err   = err;
+                    
+              }
+              if(err){
+                    return;
+              }
+              $.mousetext(e,'copied');
+              
+        }//copy
+        
+        
+        btn.public.save   = function(){
+          
+              save('public.key.pem',pem.public);
+              
+        }//save
+        
+        
+  //:
+  
+  
+        fn.export=async function(type,key){
+        
+              var format          = type=='public' ? 'spki' : 'pkcs8';
+              var buf             = await window.crypto.subtle.exportKey(format,key);
+              var b64             = buf_b64(buf);
+              var pem             = cert_hdr(type)+b64+cert_ftr(type);
+              var txt             = pretty.out(pem);
+              return txt;
+              
+        }//export
+        fn.export.public         = public=>fn.export('public',public);
+        fn.export.private        = private=>fn.export('private',private);
+
+        var cert_hdr   = (type='public')=>`-----BEGIN ${type.toUpperCase()} KEY-----`;
+        var cert_ftr   = (type='public')=>`-----END ${type.toUpperCase()} KEY-----`;
+
+        function buf_b64(buf){
+        
+              var bytes           = new Uint8Array(buf);
+              var bin             = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64             = btoa(bin);
+              return b64;
+              
+        }//buf_b64
+
+        pretty.out=function(pem){
+        
+              var {hdr,b64,ftr}   = extract(pem);
+              var txt             = hdr+'\n';
+              var n               = 64;
+              var i               = 0;
+              while(i<b64.length){
+              
+                    var str       = b64.slice(i,i+n);
+                    txt          += str.padEnd(n)+'\n';
+                    i            += n;
+                    
+              }//while
+              txt                += ftr;
+              return txt;
+              
+        }//pretty.out
+
+
+        function extract(pem){
+        
+              var i1              = pem.indexOf('KEY')+8;
+              var i2              = pem.lastIndexOf('END')-5;
+              var hdr             = pem.slice(0,i1);
+              var b64             = pem.substring(i1,i2);
+              var ftr             = pem.slice(i2);
+              return {hdr,b64,ftr};
+              
+        }//extract
+
+
+  //:
+  
+  
+        function save(filename,txt){
+          
+              var blob      = new Blob([txt]);
+              var url       = window.URL.createObjectURL(blob);
+              
+              var a         = document.createElement('a');
+              a.download    = filename;
+              a.href        = url;
+              a.click();
+              
+        }//save
+
+
+
+      </script>
+
+
+</html>
+
+
+
