@@ -60,6 +60,13 @@
         var hdr;
         var log;
         
+        var vcdemo;
+        var vctldr;
+        var fwdemo;
+        var fwtldr;
+        
+        
+        
         
   //:
   
@@ -71,12 +78,26 @@
               hdr     = mod['blog-hdr']
               log     = mod.log;
               
+              vcdemo    = mod['videoconverter-demo'];
+              vctldr    = mod['videoconverter-tldr'];
+              fwdemo    = mod['ffmpeg-wasm-demo'];
+              fwtldr    = mod['ffmpeg-wasm-tldr'];
+              
               hdr.initmod({ext,$});
               log.initmod({ext,$});
+              vcdemo.initmod({ext,$,menu,ace});
+              vctldr.initmod({ext,$,menu,ace});
+              fwdemo.initmod({ext,$,menu,ace});
+              fwtldr.initmod({ext,$,menu,ace});
+
               
               await Promise.all([
                     hdr.init(),
                     log.init(),
+                    vcdemo.init(),
+                    vctldr.init(),
+                    fwdemo.init(),
+                    fwtldr.init(),
               ]);
               
               
@@ -252,14 +273,13 @@
                   </p>
                   
                   
-                  <!--  snippet  -->
+                  <snippet-html-console id=videoconverter-demo component v2.0 src='ex/videoconverter/demo.html'></snippet-html-console>
                   
                   <p>
                         tl;dr
                   </p>
                   
-                  
-                  <!-- tldr  -->
+                  <snippet-html-console id=videoconverter-tldr component v2.0 src='ex/videoconverter/demo-tldr.html'></snippet-html-console>
                   
             </section>
             
@@ -308,13 +328,13 @@
                   </a>
                   <br>
                   
-                  <!--  snippet  -->
+                  <snippet-html-console id=ffmpeg-wasm-demo component v2.0 src='ex/ffmpeg-wasm/demo.html'></snippet-html-console>
                   
                   <p>
                         tl;dr
                   </p>
                   
-                  <!--  tldr  -->
+                  <snippet-console id=ffmpeg-wasm-tldr component v2.0 src='ex/ffmpeg-wasm/demo-tldr.html'></snippet-console>
                   
             </section>
 
@@ -378,6 +398,11 @@
               hdr.initdom();
               log.initdom();
               
+              vcdemo.initdom();
+              vctldr.initdom();
+              
+              fwdemo.initdom();
+              fwtldr.initdom();
               
         }//initdom
         
