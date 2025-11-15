@@ -1,0 +1,199 @@
+      
+      
+      <style>
+  html    {height:100%}
+  body    {height:caclc(100% - 40px);margin:20px}
+  #root   {position:absolute;left:0;right:0;height:200px;border:1px solid gray;display:flex;gap:5px;font-family:arial}
+      </style>
+      
+      <style>
+  #view       {min-width:350px;display:flex;flex-direction:column;padding:10px;border-right:1px solid lightgray}
+  .type       {display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  #list       {flex:1;overflow:auto;border-top:1px solid lightblue}
+  #item       {display:flex;align-items:center;gap:30px;height:50px;margin:10px 0}
+  #log        {flex:1;font-family:monospace;color:gray;line-height:1.2;overflow:auto;flex:1;white-space:pre-wrap;font-size:16px;margin:0}
+  .log-item   {border:1px solid dimgray;padding:10px}
+  input       {font-size:16px;padding:2px 10px;cursor:pointer}
+      </style>
+      
+      <div id=root>
+            <div id=view>
+                  <div id=ffmpeg class=type>
+                        <span>ffmpeg.js</span>
+                        <input value=run type=button>
+                  </div>
+                  <div id=ffmpeg-all-codecs class=type>
+                        <span>ffmpeg-all-codecs.js</span>
+                        <input value=run type=button>
+                  </div>
+                  <div id=list>
+                        <a id=item>
+                              <img>
+                              <div>
+                                    <div id=mode></div>
+                                    <div id=time></div>
+                              </div>
+                        </a>
+                  </div>
+            </div>
+            <pre id=log></pre>
+      </div>
+
+
+<script>
+                                                                                console.clear();
+
+        function worker(){
+          
+        var mode    = {mode};
+        
+        (async()=>{
+                                                                                log('worker',mode);
+              var {zip}               = await import('https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js');
+              
+              var log                 = (...args)=>self.postMessage({type:'log',args});
+              var get                 = url=>fetch(url).then(res=>res.blob());
+              var dtype               = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
+              var _uint8              = async v=>dtype(v)=='blob' ? new Uint8Array(await v.arrayBuffer()) : new Uint8Array(v);
+              
+                                                                                log('loading',mode);
+              var blob;
+              switch(mode){
+                
+                case 'ffmpeg'               : blob=await get('https://cdn.jsdelivr.net/gh/javascript-2020/external/ffmpeg/videoconverter/ffmpeg.zip');                  break;
+                case 'ffmpeg-all-codecs'    : blob=await get('https://cdn.jsdelivr.net/gh/javascript-2020/external/ffmpeg/videoconverter/ffmpeg-all-codecs.zip');       break;
+                
+              }//switch
+              var files               = await zip.rd(blob);
+                                                                                //  now i kno y'all gon shout at me if i just use eval
+              //  var js                  = await files[0].blob.text();
+              //  var {ffmpeg_run}        = eval(`${js};({ffmpeg_run})`);
+              
+              var url                 = self.URL.createObjectURL(files[0].blob);
+              importScripts(url);
+              var {ffmpeg_run}        = self;
+                                                                                console.log(ffmpeg_run);
+                                                                                log('loading','buck.webm');
+              var buck                = await get('https://cdn.jsdelivr.net/gh/javascript-2020/external/video/buck.webm');
+      
+              
+              var cmd                 = 'ffmpeg -t 20 -nostdin -i buck.webm -strict experimental output.mp4';
+              var args                = cmd.split(' ').slice(1);
+              var uint8               = await _uint8(buck);
+              var print               = log;
+              var printErr            = log;
+                                                                                log(cmd);
+                                                                                var start   = Date.now();
+              var result    = ffmpeg_run({
+                    files           : [{name:'buck.webm',data:uint8}],
+                    arguments       : args,
+                    TOTAL_MEMORY    : 250_000_000,
+                    print,printErr
+              });
+                                                                                var time    = Date.now()-start;
+              var {data:output}       = result[0];
+                                                                                console.log(output);
+      
+              var cmd                 = `ffmpeg -nostdin -ss 00:00:03.00 -i output.mp4 -vframes 1 -vf scale=-1:50 output.jpg`;
+              var args                = cmd.split(' ').slice(1);
+              var uint8               = await _uint8(output);
+                                                                                log(cmd);
+              var result    = ffmpeg_run({
+                    files       : [{name:'output.mp4',data:uint8}],
+                    arguments   : args,
+                    print,printErr
+              });        
+      
+              var {data:thumbnail}    = result[0];
+
+              self.postMessage({type:'done',output,thumbnail,time},[output,thumbnail]);
+              self.close();
+              
+              function log(...args){self.postMessage({type:'log',args})}
+              
+        })();
+              
+        }//worker
+        
+        worker.js   = function(mode){
+          
+              var js      = fnstr(worker);
+              js          = js.replace('{mode}',`'${mode}'`);
+              var blob    = new Blob([js]);
+              return blob;
+              
+        }//js
+        
+        worker.create   = function(e){
+          
+              var mode            = e.target.parentNode.id;
+                                                                                var node=log.create(mode);
+              var blob            = worker.js(mode);
+              var url             = window.URL.createObjectURL(blob);
+              var thread          = new Worker(url);
+              thread.onmessage    = ({data})=>onmsg(mode,node,data);
+              
+        }//create
+        
+        
+
+        var $         = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+        var log       = (node,args)=>{var div=document.createElement('div');div.textContent=args.join(' ');node.append(div);$('#log').scrollTop=9999999;console.log.apply(console,args);return node}
+        log.create    = (...args)=>{var div=document.createElement('div');div.className='log-item';$('#log').append(div);log(div,args);return div}
+        var log2      = (...args)=>{var div=document.createElement('div');div.textContent=args.join(' ');$('#log').append(div);$('#log').scrollTop=9999999;console.log.apply(console,args);return div}
+        var _blob     = v=>new Blob([new Uint8Array(v)]);
+        var fnstr     = (fn,_,js,i1,i2)=>(js=fn+'',i1=js.indexOf('{'),i2=js.lastIndexOf('}'),js.slice(i1+1,i2));
+
+
+        $('#ffmpeg [type]').onclick               = worker.create;
+        $('#ffmpeg-all-codecs [type]').onclick    = worker.create;
+        
+        var item                                  = $('#item');
+        item.remove();
+                                                                                log2('ready');
+        
+        function onmsg(mode,node,data){
+
+              switch(data.type){
+                
+                case 'log'    : log(node,data.args);          break;
+                case 'done'   : onmsg.done(mode,data);        break;
+                
+              }//switch
+              
+        }//onmsg
+
+                
+        onmsg.done    = function(mode,data){
+          
+              var {output,thumbnail,time}    = data;
+              
+              var fn                    = `${mode}.mp4`;
+              
+              var nitem                 = item.cloneNode(true);
+              
+              output                    = _blob(output);
+              var url                   = window.URL.createObjectURL(output);
+              nitem.download            = fn;
+              nitem.href                = url;
+              
+              thumbnail                 = _blob(thumbnail);
+              var url                   = window.URL.createObjectURL(thumbnail);
+              $(nitem,'img').src        = url;
+              
+              $(nitem,'#mode').textContent    = fn;
+              $(nitem,'#time').textContent    = (time/1000).toFixed(1)+' s';
+
+              $('#list').append(nitem);
+              $('#list').scrollTop    = 9999999;
+          
+        }//done
+        
+
+
+</script>
+
+
+
+
+
