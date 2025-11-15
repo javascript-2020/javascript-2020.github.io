@@ -1,20 +1,117 @@
 
 
+<!DOCTYPE html>
+
+
 <html>
 
       <head>
+            <meta charset=utf-8>
     
-            <title>generate key pair</title>
+            <title>
+                  Generate Key Pair
+            </title>
+            
+            <meta name=description content='generate rsa key pair'>
             
             <base href='https://ext-code.com/utils/x509/generate-key-pair/'>
-            <base href='https://javascript-2020.github.io/utils/x509/generate-key-pair/'>
+            <link rel=canonical href='https://ext-code.com/utils/x509/generate-key-pair/generate-key-pair.html'>
             
-            <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico'>
+            <link rel=icon type='image/x-icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAVFBMVEVHcEwAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEAAAABAQEBAQEBAQEBAQEAAAABAQEBAQEAAAABAQEBAQEBAQEBAQEBAQEAAAABAQEAAACsl1DQAAAAG3RSTlMA+Nbo8C8MBGaeFKt9TBx0ijlZy5XAUkQi4Lb6C8LjAAABM0lEQVQoz31TibKDIAzkkBsqBbXV/f//fMHOq9IrMw6jmw2bTWSsC6PZ19Bp2ja3fMm4Bw4KHu6f0MtMkBCUsnnzDkegJu9TBeISXyt4gfVKRx5XiDKI1MPXAY6UTwgOQ1n33FPcODJjC8eWwZMjBV0HSiIYE8BtwKD8jKGja/qwkIBqB1TNLGC76pZD2hXztgPlFdYT4CqE445uJQHLm/YaKMUSepMQlx5u7EWSqSXFlbzpUbUTSBh5S0/wzykq9SCPdKS5gTz7wxEpJ3X9v82nKCBPnlMTkOJB3qP5dmppFG3Qh9TyIuwShxO5qdzMu+xnudp3baYzmTHXD+RMNqpk0WeTn89XK5vOthtH8cXqozD4Svb7z/uscrzd20p8/yHYCJQfMG1e/AHrHH4VZ+bh2h/qTRXn16T2TQAAAABJRU5ErkJggg=='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Generate Key Pair",
+                        "url"                   : "https://ext-code.com/utils/x509/generate-https-certificate/generate-https-certificate.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Generate rsa keypair",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
 
 
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            
             <script init>
+                                                                                console.clear();
+                                                                                console.log('generate-key-pair-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
             
+        var df=true,did='gen-https-cert'
+        ;
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var debug;
+
+
+        var menu;
+        
+        
+        var hdr;
+        
+  //:
+  
+            
+        async function init(){
+        
+        
+              menu    = menumod();
+              
+              
+              hdr   = mod['x509-hdr'];
+              
+              hdr.initmod({ext,$,menu});
+              
+              await Promise.all([
+                    hdr.init(),
+              ]);
+              
+              
+              
+              initdom(document.body);
+
+
+                                                                                console.log('ready');
+        }//init
+        
+        
+        
+        
+(async()=>{
+  
+        mod.stack.add;
+
+        var {ext}   = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js');
+        
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
+        );
+        [$,datatype,menumod,keydown,debug]   = await promise;
+
+
+        mod.stack.complete;
+
+})();
+        
             </script init>
+
+
             
             
             <style>
@@ -23,6 +120,10 @@
     {height:100%}
   body
     {height:calc(100% - 42px);margin:20px;display:flex;flex-direction:column;font-family:arial}
+    
+  x509-hdr
+    {margin-bottom:20px}
+    
   .hdr                  
     {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
       padding-bottom:10px;border-bottom:3px solid lightblue}
@@ -58,6 +159,12 @@
     {flex:1}
   pre
     {border:1px solid lightgray;padding:10px;font-family:monospace}
+
+
+  .visually-hidden
+    {position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;
+      clip:rect(0 0 0 0) !important;white-space:nowrap !important;border:0 !important}
+
                           
             </style>
         
@@ -67,7 +174,21 @@
     
       <body>
 
-    
+
+            <x509-hdr component=grp v2.0>
+                  <h1 class=visually-hidden>
+                        Generate Key Pair
+                  </h1>
+                  <img class=title src='images/generate-key-pair.png' style='top:5px;height:55px' alt='generate key pair'>
+                  <time slot=date datetime=2025-11-15>
+                        15 Nov 2025
+                  </time>
+            </x509-hdr>
+
+
+
+
+<!--    
         <div class=hdr>
             <a class=hdr-icon href='https://javascript-2020.github.io/'>
                 <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAqFBMVEVHcEwjmpckopg9f3YxpJM6r5kjq58Nmp0Nn6QRoKExrpshnpgtoJUdoZwYnZ02spwYpaEmrZ8djpINn6Qtrp4inpcjqZ8SoqM3s5w0sp01spwrr58vr50oqpwdnpo0sZwtrJwUpKMMoaUtq50op5ssqpopppseqaM1sJwgpJ0NoaUSoaI3kYobqaMSpKQrr58PoaMVpaIOoKMLpKcXpaEkqp8Rm58YrKUL0CR4AAAAOHRSTlMACBkBCyinK59CQhUOLyKjqbUGpZgSYn6rp5WsekcmgkyWmCkmNB7AYTiuVgKuuo91i2PLn2lJ7kISMf4AAAElSURBVCjPrdPXloIwEAbgBDFKCRo6SO8lYEHd93+zxV7Zm2WuSL6Tk/MPEwBGLFH8SzFCeFiDXNeJ+7GtGds1D+ghDzzPzXX6xlJbq75s5KVLiJsSB76xIhd22Mz0pkyRnqzW2htD/SeUjL0EQKY60nqRvTLXGl64PR/SfDVxVvETZ123w8vN9Ur5YKUF4R9cd/WxqiePgCs3IMF1QXcVt6vK59tSqyjN4hwQbhS8mUuvWTLbwYtTQGhEjLHVPprv+4ztQ8AeRVn50uipBcXg/IPgfPaFF+z1axyeMEkcJwwdYHHZINQ02gALS49lJcQMci/COGzdue8apRQwNz4tYvM207JSRVEUhvtW6KeBIFVVbds07xPncZfCfWSK+UtNJ/9+VL/nTBuX7xjDZwAAAABJRU5ErkJggg==' />
@@ -88,6 +209,9 @@
                   22 Apr 2025
             </div>
         </div hdr>
+-->
+
+
 
 
         <div id=btns>
@@ -159,12 +283,12 @@
   //:
   
   
-        setTimeout(initdom,50);
-        
 
-        function initdom(){
+        function initdom(rootnode){
         
               var root                                  = document.body;  
+              
+              hdr.initdom(root);
               
               $('[value=generate]').onclick             = btn.generate;
               
@@ -263,7 +387,7 @@
               var format          = type=='public' ? 'spki' : 'pkcs8';
               var buf             = await window.crypto.subtle.exportKey(format,key);
               var b64             = buf_b64(buf);
-              var pem             = hdr(type)+b64+ftr(type);
+              var pem             = cert_hdr(type)+b64+cert_ftr(type);
               var txt             = pretty.out(pem);
               return txt;
               
@@ -271,8 +395,8 @@
         fn.export.public         = public=>fn.export('public',public);
         fn.export.private        = private=>fn.export('private',private);
 
-        var hdr   = (type='public')=>`-----BEGIN ${type.toUpperCase()} KEY-----`;
-        var ftr   = (type='public')=>`-----END ${type.toUpperCase()} KEY-----`;
+        var cert_hdr   = (type='public')=>`-----BEGIN ${type.toUpperCase()} KEY-----`;
+        var cert_ftr   = (type='public')=>`-----END ${type.toUpperCase()} KEY-----`;
 
         function buf_b64(buf){
         
@@ -287,7 +411,7 @@
         
               var {hdr,b64,ftr}   = extract(pem);
               var txt             = hdr+'\n';
-              var n               = hdr.length;
+              var n               = 64;
               var i               = 0;
               while(i<b64.length){
               
