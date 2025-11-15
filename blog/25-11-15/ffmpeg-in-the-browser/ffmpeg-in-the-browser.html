@@ -64,7 +64,7 @@
         var vctldr;
         var fwdemo;
         var fwtldr;
-        
+        var m4demo;
         
         
         
@@ -82,6 +82,7 @@
               vctldr    = mod['videoconverter-tldr'];
               fwdemo    = mod['ffmpeg-wasm-demo'];
               fwtldr    = mod['ffmpeg-wasm-tldr'];
+              m4demo    = mod['mp4box-demo'];
               
               hdr.initmod({ext,$});
               log.initmod({ext,$});
@@ -89,6 +90,7 @@
               vctldr.initmod({ext,$,menu,ace});
               fwdemo.initmod({ext,$,menu,ace});
               fwtldr.initmod({ext,$,menu,ace});
+              m4demo.initmod({ext,$,menu,ace});
 
               
               await Promise.all([
@@ -98,6 +100,7 @@
                     vctldr.init(),
                     fwdemo.init(),
                     fwtldr.init(),
+                    m4demo.init(),
               ]);
               
               
@@ -357,18 +360,20 @@
             </section>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+            <hr>
+            
+            
+            <section>
+                  <h3>
+                        media mimetypes
+                  </h3>
+                  <p>
+                        when working with audio / video its often helpful to determine the mime types of the codecs in use
+                  </p>
+                  
+                  <snippet-html-console id=mp4box-demo component v2.0 src='ex/mp4box/ex.html'></snippet-html-console>
+            
+            </section>
 
 
 
@@ -403,6 +408,10 @@
               
               fwdemo.initdom();
               fwtldr.initdom();
+              
+              m4demo.initdom();
+              
+              
               
         }//initdom
         
