@@ -1,0 +1,397 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+
+      <head>
+            <meta charset=utf-8>
+    
+            <title>
+                  Extract Public Key
+            </title>
+            
+            <meta name=description content='extract public key from x509 certificate'>
+            
+            <base href='https://ext-code.com/utils/x509/extract-public-key/'>
+            <link rel=canonical href='https://ext-code.com/utils/x509/extract-public-key/extract-public-key.html'>
+            
+            <link rel=icon type='image/x-icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAz1BMVEVHcExFjOkWsvNGjug9jOxBhesulvAMtfsqofAvoO4pn+8hqPA0j+4WtvQhoPQfuvENuPkYrPchsfMYrPcepfVFiOgqnPE5jO1CguofrfEbrPULufoLu/kIu/sUtfMRsfljr/Q+h+0tl/JmufcJuPwVrfiTz/kZqvcknPNRoPKky/um0vobp/YcpfZmo/NltfY1nvKUxvl7vvdJtPYtqPVDvfms1/o3q/VEku9Ki+09mfFZlfCb1/mfxPu54PmEx/q64/lsw/dTqvOUvflcsvflva1XAAAAH3RSTlMAKFwUi9XO/jUfW1zpJf4KqOcY1+1BrNHsPaPJhNJObHCDBwAAAM1JREFUKM/lkUcSgkAURAEJIyoK5sjA4ICggBJMiPH+Z5IRq3SBxQHs7avf1d2fov5aFZqu/IQ026/XebZaTLuctlssDjoPCm85zV3bsQN1vuie1fwguME49fSeKAIFAGrINJqzRp6K22/O5zVEaeJbltRpd+SRrLZbwvjF6cHxhCIHh9fLxvO87WppzueqKhhGq/nGjxDHUYYRQl94quTmdxtCjBNMzKUMmwQLxuQdzbVteAuikEQTa0QMUfVTzHHwj2Ils5SNWvaSP9QTHZEaQktZsJwAAAAASUVORK5CYII='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Extract Public Key From X509 Certificate",
+                        "url"                   : "https://ext-code.com/utils/x509/certificate-info/certificate-info.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Extract public key from x509 certificate",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('extract-public-key-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,did='html'
+        ;
+
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+
+        var hdr;
+        var filemod;
+        var log;
+        
+
+
+        
+  //:
+  
+  
+        async function init(){
+
+
+              await load();
+
+
+              menu                      = menumod();
+          
+              hdr                       = mod['x509-hdr'];
+              //filemod                   = mod['file-mod'];
+              log                       = mod['log-mod'];
+
+
+              hdr.initmod({ext,$,menu});
+              //filemod.initmod({ext,$,menu,menumod,complete,focus,source,editor,log});
+              log.initmod({ext,$});
+
+              await Promise.all([
+                    hdr.init(),
+                    //filemod.init(),
+                    log.init(),
+              ]);
+
+
+          
+              initdom(document.body);
+
+
+        }//init
+
+      
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+        );
+        [$,datatype,menumod,keydown]   = await promise;
+  
+        mod.stack.complete;
+              
+})();
+
+
+
+  
+        async function load(){
+
+              //var nodeForge   = await import('https://cdn.jsdelivr.net/npm/node-forge/+esm');              
+              var txt         = localStorage['node-forge'];
+                            
+              if(!txt){
+                    var url   = 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
+                                                                                console.log(url);
+                    var res   = await fetch(url);
+                    txt       = await res.text();
+                    localStorage['node-forge']    = txt;
+              }
+              
+              var blob        = new Blob([txt],{type:'text/javascript'});
+              var url         = window.URL.createObjectURL(blob);
+              var nodeforge   = await import(url);
+              pki             = nodeforge.default.pki;
+                                                                                console.log(pki);
+        }//load
+      
+
+            </script init>
+            
+
+            <style>
+        
+    html
+                          {height:100%}
+    body
+                          {height:calc(100% - 42px);margin:20px;display:flex;flex-direction:column;font-family:arial}
+    .hdr                  
+                          {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
+                            padding-bottom:10px;border-bottom:3px solid lightblue}
+    .hdr-icon             
+                          {display:inline-block;text-align:center;background:whitesmoke;border-radius:5px;
+                            border:1px solid lightgray;padding:5px 3px 0px;cursor:pointer;margin-right:10px;
+                            min-width:50px}
+    .hdr-icon-img         
+                          {width:25px;height:25px}
+    .hdr-icon-label       
+                          {margin:2px 0 0}
+    .hdr-title            
+                          {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
+    .hdr-date
+                          {float:right}
+
+    input
+                          {padding:5px 10px;font-size:16px}
+    input[type=button]
+                          {cursor:pointer}
+
+    #view
+                          {flex:1;display:flex;gap:10px}
+    #cert-root
+                          {flex:1;display:flex;flex-direction:column}
+    #cert
+                          {flex:1}
+    #key-root
+                          {flex:1;display:flex;flex-direction:column}
+    #key
+                          {flex:1}
+    pre
+                          {border:1px solid lightgray;font-size:16px;font-family:monospace}
+
+
+  .visually-hidden
+    {position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;
+      clip:rect(0 0 0 0) !important;white-space:nowrap !important;border:0 !important}
+
+                          
+            </style>
+                
+      </head>
+    
+    
+      <body>
+
+            <x509-hdr component=grp>
+                  <h1 class=visually-hidden>
+                        extract public key
+                  </h1>
+                  <img class=title src='images/extract-public-key.png' style='top:-5px;height:55px'>
+                  <time slot=date datetime=2025-11-15>
+                        15 Nov 2025
+                  </time>
+            </x509-hdr>
+
+
+<!--
+        <div class=hdr>
+            <a class=hdr-icon href='https://javascript-2020.github.io/'>
+                <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAqFBMVEVHcEwjmpckopg9f3YxpJM6r5kjq58Nmp0Nn6QRoKExrpshnpgtoJUdoZwYnZ02spwYpaEmrZ8djpINn6Qtrp4inpcjqZ8SoqM3s5w0sp01spwrr58vr50oqpwdnpo0sZwtrJwUpKMMoaUtq50op5ssqpopppseqaM1sJwgpJ0NoaUSoaI3kYobqaMSpKQrr58PoaMVpaIOoKMLpKcXpaEkqp8Rm58YrKUL0CR4AAAAOHRSTlMACBkBCyinK59CQhUOLyKjqbUGpZgSYn6rp5WsekcmgkyWmCkmNB7AYTiuVgKuuo91i2PLn2lJ7kISMf4AAAElSURBVCjPrdPXloIwEAbgBDFKCRo6SO8lYEHd93+zxV7Zm2WuSL6Tk/MPEwBGLFH8SzFCeFiDXNeJ+7GtGds1D+ghDzzPzXX6xlJbq75s5KVLiJsSB76xIhd22Mz0pkyRnqzW2htD/SeUjL0EQKY60nqRvTLXGl64PR/SfDVxVvETZ123w8vN9Ur5YKUF4R9cd/WxqiePgCs3IMF1QXcVt6vK59tSqyjN4hwQbhS8mUuvWTLbwYtTQGhEjLHVPprv+4ztQ8AeRVn50uipBcXg/IPgfPaFF+z1axyeMEkcJwwdYHHZINQ02gALS49lJcQMci/COGzdue8apRQwNz4tYvM207JSRVEUhvtW6KeBIFVVbds07xPncZfCfWSK+UtNJ/9+VL/nTBuX7xjDZwAAAABJRU5ErkJggg==' />
+                <div class=icon-label>
+                    home
+                </div>
+            </a>
+            <a id=github class=hdr-icon href='https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/x509/generate-certificate-chain/generate-certificate-chain.html'>
+                <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAbFJREFUOE/l1E2IT2EUx/HPIFI2lJfGwmYsxFZKEUWjKWM3pZSpKcqeBcpLZsNeUeNlZWdBSVFmkAXbmRWbWRCRjYW8jv+pc/V4utff3q3bvfc5z/k+557zO2dA97UHy7ERx3LbZbzEZzxscx3o4L3GWizusP/AO6yv7TXwAo5g9V8iL03vcRWnm8USeBHH/xFUb7uEE7HYAOMZeVmGm7iN61jVccBHjOMQxvAl870QoIDMZ87CfxR3E7QDTyroTjzOtf24k++R0w0BHMY9LEpDCeyXgRL4EyMBjEKcSs+o3r4uSbTQQ1r3CzVMBnCh2PimTQp9wgyJDZZV/g+Bz7E1c/AdezHdr7xp34UHvcIuye8XUZSy9A1nDT5UBSvPCL9oz9BeeY2GYR3msBIHsi834WlPTt9yrXQKIUdEIfoVhSG6Z3PTejdwGG+xDc9SPud7UZ6popjEyZaURMuOl8NhKvtzpKf4yGvMwk95l/5xwNkKeA0T5XCI96EcRbsLh5mWAtXARznyXtXA5tD4/YNYmuBzVTQN8Ctu5V/93tI1sbdjS463KxXwaFZ/NnP9h/kXPcNYElddRc0AAAAASUVORK5CYII='>
+                <div class=hdr-icon-label>
+                      github
+                </div>
+            </a>
+            
+            <img class=hdr-title src='images/extract-public-key.png' style='height:40px;top:0px'>
+            
+            <div class=hdr-date>
+                  22 Apr 2025
+            </div>
+        </div hdr>
+-->
+
+        <div id=view>
+        
+              <div id=cert-root>
+              
+                    <div>
+                          public certificate
+                    </div>
+                    <div>
+                          <input value=paste type=button>
+                          <input value=load type=button>
+                          <input value=extract type=button>
+                    </div>
+                    <pre id=cert>
+                    </pre>
+                    
+              </div>
+              
+              <div id=key-root>
+              
+                    <div>
+                          public key
+                    </div>
+                    <div>
+                          <input value=copy type=button>
+                          <input value=save type=button>
+                    </div>
+                    <pre id=key>
+                    </pre>
+              
+              </div>
+        
+        </div>
+
+
+      </body>
+    
+    
+      <script>
+
+
+        var pki;
+        
+        var cert;
+        var key;
+
+        
+        var btn     = {};
+        btn.cert    = {};
+        btn.key     = {};
+
+
+  //:  
+        
+        function initdom(){
+          
+              var rootnode                              = document.body;
+              
+
+              hdr.initdom(rootnode);
+
+
+              var root                                  = {};
+              
+              root.cert                                 = $(rootnode,'#cert-root');
+              
+              $(root.cert,'[value=paste]').onclick      = btn.cert.paste;
+              $(root.cert,'[value=load]').onclick       = btn.cert.load;
+              $(root.cert,'[value=extract]').onclick    = btn.cert.extract;
+              
+              cert                                      = $(root.cert,'#cert');
+              
+              
+              root.key                                  = $(rootnode,'#key-root');
+              
+              $(root.key,'[value=copy]').onclick        = btn.key.copy;
+              $(root.key,'[value=save]').onclick        = btn.key.save;
+              
+              key                                       = $(root.key,'#key');
+
+
+
+              log.initdom();
+              
+        }//initdom
+
+
+  //:
+  
+  
+        btn.cert.paste    = async function(e){
+          
+              var txt             = await navigator.clipboard.readText();
+              cert.textContent    = txt;
+              
+        }//paste
+        
+        
+        btn.cert.load   = function(e){
+          
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+
+              
+              async function onchange(){
+                
+                    var file            = input.files[0];
+                    var txt             = await file.text();
+                    cert.textContent    = txt;
+                    
+              }//onchange
+              
+        }//load
+        
+        
+        btn.cert.extract    = async function(e){
+          
+              var pem           = cert.textContent.trim();
+              var pem           = await extract(pem);
+              key.textContent   = pem;
+              
+        }//extract
+        
+        
+        btn.key.copy    = async function(e){
+          
+              var txt   = key.textContent.trim();
+              await navigator.clipboard.writeText(txt);
+              
+        }//copy
+        
+        
+        btn.key.save    = function(e){
+          
+              var txt       = key.textContent.trim();
+              var blob      = new Blob([txt]);
+              var url       = window.URL.createObjectURL(blob);
+              
+              var a         = document.createElement('a');
+              a.download    = 'public-key.pem';
+              a.href        = url;
+              a.click();
+              
+        }//save
+        
+        
+        
+        async function extract(pem){
+          
+              var cert    = pki.certificateFromPem(pem);
+              var key     = cert.publicKey;
+              var pem     = pki.publicKeyToPem(key);
+              return pem;
+
+        }//extract
+        
+        
+
+
+
+      </script>
+
+
+    
+</html>
+
+
+
