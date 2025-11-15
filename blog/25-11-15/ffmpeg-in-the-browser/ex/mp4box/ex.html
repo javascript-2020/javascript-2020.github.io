@@ -8,11 +8,19 @@
         
             var buf         = await input.files[0].arrayBuffer();
             buf.fileStart   = 0;
+            var mp4       = MP4Box.createFile();
+            mp4.onReady   = diplsay;
             mp4.appendBuffer(buf);
             
       }//onchange
       
-      var mp4       = MP4Box.createFile();
-      mp4.onReady   = info=>document.body.append(info.mime+' , '+MediaSource.isTypeSupported(info.mime));
+      
+      function display(info){
+        
+            var div   = document.createElement('div');
+            div.append(info.mime+' , '+MediaSource.isTypeSupported(info.mime));
+            document.body.append(div);
+            
+      }//display
       
 </script>
