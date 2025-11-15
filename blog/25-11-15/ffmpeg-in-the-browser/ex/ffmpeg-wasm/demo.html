@@ -1,0 +1,195 @@
+      
+      
+      <style>
+  html    {height:100%}
+  body    {height:caclc(100% - 40px);margin:20px}
+  #root   {position:absolute;left:0;right:0;height:200px;border:1px solid gray;display:flex;gap:5px;font-family:arial}
+      </style>
+      
+      <style>
+  #view       {min-width:350px;display:flex;flex-direction:column;padding:10px;border-right:1px solid lightgray}
+  .type       {display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  #list       {flex:1;overflow:auto;border-top:1px solid lightblue}
+  #item       {display:flex;align-items:center;gap:30px;height:50px;margin:10px 0}
+  #log        {flex:1;font-family:monospace;color:gray;line-height:1.2;overflow:auto;flex:1;white-space:pre-wrap;font-size:16px;margin:0}
+  .log-item   {border:1px solid dimgray;padding:10px}
+  input       {font-size:16px;padding:2px 10px;cursor:pointer}
+      </style>
+      
+      <div id=root>
+            <div id=view>
+                  <div id=ffmpeg class=type>
+                        <span>ffmpeg.wasm</span>
+                        <input value=run type=button>
+                  </div>
+                  <div id=ffmpeg-no-log class=type>
+                        <span>ffmpeg.wasm - no log</span>
+                        <input value=run type=button>
+                  </div>
+                  <div id=list>
+                        <a id=item>
+                              <img>
+                              <div>
+                                    <div id=mode></div>
+                                    <div id=time></div>
+                              </div>
+                        </a>
+                  </div>
+            </div>
+            <pre id=log></pre>
+      </div>
+
+
+<script>
+                                                                                console.clear();
+
+(async()=>{
+  
+        var $         = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+        var log       = (...args)=>{log.add($('#log'),args)}
+        log.add       = (node,args)=>{var div=document.createElement('div');div.textContent=args.join(' ');node.append(div);$('#log').scrollTop=9999999;console.log.apply(console,args)}
+        log.create    = (...args)=>{var node=document.createElement('div');node.className='log-item';$('#log').append(node);var log2=(...args)=>{log2.enabled && log.add(node,args)};log2.enabled=true;return log2}
+        var get       = url=>fetch(url).then(res=>res.blob());
+        var dtype     = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
+        var _blob     = v=>new Blob([v]);
+        var _uint8    = async v=>dtype(v)=='blob' ? new Uint8Array(await v.arrayBuffer()) : new Uint8Array(v);
+        var fnstr     = (fn,_,js,i1,i2)=>(js=fn+'',i1=js.indexOf('{'),i2=js.lastIndexOf('}'),js.slice(i1+1,i2));
+
+        $('#ffmpeg [type]').onclick               = e=>run(true);
+        $('#ffmpeg-no-log [type]').onclick        = e=>run(false);
+        var item                                  = $('#item');
+        item.remove();
+          
+                                                                                log('loading');
+        var {zip}     = await import('https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js');
+                                                                                log('loading','ffmpeg.wasm');
+        //var blob    = await get('https://cdn.jsdelivr.net/gh/javascript-2020/external/ffmpeg/ffmeg-wasm/ffmpeg-wasm.zip');
+        var blob      = await get('https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip');
+        
+        var files     = await zip.rd(blob);
+        files.forEach(({name,blob})=>files[name]=blob);
+        files['ffmpeg-core.wasm']   = window.URL.createObjectURL(files['ffmpeg-core.wasm']);
+        var txt     = ['ffmpeg-core.js','index.js','ffmpeg.js','814.ffmpeg.js'];
+        await Promise.all(txt.map(async name=>files[name]=await files[name].text()));
+        
+        var sandbox       = {};
+        
+        sandbox.worker    = function(){
+        
+              self.fetch        = url=>new Promise(async res=>res(new Response('Not Found',{status:404})));
+              self.onmessage    = ({data:{lib,file}})=>{var importScripts=()=>self.eval(lib);eval(file)}
+                                  
+        }//worker        
+        
+        sandbox.main    = function(){
+          
+        (()=>{
+        
+              var globalThis    = {document:{currentScript:{src:'https://null.com/'}}};
+              function Worker(url){
+                                                                                console.log('worker-sandbox',`${url}`);
+                    var js        = fnstr(sandbox.worker);
+                    var blob      = new Blob([js]);
+                    var url2      = window.URL.createObjectURL(blob);
+                    var worker    = new window.Worker(url2);
+                    var lib       = files['ffmpeg-core.js'];
+                    var name      = url.pathname.split('/').at(-1);
+                    var file      = files[name];
+                    worker.postMessage({lib,file});
+                    return worker;
+                    
+              }//worker
+  
+              eval(files['ffmpeg.js']);
+              
+        })();
+              
+        }//main        
+        
+
+        eval(fnstr(sandbox.main));
+        eval(files['index.js']);        
+
+        var {fetchFile}   = FFmpegUtil;
+        var {FFmpeg}      = FFmpegWASM;
+        
+        var ffmpeg        = new FFmpeg();
+                                                                                console.log(ffmpeg);
+        await ffmpeg.load({coreURL:'ffmpeg-core.js',wasmURL:files['ffmpeg-core.wasm']});
+        
+                                                                                log('loading','buck.webm');
+        var buck    = await get('https://cdn.jsdelivr.net/gh/javascript-2020/external/video/buck.webm');
+                                                                                log('ready');
+
+
+        async function run(logging){
+                                                                                var log2=log.create();
+              var cmd         = 'ffmpeg -t 20 -nostdin -i buck.webm -strict experimental output.mp4';
+                                                                                log2(cmd);
+              var args        = cmd.split(' ').slice(1);
+              var uint8       = await _uint8(buck);
+              
+              await ffmpeg.writeFile('buck.webm',uint8);
+              
+              var on          = {};
+              on.log          = ({message})=>log2(message);
+              on.progress     = ({progress,time})=>log2(`${progress*100}%,time:${time}`);
+              
+              ffmpeg.on('log',on.log);
+              ffmpeg.on('progress',on.progress);
+                                                                                log2.enabled=!!logging;
+                                                                                var start   = Date.now();
+              await ffmpeg.exec(args);
+                                                                                var time    = Date.now()-start;
+                                                                                log2.enabled=true;
+              var data        = await ffmpeg.readFile('output.mp4');
+                                                                                console.log(data);
+              var output      = _blob(data);
+                                         
+              var cmd         = `ffmpeg -nostdin -ss 00:00:03.00 -i output.mp4 -vframes 1 -vf scale=-1:50 output.jpg`;
+                                                                                log2(cmd);
+              var args        = cmd.split(' ').slice(1);
+              var uint8       = await _uint8(output);
+                                                                                log2.enabled=!!logging;
+              await ffmpeg.exec(args);
+                                                                                log2.enabled=true;
+              var data        = await ffmpeg.readFile('output.jpg');
+              var thumbnail   = _blob(data);
+              
+              ffmpeg.off('log',on.log);
+              ffmpeg.off('progress',on.progress);
+              
+              done(output,thumbnail,time);
+              
+        }//run
+                
+        function done(output,thumbnail,time){
+          
+              var fn                    = `output.mp4`;
+              
+              var nitem                 = item.cloneNode(true);
+              
+              var url                   = window.URL.createObjectURL(output);
+              nitem.download            = fn;
+              nitem.href                = url;
+              
+              var url                   = window.URL.createObjectURL(thumbnail);
+              $(nitem,'img').src        = url;
+              
+              $(nitem,'#mode').textContent    = fn;
+              $(nitem,'#time').textContent    = (time/1000).toFixed(1)+' s';
+
+              $('#list').append(nitem);
+              $('#list').scrollTop    = 9999999;
+              
+        }//done
+
+})();
+
+        
+</script>
+
+
+
+
+
