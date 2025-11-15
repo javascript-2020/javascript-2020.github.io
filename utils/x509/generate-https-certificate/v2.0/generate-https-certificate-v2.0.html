@@ -1,0 +1,1275 @@
+
+
+
+<!--
+
+see bottom for name constraints
+
+-->
+
+
+<!DOCTYPE html>
+
+<html>
+
+      <head>
+            <meta charset=utf-8>
+
+            <title>
+                  Generate HTTPS Certificate
+            </title>
+            <meta name=description content='generate https certificates'>
+            
+            <base href='https://ext-code.com/utils/x509/generate-https-certificate/'>
+            <link rel=canonical href='https://ext-code.com/utils/x509/generate-https-certificate/generate-https-certificate.html'>
+            
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAACJVBMVEVHcEzCqVClUDd5XGenPTKtNCe/njLGpTi+nTusiyqsNCisNyqrOCynOCetNieqOS2cNj7AoTjJqDmzkDCrOCyqOi+rNyusNiipPDGpPDGtOCusOSmrNiq/nj2ao4qqNy3DrmaoNiauNCerOS+sNSnFozGgklTFoi2fnW6/my2sn1rMpjTDvIe6iiy4oUPHqzujrY7Ipi65qlivsYDNrz20jh+mijW3kiKwjCKMp6urOi+tOi2rMiS1oEu0jiOXqZymPzSeoXyrNSi9mCmulDqYj1qtNCettpDKqTHJqDCtjzW8pkm9fyyis56uMiW2oEa5kCWim2erkEK7khiuMiWuNimCs9qCsdStMyeEs9aCstZ+rtLGoSaCtdyFsM59q86sMCKLq7Z8rdOEstSRtL9xocxomcR4qtNrm8Z/sdl8rteLs8mnghyGtdi4kh2xixrJpSmDrMWNno54ob+Ir8XMqjKFqrt1ptB6nbLBmySvhhjDniagLSC8liCfn3G1mjeQsbvnzVGrmEesjClwn8aysHS4XiamnFyrnFGlkUGoqnt5lJrdwkajoWngxkmtQCbSszi/vn2hpHfWtjnCxYp3qdPJnCy4jkGnoHjDoTbIsEfIuWCbs6m1rmayi0yZnnmQpJi9pUGihi59iHSCoKd0nLmklVGOiFd2mKuiSR/q01iVkFyIpaqFoqmTpZZ/qsWwTiS7Zip3ps7WzXRolsKMssOCpbYMwxvWAAAAVHRSTlMACwcBEvpATTQpz6lRy+w1A3w5InNZYb4iG47mg0roPwPU9kuhYqa70JTuHwKd/qLt9PnyTL1oxtX9bJr83Y/1DPG0tPzj5OC/f3Ldo/XzqBqmXhRXU/jpAAACTklEQVQoz2NgQALCnBCMHQSbWpgFWZgHYJNj0/UKnL/A0nLBfDUzOzYMac2mdSVJ6elZWZmFRZ2aqHLMjBwaiemp5Ull27Iyw8LKNDiZkKWFzLVKylOTosInrW6JCguLLXQ15UCSNtFLLG+JjoxKrG/uToqMDItNdGFHkuYwSMpIj4oKr6vNX94SFRkVliuHpJvTvyE1Y33ZmqL62vycxUvKCsNjE9WEYbKM6kZxaUVNzc35eXlVOTk5izqLkuKWOTNCpXU8W6PTClsnlFbX5lVV5edVdlRk5dYJ6sC0a7vHp0VnT+zr65lQWRkT014RDbRcG243uzFQOjl7YmPj5IKYmI6K6MiwXEdZuN0ec+PS4pPDp6zqKSiIqW5vAXotuV0dZreCqndKRmpy3JTGUpB009LwqLASW1UFhOm+m4CWb548s27Swpj6FdGZYfayyIFqtDWjJWV279r48IYuve6pmSVaQsiBatgVt6U4MT48EggaitOTuwyRA5WRTdAgLiMjPjw5OTw8KzPOQJCNETVO9VtT4lNTy6emJ0WltOqjpwYBn2nTZ8xJyc5OmTNj+jRdZjRpeb7+0A0zZ82bN6t0ZU2/ND+qrINTRERoRNtGXsW2tpqaiFBulNTCIMYaERoaEuKnzKOUkJAQGqrEgywryQWUBUqrCDBxR4QkhISGirMgScsAjQ6NCHEDWsnPB5QHqhVByDKJqHDzRoREyIASrVRohI24tZQoiuOZJbgiuCRBLAlFVJOhgIdPDMKwkpbHkouYRKF6WJQF4IIA4i2xDLpwgNwAAAAASUVORK5CYII='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Generate HTTPS Certificate",
+                        "url"                   : "https://ext-code.com/utils/x509/generate-https-certificate/generate-https-certificate.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Generate https certificates, include san ( dns,ip )",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('generate-https-certificate-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+            
+        var df=true,did='gen-https-cert'
+        ;
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var debug;
+
+
+        var menu;
+        
+        
+        var hdr;
+        
+  //:
+  
+            
+        async function init(){
+        
+        
+              await load();
+              
+              
+              menu    = menumod();
+              
+              
+              hdr   = mod['x509-hdr'];
+              
+              hdr.initmod({ext,$,menu});
+              
+              await hdr.init();
+              
+              
+              
+              initdom(document.body);
+
+
+                                                                                console.log('ready');
+        }//init
+        
+        
+        
+        
+(async()=>{
+  
+        mod.stack.add;
+
+        var {ext}   = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js');
+        
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
+        );
+        [$,datatype,menumod,keydown,debug]   = await promise;
+
+
+        mod.stack.complete;
+
+})();
+        
+            </script init>
+
+
+            <style>
+        
+  html
+    {height:100%;font-family:arial}
+  body
+    {height:calc(100% - 42px);margin:20px}
+    
+
+  #center-hldr
+    {display:flex;justify-content:center}
+  #center
+    {width:1200px;position:relative}
+
+  x509-hdr
+    {margin-bottom:20px;display:block}
+
+
+    
+  .hdr                  
+    {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
+      padding-bottom:10px;border-bottom:3px solid lightblue}
+  .hdr-icon             
+    {display:inline-block;text-align:center;background:whitesmoke;border-radius:5px;
+      border:1px solid lightgray;padding:5px 3px 0px;cursor:pointer;margin-right:10px;
+      min-width:50px;
+    }
+  .hdr-icon-img         
+    {width:25px;height:25px}
+  .hdr-icon-label       
+    {margin:2px 0 0}
+  .hdr-title            
+    {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
+  .hdr-date
+    {float:right}
+
+
+
+                        
+                        
+  section               
+    {font-family:arial;width:100%;height:calc(100% - 20px);position:relative}
+  input                 
+    {box-sizing:border-box;font-size:16px;font-weight:bold;padding:5px 10px}
+  input[type=button]    
+    {cursor: pointer}
+                        
+  
+  #tabs                 
+    {display:flex;cursor:pointer;margin-bottom:10px;text-align:center}
+  .tab                  
+    {padding:5px 0;flex:1}
+  .active               
+    {background:lightyellow;border:1px solid lightblue}
+  .inactive             
+    {background:lightgray;border:1px solid dimgray}    
+  #config               
+    {}
+  #config-btns
+    {display:flex;align-items:center}
+  #config-btns input    
+    {margin-right:20px}
+  #spinner
+    {width:20px;height:20px}
+  .sub                  
+    {margin:20px auto 10px;background-color:whitesmoke;padding:10px 10px 5px;
+      color:blue;font-weight:bold;
+    }
+  .sub input            
+    {margin-left:20px}
+  .opt-root             
+    {display:grid;grid-template-columns:1fr 1fr;gap:5px 20px}
+  .opt                  
+    {border:1px solid lightgray;padding:1px 5px;display:inline-flex;align-items:center;gap:10px;
+      cursor:pointer;padding:5px;
+    }
+  .opt .spc             
+    {flex:1}                          
+  #key-file
+    {padding:5px;}
+  #bits 
+    {width:80px;text-align:center}
+  #cacert               
+    {}
+  #pathlen
+    {width:50px;text-align:center}
+  .ext
+    {}
+  #rdns                 
+    {display:grid;grid-template-columns:auto 1fr;gap:5px 20px}
+  #rdns div:nth-of-type(odd) 
+    {white-space:nowrap;overflow:hidden;max-width:200px}
+  #rdns input           
+    {width:100%;box-sizing:border-box}
+    
+  .item                 
+    {display:flex;align-items:center}
+  .rem                  
+    {margin-right:10px;color:red}
+  .item div:nth-of-type(2)
+    {flex:1}
+  .value                
+    {width:100%}
+  #dates                
+    {display:grid;grid-template-columns:100px auto;gap:5px 20px}
+  
+  #cert
+    {}
+  #cert > div
+    {margin-bottom:10px;}
+  #cert .label
+    {width:200px;display:inline-block;text-align:right;margin-right:20px;}
+  #result
+    {display:flex;gap:20px;align-items:flex-start}
+  pre
+    {padding:10px;border:1px solid lightgray;display:inline-block;}
+
+
+  .visually-hidden
+    {position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;
+      clip:rect(0 0 0 0) !important;white-space:nowrap !important;border:0 !important}
+
+
+            </style>
+        
+      </head>
+
+      <body>
+      
+            <div id=center-hldr>
+            
+                  <div id=center>
+      
+   
+   
+                        <x509-hdr component=grp v2.0>
+                              <h1 class=visually-hidden>
+                                    Generate HTTPS Certificates
+                              </h1>
+                              <img class=title src='images/generate-https-certificate.png' style='top:-35px;height:100px' alt='generate https certificates'>
+                              <time slot=date datetime=2025-10-27>
+                                    27 Oct 2025
+                              </time>
+                        </x509-hdr>
+
+
+
+
+<!--   
+
+                        <div class=hdr>
+                              <a class=hdr-icon href='https://javascript-2020.github.io/'>
+                                    <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAqFBMVEVHcEwjmpckopg9f3YxpJM6r5kjq58Nmp0Nn6QRoKExrpshnpgtoJUdoZwYnZ02spwYpaEmrZ8djpINn6Qtrp4inpcjqZ8SoqM3s5w0sp01spwrr58vr50oqpwdnpo0sZwtrJwUpKMMoaUtq50op5ssqpopppseqaM1sJwgpJ0NoaUSoaI3kYobqaMSpKQrr58PoaMVpaIOoKMLpKcXpaEkqp8Rm58YrKUL0CR4AAAAOHRSTlMACBkBCyinK59CQhUOLyKjqbUGpZgSYn6rp5WsekcmgkyWmCkmNB7AYTiuVgKuuo91i2PLn2lJ7kISMf4AAAElSURBVCjPrdPXloIwEAbgBDFKCRo6SO8lYEHd93+zxV7Zm2WuSL6Tk/MPEwBGLFH8SzFCeFiDXNeJ+7GtGds1D+ghDzzPzXX6xlJbq75s5KVLiJsSB76xIhd22Mz0pkyRnqzW2htD/SeUjL0EQKY60nqRvTLXGl64PR/SfDVxVvETZ123w8vN9Ur5YKUF4R9cd/WxqiePgCs3IMF1QXcVt6vK59tSqyjN4hwQbhS8mUuvWTLbwYtTQGhEjLHVPprv+4ztQ8AeRVn50uipBcXg/IPgfPaFF+z1axyeMEkcJwwdYHHZINQ02gALS49lJcQMci/COGzdue8apRQwNz4tYvM207JSRVEUhvtW6KeBIFVVbds07xPncZfCfWSK+UtNJ/9+VL/nTBuX7xjDZwAAAABJRU5ErkJggg==' />
+                                    <div class=icon-label>
+                                        home
+                                    </div>
+                              </a>
+                              <a id=github class=hdr-icon href='https://github.com/javascript-2020/javascript-2020.github.io/tree/main/utils/generate-https-certificate'>
+                                    <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAbFJREFUOE/l1E2IT2EUx/HPIFI2lJfGwmYsxFZKEUWjKWM3pZSpKcqeBcpLZsNeUeNlZWdBSVFmkAXbmRWbWRCRjYW8jv+pc/V4utff3q3bvfc5z/k+557zO2dA97UHy7ERx3LbZbzEZzxscx3o4L3GWizusP/AO6yv7TXwAo5g9V8iL03vcRWnm8USeBHH/xFUb7uEE7HYAOMZeVmGm7iN61jVccBHjOMQxvAl870QoIDMZ87CfxR3E7QDTyroTjzOtf24k++R0w0BHMY9LEpDCeyXgRL4EyMBjEKcSs+o3r4uSbTQQ1r3CzVMBnCh2PimTQp9wgyJDZZV/g+Bz7E1c/AdezHdr7xp34UHvcIuye8XUZSy9A1nDT5UBSvPCL9oz9BeeY2GYR3msBIHsi834WlPTt9yrXQKIUdEIfoVhSG6Z3PTejdwGG+xDc9SPud7UZ6popjEyZaURMuOl8NhKvtzpKf4yGvMwk95l/5xwNkKeA0T5XCI96EcRbsLh5mWAtXARznyXtXA5tD4/YNYmuBzVTQN8Ctu5V/93tI1sbdjS463KxXwaFZ/NnP9h/kXPcNYElddRc0AAAAASUVORK5CYII='>
+                                    <div class=hdr-icon-label>
+                                          github
+                                    </div>
+                              </a>
+                              <img class=hdr-title src='images/generate-https-certificate.png' style='height:80px;top:-15px'>
+                              <div class=hdr-date>
+                                    25 Oct 2025
+                              </div>
+                        </div hdr>
+            
+-->            
+
+   
+   
+                        <section>
+                        
+                              <div id=tabs>
+                                    <div id=tab-config class='tab active'>config</div>
+                                    <div id=tab-cert class='tab inactive'>certificate</div>
+                              </div>
+                                
+                              <div id=config>
+                                
+                                    <div id=config-btns>
+                                          <input type=button value=clear>
+                                          <input type=button value=localhost>
+                                          <input type=button value='generate certificate'>
+                                          <img id=spinner src='images/spinner.gif' style='display:none'>
+                                    </div>
+                                    
+                                    <div id=signing-key>
+                                    
+                                          <div class=sub>signing key</div>
+                                          
+                                          <div style='display:flex;align-items:flex-start;gap:20px'>
+                                          
+                                                <div id=self class=opt style='flex:1;'>
+                                                      <span>self-signed</span>
+                                                      <span class=spc></span>
+                                                      <input type=checkbox checked>
+                                                </div>
+                                                
+                                                <div id=cert-root style='flex:1;display:flex;flex-direction:column;border:1px solid lightgray;padding:5px 10px'>
+                                                
+                                                      <div id=key>
+                                                            <div style='display:flex;width:100%;cursor:pointer'>
+                                                                  <span>private key</span>
+                                                                  <span style='flex:1'></span>
+                                                                  <input type=checkbox>
+                                                            </div>
+                                                            <div id=key-file style='font-size:12px'>
+                                                                  none
+                                                            </div>
+                                                      </div>
+                                                      
+                                                      <div id=signing-cert>
+                                                            <div style='cursor:pointer'>cert</div>
+                                                            <div id=signing-cert-file style='font-size:12px;padding:5px'>
+                                                                  none
+                                                            </div>
+                                                      </div>
+                                                      
+                                                </div cert-root>
+                                          </div>
+                                    
+                                    </div signing-key>
+                                    
+                                    <div bits>
+                                    
+                                          <div class=sub>bits</div>
+                                          <div class=opt-root>
+                                                <span id=bits-root class=opt>
+                                                      <span>bits</span>
+                                                      <span class=spc></span>
+                                                      <input id=bits value=2048>
+                                                </span>
+                                          </div>
+                                          
+                                    </div>
+                                    
+                                    <div id=constraints>
+                                    
+                                          <div class=sub>constraints</div>
+                                          <div class=opt-root>
+                                                <span id=cacert class=opt>
+                                                      <span>ca cert</span>
+                                                      <span class=spc></span>
+                                                      <input type=checkbox>
+                                                </span>
+                                                <span id=pathlen-root class=opt>
+                                                      <span>pathlen</span>
+                                                      <span class=spc></span>
+                                                      <input id=pathlen value=0>
+                                                </span>
+                                          </div>
+                                          
+                                    </div>
+                                    
+                                    <div id=ext-root>
+                                    
+                                          <div class=ext>
+                                          
+                                                <div class=sub>name</div>
+                                                <div class=opt-root>
+                                                      <span class=opt>
+                                                            <span class=name></span>
+                                                            <span class=spc></span>
+                                                            <input type=checkbox>
+                                                      </span>
+                                                </div>
+                                                
+                                          </div>
+                                          
+                                    </div>
+                                    
+                                    <div id=rdns-root>
+                                    
+                                          <div class=sub>Relative Distinguished Names</div>
+                                          <div id=rdns>
+                                                <div>CommonName (CN) </div><div><input id=cn></div>
+                                                <div>Organization (O) </div><div><input id=o></div>
+                                                <div>OrganizationalUnit (OU) </div><div><input id=ou></div>
+                                                <div>Locality (L) </div><div><input id=l></div>
+                                                <div>StateOrProvince (ST) </div><div><input id=st></div>
+                                                <div>CountryName (C) </div><div><input id=c></div>
+                                          </div>
+                                          
+                                    </div rdns-root>
+                                    
+                                    <div id=dns-root>
+                                    
+                                          <div class=sub>dns names (example.com) <input type=button value=add></div>
+                                          <div id=dns-list>
+                                                <div class=item><input type=button value=x class=rem><div><input id=dns class=value></div></div>
+                                          </div>
+                                          
+                                    </div dns-root>
+                                    
+                                    <div id=ip-root>
+                                    
+                                          <div class=sub>ip (127.0.0.1) <input type=button value=add></div>
+                                          <div id=ip-list>
+                                                <div class=item><input type=button value=x class=rem><div><input id=ip class=value></div></div>
+                                          </div>
+                                          
+                                    </div ip-root>
+                                    
+                                    <div id=dates-root>
+                                    
+                                          <div class=sub>dates</div>
+                                          <div id=dates>
+                                                <div>from</div><input id=from type=datetime-local>
+                                                <div>to</div><input id=to type=datetime-local>
+                                          </div>
+                                          
+                                    </div dates-root>
+                                    
+                              </div config>
+                  
+                                
+                              <div id=cert style='display:none'>
+                              
+                                    <div>
+                                          <span class=label>private key (pem)</span>
+                                          <input id=key-copy type=button value=copy>
+                                          <input id=key-download type=button value=download style='margin-right:20px'>
+                                          <input value=pkcs1 type=button>
+                                          <input value=pkcs8 type=button>
+                                    </div>
+                                    
+                                    <div>
+                                          <span class=label>x509 cert (pem)</span>
+                                          <input id=x509-copy type=button value=copy>
+                                          <input id=x509-download type=button value=download>
+                                    </div>
+                                    
+                                    <div id=result>
+                                          <pre id=key></pre>
+                                          <pre id=x509></pre>
+                                    </div>
+                                    
+                              </div cert>
+                                    
+                        </section>
+
+                  </div center>
+
+            </div center-hldr>            
+
+
+      </body>
+
+
+
+      <script>
+
+
+        var jsrsasign;
+        var nodeforge;
+        var pki;
+        
+        var ca;
+        
+        var rdns          = ['cn','o','ou','l','st','c'];
+        
+        var ui            = {};
+        ui.node           = {};
+        
+        var signing       = {};
+        signing.key       = null;
+        signing.cert      = null;
+        
+        var ext           = {};
+        ext.keyUsage      = ['keyCertSign','digitalSignature','nonRepudiation','keyEncipherment','dataEncipherment'];
+        ext.extKeyUsage   = ['serverAuth','clientAuth','codeSigning','emailProtection','timeStamping'];
+        ext.nsCertType    = ['client','server','email','objSign','sslCA','emailCA','objCA'];
+        
+        var list;
+        var item;
+        
+        
+        
+        var btn   = {};
+
+
+  //:
+  
+  
+        async function load(){
+        
+              jsrsasign   = await import('https://cdn.jsdelivr.net/npm/jsrsasign/+esm');
+
+              //var nodeForge   = await import('https://cdn.jsdelivr.net/npm/node-forge/+esm');              
+              var txt         = localStorage['node-forge'];
+                            
+              if(!txt){
+                    var url   = 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
+                                                                                console.log(url);
+                    var res   = await fetch(url);
+                    txt       = await res.text();
+                    localStorage['node-forge']    = txt;
+              }
+              
+              var blob        = new Blob([txt],{type:'text/javascript'});
+              var url         = window.URL.createObjectURL(blob);
+              nodeforge       = await import(url);
+              nodeforge       = nodeforge.default;
+              pki             = nodeforge.pki;
+                                                                                console.log(pki);
+        }//load
+          
+
+  //:
+  
+        
+        function initdom(){
+          
+              hdr.initdom();
+              
+        
+              $('#tab-config').onclick                                    = e=>show('config');
+              $('#tab-cert').onclick                                      = e=>show('cert');
+              
+              $('#config-btns [value="generate certificate"]').onclick    = read;
+              $('#config-btns [value=clear]').onclick                     = clear;
+              $('#config-btns [value=localhost]').onclick                 = localhost;
+              
+              var root                                                    = $('#signing-key');
+              ui.key                                                      = $.chkbox.group(root,'#self','#key');
+              ui.node.keyfile                                             = $(root,'#key-file');
+              $(root,'#self').addEventListener('click',btn.self);
+              $(root,'#key').addEventListener('click',btn.key);
+              $(root,'#signing-cert').onclick                             = btn.cert;
+              ui.node.cert                                                = $(root,'#signing-cert-file');
+                                                
+              ui.bits                                                     = $('#bits');
+              
+              ca                                                          = $.chkbox('#cacert');
+              ui.pathlen                                                  = $('#pathlen');
+
+              var node                                                    = {};
+              node.root                                                   = $('#ext-root');
+              node.ext                                                    = $('.ext');
+              node.ext.remove();
+              node.opt                                                    = $(node.ext,'.opt');
+              node.opt.remove();
+              
+              for(var key in ext){
+                
+                    var next                                              = node.ext.cloneNode(true);
+                    next.id                                               = key;
+                    $(next,'.sub').textContent                            = key;
+                    var root                                              = $(next,'.opt-root');
+                    
+                    ui[key]   = {};
+                    
+                    ext[key].sort();
+                    ext[key].forEach(name=>{
+                      
+                          var nopt                                        = node.opt.cloneNode(true);
+                          nopt.id                                         = name;
+                          $(nopt,'.name').textContent                     = name;
+                          var chk                                         = $(nopt,'[type=checkbox]')
+                          chk.id                                          = name;
+                          chk.checked                                     = true;
+                          root.append(nopt);
+                          
+                          ui[key][name]                                   = $.chkbox(root,`#${name}`,null);
+                          
+                    });
+                    
+                    node.root.append(next);
+                    
+              }//for
+              
+              
+              list                                                        = {};
+              list.dns                                                    = $('#dns-list');
+              list.ip                                                     = $('#ip-list');
+              item                                                        = {};
+              item.dns                                                    = $(list.dns,'.item');
+              item.ip                                                     = $(list.ip,'.item');
+                    
+              $('#dns-root [value=add]').onclick                          = e=>create('dns');
+              $('#ip-root [value=add]').onclick                           = e=>create('ip');
+                        
+              $('#from').value                                            = date();
+              $('#to').value                                              = date(true);
+      
+
+      
+              localhost();
+              
+
+              
+        }//initdom
+
+
+  //:
+  
+  
+        btn.self    = function(){
+        }//self
+        
+        
+        btn.key   = function(){
+                                                
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              
+              async function onchange(){
+                
+                    var file    = input.files[0];
+                    var txt     = await file.text();
+                    
+                    ui.node.keyfile.style.display   = 'block';
+                    ui.node.keyfile.textContent     = file.name;
+                    
+                    signing.key   = txt;
+                
+              }//onchange
+              
+        }//key
+        
+        
+        btn.cert    = function(){
+          
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              async function onchange(){
+                
+                      var file    = input.files[0];
+                      var txt     = await file.text();
+                      
+                      ui.node.cert.textContent    = file.name;
+                      signing.cert                = txt;
+                      
+              }//onchange
+              
+        }//cert
+
+        
+  //:
+  
+  
+        preset.enabled    = false;
+        
+        function preset(){
+
+              if(!preset.enabled){
+                    return;
+              }
+                
+              var today       = new Date();
+              var one_year    = new Date();
+              one_year.setFullYear(one_year.getFullYear()+1);
+              
+              var config      = {};
+              
+              config.ca       = false;
+              config.pathlen  = 0;  
+
+              config.keyUsage   = {
+                    dataEncipherment    : true,
+                    digitalSignature    : true,
+                    keyCertSign         : true,
+                    keyEncipherment     : true,
+                    nonRepudiation      : true
+              };
+                
+              config.extKeyUsage    = {
+                    clientAuth          : true,
+                    codeSigning         : true,
+                    emailProtection     : true,
+                    serverAuth          : true,
+                    timeStamping        : true
+              };
+              
+              config.nsCertType   = {
+                    client              : true,
+                    email               : true,
+                    emailCA             : true,
+                    objCA               : true,
+                    objSign             : true,
+                    server              : true,
+                    sslCA               : true
+              };
+
+              config.from     = today;
+              config.to       = one_year;
+              
+              config.dns      = ['localhost'];
+              config.ip       = ['127.0.0.1','127.0.0.2'];
+              
+              config.rdn      = {};
+              
+              config.rdn.cn   = 'localhost test certificate';
+              config.rdn.o    = 'Test';
+              config.rdn.ou   = 'test';
+              config.rdn.l    = 'Blacksburg';
+              config.rdn.st   = 'Virginia';
+              config.rdn.c    = 'US';
+
+                    
+              generate_certificate(config);
+              
+                    
+        }//preset
+
+  
+  //:
+        
+
+        function $(root,sel){
+          
+              if(!sel){
+                    sel     = root;
+                    root    = document
+                    if($.is.node(sel)){
+                          return sel;
+                    }
+              }
+              var node    = root.querySelector(sel);
+              return node;
+              
+        }//$
+
+
+        $.is    = {};
+        
+        
+        $.chkbox=function(root,sel,callback){
+        
+              if(callback===undefined){
+                    callback    = sel;
+                    sel         = root;
+                    root        = document;
+              }
+              
+              var node        = $(root,sel);
+              var chkbox      = $(node,'[type=checkbox]');
+              node.onclick    = click;
+              var checked     = chkbox.checked;
+              
+              var chk   = {read,set,id:node.id,checked};
+              return chk;
+              
+              
+              function click(e){
+              
+                    if(e.target!==chkbox){
+                          chkbox.checked    = !chkbox.checked;
+                    }
+                    chk.checked   = chkbox.checked;
+                    
+                    if(typeof callback=='function'){
+                          callback(chk);
+                    }
+                    
+              }//click
+              
+              function read(){return chkbox.checked}
+              function set(v=true){chkbox.checked=v}
+              
+        }//chkbox
+        
+        
+        $.chkbox.group=function(root,sel0){
+        
+              var list    = [];
+              var n       = arguments.length;
+              for(var i=1;i<n;i++){
+              
+                    var sel     = arguments[i];
+                    var chk     = $.chkbox(root,sel,chk=>set(chk.id));
+                    list.push(chk);
+                    
+              }//for
+              
+              
+              function read(){
+              
+                    var n   = list.length;
+                    for(var i=0;i<n;i++){
+                    
+                          var chk   = list[i];
+                          if(chk.read()){
+                                return chk;
+                          }
+                          
+                    }//for
+                    
+              }//read
+              
+              function set(id){list.forEach(chk=>chk.id==id ? chk.set() : chk.set(false))}
+              set.index=function(index){set(list[index].id)}
+              
+              
+              var group   = {read,set};
+              return group;
+              
+        }//group
+        
+                
+        $.is.node   = function(v){
+          
+              if(Object(v)!==v){
+                    return false;
+              }
+              if('nodeType' in v){
+                    return true;
+              }
+              
+        }//is.node
+
+
+        function localhost(){
+          
+              clear(true);
+              
+              $('#cn').value    = 'localhost test certificate';
+              ['localhost'].forEach(value=>create('dns',value));
+              ['127.0.0.1','127.0.0.2'].forEach(value=>create('ip',value))
+              
+        }//localhost
+
+        
+        function create(type,value){
+          
+              var nitem                           = item[type].cloneNode(true);
+              $(nitem,'.rem').onclick             = e=>nitem.remove();
+              if(value)$(nitem,'.value').value    = value;
+              list[type].append(nitem);
+              
+        }//create
+
+        
+        function clear(mode){
+          
+              rdns.forEach(name=>$('#'+name).value    = '');
+              list.dns.replaceChildren();
+              if(!mode)create('dns');
+              list.ip.replaceChildren();
+              if(!mode)create('ip');
+              
+        }//clear
+
+        
+        function date(adj){
+          
+              var now       = new Date();
+              var offset    = now.getTimezoneOffset()*60000;
+              var local     = new Date(now.getTime()-offset);
+              if(adj){
+                    local.setFullYear(local.getFullYear()+1);
+              }
+              var date      = local.toISOString().substring(0,16);
+              return date;
+              
+        }//date
+
+        
+        function show(name){
+          
+              if(name==='config'){
+                    $('#tab-config').classList.remove('inactive');
+                    $('#tab-config').classList.add('active');
+                    $('#config').style.display    = '';
+                    $('#tab-cert').classList.remove('active');
+                    $('#tab-cert').classList.add('inactive');
+                    $('#cert').style.display      = 'none';
+              }else{
+                    $('#tab-config').classList.remove('active');
+                    $('#tab-config').classList.add('inactive');
+                    $('#config').style.display    = 'none';
+                    $('#tab-cert').classList.remove('inactive');
+                    $('#tab-cert').classList.add('active');
+                    $('#cert').style.display      = '';
+              }
+              
+        }//show
+
+        
+        function download(filename,txt){
+          
+              var blob      = new Blob([txt]);
+              var a         = document.createElement('a');
+              a.download    = filename;
+              a.href        = window.URL.createObjectURL(blob);
+              a.click();
+              
+        }//download
+
+
+        function copy(text,textarea){
+          
+              navigator.clipboard.writeText(text);
+          
+        }//copy
+
+
+  //:
+
+
+        function read(){
+          
+              var config          = {};
+              
+              config.key          = ui.key.read().id;
+              
+              var bits            = Number(ui.bits.value);
+              if(isNaN(bits)){
+                    alert('invalid bits');
+                    return;
+              }
+              config.bits         = bits;
+              
+              config.ca           = ca.checked;
+              
+              var pathlen         = Number(ui.pathlen.value);
+              if(isNaN(pathlen)){
+                    alert('invalid pathlen');
+                    return;
+              }
+              config.pathlen      = pathlen;
+              
+              config.rdn          = {};
+              rdns.forEach(name=>config.rdn[name]=$('#'+name).value);
+              
+              var arr             = type=>[...list[type].querySelectorAll('.item')].map(node=>$(node,'.value').value).filter(v=>v);
+              
+              config.dns          = arr('dns');
+              
+              config.ip           = arr('ip');
+              
+              config.from         = new Date($('#from').value);
+              config.to           = new Date($('#to').value);
+
+
+              for(var key in ext){
+                
+                    config[key]   = {};
+                    for(var name of ext[key]){
+                      
+                          config[key][name]   = ui[key][name].checked;
+                          
+                    }//for
+                    
+              }//for
+
+
+              $('#spinner').style.display   = ''; 
+                                                                                console.json(config);
+                                                                                //return;
+              setTimeout(certificate,50,config);
+              
+        }//read
+
+  
+        function certificate(config){
+                                                                                console.json(config);
+              var keys                  = pki.rsa.generateKeyPair(2048);
+              
+              var cert                  = pki.createCertificate();
+              
+              cert.publicKey            = keys.publicKey;
+              
+              var signing_key           = keys.privateKey;
+              var signing_cert;
+              if(config.key=='key'){
+                                              
+                    signing_key     = pki.privateKeyFromPem(signing.key);
+                    signing_cert    = pki.certificateFromPem(signing.cert);
+              }
+
+
+              var bytes                 = nodeforge.random.getBytesSync(8);
+              var hex                   = nodeforge.util.bytesToHex(bytes);
+              var serialNumber          = new nodeforge.jsbn.BigInteger(hex,16);
+                                                                                console.log('serial',hex);
+              cert.serialNumber         = hex;
+              
+              cert.validity.notBefore   = config.from;
+              cert.validity.notAfter    = config.to;
+              
+              var attrs   = [];
+              rdns.forEach(name=>{
+                
+                    if(config.rdn[name]){
+                          var shortName   = name.toUpperCase();
+                          var value       = config.rdn[name];
+                          attrs.push({shortName,value});
+                    }
+                          
+              });
+
+              cert.setSubject(attrs);
+              cert.setIssuer(attrs);
+              if(signing_cert){
+                    cert.setIssuer(signing_cert.subject.attributes);
+              }
+              
+              var ext2    = [
+                
+                    {
+                          name                : 'basicConstraints',
+                          cA                  : config.ca,
+                          pathLen             : config.pathlen,
+                          critical            : true,
+                    },
+                    {
+                          name                : 'subjectAltName',
+                          altNames            : [config.dns.map(dns=>{return {type:2,value:dns}}),config.ip.map(ip=>{return {type:7,ip}})].flat()
+                    },
+                    {
+                          name                : 'subjectKeyIdentifier'
+                    }
+                    
+              ];
+              
+              if(config.ca){
+                    ext2[0].pathLenConstraint  = config.pathlen;
+              }
+              
+              
+              for(var key in ext){
+                
+                    var o     = {};
+                    o.name    = key;
+                    
+                    for(var name of ext[key]){
+                      
+                          o[name]   = config[key][name];
+                          
+                    }//for
+                    
+                    ext2.push(o);
+                    
+              }//for
+
+
+              cert.setExtensions(ext2);
+
+              var md    = nodeforge.md.sha256.create();
+              cert.sign(signing_key,md);
+              
+              var key           = pki.privateKeyToPem(keys.privateKey);
+              var cert          = pki.certificateToPem(cert);
+              
+              var forge_cert    = pki.certificateFromPem(cert);
+
+
+
+              certificate.complete(key,cert,forge_cert);
+              
+              
+        }//certificate
+
+        
+        certificate.complete    = function(key,cert,forge_cert){
+                        
+              $('#spinner').style.display     = 'none';
+              show('cert');
+
+              key                             = conv.pkcs8(key);
+              
+              $('[value=pkcs1]').onclick      = e=>key   = conv.pkcs1(key);
+              $('[value=pkcs8]').onclick      = e=>key   = conv.pkcs8(key);
+              
+              $('#key-copy').onclick          = e=>copy(key,$('#key'));
+              $('#key-download').onclick      = e=>download('key.pem',key);
+              
+              $('#x509-copy').onclick         = e=>copy(cert,$('#x509'));
+              $('#x509-download').onclick     = e=>download('cert.pem',cert);
+              
+              $('#cert #key').textContent     = key
+              $('#cert #x509').textContent    = cert;
+                            
+        }//generate_certificate
+
+
+        var conv      = {};
+        
+        conv.pkcs1    = function(key){
+
+              var key     = jsrsasign.KEYUTIL.getKey(key);
+              var pkcs1   = jsrsasign.KEYUTIL.getPEM(key,"PKCS1PRV");
+              
+              $('#cert #key').textContent    = pkcs1;
+              
+              return pkcs1;
+        
+        }//pkcs1
+        
+        
+        conv.pkcs8    = function(key){
+        
+              var key     = jsrsasign.KEYUTIL.getKey(key);
+              var pkcs8   = jsrsasign.KEYUTIL.getPEM(key,'PKCS8PRV');
+              
+              $('#cert #key').textContent    = pkcs8;
+              
+              return pkcs8;
+              
+        }//pkcs8
+  
+
+
+
+  
+      </script>
+
+
+
+
+
+</html>
+
+
+<!--
+
+const forge = require('node-forge');
+
+// Create the extension
+const nameConstraintsExt = {
+  name: 'nameConstraints',
+  id: '2.5.29.30',
+  critical: true,
+  value: forge.asn1.toDer(
+    forge.asn1.create(
+      forge.asn1.Class.UNIVERSAL,
+      forge.asn1.Type.SEQUENCE,
+      true,
+      [
+        // Permitted subtrees
+        forge.asn1.create(
+          forge.asn1.Class.CONTEXT_SPECIFIC,
+          0,
+          true,
+          [
+            forge.asn1.create(
+              forge.asn1.Class.UNIVERSAL,
+              forge.asn1.Type.SEQUENCE,
+              true,
+              [
+                forge.asn1.create(
+                  forge.asn1.Class.CONTEXT_SPECIFIC,
+                  2, // dNSName
+                  false,
+                  forge.util.createBuffer('.example.com', 'utf8')
+                )
+              ]
+            )
+          ]
+        ),
+        // Excluded subtrees
+        forge.asn1.create(
+          forge.asn1.Class.CONTEXT_SPECIFIC,
+          1,
+          true,
+          [
+            forge.asn1.create(
+              forge.asn1.Class.UNIVERSAL,
+              forge.asn1.Type.SEQUENCE,
+              true,
+              [
+                forge.asn1.create(
+                  forge.asn1.Class.CONTEXT_SPECIFIC,
+                  2, // dNSName
+                  false,
+                  forge.util.createBuffer('.evil.com', 'utf8')
+                )
+              ]
+            )
+          ]
+        )
+      ]
+    )
+  ).getBytes()
+};
+
+
+
+cert.setExtensions([
+  {
+    name: 'basicConstraints',
+    cA: true,
+    pathLenConstraint: 0
+  },
+  nameConstraintsExt,
+  // other extensions...
+]);
+
+
+
+
+
+
+
+//jsrsasign
+
+
+const KJUR = require('jsrsasign');
+
+// Define the extension
+const nameConstraintsExt = {
+  extname: "nameConstraints",
+  critical: true,
+  permitted: [
+    { dns: ".example.com" },
+    { ip: "192.168.0.0/16" }
+  ],
+  excluded: [
+    { dns: ".evil.com" }
+  ]
+};
+
+// Add to certificate extensions
+const cert = new KJUR.asn1.x509.Certificate({
+  // ... other cert fields ...
+  extensions: [
+    {
+      extname: "basicConstraints",
+      cA: true,
+      pathLen: 0
+    },
+    nameConstraintsExt,
+    // other extensions...
+  ]
+});
+
+// Generate and sign the certificate
+cert.sign();
+const pem = cert.getPEM();
+
+
+
+
+
+-->
+
+
+
+
+
+
+
+
+
+
