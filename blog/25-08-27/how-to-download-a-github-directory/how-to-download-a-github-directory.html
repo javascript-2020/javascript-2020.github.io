@@ -68,14 +68,13 @@
         var debug;
         
         
+        var hdr;
         var snippet                     = {};
-        
         snippet['full-ex']              = null;
         snippet['data-structure']       = null;
         snippet.zip                     = null;
         snippet['node-1']               = null;
         snippet['node-2']               = null;
-        
         var log;
         
         
@@ -86,16 +85,16 @@
                                                                                 debug('init',version);
               menu    = menumod();
 
-
+              hdr                             = mod['blog-hdr'];
               snippet['full-ex']              = mod['full-ex'];
               snippet['data-structure']       = mod['data-structure'];
               snippet.zip                     = mod['zip'];
               snippet['node-1']               = mod['node-1'];
               snippet['node-2']               = mod['node-2'];
-              
               log                             = mod['log-mod'];
               
-              
+
+              hdr.initmod({ext,$});              
               snippet['full-ex'].initmod({ext,$,menu,ace});
               snippet['data-structure'].initmod({ext,$,menu,ace});
               snippet.zip.initmod({ext,$,menu,ace});
@@ -105,6 +104,7 @@
 
               
               await Promise.all([
+                    hdr.init(),
                     snippet['full-ex'].init(),
                     snippet['data-structure'].init(),
                     snippet.zip.init(),
@@ -417,6 +417,9 @@ node --experimental-network-imports --no-warnings .\test.node.mjs
         function initdom(rootnode){
 
               root            = rootnode;
+
+
+              hdr.initdom();
 
               
               var node        = $('#full-ex');
