@@ -61,8 +61,8 @@
         var keydown;
         var debug;
 
+        var hdr;
         var snippet;
-        
         var log;
 
 
@@ -73,14 +73,16 @@
                                                                                 debug('init',version);
               menu          = menumod();
               
-              
+              hdr           = mod['blog-hdr'];              
               snippet       = mod['snippet-html-console'];
               log           = mod['log-mod'];
               
+              hdr.initmod({ext,$});
               snippet.initmod({ext,$,menu,ace});
               log.initmod({ext,$});
               
               await Promise.all([
+                    hdr.init(),
                     snippet.init(),
                     log.init(),
               ]);
@@ -210,6 +212,7 @@
 
               var root    = rootnode;
               
+              hdr.initdom();
 
               snippet.initdom(root);
               snippet.console.height    = 200;
