@@ -29,7 +29,7 @@
         
         
         function request(req,res){
-        
+                                                                                console.log('request',req.method,req.url);
               if(req.url=='/stream'){
                     stream(req,res);
                     return;
