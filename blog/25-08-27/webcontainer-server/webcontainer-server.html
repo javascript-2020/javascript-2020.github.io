@@ -63,8 +63,8 @@
         var menumod;
         var keydown;
         
+        var hdr;
         var ex;
-        
         var log;
         
         
@@ -76,16 +76,17 @@
                                                                                 debug('init',version);
               menu    = menumod();
 
-              
+              hdr     = mod['blog-hdr'];              
               ex      = mod.ex;
               log     = mod['log-mod'];
               
+              hdr.initmod({ext,$});
               ex.initmod({ext,$,menu,ace});
               log.initmod({ext,$});
               
               
-              
               await Promise.all([
+                    hdr.init(),
                     ex.init(),
                     log.init(),
               ]);
@@ -222,7 +223,8 @@
 
               root    = rootnode;
               
-
+              hdr.initdom(root);
+              
               ex.initdom();
               
               
