@@ -67,9 +67,9 @@
         
         var menu;
 
+        var hdr;
         var config;
         var cmd;
-        
         var log;
 
 
@@ -81,16 +81,18 @@
 
               menu                = menumod();
               
+              hdr                 = mod['blog-hdr'];
               config              = mod.config;
               cmd                 = mod.cmd;
               log                 = mod['log-mod'];
               
-              
+              hdr.initmod({ext,$});
               config.initmod({ext,$,datatype,menu});
               cmd.initmod({ext,$,datatype,menu});
               log.initmod({ext,$});
               
               await Promise.all([
+                    hdr.init(),
                     config.init(),
                     cmd.init(),
                     log.init(),
@@ -413,12 +415,11 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         function initdom(rootnode){
         
               root                          = rootnode;
+
               
-              
+              hdr.initdom();
               config.initdom({mode:'text'});
-              
               cmd.initdom({mode:'text'});
-              
               
               
               $('[value=run]').onclick      = btn.run;
