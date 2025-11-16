@@ -20,7 +20,6 @@
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
 
-
             <script type='application/ld+json'>
                   {
                         "@context"            : "https://schema.org",
@@ -84,7 +83,7 @@
               
               config              = mod.config;
               cmd                 = mod.cmd;
-              log                 = mod.log;
+              log                 = mod['log-mod'];
               
               
               config.initmod({ext,$,datatype,menu});
@@ -224,7 +223,7 @@
       <body>
 
 
-            <blog-hdr component=grp1 v2.0>      
+            <blog-hdr component=grp1>      
                   <h1 class=title>
                         Add Name Constraints To A x509 Certificate
                   </h1>
@@ -250,7 +249,7 @@
                         </div>
                   </p>
                   <h4>
-                        🔐 1. Enterprise Internal PKI
+                        1. Enterprise Internal PKI
                   </h4>
                   <p>
                         In large organizations with internal CAs, you can use Name Constraints to restrict subordinate CAs to only issue certificates for internal domains like
@@ -267,7 +266,7 @@
                         This prevents accidental or malicious issuance for public domains like google.com or microsoft.com.
                   </p>
                   <h4>
-                        🧪 2. Testing and Development Environments
+                        2. Testing and Development Environments
                   </h4>
                   <p>
                         When setting up a test CA for staging or dev environments, you can constrain it to:
@@ -284,7 +283,7 @@
                         This ensures test certificates can't be misused in production or public-facing systems.
                   </p>
                   <h4>
-                        🧭 3. Delegated Subordinate CA
+                        3. Delegated Subordinate CA
                   </h4>
                   <p>
                         If you delegate certificate issuance to a third party (e.g., a partner or vendor), you can constrain their CA to only issue for:
@@ -304,7 +303,7 @@
                         This is especially useful in federated identity systems or multi-tenant infrastructure.
                   </p>
                   <h4>
-                        🛡️ 4. IoT Device Identity
+                        4. IoT Device Identity
                   </h4>
                   <p>
                         For IoT deployments, constrain device certificates to:
@@ -321,7 +320,7 @@
                         This helps prevent rogue devices from impersonating others or accessing unauthorized networks.
                   </p>
                   <h4>
-                        📜 5. Regulatory Compliance
+                        5. Regulatory Compliance
                   </h4>
                   <p>
                         In sectors like finance or healthcare, constraints can enforce strict boundaries:
@@ -338,7 +337,7 @@
                         This supports auditability and reduces risk in tightly regulated environments.
                   </p>
                   <h4>
-                        🧠 Summary
+                        Summary
                   </h4>
                   <p>
                         Name Constraints are like a firewall for your CA’s identity scope. They don’t just say “this CA can issue certificates”—they say “only for these names, and never for those.” Whether you're building a personal PKI, securing enterprise infrastructure, or sandboxing a delegated CA, they’re a powerful tool for trust hygiene.
@@ -364,9 +363,9 @@
             </div>
 
             
-            <editor id=config component v2.0 fullsize src='ex/config.txt'></editor>
+            <web-editor id=config fullsize src='ex/config.txt' component></web-editor>
             
-            <editor id=cmd component v2.0 fullsize src='ex/cmd.txt'></editor>
+            <web-editor id=cmd fullsize src='ex/cmd.txt' component></web-editor>
             
             
 <!--
@@ -390,7 +389,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
             </div>
             
             
-            <log component v2.0></log>
+            <log-mod component></log-mod>
             
       
       </body>
