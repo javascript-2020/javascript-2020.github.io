@@ -62,11 +62,9 @@
         var keydown;
         var debug;
         
-        
+        var hdr;
         var rollup;
         var test;
-        
-        
         var log;
 
 
@@ -77,16 +75,19 @@
                                                                                 //debug('init',version);
               
               menu    = menumod();
-              
+
+              hdr       = mod['blog-hdr'];              
               rollup    = mod.rollup;
               test      = mod.test;
               log       = mod['log-mod'];
               
+              hdr.initmod({ext,$});
               rollup.initmod({ext,$,ace,menu});
               test.initmod({ext,$,ace,menu});
               log.initmod({ext,$});
               
               await Promise.all([
+                    hdr.init(),
                     rollup.init(),
                     test.init(),
                     log.init(),
@@ -252,11 +253,12 @@
         async function initdom(rootnode){
 
               var root    = rootnode;
-              
 
+              
+              hdr.init();
+              
               rollup.initdom();
               test.initdom();
-
 
               log.initdom();
 
