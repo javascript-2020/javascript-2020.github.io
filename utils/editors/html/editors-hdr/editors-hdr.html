@@ -40,6 +40,8 @@
   ::slotted(.visually-hidden)
     {position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0}
     
+  input[type=button]
+    {font-size:16px;padding:5px 10px;cursor:pointer}
     
             </style>
             
@@ -54,6 +56,8 @@
                         <top-menu component=grp></top-menu>
                       
                   </div>
+                  
+                  <input value=isolate type=button>
 
                   <slot></slot>
                   
@@ -118,12 +122,31 @@
             
             top.initdom(shadow);
             
+            $(shadow,'[value=isolate]').onclick   = btn.isolate;
+            
             
       }//initdom
       
 
   //:
   
+  
+        btn.isolate   = function(){
+          
+              var url   = window.location.toString();
+              
+              if(url.indexOf('?')){
+                    return;
+              }
+              
+              url              += '?isolate';
+              window.location   = url;
+              
+        }//isolate
+
+  
+  //:
+
   
         function debug(){
           
