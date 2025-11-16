@@ -55,8 +55,8 @@
         
         var menu;
         
+        var hdr;
         var ex;
-        
         var log;
         
         
@@ -66,14 +66,17 @@
         async function init(){
           
               menu    = menumod();
-              
+
+              hdr     = mod['blog-hdr'];              
               ex      = mod.ex;
               log     = mod['log-mod'];
               
+              hdr.initmod({ext,$});
               ex.initmod({ext,$,menu,ace});
               log.initmod({ext,$});
               
               await Promise.all([
+                    hdr.init(),
                     ex.init(),
                     log.init(),
               ]);
@@ -196,7 +199,7 @@
 
         function initdom(rootnode){
 
-          
+              hdr.initdom();
               ex.initdom();
               log.initdom();
               
