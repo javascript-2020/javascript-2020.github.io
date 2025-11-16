@@ -65,10 +65,10 @@
         
         var menu;
         
+        var hdr;
         var ex1;
         var ex2;
         var ex3;
-        
         var log;
 
         
@@ -79,18 +79,20 @@
                                                                                 debug('init',version);
               menu    = menumod();
 
-              
+              hdr     = mod['blog-hdr'];              
               ex1     = mod.ex1;
               ex2     = mod.ex2;
               ex3     = mod.ex3;
-              log     = mod.log;
+              log     = mod['log-mod'];
               
+              hdr.initmod({ext,$});
               ex1.initmod({ext,$,menu,ace});
               ex2.initmod({ext,$,menu,ace});
               ex3.initmod({ext,$,menu,ace});
               log.initmod({ext,$});
               
               await Promise.all([
+                    hdr.init(),
                     ex1.init(),
                     ex2.init(),
                     ex3.init(),
@@ -202,7 +204,7 @@
       <body>
 
 
-            <blog-hdr component=grp1 v2.0>      
+            <blog-hdr component=grp1>      
                   <h1 class=title>
                         Determine Datatypes In Javascript
                   </h1>
@@ -223,7 +225,7 @@
                   complex and then just mysteriously stop working, my go to for datatype has always been the following :
             </div>
 
-            <snippet-console id=ex1 component v2.0 src='ex/ex1.js'></snippet-console>
+            <snippet-console id=ex1 src='ex/ex1.js' component></snippet-console>
 
 
             <div class=break></div>
@@ -233,7 +235,7 @@
                   This can be extended further through the use of
             </div>
             
-            <snippet-console id=ex2 component v2.0 src='ex/ex2.js'></snippet-console>
+            <snippet-console id=ex2 src='ex/ex2.js' component></snippet-console>
             
 
             <div class=break></div>            
@@ -243,10 +245,10 @@
                   Instanceof is unreliable in the follow scenario
             </div>
             
-            <snippet-console id=ex3 component v2.0 src='ex/ex3.js'></snippet-console>
+            <snippet-console id=ex3 src='ex/ex3.js' component></snippet-console>
 
 
-            <log component v2.0></log>
+            <log-mod component></log-mod>
             
             
       </body>      
@@ -265,9 +267,9 @@
         function initdom(rootnode){
           
           
-              root                                  = rootnode;
+            root                  = rootnode;
 
-
+            hdr.initdom();
             ex1.initdom();
             ex2.initdom();
             ex3.initdom();
