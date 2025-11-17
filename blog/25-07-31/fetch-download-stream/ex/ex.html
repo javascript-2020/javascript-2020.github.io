@@ -1,34 +1,75 @@
 
       <style>
+  #root
+    {font-family:arial;--unknown:}
+  .label
+    {display:inline-block;width:150px;text-align:right;margin:5px 10px}
+  #progress
+    {border:1px solid gray;padding:2px;height:20px;margin:20px}
+  #bar
+    {background:lightgreen;width:0;height:100%}
+
+  #bar.unknown
+    {opacity:0.5;background-size:20px 20px;background-image:repeating-linear-gradient(-45deg,#f7b733 0,#f7b733 5px,yellow 0,yellow 50%);
+      animation: stripes-scroll 1s linear infinite;}
+
+  @keyframes stripes-scroll {
+    from {background-position: 0 0;}
+    to {background-position: 20px 0;}
+  }
+
       </style>
       
       <div id=root>
       
             <div>
-                  encoding
+                  <span class=label>
+                        encoding
+                  </span>
                   <span id=encoding></span>
             </div>
             <div>
-                  content-length
+                  <span class=label>
+                        content-length
+                  </span>
                   <span id=content-length></span>
+            </div>
+            <div>
+                  <span class=label>
+                        content-type
+                  </span>
+                  <span id=content-type></span>
             </div>
             <div id=progress>
                   <div id=bar></div>
             </div>
-            
+            <div id=result>
+                  <div>
+                  <div>
+                        <span class=label>name</span>
+                        <span id=name></span>
+                  </div>
+                  <div>
+                        <span class=label>size</span>
+                        <span id=size></span>
+                  </div>
+            </div>
       </div>
 
 
       <script>
 
 (async()=>{
-console.clear();
+                                                                                console.clear();
 
-  
-        var url       = 'https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip'
+        var $         = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
         
         
-        //var url   = 'https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js';
+        //varr url       = 'https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip'
+        var url   = 'https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js';
+        
+        var i         = url.lastIndexOf('/')+1
+        var fn        = url.slice(i);
         
         var headers   = {};
         var method    = 'get';
@@ -38,10 +79,19 @@ console.clear();
         
         var encoding    = res.headers.get('content-encoding')?.toLowerCase();
         if(encoding && encoding!=='identity'){
-              console.log('unable to reliably computer content-length');
+              encoding    = false;
+              $('#bar').className     = 'unknown';
+              $('#bar').style.width   = '100%';
+                                                                                console.log('unable to reliably computer content-length');
+        }else{
+              encoding    = true;
         }
+        
+        var type      = res.headers.get('content-type');
+        $('#content-type').textContent    = type;
+        
         var len       = res.headers.get('content-length');
-        console.log(len);
+                                                                                console.log(len);
         var total     = 0;
         var reader    = res.body.getReader();
         var chunks    = [];
@@ -49,11 +99,16 @@ console.clear();
         
               const {value,done}    = await reader.read();
               if(done)break;
-                                                                                total  += value.length;
-                                                                                console.log('chunk',datatype(value),value.byteLength,total,(total/len*100).toFixed(1)+' %');
+              total  += value.length;
               chunks.push(value);
-                                                                          
+              
+              if(encoding){
+                    var w   = (total/len*100).toFixed(1)+'%';
+                    $('#bar').style.width   = w;
+                                                                                console.log('chunk',datatype(value),value.byteLength,total,w);
+              }
         }//while
+        
         var total     = chunks.reduce((acc,chunk)=>acc+chunk.length,0);
         var buf       = new Uint8Array(total);
         var offset    = 0;
@@ -63,10 +118,15 @@ console.clear();
               offset   += chunk.length;
               
         }//for
+        
         var blob    = new Blob([buf],{type:'application/octet-stream'});
-        console.log(blob);
+        blob.name   = fn;
+                                                                                console.log(blob);
         
+        $('#result #name').textContent    = fn;
+        $('#result #size').textContent    = blob.size;
         
+        $('#bar').classList.remove('unknown');
         
         function datatype(v){return Object.prototype.toString.call(v).slice(8,-1).toLowerCase()}
         
