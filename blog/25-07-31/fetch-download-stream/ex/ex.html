@@ -26,7 +26,7 @@
                   <span class=label>
                         encoding
                   </span>
-                  <span id=encoding></span>
+                  <span id=content-encoding></span>
             </div>
             <div>
                   <span class=label>
@@ -65,8 +65,8 @@
         var $         = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
         
         
-        //varr url       = 'https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip'
-        var url   = 'https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js';
+        var url       = 'https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip'
+        //  var url       = 'https://bgrins.github.io/videoconverter.js/build/ffmpeg-all-codecs.js';
         
         var i         = url.lastIndexOf('/')+1
         var fn        = url.slice(i);
@@ -77,20 +77,29 @@
         
         var res       = await fetch(url,{headers,method,body});
         
-        var encoding    = res.headers.get('content-encoding')?.toLowerCase();
-        if(encoding && encoding!=='identity'){
-              encoding    = false;
+        var encoding    = res.headers.get('content-encoding');
+                                                                                console.log('content-encoding',encoding);
+        $('#content-encoding').textContent    = encoding;
+        
+        var flag    = false;
+        if(encoding){
+              encoding    = encoding.toLowerCase();
+              if(encoding==='identity'){
+                    flag    = true;
+              }
+        }
+        encoding    = flag;
+        if(!encoding){        
               $('#bar').className     = 'unknown';
               $('#bar').style.width   = '100%';
                                                                                 console.log('unable to reliably computer content-length');
-        }else{
-              encoding    = true;
         }
         
         var type      = res.headers.get('content-type');
         $('#content-type').textContent    = type;
         
         var len       = res.headers.get('content-length');
+        $('#content-length').textContent    = len;
                                                                                 console.log(len);
         var total     = 0;
         var reader    = res.body.getReader();
