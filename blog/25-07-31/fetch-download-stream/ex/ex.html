@@ -67,7 +67,7 @@
 
         
         var url         = 'https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip'
-        //  var url         = 'https://bgrins.github.io/videoconverter.js/build/ffmpeg-all-codecs.js';
+          var url         = 'https://bgrins.github.io/videoconverter.js/build/ffmpeg-all-codecs.js';
         
         var i           = url.lastIndexOf('/')+1
         var fn          = url.slice(i);
@@ -136,12 +136,13 @@
               total  += value.length;
               chunks.push(value);
               
+                                                                                var args    = ['chunk',datatype(value),value.byteLength];
               if(encoding){
                     var w   = (total/len*100).toFixed(1)+'%';
                     $('#bar').style.width   = w;
-                                                                                console.log('chunk',datatype(value),value.byteLength,total,w);
+                                                                                args.push(total,w);
               }
-              
+                                                                                console.log.apply(console,args);
         }//while
         
         var total     = chunks.reduce((acc,chunk)=>acc+chunk.length,0);
