@@ -62,20 +62,44 @@
 (async()=>{
                                                                                 console.clear();
 
-        var $         = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+        var $           = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
+        var datatype    = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
+
         
+        var url         = 'https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip'
+        //  var url         = 'https://bgrins.github.io/videoconverter.js/build/ffmpeg-all-codecs.js';
         
-        var url       = 'https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip'
-        //  var url       = 'https://bgrins.github.io/videoconverter.js/build/ffmpeg-all-codecs.js';
+        var i           = url.lastIndexOf('/')+1
+        var fn          = url.slice(i);
+
         
-        var i         = url.lastIndexOf('/')+1
-        var fn        = url.slice(i);
+        var headers     = {};
+        var method      = 'get';
+        var body        = undefined;
         
-        var headers   = {};
-        var method    = 'get';
-        var body      = undefined;
-        
-        var res       = await fetch(url,{headers,method,body});
+        var err;
+        try{
+          
+              var res         = await fetch(url,{headers,method,body});
+              
+        }//try
+        catch(err2){
+          
+              err   = err2;
+              
+        }//catch
+        if(err){
+              var error   = err.toString();
+              console.error(error);
+              return;
+        }
+        if(!res.ok){
+              var txt     = await res.text();
+              var error   = `failed to fetch : $(res.status} ${res.statusText}`;
+              console.error(error);
+              return;
+        }
+
         
         var encoding    = res.headers.get('content-encoding');
                                                                                 console.log('content-encoding',encoding);
@@ -108,6 +132,7 @@
         
               const {value,done}    = await reader.read();
               if(done)break;
+              
               total  += value.length;
               chunks.push(value);
               
@@ -116,6 +141,7 @@
                     $('#bar').style.width   = w;
                                                                                 console.log('chunk',datatype(value),value.byteLength,total,w);
               }
+              
         }//while
         
         var total     = chunks.reduce((acc,chunk)=>acc+chunk.length,0);
@@ -137,7 +163,6 @@
         
         $('#bar').classList.remove('unknown');
         
-        function datatype(v){return Object.prototype.toString.call(v).slice(8,-1).toLowerCase()}
         
 })();
 
