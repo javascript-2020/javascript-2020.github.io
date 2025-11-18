@@ -58,6 +58,8 @@
         ;
 
 
+        var ace;
+        
         var ext;
         var $;
         var datatype;
@@ -65,13 +67,10 @@
         var keydown;
         var debug;
 
-
-        var ace;
-        
         var menu;
             
+        var hdr;
         var example;
-        
         var log;
         
         
@@ -84,13 +83,21 @@
               menu    = menumod();
 
 
-
+              hdr       = mod['blog-hdr'];
               example   = mod.example;
+              log       = mod['log-mod'];
               
+              hdr.initmod({ext,$});
               example.initmod({ext,$,menu,ace,on});
+              log.initmod({ext,$});
+              
               example.btn.run   = btn.run;
               
-              await example.init();
+              await Promise.all([
+                    hdr.init(),
+                    example.init(),
+                    log.init(),
+              ]);
 
 
 
@@ -198,7 +205,7 @@
       <body>
 
 
-            <blog-hdr component=grp1 v2.0>      
+            <blog-hdr component=grp1>
                   <h1 class=title>
                         Very Simple Proxy
                   </h1>
@@ -281,10 +288,13 @@
             
             
 
-            <snippet-terminal-console id=example type=nodejs component v2.0 src='ex/very-simple-http-proxy.js'></snippet-terminal-console>
+            <snippet-terminal-console id=example type=nodejs src='ex/very-simple-http-proxy.js' component></snippet-terminal-console>
 
 
             <iframe id=iframe></iframe>
+
+
+            <log-mod component></log-mod>
 
 
       </body>
@@ -308,7 +318,13 @@
   
         function initdom(rootnode){
           
+              hdr.initdom();
+              
               example.initdom();
+              
+              
+              log.initdom();
+              
               
         }//initdom
             
