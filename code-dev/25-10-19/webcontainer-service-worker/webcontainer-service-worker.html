@@ -47,35 +47,9 @@
   
         var console;
         var terminal;
-      
-        window['iframe-3001'].onload    = e=>{
-          
-            var js    = `
-                  (async()=>{
-                  
-                          var res       = await fetch('${urls['3000']}/stream');
-                          
-                          var stream    = new TextDecoderStream();
-                          var reader    = res.body.pipeThrough(stream).getReader();
-                                                                                console.log('response stream aquired');
-                          while(true){
-                          
-                                const {value,done}    = await reader.read();
-                                                                                console.log('fetch',value);                                                                          
-                                if(done)break;
-                                
-                          }//while
-                          
-                          console.log('done');
-                          
-                  })();
-            `;
-                                                                                //console.log(js);
-            window['iframe-3001'].contentWindow.postMessage({type:'run',js},'*');
-            
-        }//onload
-        
-        
+
+
+
         var webcontainer;
         var urls    = {};
         
@@ -116,6 +90,39 @@
               }//switch
               
         }//onmessage
+
+
+  //:
+
+      
+        window['iframe-3001'].onload    = e=>{
+          
+            var js    = `
+                  (async()=>{
+                  
+                          var res       = await fetch('${urls['3000']}/stream');
+                          
+                          var stream    = new TextDecoderStream();
+                          var reader    = res.body.pipeThrough(stream).getReader();
+                                                                                console.log('response stream aquired');
+                          while(true){
+                          
+                                const {value,done}    = await reader.read();
+                                                                                console.log('fetch',value);                                                                          
+                                if(done)break;
+                                
+                          }//while
+                          
+                          console.log('done');
+                          
+                  })();
+            `;
+                                                                                //console.log(js);
+            window['iframe-3001'].contentWindow.postMessage({type:'run',js},'*');
+            
+        }//onload
+        
+        
         
         
         async function spawn(fn){
