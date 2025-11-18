@@ -4,6 +4,7 @@
       cross-origin-isolate
 -->
 
+<!DOCTYPE html>
 
 <html>
 
@@ -16,14 +17,12 @@
 
             <meta name=description content=''>
 
-
-            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAWlBMVEVHcEwAAAAEBAQAAAADAwMKCgoHBwcCAgICAgIHBwcBAQEHBwcBAQECAgIDAwMLCwsJCQkJCQkBAQEFBQUBAQEHBwcBAQEVFRUCAgIEBAQfHx8QEBAfHx8AAACw1S1HAAAAHXRSTlMA/J74o4x7CbuC747lsqtjc21DlNuI0XrHmVo3WEmfxP8AAAGGSURBVCjPbZOJruMgDEUTFgezOFCWgenw/785JH0NafWudNVIJ9d2bHVZln3/9/dTz2VqEyH/+VS48Y1J582n/HbHQvX1rm735yfuvK/jnd6Pn25zed6wowSCSo6uMnSqW+zpecPQGgQmc2DYghh4ffMTZxUQlYfs0BvqFrTm9Xn11muyliertU1ad+0BEfdt4kEOc20550lbW7R+vIsbFbIcxY1C3ygGxijQ+sYEkY3RzGu0iORNJuRXmhXfWMEsagRS5B2poK70tZbh4+HlmS7alaJVTbYom5KzyZK9MKEAAPoxGx8VI8SJgUnwAtELkL5hBGOinMWVbUpZQTUpVkqNpSaT+G20XzTTLmVyKTJVyNSqsKoC5da7xbGWfKwljt5srIXlmUbnAYaRwGchvYnNt9nb8jouVorVqY5zDOuqJ+Zdc74e5ufDevoqHmuQsQI2lf24QBDCBffauZgXk2M89nWxHY70mOZMyzNNV3pZHuGrN7/1Pgp8/Q1+9MbLY/9V2/IfnsElhy86HwkAAAAASUVORK5CYII='>
-            <meta name=viewport content='width=device-width, initial-scale=1'>
-
-
             <base href='https://ext-code.com/code-dev/'>
             <link rel=canonical href='https://ext-code.com/code-dev/display.html'>
             
+            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAWlBMVEVHcEwAAAAEBAQAAAADAwMKCgoHBwcCAgICAgIHBwcBAQEHBwcBAQECAgIDAwMLCwsJCQkJCQkBAQEFBQUBAQEHBwcBAQEVFRUCAgIEBAQfHx8QEBAfHx8AAACw1S1HAAAAHXRSTlMA/J74o4x7CbuC747lsqtjc21DlNuI0XrHmVo3WEmfxP8AAAGGSURBVCjPbZOJruMgDEUTFgezOFCWgenw/785JH0NafWudNVIJ9d2bHVZln3/9/dTz2VqEyH/+VS48Y1J582n/HbHQvX1rm735yfuvK/jnd6Pn25zed6wowSCSo6uMnSqW+zpecPQGgQmc2DYghh4ffMTZxUQlYfs0BvqFrTm9Xn11muyliertU1ad+0BEfdt4kEOc20550lbW7R+vIsbFbIcxY1C3ygGxijQ+sYEkY3RzGu0iORNJuRXmhXfWMEsagRS5B2poK70tZbh4+HlmS7alaJVTbYom5KzyZK9MKEAAPoxGx8VI8SJgUnwAtELkL5hBGOinMWVbUpZQTUpVkqNpSaT+G20XzTTLmVyKTJVyNSqsKoC5da7xbGWfKwljt5srIXlmUbnAYaRwGchvYnNt9nb8jouVorVqY5zDOuqJ+Zdc74e5ufDevoqHmuQsQI2lf24QBDCBffauZgXk2M89nWxHY70mOZMyzNNV3pZHuGrN7/1Pgp8/Q1+9MbLY/9V2/IfnsElhy86HwkAAAAASUVORK5CYII='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
 
 
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
@@ -33,12 +32,14 @@
 
             <script init>            
                                                                                 console.clear();
-                                                                                console.log('code-dev.index.html');
+                                                                                console.log('code-dev/display.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var df=true,version='v2.0'
         ;
 
+        var ace;
+        var jdenticon
 
         var ext;
         var $;
@@ -48,15 +49,9 @@
         var code;
         var debug;
 
-
-        var ace;
-        var jdenticon
-        
-        
         var menu;
 
-
-
+        var hdr;
         var log;
         
         
@@ -68,14 +63,16 @@
               
               menu    = menumod();
 
-
-
-
+              hdr     = mod['display-hdr'];
               log     = mod['log-mod'];
-              
+
+              hdr.initmod({ext,$});              
               log.initmod({ext,$});
               
-              await log.init();
+              await Promise.all([
+                    hdr.init(),
+                    log.init(),
+              ]);
 
 
               initdom(document.body);
@@ -184,7 +181,7 @@
         function initdom(rootnode){
           
 
-              
+              hdr.initdom();
           
               log.initdom();
         
