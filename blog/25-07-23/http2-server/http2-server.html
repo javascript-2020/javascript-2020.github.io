@@ -59,6 +59,8 @@
         ;
 
 
+        var ace;
+        
         var ext;
         var $;
         var datatype;
@@ -67,10 +69,9 @@
         var code;
         var debug;
 
-        var ace;
-        
         var menu;
-            
+
+        var hdr;            
         var editor;
 
         
@@ -80,14 +81,18 @@
         async function init(){
                                                                                 //debug('init',version);
               
-              menu    = menumod();
+              menu      = menumod();
 
-
-              editor    = mod.editor;
+              hdr       = mod['blog-hdr'];
+              editor    = mod['web-editor'];
               
+              hdr.initmod({ext,$});
               editor.initmod({ext,$,menu,ace});
               
-              await editor.init();
+              await Promise.all([
+                    hdr.init(),
+                    editor.init(),
+              ]);
 
 
               initdom(document.body);
@@ -198,7 +203,7 @@
       <body>
 
 
-            <blog-hdr component=grp1 v2.0>      
+            <blog-hdr component=grp1>
                   <h1 class=title>
                         how to set up HTTP/2 server in Node.js
                   </h1>
@@ -258,8 +263,7 @@
                         <input value=download type=button>
                   </div>
             
-                  <editor component v2.0 src='ex/ex1.js'>
-                  </editor>
+                  <web-editor component v2.0 src='ex/ex1.js'></web-editor>
                   
                   
             </div>
@@ -280,6 +284,9 @@
           
               $('[value=download]').onclick                 = btn.download;
 
+              
+              hdr.initdom();
+              
               
               editor.initdom(rootnode,{fullsize:true});
 
