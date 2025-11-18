@@ -5,6 +5,8 @@
 -->
 
 
+<!DOCTYPE html>
+
 <html>
 
       <head>
@@ -39,6 +41,8 @@
         var df=true,version='v2.0'
         ;
 
+        var ace;
+        var jdenticon
 
         var ext;
         var $;
@@ -47,16 +51,10 @@
         var keydown;
         var code;
         var debug;
-
-
-        var ace;
-        var jdenticon
-        
         
         var menu;
 
-
-
+        var hdr;
         var log;
         
         
@@ -68,12 +66,16 @@
               
               menu    = menumod();
 
-
-              log     = mod.log;
+              hdr     = mod['main-hdr'];
+              log     = mod['log-mod'];
               
-              log.initmod({});
+              hdr.initmod({ext,$});
+              log.initmod({ext,$});
               
-              await log.init();
+              await Promise.all([
+                    hdr.init(),
+                    log.init(),
+              ]);
 
 
               initdom(document.body);
@@ -204,7 +206,7 @@
 
 
 
-            <log component v2.0></log>
+            <log-mod component></log-mod>
             
       </body>
       
@@ -218,6 +220,7 @@
         function initdom(rootnode){
           
           
+              hdr.initdom();
           
               var list    = rootnode.querySelectorAll('a');
               list.forEach(a=>{
@@ -243,6 +246,10 @@
                       
               });
           
+          
+              log.initdom();
+              
+              
         }//initdom
         
         
