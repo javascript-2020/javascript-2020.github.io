@@ -62,9 +62,9 @@
         var ace;
         
         var menu;
-            
+
+        var hdr;            
         var example;
-        
         var log;
         
         
@@ -77,14 +77,16 @@
               menu    = menumod();
 
 
-
+              hdr       = mod['blog-hdr'];
               example   = mod.example;
-              log       = mod.log;
+              log       = mod['log-mod'];
               
+              hdr.initmod({ext,$});
               example.initmod({ext,$,menu,ace});
               log.initmod({ext,$});
               
               await Promise.all([
+                    hdr.init(),
                     example.init(),
                     log.init(),
               ]);
@@ -192,7 +194,7 @@
       <body>
 
 
-            <blog-hdr component=grp1 v2.0>      
+            <blog-hdr component=grp1>
                   <h1 class=title>
                         Deploy Cloud Run Service
                   </h1>
@@ -220,10 +222,10 @@
             </div>
 
 
-            <editor id=example component v2.0 src='ex/ex.js'></editor>
+            <web-editor id=example src='ex/ex.js' component></web-editor>
 
 
-            <log component v2.0></log>
+            <log-mod component></log-mod>
 
             
       </body>
@@ -234,6 +236,9 @@
 
         function initdom(rootnode){
           
+              var root                = rootnode;
+              
+              hdr.initdom();
               example.initdom({fullsize:true});
               log.initdom();
               
