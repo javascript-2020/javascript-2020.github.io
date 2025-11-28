@@ -259,7 +259,7 @@
               disp('loading');
 
               if(window.parent.curvideo){
-                    complete.load(window.parent.curvideo.file,window.parent.curvideo.blob);
+                    complete.load(window.parent.curvideo.file,structuredClone(window.parent.curvideo.blob));
               }
               
               
@@ -325,13 +325,15 @@
               var fn      = cur.file.filename;
               var fn2     = fn.split('.')[0];
               var thumb   = fn2+'.png';
-              debugger;
+              
               var uint8   = await _uint8(cur.blob);
               
               await ffmpeg.writeFile(fn,uint8);
               
               var cmd         = `ffmpeg -nostdin -ss 00:00:03.00 -i ${fn} -vframes 1 -vf scale=-1:50 ${thumb}`;
               var args        = cmd.split(' ').slice(1);
+              
+              await ffmpeg.exec(args);
               
               var data        = await ffmpeg.readFile(thumb);
               var thumbnail   = _blob(data);
@@ -368,7 +370,7 @@
           
               window.parent.curvideo    = {};
               window.parent.curvideo.file   = file;
-              window.parent.curvideo.blob   = blob;
+              window.parent.curvideo.blob   = structuredClone(blob);
               
               cur.file    = file;
               cur.blob    = blob;
@@ -376,7 +378,7 @@
               video.src   = url;
               
               $('#video-filename').textContent    = file.filename;
-              $('#video-size').textContent        = blob.size;
+              $('#video-size').textContent        = hs(blob.size);
               
         }//load
         
@@ -392,21 +394,21 @@
   
         var {zip}     = await import('https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js');
         var get       = url=>fetch(url).then(res=>res.blob());
-        
-        var blob;
-        //delete window.parent['ffmpeg-wasm'];
-        if(window.parent['ffmpeg-wasm']){
-              disp('** ffmpeg-wasm **');
-              blob    = window.parent['ffmpeg-wasm'];
-        }else{
-              blob      = await get('https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip');
-              window.parent['ffmpeg-wasm']   = blob;
-        }
-        
         var dtype     = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
         var fnstr     = (fn,_,js,i1,i2)=>(js=fn+'',i1=js.indexOf('{'),i2=js.lastIndexOf('}'),js.slice(i1+1,i2));
         _blob         = v=>new Blob([v]);
         _uint8        = async v=>(dtype(v)=='blob'||dtype(v)=='file') ? new Uint8Array(await v.arrayBuffer()) : new Uint8Array(v);        
+        
+        var blob;
+        console.log(window.parent['ffmpeg-wasm']);
+        //delete window.parent['ffmpeg-wasm'];
+        if(window.parent['ffmpeg-wasm']){
+              disp('** ffmpeg-wasm **');
+              blob    = structuredClone(window.parent['ffmpeg-wasm']);
+        }else{
+              blob      = await get('https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip');
+              window.parent['ffmpeg-wasm']   = structuredClone(blob);
+        }
         
         var files     = await zip.rd(blob);
         files.forEach(({name,blob})=>files[name]=blob);
