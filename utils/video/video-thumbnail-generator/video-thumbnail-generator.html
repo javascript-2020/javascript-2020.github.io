@@ -345,7 +345,8 @@
         
         
         gen.complete    = function(blob,fn){
-          
+              
+              cur.status      = false;
               var url         = window.URL.createObjectURL(thumbnail);
               img.src         = url;
           
@@ -393,6 +394,7 @@
         var get       = url=>fetch(url).then(res=>res.blob());
         
         var blob;
+        //delete window.parent['ffmpeg-wasm'];
         if(window.parent['ffmpeg-wasm']){
               disp('** ffmpeg-wasm **');
               blob    = window.parent['ffmpeg-wasm'];
