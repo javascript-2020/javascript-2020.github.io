@@ -370,7 +370,7 @@
         }//generate
         
         
-        btn.auto   = function(){
+        btn.auto   = async function(){
           
               if(cur.status){
                     log.red('already running');
@@ -391,28 +391,28 @@
                     w   = -1;                
                     for(h=25;h<=100;h+=25){
                       
-                          fn();
+                          await fn();
                           
                     }//for
                     
                     h   = -1;
                     for(w=25;w<=100;w+=25){
                       
-                          fn();
+                          await fn();
                           
                     }//for
                 
               }//for
               
               
-              function fn(){
+              async function fn(){
                 
                     if($('#png [type]').checked){
-                          gen.png(w,h,secs);
+                          await gen.png(w,h,secs);
                     }
                     
                     if($('#jpg [type]').checked){
-                          gen.jpg(w,h,secs);
+                          await gen.jpg(w,h,secs);
                     }
                     
               }//gen
@@ -421,7 +421,7 @@
         
         
         gen.png   = async function(w,h,secs){
-          
+                                                                                console.log(w,h,secs);
               var fn      = cur.file.filename;
               var fn2     = fn.split('.')[0];
               var thumb   = fn2+'.png';
