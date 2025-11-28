@@ -167,7 +167,7 @@
   #output
     {border:1px solid lightgray;padding:10px;border-radius:10px;white-space:pre-wrap;overflow:auto;font-size:16px;font-family:monospace;flex:1}
             
-  #width input,#height input
+  #width input,#height input,#secs input
     {width:70px}
 
   #png,#jpg
@@ -203,11 +203,11 @@
                         size
                         <span id=width>
                               width
-                              <input value=50>
+                              <input value=-1>
                         </span>
                         <span id=height>
                               height
-                              <input value=-1>
+                              <input value=50>
                         </span>
                   </span>
                   <span id=secs>
@@ -245,6 +245,7 @@
         var _uint8;
         
         var ffmpeg;
+        var ffmpeg_debug    = false;
         var cur   = {};
         var video;
         var img;
@@ -451,7 +452,7 @@
         console.log(window.parent['ffmpeg-wasm']);
         //delete window.parent['ffmpeg-wasm'];
         if(window.parent['ffmpeg-wasm']){
-              disp('** ffmpeg-wasm **');
+              //disp('** ffmpeg-wasm **');
               blob    = structuredClone(window.parent['ffmpeg-wasm']);
         }else{
               blob      = await get('https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip');
@@ -507,8 +508,10 @@
         ffmpeg            = new FFmpeg();
         await ffmpeg.load({coreURL:'ffmpeg-core.js',wasmURL:files['ffmpeg-core.wasm']});
 
-        ffmpeg.on('log',({message})=>{console.log(message);disp(message)});
+        ffmpeg.on('log',({message})=>{if(!ffmpeg_debug)return;console.log(message);disp(message)});
         await ffmpeg.exec(['-version']);  
+        
+        disp('ready');
 
 })()
 ;
