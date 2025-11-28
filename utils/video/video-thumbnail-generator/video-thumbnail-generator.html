@@ -164,6 +164,11 @@
   #video-root>div
     {display:flex;flex-direction:column;gap:10px}
     
+  #results
+    {display:flex;gap:20px}
+  .item
+    {display:flex;flex-direction:column;gap:10px}
+    
   #output
     {border:1px solid lightgray;padding:10px;border-radius:10px;white-space:pre-wrap;overflow:auto;font-size:16px;font-family:monospace;flex:1}
             
@@ -207,7 +212,7 @@
                         </span>
                         <span id=height>
                               height
-                              <input value=50>
+                              <input value=100>
                         </span>
                   </span>
                   <span id=secs>
@@ -215,6 +220,7 @@
                         <input value=03>
                   </span>
                   <input value=generate type=button>
+                  <input value=auto type=button>
             </div>
             
             <div id=video-root>
@@ -229,8 +235,14 @@
                         </div>
                   </div>
             </div>
-            <div>
-                  <img id=thumbnail>
+            <div id=results>
+                  <div class=item style='display:none'>
+                        <img class=thumbnail>
+                        <div>
+                              <div class=dims></div>
+                              <div class=size></div>
+                        </div>
+                  </div>
             </div>
             
             <pre id=output></pre>
@@ -248,7 +260,8 @@
         var ffmpeg_debug    = false;
         var cur   = {};
         var video;
-        var img;
+        var results;
+        var item;
 
         
         var btn   = {};
@@ -263,11 +276,15 @@
 
               
               $('[value=generate]').onclick   = btn.generate;
+              $('[value=auto]').onclick       = btn.auto;
               
               video   = $('video');
               video.onloadedmetadata    = onloadedmetadata;
               
-              img     = $('#thumbnail');
+              results               = $('#results');
+              item                  = $('.item');
+              item.remove();
+              item.style.display    = '';
               
               output    = $('#output');
               
@@ -308,6 +325,7 @@
                     return;
               }
               
+              
               var w   = $('#width [value]').value;
               w       = Number(w);
               if(isNaN(w)){
@@ -340,6 +358,7 @@
               
               cur.status    = true;
               
+              
               if($('#png [type]').checked){
                     gen.png(w,h,secs);
               }
@@ -349,6 +368,56 @@
               }
               
         }//generate
+        
+        
+        btn.auto   = function(){
+          
+              if(cur.status){
+                    log.red('already running');
+                    return;
+              }
+              
+              if(!cur.file){
+                    log.red('no file selected');
+                    return;
+              }
+              
+              var w       = -1;
+              var h       = 25;
+              var secs    = 0;
+              
+              for(secs=0;secs<=5;secs++){
+
+                    w   = -1;                
+                    for(h=25;h<=100;h+=25){
+                      
+                          fn();
+                          
+                    }//for
+                    
+                    h   = -1;
+                    for(w=25;w<=100;w+=25){
+                      
+                          fn();
+                          
+                    }//for
+                
+              }//for
+              
+              
+              function fn(){
+                
+                    if($('#png [type]').checked){
+                          gen.png(w,h,secs);
+                    }
+                    
+                    if($('#jpg [type]').checked){
+                          gen.jpg(w,h,secs);
+                    }
+                    
+              }//gen
+              
+        }//auto
         
         
         gen.png   = async function(w,h,secs){
@@ -373,7 +442,7 @@
         }//png
         
         
-        gen.jpg   = async function(){
+        gen.jpg   = async function(w,h,secs){
           
               var fn      = cur.file.filename;
               var fn2     = fn.split('.')[0];
@@ -399,7 +468,18 @@
               
               cur.status      = false;
               var url         = window.URL.createObjectURL(blob);
+              var nitem       = item.cloneNode(true);
+              var img         = $(nitem,'img');
+              img.onload      = onload;
               img.src         = url;
+              $(nitem,'.size').textContent    = hs(blob.size);
+              results.append(nitem);
+              
+              function onload(){
+                
+                    $(nitem,'.dims').textContent   = img.naturalWidth+' x '+img.naturalHeight;
+                    
+              }//onload
           
         }//complete
         
