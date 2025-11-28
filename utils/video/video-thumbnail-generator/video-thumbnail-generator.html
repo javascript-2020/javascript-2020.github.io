@@ -165,9 +165,11 @@
     {display:flex;flex-direction:column;gap:10px}
     
   #results
-    {display:flex;gap:20px}
+    {display:flex;gap:20px;flex-wrap:wrap}
   .item
-    {display:flex;flex-direction:column;gap:10px}
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px;border-radius:10px}
+  .item [type=checkbox]
+    {}
     
   #output
     {border:1px solid lightgray;padding:10px;border-radius:10px;white-space:pre-wrap;overflow:auto;font-size:16px;font-family:monospace;flex:1}
@@ -176,7 +178,10 @@
     {width:70px}
 
   #png,#jpg
-    {border:1px solid lightgray;padding:2px 10px;border-radius:10px}
+    {border:1px solid lightgray;padding:5px 10px;border-radius:10px;display:inline-flex;align-items:center}
+    
+  [type=checkbox]
+    {margin-right:10px;width:20px;height:20px;cursor:pointer}
     
             </style>
             
@@ -239,6 +244,10 @@
                   <div class=item style='display:none'>
                         <img class=thumbnail>
                         <div>
+                              <div>
+                                    <input type=checkbox>
+                                    <div class=filename></div>
+                              </div>
                               <div class=dims></div>
                               <div class=size></div>
                         </div>
@@ -288,7 +297,6 @@
               
               output    = $('#output');
               
-              disp('loading');
 
               if(window.parent.curvideo){
                     complete.load(window.parent.curvideo.file,structuredClone(window.parent.curvideo.blob));
@@ -424,7 +432,7 @@
                                                                                 console.log(w,h,secs);
               var fn      = cur.file.filename;
               var fn2     = fn.split('.')[0];
-              var thumb   = fn2+'.png';
+              var thumb   = fn2+`-${w}x${h}-${secs}s.png`;
               
               var uint8   = await _uint8(cur.blob);
               
@@ -437,7 +445,8 @@
               
               var data        = await ffmpeg.readFile(thumb);
               var thumbnail   = _blob(data);
-              gen.complete(thumbnail,thumb);
+              thumbnail.name    = thumb;
+              gen.complete(thumbnail,thumb,secs);
               
         }//png
         
@@ -446,7 +455,7 @@
           
               var fn      = cur.file.filename;
               var fn2     = fn.split('.')[0];
-              var thumb   = fn2+'.jpg';
+              var thumb   = fn2+`-${w}x${h}-${secs}s.jpg`;
               
               var uint8   = await _uint8(cur.blob);
               
@@ -459,12 +468,13 @@
               
               var data        = await ffmpeg.readFile(thumb);
               var thumbnail   = _blob(data);
-              gen.complete(thumbnail,thumb);
+              thumbnail.name    = thumb;
+              gen.complete(thumbnail,thumb,secs);
               
         }//jpg
         
         
-        gen.complete    = function(blob,fn){
+        gen.complete    = function(blob,fn,secs){
               
               cur.status      = false;
               var url         = window.URL.createObjectURL(blob);
@@ -477,7 +487,7 @@
               
               function onload(){
                 
-                    $(nitem,'.dims').textContent   = img.naturalWidth+' x '+img.naturalHeight;
+                    $(nitem,'.dims').textContent   = img.naturalWidth+' x '+img.naturalHeight+` ( ${secs} s )`;
                     
               }//onload
           
@@ -520,7 +530,8 @@
   
 ;  
 (async()=>{
-  
+                                                                                disp('loading');
+
         var {zip}     = await import('https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js');
         var get       = url=>fetch(url).then(res=>res.blob());
         var dtype     = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
@@ -591,7 +602,7 @@
         ffmpeg.on('log',({message})=>{if(!ffmpeg_debug)return;console.log(message);disp(message)});
         await ffmpeg.exec(['-version']);  
         
-        disp('ready');
+                                                                                disp('ready');
 
 })()
 ;
@@ -601,7 +612,7 @@
           
               var div   = document.createElement('div');
               div.textContent   = str;
-              output.append(div);
+              document.querySelector('#output').append(div);
               
         }//disp
 
