@@ -210,6 +210,10 @@
                               <input value=-1>
                         </span>
                   </span>
+                  <span id=secs>
+                        secs
+                        <input value=03>
+                  </span>
                   <input value=generate type=button>
             </div>
             
@@ -317,20 +321,36 @@
                     return
               }
               
+              var secs    = $('#secs [value]').value;
+              secs        = Number(secs);
+              if(isNaN(secs)){
+                    log.red('invalid secs');
+                    return;
+              }
+              if(!Number.isInteger(secs)){
+                    log.red('secs should be integer');
+                    return;
+              }
+              if(secs<0||secs>59){
+                    log.red('invalid secs');
+                    return;
+              }
+              secs        = (''+secs).padStart(2,'0');
+              
               cur.status    = true;
               
               if($('#png [type]').checked){
-                    gen.png();
+                    gen.png(w,h,secs);
               }
               
               if($('#jpg [type]').checked){
-                    gen.jpg();
+                    gen.jpg(w,h,secs);
               }
               
         }//generate
         
         
-        gen.png   = async function(){
+        gen.png   = async function(w,h,secs){
           
               var fn      = cur.file.filename;
               var fn2     = fn.split('.')[0];
@@ -340,7 +360,7 @@
               
               await ffmpeg.writeFile(fn,uint8);
               
-              var cmd         = `ffmpeg -nostdin -ss 00:00:03.00 -i ${fn} -vframes 1 -vf scale=-1:50 ${thumb}`;
+              var cmd         = `ffmpeg -nostdin -ss 00:00:${secs}.00 -i ${fn} -vframes 1 -vf scale=${w}:${h} ${thumb}`;
               var args        = cmd.split(' ').slice(1);
               
               await ffmpeg.exec(args);
@@ -352,7 +372,25 @@
         }//png
         
         
-        gen.jpg   = function(){
+        gen.jpg   = async function(){
+          
+              var fn      = cur.file.filename;
+              var fn2     = fn.split('.')[0];
+              var thumb   = fn2+'.jpg';
+              
+              var uint8   = await _uint8(cur.blob);
+              
+              await ffmpeg.writeFile(fn,uint8);
+              
+              var cmd         = `ffmpeg -nostdin -ss 00:00:${secs}.00 -i ${fn} -vframes 1 -vf scale=${w}:${h} ${thumb}`;
+              var args        = cmd.split(' ').slice(1);
+              
+              await ffmpeg.exec(args);
+              
+              var data        = await ffmpeg.readFile(thumb);
+              var thumbnail   = _blob(data);
+              gen.complete(thumbnail,thumb);
+              
         }//jpg
         
         
