@@ -234,7 +234,10 @@
             <div id=video-root>
                   <video controls></video>
                   <div>
-                        <span id=video-filename></span>
+                        <div>
+                              <input type=checkbox>
+                              <span id=video-filename></span>
+                        </div>
                         <span id=video-size></span>
                         <div>
                               <span id=video-width>-</span>
@@ -274,7 +277,7 @@
         var video;
         var results;
         var item;
-
+        var chk;
         
         var btn   = {};
         var gen   = {};
@@ -297,6 +300,7 @@
               item                  = $('.item');
               item.remove();
               item.style.display    = '';
+              chk   = $.chkbox.group();
               
               output    = $('#output');
               
@@ -482,11 +486,16 @@
               cur.status      = false;
               var url         = window.URL.createObjectURL(blob);
               var nitem       = item.cloneNode(true);
+              var id          = 'item-'+chk.len;
+              nitem.id        = id
               var img         = $(nitem,'img');
               img.onload      = onload;
               img.src         = url;
+              $(nitem,'.filename').textContent    = blob.name;
               $(nitem,'.size').textContent    = hs(blob.size);
               results.append(nitem);
+              chk.add(results,`#${id}`);
+              
               
               function onload(){
                 
