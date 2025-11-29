@@ -1,5 +1,10 @@
 
 
+<!-- headers
+      cross-origin-isolate
+-->
+
+
 <!DOCTYPE html>
 
 <html>
@@ -63,6 +68,7 @@
         var vctldr;
         var fwdemo;
         var fwtldr;
+        var ffprobe;
         var m4demo;
         
         
@@ -81,6 +87,7 @@
               vctldr    = mod['videoconverter-tldr'];
               fwdemo    = mod['ffmpeg-wasm-demo'];
               fwtldr    = mod['ffmpeg-wasm-tldr'];
+              ffprobe   = mod.ffprobe;
               m4demo    = mod['mp4box-demo'];
               
               hdr.initmod({ext,$});
@@ -89,6 +96,7 @@
               vctldr.initmod({ext,$,menu,ace});
               fwdemo.initmod({ext,$,menu,ace});
               fwtldr.initmod({ext,$,menu,ace});
+              ffprobe.initmod({ext,$,menu,ace});
               m4demo.initmod({ext,$,menu,ace});
 
               
@@ -99,6 +107,7 @@
                     vctldr.init(),
                     fwdemo.init(),
                     fwtldr.init(),
+                    ffprobe.init(),
                     m4demo.init(),
               ]);
               
@@ -365,6 +374,19 @@
 
             <hr>
             
+            <section>
+                  <h3>
+                        ffprobe in the browser
+                  </h3>
+                  <p>
+                        i came across this to day, so thought i would include it also
+                  </p>
+                  
+                  <snippet-html-console id=ffprobe src='ex/ffprobe/ffrobe.html' component></snippet-html-console>
+                  
+            </section>
+
+            <hr>
             
             <section>
                   <h3>
@@ -378,7 +400,6 @@
                   <snippet-html-console id=mp4box-demo src='ex/mp4box/ex.html' component></snippet-html-console>
             
             </section>
-
 
 
 
@@ -412,6 +433,8 @@
               
               fwdemo.initdom();
               fwtldr.initdom();
+              
+              ffprobe.initdom();
               
               m4demo.initdom();
               
