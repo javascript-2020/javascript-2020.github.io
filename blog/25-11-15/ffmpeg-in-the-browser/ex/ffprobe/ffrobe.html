@@ -1,0 +1,32 @@
+
+
+<input type=file>
+
+<script>
+
+(async()=>{
+                                                                                                    console.clear();
+      var $   = css=>document.querySelector(css);
+      
+      var {FFprobeWorker}   = await import('https://cdn.jsdelivr.net/npm/ffprobe-wasm@0.3.1/browser.mjs');
+      var ffprobe   = new FFprobeWorker();
+      
+      console.log(ffprobe);
+      
+      var input   = $('input');
+      input.addEventListener("change", async(event) => {
+        
+            const file = event.target.files[0];
+            const fileInfo = await ffprobe.getFileInfo(file);
+            //console.log(JSON.stringify(fileInfo,null,4));
+            
+            
+            var frames    = await ffprobe.getFrames(file,0);
+            console.log(frames);
+            
+      });
+  
+  
+})();
+
+</script>
