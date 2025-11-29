@@ -1,5 +1,9 @@
 
-<html>
+
+<!DOCTYPE html>
+
+
+<html lang=en>
 
       <head>
 
@@ -7,9 +11,8 @@
             <title>scan video file for objects / people</title>
             <meta name=description content='scan video file for objects / people'>
 
-            <base href='https://ext-code.com/utils/video/scan-video-file-for-objects/'>
-            <base href='https://javascript-2020.github.io/utils/video/scan-video-file-for-objects/'>
-            
+            <base href='https://ext-code.com/utils/video/scan-video-file-for-objects/scan-video-file-for-objects.html'>
+            <base href='https://javascript-2020.github.io/utils/video/scan-video-file-for-objects/scan-video-file-for-objects.html'>
             <link rel=canonical href='https://ext-code.com/utils/video/scan-video-file-for-objects/scan-video-file-for-objects.html'>
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
@@ -37,41 +40,37 @@
             
             <script init>
                                                                                 console.clear();
-                                                                                console.log('scan-video-file-for-objects.html');
-                                                                                console.log();
+                                                                                console.log('scan video');
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+
         var ext,$,datatype,menumod,keydown,hs
         ;
 
-        var menu;
-        
         var hdr;
+        var menu;
         var filemod;
         var log;
         
-
-  //:
-  
-  
-        mod.stack.add   = init;
         
+
         async function init(){
                                                                                 console.log('init');
 
               menu                      = menumod();
 
               hdr                       = mod['video-hdr'];
-              filemod                   = mod.filemod;
-              log                       = mod.log;
+              filemod                   = mod['file-mod'];
+              log                       = mod['log-mod'];
               
               hdr.initmod({ext,$,menu});
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
               log.initmod({ext,$});
               
-              await hdr.init();
-              await filemod.init();
-              await log.init();
-
+              await Promise.all([
+                    hdr.init(),
+                    filemod.init(),
+                    log.init(),
+              ]);
 
 
               initdom(document.body);
@@ -80,6 +79,10 @@
         }//init
 
 
+  //:
+
+  
+        
 (async()=>{
   
         mod.stack.add;
@@ -201,11 +204,14 @@
             <div id=center>
 
                   <video-hdr component=grp>
+                        <!--
+                        <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
+                        -->
                         <img class=title src='images/scan-video-file-for-objects.png' style='top:10px;height:55px'>
                         <h1 slot=seo-hdr class=visually-hidden>scan video file for objects / people</h1>
                         <span slot=date>03 Oct 2025</span>
                   </video-hdr>
-                  
+
                   <div id=settings>
                   
                         <div id=audio>
@@ -250,7 +256,7 @@
                   </div>
 
 
-                  <filemod component v2.0></filemod>
+                  <file-mod component></file-mod>
                   
 
                   <div style="display: flex; align-items: center; margin-top: 10px; justify-content: center; gap: 30px;">
@@ -348,7 +354,7 @@
             
             </div center>
         
-            <log component v2.0></log>
+            <log-mod component></log-mod>
             
       </body>            
       
@@ -439,6 +445,8 @@
         
               var root    = rootnode;
               
+              menu.add.style();
+
 
               hdr.initdom(root);
 
@@ -1099,7 +1107,7 @@
                     var src     = video.src;
                     var i       = src.indexOf('-');
                     var file    = src.slice(i+1);
-                    window.open('video-player.html?'+file+'='+time);
+                    window.open('../video-player/video-player.html?'+file+'='+time);
                     
               }//open
               
@@ -1252,7 +1260,9 @@
         }//strtomilli
         
         
-        
+  //:
+
+  
       </script>
         
 </html>
