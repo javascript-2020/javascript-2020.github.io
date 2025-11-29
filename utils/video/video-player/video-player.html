@@ -1,18 +1,81 @@
+
+
 <!doctype html>
+
 <html>
-    <head style="display: block;">
+
+      <head>
+      
+        
+        
+        
+        
+        
+        
+        
+        
         <style style="display: none;">
-html {height:100%}
+        
+  html
+    {height:100%}
+    
+  body
+    {display: flex; flex-direction: column; height: calc(100% - 30px); margin: 15px; font-family: arial;}
+    
+  upper
+    {margin-top: 10px; display: flex; justify-content: space-between; gap: 10px; align-items: center;}
+    
+  #rotate-root
+    {display: flex; align-items: center;}
+    
+  #rotate
+    {width: 50px; margin-right: 10px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center;}
+    
+    
+  lower
+    {display: flex; justify-content: center; align-items: center; gap: 10px;}
+    
+  #time-root
+    {display: flex; align-items: center;}
+    
+  #zero
+    {cursor: pointer; font-size: 16px; box-sizing: border-box; margin-right: 10px;}
+    
+  #time
+    {width: 100px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 5px;}
+    
+  #timestamp
+    {width: 120px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 20px;}
+    
+  #cur-time
+    {font-weight: bold;}
+    
+  #cur-timestamp
+    {margin-right: 10px; font-weight: bold;}
+    
+  #dur-time
+    {font-weight: bold;}
+    
+  #dur-timestamp
+    {margin-right: 10px; font-weight: bold;}
+    
+  #seek-root
+    {align-items: center; display: flex; margin-right: 10px;}
+    
+  #back
+    {cursor: pointer; font-size: 16px; box-sizing: border-box; margin-right: 10px;}
+    
+  #seek
+    {width: 50px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 10px;}
+    
+  #forward
+    {cursor: pointer; font-size: 16px; box-sizing: border-box;}
+    
+    
         </style>
-        <script style="display: none;">
-/*
-
-//video-player:d
-
-18-04-25
-
-
-*/
+        
+        
+        <script>
 
 
 console.clear();
@@ -47,7 +110,82 @@ console.clear();
               
         }//init
         
-        
+
+      </script>
+
+      <body>
+      
+            <div id=upper>
+            
+                  <div>
+                        <select style="padding: 5px 10px; font-size: 16px;">
+                        </select>
+                        <input id="file" type="button" value="file" style="font-size: 16px; padding: 5px 10px; margin-left: 10px; cursor: pointer;">
+                        </input>
+                  </div>
+                  
+                  <div id=rotate-root>
+                        <div style="margin-right: 10px;">
+                              rotate
+                        </div>
+                        <input id=rotate value="180">
+                        </input>
+                        <div>
+                              deg
+                        </div>
+                  </div>
+            </div>
+            
+            <div id=lower>
+                  <div id=time-root>
+                        <input type="button" value="<<" id=zero>
+                        </input>
+                        <input id=time spellcheck="false" autocomplete="off" value="0">
+                        </input>
+                        <input id="timestamp"  spellcheck="false" autocomplete="off" value="00:00:00">
+                        </input>
+                        <div id="cur-time">
+                              00000
+                        </div>
+                        <div style="margin-left: 10px; margin-right: 10px;">
+                              --
+                        </div>
+                        <div id="cur-timestamp">
+                              00:00:00
+                        </div>
+                        <div style="margin-left: 10px; margin-right: 10px;">
+                              &#x2F;
+                        </div>
+                        <div id="dur-time">
+                              00000
+                        </div>
+                        <div style="margin-left: 10px; margin-right: 10px;">
+                              --
+                        </div>
+                        <div id="dur-timestamp">
+                              00:00:00
+                        </div>
+                  </div>
+                  <div id="seek-root">
+                        <input type="button" value="back" id="back">
+                        </input>
+                        <input id="seek" spellcheck="false" autocomplete="off" value="1">
+                        </input>
+                        <input type="button" value="forward" id="forward">
+                        </input>
+                  </div>
+            </div>
+            
+            <div style="flex: 1 1 0%; text-align: center; margin-top: 20px;" id="hldr">
+                  <video style="width: 100%; height: 100%;" controls="">
+                  </video>
+            </div>
+            
+      </body>
+
+
+      <script>
+      
         function initdom(){   //c
         
               $('select').onchange      = select;
@@ -389,69 +527,10 @@ console.clear();
               }//def
               
         }//strtomilli
+        
+        
+        
         </script>
-    </head>
-    <body style="display: flex; flex-direction: column; height: calc(100% - 30px); margin: 15px; font-family: arial;">
-        <div style="margin-top: 10px; display: flex; justify-content: space-between; gap: 10px; align-items: center;">
-            <div>
-                <select style="padding: 5px 10px; font-size: 16px;">
-                </select>
-                <input id="file" type="button" value="file" style="font-size: 16px; padding: 5px 10px; margin-left: 10px; cursor: pointer;">
-                </input>
-            </div>
-            <div style="display: flex; align-items: center;" id="rotate-root">
-                <div style="margin-right: 10px;">
-rotate
-                </div>
-                <input id="rotate" style="width: 50px; margin-right: 10px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center;" value="180">
-                </input>
-                <div style="">
-deg
-                </div>
-            </div>
-        </div>
-        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-            <div id="time-root" style="display: flex; align-items: center;">
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; margin-right: 10px;" type="button" value="<<" id="zero">
-                </input>
-                <input id="time" style="width: 100px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 5px;" spellcheck="false" autocomplete="off" value="0">
-                </input>
-                <input id="timestamp" style="width: 120px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 20px;" spellcheck="false" autocomplete="off" value="00:00:00">
-                </input>
-                <div id="cur-time" style="font-weight: bold;">
-00000
-                </div>
-                <div style="margin-left: 10px; margin-right: 10px;">
---
-                </div>
-                <div id="cur-timestamp" style="margin-right: 10px; font-weight: bold;">
-00:00:00
-                </div>
-                <div style="margin-left: 10px; margin-right: 10px;">
-&#x2F;
-                </div>
-                <div id="dur-time" style="font-weight: bold;">
-00000
-                </div>
-                <div style="margin-left: 10px; margin-right: 10px;">
---
-                </div>
-                <div id="dur-timestamp" style="margin-right: 10px; font-weight: bold;">
-00:00:00
-                </div>
-            </div>
-            <div id="seek-root" style="align-items: center; display: flex; margin-right: 10px;">
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; margin-right: 10px;" type="button" value="back" id="back">
-                </input>
-                <input id="seek" style="width: 50px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 10px;" spellcheck="false" autocomplete="off" value="1">
-                </input>
-                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box;" type="button" value="forward" id="forward">
-                </input>
-            </div>
-        </div>
-        <div style="flex: 1 1 0%; text-align: center; margin-top: 20px;" id="hldr">
-            <video style="width: 100%; height: 100%;" controls="">
-            </video>
-        </div>
-    </body>
+        
+        
 </html>
