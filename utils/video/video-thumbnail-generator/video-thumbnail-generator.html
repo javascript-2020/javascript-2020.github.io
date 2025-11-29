@@ -54,7 +54,8 @@
         var menu;
         
         var hdr;
-        var filemod;
+        var load;
+        var save;
         var log;
 
         
@@ -64,16 +65,19 @@
               
               
               hdr                       = mod['video-hdr'];
-              filemod                   = mod['file-mod'];
+              load                      = mod.load;
+              save                      = mod.save;
               log                       = mod['log-mod'];
               
               hdr.initmod({ext,$,menu});
-              filemod.initmod({ext,$,menumod,menu,complete,source,focus,log});
+              load.initmod({ext,$,menumod,menu,complete,source,focus,log});
+              save.initmod({ext,$,menumod,menu,complete,source,focus,log});
               log.initmod({ext,$});
               
               await Promise.all([
                     hdr.init(),
-                    filemod.init(),
+                    load.init(),
+                    save.init(),
                     log.init(),
               ]);
               
@@ -167,12 +171,15 @@
   #results
     {display:flex;gap:20px;flex-wrap:wrap}
   .item
-    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px;border-radius:10px}
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px;border-radius:10px;align-items:center;cursor:pointer}
   .item [type=checkbox]
     {}
+  .item img
+    {flex-grow:0}
   .item .filename-root
-    {white-space:nowrap}
-    
+    {white-space:nowrap;flex-shrink:0}
+  .item .filename-root *
+    {vertical-align:middle}
   #output
     {border:1px solid lightgray;padding:10px;border-radius:10px;white-space:pre-wrap;overflow:auto;font-size:16px;font-family:monospace;flex:1}
             
@@ -184,6 +191,9 @@
     
   [type=checkbox]
     {margin-right:10px;width:20px;height:20px;cursor:pointer}
+    
+  .label
+    {margin:0 20px}
     
             </style>
             
@@ -198,14 +208,17 @@
             </video-hdr>
             
             <div>
-                  <span>
+                  <span class=label>
                         load video
                   </span>
-                  <file-mod component></file-mod>
+                  <file-mod id=load component></file-mod>
             </div>
             
             <div>
-                  thumbnail type
+                  <input value=clear type=button>
+                  <span class=label>
+                        thumbnail type
+                  </span>
                   <span id=png>
                         <input type=checkbox checked>
                         png
@@ -215,7 +228,9 @@
                         jpg
                   </span>
                   <span>
-                        size
+                        <span class=label>
+                              size
+                        </span>
                         <span id=width>
                               width
                               <input value=-1>
@@ -237,7 +252,6 @@
                   <video controls></video>
                   <div>
                         <div>
-                              <input type=checkbox>
                               <span id=video-filename></span>
                         </div>
                         <span id=video-size></span>
@@ -248,17 +262,23 @@
                         </div>
                   </div>
             </div>
+            
+            <div>
+                  <span class=label>
+                        save thumbnail
+                  </span>
+                  <file-mod id=save component></file-mod>
+            </div>
+            
             <div id=results>
                   <div class=item style='display:none'>
                         <img class=thumbnail>
-                        <div>
-                              <div class=filename-root>
-                                    <input type=checkbox>
-                                    <div class=filename></div>
-                              </div>
-                              <div class=dims></div>
-                              <div class=size></div>
+                        <div class=filename-root>
+                              <input type=checkbox>
+                              <span class=filename></span>
                         </div>
+                        <div class=dims></div>
+                        <div class=size></div>
                   </div>
             </div>
             
@@ -280,6 +300,7 @@
         var results;
         var item;
         var chk;
+        var list    = {};
         
         var btn   = {};
         var gen   = {};
@@ -288,7 +309,8 @@
 
           
               hdr.initdom();
-              filemod.initdom();
+              load.initdom();
+              save.initdom();
               log.initdom();
 
               
@@ -329,6 +351,14 @@
         
   //:
   
+  
+        btn.clear   = function(){
+          
+              results.replaceChildren();
+              list    = {};
+              
+        }//clear
+
   
         btn.generate    = function(){
           
@@ -497,7 +527,7 @@
               $(nitem,'.size').textContent    = hs(blob.size);
               results.append(nitem);
               chk.add(results,`#${id}`);
-              
+              list[blob.name]   = blob;
               
               function onload(){
                 
@@ -514,6 +544,11 @@
   
   
         function source(){
+          
+              var id      = chk.read();
+              var blob    = list[id];
+              return blob;
+              
         }//source
         
         
