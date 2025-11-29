@@ -5,16 +5,134 @@
 <html>
 
       <head>
+            <meta charset=utf-8>
+            
+            <title>
+                  Video Player
+            </title>
+            
+            <meta name=description content=''>
+
+            <base href='https://ext-code.com/utils/video/video-player/'>
+            <link rel=canonical href='https://ext-code.com/utils/video/video-player/video-player.html'>
+            
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAclBMVEVHcEzlmC3JrVHIqUflmC21tFagvGDRoz+xsVKcvWGivWG7rEjKrlvVoDiXvmGstVbTojzQwYXLpTvHp0PkmS7TpDvqlirpmC6cvF6gvGGrtlOluFbdnTSjuVrcnDK0sVCsuFvjmi7lmTChvFvBqkbomC0SwbdCAAAAJnRSTlMAOwYKIA5DFVBlE18CXC86YgFGX2U0VFVdHGFvSXRBQiRtL5UtXmnr1gIAAADXSURBVCjPvdPZFoIgFAVQBEEFxCEs5zH//xeT1FJSevM8CLrX4jIIAFfFtjZxfrTbaCmRxqW1fRttnZPp0a9fH4fcdfU86l3nWLFvW2PPz9kBWEquMURwZVTLPtoxahhjTfycumHs13BfG+cNhjhgaid839Fn7gbvJnFVFaAvDBczc+bAT7BcdzWr3GUUl7GbSjiljhamXspnbiFaA7+LStNsniE8PEjhKUZFc3LQwiOCpHlBTxwLIjAIKmr8XYIqi0xOBmJy6hV/vCLc6ENrKk8JuujevADrwgtMWqFXOwAAAABJRU5ErkJggg=='>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Video Player",
+                        "url"                   : "https://ext-code.com/utils/video/video-player/video-player.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+
+
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+
+            <script>
+                                                                                console.clear();
+                                                                                console.log('video-player');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,version='v1.0'
+        ;
       
+        var ext,$,datatype,menumod,keydown,debug,hs
+        ;
+
+        var menu;
+        
+        var hdr;
+        var filemod;
+        var log;
+        
+                                                                                
+        var github    = false;
+        if(window.location.toString().includes('github')){
+              github    = true;
+        }
+        
+        
+        var time;
+        var timestamp;
+        var seek;
+        
+        var hldr;
+        var bw;
+        var bh;
+        var video;
+        
+        var skip    = {};
+        var btn   = {};
+        
+        
+
+
+
+        
+        async function init(){
+
+              menu    = menumod();
+
+
+              hdr           = mod['video-hdr'];
+              filemod       = mod['file-mod'];
+              log           = mod['log-mod'];
+              
+              hdr.initmod({ext,$,menu});
+              filemod.initmod({ext,$,menumod,menu,complete,source,focus,log});
+              log.initmod({ext,$});
+              
+              await Promise.all([
+                    hdr.init(),
+                    filemod.init(),
+                    log.init(),
+              ]);
+              
+              
+              initdom();
+              setup();
+              
+        }//init
+        
+
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
+              'js/string/hs.js',
+        );
+        [$,datatype,menumod,keydown,debug,hs]   = await promise;
+  
+        mod.stack.complete;
+              
+})();
+
+
+
+      </script>
         
         
         
         
-        
-        
-        
-        
-        <style style="display: none;">
+        <style>
         
   html
     {height:100%}
@@ -22,7 +140,7 @@
   body
     {display: flex; flex-direction: column; height: calc(100% - 30px); margin: 15px; font-family: arial;}
     
-  upper
+  #upper
     {margin-top: 10px; display: flex; justify-content: space-between; gap: 10px; align-items: center;}
     
   #rotate-root
@@ -32,7 +150,7 @@
     {width: 50px; margin-right: 10px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center;}
     
     
-  lower
+  #lower
     {display: flex; justify-content: center; align-items: center; gap: 10px;}
     
   #time-root
@@ -71,57 +189,34 @@
   #forward
     {cursor: pointer; font-size: 16px; box-sizing: border-box;}
     
+  #hldr
+    {flex: 1 1 0%; text-align: center; margin-top: 20px;}
     
-        </style>
+  video
+    {width: 100%; height: 100%;}
+    
+    
+  .visually-hidden
+    {position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0}
+    
+            </style>
         
+      </head>
         
-        <script>
-
-
-console.clear();
-                                                                                console.log('video-player');
-                                                                                
-        var github    = false;
-        if(window.location.toString().includes('github')){
-              github    = true;
-        }
-        
-        
-        var time;
-        var timestamp;
-        var seek;
-        
-        var hldr;
-        var bw;
-        var bh;
-        var video;
-        
-        var skip    = {};
-        var btn   = {};
-        
-        
-        window.onload   = init;
-        //setTimeout(init,50);
-        
-        function init(){
-        
-              initdom();
-              setup();
-              
-        }//init
-        
-
-      </script>
 
       <body>
+      
+            <video-hdr component=grp>
+                  <img class=title src='images/video-player.png' style='top:10px;height:80px' alt='video player'>
+                  <h1 slot=seo-hdr class=visually-hidden>video player</h1>
+                  <time slot=date datetime=2025-11-28>28 Nov 2025</time>
+            </video-hdr>
+      
       
             <div id=upper>
             
                   <div>
-                        <select style="padding: 5px 10px; font-size: 16px;">
-                        </select>
-                        <input id="file" type="button" value="file" style="font-size: 16px; padding: 5px 10px; margin-left: 10px; cursor: pointer;">
-                        </input>
+                        <file-mod component></file-mod>
                   </div>
                   
                   <div id=rotate-root>
@@ -176,20 +271,31 @@ console.clear();
                   </div>
             </div>
             
-            <div style="flex: 1 1 0%; text-align: center; margin-top: 20px;" id="hldr">
-                  <video style="width: 100%; height: 100%;" controls="">
+            <div id="hldr">
+                  <video controls>
                   </video>
             </div>
+            
+            <log-mod component></log-mod>
             
       </body>
 
 
       <script>
+
+
       
         function initdom(){   //c
         
-              $('select').onchange      = select;
-              $('#file').onclick        = btn.file;
+        
+              hdr.initdom();
+              filemod.initdom();
+              log.initdom();
+              
+              
+              
+              //$('select').onchange      = select;
+              //$('#file').onclick        = btn.file;
               
               time                      = $('#time');
               time.onfocus              = e=>time.select();
@@ -221,6 +327,7 @@ console.clear();
         }//initdom
         
   //:
+
   
         btn.file    = function(){
         
@@ -238,8 +345,10 @@ console.clear();
               }//onchange
               
         }//file
+
         
   //:
+
   
         function setup(){
         
@@ -247,6 +356,7 @@ console.clear();
               var i   = s.indexOf('?');
                                                                                 console.log(s);
               if(i!=-1){
+                
                     s                   = s.slice(i+1);
                     var parts           = s.split('=');
                     var file            = parts[0];
@@ -255,28 +365,51 @@ console.clear();
                     timestamp.value     = millitostr(vtime*1000,'ts1');
                     video.src           = '/video-'+file;
                     video.currentTime   = vtime;
-                    select.add(file);
-              }else{
-                    getfiles();
+                    
+                    
               }
               
         }//setup
         
   //:
   
-        function set(filename,url){
-        
-              if(!url){
-                    url   = filename;
-              }
+        function set(file,blob){
+
+              var url   = window.URL.createObjectURL(blob);
               
               video.src           = url;
               video.currentTime   = 0;
               
         }//set
+
+
+  //:
+
+
+        function focus(){}
+        
+
+        function source(){}
+        
+  
+        var complete    = {};
+        
+        complete.load   = function(file,blob){
+        }//load
+        
+        
+        complete.save   = function(file){
+        }//save
+
+
+
+
+
+
         
   //:
   
+/*  
         function select(e){
         
               var file            = e.target.value;
@@ -306,6 +439,9 @@ console.clear();
               });
               
         }//getfiles
+*/
+
+
         
   //:
   
@@ -370,6 +506,7 @@ console.clear();
               
         }//time
         
+
         skip.timestamp=function(){
                                                                                 console.log('skip.timestamp');
               var milli   = strtomilli(timestamp.value,'ts1');
@@ -385,12 +522,14 @@ console.clear();
               
         }//timestamp
         
+
         function zero(){
         
               video.currentTime   = 0;
               
         }//zero
         
+
         function back(){
         
               var v   = parseFloat(seek.value);
@@ -402,6 +541,7 @@ console.clear();
               
         }//back
         
+
         function forward(){
         
               var v   = parseFloat(seek.value);
@@ -412,8 +552,9 @@ console.clear();
               video.currentTime   = time+v;
               
         }//forward
+
         
-        function rotate(){console.log('rotate');
+        function rotate(){
         
               var v   = parseFloat(rotate.input.value);
               if(isNaN(v)){
@@ -422,11 +563,11 @@ console.clear();
               video.style.transform   = `rotate(${v}deg)`;
               
         }//rotate
+
         
   //:
+
   
-        function $(sel,root){return (!root && (root=document),root.querySelector(sel))}
-        
         function millitostr(milli,type){
         
               var seconds   = Math.round(milli/1000);
@@ -486,6 +627,7 @@ console.clear();
               
         }//millitostr
         
+
         function strtomilli(str,type){
         
               var years     = 0;
