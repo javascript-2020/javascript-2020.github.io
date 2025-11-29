@@ -53,25 +53,24 @@
         
         
 
-        mod.stack.add   = init;
-        
         async function init(){
                                                                                 console.log('init');
 
               menu                      = menumod();
 
               hdr                       = mod['video-hdr'];
-              filemod                   = mod.filemod;
-              log                       = mod.log;
+              filemod                   = mod['file-mod'];
+              log                       = mod['log-mod'];
               
               hdr.initmod({ext,$,menu});
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
               log.initmod({ext,$});
               
-              await hdr.init();
-              await filemod.init();
-              await log.init();
-
+              await Promise.all([
+                    hdr.init(),
+                    filemod.init(),
+                    log.init(),
+              ]);
 
 
               initdom(document.body);
@@ -83,8 +82,6 @@
   //:
 
   
-        init.stack    = mod.stack;
-
         
 (async()=>{
   
@@ -259,11 +256,7 @@
                   </div>
 
 
-                  <filemod component v2.0>
-                  <!--
-                        <script html-loader src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  -->
-                  </filemod>
+                  <file-mod component></file-mod>
                   
 
                   <div style="display: flex; align-items: center; margin-top: 10px; justify-content: center; gap: 30px;">
@@ -361,9 +354,7 @@
             
             </div center>
         
-            <log>
-                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-            </log>
+            <log-mod component></log-mod>
             
       </body>            
       
@@ -1116,7 +1107,7 @@
                     var src     = video.src;
                     var i       = src.indexOf('-');
                     var file    = src.slice(i+1);
-                    window.open('video-player.html?'+file+'='+time);
+                    window.open('../video-player/video-player.html?'+file+'='+time);
                     
               }//open
               
