@@ -1,0 +1,457 @@
+<!doctype html>
+<html>
+    <head style="display: block;">
+        <style style="display: none;">
+html {height:100%}
+        </style>
+        <script style="display: none;">
+/*
+
+//video-player:d
+
+18-04-25
+
+
+*/
+
+
+console.clear();
+                                                                                console.log('video-player');
+                                                                                
+        var github    = false;
+        if(window.location.toString().includes('github')){
+              github    = true;
+        }
+        
+        
+        var time;
+        var timestamp;
+        var seek;
+        
+        var hldr;
+        var bw;
+        var bh;
+        var video;
+        
+        var skip    = {};
+        var btn   = {};
+        
+        
+        window.onload   = init;
+        //setTimeout(init,50);
+        
+        function init(){
+        
+              initdom();
+              setup();
+              
+        }//init
+        
+        
+        function initdom(){   //c
+        
+              $('select').onchange      = select;
+              $('#file').onclick        = btn.file;
+              
+              time                      = $('#time');
+              time.onfocus              = e=>time.select();
+              time.onblur               = skip.time;
+              time.onkeyup              = e=>e.key=='Enter' && skip.time();
+              
+              timestamp                 = $('#timestamp');
+              timestamp.onfocus         = e=>timestamp.select();
+              timestamp.onblur          = skip.timestamp;
+              timestamp.onkeyup         = e=>e.key=='Enter' && skip.timestamp();
+              
+              $('#zero').onclick        = zero;
+              $('#back').onclick        = back;
+              seek                      = $('#seek');
+              $('#forward').onclick     = forward;
+              
+              rotate.input              = $('#rotate');
+              rotate.input.onkeyup      = e=>e.key=='Enter' && rotate();
+              
+              hldr                      = $('#hldr');
+              bw                        = hldr.offsetWidth;
+              bh                        = hldr.offsetHeight;
+              
+              video                     = $('video');
+              video.ontimeupdate        = update;
+              video.onloadedmetadata    = meta;
+              
+              
+        }//initdom
+        
+  //:
+  
+        btn.file    = function(){
+        
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              function onchange(){
+              
+                    var file    = input.files[0];
+                    var url     = window.URL.createObjectURL(file);
+                    set(file.name,url);
+                    
+              }//onchange
+              
+        }//file
+        
+  //:
+  
+        function setup(){
+        
+              var s   = window.location.toString();
+              var i   = s.indexOf('?');
+                                                                                console.log(s);
+              if(i!=-1){
+                    s                   = s.slice(i+1);
+                    var parts           = s.split('=');
+                    var file            = parts[0];
+                    var vtime           = parts[1];
+                    time.value          = vtime;
+                    timestamp.value     = millitostr(vtime*1000,'ts1');
+                    video.src           = '/video-'+file;
+                    video.currentTime   = vtime;
+                    select.add(file);
+              }else{
+                    getfiles();
+              }
+              
+        }//setup
+        
+  //:
+  
+        function set(filename,url){
+        
+              if(!url){
+                    url   = filename;
+              }
+              
+              video.src           = url;
+              video.currentTime   = 0;
+              
+        }//set
+        
+  //:
+  
+        function select(e){
+        
+              var file            = e.target.value;
+              set(file);
+              
+        }//select
+        
+        select.add=function(file){
+        
+              var opt   = document.createElement('option');
+              opt.textContent   = file;
+              $('select').append(opt);
+              
+        }//add
+        
+        async function getfiles(){
+        
+              var res     = await fetch('/read');
+              var files   = await res.json();
+              files.forEach((file,i)=>{
+              
+                    if(i==0){
+                          video.src   = '/video-'+file;
+                    }
+                    select.add(file);
+                    
+              });
+              
+        }//getfiles
+        
+  //:
+  
+        function meta(){
+        
+              var t                                 = 0;
+              $('#cur-time').textContent            = t.toFixed(1);
+              $('#cur-timestamp').textContent       = millitostr(0,'ts1');
+              
+              var duration                          = video.duration;
+              $('#dur-time').textContent            = duration.toFixed(1);
+              $('#dur-timestamp').textContent       = millitostr(duration*1000,'ts1');
+              
+              var width                             = video.videoWidth;
+              var height                            = video.videoHeight;
+              var ar                                = width/height;
+                                                                                console.log(ar,bw,bh,width,height);
+              if(width>bw || height>bh){
+                    if(width>bw){
+                          width                     = bw;
+                          height                    = 1/ar*width;
+                          if(height>bh){
+                                height              = bh;
+                                width               = ar*bh;
+                          }
+                    }else{
+                          height                    = bh;
+                          width                     = ar*height;
+                          if(width>bw){
+                                width               = bw;
+                                height              = 1/ar*width;
+                          }
+                    }
+                    video.style.width               = width+'px';
+                    video.style.height              = height+'px';
+              }
+              
+              rotate();
+              
+        }//meta
+        
+        function update(){
+        
+              var time                              = video.currentTime;
+              $('#cur-time').textContent            = time.toFixed(1);
+              $('#cur-timestamp').textContent       = millitostr(time*1000,'ts1');
+              
+        }//update
+        
+  //:
+  
+        skip.time=function(){
+                                                                                console.log('skip.time');
+              var v   = parseFloat(time.value);
+                                                                                console.log(v);
+              if(isNaN(v)){
+                                                                                console.log('nan');
+                    return;
+              }
+                                                                                console.log(v);
+              video.currentTime   = v;
+              
+        }//time
+        
+        skip.timestamp=function(){
+                                                                                console.log('skip.timestamp');
+              var milli   = strtomilli(timestamp.value,'ts1');
+                                                                                console.log(milli);
+              var t       = milli/1000;
+              var v       = parseFloat(t);
+              if(isNaN(v)){
+                                                                                console.log('nan');
+                    return;
+              }
+                                                                                console.log(v);
+              video.currentTime   = v;
+              
+        }//timestamp
+        
+        function zero(){
+        
+              video.currentTime   = 0;
+              
+        }//zero
+        
+        function back(){
+        
+              var v   = parseFloat(seek.value);
+              if(isNaN(v)){
+                    return;
+              }
+              var time            = video.currentTime;
+              video.currentTime   = time-v;
+              
+        }//back
+        
+        function forward(){
+        
+              var v   = parseFloat(seek.value);
+              if(isNaN(v)){
+                    return;
+              }
+              var time            = video.currentTime;
+              video.currentTime   = time+v;
+              
+        }//forward
+        
+        function rotate(){console.log('rotate');
+        
+              var v   = parseFloat(rotate.input.value);
+              if(isNaN(v)){
+                    return;
+              }
+              video.style.transform   = `rotate(${v}deg)`;
+              
+        }//rotate
+        
+  //:
+  
+        function $(sel,root){return (!root && (root=document),root.querySelector(sel))}
+        
+        function millitostr(milli,type){
+        
+              var seconds   = Math.round(milli/1000);
+              var years     = Math.floor(seconds / 31536000);
+              var days      = Math.floor((seconds % 31536000) / 86400);
+              var hours     = Math.floor(((seconds % 31536000) % 86400) / 3600);
+              var minutes   = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
+              var seconds   = (((seconds % 31536000) % 86400) % 3600) % 60;
+              var msecs     = milli%1000;
+              
+              var timestr;
+              
+              switch(type){
+              
+                case 'ts'       : timestr   = ts();         break;
+                case 'ts1'      : timestr   = ts1();        break;
+                
+              }//switch
+              
+              return timestr;
+              
+              
+              function ts(){
+              
+                    var s   = '';
+                    
+                    s      += (hours+'').padStart(2,'0');
+                    s      += ':';
+                    
+                    s      += (minutes+'').padStart(2,'0');
+                    s      += ':';
+                    
+                    s      += (seconds+'').padStart(2,'0');
+                    s      += '.';
+                    
+                    s      += (msecs+'').padStart(3,'0');
+                    
+                    return s;
+                    
+              }//ts
+              
+              function ts1(){
+              
+                    var s   = '';
+                    
+                    s      += (hours+'').padStart(2,'0');
+                    s      += ':';
+                    
+                    s      += (minutes+'').padStart(2,'0');
+                    s      += ':';
+                    
+                    s      += (seconds+'').padStart(2,'0');
+                    
+                    return s;
+                    
+              }//ts1
+              
+        }//millitostr
+        
+        function strtomilli(str,type){
+        
+              var years     = 0;
+              var days      = 0;
+              var hours     = 0;
+              var minutes   = 0;
+              var seconds   = 0;
+              var msecs     = 0;
+              
+              switch(type){
+              
+                case 'ts'     : ts();         break;
+                case 'ts1'    : ts1();        break;
+                default       : def();
+                
+              }//switch
+              
+              var milli   = years*365*24*60*60*1000   +
+                            hours*60*60*1000          +
+                            minutes*60*1000           +
+                            seconds*1000              +
+                            msecs
+              ;
+              return milli;
+              
+              function ts(){
+              
+                    [hours,minutes,seconds,msecs]   = str.split(':');
+                    
+              }//ts
+              
+              function ts1(){
+              
+                    [hours,minutes,seconds]   = str.split(':');
+                    
+              }//ts1
+              
+              function def(){
+              }//def
+              
+        }//strtomilli
+        </script>
+    </head>
+    <body style="display: flex; flex-direction: column; height: calc(100% - 30px); margin: 15px; font-family: arial;">
+        <div style="margin-top: 10px; display: flex; justify-content: space-between; gap: 10px; align-items: center;">
+            <div>
+                <select style="padding: 5px 10px; font-size: 16px;">
+                </select>
+                <input id="file" type="button" value="file" style="font-size: 16px; padding: 5px 10px; margin-left: 10px; cursor: pointer;">
+                </input>
+            </div>
+            <div style="display: flex; align-items: center;" id="rotate-root">
+                <div style="margin-right: 10px;">
+rotate
+                </div>
+                <input id="rotate" style="width: 50px; margin-right: 10px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center;" value="180">
+                </input>
+                <div style="">
+deg
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+            <div id="time-root" style="display: flex; align-items: center;">
+                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; margin-right: 10px;" type="button" value="<<" id="zero">
+                </input>
+                <input id="time" style="width: 100px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 5px;" spellcheck="false" autocomplete="off" value="0">
+                </input>
+                <input id="timestamp" style="width: 120px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 20px;" spellcheck="false" autocomplete="off" value="00:00:00">
+                </input>
+                <div id="cur-time" style="font-weight: bold;">
+00000
+                </div>
+                <div style="margin-left: 10px; margin-right: 10px;">
+--
+                </div>
+                <div id="cur-timestamp" style="margin-right: 10px; font-weight: bold;">
+00:00:00
+                </div>
+                <div style="margin-left: 10px; margin-right: 10px;">
+&#x2F;
+                </div>
+                <div id="dur-time" style="font-weight: bold;">
+00000
+                </div>
+                <div style="margin-left: 10px; margin-right: 10px;">
+--
+                </div>
+                <div id="dur-timestamp" style="margin-right: 10px; font-weight: bold;">
+00:00:00
+                </div>
+            </div>
+            <div id="seek-root" style="align-items: center; display: flex; margin-right: 10px;">
+                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box; margin-right: 10px;" type="button" value="back" id="back">
+                </input>
+                <input id="seek" style="width: 50px; padding: 3px 5px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 10px;" spellcheck="false" autocomplete="off" value="1">
+                </input>
+                <input style="cursor: pointer; font-size: 16px; box-sizing: border-box;" type="button" value="forward" id="forward">
+                </input>
+            </div>
+        </div>
+        <div style="flex: 1 1 0%; text-align: center; margin-top: 20px;" id="hldr">
+            <video style="width: 100%; height: 100%;" controls="">
+            </video>
+        </div>
+    </body>
+</html>
