@@ -64,6 +64,31 @@ yeah ok, a full coding manifesto section, can you go back to all the things weve
 
 
         
+examples
+========
+
+const serverCert = fs.readFileSync(path.join(__dirname, 'certs', 'example.com.crt'));
+const serverKey  = fs.readFileSync(path.join(__dirname, 'certs', 'example.com.key'));
+const secureContext = tls.createSecureContext({
+  cert: serverCert,
+  key: serverKey,
+});
+
+=>
+
+        var cert            = fs.readFileSync('cert.pem');
+        var key             = fs.readFileSync('key.pem');
+        var secureContext   = tls.createSecureContext({cert,key});
+
         
+======
+
+
+        var fnstr     = (fn,_,js,i1,i2)=>(js=fn+'',i1=js.indexOf('{'),i2=js.lastIndexOf('}'),js.slice(i1+1,i2));
+
+====
+
         
-          
+
+
+
