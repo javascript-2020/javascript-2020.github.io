@@ -792,7 +792,7 @@
               
               var txt       = await res.text();
               ui.view.sys(txt);
-                                                                                console.log(txt);
+                                                                                debug(txt);
         }//init
         
         
@@ -806,11 +806,34 @@
               var str       = JSON.stringify(offer);
               var body      = str;
               
-              var res       = await fetch(url,{headers,method:'post',body});
+              var err;
+              try{
+                
+                    var res       = await fetch(url,{headers,method:'post',body});
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                                                                                console.log('http offer error');
+                                                                                console.error(err);
+                    ui.view.sys.red('http offer error');
+                    ui.view.sys.red(error);
+                    return;
+              }
+              if(!res.ok){
+                    var str   = res.status+' '+res.statusText;
+                    ui.view.sys.red('http offer error');
+                    ui.view.sys.red(str);
+                    return;
+              }
+              
               var txt       = await res.text();
-              
-              console.log(txt);
-              
+                                                                                debug(txt);
         }//offer
 
 
@@ -824,11 +847,32 @@
               var str       = JSON.stringify(answer);
               var body      = str;
               
-              var res       = await fetch(url,{headers,method:'post',body});
+              var err;
+              try{
+                
+                    var res       = await fetch(url,{headers,method:'post',body});
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    ui.view.sys.red('http answer error');
+                    ui.view.sys.red(error);
+                    return;
+              }
+              if(!res.ok){
+                    var str   = res.status+' '+res.statusText;
+                    ui.view.sys.red('http answer error');
+                    ui.view.sys.red(str);
+                    return;
+              }
+              
               var txt       = await res.text();
-              
-              console.log(txt);
-              
+                                                                                debug(txt);
         }//answer
         
         
@@ -836,14 +880,38 @@
                                                                                 debug('http.ice');
               var url       = $(root,'#server').value;
               url          += '/ice';
+              
               var headers   = {mode};
+              
               var str       = JSON.stringify(ice);
               var body      = str;
               
-              var res       = await fetch(url,{headers,method:'post',body});
-              var txt       = await res.text();
-              console.log(txt);
+              var err;
+              try{
+                
+                    var res       = await fetch(url,{headers,method:'post',body});
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    ui.view.sys.red('http ice error');
+                    ui.view.sys.red(error);
+                    return;
+              }
+              if(!res.ok){
+                    var str   = res.status+' '+res.statusText;
+                    ui.view.sys.red('http ice error');
+                    ui.view.sys.red(str);
+                    return;
+              }
               
+              var txt       = await res.text();
+                                                                                debug(txt);
         }//ice
         
         
@@ -853,12 +921,35 @@
               url          += '/read';
               var headers   = {mode};
               
-              var res       = await fetch(url,{headers});
-              var txt       = await res.text();
+              var err;
+              try{
+                
+                    var res       = await fetch(url,{headers,method:'post',body});
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    ui.view.sys.red('http read error');
+                    ui.view.sys.red(error);
+                    return;
+              }
+              if(!res.ok){
+                    var str   = res.status+' '+res.statusText;
+                    ui.view.sys.red('http read error');
+                    ui.view.sys.red(str);
+                    return;
+              }
               
+              var txt       = await res.text();
               if(!txt){
                     return;
               }
+
               
               var con       = JSON.parse(txt);
                                                                                 console.log(con);
@@ -868,6 +959,7 @@
               if(con.answer){
                     await read.answer(con.answer);
               }
+              
               var n   = con.ice.length;
               for(var i=0;i<n;i++){
                 
@@ -933,7 +1025,7 @@
   
   
         poll.start    = function(){
-                                                                                console.log('poll.start');
+                                                                                debug('poll.start');
               setTimeout(poll.stop,poll.max);
               poll.send();
               
@@ -941,7 +1033,7 @@
 
 
         poll.send   = async function(){
-                                                                                console.log('poll.send');
+                                                                                debug('poll.send');
               await http.read();
               
               poll.timer    = setTimeout(poll.send,poll.time);
@@ -950,7 +1042,7 @@
         
         
         poll.stop   = function(){
-                                                                                console.log('poll.stop');
+                                                                                debug('poll.stop');
               clearTimeout(poll.timer);
           
         }//stop
@@ -1015,7 +1107,7 @@
         
 
         pc.close    = function(){
-          
+                                                                                debug('pc.close');
               if(!pc.con){
                     return;
               }
@@ -1030,9 +1122,8 @@
 
         pc.on.connectionstatechange   = function(e){
     
-    
               var state   = peerConnection.connectionState;
-              
+                                                                                debug('pc.on.connectionstatechange',state);              
               switch(state){
                 
                 case 'new'              : ui.view.sys('pc new');                      break;
@@ -1143,7 +1234,7 @@
               var buf2    = buf;
               buf         = [];
               
-                                                                                console.log('process',buf2.length);
+                                                                                debug('process',buf2.length);
               
               buf2.forEach(async candidate=>{
                     
@@ -1206,7 +1297,7 @@
 
 
         dc.on.error   = function(){
-                                                                                console.log('dc.on.error');
+                                                                                debug('dc.on.error');
               ui.view.sys('data channel error');
               
         }//dc.on.error
