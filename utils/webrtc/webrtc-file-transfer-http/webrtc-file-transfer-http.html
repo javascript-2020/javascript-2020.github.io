@@ -1039,13 +1039,20 @@
                 case 'connecting'       : ui.view.sys('pc connecting');               break;
                 case 'connected'        : ui.view.sys('pc connected');                break;
                 case 'disconnected'     : ui.view.sys('pc disconnecting');            break;
-                case 'closed'           : ui.view.sys('pc closed');
-                                          btn.connect.value   = 'connect';
-                                                                                      break;
+                case 'closed'           : ui.view.sys('pc closed');                   break;
                 case 'failed'           : ui.view.sys('pc failed');                   break;
                   
                 default                 : ui.view.sys('pc unknown');                  break;
                   
+              }//switch
+              
+              switch(state){
+                
+                case 'disconnected'   :
+                case 'failed'         :
+                case 'closed'         :
+                                                                                debug('ICE connection ended');
+                                          btn.connect.value   = 'connect';
               }//switch
               
         }//connectionstatechange
