@@ -344,17 +344,13 @@
         
         var http            = {};
         http.send           = {};
-        http.read           = {};
+        
         var poll            = {};
         poll.time           = 1000;
         poll.max            = 30_000;
         poll.timer          = null;
 
-/*        
-        var ws              = {};
-        ws.on               = {};
-        ws.send             = {};
-*/
+
 
         var pc              = {};
         pc.on               = {};
@@ -364,6 +360,7 @@
         var btn             = {};
         btn.click           = {};
         var create          = {};
+        var read            = {};
         var send            = {};
         var server          = {};
         var kd              = {};
@@ -490,7 +487,7 @@
         btn['server-init']    = async function(){
           
               focus();
-              await http.send.init();
+              await http.init();
 
         }//server-init
         
@@ -517,7 +514,7 @@
         btn.read    = async function(){
           
               focus();
-              http.send.read();
+              http.read();
               
         }//read
 
@@ -764,8 +761,8 @@
   //:
   
   
-        http.send.init    = async function(){
-          
+        http.init    = async function(){
+                                                                                debug('http.init');
               var url       = $(root,'#server').value;
               url          += '/init';
 
@@ -783,9 +780,9 @@
                     
               }//catch
               if(err){
-                                                                                console.log('http.send.init error');
+                                                                                console.log('http.init error');
                                                                                 console.error(err);
-                    ui.view.sys.red('http.send.init error');
+                    ui.view.sys.red('http.init error');
                     ui.view.sys.red(err.toString());
                     return;
               }
@@ -796,8 +793,8 @@
         }//init
         
         
-        http.send.offer   = async function(offer){
-                                                                                debug('http.send.offer');
+        http.offer   = async function(offer){
+                                                                                debug('http.offer');
               var url       = $(root,'#server').value;
               url          += '/offer';
               
@@ -814,8 +811,8 @@
         }//offer
 
 
-        http.send.answer   = async function(answer){
-                                                                                debug('http.send.answer');
+        http.answer   = async function(answer){
+                                                                                debug('http.answer');
               var url       = $(root,'#server').value;
               url          += '/answer';
               
@@ -832,8 +829,8 @@
         }//answer
         
         
-        http.send.ice   = async function(ice){
-          
+        http.ice   = async function(ice){
+                                                                                debug('http.ice');
               var url       = $(root,'#server').value;
               url          += '/ice';
               var headers   = {mode};
@@ -847,8 +844,8 @@
         }//ice
         
         
-        http.send.read    = async function(){
-          
+        http.read    = async function(){
+                                                                                debug('http.read');
               var url       = $(root,'#server').value;
               url          += '/read';
               var headers   = {mode};
@@ -863,16 +860,16 @@
               var con       = JSON.parse(txt);
                                                                                 console.log(con);
               if(con.offer){
-                    await http.read.offer(con.offer);
+                    await read.offer(con.offer);
               }
               if(con.answer){
-                    await http.read.answer(con.answer);
+                    await read.answer(con.answer);
               }
               var n   = con.ice.length;
               for(var i=0;i<n;i++){
                 
                     var ice   = con.ice[i];
-                    await http.read.ice(ice);
+                    await read.ice(ice);
                     
               }//for
               
@@ -884,8 +881,8 @@
   //:
   
   
-        http.read.offer   = async function(offer){
-                                                                                debug('http.read.offer');
+        read.offer   = async function(offer){
+                                                                                debug('read.offer');
               var sdp   = JSON.parse(offer);
                                                                                 console.log(sdp);
               await pc.con.setRemoteDescription(sdp);
@@ -900,8 +897,8 @@
         }//offer
 
 
-        http.read.answer   = async function(answer){
-                                                                                debug('http.read.answer');
+        read.answer   = async function(answer){
+                                                                                debug('read.answer');
               var sdp   = JSON.parse(answer);
                                                                                 console.log(sdp);
               await pc.con.setRemoteDescription(sdp);
@@ -916,11 +913,11 @@
         }//answer
         
         
-        http.read.ice   = async function(ice){
-          
+        read.ice   = async function(ice){
+                                                                                debug('read.ice');  
               var str         = ice;
               var candidate   = JSON.parse(str);
-                                                                //console.log(candidate);
+                                                                                console.log(candidate);
 
               ui.view.sys('remote ice candidate');
               
@@ -942,7 +939,7 @@
 
         poll.send   = async function(){
                                                                                 console.log('poll.send');
-              await http.send.read();
+              await http.read();
               
               poll.timer    = setTimeout(poll.send,poll.time);
               
@@ -954,174 +951,6 @@
               clearTimeout(poll.timer);
           
         }//stop
-        
-        
-  //:
-
-
-
-/*
-
-
-        ws.create   = function(url){
-                                                                                debug('ws.create');
-              var promise           = new Promise(res=>ws.create.resolve=res);
-              
-              ws.con                = new WebSocket(url);
-              ws.con.onopen         = ws.on.open;
-              ws.con.onclose        = ws.on.close;
-              ws.con.onerror        = ws.on.error;
-              ws.con.onmessage      = ws.on.message;
-              
-              return promise;
-              
-        }//create.ws
-
-
-        ws.on.open    = function(){
-                                                                                debug('ws.on.open');
-              ui.view.sys('signalling open');
-              
-        }//on.open
-        
-        
-        ws.on.close    = function(){
-                                                                                debug('ws.on.close');
-              ui.view.sys('signalling closed');
-        }//close
-        
-        
-        ws.on.error   = function(){
-                                                                                debug('ws.on.error');          
-        }//error
-        
-        
-        ws.on.message   = function({data}){
-                                                                                debug('ws.on.message');
-                                                                                //debug.log(data);
-              data    = JSON.parse(data);
-              
-              switch(data.type){
-                
-                case 'init'       : ws.on.message.init(data);         break;
-                case 'remote'     : ws.on.message.remote(data);       break;
-                case 'offer'      : ws.on.message.offer(data);        break;
-                case 'answer'     : ws.on.message.answer(data);       break;
-                case 'sdp'        : ws.on.message.sdp(data);          break;
-                case 'ice'        : ws.on.message.ice(data);          break;
-                                      
-                default           :
-                                                                                debug('ws.on.message unknown');
-              }//switch
-              
-        }//message
-        
-        
-        ws.on.message.init    = function(data){
-                                                                                debug('ws.on.message.init');
-                                                                                //debug.log(data);
-              mode    = data.mode;
-              ui.view.sys(`mode : ${mode}`);
-              
-              if(mode=='master'){
-                    ui.view.sys('waiting for remote ...');
-              }
-              
-              ws.create.resolve();
-
-              
-        }//init
-        
-        
-        ws.on.message.remote    = function(){
-        }//remotee
-        
-          
-        ws.on.message.offer   = async function({offer}){
-                                                                                debug('ws.on.message.offer');
-              ui.view.sys('offer received');
-              
-              await pc.con.setRemoteDescription(offer);
-              
-              pc.create.answer();
-              
-        }//offer
-        
-        
-        ws.on.message.answer    = async function({answer}){
-                                                                                debug('ws.on.message.answer');
-              ui.view.sys('answer received');
-              
-              await pc.con.setRemoteDescription(answer);
-              
-        }//answer
-        
-        
-        ws.on.message.sdp   = function(data){
-        }//sdp
-        
-        
-        ws.on.message.ice   = async function({candidate}){
-                                                                                debug('ws.on.message.ice');
-                                                                                console.log(candidate);              
-              ui.view.sys('ice candidate received');
-              
-              var err;
-              try{
-                
-                    await pc.con.addIceCandidate(candidate);
-                    
-              }//try
-              catch(err2){
-                
-                    err   = err2;
-                    
-              }//catch
-              if(err){
-                                                                                console.log('ice candidate error');
-                                                                                console.error(err);
-                    ui.view.sys.red('ice cadidate received error');
-                    ui.view.sys.red(err.toString());
-                    return;
-              }
-              
-        }//ice
-        
-
-  //:
-  
-  
-        ws.send.json    = function(json){
-          
-              var str   = JSON.stringify(json);
-              ws.con.send(str);
-              
-        }//json
-        
-        
-        ws.send.offer   = function(offer){
-                                                                                debug('ws.send.offer');
-                                                                                //debug.log(offer);
-              ws.send.json({type:'offer',offer});
-              
-        }//offer
-
-
-        ws.send.answer    = function(answer){
-                                                                                debug('ws.send.answer');
-                                                                                //debug.log(answer);
-              ws.send.json({type:'answer',answer});
-              
-        }//answer
-
-
-        ws.send.ice    = function(candidate){
-          
-              ws.send.json({type:'ice',candidate});
-              
-        }//ice
-        
-*/
 
 
   //:
@@ -1170,9 +999,7 @@
               var offer   = await pc.con.createOffer();
               await pc.con.setLocalDescription(offer);
               
-              http.send.offer(offer);
-              //ws.send.offer(offer);
-              
+              http.offer(offer);
               
         }//offer
         
@@ -1184,8 +1011,7 @@
               var answer    = await pc.con.createAnswer();
               await pc.con.setLocalDescription(answer);
               
-              http.send.answer(answer);
-              //ws.send.answer(answer);
+              http.answer(answer);
               
         }//answer
         
@@ -1240,7 +1066,7 @@
               
               ui.view.sys('local ice candidate');
 
-              http.send.ice(candidate);
+              http.ice(candidate);
               pc.process(candidate);
               
         }//onice
