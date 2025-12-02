@@ -231,7 +231,15 @@
 
                   
             <div id=server-root>
+
             
+                  <label>
+                        session
+                  </label>
+                  
+                  <input id=session value=main>
+                  
+                  
                   <label>
                         server
                   </label>
@@ -391,17 +399,23 @@
               keydown.initdom();
 
 
-              img.disconnected                        = $(root,'#status').src;
+              ui.session                              = $(root,'#session');
               
               $(root,'#server').value                 = url;
+              
               btn.connect                             = $(root,'[value=connect]');
               btn.connect.onclick                     = btn.click.connect;
+              
+              img.disconnected                        = $(root,'#status').src;
               $(root,'#server-init').onclick          = btn['server-init'];
+
 
               $(root,'[value=read]').onclick          = btn.read;
               $(root,'[value=process]').onclick       = btn.process;
+
               
               $(root,'[value="download server"]').onclick   = btn.download;
+
 
               
               filemod.initdom(root);
@@ -553,10 +567,6 @@
               var {blob,error}    = await get('code','nodejs/server/webrtc-file-transfer-http/webrtc-file-transfer-http-server.js');
               if(error)return;
               zip.file(`${root}/webrtc-file-transfer-http-server.js`,blob);
-              
-              var {blob,error}    = await get('javascript-2020.github.io','utils/webrtc/file-transfer-http/file-transfer-http.html');
-              if(error)return;
-              zip.file(`${root}/file-transfer-http.html`,blob);
               
               zip.folder(`${root}/node_modules`);
 
@@ -726,17 +736,19 @@
 
               ui.view.sys(`connect ${url}`);
               
+              var body    = ui.session.value;
+              
               var err;
               try{
                 
-                    var res   = await fetch(url);
+                    var res   = await fetch(url,{method:'post',body});
                     
-              }
+              }//try
               catch(err2){
                 
                     err   = err2;
                     
-              }
+              }//catch
               if(err){
                                                                                 console.log('http.create error');
                                                                                 console.error(err);
@@ -852,7 +864,28 @@
               var res       = await fetch(url,{headers});
               var txt       = await res.text();
               
+              if(!txt){
+                    return;
+              }
               
+              var con       = JSON.parse(txt);
+                                                                                console.log(con);
+              if(con.offer){
+                    await http.read.offer(con.offer);
+              }
+              if(con.answer){
+                    await http.read.answer(con.answer);
+              }
+              var n   = con.ice.length;
+              for(var i=0;i<n;i++){
+                
+                    var ice   = con.ice[i];
+                    await http.read.ice(ice);
+                    
+              }//for
+              
+              
+/*              
               var parts     = txt.split('\n\n').filter(Boolean);
               var n         = parts.length;
               for(var i=0;i<n;i+=2){
@@ -871,6 +904,7 @@
                     }//switch
                     
               }//for
+*/
 
               pc.process();
               
@@ -1309,7 +1343,7 @@
               var buf2    = buf;
               buf         = [];
               
-              console.log('process',buf2.length);
+                                                                                console.log('process',buf2.length);
               
               buf2.forEach(async candidate=>{
                     
