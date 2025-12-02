@@ -55,6 +55,7 @@
 
         var menu;
         
+        var hdr;
         var filemod;                                                                                
         var log;
 
@@ -65,20 +66,18 @@
         async function init(){
                                                                                 debug('init');
 
-              //keydown                   = keydown();
-              console.log(keydown);
-              
               menu                      = menumod();
               
+              hdr                       = mod['video-hdr'];
               filemod                   = mod['file-mod'];
               log                       = mod['log-mod'];
 
-
+              hdr.initmod({ext,$,menu});
               filemod.initmod({ext,$,menu,menumod,complete});
               log.initmod({ext,$});
-
               
               await Promise.all([
+                    hdr.init(),
                     filemod.init(),
                     log.init(),
               ]);
@@ -209,21 +208,13 @@
       
       <body>
 
-            
-<!--
-            <hdr-grp-api>
-                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-                  <img class=title src='images/html-editor.png' style='top:-5px;height:55px'>
-                  <span slot=date>11 Jun 2025</span>
-            </hdr-grp-api>
--->            
+            <webrtc-hdr component=grp>
+                  <h1 slot=seo-hdr class=visually-hidden>webrtc file transfer http</h1>
+                  <img class=title src='images/webrtc-file-transfer-http.png' style='top:-5px;height:55px' alt='webrtc file transfer http'>
+                  <time slot=date datetime=2025-12-02>02 Dec 2025</time>
+            </webrtc-hdr>
 
 
-            <h3>
-                  file transfer http
-            </h3>
-
-                  
             <div id=server-root>
 
             
@@ -384,9 +375,10 @@
         async function initdom(rootnode){   //c
                                                                                 debug('initdom');
 
-                                                                                
               root                                    = rootnode;
+
               
+              hdr.initdom();              
               keydown.initdom();
 
 
