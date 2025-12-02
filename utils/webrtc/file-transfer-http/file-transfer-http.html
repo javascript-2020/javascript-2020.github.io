@@ -1,15 +1,38 @@
 
 
-<html>
+<!DOCTYPE html>
+
+
+<html lang=en>
 
       <head>
-
-            <title>file-transfer-http</title>
+            <meta charset=utf-8>
             
+            <title>
+                  WebRTC File Transfer HTTP
+            </title>
+            
+            <meta name=description content=''>
+
             <base href='https://ext-code.com/utils/webrtc/file-transfer-http/'>
-            <base href='https://javascript-2020.github.io/utils/webrtc/file-transfer-http/'>
+            <link rel=canonical href='https://ext-code.com/utils/webrtc/file-transfer-http/file-transfer.html'>
             
             <link rel=icon type='image/png' href='image/file-transfer-http-30.png'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"            : "https://schema.org",
+                        "@type"               : "TechArticle",
+                        "headline"            : "WebRTC File Transfer HTTP",
+                        "description"         : "",
+                        "author"              : {"@type":"Person","name":"Matthew Richards"},
+                        "datePublished"       : "2025-12-02",
+                        "dateModified"        : "2025-12-02",
+                        "mainEntityOfPage"    : {"@type":"WebPage","@id":"https://ext-code.com/utils/webrtc/file-transfer-http/file-transfer.html"},
+                        "publisher"           : {"@type":"Organization","name":"ext-code.com","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
+                  }
+            </script>
 
 
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
@@ -39,28 +62,24 @@
   //:
   
   
-        mod.stack.add   = init;
-        
         async function init(){
 
 
               //keydown                   = keydown();
               menu                      = menumod();
               
-              filemod                   = mod.filemod;
-              log                       = mod.log;
+              filemod                   = mod['file-mod'];
+              log                       = mod['log-mod'];
+
 
               filemod.initmod({ext,$,menu,menumod,complete});
-
-
               log.initmod({ext,$});
 
-
-
-              await filemod.init();
-
-
-              await log.init();
+              
+              await Promise.all([
+                    filemod.init(),
+                    log.init(),
+              ]);
 
 
   //:
@@ -228,7 +247,7 @@
             </div>
 
 
-            <filemod component v2.0></filemod>
+            <file-mod component></file-mod>
 
 
             <div id=message>
@@ -281,7 +300,7 @@
                   
             
 
-            <log component v2.0></log>
+            <log-mod component></log-mod>
 
             
       
