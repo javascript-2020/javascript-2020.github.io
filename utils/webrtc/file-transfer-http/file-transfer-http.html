@@ -112,8 +112,10 @@
         [$,datatype,menumod,keydown]   = await promise;
   
         mod.stack.complete;
-              
+        
 })();
+
+
 
                   
             </script init>
@@ -243,6 +245,10 @@
                   
                   <input value=read type=button>
                   <input value=process type=button>
+                  
+                  <div class=spc></div>
+                  
+                  <input value='download server' type=button>
                   
             </div>
 
@@ -394,6 +400,8 @@
 
               $(root,'[value=read]').onclick          = btn.read;
               $(root,'[value=process]').onclick       = btn.process;
+              
+              $(root,'[value="download server"]').onclick   = btn.download;
 
               
               filemod.initdom(root);
@@ -515,6 +523,45 @@
         }//process
         
   
+        btn.download    = async function(){
+          
+              var jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
+              jszip       = jszip.default;
+
+              var root    = `webrtc-file-transfer-http-server`;
+              
+              var zip       = new jszip();
+              zip.folder(root);
+              
+              var res       = await fetch('https://raw.githubusercontent.com/javascript-2020/code/main/nodejs/server/webrtc-file-transfer-http/webrtc-file-transfer-http-server.js');
+              var blob      = await res.blob();
+              zip.file(`${root}/webrtc-file-transfer-http-server.js`,blob);
+              
+              zip.folder(`${root}/node_modules`);
+
+              var libs      = ['nodejs/keys/keys.js','nodejs/wsmod/wsmod.js','nodejs/server-cert/server-cert.js'];
+              await Promise.all(
+                    libs.map(async path=>{
+                
+                          var fn    = path.split('/').at(-1);
+                          var blob    = await fetch(`https://raw.githubusercontent.com/javascript-2020/libs/main/${path}`).then(res=>res.blob());
+                          zip.file(`${root}/node_modules/${fn}`,blob);
+                    
+                    });
+              );
+              
+
+              var blob      = await zip.generateAsync({type:'blob'});
+              
+              var url       = window.URL.createObjectURL(blob);
+              var a         = document.createElement('a');
+              a.download    = `${root}.zip`;
+              a.href        = url;
+              a.click();              
+                
+        }//download
+        
+        
   //:
   
   
