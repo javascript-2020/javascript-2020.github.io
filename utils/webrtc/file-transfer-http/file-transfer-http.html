@@ -525,16 +525,33 @@
   
         btn.download    = async function(){
           
-              var jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
+              var err;
+              try{
+                
+                    var jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catcg
+              if(err){
+                    var error   = err.toString();
+                    log.red(`failed to load zip module : ${error}`);
+                    return;
+              }
+              
               jszip       = jszip.default;
+
 
               var root    = `webrtc-file-transfer-http-server`;
               
               var zip       = new jszip();
               zip.folder(root);
-              
-              var res       = await fetch('https://raw.githubusercontent.com/javascript-2020/code/main/nodejs/server/webrtc-file-transfer-http/webrtc-file-transfer-http-server.js');
-              var blob      = await res.blob();
+
+              var {blob,error}    = await get('code','nodejs/server/webrtc-file-transfer-http/webrtc-file-transfer-http-server.js');
+              if(error)return;
               zip.file(`${root}/webrtc-file-transfer-http-server.js`,blob);
               
               zip.folder(`${root}/node_modules`);
@@ -543,11 +560,12 @@
               await Promise.all(
                     libs.map(async path=>{
                 
-                          var fn    = path.split('/').at(-1);
-                          var blob    = await fetch(`https://raw.githubusercontent.com/javascript-2020/libs/main/${path}`).then(res=>res.blob());
+                          var fn              = path.split('/').at(-1);
+                          var {blob,error}    = await get('libs',path);
+                          if(error)return;
                           zip.file(`${root}/node_modules/${fn}`,blob);
                     
-                    });
+                    })
               );
               
 
@@ -559,6 +577,39 @@
               a.href        = url;
               a.click();              
                 
+                
+              async function get(repo,path){
+                
+                    var url       = `https://raw.githubusercontent.com/javascript-2020/${repo}/main/${path}`;
+                    
+                    var err;
+                    try{
+                      
+                          var res       = await fetch(url);
+                          
+                    }//try
+                    catch(err2){
+                      
+                          err   = err2;
+                          
+                    }//catcg
+                    if(err){
+                          var error   = err.toString();
+                          log.red(error);
+                          return {error};
+                    }
+                    if(!res.ok){
+                          var txt     = await res.text();
+                          var error   = res.status+' '+res.statusText;
+                          log.red(error);
+                          return {error};
+                    }
+                    
+                    var blob      = await res.blob();
+                    return {blob};
+                    
+              }//get
+              
         }//download
         
         
