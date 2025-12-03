@@ -789,6 +789,12 @@
                     ui.view.sys.red(err.toString());
                     return;
               }
+              if(!res.ok){
+                    var str   = res.status+' '+res.statusText;
+                    ui.view.sys.red('http offer error');
+                    ui.view.sys.red(str);
+                    return;
+              }
               
               var txt       = await res.text();
               ui.view.sys(txt);
