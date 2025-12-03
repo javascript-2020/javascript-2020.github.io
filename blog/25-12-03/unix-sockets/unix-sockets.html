@@ -57,7 +57,7 @@
 
         var hdr;
         var log;
-        
+        var ex    = {};
         
         
   //:
@@ -65,18 +65,22 @@
   
         async function init(){
           
-              menu    = menumod();
+              menu                            = menumod();
               
-              hdr     = mod['blog-hdr'];
-              log     = mod['log-mod'];
+              hdr                             = mod['blog-hdr'];
+              log                             = mod['log-mod'];
+              
+              ex['linux-server-js']           = mod['linux-server-js'];
               
               hdr.initmod({ext,$});
               log.initmod({ext,$});
+              ex['linux-server-js'].initmod({ext,$,menu,ace});
 
               
               await Promise.all([
                     hdr.init(),
                     log.init(),
+                    ex['linux-server-js'].init(),
               ]);
               
               
@@ -208,11 +212,27 @@
             </div>
 
 
+            <web-editor id=linux-server-js src='ex/ipc-linux-server.js' fullsize component></web-editor>
 
 
-
+            <log-mod component></log-mod>
+            
       </body>
       
+      <script>
+      
+      
+        function initdom(){
+          
+              hdr.initdom();
+              log.initdom();
+              ex['linux-server-js'].initdom();
+
+              
+        }//initdom
+        
+        
+      </script>
       
 </html>
 
