@@ -23,7 +23,7 @@
                                                                                 console.log('Client disconnected');
               });
                                                                                 //  Send a test message
-              con.write('Hello from Node server over Unix socket!');
+              con.write('hello from server');
               
         });
         
