@@ -12,7 +12,8 @@
                       action: {
                             type: 'modifyHeaders',
                             responseHeaders: [
-                                  {header: 'access-control-allow-origin',operation:'set',value:'*'},
+                                  {header:'content-security-protocol',operation:'remove'},
+                                  {header:'access-control-allow-origin',operation:'set',value:'*'},
                             ],
                       },
                 };
