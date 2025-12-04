@@ -13,15 +13,15 @@
               
         });
         
-        client.on('data', (data) => {
-                                                                                console.log('Received from server:', data.toString());
+        client.on('data',data=>{
+                                                                                console.log('Received from server:',data.toString());
         });
                                                                                         
-        client.on('end', () => {
+        client.on('end',()=>{
                                                                                 console.log('Disconnected from server');
         });
         
-        client.on('error', (err) => {
+        client.on('error',err=>{
                                                                                 console.error('Socket error:',err.message);
         });
 
