@@ -1,17 +1,17 @@
         
         
         
-// server.js
+//  ipc-server-linux.node.js
         
+        var fs          = require('fs');
         var net         = require('net');
         var PIPE_PATH   = '/tmp/mysock';
         
                                                                                 // Clean up old socket file if it exists
-        var fs          = require('fs');
-        
         if(fs.existsSync(PIPE_PATH)){
               fs.unlinkSync(PIPE_PATH);
         }
+        
         
         var server    = net.createServer(con=>{
                                                                                 console.log('Client connected');
