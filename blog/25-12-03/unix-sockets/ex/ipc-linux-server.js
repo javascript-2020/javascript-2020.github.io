@@ -9,27 +9,26 @@
                                                                                 // Clean up old socket file if it exists
         var fs          = require('fs');
         
-        if (fs.existsSync(PIPE_PATH)) {
+        if(fs.existsSync(PIPE_PATH)){
               fs.unlinkSync(PIPE_PATH);
         }
         
-        var server = net.createServer((conn) => {
-              console.log('Client connected');
-        
-              conn.on('data', (data) => {
-                    console.log('Received from client:', data.toString());
+        var server    = net.createServer(con=>{
+                                                                                console.log('Client connected');
+              con.on('data',data=>{
+                                                                                console.log('Received from client:', data.toString());
               });
         
-              conn.on('end', () => {
-                    console.log('Client disconnected');
+              con.on('end',()=>{
+                                                                                console.log('Client disconnected');
               });
-        
-              // Send a test message
-              conn.write('Hello from Node server over Unix socket!');
+                                                                                // Send a test message
+              con.write('Hello from Node server over Unix socket!');
+              
         });
         
-        server.listen(PIPE_PATH, () => {
-              console.log('Server listening on', PIPE_PATH);
+        server.listen(PIPE_PATH,()=>{
+                                                                                console.log('Server listening on', PIPE_PATH);
         });
 
 
