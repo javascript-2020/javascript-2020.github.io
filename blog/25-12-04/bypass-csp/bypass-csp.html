@@ -85,6 +85,16 @@
               ex['chrome-extension']          = mod['chrome-extension'];
               ex['chrome-extension'].initmod({ext,$,menu,menumod,ace});
               
+              ex['ws-server']                 = mod['ws-server'];
+              ex['ws-server'].initmod({ext,$,menu,menumod,ace});
+              ex['ws-client']                 = mod['ws-client'];
+              ex['ws-client'].initmod({ext,$,menu,menumod,ace});
+              
+              ex['proxy']                     = mod['proxy'];
+              ex['proxy'].initmod({ext,$,menu,menumod,ace});
+              ex['test']                      = mod['test'];
+              ex['test'].initmod({ext,$,menu,menumod,ace});
+              
               
               
               await Promise.all([
@@ -95,6 +105,10 @@
                     ex['firefox-extension'].init(),
                     ex['chrome-manifest'].init(),
                     ex['chrome-extension'].init(),
+                    ex['ws-server'].init(),
+                    ex['ws-client'].init(),
+                    ex['proxy'].init(),
+                    ex['test'].init(),
                                         
               ]);
               
@@ -148,7 +162,7 @@
     {display:none}
     
   .description 
-    {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
+    {max-width:1200px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
       background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
   .description>p
     {margin:0}
@@ -211,7 +225,7 @@
     {font-family:pacifico}
 
   .br
-    {margin-top:1em}
+    {margin-top:0.8em}
     
             </style>
             
@@ -318,7 +332,58 @@
             </section>
                   
                   
+            <section class=blog-text>
+                  <h3>
+                        How to Tell if it Worked?
+                  </h3>
+                  <p>
+                        Well the test in question was on a webpage protected with a content-security-policy, create a websocket
+                        to a local server ( or other )<br>
+                        <div class=br></div>
+                        So i thought this would make for some interesting code<br>
+                        <div class=br></div>
+                        Its worth noting here that when a server uses a certificate not in the trsuted root store, self-signed or otherwise,
+                        it requires top-level navigation to get the browser to accept that certificate, any other form of navigation will
+                        fail silently<br>
+                        <div class=br></div>
+                        Here is a minimal websocket server, supports text only, upto 125 bytes
+                  </p>
                   
+                  <snippet-editor id=ws-server src='ws/websocket-server.js' mode=js fullsize component></snippet-editor>
+                  
+                  <p>
+                        And the code to connect onto it
+                  </p>
+                  
+                  <snippet-editor id=ws-client src='ws/websocket-client.js' mode=js fullsize component></snippet-editor>
+            </section>  
+
+
+            <section class=blog-text>
+                  <h3>
+                        bypassing content-security policy with a mitm proxy
+                  </h3>
+                  <p>
+                        so we can bypass the content-security-protocol header with a mitm proxy and remove the header before sending it to the
+                        browser
+                  </p>
+                  
+                  <snippet-editor id=proxy src='proxy/mitm-proxy.js' mode=js fullsize component></snippet-editor>
+            </section>
+            
+            
+            <section class=blog-text>
+                  <h3>
+                        checking the input / output of the mitm proxy
+                  </h3>
+                  <p>
+                        by connecting onto the server below we can check the actual input and output of the mitm proxy, should you wish to adapt
+                        the code, its always good to be able to check exactly what is happening
+                  </p>
+                  
+                  <snippet-editor id=test src='server/test-server.js' mode=js fullsize component></snippet-editor>
+            </section>
+
 
             
             <log-mod component></log-mod>
@@ -339,6 +404,11 @@
               ex['firefox-extension'].initdom();
               ex['chrome-manifest'].initdom();
               ex['chrome-extension'].initdom();
+              ex['ws-server'].initdom();
+              ex['ws-client'].initdom();
+              ex['proxy'].initdom();
+              ex['test'].initdom();
+              
               
         }//initdom
 
