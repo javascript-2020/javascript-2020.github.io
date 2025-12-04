@@ -75,13 +75,27 @@
               hdr.initmod({ext,$});
               log.initmod({ext,$});
               
-
-
+              ex['firefox-manifest']          = mod['firefox-manifest'];
+              ex['firefox-manifest'].initmod({ext,$,menu,menumod,ace});
+              ex['firefox-extension']         = mod['firefox-extension'];
+              ex['firefox-extension'].initmod({ext,$,menu,menumod,ace});
+              
+              ex['chrome-manifest']           = mod['chrome-manifest'];
+              ex['chrome-manifest'].initmod({ext,$,menu,menumod,ace});
+              ex['chrome-extension']          = mod['chrome-extension'];
+              ex['chrome-extension'].initmod({ext,$,menu,menumod,ace});
+              
+              
               
               await Promise.all([
                     hdr.init(),
                     log.init(),
-                    
+              
+                    ex['firefox-manifest'].init(),
+                    ex['firefox-extension'].init(),
+                    ex['chrome-manifest'].init(),
+                    ex['chrome-extension'].init(),
+                                        
               ]);
               
               
@@ -265,9 +279,9 @@
                   
                   <img src='ext/firefox/cubes.png'>
                   
-                  <snippet-editor src='ext/firefox/manifest.json' mode=json fullsize component></snippet-editor>
+                  <snippet-editor id=firefox-manifest src='ext/firefox/manifest.json' mode=json fullsize component></snippet-editor>
 
-                  <snippet-editor src='ext/firefox/extension.js' mode=js fullsize component></snippet-editor>
+                  <snippet-editor id=firefox-extension src='ext/firefox/extension.js' mode=js fullsize component></snippet-editor>
             </section>
             
             
@@ -278,9 +292,9 @@
                   
                   <img src='ext/chrome/cubes.png'>
                   
-                  <snippet-editor src='ext/chrome/manifest.json' mode=json fullsize component></snippet-editor>
+                  <snippet-editor id=chrome-manifest src='ext/chrome/manifest.json' mode=json fullsize component></snippet-editor>
                   
-                  <snippet-editor src='ext/chrome/extension.js' mode=js fullsize component></snippet-editor>
+                  <snippet-editor id=chrome-extension src='ext/chrome/extension.js' mode=js fullsize component></snippet-editor>
             </section>
                   
                   
@@ -299,7 +313,12 @@
           
               hdr.initdom();
               log.initdom();
-              
+
+
+              ex['firefox-manifest'].initdom();
+              ex['firefox-extension'].initdom();
+              ex['chrome-manifest'].initdom();
+              ex['chrome-extension'].initdom();
               
         }//initdom
 
