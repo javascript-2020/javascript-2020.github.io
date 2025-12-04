@@ -95,6 +95,17 @@
               ex['test']                      = mod['test'];
               ex['test'].initmod({ext,$,menu,menumod,ace});
               
+              ex['ext-js-manifest']           = mod['ext-js-manifest'];
+              ex['ext-js-manifest'].initmod({ext,$,menu,menumod,ace});
+              ex['ext-js-extension']          = mod['ext-js-extension'];
+              ex['ext-js-extension'].initmod({ext,$,menu,menumod,ace});
+              ex['ext-js-cs']                 = mod['ext-js-cs'];
+              ex['ext-js-cs'].initmod({ext,$,menu,menumod,ace});
+              ex['ext-js-popup-html']         = mod['ext-js-popup-html'];
+              ex['ext-js-popup-html'].initmod({ext,$,menu,menumod,ace});
+              ex['ext-js-popup-js']           = mod['ext-js-popup-js'];
+              ex['ext-js-popup-js'].initmod({ext,$,menu,menumod,ace});
+              
               
               
               await Promise.all([
@@ -109,6 +120,11 @@
                     ex['ws-client'].init(),
                     ex['proxy'].init(),
                     ex['test'].init(),
+                    ex['ext-js-manifest'].init(),
+                    ex['ext-js-extension'].init(),
+                    ex['ext-js-cs'].init(),
+                    ex['ext-js-popup-html'].init(),
+                    ex['ext-js-popup-js'].init(),
                                         
               ]);
               
@@ -365,7 +381,14 @@
                   </h3>
                   <p>
                         so we can bypass the content-security-protocol header with a mitm proxy and remove the header before sending it to the
-                        browser
+                        browser<br>
+                        <div class=br></div>
+                        for chrome, i believe chrome can be started with flags
+                        <code>
+chrome --proxy-server="http://127.0.0.1:8080"
+                        </code>
+                        <div class=br></div>
+                        for firefox, you set a proxy by going to Settings → General → Network Settings → Settings…, then choosing Manual proxy configuration and entering your proxy details
                   </p>
                   
                   <snippet-editor id=proxy src='proxy/mitm-proxy.js' mode=js fullsize component></snippet-editor>
@@ -395,8 +418,17 @@
                         so i thought i'd create a little extension that allows code to be easily run in a webpage<br>
                   </p>
                   
-                  <snippet-editor></snippet-editor>
+                  <img src='ext-js/js.png'>
+                  
+                  <snippet-editor id=ext-js-manifest src='ext-js/manifest.json' mode=json fullsize component></snippet-editor>
                         
+                  <snippet-editor id=ext-js-extension src='ext-js/extension.js' mode=js fullsize component></snippet-editor>
+                  
+                  <snippet-editor id=ext-js-cs src='ext-js/content-script.js' mode=js fullsize component></snippet-editor>
+                  
+                  <snippet-editor id=ext-js-popup-html src='ext-js/popup/popup.html' mode=html fullsize component></snippet-editor>
+                  
+                  <snippet-editor id=ext-js-popup-js src='ext-js/popup/popup.js' mode=js fullsize component></snippet-editor>
             </section>
             
             
@@ -423,7 +455,12 @@
               ex['ws-client'].initdom();
               ex['proxy'].initdom();
               ex['test'].initdom();
-              
+              ex['ext-js-manifest'].initdom();
+              ex['ext-js-extension'].initdom();
+              ex['ext-js-cs'].initdom();
+              ex['ext-js-popup-html'].initdom();
+              ex['ext-js-popup-js'].initdom();
+
               
         }//initdom
 
