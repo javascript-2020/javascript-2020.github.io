@@ -1,6 +1,8 @@
         
         
-        
+//  ipc-server-win.c
+
+
         #include <windows.h>
         #include <stdio.h>
 
@@ -31,8 +33,8 @@
                                                                                 // Wait for a client (Node.js) to connect
               BOOL connected    = ConnectNamedPipe(hPipe,NULL) ? TRUE : (GetLastError()==ERROR_PIPE_CONNECTED);
           
-              if (!connected){
-                    printf("ConnectNamedPipe failed with error %lu\n", GetLastError());
+              if(!connected){
+                    printf("ConnectNamedPipe failed with error %lu\n",GetLastError());
                     CloseHandle(hPipe);
                     return 1;
               }
@@ -46,6 +48,8 @@
           
                                                                                 // Close pipe
               CloseHandle(hPipe);
+              
+              
               return 0;
               
         }//main
