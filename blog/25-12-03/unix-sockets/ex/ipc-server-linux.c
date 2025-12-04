@@ -15,28 +15,33 @@
                     perror("socket");
                     return 1;
               }
-          
+              
+                                                                                // remove old socket file
+              unlink("/tmp/mysock");
+
+              
               struct sockaddr_un addr;
               memset(&addr,0,sizeof(addr));
               addr.sun_family   = AF_UNIX;
               strcpy(addr.sun_path,"/tmp/mysock");
-                                                                                // remove old socket file
-              unlink("/tmp/mysock");
           
               if(bind(sock,(struct sockaddr*)&addr,sizeof(addr))<0){
                       perror("bind");
                       return 1;
-              }
-          
+              }          
               listen(sock,1);
+              
+              
               int conn    = accept(sock,NULL,NULL);
               if(conn<0){
                     perror("accept");
                     return 1;
               }
+              
                                                                                 // Send a test message
               const char *msg   = "Hello from C over Unix socket!";
               write(conn,msg,strlen(msg));
+
           
               close(conn);
               close(sock);
