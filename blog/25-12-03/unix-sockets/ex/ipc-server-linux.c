@@ -40,13 +40,22 @@
                     return 1;
               }
               
-                                                                                // Send a test message
-              const char *msg   = "Hello from C over Unix socket!";
-              write(conn,msg,strlen(msg));
-
+                                                                                //  Send a message to client
+              const char *msg   = "Hello from server!";
+              write(con,msg,strlen(msg));
           
+                                                                                //  Read reply from client
+              char buf[256];
+              int n   = read(con,buf,sizeof(buf)-1);
+              if(n>0){
+                    buf[n]    = '\0';
+                    printf("Server received: %s\n",buf);
+              }
+    
+    
               close(conn);
               close(sock);
+
               
               return 0;
               
