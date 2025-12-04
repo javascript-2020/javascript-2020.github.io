@@ -71,21 +71,23 @@
               log                             = mod['log-mod'];
               
               ex['linux-server-js']           = mod['linux-server-js'];
-              ex['linux-c']                   = mod['linux-c'];
-              ex['linux-js']                  = mod['linux-js'];
+              ex['linux-server-c']            = mod['linux-server-c'];
               ex['win-server-js']             = mod['win-server-js'];
-              ex['win-c']                     = mod['win-c'];
-              ex['win-js']                    = mod['win-js'];
+              ex['win-server-c']              = mod['win-server-c'];
+              
+              ex['client-win-js']             = mod['client-win-js'];
+              ex['client-linux-c']            = mod['client-linux-c'];
               
               hdr.initmod({ext,$});
               log.initmod({ext,$});
               
               ex['linux-server-js'].initmod({ext,$,menu,ace});
-              ex['linux-c'].initmod({ext,$,menu,ace});
-              ex['linux-js'].initmod({ext,$,menu,ace});
+              ex['linux-server-c'].initmod({ext,$,menu,ace});
               ex['win-server-js'].initmod({ext,$,menu,ace});
-              ex['win-c'].initmod({ext,$,menu,ace});
-              ex['win-js'].initmod({ext,$,menu,ace});
+              ex['win-server-c'].initmod({ext,$,menu,ace});
+              
+              ex['client-win-js'].initmod({ext,$,menu,ace});
+              ex['client-linux-c'].initmod({ext,$,menu,ace});
 
               
               await Promise.all([
@@ -93,11 +95,13 @@
                     log.init(),
                     
                     ex['linux-server-js'].init(),
-                    ex['linux-c'].init(),
-                    ex['linux-js'].init(),
+                    ex['linux-server-c'].init(),
                     ex['win-server-js'].init(),
-                    ex['win-c'].init(),
-                    ex['win-js'].init(),
+                    ex['win-server-c'].init(),
+                    
+                    ex['client-win-js'].init(),
+                    ex['client-linux-c'].init(),
+                    
               ]);
               
               
@@ -251,7 +255,6 @@
             </section>
 
 
-
             <section class=blog-text>
                   <h3>
                         ipc server linux c
@@ -260,29 +263,14 @@
                         the following sets up an ipc unix domain socket server on linux in c
                   </p>
                   
-                  <web-editor id=linux-c src='ex/ipc-server-linux.c' fullsize component></web-editor>
+                  <web-editor id=linux-server-c src='ex/ipc-server-linux.c' fullsize component></web-editor>
                   
             </section>
-            
-            
+                        
             
             <section class=blog-text>
                   <h3>
-                        ipc server linux nodejs
-                  </h3>
-                  <p>
-                        the following sets up an ipc unix domain socket server on linux in nodejs
-                  </p>
-                  
-                  <web-editor id=linux-js src='ex/ipc-server-linux.node.js' fullsize component></web-editor>
-                  
-            </section>
-            
-            
-            
-            <section class=blog-text>
-                  <h3>
-                        ipc win server nodejs
+                        ipc server windows nodejs
                   </h3>
                   <p>
                         the following sets up an ipc named pipe server on windows in nodedjs
@@ -291,18 +279,17 @@
                   <web-editor id=win-server-js src='ex/ipc-server-win.node.js' fullsize component></web-editor>
                   
             </section>
-            
-            
+                        
             
             <section class=blog-text>
                   <h3>
-                        ipc server win c
+                        ipc server windows c
                   </h3>
                   <p>
                         the following sets up an ipc named pipe server on windows in c
                   </p>
                   
-                  <web-editor id=win-c src='ex/ipc-server-win.c' fullsize component></web-editor>
+                  <web-editor id=win-server-c src='ex/ipc-server-win.c' fullsize component></web-editor>
                   
             </section>
             
@@ -320,9 +307,30 @@
                         the following sets up a named pipe client on windows in nodejs
                   </p>
                   
-                  <web-editor id=win-js src='ex/ipc-win.js' fullsize component></web-editor>
+                  <web-editor id=client-win-js src='ex/ipc-client-win.node.js' fullsize component></web-editor>
                   
             </section>
+
+
+            <section class=blog-text>
+                  <h3>
+                        ipc client linux c
+                  </h3>
+                  <p>
+                        the following sets up an ipc unix domain socket client on linux in c
+                  </p>
+                  
+                  <web-editor id=client-linux-c src='ex/ipc-client-linux.c' fullsize component></web-editor>
+                  
+            </section>
+            
+
+
+
+
+
+            
+            
             
             
             
@@ -342,11 +350,12 @@
               log.initdom();
               
               ex['linux-server-js'].initdom();
-              ex['linux-c'].initdom();
-              ex['linux-js'].initdom();
+              ex['linux-server-c'].initdom();
               ex['win-server-js'].initdom();
-              ex['win-c'].initdom();
-              ex['win-js'].initdom();
+              ex['win-server-c'].initdom();
+              
+              ex['client-win-js'].initdom();
+              ex['client-linux-c'].initdom();
 
               
         }//initdom
