@@ -523,6 +523,8 @@ chrome --proxy-server="http://127.0.0.1:8080"
                     
                     jszip       = jszip.default;
               }
+              
+              return {jszip};
           
         }//load_jszip
         
@@ -539,7 +541,7 @@ chrome --proxy-server="http://127.0.0.1:8080"
 
               var err;              
               await Promise.all(
-                    file.map(async file=>{
+                    files.map(async file=>{
                 
                           var fn              = file.split('/').at(-1);
                           var {blob,error}    = await get(file);
