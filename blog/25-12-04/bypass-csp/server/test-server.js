@@ -53,7 +53,13 @@
                     }
                                   
                     var csp   = `default-src 'self';connect-src 'self';script-src 'self' 'unsafe-inline';`;
-                    res.writeHead(200,{'content-type':'text/html','content-security-policy':csp});
+                    var headers   = {
+                          'content-type'                    : 'text/html',
+                          'content-security-policy'         : csp,
+                          'access-control-allow-origin'     : '*',
+                          'access-control-expose-headers'   : 'content-length, content-encoding, content-disposition etag'
+                    }
+                    res.writeHead(200,headers);
                     res.end(html)
                     
               });
