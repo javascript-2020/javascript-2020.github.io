@@ -256,6 +256,9 @@
                         </div>
                         <web-editor id=editor1 component></web-editor>
                   </div>
+                  
+                  <div id=slider-1 style='width:10px;cursor:ew-resize'></div>
+                  
                   <div id=view2>
                         <div id=hdr>
                               <file-mod id=file2 component></file-mod>
@@ -288,7 +291,7 @@
       <script>
 
 
-        var slider      = {};
+        var slider1     = {mode:'horiz'};
         
         var ui          = {};
         ui.mode         = 'vert';
@@ -327,7 +330,14 @@
               var node                                        = $('#output');
               await output.initdom(node,{mode:'text'});
 
-
+              slider1.root    = $('#main');
+              slider1.node    = $.slider('#view1','#slider-1','#view2',null,slider1);
+  
+  
+  
+  
+  
+  
   
               var style                                       = document.createElement('style');
               style.textContent   = `
