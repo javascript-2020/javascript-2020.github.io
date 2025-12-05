@@ -130,7 +130,7 @@
               
               
               initdom(document.body);
-              
+
               
         }//init
         
@@ -193,13 +193,14 @@
     {margin:1.5rem auto;padding:1.25rem 1.75rem;background-color:#fcfcfc;/*#f9f9f9*/font-family:system-ui, sans-serif;font-size:1rem;line-height:2;
       color:#333;text-align:justify;border-radius:4px}      
   .blog-text h2,.blog-text h3 
-    {margin-top:1.5rem;margin-bottom:0.75rem;font-weight:600;color:#222;}
+    {margin-top:1.5rem;margin-bottom:0.75rem;font-weight:600;color:#222;display:flex}
   .blog-text p 
     {margin:0 0 1rem 0;}
 
 
 
-
+  .spc
+    {flex:1}
 
 
 
@@ -380,7 +381,7 @@
                         bypassing content-security policy with a mitm proxy
                   </h3>
                   <p>
-                        so we can bypass the content-security-protocol header with a mitm proxy and remove the header before sending it to the
+                        so, we can bypass the content-security-protocol header with a mitm proxy and remove the header before sending it to the
                         browser<br>
                         <div class=br></div>
                         for chrome, i believe chrome can be started with flags
@@ -389,6 +390,16 @@ chrome --proxy-server="http://127.0.0.1:8080"
                         </code>
                         <div class=br></div>
                         for firefox, you set a proxy by going to Settings → General → Network Settings → Settings…, then choosing Manual proxy configuration and entering your proxy details
+                        <div class=br></div>
+                        this mitm proxy requires a x.509 key and certificate, they can be generated
+                        <br>
+                        <a href='utils/x509/generate-https-certificate/generate-https-certificate.html'>
+                              Generate HTTPS Certificate
+                              <span class=link-domain>
+                                    ext-code.com
+                              </span>
+                        </a>
+                        <br>
                   </p>
                   
                   <snippet-editor id=proxy src='proxy/mitm-proxy.js' mode=js fullsize component></snippet-editor>
@@ -398,6 +409,8 @@ chrome --proxy-server="http://127.0.0.1:8080"
             <section class=blog-text>
                   <h3>
                         checking the input / output of the mitm proxy
+                        <div class=spc></div>
+                        <input value='download test-server' type=button>
                   </h3>
                   <p>
                         by connecting onto the server below we can check the actual input and output of the mitm proxy, should you wish to adapt
@@ -439,7 +452,11 @@ chrome --proxy-server="http://127.0.0.1:8080"
 
       
       <script>
+
       
+        var btn         = {};
+        btn.download    = {};
+        
       
         function initdom(){
           
@@ -461,8 +478,126 @@ chrome --proxy-server="http://127.0.0.1:8080"
               ex['ext-js-popup-html'].initdom();
               ex['ext-js-popup-js'].initdom();
 
+
+              $('[value="download test-server"]').onclick           = btn.download['test-server'];
+              
+              
               
         }//initdom
+
+
+  //:
+  
+  
+        btn.download['test-server']   = function(){
+          
+              download('test-server','server/test-server.js');
+              
+        }//test-server
+        
+
+  //:
+  
+  
+        var jszip;
+        
+        async function load_jszip(){
+          
+              if(!jszip){
+                    var err;
+                    try{
+                      
+                          jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
+                          
+                    }//try
+                    catch(err2){
+                      
+                          err   = err2;
+                          
+                    }//catcg
+                    if(err){
+                          var error   = err.toString();
+                          log.red(`failed to load zip module : ${error}`);
+                          return {error};
+                    }
+                    
+                    jszip       = jszip.default;
+              }
+          
+        }//load_jszip
+        
+        
+        async function download(root,...files){
+          
+              if(!jszip){
+                    var {error}   = await load_jszip();
+                    if(error)return;
+              }
+              
+              var zip       = new jszip();
+              zip.folder(root);
+
+              var err;              
+              await Promise.all(
+                    file.map(async file=>{
+                
+                          var fn              = file.split('/').at(-1);
+                          var {blob,error}    = await get(file);
+                          if(error){
+                            
+                                return;
+                          }
+                          zip.file(`${root}/${fn}`,blob);
+                          
+                    })
+              ).catch(err2=>err=err2);
+              
+              if(err){
+                    return;
+              }
+                
+              var blob      = await zip.generateAsync({type:'blob'});
+              var url       = window.URL.createObjectURL(blob);
+              var a         = document.createElement('a');
+              a.download    = `${root}.zip`;
+              a.href        = url;
+              a.click();              
+                
+                
+              async function get(path){
+                
+                    //var url       = `https://raw.githubusercontent.com/javascript-2020/${repo}/main/${path}`;
+                    var url   = path;
+                    
+                    var err;
+                    try{
+                      
+                          var res       = await fetch(url);
+                          
+                    }//try
+                    catch(err2){
+                      
+                          err   = err2;
+                          
+                    }//catcg
+                    if(err){
+                          var error   = err.toString();
+                          log.red(error);
+                          return {error};
+                    }
+                    if(!res.ok){
+                          var txt     = await res.text();
+                          var error   = res.status+' '+res.statusText;
+                          log.red(error);
+                          return {error};
+                    }
+                    
+                    var blob      = await res.blob();
+                    return {blob};
+                    
+              }//get
+              
+        }//download
 
 
 
