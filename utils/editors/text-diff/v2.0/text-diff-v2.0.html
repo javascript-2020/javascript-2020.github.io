@@ -198,10 +198,10 @@
     {display:flex;flex:1;margin:5px 0;gap:10px}
     
   #view1
-    {flex:1;display:flex;flex-direction:column;border:1px solid var(--green);padding:5px}
+    {flex:1;display:flex;flex-direction:column;border:1px solid var(--green);padding:5px;box-sizing:border-box}
     
   #view2
-    {flex:1;display:flex;flex-direction:column;border:1px solid var(--red);padding:5px}
+    {flex:1;display:flex;flex-direction:column;border:1px solid var(--red);padding:5px;box-sizing:border-box}
     
     
   #hdr
@@ -214,7 +214,7 @@
     {flex:1}
     
   #output
-    {border:1px solid lightgray;padding:5px}
+    {border:1px solid lightgray;padding:5px;box-sizing:border-box}
 
 /*    
   #output-hldr
@@ -254,7 +254,7 @@
                               <file-mod id=file1 component></file-mod>
                               <div id=label>primary</div>
                         </div>
-                        <web-editor id=editor1 component></web-editor>
+                        <web-editor id=editor1 component mode=text></web-editor>
                   </div>
                   
                   <div id=slider-1 style='width:10px;cursor:ew-resize'></div>
@@ -264,13 +264,14 @@
                               <file-mod id=file2 component></file-mod>
                               <div id=label>secondary</div>
                         </div>
-                        <web-editor id=editor2 component></web-editor>
+                        <web-editor id=editor2 component mode=text></web-editor>
                   </div>
             </div>
 
+            <div id=slider-2 style='height:10px;cursor:ns-resize'></div>
 
             
-            <web-editor id=output component></web-editor>
+            <web-editor id=output component mode=text></web-editor>
             <!--
             <div id=output-hldr>
                   <web-editor id=output component></web-editor>
@@ -294,6 +295,7 @@
 
 
         var slider1     = {mode:'vert'};
+        var slider2     = {mode:'horiz'};
         
         var ui          = {};
         ui.mode         = 'vert';
@@ -319,21 +321,30 @@
               $('#output-hdr [type=checkbox]').onclick        = btn['output-chk'];
               $('[value=check]').onclick                      = btn.check;
               
-        
               
               var view1                                       = $('#view1');
               primary.filemod.initdom(view1);
-              primary.editor.initdom(view1,{mode:'text'});
+              primary.editor.initdom();
               
               var view2                                       = $('#view2');
               secondary.filemod.initdom(view2);
-              secondary.editor.initdom(view2,{mode:'text'});
+              secondary.editor.initdom();
+              var w               = view2.offsetWidth;
+              view2.style.flex    = 'none';
+              view2.style.width   = w+'px';
+              
               
               var node                                        = $('#output');
-              await output.initdom(node,{mode:'text'});
+              output.initdom();
+              setTimeout(()=>{
+                    var w               = node.offsetHeight;console.log('w',w);
+                    node.style.flex     = 'none';
+                    node.style.height   = w+'px';
+              },500);
 
-              //slider1.root    = $('#main');
+
               slider1.node    = $.slider('#view1','#slider-1','#view2',null,slider1);
+              slider2.node    = $.slider('#main','#slider-2','#output',null,slider2);
   
   
   
