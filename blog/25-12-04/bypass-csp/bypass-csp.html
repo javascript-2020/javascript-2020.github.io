@@ -367,13 +367,19 @@ about:debugging#/runtime/this-firefox
                   </h3>
                   <p>
                         Well the test in question was on a webpage protected with a content-security-policy, create a websocket
-                        to a local server ( or other )<br>
+                        to a local server ( or other )
+                        <br>
                         <div class=br></div>
-                        So i thought this would make for some interesting code<br>
+                        So i thought this would make for some interesting code
+                        <br>
                         <div class=br></div>
                         Its worth noting here that when a server uses a certificate not in the trsuted root store, self-signed or otherwise,
                         it requires top-level navigation to get the browser to accept that certificate, any other form of navigation will
-                        fail silently<br>
+                        fail silently
+                        <br>
+                        Its also worth noting that often when extensions modify the headers, dev tools reports the original headers, if you 
+                        look at the test-server, it provides a simepl webpage that 1. allows top level navigation to accept the self-signed
+                        ( unrecognised ) certificate, 2. it also displays the page headers as received after the extension has modified them.
                         <div class=br></div>
                         Here is a minimal websocket server, supports text only, upto 125 bytes
                   </p>
@@ -500,6 +506,7 @@ chrome --proxy-server="http://127.0.0.1:8080"
               
               $('[value="download firefox extension"]').onclick     = btn.download['firefox-extension'];
               $('[value="download chrome extension"]').onclick      = btn.download['chrome-extension'];
+              $('[value="download websocket server"]').onclick      = btn.download['websocket-server'];
               $('[value="download mitm proxy"]').onclick            = btn.download['mitm-proxy'];
               $('[value="download test-server"]').onclick           = btn.download['test-server'];
               $('[value="download js extension"]').onclick          = btn.download['js-extension'];
@@ -525,6 +532,13 @@ chrome --proxy-server="http://127.0.0.1:8080"
               
         }//chrome-extension
 
+        
+        btn.download['websocket-server']    = function(){
+          
+            download.file('ws/websocket-server.js');
+            
+        }//websocket-server
+        
         
         btn.download['mitm-proxy']    = function(){
           
