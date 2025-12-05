@@ -58,7 +58,7 @@
                           'content-security-policy'         : csp,
                           'access-control-allow-origin'     : '*',
                           'access-control-expose-headers'   : 'content-length, content-encoding, content-disposition etag'
-                    }
+                    };
                     res.writeHead(200,headers);
                     res.end(html)
                     
