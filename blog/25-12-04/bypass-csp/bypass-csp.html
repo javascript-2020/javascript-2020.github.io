@@ -264,7 +264,8 @@
       
             <div class=description>
                   <p>
-                        I was in the process of answer this question<br>
+                        I was in the process of answering this question
+                        <br>
                         <div class=br></div>
                         <a href='https://stackoverflow.com/questions/79833235/is-it-possible-to-connect-to-a-local-python-server-using-secure-web-sockets-from'>
                               Is it possible to connect to a local Python server using secure web sockets from a browser console on an HTTPS webpage?
@@ -273,15 +274,8 @@
                               </span>
                         </a><br>
                         <div class=br></div>
-                        but i didnt qant to get -1'd for no reason ...
-                        <a href='https://stackoverflow.com/questions/28099493/running-ffmpeg-in-browser-options/79820132#79820132'>
-                              Running ffmpeg in browser - options?
-                              <span class=link-domain>
-                                    stackoverflow.com
-                              </span>
-                        </a><br>
-                        <div class=br></div>
-                        so i thought i'd write a blog post about it anyway<br>
+                        so i thought i'd write a blog post about it anyway
+                        <br>
                         <div class=br></div>
                         Discover how to overcome the content-security-policy for a website.
                   </p>
@@ -289,20 +283,25 @@
 
 
             <h3 class=blog-hdr style='margin-bottom:0'>
-                  Manifest v2
+                  Browser Extensions Manifest v2
             </h3>
             
             <section class=blog-text>
-                  so right off the bat, manifest v2 is capable of removing the contest-security-policy on a web request<br>
+                  so right off the bat, manifest v2 is capable of removing the contest-security-policy on a web request
+                  <br>
                   firefox still ( currently, at the time of writing ) supports manifest v2, it has the bindings for manifest v3 but
-                  they are just stubs that do nothing<br>                  
+                  they are just stubs that do nothing
+                  <br>
                   <div class=br></div>                  
                   chromium and hence google chrome, edge, brave, opera and any of the myriad of browsers that are based on chromium do
-                  not support manifest v2<br>
+                  not support manifest v2
+                  <br>
                   <div class=br></div>
-                  google's official stance on manifest v3 changes<br>
+                  google's official stance on manifest v3 changes
+                  <br>
                   <div class=br></div>
-                  To prevent extensions from weakening site security. Allowing CSP removal would undermine protections against XSS and remote code injection.<br>
+                  To prevent extensions from weakening site security. Allowing CSP removal would undermine protections against XSS and remote code injection.
+                  <br>
                   <div class=br></div>
                   <a href='https://developer.chrome.com/docs/extensions/migrating/improve-security/'>
                         Improve extension security
@@ -311,7 +310,8 @@
                         </span>
                   </a>
                   <div class=br></div>
-                  for those who wish to develop using the old manifest v2, previous versions of chromium can be downloaded from<br>
+                  for those who wish to develop using the old manifest v2, previous versions of chromium can be downloaded from
+                  <br>
                   <a href='https://www.chromium.org/getting-involved/download-chromium/#downloading-old-builds-of-chrome-chromium'>
                         Downloading old builds of Chrome / Chromium
                         <span class=link-domain>
@@ -319,13 +319,16 @@
                         </span>
                   </a>
                   <div class=br></div>
-                  manifest V3 is supported generally in Chrome 88 ( January 19th, 2021 ) or later.<br>
+                  manifest V3 is supported generally in Chrome 88 ( January 19th, 2021 ) or later.
+                  <br>
             </section>
             
             
             <section class=blog-text>
                   <h3 class=blog-hdr>
                         Firefox Manifest V2 Extension Remove CSP
+                        <div class=spc></div>
+                        <input value='download firefox extension' type=button>
                   </h3>
                   
                   <img src='ext/firefox/cubes.png'>
@@ -339,6 +342,8 @@
             <section class=blog-text>
                   <h3 class=bog-hdr>
                         Google Chrome Manifest V3 Extension Remove CSP ( doesn't work )
+                        <div class=spc></div>
+                        <input value='download chrome extension' type=button>
                   </h3>
                   
                   <img src='ext/chrome/cubes.png'>
@@ -352,6 +357,8 @@
             <section class=blog-text>
                   <h3>
                         How to Tell if it Worked?
+                        <div class=spc></div>
+                        <input value='download websocket server' type=button>
                   </h3>
                   <p>
                         Well the test in question was on a webpage protected with a content-security-policy, create a websocket
@@ -379,6 +386,8 @@
             <section class=blog-text>
                   <h3>
                         bypassing content-security policy with a mitm proxy
+                        <div class=spc></div>
+                        <input value='download mitm proxy' type=button>
                   </h3>
                   <p>
                         so, we can bypass the content-security-protocol header with a mitm proxy and remove the header before sending it to the
@@ -424,6 +433,8 @@ chrome --proxy-server="http://127.0.0.1:8080"
             <section class=blog-text>
                   <h3>
                         Running Code in the Webpage
+                        <div class=spc></div>
+                        <input value="download js extension" type=button>
                   </h3>
                   <p>
                         The original question identified that they opened dev tools and then pasted in the websocket client code, to be able to run the code<br>
@@ -453,6 +464,9 @@ chrome --proxy-server="http://127.0.0.1:8080"
       
       <script>
 
+
+        var jszip;
+
       
         var btn         = {};
         btn.download    = {};
@@ -478,8 +492,12 @@ chrome --proxy-server="http://127.0.0.1:8080"
               ex['ext-js-popup-html'].initdom();
               ex['ext-js-popup-js'].initdom();
 
-
+              
+              $('[value="download firefox extension"]').onclick     = btn.download['firefox-extension'];
+              $('[value="download chrome extension"]').onclick      = btn.download['chrome-extension'];
+              $('[value="download mitm proxy"]').onclick            = btn.download['mitm-proxy'];
               $('[value="download test-server"]').onclick           = btn.download['test-server'];
+              $('[value="download js extension"]').onclick          = btn.download['js-extension'];
               
               
               
@@ -489,17 +507,41 @@ chrome --proxy-server="http://127.0.0.1:8080"
   //:
   
   
+        btn.download['firefox-extension']   = function(){
+          
+              download.zip('firefox','ext/firefox/manifest.json','ext/firefox/extension.js','ext/firefox/cubes.png');
+              
+        }//firefox-extension
+        
+        
+        btn.download['chrome-extension']    = function(){
+          
+              download.zip('chrome','ext/chrome/manifest.json','ext/chrome/extension.js','ext/chrome/cubes.png');
+              
+        }//chrome-extension
+
+        
+        btn.download['mitm-proxy']    = function(){
+          
+            download.file('proxy/mitm-proxy.js');
+            
+        }//mitm-proxy
+        
+        
         btn.download['test-server']   = function(){
           
-              download('test-server','server/test-server.js');
+              download.file('server/test-server.js');
               
         }//test-server
         
-
+        
+        btn.download['js-extension']    = function(){
+          
+              download.zip('ext-js','ext-js/manifest.json','ext-js/extension.js','ext-js/content-script.js','ext-js/popup/popup.html','ext-js/popup/popup.js');
+              
+        }//js-extension
   //:
-  
-  
-        var jszip;
+    
         
         async function load_jszip(){
           
@@ -529,7 +571,29 @@ chrome --proxy-server="http://127.0.0.1:8080"
         }//load_jszip
         
         
-        async function download(root,...files){
+        function download(blob,name){
+          
+              name        ||= blob.name;
+              var url       = window.URL.createObjectURL(blob);
+              var a         = document.createElement('a');
+              a.download    = blob.name;
+              a.href        = url;
+              a.click();
+              
+        }//blob
+        
+        
+        download.file   = async function(path){
+          
+              var fn              = path.split('/').at(-1);
+              var {blob,error}    = await get(path);
+              if(error)return;
+              download(blob,fn);
+              
+        }//file
+
+        
+        download.zip    = async function(root,...files){
           
               if(!jszip){
                     var {error}   = await load_jszip();
@@ -559,48 +623,49 @@ chrome --proxy-server="http://127.0.0.1:8080"
               }
                 
               var blob      = await zip.generateAsync({type:'blob'});
-              var url       = window.URL.createObjectURL(blob);
-              var a         = document.createElement('a');
-              a.download    = `${root}.zip`;
-              a.href        = url;
-              a.click();              
+              download(blob,`${root}.zip`;);
                 
-                
-              async function get(path){
-                
-                    //var url       = `https://raw.githubusercontent.com/javascript-2020/${repo}/main/${path}`;
-                    var url   = path;
-                    
-                    var err;
-                    try{
-                      
-                          var res       = await fetch(url);
-                          
-                    }//try
-                    catch(err2){
-                      
-                          err   = err2;
-                          
-                    }//catcg
-                    if(err){
-                          var error   = err.toString();
-                          log.red(error);
-                          return {error};
-                    }
-                    if(!res.ok){
-                          var txt     = await res.text();
-                          var error   = res.status+' '+res.statusText;
-                          log.red(error);
-                          return {error};
-                    }
-                    
-                    var blob      = await res.blob();
-                    return {blob};
-                    
-              }//get
-              
         }//download
 
+
+        async function get(url){
+          
+              var err;
+              try{
+                
+                    var res       = await fetch(url);
+                    
+              }//try
+              catch(err2){
+                
+                    err   = err2;
+                    
+              }//catcg
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    return {error};
+              }
+              if(!res.ok){
+                    var txt     = await res.text();
+                    var error   = res.status+' '+res.statusText;
+                    log.red(error);
+                    return {error};
+              }
+              
+              var blob      = await res.blob();
+              return {blob};
+              
+        }//get
+
+        
+        get.raw   = function(repo,path){
+          
+              var url       = `https://raw.githubusercontent.com/javascript-2020/${repo}/main/${path}`;
+              var result    = get(url);
+              return result;
+              
+        }//raw
 
 
       </script>
