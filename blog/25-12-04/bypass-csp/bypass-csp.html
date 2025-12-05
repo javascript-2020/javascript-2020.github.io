@@ -330,7 +330,12 @@
                         <div class=spc></div>
                         <input value='download firefox extension' type=button>
                   </h3>
-                  
+                  <p>
+                        to load an unpacked extension goto
+                        <code>
+about:debugging#/runtime/this-firefox
+                        </code>
+                  </p>
                   <img src='ext/firefox/cubes.png'>
                   
                   <snippet-editor id=firefox-manifest src='ext/firefox/manifest.json' mode=json fullsize component></snippet-editor>
@@ -611,7 +616,7 @@ chrome --proxy-server="http://127.0.0.1:8080"
                           var {blob,error}    = await get(file);
                           if(error){
                             
-                                return;
+                                throw error;
                           }
                           zip.file(`${root}/${fn}`,blob);
                           
