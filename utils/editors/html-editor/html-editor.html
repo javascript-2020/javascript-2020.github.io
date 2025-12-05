@@ -96,6 +96,7 @@
 
         var menu;
         
+        var hdr;
         var mainmenu;
         var filemod;                                                                                
         var publish;
@@ -214,7 +215,7 @@
     {border:none}
   
   #view
-    {display:none;flex:1}
+    {display:flex;flex:1}
   
   publish-ui
     {z-index:1;position:relative}
@@ -355,7 +356,8 @@
               
               await editor.initdom(view,{mode:'html'});
               
-              slider.node                           = $.slider.glass('editor-root','#page-slider','output-root',slider,ui,output);
+              
+              slider.node                           = $.slider.glass('web-editor','#page-slider','output-html',slider,ui,output);
               
               output.initdom(root);
 
@@ -363,7 +365,7 @@
               log.initdom();
 
               
-              ui.setup(view);
+              //ui.setup(view);
 
 
               editor.focus();
@@ -528,6 +530,7 @@
 
         ui.setup    = function(view){
   
+  
               var o   = localStorage.getItem('orientation');
               if(o==='horiz'){
                     horiz();
@@ -542,7 +545,7 @@
 
         function horiz(){
   
-              localStorage.setItem('orientation','horiz');
+              //localStorage.setItem('orientation','horiz');
   
               ui.mode                     = 'horiz';
               slider.node.style.cursor    = 'ns-resize';
@@ -560,7 +563,7 @@
   
         function vert(){
   
-              localStorage.setItem('orientation','vert');
+              //localStorage.setItem('orientation','vert');
   
               ui.mode                     = 'vert';
               slider.node.style.cursor    = 'ew-resize';
