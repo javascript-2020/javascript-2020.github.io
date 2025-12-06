@@ -70,6 +70,7 @@
         var fwtldr;
         var ffprobe;
         var m4demo;
+        var webcodec;
         
         
         
@@ -78,17 +79,18 @@
   
         async function init(){
           
-              menu    = menumod();
+              menu            = menumod();
               
-              hdr     = mod['blog-hdr'];
-              log     = mod['log-mod'];
+              hdr             = mod['blog-hdr'];
+              log             = mod['log-mod'];
               
-              vcdemo    = mod['videoconverter-demo'];
-              vctldr    = mod['videoconverter-tldr'];
-              fwdemo    = mod['ffmpeg-wasm-demo'];
-              fwtldr    = mod['ffmpeg-wasm-tldr'];
-              ffprobe   = mod.ffprobe;
-              m4demo    = mod['mp4box-demo'];
+              vcdemo          = mod['videoconverter-demo'];
+              vctldr          = mod['videoconverter-tldr'];
+              fwdemo          = mod['ffmpeg-wasm-demo'];
+              fwtldr          = mod['ffmpeg-wasm-tldr'];
+              ffprobe         = mod.ffprobe;
+              m4demo          = mod['mp4box-demo'];
+              webcodec        = mod['webcodec'];
               
               hdr.initmod({ext,$});
               log.initmod({ext,$});
@@ -98,6 +100,7 @@
               fwtldr.initmod({ext,$,menu,ace});
               ffprobe.initmod({ext,$,menu,ace});
               m4demo.initmod({ext,$,menu,ace});
+              webcodec.initmod({ext,$,menumod,menu,ace});
 
               
               await Promise.all([
@@ -109,6 +112,7 @@
                     fwtldr.init(),
                     ffprobe.init(),
                     m4demo.init(),
+                    webcodec.init(),
               ]);
               
               
@@ -214,7 +218,9 @@
     {margin:30px 0;display:block}
 
 
-            
+  .br
+    {margin-top:0.8em}            
+    
             </style>
             
       </head>
@@ -439,6 +445,27 @@
                         Further Reading : Minimal h.264-in-javascript overview
                   </h3>
                   <p>
+                        <a href='https://developer.mozilla.org/en-US/docs/Web/API/WebCodecs_API'>
+                              WebCodecs API
+                              <span class=link-domain>
+                                    developer.mozilla.org
+                              </span>
+                        </a>
+                        <div class=br></div>
+                        <a href='https://developer.mozilla.org/en-US/docs/Web/API/VideoDecoder'>
+                              VideoDecoder
+                              <span class=link-domain>
+                                    developer.mozilla.org
+                              </span>
+                        </a>
+                        <div class=br></div>
+                        <a href='https://developer.mozilla.org/en-US/docs/Web/API/VideoEncoder'>
+                              VideoEncoder
+                              <span class=link-domain>
+                                    developer.mozilla.org
+                              </span>
+                        </a>
+                        <div class=br></div>
                         If you only need to take an H.264 keyframe (IDR) and the next frames and turn a single decoded frame into a JPEG,
                         the most “minimal” modern approach in the browser is WebCodecs. It lets you feed compressed H.264 bytes,
                         get decoded VideoFrames, draw them to a canvas, and export as JPEG—no heavy libraries required. Key detail:
@@ -464,7 +491,7 @@
                         Minimal webcodecs example: decode one frame and export jpeg
                   </h3>
                   
-                  <snippet-editor component src='ex/webcodec-api.js'></snippet-editor>
+                  <snippet-editor id=webcodec component fullsize src='ex/webcodec-api.js'></snippet-editor>
 
                   <h4>
                         Tips:
@@ -573,6 +600,8 @@
               ffprobe.initdom();
               
               m4demo.initdom();
+              
+              webcodec.initdom();
               
               
               
