@@ -486,11 +486,17 @@
                   </h4>
                   <ul>
                         <li>
-                              <b>WebCodecs (recommended):</b> Native browser API. Minimal code, no external library downloads, good performance.
+                              <b>
+                                    WebCodecs (recommended):
+                              </b>
+                              Native browser API. Minimal code, no external library downloads, good performance.
                               Requires you to parse or otherwise obtain SPS/PPS for the decoder config.
                         </li>
                         <li>
-                              <b>Broadway (JS/asm.js/WASM):</b> A historical JavaScript H.264 decoder compiled from Android’s C decoder via Emscripten.
+                              <b>
+                                    Broadway (JS/asm.js/WASM):
+                              </b>
+                              A historical JavaScript H.264 decoder compiled from Android’s C decoder via Emscripten.
                               Runs fully in JS without browser codecs, but is heavier and slower compared to hardware/native paths.
                               Useful if WebCodecs isn’t available or you need a pure-JS path.                  
                         </li>
@@ -519,14 +525,23 @@
                   </h4>
                   <ul>
                         <li>
-                              <b>From container:</b> If your H.264 comes from MP4, read the avcC box (AVCDecoderConfigurationRecord). It contains SPS/PPS you can pass as description.
+                              <b>
+                                    From container:
+                              </b>
+                              If your H.264 comes from MP4, read the avcC box (AVCDecoderConfigurationRecord). It contains SPS/PPS you can pass as description.
                         </li>
                         <li>
-                              <b>From Annex B elementary stream:</b> Extract NAL units with start codes 00 00 00 01 (or 00 00 01). Find NAL types: 7 = SPS, 8 = PPS; 5 = IDR.
+                              <b>
+                                    From Annex B elementary stream:
+                              </b>
+                              Extract NAL units with start codes 00 00 00 01 (or 00 00 01). Find NAL types: 7 = SPS, 8 = PPS; 5 = IDR.
                               Collect SPS/PPS bytes and build a description buffer compatible with your browser’s AVCC expectations.
                         </li>
                         <li>
-                              <b>Why this matters:</b> The decoder uses SPS/PPS to understand frame dimensions, profiles, and other parameters;
+                              <b>
+                                    Why this matters:
+                              </b>
+                              The decoder uses SPS/PPS to understand frame dimensions, profiles, and other parameters;
                               skipping them is the most common reason minimal examples fail.
                               <br>
                               <a href='https://stackoverflow.com/questions/79264506/error-using-webcodecs-to-decode-h264-data-and-display-on-browser-from-http-fetch'>
@@ -547,7 +562,10 @@
                               This is the simplest pipeline for a single snapshot.
                         </li>
                         <li>
-                              <b>Alternatives:</b> Use VideoFrame directly with HTMLVideoElement/WebGL for preview and only snapshot when needed;
+                              <b>
+                                    Alternatives:
+                              </b>
+                              Use VideoFrame directly with HTMLVideoElement/WebGL for preview and only snapshot when needed;
                               then export via canvas as above. Guides and examples show decode pipelines using WebCodecs for both playback and encoding.                        
                               <br>
                               <a href='https://www.slingacademy.com/article/decode-and-encode-video-with-the-webcodecs-api-in-javascript/'>
