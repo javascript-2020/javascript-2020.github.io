@@ -434,7 +434,113 @@
 
 
 
+            <section class=blog-text>
+                  <h3>
+                        Further Reading : Minimal h.264-in-javascript overview
+                  </h3>
+                  <p>
+                        If you only need to take an H.264 keyframe (IDR) and the next frames and turn a single decoded frame into a JPEG,
+                        the most “minimal” modern approach in the browser is WebCodecs. It lets you feed compressed H.264 bytes,
+                        get decoded VideoFrames, draw them to a canvas, and export as JPEG—no heavy libraries required. Key detail:
+                        you must provide the AVCDecoderConfigRecord (SPS/PPS) in the decoder config or immediately after configure,
+                        otherwise decoding will fail.
+                  </p>
+                  
+                  <h4>
+                        Practical options
+                  </h4>
+                  <ul>
+                        <li>
+                              WebCodecs (recommended): Native browser API. Minimal code, no external library downloads, good performance.
+                              Requires you to parse or otherwise obtain SPS/PPS for the decoder config.
+                        </li>
+                        <li>
+                              Broadway (JS/asm.js/WASM): A historical JavaScript H.264 decoder compiled from Android’s C decoder via Emscripten.
+                              Runs fully in JS without browser codecs, but is heavier and slower compared to hardware/native paths.
+                              Useful if WebCodecs isn’t available or you need a pure-JS path.                  
+                        </li>
+                  </ul>
+                  <h3>
+                        Minimal webcodecs example: decode one frame and export jpeg
+                  </h3>
+                  
+                  <snippet-editor component src='ex/webcodec-api.js'></snippet-editor>
 
+                  <h4>
+                        Tips:
+                  </h4>
+                  <ul>
+                        <li>
+                              You must provide a keyframe right after configure or flush. For AVC/H.264, the SPS/PPS must be supplied in the description field for VideoDecoderConfig.
+                              If not, you’ll get a “key frame is required” style error.
+                        </li>
+                        <li>
+                              WebCodecs exposes raw decoded frames efficiently, avoiding the need for shipping external codec libraries.
+                        </li>
+                  </ul>
+                  
+                  <h4>
+                        Getting the sps/pps (avc decoder config)
+                  </h4>
+                  <ul>
+                        <li>
+                              <b>From container:</b> If your H.264 comes from MP4, read the avcC box (AVCDecoderConfigurationRecord). It contains SPS/PPS you can pass as description.
+                        </li>
+                        <li>
+                              <b>From Annex B elementary stream:</b> Extract NAL units with start codes 00 00 00 01 (or 00 00 01). Find NAL types: 7 = SPS, 8 = PPS; 5 = IDR.
+                              Collect SPS/PPS bytes and build a description buffer compatible with your browser’s AVCC expectations.
+                        </li>
+                        <li>
+                              <b>Why this matters:</b> The decoder uses SPS/PPS to understand frame dimensions, profiles, and other parameters;
+                              skipping them is the most common reason minimal examples fail.
+                              <br>
+                              <a href='https://stackoverflow.com/questions/79264506/error-using-webcodecs-to-decode-h264-data-and-display-on-browser-from-http-fetch'>
+                                    Error using webcodecs to decode h264 data and display on browser from http fetch
+                                    <span class=link-domain>
+                                          stackoverflow.com
+                                    </span>
+                              </a>
+                        </li>
+                  </ul>
+                  
+                  <h4>
+                        Converting the decoded frame to jpeg
+                  </h4>
+                  <ul>
+                        <li>
+                              <b>Canvas route:</b> Convert the VideoFrame to an ImageBitmap, draw to a canvas, then canvas.toBlob('image/jpeg').
+                              This is the simplest pipeline for a single snapshot.
+                        </li>
+                        <li>
+                              <b>Alternatives:</b> Use VideoFrame directly with HTMLVideoElement/WebGL for preview and only snapshot when needed;
+                              then export via canvas as above. Guides and examples show decode pipelines using WebCodecs for both playback and encoding.                        
+                              <br>
+                              <a href='https://www.slingacademy.com/article/decode-and-encode-video-with-the-webcodecs-api-in-javascript/'>
+                                    Decode and Encode Video with the WebCodecs API in JavaScript
+                                    <span class=link-domain>
+                                          slingacademy.com
+                                    </span>
+                              </a>
+                        </li>
+                  </ul>
+
+                  <h4>                  
+                        Pure-js fallback: broadway
+                  </h4>
+                  <p>
+                        If you truly need a codec that runs without relying on the browser’s built-in decoders, Broadway is a project that compiled Android’s
+                        H.264 decoder to JavaScript via Emscripten. It can decode frames directly in JS, but expect significantly lower performance and more
+                        complex integration compared to WebCodecs. It’s mainly of historical/educational interest today.
+                        <br>
+                        <a href='https://github.com/LongJohnCoder/Broadway264'>
+                              LongJohnCoder / Broadway264
+                              <span class=link-domain>
+                                    github.com
+                              </span>
+                        </a>
+                  </p>
+                  
+            </section>
 
 
 
