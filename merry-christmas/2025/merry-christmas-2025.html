@@ -24,10 +24,10 @@
             <style>
       
   html
-    {font-family:allura;color:#c5a880}
+    {font-family:allura;color:#c5a880;background:#00101a}
     
   body
-    {overflow:hidden;background:#00101a}
+    {overflow:hidden;background:#00101a;opacity:0;transition:all 1s}
       
   canvas 
     {position:fixed;width:100vw;height:100vh}
@@ -46,10 +46,10 @@
     {position:absolute;bottom:0;left:0;right:0;margin:auto;text-align:center}
     
   h3
-    {font-size:50px}
+    {position:absolute;bottom:100px;left:0;right:0;margin:auto;text-align:center;font-size:50px}
     
   #loading
-    {font-size:50px}
+    {position:absolute;bottom:20px;left:0;right:0;margin:auto;text-align:center;font-size:50px}
     
   
 
@@ -79,17 +79,18 @@
             </h2>
             
        
-            <div id=info>     
-                  <h3>
-                        click - 
-                        <span id=play>
-                              play
-                        </span>
-                  </h3>
-                  <div id=loading>
-                        loading ...
-                  </div>
+            <h3>
+                  click - 
+                  <span id=play>
+                        play
+                  </span>
+            </h3>
+            
+
+            <div id=loading>
+                  loading ...
             </div>
+            
 
 
       </body>
@@ -194,10 +195,11 @@
 
   //:
   
+        window.onload             = e=>document.body.style.opacity=1;
         
-        window.addEventListener('resize',resize);
+        window.onresize           = resize;
         
-        document.body.onclick    = e=>{console.log('click');
+        document.body.onclick     = e=>{console.log('click');
         
                                       if(!analyser){
                                             console.log(analyser);
