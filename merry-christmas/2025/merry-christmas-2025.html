@@ -566,9 +566,9 @@ function postProcessing() {
               
               spiral   = new THREE.Mesh(instancedGeometry,spiralMaterial);
 
-spiral.position.set(0,-1,0);
-//spiral.rotation.y = Math.PI/4;
-spiral.scale.set(1,1,1);
+              spiral.position.set(0,-1,0);
+              //spiral.rotation.y = Math.PI/4;
+              spiral.scale.set(1,1,1);
 
               scene.add(spiral);
               
@@ -916,22 +916,28 @@ var starMesh2;
               
               var value               = new THREE.TextureLoader().load(spark);
               var pointTexture        = {value};
-              const shaderMaterial    = new THREE.ShaderMaterial({
-                    vertexShader,
-                    fragmentShader,
-                    uniforms        : {...uniforms,pointTexture},
-                    blending        : THREE.AdditiveBlending,
-                    depthTest       : false,
-                    transparent     : true,
-                    vertexColors    : true,
-              });
-              
+              var shaderMaterial      = new THREE.ShaderMaterial({
+                                              vertexShader,
+                                              fragmentShader,
+                                              uniforms        : {...uniforms,pointTexture},
+                                              blending        : THREE.AdditiveBlending,
+                                              depthTest       : false,
+                                              transparent     : true,
+                                              vertexColors    : true,
+                                        });
               
               var totalPoints   = 10000;
-              const positions   = [];
-              const colors      = [];
-              const sizes       = [];
-              const color       = new THREE.Color();
+              var positions     = [];
+              var colors        = [];
+              var sizes         = [];
+              var color         = new THREE.Color();
+              
+              if(height<1200){
+                    totalPoints=5000;
+              }
+              if(width<800){
+              }
+              
               
               for(let i=0;i<totalPoints;i++){
               
