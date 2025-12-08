@@ -46,7 +46,6 @@
 
 
 
-
             <script>
 /*            
         navigator.serviceWorker.register('/service-worker.js')
@@ -462,9 +461,11 @@
 
         on.change   = function(){
                                                                                 //console.log('on.change');
-              if(!document.title.startsWith('💾')){
-                    document.title    = '💾 '+document.title;
+              const SAVE_RE = /^\u{1F4BE}\uFE0F?/u;
+              if (!SAVE_RE.test(document.title)) {
+                document.title = "💾 " + document.title;
               }
+
               
         }//change
         
