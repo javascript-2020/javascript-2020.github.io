@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang=en>
 
       <head>
             <meta charset=utf-8>
@@ -77,8 +77,6 @@
   //:
 
 
-        mod.stack.add   = init;
-  
         async function init(){
                                                                                 debug('init',version);
               //keydown                   = keydown();
@@ -99,7 +97,7 @@
               mainmenu.initmod({ext,$,menu,editor,filemod});
               filemod.initmod({ext,$,menu,menumod,complete,source,focus,log});
               publish.initmod({ext,$,ui,menu,source,complete,log});
-              editor.initmod({ext,$,menu,ace});
+              editor.initmod({ext,$,menu,ace,on});
               output.initmod({ext,$});
               log.initmod({ext,$});
               
@@ -116,6 +114,7 @@
   
   //:
 
+              icon.def    = $('[rel*=icon]').href;
           
               window.onfocus              = ()=>editor && editor.focus();
               keydown.add(kd);
@@ -247,10 +246,10 @@
 
                   <div id=save-root>
                         <button id=save>save</button>
+                        <checkbox-one id=autosave></checkbox-one>
                         <div id=save-menu-root class=menu-root>
                               <img id=save-menu-icon class=menu-icon>
                               <div id=save-menu class=menu style='display:none'>
-                                    <checkbox-one id=autosave></checkbox-one>
                               </div>
                         </div>
                   </div>
@@ -325,9 +324,12 @@
         var ui          = {};
         ui.mode         = 'vert';
 
+        var icon        = {};
         
         var btn         = {};
-        var mode    = {};
+        var mode        = {};
+        var on          = {};
+        var set         = {};
       
         
 
@@ -576,6 +578,22 @@
               
         }//obfuscator
 
+
+  //:
+  
+  
+        on.change   = function(){
+          
+              set.favicon(icon.save);
+              
+        }//change
+        
+        
+        set.title   = function(title){
+          
+              document.title    = title;
+              
+        }//title
         
   //:
 
@@ -595,7 +613,9 @@
                     editor.filename(file);
                     editor.filename.save.hide();
                     filemod.cur   = file;
-                    document.title    = file.name||file.filename;
+                    var title     = file.name||file.filename;
+                    set.title(title);
+                    set.favicon(icon.def);
               }
               menu.close();
               editor.focus();
@@ -730,6 +750,12 @@
   
         function run(){
   
+              if(autosave.checked){
+                                                                                console.log('save');
+                    filemod.save();
+              }
+              
+              
               var js    = editor.getValue();
               if(mode.iframe.checked){
                     output.run.iframe(js,{async:mode.async.checked});
@@ -737,10 +763,6 @@
                     output.run(js,{async:mode.async.checked});
               }
               
-              if(autosave.checked){
-                                                                                console.log('save');
-                    filemod.save();
-              }
   
         }//run
 
@@ -795,9 +817,29 @@
 
         }//syntax
         
-        
+
+  //:
+
+  
+        icon.save   = 'data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAKlBMVEX/pQD/////qhH/pAD/rhr/zHH/yGT/wlP//vz/8dn/tjD/+u//6MD/2ZUL9bZAAAAA30lEQVQoz2OQvuWihARUMgUFBRlamRkYlqXBQLoy10Sg4CUGBisgDQLSu3dLXGBeAxRczMBg3ggR3LZqaeMhBquDggzOCMFdxuZAQWYfQQYHuKDELgOQINA0JEFBqCDzSiwqGdiwqGRgYlDAVIksSIpKYyyC28E+ggoi/L5D8AJMkGFZKAyEKcAFjRGAAS6IBsCCzMbGKGpBgkwqLshAASzoOxMFHDEACjJXCKKANmyCYkNI0IEGgs7YBBdjCpowXGBejSq43YCVYSszV1ooEkgrMMhmkL6lhAIUlJZuBAAfSYTf2T2EkwAAAABJRU5ErkJggg==';
+
+  
+        set.favicon   = function(dataUrl){
+          
+              $.all('link[rel*="icon"]').forEach(node=>node.remove());
+              var link    = document.createElement('link');
+              link.rel    = 'icon';
+              link.href   = dataUrl;
+              document.head.appendChild(link);
+              
+        }//favicon
+
+
+
 
       </script>
 
 </html>
+
+
 
