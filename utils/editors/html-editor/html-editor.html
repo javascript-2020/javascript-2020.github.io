@@ -104,7 +104,7 @@
         var log;
 
         
-
+        var icon    = {};
         
         
   //:
@@ -150,6 +150,10 @@
               keydown.add(kd);
               menu.on.close             = focus;
 
+              
+              icon.def    = $('link[rel~=icon]').href;
+              console.log(icon.def);
+              
               
               initdom(document.body);
 
@@ -257,10 +261,10 @@
 
                   <div id=save-root>
                         <button id=save>save</button>
+                        <checkbox-one id=autosave></checkbox-one>
                         <div id=save-menu-root class=menu-root>
                               <img id=save-menu-icon class=menu-icon>
                               <div id=save-menu class=menu style='display:none'>
-                                    <checkbox-one id=autosave></checkbox-one>
                               </div>
                         </div>
                   </div>
@@ -464,10 +468,13 @@
 
         on.change   = function(){
                                                                                 //console.log('on.change');
+              set.favicon(icon.save);
+              /*
               const SAVE_RE = /^\u{1F4BE}\uFE0F?/u;
               if (!SAVE_RE.test(document.title)) {
                 document.title = "💾 " + document.title;
               }
+              */
 
               
         }//change
@@ -476,6 +483,7 @@
         set.title   = function(title){
           
               document.title    = title;
+              set.favicon(icon.def);
           
         }//title
         
@@ -620,8 +628,26 @@
               }
   
         }//run
+
+  
+        set.favicon   = function(dataUrl){
+          
+              $.all('link[rel*="icon"]').forEach(node=>node.remove());
+              var link    = document.createElement('link');
+              link.rel    = 'icon';
+              link.href   = dataUrl;
+              document.head.appendChild(link);
+              
+        }//favicon
+
+  
+  //:
   
   
+        icon.save   = 'data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAKlBMVEX/pQD/////qhH/pAD/rhr/zHH/yGT/wlP//vz/8dn/tjD/+u//6MD/2ZUL9bZAAAAA30lEQVQoz2OQvuWihARUMgUFBRlamRkYlqXBQLoy10Sg4CUGBisgDQLSu3dLXGBeAxRczMBg3ggR3LZqaeMhBquDggzOCMFdxuZAQWYfQQYHuKDELgOQINA0JEFBqCDzSiwqGdiwqGRgYlDAVIksSIpKYyyC28E+ggoi/L5D8AJMkGFZKAyEKcAFjRGAAS6IBsCCzMbGKGpBgkwqLshAASzoOxMFHDEACjJXCKKANmyCYkNI0IEGgs7YBBdjCpowXGBejSq43YCVYSszV1ooEkgrMMhmkL6lhAIUlJZuBAAfSYTf2T2EkwAAAABJRU5ErkJggg==';
+        
+
+        
   //:
   
   
