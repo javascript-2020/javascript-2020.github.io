@@ -128,7 +128,7 @@
               hdr.initmod({ext,$,menu});
               filemod.initmod({ext,$,menumod,menu,complete,source,focus,log});
               publish.initmod({ext,$,menu,run,source,complete,log});
-              editor.initmod({ext,$,menu});
+              editor.initmod({ext,$,menu,on});
               output.initmod({ext,$});
               log.initmod({ext,$});
               
@@ -312,6 +312,7 @@
         
         
         var btn           = {};
+        var on            = {};
 
 
   //:
@@ -456,6 +457,23 @@
         
   //:
 
+
+        on.change   = function(){
+          
+              console.log('on.change');
+                
+        }//change
+        
+     
+        set.title   = function(){
+          
+              document.title    = file.name||file.filename;
+          
+        }//title
+        
+        
+  //:
+  
         
         function source(file){
           
@@ -472,7 +490,7 @@
                     editor.filename(file);
                     editor.filename.save.hide();                    
                     filemod.cur   = file;
-                    document.title    = file.name||file.filename;
+                    set.title();
               }
               
               menu.close();
