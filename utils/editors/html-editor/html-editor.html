@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang=en>
 
       <head>
             <meta charset=utf-8>
@@ -128,7 +128,7 @@
               hdr.initmod({ext,$,menu});
               filemod.initmod({ext,$,menumod,menu,complete,source,focus,log});
               publish.initmod({ext,$,menu,run,source,complete,log});
-              editor.initmod({ext,$,menu});
+              editor.initmod({ext,$,menu,on});
               output.initmod({ext,$});
               log.initmod({ext,$});
               
@@ -277,7 +277,7 @@
             
             <div id=view>
             
-                  <web-editor component></web-editor>
+                  <web-editor v2.0 component></web-editor>
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
@@ -312,6 +312,8 @@
         
         
         var btn           = {};
+        var on            = {};
+        var set           = {};
 
 
   //:
@@ -456,6 +458,23 @@
         
   //:
 
+
+        on.change   = function(){
+                                                                                //console.log('on.change');
+              document.title    = '💾 '+document.title;
+              
+        }//change
+        
+     
+        set.title   = function(title){
+          
+              document.title    = title;
+          
+        }//title
+        
+        
+  //:
+  
         
         function source(file){
           
@@ -472,7 +491,8 @@
                     editor.filename(file);
                     editor.filename.save.hide();                    
                     filemod.cur   = file;
-                    document.title    = file.name||file.filename;
+                    var title   = file.name||file.filename;
+                    set.title(title);
               }
               
               menu.close();
