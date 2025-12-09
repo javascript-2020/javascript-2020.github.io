@@ -42,6 +42,9 @@
 
         var menu;
         
+        var hdr;
+        var log;
+        
         var ex1;
         var ex2;
         var ex3;
@@ -50,16 +53,24 @@
         
               menu    = menumod();
               
+              hdr   = mod['html-components-hdr'];
+              log   = mod['log-mod'];
+              
               ex1   = mod.ex1;
               ex2   = mod.ex2;
               ex3   = mod.ex3;
               
+
+              hdr.initmod({ext,$,menu,log});
+              log.initmod({ext,$});
               
               ex1.initmod({ext,$,menu,ace});
               ex2.initmod({ext,$,menu,ace});
               ex3.initmod({ext,$,menu,ace});
               
               await Promise.all([
+                    hdr.init(),
+                    log.init(),
                     ex1.init(),
                     ex2.init(),
                     ex3.init(),
@@ -153,7 +164,7 @@
 
 
 
-            <html-components-hdr component=page>
+            <html-components-hdr v2.0 component=page>
                   <img class=title src='images/html-components.png' style='top:-5px;height:80px' alt='deploy cloud run service'>
                   <time slot=date datetime=2025-11-08>08 Nov 2025</time>
             </html-components-hdr>
@@ -216,7 +227,8 @@
                                 init runs to be delayed until the loading stack is complete
                           </p>
                     </div>
-        
+                    <br>
+                    <br>
                     <div>
                           <p>
                                 i demonstrate here a simple setup that loads a log-mod element whos function is to log toaster style messages
@@ -320,7 +332,8 @@
             </div>
 
 
-        
+            <log-mod component></log-mod>
+            
       </body>
     
       <script>
@@ -328,7 +341,9 @@
       
         function initdom(){
 
-          
+              hdr.initdom();
+              log.initdom();
+              
               ex1.initdom();
               ex2.initdom();
               ex3.initdom();
