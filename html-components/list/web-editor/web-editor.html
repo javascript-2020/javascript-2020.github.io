@@ -20,7 +20,9 @@
             
             <meta>
             <link rel=icon href=''>
+
             
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
             
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
             
@@ -34,6 +36,8 @@
         var df=true,did='html'
         ;
         
+        var ace;
+        
         var ext,$,datatype,keydown,menumod
         ;
         
@@ -42,9 +46,34 @@
         var hdr;
         var log;
         
+        var latest;
         
         
         async function init(){
+          
+              var menu    = menumod();
+              
+              hdr         = mod['html-component-hdr'];
+              log         = mod['log-mod'];
+              
+              latest      = mod['latest'];
+              
+              
+              hdr.initmod({ext,$,menu});
+              log.initmod({ext,$});
+              
+              latest.initmod({ext,$,menu,ace});
+              
+              
+              await Promise.all([
+                    hdr.init(),
+                    log.init(),
+                    latest.init(),
+              ]);
+              
+              
+              initdom();
+              
         }//init
         
         
@@ -74,6 +103,13 @@
       
       <body>
       
+            <html-components-hdr v2.0 component=grp2>
+                  <img class=title src='images/html-components.png' style='top:-5px;height:80px' alt='deploy cloud run service'>
+                  <time slot=date datetime=2025-11-08>08 Nov 2025</time>
+            </html-components-hdr>
+    
+      
+      
             <div class=description>
             
                   The web-editor component produces an editor in the webpage
@@ -84,7 +120,7 @@
             
             </code>
             
-            <web-editor component id=mod src=''></web-editor>
+            <web-editor component id=latest src='https://libs.ext-code.com/html/web-editor/web-editor.html'></web-editor>
             
             
       </body>
@@ -94,6 +130,12 @@
       
       
         function initdom(){
+          
+              hdr.initdom();
+              log.initdom();
+              
+              latest.initdom();
+              
         }//initdom
         
   //:
