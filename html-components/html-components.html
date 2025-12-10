@@ -45,20 +45,23 @@
         var hdr;
         var log;
         
+        var ex    = {};
         var ex1;
         var ex2;
         var ex3;
         
+        
         async function init(){
         
-              menu    = menumod();
+              menu                    = menumod();
               
-              hdr   = mod['html-components-hdr'];
-              log   = mod['log-mod'];
+              hdr                     = mod['html-components-hdr'];
+              log                     = mod['log-mod'];
               
-              ex1   = mod.ex1;
-              ex2   = mod.ex2;
-              ex3   = mod.ex3;
+              ex1                     = mod.ex1;
+              ex2                     = mod.ex2;
+              ex3                     = mod.ex3;
+              ex['web-editor-demo']   = mod['web-editor-demo'];
               
 
               hdr.initmod({ext,$,menu,log});
@@ -67,6 +70,7 @@
               ex1.initmod({ext,$,menu,ace});
               ex2.initmod({ext,$,menu,ace});
               ex3.initmod({ext,$,menu,ace});
+              ex['web-editor-demo'].initmod({ext,$,menu,ace});
               
               await Promise.all([
                     hdr.init(),
@@ -74,6 +78,7 @@
                     ex1.init(),
                     ex2.init(),
                     ex3.init(),
+                    ex['web-editor-demo'].init(),
               ]);
               
               initdom();
@@ -154,7 +159,7 @@
 
 
   code, code-src
-    {display:block;white-space:pre;background:whitesmoke;padding:10px}
+    {display:block;white-space:pre;background:whitesmoke;padding:10px;font-family:monospace;font-size:16px}
 
     
             </style>
@@ -181,11 +186,58 @@
             
                   <div id=center>
 
-                    
-                    <code-src src='ex/component-include.js'></code-src>
-
-
                     <div>
+                          <h3>
+                                Getting Started
+                          </h3>
+                          <p>
+                                to get web components working include the component library
+                          </p>
+                          
+                          <code-src src='ex/component-include.js'></code-src>
+                          
+                          <p>
+                                after that any elements with a 
+                                <b>
+                                      [component]
+                                </b>
+                                attribute will be treated as a web component module
+                          </p>
+                          
+                          <code>
+                                <script type=text/html>
+                                
+                                      <web-editor component></web-editor>
+                                      
+                                      <web-editor component id=test></web-editor>
+                                      
+                                </script>
+                          </code>
+                          
+                          <p>
+                                the component.js library exposes a 
+                                <b>
+                                      mod
+                                </b>
+                                object, which holds as its keys the component modules, the key is either the element nodename,
+                                or its id, the id can be used when the page contains multiple of the same component
+                          </P>
+                                
+                          <code>
+                          
+                                var editor    = mod['web-editor'];
+                                
+                                var editor2   = mod.test;
+                                
+                          </code>
+                                
+                          <snippet-html id=web-editor-demo component src='ex/web-editor-demo.html'></snippet-html>
+                                
+                          
+                    </div>
+
+
+                    <div style='margin-top:100px'>
                     
                           <p>
                                 view the full list of component
@@ -344,7 +396,40 @@
     
       <script>
 
-        document.querySelectorAll('code script').forEach(node=>node.parentNode.textContent=node.textContent);
+        var trim    = txt=>{
+              var indent    = '       ';
+              txt   =  ('\n'+txt.trim()+'\n').split('\n').map(line=>indent+line.trimStart()).join('\n');
+              return txt;
+        };
+        
+        document.querySelectorAll('code script').forEach(node=>{
+              var indent    = '       ';
+              //var txt       = ('\n'+node.textContent.trim()+'\n').split('\n').map(line=>indent+line.trimStart()).join('\n');
+              node.parentNode.textContent   = trim(node.textContent);
+        });
+        
+        document.querySelectorAll('code:not(:has(script))').forEach(node=>node.textContent=trim(node.textContent));
+        
+        
+        
+
+/*              
+              var txt       = 
+              txt           = txt.trim();
+              txt           = '\n'+txt+'\n';
+              var lines     = txt.split('\n');
+              var indent    = '       ';
+              lines         = lines.map(line=>{
+                
+                    line    = indent+line.trimStart();
+                    return line;
+                    
+              });
+              txt   = lines.join('\n');
+              node.parentNode.textContent=txt;
+          
+        });
+*/        
 
 
   //:
@@ -358,6 +443,8 @@
               ex1.initdom();
               ex2.initdom();
               ex3.initdom();
+              ex['web-editor-demo'].initdom();
+              ex['web-editor-demo'].run();
               
               
               
