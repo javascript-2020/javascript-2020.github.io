@@ -46,7 +46,7 @@
         var hdr;
         var log;
         
-        var latest;
+        var editor;
         
         
         async function init(){
@@ -56,19 +56,19 @@
               hdr         = mod['html-components-hdr'];
               log         = mod['log-mod'];
               
-              latest      = mod['latest'];
+              editor      = mod['editor'];
               
               
               hdr.initmod({ext,$,menu});
               log.initmod({ext,$});
               
-              latest.initmod({ext,$,menu,ace});
+              editor.initmod({ext,$,menu,ace});
               
               
               await Promise.all([
                     hdr.init(),
                     log.init(),
-                    latest.init(),
+                    editor.init(),
               ]);
               
               
@@ -107,7 +107,9 @@
   #latest
     {display:block;margin-top:50px;border:1px solid blue;border-radius:10px;padding:10px}
     
-  
+  h3
+    {color:blue}
+    
   code
     {display:block;white-space:pre;background:whitesmoke}
 
@@ -306,17 +308,55 @@ td, th {
             </div>
             
             
-            <h3>
-                  Files
-            </h3>
-            
-            <div>
-                  latest
-                  <br>
-                  v2.0
-            </div>
-            
-            <web-editor component id=latest fullsize src='https://libs.ext-code.com/html/web-editor/web-editor.html'></web-editor>
+            <section files>
+                  <h3>
+                        Files
+                  </h3>
+                  
+                  <div list>
+                        <div>
+                              latest
+                        </div>
+                        <div>
+                              v2.0
+                        </div>
+                  </div>
+                  
+                  <script>
+                  
+        mod.stack.push(()=>{
+          
+              var base    = 'https://libs.ext-code.com/html/web-editor/';
+              var get     = url=>fetch(url).then(res=>res.text());
+              
+              $.all('[files] [list] div').forEach(div=>{
+                    
+                    div.onclick   = async e=>{
+                      
+                          var txt     = div.textContent;
+                          var src;
+                          switch(txt){
+                            
+                            case 'latest'   : src='web-editor.html';                  break;
+                            case 'v2.0'     : src='v2.0/web-editor-v2.0.html';        break;
+                            
+                          }//switch
+                          
+                          var txt   = await get(base+src);
+                          editor.setValue(txt);
+                          editor.filename(src);
+
+                    }//onclick                    
+                    
+              });
+              
+        });
+        
+                  </script>
+                  
+                  <web-editor component id=editor fullsize src='https://libs.ext-code.com/html/web-editor/web-editor.html'></web-editor>
+                  
+            </section>
             
             
             <log-mod component></log-mod>
@@ -340,7 +380,7 @@ td, th {
               hdr.initdom();
               log.initdom();
               
-              latest.initdom();
+              editor.initdom();
               
         }//initdom
         
