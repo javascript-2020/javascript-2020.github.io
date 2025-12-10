@@ -309,6 +309,11 @@ td, th {
             
             
             <section files>
+                  <style>
+  [files] [list] div                  
+    {cursor:pointer;margin-bottom:10px;text-decoration:underline}
+    
+                  </style>
                   <h3>
                         Files
                   </h3>
@@ -333,7 +338,7 @@ td, th {
                     
                     div.onclick   = async e=>{
                       
-                          var txt     = div.textContent;
+                          var txt     = div.textContent.trim();
                           var src;
                           switch(txt){
                             
@@ -345,6 +350,7 @@ td, th {
                           var txt   = await get(base+src);
                           editor.setValue(txt);
                           editor.filename(src);
+                          editor.filename.save.hide();
 
                     }//onclick                    
                     
@@ -354,7 +360,7 @@ td, th {
         
                   </script>
                   
-                  <web-editor component id=editor fullsize src='https://libs.ext-code.com/html/web-editor/web-editor.html'></web-editor>
+                  <web-editor component id=editor mode=html fullsize src='https://libs.ext-code.com/html/web-editor/web-editor.html'></web-editor>
                   
             </section>
             
