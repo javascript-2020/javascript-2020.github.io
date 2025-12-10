@@ -124,6 +124,15 @@ td, th {
             
       </head>
       
+      <script>
+                  
+        var data    = {};
+        data.readmd   = `
+# description
+
+        `;
+        
+      </script>
       
       <body>
       
@@ -269,6 +278,7 @@ td, th {
     {margin:20px}
     
                   </style>
+            
             <section api>
                   <h3>
                         API
@@ -299,23 +309,23 @@ td, th {
                                     js | javascript,python,java,c_cpp,csharp,php,ruby,go,swift,html,css,scss,less,typescript,markdown,json,xml,yaml,sql
                               </div>
                               <div class=description>
-                                    sets the mode for the editor
+                                    set the mode for the editor
                               </div>
                         </div>
-                        
+
                         <div item>
                               <div class=name>
                                     src
                               </div>
                               <div class=value>
-                                    [url]
+                                    url
                               </div>
                               <div class=description>
-                                    url of text to display
+                                    the url of the text to load in the editor
                               </div>
                         </div>
+                        
                   </div>
-                  
                   
                   <div module>
                         <h4>
@@ -323,13 +333,20 @@ td, th {
                         </h4>
                         
                         <div item>
+                              <div class=label>
+                                    name
+                              </div>
                               <div class=name>
-                                    getvalue()
-                                    <br>
-                                    getValue()
+                                    getvalue(), alias : getValue
+                              </div>
+                              <div class=label>
+                                    parameters
                               </div>
                               <div class=params>
                                     none
+                              </div>
+                              <div class=return>
+                                    string : the text of the docuemnt
                               </div>
                               <div class=description>
                                     get the text from the editor
@@ -344,6 +361,9 @@ td, th {
                               </div>
                               <div class=params>
                                     txt   : string, the text to be displayed
+                              </div>
+                              <div class=return>
+                                    does not return a value
                               </div>
                               <div class=description>
                                     set the text of the editor
@@ -376,16 +396,19 @@ td, th {
             
             <section files>
                   <style>
-                  
-  [files] [list] div                  
-    {cursor:pointer;margin-bottom:10px;text-decoration:underline}
+  
+  [files] [tabs]
+    {display:flex;text-align:center}
+    
+  [files] [tabs] div                  
+    {cursor:pointer;margin-bottom:10px;flex:1;border:1px solid lightgray;padding:5px 10px}
     
                   </style>
                   <h3>
                         Files
                   </h3>
                   
-                  <div list>
+                  <div tabs>
                         <div>
                               latest
                         </div>
@@ -401,7 +424,7 @@ td, th {
               var base    = 'https://libs.ext-code.com/html/web-editor/';
               var get     = url=>fetch(url).then(res=>res.text());
               
-              $.all('[files] [list] div').forEach(div=>{
+              $.all('[files] [tabs] div').forEach(div=>{
                     
                     div.onclick   = async e=>{
                       
