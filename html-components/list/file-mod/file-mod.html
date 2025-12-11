@@ -1,0 +1,510 @@
+
+
+
+<!DOCTYPE html>
+
+
+<html lang=en>
+
+      <head>
+            <meta charset=utf-8>
+            
+            <title>
+                  html component : file-mod
+            </title>
+            
+            <meta name=description content=''>
+            
+            <base href='https://ext-code.com/html-components/list/file-mod/'>
+            <link rel=canonical href='https://ext-code.com/html-components/list/file-mod/file-mod.html'>
+            
+            <meta>
+            <link rel=icon href=''>
+
+            
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+            
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('file-mod.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var version   = 'v2.0'
+        ;
+        var df=true,did='html'
+        ;
+        
+        var ace;
+        
+        var ext,$,datatype,keydown,menumod,debug
+        ;
+        
+        var menu;
+        
+        var hdr;
+        var log;
+        
+        var editor;
+        
+        
+        async function init(){
+          
+              var menu    = menumod();
+              
+              hdr         = mod['html-components-hdr'];
+              log         = mod['log-mod'];
+              
+              editor      = mod['editor'];
+              
+              
+              hdr.initmod({ext,$,menu});
+              log.initmod({ext,$});
+              
+              editor.initmod({ext,$,menu,ace});
+              
+              
+              await Promise.all([
+                    hdr.init(),
+                    log.init(),
+                    editor.init(),
+              ]);
+              
+              
+              initdom();
+              
+        }//init
+        
+        
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+          
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
+        );
+        [$,datatype,menumod,keydown,debug]   = await promise;
+  
+        mod.stack.complete;
+              
+})();
+
+            </script>
+            
+            
+            <style>
+
+  html
+    {font-family:arial}
+            
+  #latest
+    {display:block;margin-top:50px;border:1px solid blue;border-radius:10px;padding:10px}
+    
+  h3
+    {color:blue}
+    
+  code
+    {display:block;white-space:pre;background:whitesmoke}
+
+  
+  th {
+    text-align: left;margin-bottom:10px
+  }    
+td, th {
+  padding: 5px 0px;
+}  
+            </style>
+            
+      </head>
+      
+      <script>
+                  
+        var data    = {};
+        data.readmd   = `
+# description
+
+        `;
+        
+      </script>
+      
+      <body>
+      
+            <html-components-hdr component=grp1>
+                  <h2 class=title style='top:10px'>file-mod</h2>
+                  <time slot=date datetime=2025-12-11>11 Dec 2025</time>
+            </html-components-hdr>
+    
+      
+            <h3>
+                  Description
+            </h3>
+      
+            <div class=description>
+            
+                  The file-mod manages various file access
+                  
+            </div>
+
+            
+            <h3>
+                  Include
+            </h3>
+            
+            <code>
+                  <script type=text/html>
+                  
+                        <file-mod component></file-mod>
+                        
+                  </script>
+            </code>
+            
+            
+            <h3>
+                  initmod
+            </h3>
+              ext             = params.ext;
+              $               = params.$;
+              menumod         = params.menumod;
+              
+              menu            = params.menu;
+              complete        = params.complete;
+              source          = params.source;
+              focus           = params.focus;
+              log             = params.log;
+            
+            <div>
+                  <p>
+                        the web-editor is setup as the main demo component and as such to simplify the demo's, all options within its 
+                        initmod are optional
+                  </p>
+                  <table>
+                        <tr>
+                              <th>
+                                    name
+                              </th>
+                              <th>
+                                    description
+                              </th>
+                        </tr>
+                        <tr>
+                              <td>
+                                    ext
+                              </td>
+                              <td>
+                                    the default loader helper
+                              </td>
+                        </tr>
+                        <tr>
+                              <td>
+                                    $
+                              </td>
+                              <td>
+                                    the dom helper module
+                              </td>
+                        </tr>
+                        <tr>
+                              <td>
+                                    menu | menumod
+                              </td>
+                              <td>
+                                    either the main menu or the menumod module
+                              </td>
+                        </tr>
+                        <tr>
+                              <td>
+                                    complete
+                              </td>
+                              <td>
+                                    an object with keys
+                                    <br>
+                                    load
+                                    <br>
+                                    complete.load, this is called when a file is loaded, the callback is called with parameters
+                                    <br>
+                                    file  an object representing the file
+                                    <br>
+                                    blob
+                                    <br>
+                                    a blob, the file data
+                              </td>
+                        </tr>
+                        <tr>
+                              <td>
+                                    source
+                              </td>
+                              <td>
+                                    a function called when save is called from outside the file-mod itself, it returns a blob
+                                    of the current file
+                              </td>
+                        </tr>
+                        <tr>
+                              <td>
+                                    focus
+                              </td>
+                              <td>
+                                    when menu's close, it is sometimes useful for user experience to refocus the active work area,
+                                    this function is called when that needs to happen
+                              </td>
+                        </tr>
+                        <tr>
+                              <td>
+                                    log
+                              </td>
+                              <td>
+                                    a reference to global log-mod, in case there is anything that needs to be communicated back to the user,
+                                    such as file not found, no current file
+                              </td>
+                        </tr>
+                  </table>
+                        
+            </div>
+            
+            
+                  <style>
+  [api] [attribute] [item], [api] [module] [item]
+    {margin:20px;white-space:pre}
+    
+                  </style>
+            
+            <section api>
+                  <h3>
+                        API
+                  </h3>
+                  
+                  <div attribute>
+                        <h4>
+                              [attribute]
+                        </h4>
+                        
+                        <div item>
+                              no supported attributes
+                        </div>
+                  </div>
+                  
+                  <div module>
+                        <h4>
+                              [module]
+                        </h4>
+                        
+                        <div item>
+                              <div class=label>
+                                    name
+                              </div>
+                              <div class=name>
+                                    save ( file )
+                              </div>
+                              <div class=label>
+                                    parameters
+                              </div>
+                              <div class=params>
+                                    file, optional
+                                    
+                                    object : file object
+                              </div>
+                              <div class=return>
+                                    no return value
+                              </div>
+                              <div class=description>
+                                    save the current file, the blob is obtained from calling source
+                              </div>
+                        </div>
+                        
+                        <div item>
+                              <div class=name>
+                                    clear ()
+                              </div>
+                              <div class=params>
+                                    none
+                              </div>
+                              <div class=return>
+                                    does not return a value
+                              </div>
+                              <div class=description>
+                                    clear the current file
+                              </div>
+                        </div>
+                        
+                        <div item>
+                              <div class=name>
+                                    new(
+                                          filetype,ft,
+                                          
+                                          abs,path,
+                                          name,filename,
+                                          rel,
+                                          
+                                          kind,
+                                          size,
+                                          ctime,mtime,
+                                      
+                                          title,icon
+                                    )
+                                    
+                                    alias : newfile
+                              </div>
+                              <div class=parameters>
+                                    filetype | ft       string    : represents the filetype
+                                    
+                                    abs | path          string    : holds the file path
+                                    name | filename     string    : holds the filename, name is preferred, filename deprecated
+                                    rel                 string    : holds a relative path
+                                    kind                string    : file type
+                                    size                int       : holds file size in bytes
+                                    ctime               int       : file creation time, unix timestamp
+                                    mtime               int       : file modified time, unix timestamp
+                                    title               string    : used for a tooltip for the file, usually path+filename
+                                    icon                string    : url for file icon, usually data url
+                              </div>
+                              <div class=return>
+                                    file    : object, the file object
+                              </div>
+                              <div class=description>
+                                    creates a file object
+                              </div>
+                        </div>
+
+                        <div item>
+                              <div class=name>
+                                    export
+                              </div>
+                              <div class=parameters>
+                                    no parameters
+                              </div>
+                              <div class=return>
+                                    object, the exported file object, usually the serialised file object
+                              </div>
+                              <div class=description>
+                                    creates a file object
+                              </div>
+                        </div>
+
+                        <div item>
+                              <div class=name>
+                                    import
+                              </div>
+                              <div class=parameters>
+                                    file, object an exported file object
+                              </div>
+                              <div class=return>
+                                    object, file object
+                              </div>
+                              <div class=description>
+                                    imports an exported file object ( not yet implemented )
+                              </div>
+                        </div>
+                        
+                        
+                  </div>
+            </section>
+
+
+            <section>
+                  <h3>
+                        Examples
+                  </h3>
+                  <div>
+                  </div>
+            </section>
+            
+            
+            <section files>
+                  <style>
+  
+  [files] [tabs]
+    {display:flex;text-align:center}
+    
+  [files] [tabs] div                  
+    {cursor:pointer;margin-bottom:10px;flex:1;border:1px solid lightgray;padding:5px 10px}
+    
+                  </style>
+                  <h3>
+                        Files
+                  </h3>
+                  
+                  <div tabs>
+                        <div>
+                              latest
+                        </div>
+                        <div>
+                              v2.0
+                        </div>
+                  </div>
+                  
+                  <script>
+                  
+        mod.stack.push(()=>{
+          
+              var base    = 'https://libs.ext-code.com/html/file-mod/';
+              var get     = url=>fetch(url).then(res=>res.text());
+              
+              $.all('[files] [tabs] div').forEach(div=>{
+                    
+                    div.onclick   = async e=>{
+                      
+                          var txt     = div.textContent.trim();
+                          var src;
+                          switch(txt){
+                            
+                            case 'latest'   : src='file-mod.html';                  break;
+                            case 'v2.0'     : src='v2.0/file-mod-v2.0.html';        break;
+                            
+                          }//switch
+                          
+                          var txt   = await get(base+src);
+                          editor.setValue(txt);
+                          editor.filename(src);
+                          editor.filename.save.hide();
+
+                    }//onclick                    
+                    
+              });
+              
+        });
+        
+                  </script>
+                  
+                  <web-editor component id=editor mode=html fullsize src='https://libs.ext-code.com/html/file-mod/file-mod.html'></web-editor>
+                  
+            </section>
+            
+            
+            <log-mod component></log-mod>
+            
+      </body>
+      
+      
+      <script>
+
+      
+        document.querySelectorAll('code script').forEach(node=>node.parentNode.textContent=node.textContent);
+
+
+  //:
+  
+  
+  //:
+  
+        function initdom(){
+          
+              hdr.initdom();
+              log.initdom();
+              
+              editor.initdom();
+              
+        }//initdom
+        
+  //:
+  
+  
+      </script>
+      
+      
+</html>
+
