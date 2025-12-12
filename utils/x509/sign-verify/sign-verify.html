@@ -1,24 +1,139 @@
 
 
 
-
+<!DOCTYPE html>
 
 <html>
 
       <head>
+            <meta charset=utf-8>
     
-            <title>sign/verify file</title>
+            <title>
+                  Sign / Verify File
+            </title>
+            
+            <meta name=description content='sign or verify a file with a cryptographic signature using x509 certificates'>
             
             <base href='https://ext-code.com/utils/x509/sign-verify/'>
-            <base href='https://javascript-2020.github.io/utils/x509/sign-verify/'>
+            <link rel=canonical href='https://ext-code.com/utils/x509/sign-verify/sign-verify.html'>
             
-            <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico'>
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAP1BMVEVHcEyR2pGP242O242P246X1ZeP246Q2o+T2ZKQ2o+O242Q2o+P246P2o6Q2ZCR2ZCR2ZGP246Q2o6P246O243EYZFGAAAAFHRSTlMAF9rprQXPQAxl9k6gkTIoH7xyuzEuK6IAAADQSURBVCjPtZPbEoMgDES5hDuIlfz/t7YUREHsTDvTfQIOE9dkIeQbCfGJRu+Xe+okItv0HK7BYhaoGdwYVvGwdBaoMr7B9wUwiu5Ug8WLLOweKMOJGP0D5on3WMszdSK8F3K3JlI1yzMltGxT+3dfcIg+Uyg739piysFG6NIomoYXXj9LDsqP0elHPTJxp5hOgzN4mLvUfpWUY1MkPc/MDEOxppu2hh7DEJnYlZdxTIs6NZ5P4uQaZ24WRVXrSzWPKs1RtWG9fSMKQImfH9FFT2olG93t/+JzAAAAAElFTkSuQmCC'>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Sign and Verify a file",
+                        "url"                   : "https://ext-code.com/utils/x509/sign-verify/sign-verify.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Generate rsa keypair",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
 
 
-
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            
             <script init>
+                                                                                console.clear();
+                                                                                console.log('sign-verify-file.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
             
+        var df=true,did='html'
+        ;
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var debug;
+
+
+        var menu;
+        
+        
+        var hdr;
+        
+  //:
+  
+            
+        async function init(){
+
+
+              await load();
+        
+        
+              menu    = menumod();
+              
+              mod.base.add({ext,$,datatype,keydown,menu,menumod});
+              
+              
+              hdr   = mod['x509-hdr'];
+              
+              hdr.initmod({ext,$,menu});
+              
+              await Promise.all([
+                    hdr.init(),
+              ]);
+              
+              
+              
+              initdom(document.body);
+
+
+                                                                                console.log('ready');
+        }//init
+        
+        
+(async()=>{
+  
+        mod.stack.add;
+
+        var {ext}   = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js');
+        
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
+        );
+        [$,datatype,menumod,keydown,debug]   = await promise;
+
+
+        mod.stack.complete;
+
+})();
+
+
+        async function load(){
+          
+              var txt         = localStorage['node-forge'];
+              if(!txt){
+                    var url   = 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
+                                                                                //console.log(url);
+                    var res   = await fetch(url);
+                    txt       = await res.text();
+                    localStorage['node-forge']    = txt;
+              }
+              var blob        = new Blob([txt],{type:'text/javascript'});
+              var url         = window.URL.createObjectURL(blob);
+              nodeforge       = await import(url);
+              nodeforge       = nodeforge.default;
+              console.log(nodeforge);
+              
+        }//load
+
+        
             </script init>
+
 
             
             <style>
@@ -74,12 +189,32 @@
   .filename
     {font-size:12px;padding:5px}
 
+
+  .visually-hidden
+    {position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;
+      clip:rect(0 0 0 0) !important;white-space:nowrap !important;border:0 !important}
+
+
             </style>
 
       </head>
       
       <body>
-      
+
+
+            <x509-hdr component=grp v2.0>
+                  <h1 class=visually-hidden>
+                        Sign and Verify File
+                  </h1>
+                  <img class=title src='images/sign-verify.png' style='top:5px;height:55px' alt='sign and verify file'>
+                  <time slot=date datetime=2025-11-15>
+                        15 Nov 2025
+                  </time>
+            </x509-hdr>
+
+
+
+<!--      
         <div class=hdr>
             <a class=hdr-icon href='https://javascript-2020.github.io/'>
                 <img class=hdr-icon-img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAqFBMVEVHcEwjmpckopg9f3YxpJM6r5kjq58Nmp0Nn6QRoKExrpshnpgtoJUdoZwYnZ02spwYpaEmrZ8djpINn6Qtrp4inpcjqZ8SoqM3s5w0sp01spwrr58vr50oqpwdnpo0sZwtrJwUpKMMoaUtq50op5ssqpopppseqaM1sJwgpJ0NoaUSoaI3kYobqaMSpKQrr58PoaMVpaIOoKMLpKcXpaEkqp8Rm58YrKUL0CR4AAAAOHRSTlMACBkBCyinK59CQhUOLyKjqbUGpZgSYn6rp5WsekcmgkyWmCkmNB7AYTiuVgKuuo91i2PLn2lJ7kISMf4AAAElSURBVCjPrdPXloIwEAbgBDFKCRo6SO8lYEHd93+zxV7Zm2WuSL6Tk/MPEwBGLFH8SzFCeFiDXNeJ+7GtGds1D+ghDzzPzXX6xlJbq75s5KVLiJsSB76xIhd22Mz0pkyRnqzW2htD/SeUjL0EQKY60nqRvTLXGl64PR/SfDVxVvETZ123w8vN9Ur5YKUF4R9cd/WxqiePgCs3IMF1QXcVt6vK59tSqyjN4hwQbhS8mUuvWTLbwYtTQGhEjLHVPprv+4ztQ8AeRVn50uipBcXg/IPgfPaFF+z1axyeMEkcJwwdYHHZINQ02gALS49lJcQMci/COGzdue8apRQwNz4tYvM207JSRVEUhvtW6KeBIFVVbds07xPncZfCfWSK+UtNJ/9+VL/nTBuX7xjDZwAAAABJRU5ErkJggg==' />
@@ -100,7 +235,9 @@
                   24 Apr 2025
             </div>
         </div hdr>
-        
+-->
+
+
         <div id=btns>
               <input value=sign type=button style='margin-right:20px'>
               <input value=verify type=button style='margin-right:10px'>
@@ -170,10 +307,7 @@
       
       
       <script>
-                                                                                console.clear();
-                                                                                console.log('sign/verify.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+
 
         var $               = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
         $.style             = (node,style)=>{
@@ -208,7 +342,6 @@
         var extract         = {};
         var is              = {};
         is.public           = {};
-        var load            = {};
         var btn             = {};
         btn.private         = {};
         btn.public          = {};
@@ -220,25 +353,6 @@
   //
   
   
-        setTimeout(init,50);
-        
-        async function init(){
-          
-              await load.nodeforge();
-              
-              initdom();
-
-              
-              
-              
-              //test();
-              //test2();
-
-
-
-              
-        }//init
-        
         
         function initdom(){
 
@@ -246,6 +360,9 @@
               
               var root                                        = {};
 
+
+              hdr.initdom();
+              
               
               root.btns                                       = $(rootnode,'#btns');
               
@@ -480,23 +597,6 @@
         
   //:
   
-        load.nodeforge    = async function(){
-          
-              var txt         = localStorage['node-forge'];
-              if(!txt){
-                    var url   = 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
-                                                                                //console.log(url);
-                    var res   = await fetch(url);
-                    txt       = await res.text();
-                    localStorage['node-forge']    = txt;
-              }
-              var blob        = new Blob([txt],{type:'text/javascript'});
-              var url         = window.URL.createObjectURL(blob);
-              nodeforge       = await import(url);
-              nodeforge       = nodeforge.default;
-              console.log(nodeforge);
-              
-        }//nodeforge
 
   
         load.file   = function(){
