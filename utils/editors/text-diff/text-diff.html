@@ -34,8 +34,8 @@
                   }
             </script>
 
-        
-            <script src="https://cdn.jsdelivr.net/npm/diff@latest/dist/diff.min.js"></script>
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+            <script src='https://cdn.jsdelivr.net/npm/diff@latest/dist/diff.min.js'></script>
 
             
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
@@ -47,6 +47,8 @@
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var df=true,version='v2.0'
         ;
+        
+        var ace;
         
         var ext;
         var $;
@@ -76,7 +78,7 @@
               //keydown                   = keydown();
               menu                      = menumod();
 
-              mod.base.add({ext,$,datatype,keydown,menu,menumod});
+              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
               
               
               hdr                       = mod['editors-hdr'];
@@ -96,10 +98,10 @@
               //mod.menu.main.initmod({menumod,editor});
               
               primary.filemod.initmod({ext,$,menu,menumod,complete:primary.complete,log});
-              primary.editor.initmod({ext,$,menu});
+              primary.editor.initmod({ext,$,menu,ace});
               
               secondary.filemod.initmod({ext,$,menu,menumod,complete:secondary.complete,log});
-              secondary.editor.initmod({ext,$,menu});
+              secondary.editor.initmod({ext,$,menu,ace});
               
               output.initmod({ext,$,menu});
               log.initmod({ext,$});
