@@ -74,11 +74,16 @@
 
   
               console.log(window.electronAPI);
+              var encoder   = new TextEncoder();
               
               window.electronAPI?.onOpenFile(async({path})=>{
                                                                                 console.log('openfile',path);
                     var buf   = await window.electronAPI.readFile({path});
                                                                                 console.log('buf',buf);
+                    var blob    = new Blob([buf]);
+                    var txt     = await blob.text();
+                    txt        += '123';
+                    var buf     = encoder.encode(txt);
                     await window.electronAPI.writeFile({path,buf});
                     
               });
