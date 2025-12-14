@@ -80,6 +80,8 @@
               if(path[1]==':'){
                     path    = path.slice(2);
               }
+              path    = path.replaceAll('\\','/');
+              
               openfile    = path;
               
         });
@@ -130,12 +132,13 @@
 
               
               if(openfile){
-                    var parts   = openfile.split('/');
+                    var parts   = openfile.split('/').filter(s=>s!='');
                     var path    = '/'+parts.slice(0,-1).join('/');
                     if(path.length>1){
                           path   += '/';
                     }
                     var filename    = parts.at(-1);
+                                                                                console.log('openfile',path,filename);
                     filemod.electron.load.ui(path,filename);
               }
 
