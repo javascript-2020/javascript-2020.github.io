@@ -66,27 +66,23 @@
         var output;
         var log;
   
+        var openfile;
+        
         
         var icon    = {};
         
         
   //:
 
-  
-              console.log(window.electronAPI);
-              var encoder   = new TextEncoder();
-              
-              window.electronAPI?.onOpenFile(async({path})=>{
+                                                                                window.electronAPI && console.log('electronAPI');
+        window.electronAPI?.onOpenFile(async({path})=>{
                                                                                 console.log('openfile',path);
-                    var buf   = await window.electronAPI.readFile({path});
-                                                                                console.log('buf',buf);
-                    var blob    = new Blob([buf]);
-                    var txt     = await blob.text();
-                    txt        += '123';
-                    var buf     = encoder.encode(txt);
-                    await window.electronAPI.writeFile({path,buf});
-                    
-              });
+              if(path[1]==':'){
+                    path    = path.slice(2);
+              }
+              openfile    = path;
+              
+        });
 
 
   
@@ -132,7 +128,16 @@
               
               initdom(document.body);
 
-
+              
+              if(openfile){
+                    var parts   = openfile.split('/');
+                    var path    = '/'+parts.slice(0,-1).join('/');
+                    if(path.length>1){
+                          path   += '/';
+                    }
+                    var filename    = parts.at(-1);
+                    electron.load.ui(path,filename);
+              }
 
         }//init
 
