@@ -172,7 +172,7 @@
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
+              'js/dom/menumod/menumod.js.api',
               'js/dom/keydown/keydown.js',
               'js/debug/debug.js',
         );
@@ -237,6 +237,19 @@
 
   .visually-hidden
     {position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0}
+
+    
+  .menu input
+    {font-size:16px;padding:5px 10px}
+    
+  .menu [type=checkbox]
+    {width:20px;height:20px;margin:0}
+    
+  .menu-item
+    {gap:20px}
+    
+  .menu-item .menu-label
+    {width:120px;text-align:right}
     
             </style>
 
@@ -266,6 +279,22 @@
                         <div id=save-menu-root class=menu-root>
                               <img id=save-menu-icon class=menu-icon>
                               <div id=save-menu class=menu style='display:none'>
+                                    <div class=menu-title>
+                                          save menu
+                                    </div>
+                                    <div class=menu-item>
+                                          <div class=menu-label>
+                                                autosave
+                                          </div>
+                                          <input type=checkbox>
+                                          <input value=300 style='width:60px'>
+                                    </div>
+                                    <div id=trim class=menu-item>
+                                          <div class=menu-label>
+                                                trim on save
+                                          </div>
+                                          <input type=checkbox>
+                                    </div>
                               </div>
                         </div>
                   </div>
@@ -311,16 +340,22 @@
         
         
         
-        var slider        = {};
+        var slider              = {};
         
-        var ui            = {};
-        ui.mode           = 'vert';
+        var ui                  = {};
+        ui.mode                 = 'vert';
+        
+        var savemenu;
+        var savetimer           = {};
+        savetimer.timer         = null;
+        savetimer.chk           = null;
+        savetimer.time          = null;
+        savetimer.onclick       = null;
         
         
-        
-        var btn           = {};
-        var on            = {};
-        var set           = {};
+        var btn                 = {};
+        var on                  = {};
+        var set                 = {};
 
  
  
@@ -345,9 +380,14 @@
               
               $(root,'#save').onclick               = btn.save;
 
-              var card                              = $(root,'#save-root .menu');
-              $(root,'.menu-icon').onclick          = menu.click(card,false,false);
+              savemenu                              = $(root,'#save-root .menu');
+              $(root,'.menu-icon').onclick          = menu.click(savemenu,false,false,savemenu_callback);
+              menu.input.norm(savemenu);
 
+              savetimer.chk                         = $(savemenu,':scope>div:nth-of-type(2) [type=checkbox]');
+              savetimer.time                        = $(savemenu,':scope>div:nth-of-type(2) input:not([type])');
+              savetimer.chk.onclick                 = savetimer.onclick;
+              
               autosave                              = $(root,'#autosave');
 
               
@@ -393,6 +433,57 @@
         }//focus
 
 
+        function savemenu_kd(e){
+                                                          console.log(e.target);
+              if(e.target.nodeName=='INPUT'){
+                    return;
+              }
+              return false;
+              
+        }//savemenu_kd
+
+        
+        function savemenu_callback(type){
+                                                          console.log('savemenu_callback',arguments);
+              if(type=='show'){
+                    $(savemenu,':scope>div:nth-of-type(2) input:not([type])').focus();
+                    keydown.add(savemenu_kd);
+              }
+              if(type=='hide'){
+                    keydown.rem(savemenu_kd);
+              }
+          
+        }//savemenu_callback
+        
+        
+        savetimer.onclick   = function(){
+                                                                                debug('savetimer.click');
+              clearTimeout(savetimer.timer);
+              
+              if(savetimer.chk.checked){
+                    var value   = savetimer.time.value;
+                    value       = Number(value);
+                    if(isNaN(value)){
+                          log.red('invalid autosave time, using 300s');
+                          value   = 300;
+                    }                
+                    fn();
+              }
+
+
+              function fn(){
+                                                                                debug('savetimer',value);
+                    btn.save();
+                    if(savetimer.chk.checked){
+                          var ms    = value*1000;
+                          setTimeout(fn,ms);
+                    }
+                          
+              }//fn
+              
+        }//savetimer
+        
+        
   //:
 
   
@@ -507,7 +598,7 @@
                     editor.filename(file);
                     editor.filename.save.hide();                    
                     filemod.cur   = file;
-                    var title   = file.name||file.filename;
+                    var title     = file.name||file.filename;
                     set.title(title);
                     set.favicon(icon.def);
               }
