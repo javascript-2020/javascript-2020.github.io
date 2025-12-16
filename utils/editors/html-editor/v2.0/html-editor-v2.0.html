@@ -286,14 +286,14 @@
                                           <div class=menu-label>
                                                 autosave
                                           </div>
-                                          <input type=checkbox>
+                                          <input type=checkbox checked>
                                           <input value=300 style='width:60px'>
                                     </div>
                                     <div id=trim class=menu-item>
                                           <div class=menu-label>
                                                 trim on save
                                           </div>
-                                          <input type=checkbox>
+                                          <input type=checkbox checked>
                                     </div>
                               </div>
                         </div>
@@ -344,6 +344,7 @@
         
         var ui                  = {};
         ui.mode                 = 'vert';
+        ui.trim                 = null;
         
         var savemenu;
         var savetimer           = {};
@@ -378,6 +379,8 @@
               filemod.initdom(root);
 
               
+              autosave                              = $(root,'#autosave');
+              
               $(root,'#save').onclick               = btn.save;
 
               savemenu                              = $(root,'#save-root .menu');
@@ -388,7 +391,7 @@
               savetimer.time                        = $(savemenu,':scope>div:nth-of-type(2) input:not([type])');
               savetimer.chk.onclick                 = savetimer.onclick;
               
-              autosave                              = $(root,'#autosave');
+              ui.trim                               = $(savemenu,':scope>div:nth-of-type(3) [type=checkbox]');
 
               
               publish.initdom();
@@ -472,6 +475,10 @@
 
 
               function fn(){
+                
+                    if(!autosave.checked){
+                          return;
+                    }
                                                                                 debug('savetimer',value);
                     btn.save();
                     if(savetimer.chk.checked){
@@ -586,6 +593,24 @@
         function source(file){
           
               var txt     = editor.getValue();
+              
+              if(ui.trim.checked){
+                    var indent    = 0;
+                    var lines     = txt.split('\n');
+                    lines         = lines.map(line=>{
+                      
+                                          line    = line.trimEnd();
+                                          if(line.length==0){
+                                                line    = line.padStart(indent,' ');
+                                          }
+                                          var match   = line.match(/^\s*/);
+                                          indent      = match ? match[0].length : indent;
+                                          return line;
+                                          
+                                    });
+                    txt           = lines.join('\n');
+              }
+              
               var blob    = new Blob([txt]);
               return blob;
               
