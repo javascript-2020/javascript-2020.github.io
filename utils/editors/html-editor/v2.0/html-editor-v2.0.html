@@ -84,7 +84,7 @@
                                                                                 console.log('html-editor-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v1.0'
+        var df=true,did='html-editor',version='v1.0'
         ;
             
         var ace;
@@ -771,8 +771,14 @@
         function debug(){
           
               if(!df)return;
+              
               var str   = [...arguments].join(' ');
-              console.log('[ https-file ]',str);
+              
+              console.groupCollapsed(`[ ${did} ]`,str);
+              console.trace();
+              console.groupEnd();
+              
+              //console.log('[ https-file ]',str);
               
         }//debug
         
