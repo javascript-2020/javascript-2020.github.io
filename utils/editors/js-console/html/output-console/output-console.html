@@ -5,26 +5,26 @@
       <template shadowrootmode=open>
       
             <style>
-                  
+            
   :host
     {font-family:arial}
-  
+    
   #root
     {height:100%;display:flex;flex-direction:column}
   #hdr
     {display:flex;align-items:center;margin:0;margin-bottom:5px}
-  
+    
   #spc
     {flex:1}
-  
+    
   .ext-button
     {border:1px solid lightgray;padding:2px 5px;cursor:pointer;display:flex;align-items:center;margin-right:10px}
   .ext-button [type=checkbox]
     {margin:0;margin-left:5px;cursor:pointer}
-  
+    
   button
     {font-size:16px;margin-right:10px}
-  
+    
   #output
     {flex:1;
       overflow:auto;border:2px solid lightgray;box-sizing:border-box;
@@ -32,7 +32,7 @@
       word-break:break-all;
       font-size:16px;line-height:1.5;
     }
-                  
+    
             </style>
             
             <div id=root>
@@ -58,13 +58,13 @@
   var obj   = {
         version   : 'v2.0',
   };
-
-      
+  
+  
       var ext,$
       ;
       
       obj.initmod   = function(params){
-        
+      
             ext   = params.ext;
             $     = params.$;
             
@@ -72,9 +72,9 @@
       
       
   //vars:-
-
-      var inspect;
   
+      var inspect;
+      
       var con             = {};
       con.log             = console.log;
       con.clear           = console.clear;
@@ -89,33 +89,33 @@
       
       var iframe;
       obj.iframe;
-
-
+      
+      
       
       var chk             = {};
       var btn             = {};
-
+      
       
   //:
-
+  
   
       obj.init    = async function(){
       
             await libs();
             
       }//init
-
-
+      
+      
       async function libs(){
-        
+      
             [inspect]   = await ext.load.libs('js/string/inspect.js');
             console.log(inspect);
             
       }//libs
-
+      
       
   //:
-
+  
   
       obj.initdom   = function(rootnode){
       
@@ -131,23 +131,23 @@
             
             output                          = $(shadow,'#output');
             cur.root                        = output;
-
-
+            
+            
             wrap(chk.wrap.checked);
-
+            
             
       }//initdom
       
       
       btn.kill    = function(){
-        
+      
             kill();
             
       }//kill
       
       
       btn.clear   = function(){
-        
+      
             clear();
             
       }//clear
@@ -162,7 +162,7 @@
             }
             
       }//wrap
-
+      
       
       obj.run   = async function(js,params={}){
                                                                     console.log('run');
@@ -179,7 +179,7 @@
                   console.groupEnd            = window.console.groupEnd.bind(window.console);
                   console.trace               = window.console.trace.bind(window.console);
                   console.info                = window.console.info.bind(window.console);
-
+                  
                   
                   async function run(js){
                   
@@ -202,7 +202,7 @@
                   
                   
                   return run;
-                        
+                  
             })();
             
             var result    = await sandbox(js);
@@ -216,7 +216,7 @@
             //console.error   = con.error;
             
             
-        
+            
       }//run
       
       
@@ -238,13 +238,13 @@
             
             
             async function onload(){
-              
+            
                   setTimeout(complete,100);
                   
             }//onload
             
             async function complete(){
-              
+            
                   var win             = iframe.contentWindow;
                   win.focus();
                   win.console.log     = log;
@@ -272,16 +272,16 @@
       obj.kill    = function(){return kill()}
       
       function kill(){
-        
+      
             if(!iframe)return;
             iframe.remove();
             
       }//kill
-
-
-
+      
+      
+      
       obj.set   = function(root){
-        
+      
             if(root){
                   cur.root    = root;
             }else{
@@ -290,15 +290,15 @@
             
       }//set
       
-
+      
   //:
   
   
-      
+  
       obj.clear   = function(){return clear()}
       
       function clear(){
-        
+      
             if(chk.log.checked){
                   con.clear.call(window.console);
             }
@@ -311,18 +311,21 @@
       obj.log   = function(){return log.apply(log,arguments)};
       
       function log(){
-
+      
             if(chk.log.checked){
-                  con.log.apply(window.console,arguments);
+                  //con.log.apply(window.console,arguments);
+                  window.console.groupCollapsed.apply(window.console,arguments);
+                  window.console.trace();
+                  window.console.groupEnd();
             }
-
+            
             var txt           = build(arguments);
             var div           = document.createElement('div');
             div.textContent   = txt;
             cur.root.append(div);
             
             cur.node    = div;
-
+            
             if(txt==''){
                   div.style.height    = '16px';
             }
@@ -330,14 +333,14 @@
             cur.root.scrollTop    = 999999999;
             
             return div;
-        
+            
       }//log
-
-
+      
+      
       obj.error   = function(){return error.apply(null,arguments)}
       
       function error(){
-        
+      
             if(chk.log.checked){
                   con.error.apply(window.console,arguments);
             }
@@ -353,7 +356,7 @@
       obj.node    = function(){return node.apply(null,arguments)}
       
       function node(node){
-        
+      
             node    = create(node);
             
             cur.root.append(node);
@@ -367,7 +370,7 @@
       obj.write    = function(){return write.apply(null,arguments)}
       
       function write(){
-        
+      
             var txt   = build(arguments);
             
             var span            = document.createElement('span');
@@ -382,12 +385,12 @@
             
       }//write
       
-
+      
   //:
   
   
       function build(args){
-        
+      
             var str     = '';
             var args    = [...args];
             args        = args.map(v=>{
@@ -407,25 +410,25 @@
             
             var txt   = args.join(' ');
             return txt;
-        
+            
       }//build
-  
-  
+      
+      
       function create(node){
-        
+      
             var type    = datatype(node);
             switch(type){
-              
+            
               case 'string'   : node    = create.string(node);        break;
               
             }//switch
-            return node;        
+            return node;
             
       }//create
       
       
       create.string   = function(str){
-        
+      
             var node    = document.createElement(str);
             return node;
             
@@ -436,7 +439,7 @@
   
   
       obj.horiz   = function(){
-        
+      
             host.style.width    = '100%';
             host.style.height   = '50%';
             
@@ -444,12 +447,12 @@
       
       
       obj.vert    = function(){
-        
+      
             host.style.width    = '50%';
             host.style.height   = '100%';
             
       }//vert
-
+      
       
   //:
   
@@ -458,7 +461,7 @@
   return obj;
   
 })//output_console
-            
+
       </script>
       
 </output-console>
