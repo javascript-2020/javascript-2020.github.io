@@ -9,20 +9,25 @@
                   cors extension
             </title>
             
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/init-hdr/init-hdr.js'></script>
+            
             <style>
+            
   html
     {font-family:arial}
     
   #hdr
     {display:flex;justify-content:space-between}
     
-  .item
-    {display:flex;gap:30px}
+  .desc
+    {margin:20px 0}
     
-  .item a
-    {width:200px;text-align:right}
+  .download
+    {text-decoration:underline;cursor:pointer}
     
             </style>
+            
       </head>
       
       
@@ -51,10 +56,10 @@
             
             
             <div>
-                  <div id=chrome style='text-decoration:underline'>
+                  <div id=chrome class=download>
                         download chrome
                   </div>
-                  <div id=firefox style='text-decoration:underline'>
+                  <div id=firefox class=download>
                         download firefox
                   </div>
             </div>
@@ -66,12 +71,15 @@
       
       <script>
       
+        var df=true
+        ;
+        
         var $   = (root,css)=>(!css && (css=root,root=document),root.querySelector(css));
         
         
         
-        window.onload   = async function(){
-        
+        async function init(){
+                                                                                debug('init');
               await libs();
               initdom();
               
@@ -99,7 +107,7 @@
   //:
   
   
-        funciton initdom(){
+        function initdom(){
         
               $('#chrome').onclick        = btn.chrome;
               $('#firefox').onclick       = btn.firefox;
@@ -113,18 +121,14 @@
         btn.chrome    = function(){
         
               var dir    = {
-                    'xml-http-request'   :{directory:{
-                          'xhr-upload.html'       : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-upload.html'}}},
-                          'upload-server.js'      : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/upload-server.js'}}},
-                          'xhr-download.html'     : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-download.html'}}},
-                          'download-server.js'    : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/download-server.js'}}},
-                          node_modules    : {directory:{
-                                'a.txt'   : {file:{contents:'a'}},
-                          }}
+                    'cors-chrome'   :{directory:{
+                          'manifest.json'   : {file:{github:{repo:'browser-extensions',path:'/cors/chrome/manifest.json'}}},
+                          'extension.js'    : {file:{github:{repo:'browser-extensions',path:'/cors/chrome/extension.js'}}},
+                          'asterisk.png'    : {file:{github:{repo:'browser-extensions',path:'/cors/chrome/asterisk.png'}}},
                     }}
               };
               
-              var blob    = await create(dir,{download:true,df:true});
+              create(dir,{download:'cors-chrome',df:true});
                                                                                       console.log('zip',blob.type,blob.size);
         }//chrome
         
@@ -132,18 +136,14 @@
         btn.firefox   = function(){
         
               var dir    = {
-                    'xml-http-request'   :{directory:{
-                          'xhr-upload.html'       : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-upload.html'}}},
-                          'upload-server.js'      : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/upload-server.js'}}},
-                          'xhr-download.html'     : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-download.html'}}},
-                          'download-server.js'    : {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/download-server.js'}}},
-                          node_modules    : {directory:{
-                                'a.txt'   : {file:{contents:'a'}},
-                          }}
+                    'cors-firefox'   :{directory:{
+                          'manifest.json'   : {file:{github:{repo:'browser-extensions',path:'/cors/firefox/manifest.json'}}},
+                          'extension.js'    : {file:{github:{repo:'browser-extensions',path:'/cors/firefox/extension.js'}}},
+                          'asterisk.png'    : {file:{github:{repo:'browser-extensions',path:'/cors/firefox/asterisk.png'}}},
                     }}
               };
               
-              var blob    = await create(dir,{download:true,df:true});
+              create(dir,{download:'cors-firefox',df:true});
               
         }//firefox
         
@@ -152,10 +152,8 @@
   
   
   
-                                                                                console.log('zip',blob.type,blob.size);
-                                                                                
-                                                                                
-                                                                                
+  
+  
         async function create(dir,{download=true,test,df=false}={}){
                                                                                 df && console.log('download',!!download);
                                                                                 df && console.log('test',!!test);
@@ -178,7 +176,7 @@
                     if(download){
                           var url       = window.URL.createObjectURL(blob);
                           var a         = document.createElement('a');
-                          a.download    = 'https-file-server';
+                          a.download    = download;
                           a.href        = url;
                           a.click();
                     }
