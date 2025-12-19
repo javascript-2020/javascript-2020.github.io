@@ -19,6 +19,13 @@
             <script>
             
             
+        function start(){
+                                                                                debug('start');
+              initdom();
+              
+        }//start
+        
+        
             </script>
             
             <style>
@@ -34,6 +41,17 @@
     
   code
     {display:block;white-space:pre;font-family:monospace;margin:20px;padding:20px;background:whitesmoke}
+    
+    
+    
+  web-editor
+    {display:block;height:200px;margin:20px;border:1px solid lightgray;padding:10px}
+    
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
     
     
             </style>
@@ -73,6 +91,10 @@
                   <p>
                         This code module implements a lightweight HTTPS server that exposes direct file system operations to the browser through a simple fetch‑based API. By sending requests such as
                   </p>
+                  
+                  <div>
+                        <input value=download type=button>
+                  </div>
                   
                   <code>
                   
@@ -116,12 +138,73 @@
                         Together, these commands provide a complete set of standard file I/O capabilities accessible from the browser. This member sits at the Code stage of the pipeline: more substantial than a library, since it defines a working server with a defined protocol, but not yet a full project. It serves as a foundation for building browser‑driven file management tools, developer utilities, or experimental web‑native applications.
                   </p>
                   
+            </div>
+            
+            <web-editor component h=200>
+            
+                  [ not implemented yet ]
                   
+            </web-editor>
+            
       </body>
       
       <script>
       
       
+        var jszip;
+        
+        
+        var btn   = {};
+        
+        
+  //:
+  
+  
+        function initdom(){
+        
+              $('[value=download]').onclick       = btn.download;
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        btn.download    = async function(){
+        
+              if(!jszip){
+                    jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
+                    jszip   = jszip.default;
+              }
+              
+              var zip       = new jszip();
+              zip.folder(`file-server`);
+              
+              var res       = await fetch('https://raw.githubusercontent.com/javascript-2020/code/main/nodejs/server/file-server/file-server.js');
+              var blob      = await res.blob();
+              zip.file(`file-server/file-server.js`,blob);
+              
+              zip.folder(`file-server/node_modules`);
+              
+              var res       = await fetch('https://raw.githubusercontent.com/javascript-2020/libs/main/js/string/getmime/getmime.js');
+              var blob      = await res.blob();
+              zip.file(`file-server/node_modules/getmime.js`,blob);
+              
+              var res       = await fetch('https://raw.githubusercontent.com/javascript-2020/libs/main/nodejs/keys/keys.js');
+              var blob      = await res.blob();
+              zip.file(`file-server/node_modules/keys.js`,blob);
+              
+              var blob      = await zip.generateAsync({type:'blob'});
+              
+              var url       = window.URL.createObjectURL(blob);
+              var a         = document.createElement('a');
+              a.download    = 'file-server';
+              a.href        = url;
+              a.click();
+              
+        }//download
+        
+        
       </script>
       
 </html>
