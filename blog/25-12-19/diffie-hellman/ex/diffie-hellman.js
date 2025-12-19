@@ -20,7 +20,7 @@
                                                                                 console.log('bob sends',B);
         var alice_secret        = dh.power(B,alice,p);
         var bob_secret          = dh.power(A,bob,p)
-                                                                                console.log('secret',alice_secret);
+                                                                                console.log('shared secret',alice_secret);
                                                                                 //console.log('secret,bob_secret);
                                                                                 console.log(alice_secret==bob_secret);
                                                                                 
