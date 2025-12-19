@@ -1,0 +1,200 @@
+
+
+
+<!DOCTYPE html>
+
+<html lang=en>
+
+      <head>
+            <meta charset=utf-8>
+            
+            <title>
+                  file-server.js
+            </title>
+            
+            <meta name=description content=''>
+            
+            <base href='https://ext-code.com/libs/js/io/file-server/'>
+            <link rel=canonical href='https://ext-code.com/libs/js/io/file-server/file-server.html'>
+            
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABAlBMVEVHcEzwShbtTxrzbhXyoSHyORLyTRPzXxTzZxXzqB/upCjyRRP0ixfpOB31qBnyTxTvOBTtMBX1nhjxLBH1phr0nhvwMBPtNxb0hhfubRzzeBbyaxjxbBr0jBr0hRnyQhP0jhfzlBzzrB70gxbxPRP0kxjypiD0rBz0mRnzox/uKhLzfhjzoR3xPRPzmRn0kxjvKhPwMhL1oxnwMxP1oxryWBXyeRnxXRfzfRbyfhryVxXycxfybRjwchrzbRXxeBnyaRjzchbyYxbzYhXxXxfzaBbtKxTuKhP0qx3zrB7xZhrxZhn1pRjxMBHzUhPyRRP0jhf0iBf0kxf1mRj0gxb0fRW9Ofp/AAAATHRSTlMAHxH+EP3g/f42CIF/CPZ/izb89ruLuyjgG/x/Ux8f3+AeWoDO3yB4ziV4eyuzs4JL6+vQ0HtYWOUk5dGMRfFnjOjR6GjxWlpLS0VFZBEF4QAAATVJREFUKM+tk9eygjAURaWJoFgREOy9997rrYD9/3/lwsCEBJ/ujDztlcXsk4TB43nHg3frH5wVuc96F0dtRIhpsYidjShEYCsONK0nYBZgQk/TBiKkwxQVFkEhLpoMDS5SLQ5u41pU0RmPZc5+dC/+cwZztPdVe2Gth1Ad0v+h5/oI1SN97ugjTU9QPaHpo32qX+VA7xOoTuzpg/Jjnm3r8/lOSfc3SJ6M5a0RlgRBrF/12lhemuUrZUcs3OULYqes7IvbyPIY1WNZ3gCYTZ8NVDee0xmAtPQooLrwkNIAUtI1gOrAFdbZi1tfsikAudKtg+rOrZQDQFbvbRa2bPteJR2MR6PxJmCyaTL0dm2oqn2+bEGZ76vqsAa3MXxQDTJ2NiLPoHshvyp5ezybr3yTb/m3/gB3/SLZj0tcfgAAAABJRU5ErkJggg=='>
+            
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/init-hdr/init-hdr.js'></script>
+            
+            <script>
+            
+            
+        function start(){
+                                                                                debug('start');
+              initdom();
+              
+        }//start
+        
+        
+            </script>
+            
+            <style>
+            
+  html
+    {font-family:arial}
+    
+    
+  #hdr
+    {display:flex;justify-content:space-between}
+  #hdr>div:first-of-type
+    {display:flex;gap:20px}
+    
+  code
+    {display:block;white-space:pre;font-family:monospace;margin:20px;padding:20px;background:whitesmoke}
+    
+    
+    
+  web-editor
+    {display:block;height:200px;margin:20px;border:1px solid lightgray;padding:10px}
+    
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+    
+    
+            </style>
+            
+      </head>
+      
+      
+      <body>
+      
+      
+            <div id=hdr>
+            
+                  <div>
+                        <a href='https://ext-code.com/'>
+                              home
+                        </a>
+                        
+                        <a href='../../../code.html'>
+                              libs
+                        </a>
+                  </div>
+                  
+                  <h1>
+                        libs/js/io/file-server/file-server.js
+                  </h1>
+                  
+                  <div>
+                        19 Dec 2025
+                  </div>
+                  
+            </div hdr>
+            
+            
+            <div>
+            
+            
+                  <p>
+                        This library interfaces the server to expose direct file system operations to the browser through a simple fetch‑based API. By sending requests such as
+                  </p>
+                  
+                  <div>
+                        <input value=download type=button>
+                  </div>
+                  
+                  <code>
+                  
+      fetch('https://localhost:3000/a.txt',{headers:{mode:'load',auth:'my-auth'}})
+      
+                  </code>
+                  
+                  <p>
+                        the browser can interact with local files securely and consistently.
+                  </p>
+                  
+                  <p>
+                        Supported operations include:
+                  </p>
+                  
+                  <p>
+                        load → retrieve file contents
+                  </p>
+                  
+                  <p>
+                        save → write or overwrite file data
+                  </p>
+                  
+                  <p>
+                        file delete → remove a file
+                  </p>
+                  
+                  <p>
+                        dir read → list directory contents
+                  </p>
+                  
+                  <p>
+                        dir create → make a new directory
+                  </p>
+                  
+                  <p>
+                        dir delete → remove a directory
+                  </p>
+                  
+                  <p>
+                        Together, these commands provide a complete set of standard file I/O capabilities accessible from the browser. This member sits at the Code stage of the pipeline: more substantial than a library, since it defines a working server with a defined protocol, but not yet a full project. It serves as a foundation for building browser‑driven file management tools, developer utilities, or experimental web‑native applications.
+                  </p>
+                  
+            </div>
+            
+            <web-editor component fullsize src='https://libs.ext-code.com/js/io/file-server/file-server.js'></web-editor>
+            
+      </body>
+      
+      <script>
+      
+      
+        var jszip;
+        
+        
+        var btn   = {};
+        
+        
+  //:
+  
+  
+        function initdom(){
+        
+              $('[value=download]').onclick       = btn.download;
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        btn.download    = async function(){
+        
+        
+              var res       = await fetch('https://raw.githubusercontent.com/javascript-2020/libs/main/io/file-server/file-server.js');
+              var blob      = await res.blob();
+              
+              var url       = window.URL.createObjectURL(blob);
+              var a         = document.createElement('a');
+              a.download    = 'file-server';
+              a.href        = url;
+              a.click();
+              
+        }//download
+        
+        
+      </script>
+      
+</html>
+
+
+
+
+
