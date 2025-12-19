@@ -107,7 +107,19 @@
                   
                   <code>
                   
-      fetch('https://localhost:3000/a.txt',{headers:{mode:'load',auth:'my-auth'}})
+      var fs    = await import();
+      
+      fs.url    = 'localhost';
+      fs.port   = 3000;
+      fs.auth   = 'my-auth';
+      
+      var {blob,error}    = await fs.file.load('a.txt');
+      if(error){
+            console.error(error);
+            return;
+      }
+      var txt   = await blob.text();
+      console.log(txt);
       
                   </code>
                   
