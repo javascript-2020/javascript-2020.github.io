@@ -12,11 +12,12 @@
                                                                                 console.log(' [','q',q,']');
         var alice               = dh.rnd;
         var A                   = dh.power(g,alice,p);
-        
+                                                                                console.log('alice',alice);
+                                                                                console.log('alice sends',A);
         var bob                 = dh.rnd;
         var B                   = dh.power(g,bob,p);
-                                                                                console.log('alice',alice,'=>',A);
-                                                                                console.log('bob',bob,'=>',B);
+                                                                                console.log('bob',bob);
+                                                                                console.log('bob sends',B);
         var alice_secret        = dh.power(B,alice,p);
         var bob_secret          = dh.power(A,bob,p)
                                                                                 console.log('secret',alice_secret);
@@ -24,6 +25,8 @@
                                                                                 console.log(alice_secret==bob_secret);
                                                                                 
                                                                                 console.log(dh.time);
+
+                                                                                
         function diffie_hellman(bits=1024){
         
           var obj   = {};
