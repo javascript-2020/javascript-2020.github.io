@@ -7,7 +7,9 @@
         var dh                  = diffie_hellman();
                                                                                 console.log('bits',dh.bits);
         var {p,g,q}             = dh.init;
-                                                                                console.log('prime',p,'primitive root',g,' [','q',q,']');
+                                                                                console.log('prime',p,'\n');
+                                                                                console.log('primitive root',g,'\n');
+                                                                                console.log(' [','q',q,']');
         var alice               = dh.rnd;
         var A                   = dh.power(g,alice,p);
         
