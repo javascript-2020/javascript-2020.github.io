@@ -1,4 +1,4 @@
-```
+
 
         var tiny        = {};        
         tiny.encrypt    = (message,key)=>btoa([...message].reduce((a,c,i)=>a+tiny.xor(c,key,i),''));
@@ -12,4 +12,4 @@
         var decrypted   = tiny.decrypt(encrypted,'sky');
         console.log(decrypted);
 
-```
+
