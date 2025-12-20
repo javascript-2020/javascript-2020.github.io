@@ -1,7 +1,7 @@
 
 
 
-//  key >>> message
+//  if key is much longer than message
 
 
         var tiny        = {};        
