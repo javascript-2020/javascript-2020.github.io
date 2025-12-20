@@ -87,7 +87,7 @@
     
     
   .blog-hdr
-    {color:blue}
+    {color:blue;font-weight:bold}
     
   .blog-text
     {margin:1.5rem auto;padding:1.25rem 1.75rem;background-color:#fcfcfc;/*#f9f9f9*/font-family:system-ui, sans-serif;font-size:1rem;line-height:2;
@@ -116,6 +116,9 @@
   .link-txt
     {}
     
+  ol li, ul li
+    {margin:10px}
+    
   input
     {font-size:16px;padding:5px 7px;box-sizing:border-box;}
   input[type=button]
@@ -141,25 +144,170 @@
             <div class=description>
             
                   <p>
-                        In this post, we’ll walk through a practical demonstration of the Diffie–Hellman key exchange algorithm implemented in JavaScript. Diffie–Hellman is a cornerstone of modern cryptography, allowing two parties to establish a shared secret over an insecure channel without ever transmitting the secret itself.
+                        In this post, we’ll walk through a practical demonstration of the Diffie–Hellman key exchange algorithm implemented in JavaScript.
+                        Diffie–Hellman is a cornerstone of modern cryptography, allowing two parties to establish a shared secret over an insecure channel
+                        without ever transmitting the secret itself.
                   </p>
                   
                   <p>
-                        We’ll explore how the algorithm works step by step — from generating public and private keys, to exchanging values, to deriving the same shared secret on both sides. Along the way, you’ll see how simple modular arithmetic underpins secure communication, and how JavaScript can be used to illustrate these concepts in code.
+                        We’ll explore how the algorithm works step by step — from generating public and private keys, to exchanging values, to deriving
+                        the same shared secret on both sides. Along the way, you’ll see how simple modular arithmetic underpins secure communication,
+                        and how JavaScript can be used to illustrate these concepts in code.
                   </p>
                   
                   <p>
-                        By the end, you’ll understand not only the theory behind Diffie–Hellman, but also how to implement it in practice, making abstract cryptographic ideas tangible and accessible.
+                        By the end, you’ll understand not only the theory behind Diffie–Hellman, but also how to implement it in practice,
+                        making abstract cryptographic ideas tangible and accessible.
                   </p>
                   
             </div>
             
             
-            <snippet-console component fullsize src='ex/diffie-hellman.js'></snippet-console>
+            
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        Diffie–Hellman Key Exchange
+                  </div>
+                  
+                  <p>
+                        The Diffie–Hellman algorithm is a method that allows two people to create a shared secret even if they’re talking over a completely
+                        insecure channel. That’s the magic of it: anyone can listen in on the conversation, but nobody except the two participants can figure
+                        out the secret they end up sharing.
+                  </p>
+                  
+                  <ol>
+                        <li>
+                              <b>
+                                    Both sides agree on two public numbers.
+                              </b>
+                              <br>
+                              These numbers don’t need to be secret — everyone in the world can see them.
+                        </li>
+                        <li>
+                              <b>
+                                    Each person picks a private number.
+                              </b>
+                              <br>
+                                    This is the only part that must stay hidden.
+                        </li>
+                        <li>
+                              <b>
+                                    They each combine their private number with the public numbers
+                              </b>
+                              <br>
+                              Using a special kind of math (modular exponentiation).  The result is a public value that they send to each other.
+                        </li>
+                        <li>
+                              <b>
+                                    They each take the other person’s public value and combine it with their own private number.
+                              </b>
+                              <br>
+                                    Because of the math involved, both sides end up with the exact same final number, even though they never sent that
+                                    number over the network.
+                        </li>
+                        <li>
+                              <b>
+                                    Anyone listening in sees only the public values
+                              </b>
+                              <br>
+                              but cannot reverse them to find the private numbers — that’s what makes the system secure.
+                        </li>
+                  </ol>
+                  
+                  <p>
+                        The final shared number becomes a shared secret key, which can then be used to encrypt communication.
+                  </p>
+            </div>
+            
+            
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        What Diffie–Hellman is used for
+                  </div>
+                  
+                  <ul>
+                        <li>
+                              <b>
+                                    Establishing secure connections
+                              </b>
+                              (HTTPS, SSH, VPNs, TLS).
+                        </li>
+                        <li>
+                              <b>
+                                    Creating encryption keys on the fly
+                              </b>
+                              without pre‑sharing passwords.
+                        </li>
+                        <li>
+                              <b>
+                                    Protecting against eavesdropping
+                              </b>
+                              , even on open networks.
+                        </li>
+                        <li>
+                              <b>
+                                    Forward secrecy
+                              </b>
+                              , even if someone steals your long‑term keys later, they still can’t decrypt past conversations.
+                        </li>
+                  </ul>
+                  
+                  <p>
+                        It’s one of the foundational building blocks of modern secure communication.
+                  </p>
+                  
+            </div>
             
             
             
-            <div>
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        Why it’s secure
+                  </div>
+                  
+                  <p>
+                        Diffie–Hellman relies on the difficulty of the discrete logarithm problem — a math problem that’s easy to compute in one direction
+                        but practically impossible to reverse. Even with powerful computers, guessing the private numbers from the public ones would take
+                        longer than the age of the universe.
+                  </p>
+                  
+            </div>
+            
+            
+            
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        Other useful notes
+                  </div>
+                  
+                  <ul>
+                        <li>
+                              Diffie–Hellman itself does not encrypt anything — it only creates the shared key.
+                        </li>
+                        <li>
+                              It’s often combined with other algorithms (like AES) to actually encrypt data.
+                        </li>
+                        <li>
+                              There are modern variants like Elliptic Curve Diffie–Hellman (ECDH), which provide the same security with much
+                              smaller numbers and faster performance.
+                        </li>
+                        <li>
+                              It was invented in 1976 and is considered one of the most important breakthroughs in cryptography.
+                        </li>
+                  </ul>
+                  
+            </div>
+            
+            
+            <snippet-console id=ex1 component fullsize src='ex/diffie-hellman.js'></snippet-console>
+            
+            
+            
+            <div class=blog-text>
                   <p>
                         once a shared secret has been established this can be used to encrypt communications between alice and bob
                   </p>
@@ -168,7 +316,7 @@
                   </p>
             </div>
             
-            <snippet-console component fullsize src='ex/tiny-encrypt.js'></snippet-console>
+            <snippet-console id=ex2 component fullsize src='ex/tiny-encrypt.js'></snippet-console>
             
             
             
