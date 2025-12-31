@@ -286,7 +286,13 @@
             var html        = `
                   <script>
                   
-                  
+                        window.addEventListener('message',({data})=>{
+                        
+                              var {js}    = data;
+                              window.eval(js);
+                              
+                        });
+                        
                   </scr`+`ipt>
             `;
             
@@ -324,11 +330,12 @@
                         clear();
                   }
                   
+                  iframe.contentWindow.postMessage({js});
                   
-                  var result    = await win.eval(js);
-                  resolve(result);
+                  //var result    = await win.eval(js);
+                  //resolve(result);
                   
-                  iframe.remove();
+                  //iframe.remove();
                   
             }//onload
             
