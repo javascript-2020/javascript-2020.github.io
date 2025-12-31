@@ -740,7 +740,7 @@ iframe.addEventListener("load", () => {
             switch (typeof val) {
             
               case 'number':   return String(val);
-              case 'string':   return `"${val}"`;
+              case 'string':   return val;
               case 'boolean':  return String(val);
               case 'bigint':   return val.toString() + 'n';
               case 'symbol':   return val.toString();
@@ -748,27 +748,22 @@ iframe.addEventListener("load", () => {
               
             }//switch
             
-            // Arrays
             if (Array.isArray(val)) {
                   return '[' + val.map(v => fn(v, seen)).join(', ') + ']';
             }
             
-            // Date
             if (val instanceof Date) {
                   return `Date("${val.toISOString()}")`;
             }
             
-            // RegExp
             if (val instanceof RegExp) {
                   return val.toString();
             }
             
-            // Error objects
             if (val instanceof Error) {
                   return `${val.name}: ${val.message}`;
             }
             
-            // Map
             if (val instanceof Map) {
                   const entries = [];
                   for (const [k, v] of val.entries()) {
@@ -777,18 +772,15 @@ iframe.addEventListener("load", () => {
                   return `Map { ${entries.join(', ')} }`;
             }
             
-            // Set
             if (val instanceof Set) {
                   const entries = [...val].map(v => fn(v, seen));
                   return `Set { ${entries.join(', ')} }`;
             }
             
-            // Typed arrays
             if (ArrayBuffer.isView(val) && !(val instanceof DataView)) {
                   return `${val.constructor.name} [ ${Array.from(val).join(', ')} ]`;
             }
             
-            // DOM nodes
             if (val instanceof Node) {
                   if (val.nodeType === 1) {
                     return `<${val.tagName.toLowerCase()}>`;
@@ -816,7 +808,7 @@ iframe.addEventListener("load", () => {
                   
             }//catch
             
-      }
+      }//fn
       
       
       
