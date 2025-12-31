@@ -764,7 +764,7 @@ iframe.addEventListener("load", () => {
             var type    = datatype(val);
                                                                                 console.log('format.fn',type);
             if(type=='array'){
-                  val       = val.map(v=>fn(v,seen));
+                  val       = val.map(v=>format.fn(v,seen));
                   var str   = val.join(', ')
                   return '['+str+']';
             }
@@ -784,13 +784,13 @@ iframe.addEventListener("load", () => {
             if(val instanceof Map){
                   const entries = [];
                   for (const [k, v] of val.entries()) {
-                    entries.push(`${fn(k, seen)} => ${fn(v, seen)}`);
+                    entries.push(`${fn(k, seen)} => ${format.fn(v, seen)}`);
                   }
                   return `Map { ${entries.join(', ')} }`;
             }
             
             if(val instanceof Set){
-                  const entries   = [...val].map(v=>fn(v,seen));
+                  const entries   = [...val].map(v=>format.fn(v,seen));
                   return `Set { ${entries.join(', ')} }`;
             }
             
@@ -806,9 +806,9 @@ iframe.addEventListener("load", () => {
             }
             
             if(typeof val==='object'){
-                  const entries   = Object.entries(val).map(([k, v])=>{
+                  const entries   = Object.entries(val).map(([k,v])=>{
                   
-                        return `${k}: ${fn(v, seen)}`;
+                        return `${k}: ${format.fn(v,seen)}`;
                         
                   });
                   return `{ ${entries.join(', ')} }`;
