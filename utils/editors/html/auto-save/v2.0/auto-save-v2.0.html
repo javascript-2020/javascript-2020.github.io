@@ -102,12 +102,12 @@
         
               var content     = [...host.shadowRoot.childNodes];
               
-              var shadow2     = host.attachShadow({mode:'open',customElements:{}});
-              var registry    = shadow.customElements;
+              var shadow      = host.attachShadow({mode:'open',customElements:{}});
+              shadow.append(...content);
               
+              var registry    = shadow.customElements;
               registry.define('check-box',checkbox);
               
-              shadow2.append(...content);
               
               
               
