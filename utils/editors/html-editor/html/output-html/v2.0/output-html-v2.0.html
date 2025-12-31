@@ -8,17 +8,17 @@
             
   :host
     {display:flex;flex-direction:column;height:100%}
-
+    
   #hdr
     {display:flex}
-  
+    
   #hldr
     {flex:1;box-sizing:border-box;position:relative}
   iframe
     {width:100%;height:100%}
   #glass
     {position:absolute;left:0;top:0;width:100%;height:100%;display:none}
-                  
+    
             </style>
             
             <div id=hdr>
@@ -27,7 +27,7 @@
             </div>
             
             <div id=hldr>
-                  <iframe></iframe>
+                  <iframe sandbox='allow-scripts allow-sameorigin'></iframe>
                   <div id=glass></div>
             </div>
             
@@ -40,7 +40,7 @@
   var obj   = {
         version   : 'v2.0',
   };
-
+  
         var ext,$;
         
         obj.initmod=function(params){
@@ -49,27 +49,27 @@
               $     = params.$;
               
         }//initmod
-
-      
+        
+        
   //vars:-
-
-        var hldr;      
+  
+        var hldr;
         var iframe;
         var glass;
-  
+        
         
         var btn   = {};
-
-
+        
+        
   //:
-
+  
   
         obj.init    = async function(){
         }//init
-
-      
+        
+        
   //:
-
+  
   
         obj.initdom   = function(rootnode){
         
@@ -77,12 +77,12 @@
               
               var style       = $(shadow,'style');
               $.stylesheet.insert(style,'button','.icon');
-  
+              
               
               var hdr         = $(shadow,'#hdr');
               
               $(hdr,'#kill').onclick    = btn.kill;
-  
+              
               
               hldr            = $(shadow,'#hldr');
               iframe          = $(shadow,'iframe');
@@ -90,8 +90,8 @@
               
               
         }//initdom
-
-
+        
+        
   //:
   
   
@@ -100,19 +100,19 @@
               kill();
               
         }//kill
-  
-    
+        
+        
         obj.glass   = function(show=true){
-  
+        
               var display     = 'none';
               if(show){
                     display   = 'block';
               }
               glass.style.display    = display;
-        
+              
         }//glass
-      
-      
+        
+        
         obj.horiz   = function(){
         
               host.style.width     = '100%';
@@ -120,23 +120,23 @@
               
         }//horiz
         
-  
+        
         obj.vert    = function(){
-  
+        
               host.style.width    = '50%';
               host.style.height   = '100%';
-            
+              
         }//vert
-  
-  
-  
+        
+        
+        
         obj.srcdoc    = function(html){
         
               iframe.srcdoc   = html;
               
         }//srcdoc
-  
-  
+        
+        
         obj.kill    = function(){return kill()}    //d
         
         function kill(){
@@ -145,16 +145,16 @@
               niframe.srcdoc    = null;
               hldr.replaceChild(niframe,iframe);
               iframe            = niframe;
-        
+              
         }//kill
         
-      
-
-      
+        
+        
+        
   return obj;
   
 })//output_html
-            
+
       </script>
       
 </output-html>
