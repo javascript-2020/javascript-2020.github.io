@@ -1,0 +1,187 @@
+
+
+<auto-save>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+            
+            </style>
+            
+            
+            <checkbox-one id=autosave></checkbox-one>
+            
+            <div id=save-menu-root class=menu-root>
+                  <img id=save-menu-icon class=menu-icon>
+                  <div id=save-menu class=menu style='display:none'>
+                        <div class=menu-title>
+                              save menu
+                        </div>
+                        <div class=menu-item>
+                              <div class=menu-label>
+                                    autosave
+                              </div>
+                              <input type=checkbox checked>
+                              <input value=300 style='width:60px'>
+                        </div>
+                        <div id=trim class=menu-item>
+                              <div class=menu-label>
+                                    trim on save
+                              </div>
+                              <input type=checkbox checked>
+                        </div>
+                  </div>
+            </div>
+            
+      </template>
+      
+      
+      <script>
+      
+(function auto_save({mod,dom,host}){
+
+  var obj   = {
+        version   : 'v1.0',
+  };
+  
+        var df=true,did='auto-save'
+        ;
+        
+        
+        
+        var $,menu,save,log,keydown
+        ;
+        
+        obj.initmod   = function(params){
+        
+              $           = mod.rd(params,'$',$);
+              menu        = mod.rd(params,'menu',menu);
+              save        = mod.rd(params,'save',save);
+              log         = mod.rd(params,'log',log);
+              keydown     = mod.rd(params,'keydown',keydown);
+              
+        }//initmod
+        
+        
+  //:
+  
+  
+        var savemenu;
+        var savetimer           = {};
+        savetimer.timer         = null;
+        savetimer.chk           = null;
+        savetimer.time          = null;
+        savetimer.onclick       = null;
+        
+        
+  //:
+  
+  
+        obj.init    = function(){
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = function(){
+        
+              var shadow    = host.shadowRoot;
+              
+              menu.add.style(shadow);
+              
+              
+              savemenu                              = $(shadow,'.menu');
+              $(root,'.menu-icon').onclick          = menu.click(savemenu,false,false,savemenu_callback);
+              menu.input.norm(savemenu);
+              
+              savetimer.chk                         = $(savemenu,':scope>div:nth-of-type(2) [type=checkbox]');
+              savetimer.time                        = $(savemenu,':scope>div:nth-of-type(2) input:not([type])');
+              savetimer.chk.onclick                 = savetimer.onclick;
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+  
+        function savemenu_kd(e){
+                                                          console.log(e.target);
+              if(e.target.nodeName=='INPUT'){
+                    return;
+              }
+              return false;
+              
+        }//savemenu_kd
+        
+        
+        function savemenu_callback(type){
+                                                          console.log('savemenu_callback',arguments);
+              if(type=='show'){
+                    $(savemenu,':scope>div:nth-of-type(2) input:not([type])').focus();
+                    keydown.add(savemenu_kd);
+              }
+              if(type=='hide'){
+                    keydown.rem(savemenu_kd);
+              }
+              
+        }//savemenu_callback
+        
+        
+        savetimer.onclick   = function(){
+                                                                                debug('savetimer.click');
+              clearTimeout(savetimer.timer);
+              
+              if(savetimer.chk.checked){
+                    var value   = savetimer.time.value;
+                    value       = Number(value);
+                    if(isNaN(value)){
+                          log.red('invalid autosave time, using 300s');
+                          value   = 300;
+                    }
+                    fn();
+              }
+              
+              
+              function fn(){
+              
+                    if(!autosave.checked){
+                          return;
+                    }
+                                                                                debug('savetimer',value);
+                    save();
+                    
+                    if(savetimer.chk.checked){
+                          var ms    = value*1000;
+                          setTimeout(fn,ms);
+                    }
+                    
+              }//fn
+              
+        }//savetimer
+        
+        
+  //:
+  
+  
+        function debug(...args){
+        
+              if(!df && !obj.df)return;
+              args.unshift(`[ ${did} ]`);
+              var fmt     = Array.from({length:args.length}).fill('%O').join(' ');
+              var args2   = [fmt].concat(args);
+              console.groupCollapsed.apply(console,args2);
+              console.trace();
+              console.groupEnd();
+              
+        }//debug
+        
+        
+        
+  return obj;
+  
+//auto_save
+}
