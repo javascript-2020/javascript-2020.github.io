@@ -675,37 +675,149 @@ iframe.addEventListener("load", () => {
   //:
   
   
-      function formatConsoleArgs(args) {
+      function format(args){
       
-        if (typeof args[0] !== "string") return args;
-        
-        let fmt = args[0];
-        let out = [];
-        let argIndex = 1;
-        
-        out.push(fmt.replace(/%[sdifoO]/g, (match) => {
-          const val = args[argIndex++];
-          switch (match) {
-            case "%s": return ''+val;
-            case "%d":
-            case "%i": return parseInt(val, 10);
-            case "%f": return parseFloat(val);
-            case "%o":
-            case "%O":
-              return JSON.stringify(val, null, 2); // or your own inspector
-            default:
-              return match;
-          }
-        }));
-        
-        // Append any remaining args
-        while (argIndex < args.length) {
-          out.push(args[argIndex++]);
-        }
-        
-        return out;
-        
+            if (typeof args[0] !== "string") return args;
+            
+            let fmt = args[0];
+            let out = [];
+            let argIndex = 1;
+            
+            out.push(fmt.replace(/%[sdifoO]/g, (match) => {
+            
+              const val = args[argIndex++];
+              switch (match) {
+                case "%s": return ''+val;
+                case "%d":
+                case "%i": return parseInt(val, 10);
+                case "%f": return parseFloat(val);
+                case "%o":
+                case "%O": return format.fn(val);
+                default:
+                  return match;
+              }
+              
+            }));
+            
+            // Append any remaining args
+            while (argIndex < args.length) {
+              out.push(args[argIndex++]);
+            }
+            
+            return out;
+            
+            
+            function fn(val){
+            
+                  if(val===null)return 'null';
+                  if(val===undefined)return 'undefined';
+                  
+                  switch(typeof val){
+                  
+                    case 'number'   : return val;
+                    case 'string'   : return val;
+                    
+                  }//switch
+                  
+                  return JSON.stringify(val,null,2);
+            }//fn
+            
+      }//format
+      
+      
+      format.fn   = function(val,seen=new WeakSet()){
+      
+            if (val === null) return 'null';
+            if (val === undefined) return 'undefined';
+            
+                                                                                // Prevent circular references
+            if (typeof val === 'object' || typeof val === 'function') {
+                  if (seen.has(val)) return '[Circular]';
+                  seen.add(val);
+            }
+            
+                                                                                // Primitive types
+            switch (typeof val) {
+            
+              case 'number':   return String(val);
+              case 'string':   return `"${val}"`;
+              case 'boolean':  return String(val);
+              case 'bigint':   return val.toString() + 'n';
+              case 'symbol':   return val.toString();
+              case 'function': return `[Function${val.name ? ': ' + val.name : ''}]`;
+              
+            }//switch
+            
+            // Arrays
+            if (Array.isArray(val)) {
+                  return '[' + val.map(v => fn(v, seen)).join(', ') + ']';
+            }
+            
+            // Date
+            if (val instanceof Date) {
+                  return `Date("${val.toISOString()}")`;
+            }
+            
+            // RegExp
+            if (val instanceof RegExp) {
+                  return val.toString();
+            }
+            
+            // Error objects
+            if (val instanceof Error) {
+                  return `${val.name}: ${val.message}`;
+            }
+            
+            // Map
+            if (val instanceof Map) {
+                  const entries = [];
+                  for (const [k, v] of val.entries()) {
+                    entries.push(`${fn(k, seen)} => ${fn(v, seen)}`);
+                  }
+                  return `Map { ${entries.join(', ')} }`;
+            }
+            
+            // Set
+            if (val instanceof Set) {
+                  const entries = [...val].map(v => fn(v, seen));
+                  return `Set { ${entries.join(', ')} }`;
+            }
+            
+            // Typed arrays
+            if (ArrayBuffer.isView(val) && !(val instanceof DataView)) {
+                  return `${val.constructor.name} [ ${Array.from(val).join(', ')} ]`;
+            }
+            
+            // DOM nodes
+            if (val instanceof Node) {
+                  if (val.nodeType === 1) {
+                    return `<${val.tagName.toLowerCase()}>`;
+                  }
+                  return val.toString();
+            }
+            
+            if (typeof val === 'object') {
+                  const entries = Object.entries(val).map(([k, v]) => {
+                  
+                        return `${k}: ${fn(v, seen)}`;
+                        
+                  });
+                  return `{ ${entries.join(', ')} }`;
+            }
+            
+            try {
+            
+                  return JSON.stringify(val);
+                  
+            }//try
+            catch {
+            
+                  return String(val);
+                  
+            }//catch
+            
       }
+      
       
       
       function build(args){
