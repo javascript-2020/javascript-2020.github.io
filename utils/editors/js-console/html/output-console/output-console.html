@@ -54,12 +54,16 @@
       <script>
       
 (function output_console({mod,dom,host}){
-                                                                                //console.log('output');
+
   var obj   = {
         version   : 'v2.0',
   };
   
-  
+      var df=false,did='output-console'
+      ;
+      
+      
+      
       var ext,$
       ;
       
@@ -100,7 +104,7 @@
   
   
       obj.init    = async function(){
-      
+                                                                                debug('init',obj.version);
             await libs();
             
       }//init
@@ -118,7 +122,7 @@
   
   
       obj.initdom   = function(rootnode){
-      
+                                                                                debug('initdom');
             shadow                          = host.shadowRoot;
             
             chk.persist                     = $.chkbox(shadow,'#console-persist',false);
@@ -140,14 +144,14 @@
       
       
       btn.kill    = function(){
-      
+                                                                              debug('btn.kill');
             kill();
             
       }//kill
       
       
       btn.clear   = function(){
-      
+                                                                              debug('btn.clear');
             clear();
             
       }//clear
@@ -165,7 +169,7 @@
       
       
       obj.run   = async function(js,params={}){
-                                                                    console.log('run');
+                                                                                debug('run');
             var sandbox   = (()=>{
             
                   var console                 = {};
@@ -221,7 +225,7 @@
       
       
       obj.run.iframe    = async function(js,params={}){
-                                                                    console.log('run.iframe');
+                                                                                debug('run.iframe');
             var resolve,promise=new Promise(res=>resolve=res);
             
             if(iframe){
@@ -271,7 +275,7 @@
       
       
       obj.run.iframe2    = async function(js,params={}){
-                                                                    console.log('run.iframe2');
+                                                                                debug('run.iframe2');
             var resolve,promise=new Promise(res=>resolve=res);
             
             if(iframe){
@@ -675,6 +679,9 @@ iframe.addEventListener("load", () => {
   //:
   
   
+      function datatype(v){return Object.prototype.toString.call(v).slice(8,-1).toLowerCase()}
+      
+      
       function format(args){
       
             if (typeof args[0] !== "string") return args;
@@ -727,44 +734,46 @@ iframe.addEventListener("load", () => {
       
       format.fn   = function(val,seen=new WeakSet()){
       
-            if (val === null) return 'null';
-            if (val === undefined) return 'undefined';
+            if(val === null)return 'null';
+            if(val === undefined)return 'undefined';
             
                                                                                 // Prevent circular references
-            if (typeof val === 'object' || typeof val === 'function') {
-                  if (seen.has(val)) return '[Circular]';
+            if(typeof val==='object' || typeof val==='function'){
+                  if(seen.has(val))return '[Circular]';
                   seen.add(val);
             }
             
                                                                                 // Primitive types
-            switch (typeof val) {
+            switch(typeof val){
             
-              case 'number':   return String(val);
-              case 'string':   return val;
-              case 'boolean':  return String(val);
-              case 'bigint':   return val.toString() + 'n';
-              case 'symbol':   return val.toString();
-              case 'function': return `[Function${val.name ? ': ' + val.name : ''}]`;
+              case 'number'     : return String(val);
+              case 'string'     : return val;
+              case 'boolean'    : return String(val);
+              case 'bigint'     : return val.toString() + 'n';
+              case 'symbol'     : return val.toString();
+              case 'function'   : return `[Function${val.name ? ': '+val.name : ''}]`;
               
             }//switch
             
-            if (Array.isArray(val)) {
-                  return '[' + val.map(v => fn(v, seen)).join(', ') + ']';
+            var type    = datatype(val);
+            
+            if(type=='array'){
+                  return '['+val.map(v=>fn(v,seen)).join(', ')+']';
             }
             
-            if (val instanceof Date) {
+            if(type=='date'){//val instanceof Date){
                   return `Date("${val.toISOString()}")`;
             }
             
-            if (val instanceof RegExp) {
+            if(val instanceof RegExp){
                   return val.toString();
             }
             
-            if (val instanceof Error) {
+            if(val instanceof Error){
                   return `${val.name}: ${val.message}`;
             }
             
-            if (val instanceof Map) {
+            if(val instanceof Map){
                   const entries = [];
                   for (const [k, v] of val.entries()) {
                     entries.push(`${fn(k, seen)} => ${fn(v, seen)}`);
@@ -772,24 +781,24 @@ iframe.addEventListener("load", () => {
                   return `Map { ${entries.join(', ')} }`;
             }
             
-            if (val instanceof Set) {
-                  const entries = [...val].map(v => fn(v, seen));
+            if(val instanceof Set){
+                  const entries   = [...val].map(v=>fn(v,seen));
                   return `Set { ${entries.join(', ')} }`;
             }
             
-            if (ArrayBuffer.isView(val) && !(val instanceof DataView)) {
+            if(ArrayBuffer.isView(val) && !(val instanceof DataView)){
                   return `${val.constructor.name} [ ${Array.from(val).join(', ')} ]`;
             }
             
-            if (val instanceof Node) {
-                  if (val.nodeType === 1) {
-                    return `<${val.tagName.toLowerCase()}>`;
+            if(val instanceof Node){
+                  if(val.nodeType===1){
+                        return `<${val.tagName.toLowerCase()}>`;
                   }
                   return val.toString();
             }
             
-            if (typeof val === 'object') {
-                  const entries = Object.entries(val).map(([k, v]) => {
+            if(typeof val==='object'){
+                  const entries   = Object.entries(val).map(([k, v])=>{
                   
                         return `${k}: ${fn(v, seen)}`;
                         
@@ -797,12 +806,12 @@ iframe.addEventListener("load", () => {
                   return `{ ${entries.join(', ')} }`;
             }
             
-            try {
+            try{
             
                   return JSON.stringify(val);
                   
             }//try
-            catch {
+            catch{
             
                   return String(val);
                   
@@ -881,11 +890,32 @@ iframe.addEventListener("load", () => {
   
   
   
+        function debug(...args){
+        
+              if(!df && !obj.df)return;
+              args.unshift(`[ ${did} ]`);
+              var fmt     = Array.from({length:args.length}).fill('%O').join(' ');
+              var args2   = [fmt].concat(args);
+              console.groupCollapsed.apply(console,args2);
+              console.trace();
+              console.groupEnd();
+              
+        }//debug
+        
+        
+        
+        
+        
   return obj;
   
-})//output_console
+//output_console
+})
+
 
       </script>
       
+      
 </output-console>
+
+
 
