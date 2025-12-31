@@ -408,6 +408,79 @@ var html    = `
       }//iframe
       
       
+      
+      
+      run.iframe3   = function(js){
+      
+      
+// Create the iframe
+const iframe = document.createElement("iframe");
+document.body.appendChild(iframe);
+
+// HTML that will run inside the iframe
+const html = `
+<!doctype html>
+<html>
+  <body>
+    <script type="module">
+      console.log("iframe module script loaded");
+      
+      // Catch *everything* the iframe might throw
+      window.addEventListener("error", (e) => {
+        console.log("iframe error:", e.message);
+      });
+      
+      window.addEventListener("unhandledrejection", (e) => {
+        console.log("iframe unhandledrejection:", e.reason);
+      });
+      
+      window.addEventListener("message", async (event) => {
+        if (event.data?.type !== "run") return;
+        
+        console.log("iframe got message, code:", event.data.code);
+        
+        try {
+          // Turn the incoming code into a module
+          const blob = new Blob(
+            [event.data.code],
+            { type: "text/javascript" }
+          );
+          const url = URL.createObjectURL(blob);
+          
+          console.log("importing user module:", url);
+          
+          await import(url);
+          
+          console.log("user module finished");
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          console.log("import failed:", err);
+        }
+      });
+    </scr`+`ipt>
+  </body>
+</html>
+`;
+
+// Load the iframe from a Blob URL
+const blob = new Blob([html], { type: "text/html" });
+iframe.src = URL.createObjectURL(blob);
+
+// When iframe is ready, send some code
+iframe.addEventListener("load", () => {
+  console.log("iframe loaded, posting message");
+  
+  iframe.contentWindow.postMessage({
+    type: "run",
+    code: js
+  }, "*");
+});
+
+
+      }//iframe3
+      
+      
+      
       obj.kill    = function(){return kill()}
       
       function kill(){
