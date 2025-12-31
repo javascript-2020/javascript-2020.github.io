@@ -54,12 +54,16 @@
       <script>
       
 (function output_console({mod,dom,host}){
-                                                                                //console.log('output');
+
   var obj   = {
         version   : 'v2.0',
   };
   
-  
+      var df=false,did='output-console'
+      ;
+      
+      
+      
       var ext,$
       ;
       
@@ -100,7 +104,7 @@
   
   
       obj.init    = async function(){
-      
+                                                                                debug('init',obj.version);
             await libs();
             
       }//init
@@ -118,7 +122,7 @@
   
   
       obj.initdom   = function(rootnode){
-      
+                                                                                debug('initdom');
             shadow                          = host.shadowRoot;
             
             chk.persist                     = $.chkbox(shadow,'#console-persist',false);
@@ -140,14 +144,14 @@
       
       
       btn.kill    = function(){
-      
+                                                                              debug('btn.kill');
             kill();
             
       }//kill
       
       
       btn.clear   = function(){
-      
+                                                                              debug('btn.clear');
             clear();
             
       }//clear
@@ -165,7 +169,7 @@
       
       
       obj.run   = async function(js,params={}){
-                                                                    console.log('run');
+                                                                                debug('run');
             var sandbox   = (()=>{
             
                   var console                 = {};
@@ -221,7 +225,7 @@
       
       
       obj.run.iframe    = async function(js,params={}){
-                                                                    console.log('run.iframe');
+                                                                                debug('run.iframe');
             var resolve,promise=new Promise(res=>resolve=res);
             
             if(iframe){
@@ -271,7 +275,7 @@
       
       
       obj.run.iframe2    = async function(js,params={}){
-                                                                    console.log('run.iframe2');
+                                                                                debug('run.iframe2');
             var resolve,promise=new Promise(res=>resolve=res);
             
             if(iframe){
@@ -881,11 +885,32 @@ iframe.addEventListener("load", () => {
   
   
   
+        function debug(...args){
+        
+              if(!df && !obj.df)return;
+              args.unshift(`[ ${did} ]`);
+              var fmt     = Array.from({length:args.length}).fill('%O').join(' ');
+              var args2   = [fmt].concat(args);
+              console.groupCollapsed.apply(console,args2);
+              console.trace();
+              console.groupEnd();
+              
+        }//debug
+        
+        
+        
+        
+        
   return obj;
   
-})//output_console
+//output_console
+})
+
 
       </script>
       
+      
 </output-console>
+
+
 
