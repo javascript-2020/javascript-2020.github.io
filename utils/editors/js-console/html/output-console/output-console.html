@@ -259,6 +259,7 @@
                   if(params.async){
                         js      = '(async()=>{\n'+js+'\n})()';
                   }
+                  
                   var result    = await win.eval(js);
                   resolve(result);
                   
@@ -267,6 +268,249 @@
             }//onload
             
       }//iframe
+      
+      
+      obj.run.iframe2    = async function(js,params={}){
+                                                                    console.log('run.iframe2');
+            var resolve,promise=new Promise(res=>resolve=res);
+            
+            if(iframe){
+                  iframe.remove();
+            }
+            
+            if(params.async){
+                  js      = '(async()=>{\n'+js+'\n})()';
+            }
+            
+            
+            
+/*
+            var html        = `
+                  <script>
+                  
+                        window.addEventListener('message',({data})=>{
+                        console.log('message',data);
+                              var {js}    = data;
+                        console.log(js);
+                              window.eval(js);
+                              
+                        });
+                        
+                  </scr`+`ipt>
+            `;
+            
+            
+var html    = `
+
+<script type="module">
+  window.addEventListener("message", async (event) => {
+      try {
+        // Wrap the code in a module so dynamic import works
+        const blob = new Blob([event.data.js], { type: "text/javascript" });
+        const url = URL.createObjectURL(blob);
+        await import(url);
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        console.error("Module error:", e);
+      }
+  });
+</scr`+`ipt>
+
+
+`;
+
+
+
+
+              var html    = `
+              
+                    <script>
+                    
+                          ${js}
+                          
+                    </scr`+`ipt>
+              `;
+              
+              
+              var html    = `
+              
+              <!DOCTYPE html>
+              
+              <html>
+                    <head>
+                    
+                    <script type=module>
+                    
+      // Catch *everything* the iframe might throw
+      window.addEventListener("error", (e) => {
+        console.log("iframe error:", e.message);
+      });
+      
+      window.addEventListener("unhandledrejection", (e) => {
+        console.log("iframe unhandledrejection:", e.reason);
+      });
+      
+      
+                          window.addEventListener('message',async({data})=>{
+                          
+                                var {js}    = data;
+                                try{
+                                      var blob    = new Blob([js],{type:'text/javascript'});
+                                      var url     = window.URL.createObjectURL(blob);
+                                      await import(url);
+                                }
+                                catch(err){
+                                      console.error('import failed',err);
+                                }
+                                
+                          });
+                          
+                    </scr`+`ipt>
+                    
+                    </head>
+                    
+                    <body>
+                    </body>
+              </html>
+              
+              `;
+              
+              
+              var html    = `
+              
+                    <script>
+                    
+                          window.addEventListener('message',async({data})=>{
+                          
+                                var {js}    = data;
+                                window.eval(js);
+                                
+                          });
+                          
+                    </scr`+`ipt>
+                    
+              `;
+              
+              
+              
+              
+*/
+
+
+
+            iframe            = document.createElement('iframe');
+            obj.iframe        = iframe;
+            document.body.append(iframe)
+            //cur.root.append(iframe);
+            
+            iframe.style.display    = 'none';
+            iframe.sandbox          = 'allow-scripts allow-same-origin';
+            iframe.onload           = onload;
+            
+            //var blob          = new Blob([html],{type:'text/html'});
+            //var url           = window.URL.createObjectURL(blob);
+            //iframe.src        = url;
+            
+            iframe.srcdoc     = '';
+            
+            return promise;
+            
+            
+            async function onload(){
+            
+                  var win             = iframe.contentWindow;
+                  
+                  win.focus();
+                  win.console.log     = log;
+                  win.console.clear   = clear;
+                  win.console.error   = error;
+                  win.console.write   = write;
+                  
+                  if(!chk.persist){
+                        clear();
+                  }
+                  
+                  var result    = await win.eval(js);
+                  resolve(result);
+                  
+                  //iframe.remove();
+                  
+            }//onload
+            
+      }//iframe
+      
+      
+      
+      
+      obj.run.iframe3   = function(js){
+      
+      
+// Create the iframe
+const iframe = document.createElement("iframe");
+document.body.appendChild(iframe);
+
+// HTML that will run inside the iframe
+const html = `
+<!doctype html>
+<html>
+  <body>
+    <script type="module">
+      console.log("iframe module script loaded");
+      
+      // Catch *everything* the iframe might throw
+      window.addEventListener("error", (e) => {
+        console.log("iframe error:", e.message);
+      });
+      
+      window.addEventListener("unhandledrejection", (e) => {
+        console.log("iframe unhandledrejection:", e.reason);
+      });
+      
+      window.addEventListener("message", async (event) => {
+        if (event.data?.type !== "run") return;
+        
+        console.log("iframe got message, code:", event.data.code);
+        
+        try {
+          // Turn the incoming code into a module
+          const blob = new Blob(
+            [event.data.code],
+            { type: "text/javascript" }
+          );
+          const url = URL.createObjectURL(blob);
+          
+          console.log("importing user module:", url);
+          
+          await import(url);
+          
+          console.log("user module finished");
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          console.log("import failed:", err);
+        }
+      });
+    </scr`+`ipt>
+  </body>
+</html>
+`;
+
+// Load the iframe from a Blob URL
+const blob = new Blob([html], { type: "text/html" });
+iframe.src = URL.createObjectURL(blob);
+
+// When iframe is ready, send some code
+iframe.addEventListener("load", () => {
+  console.log("iframe loaded, posting message");
+  
+  iframe.contentWindow.postMessage({
+    type: "run",
+    code: js
+  }, "*");
+});
+
+
+      }//iframe3
+      
       
       
       obj.kill    = function(){return kill()}
