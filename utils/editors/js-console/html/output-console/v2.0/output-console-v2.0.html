@@ -333,6 +333,32 @@ var html    = `
               `;
               
               
+              var html    = `
+              
+                    <script>
+                          window.addEventListener('message',({data})=>{
+                          console.log('message',data);
+                                var {type}    = data;
+                                if(type==='run'){
+                                      run();
+                                }
+                                
+                          });
+                          
+                    </scr`+`ipt>
+                    
+                    <script>
+                    
+                    function run(){
+                    
+                          ${js}
+                          
+                    }//run
+                    
+                    </scr`+`ipt>
+              `;
+              
+              
               
               
               
@@ -370,7 +396,7 @@ var html    = `
                         clear();
                   }
                   
-                  iframe.contentWindow.postMessage({js});
+                  iframe.contentWindow.postMessage({type:'run'});
                   
                   //var result    = await win.eval(js);
                   //resolve(result);
