@@ -102,6 +102,11 @@
         
               var content     = [...host.shadowRoot.childNodes];
               
+const parent = host.parentNode;
+const next = host.nextSibling;
+parent.removeChild(host);
+parent.insertBefore(host, next);
+
               var shadow      = host.attachShadow({mode:'open',customElements:{}});
               shadow.append(...content);
               debugger;
