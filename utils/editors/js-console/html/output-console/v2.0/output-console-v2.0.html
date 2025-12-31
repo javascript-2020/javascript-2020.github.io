@@ -298,6 +298,30 @@
             `;
             
             
+var html    = `
+
+<script type="module">
+  window.addEventListener("message", async (event) => {
+      try {
+        // Wrap the code in a module so dynamic import works
+        const blob = new Blob([event.data.js], { type: "text/javascript" });
+        const url = URL.createObjectURL(blob);
+        await import(url);
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        console.error("Module error:", e);
+      }
+  });
+</scr`+`ipt>
+
+
+`;
+
+
+
+
+
+
             iframe            = document.createElement('iframe');
             obj.iframe        = iframe;
             iframe.sandbox    = 'allow-scripts allow-same-origin';
