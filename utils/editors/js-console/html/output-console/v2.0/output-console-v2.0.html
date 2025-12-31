@@ -259,8 +259,62 @@
                   if(params.async){
                         js      = '(async()=>{\n'+js+'\n})()';
                   }
+                  
                   var result    = await win.eval(js);
                   resolve(result);
+                  
+                  //iframe.remove();
+                  
+            }//onload
+            
+      }//iframe
+      
+      
+      obj.run.iframe2    = async function(js,params={}){
+                                                                    console.log('run.iframe');
+            var resolve,promise=new Promise(res=>resolve=res);
+            
+            if(iframe){
+                  iframe.remove();
+            }
+            
+            if(params.async){
+                  js      = '(async()=>{\n'+js+'\n})()';
+            }
+            
+            iframe          = document.createElement('iframe');
+            obj.iframe      = iframe;
+            iframe.srcdoc   = `<script>${js}</script>`;
+            iframe.onload   = onload;
+            cur.root.append(iframe);
+            
+            return promise;
+            
+            
+            async function onload(){
+            
+                  //setTimeout(complete,100);
+                  
+            //}//onload
+            
+            
+            //async function complete(){
+            
+                  var win             = iframe.contentWindow;
+                  
+                  win.focus();
+                  win.console.log     = log;
+                  win.console.clear   = clear;
+                  win.console.error   = error;
+                  win.console.write   = write;
+                  
+                  if(!chk.persist){
+                        clear();
+                  }
+                  
+                  
+                  //var result    = await win.eval(js);
+                  //resolve(result);
                   
                   //iframe.remove();
                   
