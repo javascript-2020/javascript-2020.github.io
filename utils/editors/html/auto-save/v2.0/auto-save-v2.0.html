@@ -100,14 +100,14 @@
   
         obj.init    = function(){
         
-        
-              var registry    = new CustomElementRegistry();
+              var content     = host.shadowRoot.cloneNode(true);
+              
+              var shadow2     = host.attachShadow({mode:'open',customElements:{}});
+              var registry    = shadow.customElements;
+              
               registry.define('check-box',checkbox);
               
-              var content   = host.shadowRoot.cloneNode(true);
-              
-              var shadow    = host.attachShadow({mode:'open',customElements:registry});
-              shadow.append(content);
+              shadow2.append(content);
               
               
         }//init
