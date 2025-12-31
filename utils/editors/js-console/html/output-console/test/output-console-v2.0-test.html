@@ -5,26 +5,26 @@
       <head>
       
             <base href='https://ext-code.com/utils/editors/js-console/'>
-      
-
-
-
-
+            
+            
+            
+            
+            
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
+            
             
             <script init>
                                                                                 console.clear();
-
+                                                                                
         var ext,$,datatype,menumod,keydown;
         
-
+        
         var output;
         
-            
+        
         async function init(){
                                                                                 console.log('init');
-
+                                                                                
               //keydown.add(kd);
               
               output    = mod['output-console'];
@@ -38,19 +38,19 @@
               
               
               initdom();
-
-              test();
               
-
+              test2();
+              
+              
         }//init
-
-
+        
+        
 (async()=>{
 
         mod.stack.add;
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
+        
         var promise   = ext.load.libs(
               'js/dom/$.js.api',
               'js/core/datatype.js',
@@ -58,13 +58,13 @@
               'js/dom/keydown/keydown.js'
         );
         [$,datatype,menumod,keydown]   = await promise;
-  
+        
         mod.stack.complete;
-              
+        
 })();
 
             </script init>
-
+            
             
             <style>
             
@@ -74,34 +74,34 @@
     {height:calc(100% - 16px)}
     
             </style>
-      
+            
       </head>
       
       
       <body>
-            
+      
             <output-console component=page v2.0></output-console>
             
       </body>
-
+      
       
       <script>
-
+      
       
         function initdom(){
-          
+        
               output.initdom();
-
-
+              
+              
               
         }//initdom
-            
-            
+        
+        
   //:
   
   
         function test(){
-          
+        
               var js    = `
               
                     console.log(1,2,3);
@@ -110,6 +110,22 @@
               output.run(js);
               
         }//test
+        
+        
+        function test2(){
+        
+              var js    = `
+              
+                    console.groupCollapsed(1,2,3);
+                    
+                          function datatype(v){return Object.prototype.toString.call(v).slice(8,-1).toLowerCase()}
+                          
+                    console.log(datatype({}));
+                    
+              `;
+              output.run.iframe2(js);
+              
+        }//test2
         
         
         
