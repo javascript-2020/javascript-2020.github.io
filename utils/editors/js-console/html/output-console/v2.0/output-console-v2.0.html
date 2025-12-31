@@ -421,10 +421,11 @@ var html    = `
                   var win             = iframe.contentWindow;
                   
                   win.focus();
-                  win.console.log     = log;
-                  win.console.clear   = clear;
-                  win.console.error   = error;
-                  win.console.write   = write;
+                  win.console.log                 = log;
+                  win.console.clear               = clear;
+                  win.console.error               = error;
+                  win.console.write               = write;
+                  win.console.groupCollapsed      = groupCollapsed;
                   
                   if(!chk.persist){
                         clear();
@@ -581,6 +582,16 @@ iframe.addEventListener("load", () => {
       }//log
       
       
+      obj.groupCollapsed    = function(){return groupCollapsed.apply(null,arguments)}
+      
+      function groupCollapsed(...args){
+      
+            log.apply(null,args);
+            window.console.groupCollapsed.apply(window.console,args);
+            
+      }//groupCollapsed
+      
+      
       obj.error   = function(){return error.apply(null,arguments)}
       
       function error(){
@@ -628,6 +639,8 @@ iframe.addEventListener("load", () => {
             return span;
             
       }//write
+      
+      
       
       
   //:
