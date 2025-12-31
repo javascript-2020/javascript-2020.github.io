@@ -341,25 +341,15 @@ var html    = `
                     <head>
                     
                     <script>
-                          window.addEventListener('message',({data})=>{
-                          console.log('message',data);
-                                var {type}    = data;
-                                if(type==='run'){
-                                      run();
-                                }
+                          window.addEventListener('message',async({data})=>{
+                          
+                                var {js}    = data;
+                                var blob    = new Blob([js],{type:'text/javascript'});
+                                var url     = window.URL.createObjectURL(blob);
+                                await import(url);
                                 
                           });
                           
-                    </scr`+`ipt>
-                    
-                    <script type=module>
-                    
-                    window.run=function(){
-                    
-                          ${js}
-                          
-                    }//run
-                    
                     </scr`+`ipt>
                     
                     </head>
