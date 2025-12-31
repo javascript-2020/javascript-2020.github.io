@@ -684,32 +684,37 @@ iframe.addEventListener("load", () => {
       
       function format(args){
       
-            if (typeof args[0] !== "string") return args;
+            if(typeof args[0]!=='string')return args;
             
-            let fmt = args[0];
-            let out = [];
-            let argIndex = 1;
+            let fmt         = args[0];
+            let out         = [];
+            let argIndex    = 1;
             
-            out.push(fmt.replace(/%[sdifoO]/g, (match) => {
+            out.push(fmt.replace(/%[sdifoO]/g,match=>{
             
-              const val = args[argIndex++];
-              switch (match) {
-                case "%s": return ''+val;
-                case "%d":
-                case "%i": return parseInt(val, 10);
-                case "%f": return parseFloat(val);
-                case "%o":
-                case "%O": return format.fn(val);
-                default:
-                  return match;
-              }
-              
+                  var val   = args[argIndex++];
+                  
+                  switch (match) {
+                  
+                    case '%s'   : return ''+val;
+                    case '%d'   :
+                    case '%i'   : return parseInt(val, 10);
+                    case '%f'   : return parseFloat(val);
+                    case '%o'   :
+                    case '%O'   : return format.fn(val);
+                    default     : return match;
+                    
+                  }//switch
+                  
             }));
             
-            // Append any remaining args
-            while (argIndex < args.length) {
-              out.push(args[argIndex++]);
-            }
+            
+            while(argIndex<args.length){
+            
+                  var v   = args[argIndex++];
+                  out.push(v);
+                  
+            }//while
             
             return out;
             
@@ -726,7 +731,7 @@ iframe.addEventListener("load", () => {
                     
                   }//switch
                   
-                  return JSON.stringify(val,null,2);
+                  return JSON.stringify(val,null,4);
             }//fn
             
       }//format
@@ -755,8 +760,9 @@ iframe.addEventListener("load", () => {
               
             }//switch
             
-            var type    = datatype(val);
             
+            var type    = datatype(val);
+            console.log('format.fn',type);
             if(type=='array'){
                   return '['+val.map(v=>fn(v,seen)).join(', ')+']';
             }
