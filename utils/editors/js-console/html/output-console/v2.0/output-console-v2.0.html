@@ -679,6 +679,9 @@ iframe.addEventListener("load", () => {
   //:
   
   
+      function datatype(v){return Object.prototype.toString.call(v).slice(8,-1).toLowerCase()}
+      
+      
       function format(args){
       
             if (typeof args[0] !== "string") return args;
@@ -731,32 +734,34 @@ iframe.addEventListener("load", () => {
       
       format.fn   = function(val,seen=new WeakSet()){
       
-            if (val === null) return 'null';
-            if (val === undefined) return 'undefined';
+            if(val === null)return 'null';
+            if(val === undefined)return 'undefined';
             
                                                                                 // Prevent circular references
-            if (typeof val === 'object' || typeof val === 'function') {
-                  if (seen.has(val)) return '[Circular]';
+            if(typeof val==='object' || typeof val==='function'){
+                  if(seen.has(val))return '[Circular]';
                   seen.add(val);
             }
             
                                                                                 // Primitive types
-            switch (typeof val) {
+            switch(typeof val){
             
-              case 'number':   return String(val);
-              case 'string':   return val;
-              case 'boolean':  return String(val);
-              case 'bigint':   return val.toString() + 'n';
-              case 'symbol':   return val.toString();
-              case 'function': return `[Function${val.name ? ': ' + val.name : ''}]`;
+              case 'number'     : return String(val);
+              case 'string'     : return val;
+              case 'boolean'    : return String(val);
+              case 'bigint'     : return val.toString() + 'n';
+              case 'symbol'     : return val.toString();
+              case 'function'   : return `[Function${val.name ? ': '+val.name : ''}]`;
               
             }//switch
             
-            if(Array.isArray(val)){
+            var type    = datatype(val);
+            
+            if(type=='array'){
                   return '['+val.map(v=>fn(v,seen)).join(', ')+']';
             }
             
-            if(val instanceof Date){
+            if(type=='date'){//val instanceof Date){
                   return `Date("${val.toISOString()}")`;
             }
             
