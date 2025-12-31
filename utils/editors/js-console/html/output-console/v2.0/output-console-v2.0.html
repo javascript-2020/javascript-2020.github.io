@@ -396,6 +396,8 @@ var html    = `
               
               
               
+              
+              
             iframe            = document.createElement('iframe');
             obj.iframe        = iframe;
             document.body.append(iframe)
@@ -406,20 +408,13 @@ var html    = `
             var blob          = new Blob([html],{type:'text/html'});
             var url           = window.URL.createObjectURL(blob);
             iframe.onload     = onload;
-            iframe.src        = url;
+            iframe.srcdoc     = '';
             //cur.root.append(iframe);
             
             return promise;
             
             
             async function onload(){
-            
-                  //setTimeout(complete,100);
-                  
-            //}//onload
-            
-            
-            //async function complete(){
             
                   var win             = iframe.contentWindow;
                   
@@ -435,10 +430,10 @@ var html    = `
                   
                   iframe.contentWindow.postMessage({js},'*');
                   
-                  //var result    = await win.eval(js);
-                  //resolve(result);
+                  var result    = await win.eval(js);
+                  resolve(result);
                   
-                  //iframe.remove();
+                  iframe.remove();
                   
             }//onload
             
