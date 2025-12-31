@@ -342,12 +342,26 @@ var html    = `
                     
                     <script type=module>
                     
+      // Catch *everything* the iframe might throw
+      window.addEventListener("error", (e) => {
+        console.log("iframe error:", e.message);
+      });
+      
+      window.addEventListener("unhandledrejection", (e) => {
+        console.log("iframe unhandledrejection:", e.reason);
+      });
+      
                           window.addEventListener('message',async({data})=>{
                           
                                 var {js}    = data;
-                                var blob    = new Blob([js],{type:'text/javascript'});
-                                var url     = window.URL.createObjectURL(blob);
-                                await import(url);
+                                try{
+                                      var blob    = new Blob([js],{type:'text/javascript'});
+                                      var url     = window.URL.createObjectURL(blob);
+                                      await import(url);
+                                }
+                                catch(err){
+                                      console.error('iport failed',err);
+                                }
                                 
                           });
                           
