@@ -539,7 +539,26 @@ iframe.addEventListener("load", () => {
   //:
   
   
-  
+      function disp(){
+      
+            var txt           = build(arguments);
+            var div           = document.createElement('div');
+            div.textContent   = txt;
+            cur.root.append(div);
+            
+            cur.node    = div;
+            
+            if(txt==''){
+                  div.style.height    = '16px';
+            }
+            
+            cur.root.scrollTop    = 999999999;
+            
+            return div;
+            
+      }//disp
+      
+      
       obj.clear   = function(){return clear()}
       
       function clear(){
@@ -586,8 +605,12 @@ iframe.addEventListener("load", () => {
       
       function groupCollapsed(...args){
       
-            log.apply(null,args);
-            window.console.groupCollapsed.apply(window.console,args);
+            if(chk.log.checked){
+                  window.console.groupCollapsed.apply(window.console,args);
+            }
+            
+            var div   = disp.apply(null,arguments);
+            return div;
             
       }//groupCollapsed
       
