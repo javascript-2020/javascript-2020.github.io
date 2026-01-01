@@ -139,6 +139,9 @@
               initdom(document.body);
               
               
+              publish.query();
+              
+              
         }//init
         
         
@@ -414,7 +417,6 @@
               
               
               
-              publish.query();
               editor.focus();
               
               query();
@@ -640,7 +642,7 @@
         
         
         function complete(file){
-                                                                                console.log('complete',file);
+                                                                                //console.log('complete',file);
               if(file){
                     editor.filename(file);
                     editor.filename.save.hide();
@@ -783,20 +785,16 @@
   
   
         function run(){
-        
+                                                                                debug('run');
               if(autosave.checked){
-                                                                                console.log('save');
+                                                                                debug('autosave');
                     filemod.save();
               }
               
               
               var js    = editor.getValue();
               
-              //if(mode.iframe.checked){
-                    output.run.iframe2(js,{async:mode.async.checked});
-              //}else{
-                    //output.run(js,{async:mode.async.checked});
-              //}
+              output.run.iframe2(js,{async:mode.async.checked});
               
               
         }//run
@@ -869,6 +867,21 @@
               
         }//favicon
         
+        
+  //:
+  
+  
+        function debug(...args){
+        
+              if(!df && !obj.df)return;
+              args.unshift(`[ ${did} ]`);
+              var fmt     = Array.from({length:args.length}).fill('%O').join(' ');
+              var args2   = [fmt].concat(args);
+              console.groupCollapsed.apply(console,args2);
+              console.trace();
+              console.groupEnd();
+              
+        }//debug
         
         
         
