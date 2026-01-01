@@ -62,9 +62,9 @@
                               <input type=checkbox checked>
                         </div>
                         
-                  </div>
+                  </div menu>
                   
-            </div>
+            </div menu-root>
             
       </template>
       
@@ -100,6 +100,9 @@
   //:
   
   
+        obj.checked         = false;
+        
+        
         var savemenu;
         
         var timer           = {};
@@ -215,32 +218,32 @@
                     super();
                     
                     var root              = this;
+                    
                     var template          = $(host,'template#check-box');
-                    var content           = template.content;
                     var shadow            = root.attachShadow({mode:'open'});
-                    shadow.appendChild(content);
-                    
-                    
-                    
+                    shadow.appendChild(template.content);
                     
                     var chk         = shadow.querySelector('[type=checkbox]');
                     chk.onchange     = e=>{
-                    
-                                              root.checked    = chk.checked;
+                                                                                debug('autosave.chk onchange',chk,checked);
+                                              obj.checked    = chk.checked;
+                                              timer.onclick();
+                                              
                                               if(typeof root.onchange=='function'){
                                                     root.onchange(e);
                                               }
                                               
-                                      };
+                                      }//onchange
                                       
                     Object.defineProperty(root,'checked',{get:()=>chk.checked,set:v=>chk.checked=v});
                     
                     if(root.hasAttribute('checked')){
-                          root.checked   = true;
+                          chk.checked   = true;
                     }
                     if('checked' in root){
                           chk.checked   = root.checked;
                     }
+                    
                     
                     setTimeout(()=>{
                     
