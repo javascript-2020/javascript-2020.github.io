@@ -1,5 +1,10 @@
 
 
+<!-- headers
+      cross-origin-isolate
+-->
+
+
 <!DOCTYPE html>
 
 <html lang=en>
@@ -62,12 +67,14 @@
         var menumod;
         var keydown;
         var debug;
+        var ls;
         
         var menu;
         
         var hdr;
         var mainmenu;
         var filemod;
+        var autosave;
         var publish;
         var editor;
         var output;
@@ -83,12 +90,13 @@
               menu                      = menumod();
               
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
+              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace,ls});
               
               
               hdr                       = mod['editors-hdr'];
               mainmenu                  = mod['main-menu'];
               filemod                   = mod['file-mod'];
+              autosave                  = mod['auto-save'];
               publish                   = mod['publish-ui'];
               editor                    = mod['web-editor'];
               output                    = mod['output-console']
@@ -100,6 +108,7 @@
               hdr.initmod({ext,$,menu});
               mainmenu.initmod({ext,$,menu,editor,filemod});
               filemod.initmod({ext,$,menu,menumod,complete,source,focus,log});
+              autosave.initmod({$,menu,keydown,log,save:btn.save});
               publish.initmod({ext,$,ui,menu,source,complete,log});
               editor.initmod({ext,$,menu,ace,on});
               output.initmod({ext,$});
@@ -109,6 +118,7 @@
                     mainmenu.init(),
                     hdr.init(),
                     filemod.init(),
+                    autosave.init(),
                     publish.init(),
                     editor.init(),
                     output.init(),
@@ -117,6 +127,7 @@
               
               
   //:
+  
   
               icon.def    = $('[rel*=icon]').href;
               
@@ -140,14 +151,19 @@
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
         
+        var lsmod;
+        
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
-              'js/debug/debug.js'
+              'js/debug/debug.js',
+              'js/core/ls-mod/ls-mod.js',
         );
-        [$,datatype,menumod,keydown,debug]   = await promise;
+        [$,datatype,menumod,keydown,debug,lsmod]   = await promise;
+        
+        ls    = lsmod();
         
         mod.stack.complete;
         
@@ -250,12 +266,15 @@
                   
                   <div id=save-root>
                         <button id=save>save</button>
+                        <auto-save v2.0 component=grp></auto-save>
+                        <!--
                         <checkbox-one id=autosave></checkbox-one>
                         <div id=save-menu-root class=menu-root>
                               <img id=save-menu-icon class=menu-icon>
                               <div id=save-menu class=menu style='display:none'>
                               </div>
                         </div>
+                        -->
                   </div>
                   
                   <publish-ui component></publish-ui>
@@ -303,12 +322,13 @@
             
             
             
-            
+<!--
             <checkbox-one-template>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
             </checkbox-one-template>
-            
-            
+-->
+
+
       </body>
       
       
@@ -317,7 +337,7 @@
       
         var root;
         
-        var autosave;
+        //var autosave;
         
         var iframe;
         
@@ -345,28 +365,21 @@
               menu.add.style();
               
               
-              hdr.initdom();
-              
-              
-              mainmenu.initdom(root);
-              
-              filemod.initdom(root);
-              
-              
               $(root,'#save').onclick               = btn.save;
               
-              var card                              = $(root,'#save-root .menu');
-              $(root,'.menu-icon').onclick          = menu.click(card,false,false);
-              
-              autosave                              = $(root,'#autosave');
-              autosave.checked                      = false;
+              //var card                              = $(root,'#save-root .menu');
+              //$(root,'.menu-icon').onclick          = menu.click(card,false,false);
               
               
-              publish.initdom(root);
+              //autosave                              = $(root,'#autosave');
+              //autosave.checked                      = false;
+              
+              
               
               $(root,'#run').onclick                = run;
               mode.iframe                           = $(root,'#iframe');
               mode.async                            = $(root,'#async');
+              
               $(root,'#syntax-chk').onclick         = btn.syntax;
               $(root,'#prettier').onclick           = btn.prettier;
               $(root,'#terser').onclick             = btn.terser;
@@ -380,22 +393,32 @@
               var view                              = $('#view');
               ui.root                               = view;
               
-              editor.initdom(view,{mode:'javascript'});
               
               slider.node                           = $.slider('web-editor','#page-slider','output-console',slider,ui);
-              output.initdom(root);
               
               
-              log.initdom();
+              await Promise.all([
+                    hdr.initdom(),
+                    mainmenu.initdom(root),
+                    filemod.initdom(root),
+                    autosave.initdom(),
+                    publish.initdom(root),
+                    editor.initdom(view,{mode:'javascript'}),
+                    output.initdom(root),
+                    log.initdom(),
+              ]);
               
               
               
               //ui.setup(view);
               
+              
+              
               publish.query();
               editor.focus();
               
               query();
+              
               
         }//initdom
         
@@ -605,6 +628,11 @@
         function source(){
         
               var txt     = editor.getValue();
+              
+              if(autosave.trim.checked){
+                    txt   = autosave.txt.trim(txt);
+              }
+              
               var blob    = new Blob([txt]);
               return blob;
               
@@ -658,6 +686,7 @@
   //:
   
   
+/*
         window.onmessage    = function(e){
         
               var err;
@@ -685,8 +714,9 @@
               }
               
         }//onmessage
-        
-        
+*/
+
+
   //:
   
   
