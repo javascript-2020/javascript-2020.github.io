@@ -1,5 +1,10 @@
 
 
+<!-- headers
+      cross-origin-isolate
+-->
+
+
 <!DOCTYPE html>
 
 <html lang=en>
@@ -98,6 +103,7 @@
         var hdr;
         var mainmenu;
         var filemod;
+        var autosave;
         var publish;
         var editor;
         var output;
@@ -122,6 +128,7 @@
               hdr                       = mod['editors-hdr'];
               mainmenu                  = mod['main-menu'];
               filemod                   = mod['file-mod'];
+              autosave                  = mod['auto-save'];
               publish                   = mod['publish-ui'];
               editor                    = mod['web-editor'];
               output                    = mod['output-html'];
@@ -131,6 +138,7 @@
               mainmenu.initmod({ext,$,menu,editor,filemod});
               hdr.initmod({ext,$,menu});
               filemod.initmod({ext,$,menumod,menu,complete,source,focus,log});
+              autosave.initmod({$,menu,keydown,log,save:btn.save});
               publish.initmod({ext,$,menu,run,source,complete,log});
               editor.initmod({ext,$,menu,on,ace});
               output.initmod({ext,$});
@@ -140,6 +148,7 @@
                     mainmenu.init(),
                     hdr.init(),
                     filemod.init(),
+                    autosave.init(),
                     publish.init(),
                     editor.init(),
                     output.init(),
@@ -169,6 +178,8 @@
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
         
+        var lsmod;
+        
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
@@ -177,7 +188,9 @@
               'js/debug/debug.js',
               'js/core/ls-mod/ls-mod.js',
         );
-        [$,datatype,menumod,keydown,debug]   = await promise;
+        [$,datatype,menumod,keydown,debug,lsmod]   = await promise;
+        
+        ls    = lsmod();
         
         mod.stack.complete;
         
@@ -205,12 +218,8 @@
   #save-root
     {margin-left:5px;display:flex}
     
-  #save-menu
-    {position:absolute;left:0;top:30px}
-    
-    
   #run
-    {color:blue;font-weight:bold}
+    {color:blue;font-weight:bold;min-width:60px}
     
   #prettier
     {padding:2px;
@@ -264,7 +273,7 @@
             <editors-hdr component=grp>
                   <img class=title src='images/html-editor.png' style='top:-5px;height:55px' alt='html editor'>
                   <h1 slot=seo-hdr class=visually-hidden>html editor</h1>
-                  <time slot=date datetime=2025-12-31>31 Dec 2025</time>
+                  <time slot=date datetime=2026-01-01>01 Jan 2026</time>
             </editors-hdr>
             
             
@@ -276,28 +285,7 @@
                   
                   <div id=save-root>
                         <button id=save>save</button>
-                        <checkbox-one id=autosave></checkbox-one>
-                        <div id=save-menu-root class=menu-root>
-                              <img id=save-menu-icon class=menu-icon>
-                              <div id=save-menu class=menu style='display:none'>
-                                    <div class=menu-title>
-                                          save menu
-                                    </div>
-                                    <div class=menu-item>
-                                          <div class=menu-label>
-                                                autosave
-                                          </div>
-                                          <input type=checkbox checked>
-                                          <input value=300 style='width:60px'>
-                                    </div>
-                                    <div id=trim class=menu-item>
-                                          <div class=menu-label>
-                                                trim on save
-                                          </div>
-                                          <input type=checkbox checked>
-                                    </div>
-                              </div>
-                        </div>
+                        <auto-save v2.0 component=grp></auto-save>
                   </div>
                   
                   <publish-ui component></publish-ui>
@@ -314,17 +302,13 @@
             
             <div id=view>
             
-                  <web-editor v2.0 component></web-editor>
+                  <web-editor component></web-editor>
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
-                  <output-html component=page v2.0></output-html>
+                  <output-html component=page></output-html>
                   
             </div>
-            
-            <checkbox-one-template>
-                  <script src='https://libs.ext-code.com/html/html-loader.js'></script>
-            </checkbox-one-template>
             
             <log-mod component></log-mod>
             
@@ -336,23 +320,12 @@
       
         var root;
         
-        var autosave;
-        
-        
         
         
         var slider              = {};
         
         var ui                  = {};
         ui.mode                 = 'vert';
-        ui.trim                 = null;
-        
-        var savemenu;
-        var savetimer           = {};
-        savetimer.timer         = null;
-        savetimer.chk           = null;
-        savetimer.time          = null;
-        savetimer.onclick       = null;
         
         
         var btn                 = {};
@@ -377,22 +350,14 @@
               
               mainmenu.initdom(root);
               
-              filemod.initdom(root);
+              filemod.initdom();
               
               
-              autosave                              = $(root,'#autosave');
+              autosave.initdom();
+              
+              
               
               $(root,'#save').onclick               = btn.save;
-              
-              savemenu                              = $(root,'#save-root .menu');
-              $(root,'.menu-icon').onclick          = menu.click(savemenu,false,false,savemenu_callback);
-              menu.input.norm(savemenu);
-              
-              savetimer.chk                         = $(savemenu,':scope>div:nth-of-type(2) [type=checkbox]');
-              savetimer.time                        = $(savemenu,':scope>div:nth-of-type(2) input:not([type])');
-              savetimer.chk.onclick                 = savetimer.onclick;
-              
-              ui.trim                               = $(savemenu,':scope>div:nth-of-type(3) [type=checkbox]');
               
               
               publish.initdom();
@@ -435,61 +400,6 @@
               editor.focus();
               
         }//focus
-        
-        
-        function savemenu_kd(e){
-                                                          console.log(e.target);
-              if(e.target.nodeName=='INPUT'){
-                    return;
-              }
-              return false;
-              
-        }//savemenu_kd
-        
-        
-        function savemenu_callback(type){
-                                                          console.log('savemenu_callback',arguments);
-              if(type=='show'){
-                    $(savemenu,':scope>div:nth-of-type(2) input:not([type])').focus();
-                    keydown.add(savemenu_kd);
-              }
-              if(type=='hide'){
-                    keydown.rem(savemenu_kd);
-              }
-              
-        }//savemenu_callback
-        
-        
-        savetimer.onclick   = function(){
-                                                                                debug('savetimer.click');
-              clearTimeout(savetimer.timer);
-              
-              if(savetimer.chk.checked){
-                    var value   = savetimer.time.value;
-                    value       = Number(value);
-                    if(isNaN(value)){
-                          log.red('invalid autosave time, using 300s');
-                          value   = 300;
-                    }
-                    fn();
-              }
-              
-              
-              function fn(){
-              
-                    if(!autosave.checked){
-                          return;
-                    }
-                                                                                debug('savetimer',value);
-                    btn.save();
-                    if(savetimer.chk.checked){
-                          var ms    = value*1000;
-                          setTimeout(fn,ms);
-                    }
-                    
-              }//fn
-              
-        }//savetimer
         
         
   //:
@@ -595,6 +505,11 @@
         
               var txt     = editor.getValue();
               
+              if(autosave.trim.checked){
+                    txt   = autosae.txt.trim(txt);
+              }
+              
+              /*
               if(ui.trim.checked){
                     var indent    = 0;
                     var lines     = txt.split('\n');
@@ -604,13 +519,15 @@
                                           if(line.length==0){
                                                 line    = line.padStart(indent,' ');
                                           }
-                                          var match   = line.match(/^\s*/);
+                                          var match   = line.match(/^\s* /);
                                           indent      = match ? match[0].length : indent;
                                           return line;
                                           
                                     });
                     txt           = lines.join('\n');
               }
+              */
+              
               
               var blob    = new Blob([txt]);
               return blob;
@@ -665,7 +582,7 @@
         
   //:
   
-  
+/*
         window.onmessage    = function(e){
         
         
@@ -677,8 +594,9 @@
               }
               
         }//onmessage
-        
-        
+*/
+
+
   //:
   
   
