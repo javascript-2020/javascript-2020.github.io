@@ -100,7 +100,10 @@
   //:
   
   
-        obj.checked         = false;
+        Object.defineProperty(obj,'checked',{get:()=>autosave.checked,set:v=>autosave.checked=v});
+        
+        
+        var autosave;
         
         
         var savemenu;
@@ -134,6 +137,12 @@
               menu.add.style(shadow);
               
               autosave                                = $(shadow,'#autosave');
+              if(host.hasAttribute('checked')){
+                    autosave.checked   = true;
+              }
+              if('checked' in host){
+                    autosave.checked   = host.checked;
+              }
               
               savemenu                                = $(shadow,'.menu');
               $(shadow,'.menu-icon').onclick          = menu.click(savemenu,savemenu_callback);
@@ -223,10 +232,11 @@
                     var shadow            = root.attachShadow({mode:'open'});
                     shadow.appendChild(template.content);
                     
+                    
                     var chk         = shadow.querySelector('[type=checkbox]');
                     chk.onchange     = e=>{
-                                                                                debug('autosave.chk onchange',chk,checked);
-                                              obj.checked    = chk.checked;
+                                                                                debug('autosave.chk onchange',chk.checked);
+                                              root.checked    = chk.checked;
                                               timer.onclick();
                                               
                                               if(typeof root.onchange=='function'){
@@ -234,6 +244,7 @@
                                               }
                                               
                                       }//onchange
+                                      
                                       
                     Object.defineProperty(root,'checked',{get:()=>chk.checked,set:v=>chk.checked=v});
                     
@@ -243,6 +254,8 @@
                     if('checked' in root){
                           chk.checked   = root.checked;
                     }
+                    
+                    
                     
                     
                     setTimeout(()=>{
