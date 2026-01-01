@@ -47,12 +47,12 @@
                               save menu
                         </div>
                         
-                        <div class=menu-item>
+                        <div id=autosave class=menu-item>
                               <div class=menu-label>
                                     autosave
                               </div>
-                              <input id=timer-chk type=checkbox checked>
-                              <input id=timer-value value=300 style='width:60px'>
+                              <input type=checkbox checked>
+                              <input value=300 style='width:60px'>
                         </div>
                         
                         <div id=trim class=menu-item>
@@ -100,7 +100,11 @@
   //:
   
   
+        obj.checked   = null;
+        obj.trim      = null;
+        
         Object.defineProperty(obj,'checked',{get:()=>autosave.checked,set:v=>autosave.checked=v});
+        
         
         
         var autosave;
@@ -113,6 +117,10 @@
         timer.chk           = null;
         timer.time          = null;
         timer.onclick       = null;
+        
+        
+        
+        obj.txt   = {};
         
         
   //:
@@ -150,9 +158,14 @@
               $(shadow,'.menu-icon').onclick          = menu.click(savemenu,savemenu_callback);
               menu.input.norm(savemenu);
               
-              timer.chk                               = $(savemenu,'#timer-chk');     //':scope>div:nth-of-type(2) [type=checkbox]');
+              //$.chkbox(savemenu,'#autosave');
+              
+              timer.chk                               = $.chkbox(savemenu,'#autosave');   //$(savemenu,'[type]');     //':scope>div:nth-of-type(2) [type=checkbox]');
               timer.chk.onclick                       = timer.onclick;
-              timer.time                              = $(savemenu,'#timer-value');   //':scope>div:nth-of-type(2) input:not([type])');
+              timer.time                              = $(savemenu,'[value]');   //':scope>div:nth-of-type(2) input:not([type])');
+              
+              
+              obj.trim                                = $.chkbox(savemenu,'#trim');
               
               
         }//initdom
@@ -217,6 +230,30 @@
               }//fn
               
         }//timer.onclick
+        
+        
+  //:
+  
+  
+        obj.txt.trim    = function(txt){
+        
+              var indent    = 0;
+              var lines     = txt.split('\n');
+              lines         = lines.map(line=>{
+              
+                                    line    = line.trimEnd();
+                                    if(line.length==0){
+                                          line    = line.padStart(indent,' ');
+                                    }
+                                    var match   = line.match(/^\s*/);
+                                    indent      = match ? match[0].length : indent;
+                                    return line;
+                                    
+                              });
+              txt           = lines.join('\n');
+              return txt;
+              
+        }//trim
         
         
   //:
