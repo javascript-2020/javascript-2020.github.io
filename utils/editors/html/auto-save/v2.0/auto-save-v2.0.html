@@ -7,15 +7,15 @@
             <style>
             
   :host
-    {font-family:arial;display:inline-flex;align-items:center;
-}
-
-  check-box, #menu-root
+    {font-family:arial;display:inline-flex;align-items:center}
+    
+  check-box, .menu-root
     {display:flex}
     
   .menu
-    {display:flex;flex-direction:column;position:absolute}
-    
+    {display:flex;flex-direction:column;position:absolute;
+      left:0;top:35px;width:350px}
+      
   .menu [type=checkbox]
     {width:20px;height:20px;margin:0}
     
@@ -37,26 +37,33 @@
             
             <check-box id=autosave></check-box>
             
-            <div id=menu-root class=menu-root>
-                  <img id=menu-icon class=menu-icon>
-                  <div id=menu class=menu style='display:none;left:0;top:35px;width:350px'>
+            <div class=menu-root>
+            
+                  <img class=menu-icon>
+                  
+                  <div class=menu style='display:none'>
+                  
                         <div class=menu-title>
                               save menu
                         </div>
+                        
                         <div class=menu-item>
                               <div class=menu-label>
                                     autosave
                               </div>
-                              <input type=checkbox checked>
-                              <input value=300 style='width:60px'>
+                              <input id=timer-chk type=checkbox checked>
+                              <input id=timer-value value=300 style='width:60px'>
                         </div>
+                        
                         <div id=trim class=menu-item>
                               <div class=menu-label>
                                     trim on save
                               </div>
                               <input type=checkbox checked>
                         </div>
+                        
                   </div>
+                  
             </div>
             
       </template>
@@ -94,11 +101,12 @@
   
   
         var savemenu;
-        var savetimer           = {};
-        savetimer.timer         = null;
-        savetimer.chk           = null;
-        savetimer.time          = null;
-        savetimer.onclick       = null;
+        
+        var timer           = {};
+        timer.timer         = null;
+        timer.chk           = null;
+        timer.time          = null;
+        timer.onclick       = null;
         
         
   //:
@@ -122,15 +130,15 @@
               
               menu.add.style(shadow);
               
-              autosave                              = $(shadow,'#autosave');
+              autosave                                = $(shadow,'#autosave');
               
-              savemenu                              = $(shadow,'.menu');
-              $(shadow,'.menu-icon').onclick          = menu.click(savemenu,false,false,savemenu_callback);
+              savemenu                                = $(shadow,'.menu');
+              $(shadow,'.menu-icon').onclick          = menu.click(savemenu,savemenu_callback);
               menu.input.norm(savemenu);
               
-              savetimer.chk                         = $(savemenu,':scope>div:nth-of-type(2) [type=checkbox]');
-              savetimer.time                        = $(savemenu,':scope>div:nth-of-type(2) input:not([type])');
-              savetimer.chk.onclick                 = savetimer.onclick;
+              timer.chk                               = $(savemenu,'#timer-chk');     //':scope>div:nth-of-type(2) [type=checkbox]');
+              timer.chk.onclick                       = timer.onclick;
+              timer.time                              = $(savemenu,'#timer-value');   //':scope>div:nth-of-type(2) input:not([type])');
               
               
         }//initdom
@@ -141,7 +149,7 @@
   
   
         function savemenu_kd(e){
-                                                          console.log(e.target);
+                                                                                console.log(e.target);
               if(e.target.nodeName=='INPUT'){
                     return;
               }
@@ -151,9 +159,10 @@
         
         
         function savemenu_callback(type){
-                                                          console.log('savemenu_callback',arguments);
+                                                                                console.log('savemenu_callback',arguments);
               if(type=='show'){
-                    $(savemenu,':scope>div:nth-of-type(2) input:not([type])').focus();
+                    timer.time.focus();
+                    //$(savemenu,':scope>div:nth-of-type(2) input:not([type])').focus();
                     keydown.add(savemenu_kd);
               }
               if(type=='hide'){
@@ -163,12 +172,12 @@
         }//savemenu_callback
         
         
-        savetimer.onclick   = function(){
+        timer.onclick   = function(){
                                                                                 debug('savetimer.click');
-              clearTimeout(savetimer.timer);
+              clearTimeout(timer.timer);
               
-              if(savetimer.chk.checked){
-                    var value   = savetimer.time.value;
+              if(timer.chk.checked){
+                    var value   = timer.time.value;
                     value       = Number(value);
                     if(isNaN(value)){
                           log.red('invalid autosave time, using 300s');
@@ -186,30 +195,32 @@
                                                                                 debug('savetimer',value);
                     save();
                     
-                    if(savetimer.chk.checked){
+                    if(timer.chk.checked){
                           var ms    = value*1000;
                           setTimeout(fn,ms);
                     }
                     
               }//fn
               
-        }//savetimer
+        }//timer.onclick
         
         
   //:
   
+  
         class checkbox extends HTMLElement {
         
               constructor() {
-                                                                                              //console.log('checkbox-one');
+                                                                                //console.log('checkbox-one');
                     super();
                     
                     var root              = this;
-                    var shadow            = host.shadowRoot;
-                    var template          = $(host,'#check-box');
+                    var template          = $(host,'template#check-box');
                     var content           = template.content;
-                    var shadow            = root.attachShadow({mode:"open"});
+                    var shadow            = root.attachShadow({mode:'open'});
                     shadow.appendChild(content);
+                    
+                    
                     
                     
                     var chk         = shadow.querySelector('[type=checkbox]');
@@ -233,12 +244,13 @@
                     
                     setTimeout(()=>{
                     
-                          var str   = root.innerHTML.trim();
+                          var str   = root.textContent.trim();
                           if(str==''){
-                                root.innerHTML    = root.id;
+                                root.textContent    = root.id;
                           }
                           
                     },50);
+                    
                     
               }//constructor
               
