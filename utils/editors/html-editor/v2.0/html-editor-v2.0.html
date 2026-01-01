@@ -134,6 +134,7 @@
               output                    = mod['output-html'];
               log                       = mod['log-mod'];
               
+              
               menu.initmod({keydown});
               mainmenu.initmod({ext,$,menu,editor,filemod});
               hdr.initmod({ext,$,menu});
@@ -143,6 +144,7 @@
               editor.initmod({ext,$,menu,on,ace});
               output.initmod({ext,$});
               log.initmod({ext,$});
+              
               
               await Promise.all([
                     mainmenu.init(),
@@ -165,7 +167,10 @@
               icon.def    = $('link[rel~=icon]').href;
               
               
-              initdom(document.body);
+              await initdom(document.body);
+              
+              
+              publish.query();
               
               
               
@@ -341,19 +346,10 @@
                                                                                 debug('initdom');
               root                                  = rootnode;
               
-              keydown.initdom();
               menu.add.style();
               
               
-              hdr.initdom(root);
               
-              
-              mainmenu.initdom(root);
-              
-              filemod.initdom();
-              
-              
-              autosave.initdom();
               
               
               
@@ -372,24 +368,31 @@
               var view                              = $('#view');
               ui.root                               = view;
               
-              await editor.initdom(view,{mode:'html'});
-              
               
               slider.node                           = $.slider.glass('web-editor','#page-slider','output-html',slider,ui,output);
               
-              output.initdom(root);
-              
-              
-              log.initdom();
               
               
               //ui.setup(view);
               
               
+              await Promise.all([
+                    keydown.initdom(),
+                    hdr.initdom(root),
+                    mainmenu.initdom(root),
+                    filemod.initdom(),
+                    autosave.initdom(),
+                    output.initdom(root),
+                    log.initdom(),
+                    editor.initdom(view,{mode:'html'}),
+              ]);
+              
+              
+              
+              
               editor.focus();
               
               
-              publish.query();
               
               
         }//initdom
