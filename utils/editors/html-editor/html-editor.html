@@ -35,7 +35,7 @@
                         "applicationCategory"   : "DeveloperApplication",
                         "operatingSystem"       : "All",
                         "browserRequirements"   : "Requires JavaScript-enabled browser",
-                        "softwareVersion"       : "1.0.0",
+                        "softwareVersion"       : "2.0.0",
                         "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
                   }
             </script>
@@ -48,7 +48,7 @@
             <meta property=og:url content='https://ext-code.com/utils/editors/html-editor/html-editor.html'>
             <meta property=og:type content=website>
             <meta property=og:site_name content=ext-code.com>
-            
+            <!--https://www.opengraph.xyz/-->
             
             <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
             <script src='https://cdn.jsdelivr.net/npm/prettier@2.8.8/standalone.js'></script>
@@ -367,7 +367,6 @@
               $(root,'#save').onclick               = btn.save;
               
               
-              publish.initdom();
               
               $('#run').onclick                     = run;
               $(root,'#prettier').onclick           = btn.prettier;
@@ -393,6 +392,7 @@
                     mainmenu.initdom(root),
                     filemod.initdom(),
                     autosave.initdom(),
+                    publish.initdom(),
                     output.initdom(root),
                     log.initdom(),
                     editor.initdom(view,{mode:'html'}),
@@ -649,14 +649,15 @@
   
   
         function run(){
-        
+                                                                                debug('run');
+              if(autosave.checked){
+                                                                                debug('autosave');
+                    filemod.save();
+              }
+              
               var html    = editor.getValue();
               output.srcdoc(html);
               
-              if(autosave.checked){
-                                                                                console.log('save');
-                    filemod.save();
-              }
               
         }//run
         
@@ -681,6 +682,20 @@
   //:
   
   
+        function debug(...args){
+        
+              if(!df && !obj.df)return;
+              args.unshift(`[ ${did} ]`);
+              var fmt     = Array.from({length:args.length}).fill('%O').join(' ');
+              var args2   = [fmt].concat(args);
+              console.groupCollapsed.apply(console,args2);
+              console.trace();
+              console.groupEnd();
+              
+        }//debug
+        
+        
+  /*
         function debug(){
         
               if(!df)return;
@@ -716,9 +731,9 @@
               debug.log.apply(null,arguments);
               
         }//trace
-        
-        
-        
+*/
+
+
       </script>
       
       
