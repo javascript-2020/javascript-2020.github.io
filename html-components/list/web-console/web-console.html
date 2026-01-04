@@ -221,20 +221,22 @@
               var par     = e.node.parent.title;
               var file    = e.node.title;
                                                                                 console.log(d,par,file);
-              var txt;
               switch(par){
               
-                case 'source'     : txt   = show.source(file);        break;
-                case 'examples'   : txt   = show.example(file);       break;
+                case 'source'     : show.source(file);        break;
+                case 'examples'   : show.example(file);       break;
                 
               }//switch
               
-              if(!txt)return;
-              
-              editor.setvalue(txt);
-              
         }//show
         
+        
+        show.display    = function(txt){
+        
+              if(!txt)return;
+              editor.setvalue(txt);
+              
+        }//display
         
         show.source   = async function(file){
         
@@ -250,7 +252,7 @@
               }
               
               var {txt}   = await get(url);
-              return txt;
+              show.display(txt);
               
         }//source
         
@@ -259,7 +261,7 @@
         
               var url     = 'https://libs.ext-code.com/html/web-console/test/'+file;
               var {txt}   = await get(url);
-              return txt;
+              show.display(txt);
               
         }//example
         
