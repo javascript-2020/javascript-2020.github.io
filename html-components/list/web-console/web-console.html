@@ -31,7 +31,7 @@
             <script src='https://cdn.jsdelivr.net/npm/wunderbaum@0/dist/wunderbaum.umd.min.js'></script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/component.js?init'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js?init'></script>
             
             <script>
             
@@ -101,7 +101,11 @@
   #demo-tree
     {margin:50px 0;height:auto !important;border:none !important;overflow:visible;box-sizing:border-box;outline:none}
     
+  #view-hdr
+    {padding:5px 10px;font-weight:bold;}
     
+  web-editor
+    {border:1px solid lightgray;border-radius:5px;padding:10px}
             </style>
             
       </head>
@@ -127,9 +131,12 @@
                   
             </section>
             
+            <div id=view-hdr>
+            </div>
+            
             <div id=view style='display:none'>
                   <snippet-html-console component></snippet-html-console>
-                  <web-editor component></web-editor>
+                  <web-editor component fullsize></web-editor>
             </div>
             
             
@@ -144,7 +151,7 @@
   //:
   
   
-        function initdom(){
+        async function initdom(){
                                                                                 debug('initdom');
                                                                                 
               var html                      = md.render(txt);
@@ -159,6 +166,9 @@
                     activate:show
               });
               
+              
+              await show.source('latest');
+              $('#view').style.display    = '';
               
         }//initdom
         
@@ -184,11 +194,51 @@
               }//depth
               
               var d   = depth(e);
-              console.log(d,e.node.title);
-              console.log(`Thank you for activating ${e.node}.`);
+              if(d==1)return;
               
+              var par     = e.node.parent.title;
+              var file    = e.node.title;
+                                                                                console.log(d,par,file);
+              switch(par){
+              
+                case 'source'     : show.source(file);        break;
+                case 'examples'   : show.example(file);       break;
+                
+              }//switch
               
         }//show
+        
+        
+        show.source   = async function(file){
+        
+              $('#view-hdr').textContent                = 'source : '+file;
+              $('web-editor').style.display             = '';
+              $('snippet-html-console').style.display   = 'none';
+              
+              var url   = 'https://libs.ext-code.com/html/web-console/';
+              if(file=='latest'){
+                    url  += 'web-console.html';
+              }else{
+                    url  += `${file}/web-console-${file}.html`;
+              }
+              
+              var {error,txt}   = await get(url);
+              if(error)return;
+              
+              editor.setvalue(txt);
+              
+        }//source
+        
+        
+        show.example    = async function(file){
+        }//example
+        
+        
+        async function get(url){
+        
+              var txt   = await fetch(url).then(res=>res.text());
+              return {txt};
+        }//get
         
         
       </script>
