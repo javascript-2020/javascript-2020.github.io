@@ -57,7 +57,7 @@
             <script src='https://cdn.jsdelivr.net/npm/prettier@2.8.8/parser-html.js'></script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/component.js?init'></script>
             
             
             
@@ -96,23 +96,12 @@
             
             
             <script init>
-                                                                                console.clear();
                                                                                 console.log('html-editor-v2.0.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,did='html-editor',version='v1.0'
-        ;
+        var version='v3.0';
         
-        var ace;
-        
-        var ext,$,datatype,menumod,keydown,debug,ls
-        ;
+        var df=true,did='html-editor';
         
         
-        var menu;
-        
-        var hdr;
-        var mainmenu;
         var filemod;
         var autosave;
         var publish;
@@ -121,7 +110,6 @@
         var log;
         
         
-        var icon    = {};
         
         
   //:
@@ -129,90 +117,31 @@
   
         async function init(){
                                                                                 debug('init',version);
-                                                                                
-              //keydown                   = keydown();
-              menu                      = menumod();
-              
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace,ls});
-              
-              
-              hdr                       = mod['editors-hdr'];
-              mainmenu                  = mod['main-menu'];
+              log                       = mod['log-mod'];
               filemod                   = mod['file-mod'];
               autosave                  = mod['auto-save'];
               publish                   = mod['publish-ui'];
               editor                    = mod['web-editor'];
               output                    = mod['output-html'];
-              log                       = mod['log-mod'];
               
+              editor.initmod({mode:'html',on});
+              autosave.initmod({save:btn.save});
               
-              menu.initmod({keydown});
-              mainmenu.initmod({ext,$,menu,editor,filemod});
-              hdr.initmod({ext,$,menu});
-              filemod.initmod({ext,$,menumod,menu,complete,source,focus,log});
-              autosave.initmod({$,menu,keydown,log,save:btn.save});
-              publish.initmod({ext,$,menu,run,source,complete,log});
-              editor.initmod({ext,$,menu,on,ace});
-              output.initmod({ext,$});
-              log.initmod({ext,$});
+              mod.base.add({log,complete,source,focus,editor,filemod});
+              await mod.auto();
               
-              
-              await Promise.all([
-                    mainmenu.init(),
-                    hdr.init(),
-                    filemod.init(),
-                    autosave.init(),
-                    publish.init(),
-                    editor.init(),
-                    output.init(),
-                    log.init(),
-              ]);
-              
-  //:
-  
               window.onfocus            = focus;
               keydown.add(kd);
               menu.on.close             = focus;
-              
-              
-              icon.def    = $('link[rel~=icon]').href;
-              
+              icon.def                  = $('link[rel~=icon]').href;
               
               await initdom(document.body);
               
-              
               publish.query();
-              
-              
               
         }//init
         
         
-(async()=>{
-
-        mod.stack.add;
-        
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-        
-        var lsmod;
-        
-        var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js.api',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js',
-              'js/core/ls-mod/ls-mod.js',
-        );
-        [$,datatype,menumod,keydown,debug,lsmod]   = await promise;
-        
-        ls    = lsmod();
-        
-        mod.stack.complete;
-        
-})();
-
-
             </script init>
             
             
@@ -336,6 +265,10 @@
       <script>
       
       
+      
+        var icon    = {};
+        
+        
         var root;
         
         
@@ -362,10 +295,6 @@
               menu.add.style();
               
               
-              
-              
-              
-              
               $(root,'#save').onclick               = btn.save;
               
               
@@ -385,27 +314,7 @@
               
               
               
-              //ui.setup(view);
-              
-              
-              await Promise.all([
-                    keydown.initdom(),
-                    hdr.initdom(root),
-                    mainmenu.initdom(root),
-                    filemod.initdom(),
-                    autosave.initdom(),
-                    publish.initdom(),
-                    output.initdom(root),
-                    log.initdom(),
-                    editor.initdom(view,{mode:'html'}),
-              ]);
-              
-              
-              
-              
               editor.focus();
-              
-              
               
               
         }//initdom
