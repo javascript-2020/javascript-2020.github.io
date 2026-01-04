@@ -42,6 +42,7 @@ methods without a description are not currently implmented and are passed throug
 
 name|description
 ---|---
+**standard**|
 initmod|standard function for importing local dependencies
 init|standard initialisation function
 initdom|standard function to setup the dom
