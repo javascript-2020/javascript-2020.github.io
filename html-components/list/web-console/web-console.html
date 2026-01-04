@@ -168,7 +168,7 @@
       
       
         var md_txt;
-        var cache;
+        var cache   = {};
         
         
   //:
@@ -265,8 +265,9 @@
         
         
         async function get(url){
-        
+                                                                                debug('get',url);
               if(cache[url]){
+                                                                                debug('cache');
                     return {txt:cache[url]};
               }
               
@@ -292,7 +293,8 @@
                     return {error};
               }
               
-              var txt   = await res.text();
+              var txt       = await res.text();
+              cache[url]    = txt;
               return {txt};
               
         }//get
