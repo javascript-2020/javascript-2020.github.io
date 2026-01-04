@@ -252,23 +252,21 @@
                     <div style='margin-top:50px'>
                           <h3>
                                 Boiler Plate
-                                <br>
-                                <a href='#'>
-                                      init-hdr.js
-                                </a>
                           </h3>
                           <p>
+                                <b>
+                                      warning : this extension is not quite stable yet
+                                </b>
+                                <br>
                                 many of the official components, at this time, require some boiler plate code, mainly small dependencies.
                           </p>
                           <p>
                                 <code>
-                                      http://libs.ext-code.com/js/dom/init-hdr/init-hdr.js
+                                      http://libs.ext-code.com/js/dom/component/component.js?init
                                 </code>
                                 <br>
-                                provides this boiler plate,
-                                <b>
-                                      warning : this library is not stable yet
-                                </b>
+                                adding the init search parameter automatically sets up the default boilerplate, which for most of the official
+                                components is all that is required.
                           </p>
                           
                           <p>
@@ -280,7 +278,7 @@
                     </div>
                     
                     
-                    <div style='margin-top:30px'>
+                    <div style='margin-top:50px;margin-bottom:50px'>
                     
                           <p>
                                 view the full list of components
@@ -302,26 +300,45 @@
                                 </a>
                           </p>
                           
+                    </div>
+                    
+                    
+                    <div>
                           <p>
-                                to me a component / module will have a standard lifecycle that is
+                                a component / module will has a standard lifecycle that is
                           </p>
+                          
                           <ul>
                                 <li>
-                                      initmod, this is where local depencies are passed to the component, they fundamentally should not be relying on global
-                                      state to receive their local depencies
+                                      <b>
+                                            initmod
+                                      </b>
+                                      <br>
+                                      This is where local depencies are / can be passed to the component
+                                      <br>
+                                      They fundamentally should not be relying on global state to receive their local depencies
                                 </li>
                                 <li>
-                                      init, this is where the component first get executed, its an asynchronous function that allows the component to check
+                                      <b>
+                                            init
+                                      </b>
+                                      <br>
+                                      This is where the component first get executed, its an asynchronous function that allows the component to check
                                       that it has everything it needs to run, including access to the network to load resources it may need
                                 </li>
                                 <li>
-                                      initdom, this is where the component is able to set up its ui, internally build the references it needs to run effeiciently
-                                      in code
+                                      <b>
+                                            initdom
+                                      </b>
+                                      <br>
+                                      This is where the component is able to set up its ui, internally build the references it needs to run effeiciently,
+                                      it should be treated potentially as asynchronous
                                 </li>
                           </ul>
+                          
                           <p>
-                                components should also be effectively namespaced so they are free to load any other components that they may need without having to
-                                worry that there will ever be a clash
+                                components are also effectively namespaced so they are free to load any other components that they may need without having to
+                                worry that there will ever be a clash of variables or tag names.
                           </p>
                     </div>
                     
@@ -332,16 +349,13 @@
                                 init runs to be delayed until the loading stack is complete
                           </p>
                     </div>
+                    
                     <br>
                     <br>
+                    
                     <div>
                           <p>
-                                i demonstrate here a simple setup that loads a log-mod element whos function is to log toaster style messages
-                                in a webpage
-                          </p>
-                          <p>
-                                the common elements to this setup are the inclusion of the component script, the initialisation ( init ) function
-                                and the initdom
+                                Here is a simple setup that loads the log-mod element.  Its function is to log toaster style messages in a webpage.
                           </p>
                           
                           <snippet-html-console id=ex1 component v2.0 src='ex/log-ex.html' style='display:block;margin-top:100px'></snippet-html-console>
@@ -350,8 +364,72 @@
                     
                     <div style='display:block;margin-top:100px'>
                           <p>
-                                this is the code for the log-mod component
+                                the code for the log-mod component, note
                           </p>
+                          
+                          <ul>
+                                <li>
+                                      the function that defines the api for the log-mod is wrapped in parenthesis' () making it a function expression,
+                                      this is required.
+                                </li>
+                                <li>
+                                      the arguments to the function ({mod,dom,host})
+                                      
+                                      <ul>
+                                            <li>
+                                                  <b>
+                                                        mod
+                                                  </b>
+                                                  <br>
+                                                  the modules own namespaced component module reference
+                                            </li>
+                                            <li>
+                                                  <b>
+                                                        dom
+                                                  </b>
+                                                  <br>
+                                                  a reference to the original dom node
+                                            </li>
+                                            <li>
+                                                  <b>
+                                                        host
+                                                  </b>
+                                                  <br>
+                                                  the replaced element
+                                            </li>
+                                      </ul>
+                                </li>
+                                <li>
+                                      the function defines an object that is returned, thats its variable name is obj is purely an internal reference.
+                                      <code>
+                                      
+                                            var obj   = {
+                                                  version   : 'v2.0'
+                                            };
+                                            
+                                      </code>
+                                      <br>
+                                      <code>
+                                      
+                                            return obj;
+                                            
+                                      </code>
+                                </li>
+                                <li>
+                                      any methods and properties that are exposed to the public are added as properties to the obj
+                                      <br>
+                                      <code>
+                                      
+                                            obj.initmod   = function(){}
+                                            
+                                            obj.init      = function(){}
+                                            
+                                            obj.initdom   = function(){}
+                                            
+                                      </code>
+                                </li>
+                                
+                          </ul>
                           
                           <web-editor id=ex2 component fullsize src='https://libs.ext-code.com/html/log-mod/log-mod.html'></web-editor>
                           
@@ -369,12 +447,24 @@
         
         
                     <div style="margin-bottom: 20px;">
-                          i include here a standard example of web components, which i feel went some way as to introducing the ability to include complex functionality
+                          here is an example of a standard web components
+                          <br>
+                          this went some way as to introducing the ability to include complex functionality
                           into web pages, i feel however it fell short on a number of issues i have solved with my component.js library, these are
                           <ul>
                                 <li>
                                       elements were scoped to the global namespace, always a problem when functionality gets ever more complex its only a matter
                                       of time before clashes occur
+                                      <br>
+                                      there is the proposal of
+                                      <br>
+                                      <code>
+                                      
+                                            var registry    = new ComponentRegistry();
+                                            
+                                      </code>
+                                      <br>
+                                      but its still some time away
                                 </li>
                                 <li>
                                       methods and properties associated with the component were added to the host node of the element, again thats ok for simple
@@ -384,51 +474,56 @@
                     </div>
                     
                     
-        <web-editor id=ex3 component fullsize>
+                    <web-editor id=ex3 component fullsize>
+                    
+        class newElement extends HTMLElement {
         
-              class newElement extends HTMLElement {
+              constructor(){
               
-                    constructor(){
+                    super();
                     
-                          super();
-                          
-                          var root    = this;
-                          
-                          
-                    }//constructor
+                    var root    = this;
                     
-                    connectedCallback(){}
                     
-                    disconnectedCallback(){}
-                    
-                    static get observedAttributes(){}
-                    
-                    attributeChangedCallback(name,oldValue,newValue){}
-                    
-                    adoptedCallback(){}
-                    
-                    render(){}
-                    
-                    // A getter/setter for a disabled property.
-                    get disabled(){}
-                    set disabled(){}
-                    
-                    // A getter/setter for an open property.
-                    get open(){}
-                    set open(){}
-                    
-              }//class
+              }//constructor
               
-        </web-editor>
+              connectedCallback(){}
+              
+              disconnectedCallback(){}
+              
+              static get observedAttributes(){}
+              
+              attributeChangedCallback(name,oldValue,newValue){}
+              
+              adoptedCallback(){}
+              
+              render(){}
+              
+              // A getter/setter for a disabled property.
+              get disabled(){}
+              set disabled(){}
+              
+              // A getter/setter for an open property.
+              get open(){}
+              set open(){}
+              
+        }//class
         
+                    </web-editor>
+                    
                         <br>
                         
-                        <div id=links>
+                        <div id=links style-'margin-top:50px;margin-bottom:50px'>
                               <a href='https://web.dev/articles/custom-elements-v1'>Custom Elements v1 - Reusable Web Components<a>
+                              <br>
                               <a href='https://syntackle.com/blog/web-components-and-custom-elements-5LuzI/'>Web Components & Custom Elements</a>
+                              <br>
                               <a href='https://javascript.info/custom-elements'>Custom elements</a>
+                              <br>
                               <a href='https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements'>Using custom elements</a>
+                              <br>
                               <a href='https://blog.jim-nielsen.com/2023/html-web-components-an-example/'>HTML Web Components: An Example</a>
+                              <br>
                               <a href='https://web.archive.org/web/20140118032429/http://www.html5rocks.com/en/tutorials/webcomponents/customelements/'>Custom Element : Defining new elements in html</a>
                         </div>
                         
