@@ -265,10 +265,6 @@
         var set                 = {};
         
         
-        
-  //:
-  
-  
         async function initdom(rootnode){   //c
                                                                                 debug('initdom');
               root                                  = rootnode;
@@ -280,7 +276,7 @@
               
               
               
-              $('#run').onclick                     = run;
+              $('#run').onclick                     = btn.run;
               $(root,'#prettier').onclick           = btn.prettier;
               
               $('#horiz').onclick                   = horiz;
@@ -295,7 +291,7 @@
               
               
               
-              editor.focus();
+              focus();
               
               
         }//initdom
@@ -341,6 +337,13 @@
               filemod.save();
               
         }//save
+        
+        
+        btn.run   = function(){
+        
+              run();
+              
+        }//run
         
         
         btn.prettier    = function(){
@@ -397,13 +400,6 @@
         }//change
         
         
-        set.title   = function(title){
-        
-              document.title    = title;
-              
-        }//title
-        
-        
   //:
   
   
@@ -440,13 +436,7 @@
         
         complete.load   = async function(file,blob){
         
-              var txt;
-              if(typeof blob=='string'){
-                    txt   = blob;
-              }else{
-                    txt   = await blob.text();
-              }
-              
+              var txt   = await blob.text();
               editor.clear();
               output.kill();
               editor.setValue(txt,-1);
@@ -468,23 +458,6 @@
         
   //:
   
-/*
-        window.onmessage    = function(e){
-        
-        
-              var json    = JSON.parse(e.data);
-              
-              var txt   = json.code||json.text||json.txt;
-              if(txt){
-                    editor.setValue(txt,-1);
-              }
-              
-        }//onmessage
-*/
-
-
-  //:
-  
   
         ui.setup    = function(view){
         
@@ -498,9 +471,6 @@
         }//setup
         
         
-  //:
-  
-  
         function horiz(){
         
               //localStorage.setItem('orientation','horiz');
@@ -571,6 +541,13 @@
         }//favicon
         
         
+        set.title   = function(title){
+        
+              document.title    = title;
+              
+        }//title
+        
+        
   //:
   
   
@@ -587,47 +564,7 @@
         }//debug
         
         
-  /*
-        function debug(){
-        
-              if(!df)return;
-              
-              var str   = [...arguments].join(' ');
-              
-              console.groupCollapsed(`[ ${did} ]`,str);
-              console.trace();
-              console.groupEnd();
-              
-              //console.log('[ https-file ]',str);
-              
-        }//debug
-        
-        
-        debug.log   = function(){
-        
-              if(!df)return;
-              
-              console.log.apply(console,arguments);
-              
-              if(debug.trace){
-                    console.trace();
-              }
-              delete debug.trace;
-              
-        }//log
-        
-        
-        debug.log.trace   = function(){
-        
-              debug.trace   = true;
-              debug.log.apply(null,arguments);
-              
-        }//trace
-*/
-
-
       </script>
-      
       
 </html>
 
