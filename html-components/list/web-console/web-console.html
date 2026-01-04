@@ -231,13 +231,6 @@
         }//show
         
         
-        show.display    = function(txt){
-        
-              if(!txt)return;
-              editor.setvalue(txt);
-              
-        }//display
-        
         show.source   = async function(file){
         
               $('#view-hdr').textContent                = 'source : '+file;
@@ -252,16 +245,22 @@
               }
               
               var {txt}   = await get(url);
-              show.display(txt);
+              if(!txt)return;
+              editor.setvalue(txt);
               
         }//source
         
         
         show.example    = async function(file){
         
+              $('#view-hdr').textContent                = 'example : '+file;
+              $('web-editor').style.display             = 'none';
+              $('snippet-html-console').style.display   = '';
+              
               var url     = 'https://libs.ext-code.com/html/web-console/test/'+file;
               var {txt}   = await get(url);
-              show.display(txt);
+              if(!txt)return;
+              snippet.editor.setvalue(txt);
               
         }//example
         
