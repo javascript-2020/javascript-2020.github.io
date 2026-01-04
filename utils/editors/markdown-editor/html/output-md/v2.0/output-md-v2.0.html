@@ -5,6 +5,7 @@
       <template shadowrootmode=open>
       
             <link rel=stylesheet href='css/github-markdown-light.css'>
+            
             <style>
             
                   #output {height:100%;border:2px solid lightgray;box-sizing:border-box;padding:10px}
@@ -23,39 +24,39 @@
   var obj   = {
         version   : 'v2.0',
   };
-
+  
       var $
       ;
       
       obj.initmod   = function(params){
-        
+      
             $       = params.$;
             
       }//initmod
-
+      
       
   //vars:-
-                
+  
       var md;
       
       var shadow;
       
       var output;
-
+      
       
   //:
-
+  
   
       obj.init    = async function(){
-        
+      
             await libs();
             
       }//init
-
-
-
+      
+      
+      
       function libs(){
-        
+      
             var resolve,promise=new Promise(res=>resolve=res);
             
             var script      = document.createElement('script');
@@ -67,62 +68,62 @@
             
             
             function onload(){
-              
+            
                   md    = markdownit();
                   resolve();
                   
             }//onload
             
       }//libs
-
+      
       
   //:
-
+  
   
       obj.initdom   = function(rootnode){
       
             shadow              = host.shadowRoot;
             
             output              = $(shadow,'#output');
-
+            
             
       }//initdom
-
-
+      
+      
   //:
   
-      
-      
+  
+  
       obj.display   = async function(txt){
-
+      
             await libs;
             
             var html            = md.render(txt);
             output.innerHTML    = html;
             
       }//show
-
-
+      
+      
       obj.horiz   = function(){
-        
+      
             host.style.width    = '100%';
             host.style.height   = '50%';
-      
+            
       }//horiz
       
       
       obj.vert    = function(){
-        
+      
             host.style.width    = '50%';
             host.style.height   = '100%';
             
       }//vert
-
+      
       
   return obj;
   
 })//output_md
-            
+
       </script>
       
 </output-md>
