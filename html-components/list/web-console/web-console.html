@@ -42,6 +42,7 @@
         var md;
         var snippet;
         var editor;
+        var log;
         
         
         async function init(){
@@ -52,8 +53,10 @@
               await load();
               
               
-              snippet   = mod['snippet-html-console'];
-              editor    = mod['web-editor'];
+              snippet       = mod['snippet-html-console'];
+              editor        = mod['web-editor'];
+              log           = mod['log-mod'];
+              
               
               await mod.auto();
               
@@ -66,7 +69,13 @@
         
         async function load(){
         
-              txt   = await fetch('readme.md').then(res=>res.text());
+              var {error,txt}   = await get('https://libs.ext-code.com/html/web-console/readme.md');
+              
+              if(error){
+                    md_txt    = error;
+              }else{
+                    md_txt    = txt;
+              }
               
         }//load
         
@@ -151,12 +160,15 @@
             </div>
             
             
+            <log-mod component></log-mod>
+            
       </body>
       
       <script>
       
       
-        var txt;
+        var md_txt;
+        var cache;
         
         
   //:
@@ -165,7 +177,7 @@
         async function initdom(){
                                                                                 debug('initdom');
                                                                                 
-              var html                      = md.render(txt);
+              var html                      = md.render(md_txt);
               $('#readme').innerHTML        = html;
               
               
@@ -193,7 +205,6 @@
               
                     var c       = 0;
                     var node    = e.node;
-                    
                     while(node.parent){
                     
                           c++;
@@ -210,12 +221,17 @@
               var par     = e.node.parent.title;
               var file    = e.node.title;
                                                                                 console.log(d,par,file);
+              var txt;
               switch(par){
               
-                case 'source'     : show.source(file);        break;
-                case 'examples'   : show.example(file);       break;
+                case 'source'     : txt   = show.source(file);        break;
+                case 'examples'   : txt   = show.example(file);       break;
                 
               }//switch
+              
+              if(!txt)return;
+              
+              editor.setvalue(txt);
               
         }//show
         
@@ -233,22 +249,52 @@
                     url  += `${file}/web-console-${file}.html`;
               }
               
-              var {error,txt}   = await get(url);
-              if(error)return;
-              
-              editor.setvalue(txt);
+              var {txt}   = await get(url);
+              return txt;
               
         }//source
         
         
         show.example    = async function(file){
+        
+              var url     = 'https://libs.ext-code.com/html/web-console/test/'+file;
+              var {txt}   = await get(url);
+              return txt;
+              
         }//example
         
         
         async function get(url){
         
-              var txt   = await fetch(url).then(res=>res.text());
+              if(cache[url]){
+                    return {txt:cache[url]};
+              }
+              
+              var err;
+              try{
+              
+                    var res   = await fetch(url);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    return {error};
+              }
+              if(!res.ok){
+                    var error   = await res.text();
+                    log.red(error);
+                    return {error};
+              }
+              
+              var txt   = await res.text();
               return {txt};
+              
         }//get
         
         
@@ -275,7 +321,8 @@
                     title: 'examples',
                     expanded:true,
                     children:[
-                          {title:'simple example'}
+                          {title:'web-console-v2.0-test-1.html'},
+                          {title:'web-console-v2.0-test-2.html'}
                     ]
               },
               
