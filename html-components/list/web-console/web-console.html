@@ -26,11 +26,13 @@
             <script src='https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js'></script>
             <link rel=stylesheet href='/css/github-markdown-light.css'>
             
+/*
             <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css'>
             <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/wunderbaum@0/dist/wunderbaum.min.css'>
             <script src='https://cdn.jsdelivr.net/npm/wunderbaum@0/dist/wunderbaum.umd.min.js'></script>
-            
-            
+*/
+
+
             <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js?init'></script>
             
             <script>
@@ -40,6 +42,7 @@
         
         var ace;
         var md;
+        var dirtree;
         var snippet;
         var editor;
         var log;
@@ -52,7 +55,7 @@
               
               await load();
               
-              
+              dirtree       = mod['dir-tree'];
               snippet       = mod['snippet-html-console'];
               editor        = mod['web-editor'];
               log           = mod['log-mod'];
@@ -160,7 +163,7 @@
                         </span>
                   </h3>
                   
-                  <div id=demo-tree class='wb-skeleton wb-initializing wb-fade-expander'></div>
+                  <dir-tree component></dir-tree>
                   
             </section>
             
@@ -184,6 +187,10 @@
         var cache   = {};
         
         
+        var callback    = {};
+        var show        = {};
+        
+        
   //:
   
   
@@ -195,15 +202,20 @@
               
               
               var node    = $('#demo-tree');
+              
+              /*
               var tree    = new mar10.Wunderbaum({
                     element:node,
                     source: files,
                     init:e=>{e.tree.setFocus()},
                     activate:show
               });
+              */
+              files   = dirtree.build(files);
+              dirtree.display(files,{callback});
               
               
-              await show.source('latest');
+              await show.examples('web-console-v2.0-test-2.html');
               $('#view').style.display    = '';
               
         }//initdom
@@ -212,32 +224,14 @@
   //:
   
   
-        function show(e){
+        callback.file   = function(name,o){
         
-              var depth   = e=>{
-              
-                    var c       = 0;
-                    var node    = e.node;
-                    while(node.parent){
-                    
-                          c++;
-                          node    = node.parent;
-                          
-                    }//while
-                    return c;
-                    
-              }//depth
-              
-              var d   = depth(e);
-              if(d==1)return;
-              
-              var par     = e.node.parent.title;
-              var file    = e.node.title;
-                                                                                console.log(d,par,file);
+              var par   = o.parent.name;
+                                                                                console.log(par,name);
               switch(par){
               
-                case 'source'     : show.source(file);        break;
-                case 'examples'   : show.example(file);       break;
+                case 'source'     : show.source(name);         break;
+                case 'examples'   : show.examples(name);       break;
                 
               }//switch
               
@@ -264,7 +258,7 @@
         }//source
         
         
-        show.example    = async function(file){
+        show.examples    = async function(file){
         
               $('#view-hdr').textContent                = 'example : '+file;
               $('web-editor').style.display             = 'none';
@@ -273,6 +267,7 @@
               var url     = 'https://libs.ext-code.com/html/web-console/test/'+file;
               var {txt}   = await get(url);
               if(!txt)return;
+              console.log(1);
               snippet.editor.setvalue(txt);
               
         }//example
@@ -320,29 +315,31 @@
       <script>
       
       
-      
-      
-        var files    = [
-        
-              {
-                    title: 'source',
-                    expanded: true,
-                    children: [
-                          {title:'latest'},
-                          {title:'v2.0'}
-                    ],
+/*
+              var data    = {
+                    'tmp'   : {
+                          'tmp-1'   : {
+                                'test.txt':null,
+                          },
+                          'my-file-1.bin':null,
+                          'my-file-2.bin':null,
+                    },
+                    'hello-1.txt':null,
+                    'hello-2.txt':null,
+              };
+*/
+
+
+        var files    = {
+              'source'    : {
+                    'latest'    : null,
+                    'v2.0'      : null,
               },
-              
-              {
-                    title: 'examples',
-                    expanded:true,
-                    children:[
-                          {title:'web-console-v2.0-test-1.html'},
-                          {title:'web-console-v2.0-test-2.html'}
-                    ]
+              'examples'    : {
+                    'web-console-v2.0-test-1.html':null,
+                    'web-console-v2.0-test-2.html':null,
               },
-              
-        ];
+        };
         
         
         
