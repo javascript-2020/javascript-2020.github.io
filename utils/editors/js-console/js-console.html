@@ -1,5 +1,10 @@
 
 
+<!-- headers
+      cross-origin-isolate
+-->
+
+
 <!DOCTYPE html>
 
 <html lang=en>
@@ -17,7 +22,7 @@
             <link rel=canonical href='https://ext-code.com/utils/editors/js-console/js-console.html'>
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
-            <link rel=icon type='image/png' href='images/js-console-favicon.png'>
+            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB4FBMVEX/3wD/3gD/4QD+4AD31wDy0wD32AD+3wDt0AB2ZwBfUwBeUgCKeQD62gD73QDDqgBwYgBDOwA3MABvYQDBqQD/4ADjxgAiHQAAAABCOgD21wD42gCIdwASDwARDwCHdgAiHgClkQAKCQAIBwCciAD01QBEOwAGBQBXTABbTwAmIQCrlQDewgAdGgDx1AD/4wCDcgBkVwDZvgDavwAaFgBMQgD42wD32gDrzQAvKQAMCwCGdQDpzAD+3gByZAADAwAzLACLeQDcwAD93wDcwQA2LwABAQAhHQB+bgDjxwDUugBORADGrgDw0wCjjgD/4gDy1AC3oABWSwALCQB9bQCVggAJCAD11wDu0QDJsAD63ADfxAAeGwBFPADRtwDpzwAqJQAxKwDu0AD62wBKQAAaFwC1nwC0ngBZTQD93QCahgArJQBBOQDTuAC8pQAUEQA9NQDz1QC/pwAXFAAdGQBtXwB0ZgAnIgCNfAA6MwBmWQCDcwBqXQAfGwBzZADoywAoIwDbwAC6owAeGgAkIADXvQBJQAAEAwAkHwCznQA9NgAEBAAwKgChjQBaTwA7MwCBcADWuwDszgCnkgBlWABAOAA0LgBYTQCWgwD83QDx0wD52QD+4QDw0gD83AD///80U23rAAAAAWJLR0Sf6LWTnQAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAAd0SU1FB+gMGw8AOrl7kF8AAAGXSURBVDjL7ZJVUwMxFIWTFCgOLaRcurhLobi7FV/cW9y1uLu7O/xWwhaYUtodXpnhPGzmzP12k3M2CP3rX39D2OgpihGJlbWNlFhCbe3sHRyd2NTZxVUml7m5O5snqcIDwFOJEOflDe/y8eXMklThJ4DEPwAMCgyiyDJIg0MAQsMcwwMgIhKJgEQVBSCLVnMxsXFUbGsSnwCQmERRMkcshTFsnZIKkJaeQSy28xkmM4vlyM7JzcunWBSkBYXvkYs0xSVEtB5MSstChXrk5VQMZGRFpafQZWq8OfILZOKrqmtqGVln0ji7BgjTkg+QSqQY8Vx9A7ONJlhTcwuirW0AWhtEVL46nr3X3gHQ2fXtg93uPb19RN3PzjUwqBwahpFRKU/GxgEm9MYcmZwCmJ6ZnWOHmlenLLBFs7i0vMLW1e8p1rQf1wXWNyjd3Pp0sK0jxqkx2dndEwb7ByylZPLwSHBFx5umoYntyemZvOf8QoIwi3Z5dX1ze3Z3r/jxZzDlH/SPT8+GAXP5yhf9K0/xz7qxiPut3gACakyeVGPirgAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyNC0xMi0yN1QxNTowMDo1MiswMDowMDd07d8AAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjQtMTItMjdUMTU6MDA6NTIrMDA6MDBGKVVjAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAABJRU5ErkJggg=='>
             
             <script type='application/ld+json'>
                   {
@@ -49,8 +54,8 @@
                                                                                 console.log('js-console-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
-        ;
+        var version='v2.0';
+        var df=true,did='js-console';
         
         var ace;
         var obfuscator;
@@ -62,12 +67,14 @@
         var menumod;
         var keydown;
         var debug;
+        var ls;
         
         var menu;
         
         var hdr;
         var mainmenu;
         var filemod;
+        var autosave;
         var publish;
         var editor;
         var output;
@@ -83,12 +90,13 @@
               menu                      = menumod();
               
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
+              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace,ls});
               
               
               hdr                       = mod['editors-hdr'];
               mainmenu                  = mod['main-menu'];
               filemod                   = mod['file-mod'];
+              autosave                  = mod['auto-save'];
               publish                   = mod['publish-ui'];
               editor                    = mod['web-editor'];
               output                    = mod['output-console']
@@ -100,15 +108,18 @@
               hdr.initmod({ext,$,menu});
               mainmenu.initmod({ext,$,menu,editor,filemod});
               filemod.initmod({ext,$,menu,menumod,complete,source,focus,log});
+              autosave.initmod({$,menu,keydown,log,save:btn.save});
               publish.initmod({ext,$,ui,menu,source,complete,log});
               editor.initmod({ext,$,menu,ace,on});
               output.initmod({ext,$});
               log.initmod({ext,$});
               
+              
               await Promise.all([
                     mainmenu.init(),
                     hdr.init(),
                     filemod.init(),
+                    autosave.init(),
                     publish.init(),
                     editor.init(),
                     output.init(),
@@ -118,6 +129,7 @@
               
   //:
   
+  
               icon.def    = $('[rel*=icon]').href;
               
               window.onfocus              = ()=>editor && editor.focus();
@@ -126,6 +138,9 @@
               
               
               initdom(document.body);
+              
+              
+              publish.query();
               
               
         }//init
@@ -140,14 +155,19 @@
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
         
+        var lsmod;
+        
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
-              'js/debug/debug.js'
+              'js/debug/debug.js',
+              'js/core/ls-mod/ls-mod.js',
         );
-        [$,datatype,menumod,keydown,debug]   = await promise;
+        [$,datatype,menumod,keydown,debug,lsmod]   = await promise;
+        
+        ls    = lsmod();
         
         mod.stack.complete;
         
@@ -250,12 +270,7 @@
                   
                   <div id=save-root>
                         <button id=save>save</button>
-                        <checkbox-one id=autosave></checkbox-one>
-                        <div id=save-menu-root class=menu-root>
-                              <img id=save-menu-icon class=menu-icon>
-                              <div id=save-menu class=menu style='display:none'>
-                              </div>
-                        </div>
+                        <auto-save v2.0 component=grp></auto-save>
                   </div>
                   
                   <publish-ui component></publish-ui>
@@ -303,12 +318,6 @@
             
             
             
-            
-            <checkbox-one-template>
-                  <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
-            </checkbox-one-template>
-            
-            
       </body>
       
       
@@ -317,7 +326,7 @@
       
         var root;
         
-        var autosave;
+        //var autosave;
         
         var iframe;
         
@@ -345,28 +354,21 @@
               menu.add.style();
               
               
-              hdr.initdom();
-              
-              
-              mainmenu.initdom(root);
-              
-              filemod.initdom(root);
-              
-              
               $(root,'#save').onclick               = btn.save;
               
-              var card                              = $(root,'#save-root .menu');
-              $(root,'.menu-icon').onclick          = menu.click(card,false,false);
-              
-              autosave                              = $(root,'#autosave');
-              autosave.checked                      = false;
+              //var card                              = $(root,'#save-root .menu');
+              //$(root,'.menu-icon').onclick          = menu.click(card,false,false);
               
               
-              publish.initdom(root);
+              //autosave                              = $(root,'#autosave');
+              //autosave.checked                      = false;
+              
+              
               
               $(root,'#run').onclick                = run;
               mode.iframe                           = $(root,'#iframe');
               mode.async                            = $(root,'#async');
+              
               $(root,'#syntax-chk').onclick         = btn.syntax;
               $(root,'#prettier').onclick           = btn.prettier;
               $(root,'#terser').onclick             = btn.terser;
@@ -380,22 +382,31 @@
               var view                              = $('#view');
               ui.root                               = view;
               
-              editor.initdom(view,{mode:'javascript'});
               
               slider.node                           = $.slider('web-editor','#page-slider','output-console',slider,ui);
-              output.initdom(root);
               
               
-              log.initdom();
+              await Promise.all([
+                    hdr.initdom(),
+                    mainmenu.initdom(root),
+                    filemod.initdom(root),
+                    autosave.initdom(),
+                    publish.initdom(root),
+                    editor.initdom(view,{mode:'javascript'}),
+                    output.initdom(root),
+                    log.initdom(),
+              ]);
               
               
               
               //ui.setup(view);
               
-              publish.query();
+              
+              
               editor.focus();
               
               query();
+              
               
         }//initdom
         
@@ -605,6 +616,11 @@
         function source(){
         
               var txt     = editor.getValue();
+              
+              if(autosave.trim.checked){
+                    txt   = autosave.txt.trim(txt);
+              }
+              
               var blob    = new Blob([txt]);
               return blob;
               
@@ -612,7 +628,7 @@
         
         
         function complete(file){
-                                                                                console.log('complete',file);
+                                                                                //console.log('complete',file);
               if(file){
                     editor.filename(file);
                     editor.filename.save.hide();
@@ -658,6 +674,7 @@
   //:
   
   
+/*
         window.onmessage    = function(e){
         
               var err;
@@ -685,8 +702,9 @@
               }
               
         }//onmessage
-        
-        
+*/
+
+
   //:
   
   
@@ -753,20 +771,16 @@
   
   
         function run(){
-        
+                                                                                debug('run');
               if(autosave.checked){
-                                                                                console.log('save');
+                                                                                debug('autosave');
                     filemod.save();
               }
               
               
               var js    = editor.getValue();
               
-              //if(mode.iframe.checked){
-                    output.run.iframe2(js,{async:mode.async.checked});
-              //}else{
-                    //output.run(js,{async:mode.async.checked});
-              //}
+              output.run.iframe2(js,{async:mode.async.checked});
               
               
         }//run
@@ -839,6 +853,21 @@
               
         }//favicon
         
+        
+  //:
+  
+  
+        function debug(...args){
+        
+              if(!df && !obj.df)return;
+              args.unshift(`[ ${did} ]`);
+              var fmt     = Array.from({length:args.length}).fill('%O').join(' ');
+              var args2   = [fmt].concat(args);
+              console.groupCollapsed.apply(console,args2);
+              console.trace();
+              console.groupEnd();
+              
+        }//debug
         
         
         
