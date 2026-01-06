@@ -10,35 +10,32 @@
             <meta charset=utf-8>
             
             <title>
-                  html component : web-editor
+                  html component :
             </title>
             
             <meta name=description content=''>
             
-            <base href='https://ext-code.com/html-components/list/web-console/'>
-            <link rel=canonical href='https://ext-code.com/html-components/list/web-console/web-console.html'>
+            <base href='https://ext-code.com/html-components/list/'>
+            <link rel=canonical href='https://ext-code.com/html-components/list/'>
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
-            <link rel=icon href=''>
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAaVBMVEVHcExfpvhYpPxapPtZo/lZpfxYpPtZpfxjp/Rxsv1ZpPpZpPtZpPpZpfxbpPheqPxcpvxorf1jqvxoputao/lbpPhmrP1ZpPtYo/tZo/hZpPtZpPqcyf+Rw/6Xxv+KwP6EvP53tf19uf1CLkbiAAAAHHRSTlMADp1YNLp7swf+YpU/wizc0vrpAiIX84VvHKlK4cmJ4wAAAVdJREFUKM+1ktmShCAMRVU2ARFxb5tF/f+PHIK92j1vM6myKuQYkns1y/4i8mEof6dlobX4hWHc09GtzfVSDZ/0qlvNg/Wr0SO7nOmlWb2zEN55Lj+WUsFat3O+ems3+g2HViLBuLfbdKaz8X5EkMnNBl2961tMsOuSanXr7N6iHOL+klqt3Y8r8yZuwRtGCCPyxgl3di0ODdrZYGgdA5H8wLXk1rUVpBQykeqY5Q/dcXgjajyNcfRNN2Z9P3TJbhKnB96OWzSHzzesCSGyThOjodEyeOxWpJZsEHioKcGxW4zc7LEzbCNv8KtoCit3SFwX40NLq7l+8wSRu3fEGLC7r/p07mDxYXl8gZ7RWBGKKXEcJ0GJzB8XFdH2SuESK/AAN5Ocri/2A5Yga5ZJ9+nPi7hk0FgBebr2xN2S8NJ9wxIhBZtShRCi5IRREQO2FpAUc5n9e/wA3jcXGxBAlmMAAAAASUVORK5CYII='>
             
             
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
             <script src='https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js'></script>
             <link rel=stylesheet href='/css/github-markdown-light.css'>
             
-/*
-            <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css'>
-            <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/wunderbaum@0/dist/wunderbaum.min.css'>
-            <script src='https://cdn.jsdelivr.net/npm/wunderbaum@0/dist/wunderbaum.umd.min.js'></script>
-*/
-
-
+            
             <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js?init'></script>
             
             <script>
             
         var df=true,did='html'
         ;
+        
+        var base        = 'https://libs.ext-code.com/html/';
+        var component   = 'web-console';
         
         var ace;
         var md;
@@ -72,7 +69,7 @@
         
         async function load(){
         
-              var {error,txt}   = await get('https://libs.ext-code.com/html/web-console/readme.md');
+              var {error,txt}   = await get(base+component+'/readme.md');
               
               if(error){
                     md_txt    = error;
@@ -191,6 +188,20 @@
         var show        = {};
         
         
+        
+        var files    = {
+              'source'    : {
+                    'latest'    : null,
+                    'v2.0'      : null,
+              },
+              'examples'    : {
+                    'web-console-v2.0-test-1.html':null,
+                    'web-console-v2.0-test-2.html':null,
+              },
+        };
+        
+        
+        
   //:
   
   
@@ -203,20 +214,13 @@
               
               var node    = $('#demo-tree');
               
-              /*
-              var tree    = new mar10.Wunderbaum({
-                    element:node,
-                    source: files,
-                    init:e=>{e.tree.setFocus()},
-                    activate:show
-              });
-              */
               files   = dirtree.build(files);
               dirtree.display(files,{callback});
               
               
               await show.examples('web-console-v2.0-test-2.html');
               $('#view').style.display    = '';
+              
               
         }//initdom
         
@@ -244,7 +248,7 @@
               $('web-editor').style.display             = '';
               $('snippet-html-console').style.display   = 'none';
               
-              var url   = 'https://libs.ext-code.com/html/web-console/';
+              var url   = base+component+'/';
               if(file=='latest'){
                     url  += 'web-console.html';
               }else{
@@ -264,7 +268,7 @@
               $('web-editor').style.display             = 'none';
               $('snippet-html-console').style.display   = '';
               
-              var url     = 'https://libs.ext-code.com/html/web-console/test/'+file;
+              var url     = base+component+'/test/'+file;
               var {txt}   = await get(url);
               if(!txt)return;
               console.log(1);
@@ -310,17 +314,6 @@
         
         
         
-        
-        var files    = {
-              'source'    : {
-                    'latest'    : null,
-                    'v2.0'      : null,
-              },
-              'examples'    : {
-                    'web-console-v2.0-test-1.html':null,
-                    'web-console-v2.0-test-2.html':null,
-              },
-        };
         
         
         
