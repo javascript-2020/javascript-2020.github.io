@@ -6,20 +6,20 @@
 <html>
 
       <head>
-            <meta charset=utf-8>      
-      
+            <meta charset=utf-8>
+            
             <title>
                   Fetch
             </title>
             
             <meta name=description content='A lightweight utility for fetching resources from the internet, similar to wget. Easily download files, inspect responses, and test endpoints directly from your browser or app.'>
-
+            
             <base href='https://ext-code.com/utils/misc/fetch/'>
             <link rel=canonical href='https://ext-code.com/utils/misc/fetch/fetch.html'>
             
             <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAVFBMVEVHcEwBAQEBAQEAAAACAgIBAQEBAQEBAQEBAQEBAQECAgIBAQEBAQEAAAABAQEBAQEBAQEBAQEAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQFU2+9pAAAAHHRSTlMAHCTfBMPio3dGCRGVi9tK1VD+5Vxrr7NXLuk8uqRECAAAAOlJREFUKM+9ktlywyAMRc0iRNgMBry0//+fBZKYdIrTt9wHRnDQ6AoxTR+SnvNOL2kA4Z2TWvERnYU5NMkCYJ3/QK4BVQ3SJlGEX4xk3Lav7/s9NXGMG2ZyFvUe7QrnfrqhRe/DWbQQTrqjGhEjmgUNRo2sKgTdko9xo0dLl6DGWIH8HyfXLWtrdW/XpbJSJ/uJEP2udG0AMu7PnghjT8z3eE9TNmK6VZGKaQsTRvvwxMNaRuUcyxVLwRhzfg0vz0Rola5Yt5CMpvpSeyBKGaPX/8VYIay5xkvRNaawLEDfFId3tFgn0+f0A0H+CN0Zwf8NAAAAAElFTkSuQmCC'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
-
+            
             <script type='application/ld+json'>
                   {
                         "@context"              : "https://schema.org",
@@ -38,7 +38,7 @@
             
             
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
+            
             <script init>
                                                                                 console.clear();
                                                                                 console.log('fetch-v2.0.html');
@@ -46,7 +46,7 @@
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var df=true,version='v2.0'
         ;
-
+        
         var ext;
         var $;
         var datatype;
@@ -57,19 +57,19 @@
         var menu;
         
         var hdr;
-        var filemod;                                                                                
+        var filemod;
         var log;
         
-
+        
   //:
-
+  
         mod.stack.add   = init;
-              
+        
         async function init(){
-
+        
               //keydown                   = keydown();
               menu                        = menumod();
-
+              
               mod.base.add({ext,$,datatype,keydown,menu,menumod});
               
               
@@ -90,26 +90,26 @@
                     filemod.init(),
                     log.init(),
               ]);
-
+              
   //:
-          
+  
               //window.onfocus            = focus;
               //keydown.add(kd);
               //menumod.on.close          = focus;
-
+              
               
               initdom(document.body);
-
-
+              
+              
         }//init
-
-
+        
+        
 (async()=>{
 
         mod.stack.add;
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
+        
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
@@ -118,34 +118,34 @@
               'js/debug/debug.js'
         );
         [$,datatype,menumod,keydown,debug]   = await promise;
-  
+        
         mod.stack.complete;
-              
+        
 })();
 
 
             </script init>
-
-
-
+            
+            
+            
             <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymous>
             
             <style>
   :root
     {--label-width: 200px;
     }
-
+    
   html
     {height:100%}
   body
     {height:calc(100% - 40px);margin:20px;display:flex;flex-direction:column;gap:10px}
-
+    
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
   .spc
     {flex:1}
-
-            
+    
+    
   #url-root
     {display:flex;gap:5px;align-items:center}
   #url-label
@@ -153,7 +153,7 @@
   .copy
     {padding:2px;width:24px;height:24px;border:1px solid gray;cursor:pointer;border-radius:3px;
       content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAABSlBMVEVHcEwnz/4C8P4g1P4L6P43wf5Mr/4a2v4Y3P4/uv5PrP4+vf5Auv4ozv5KsP4vyv45wP5Jsf5Auf49vP5Mrv4zxf44wf5Lr/46wP4h1P5Lr/46vv5Jsv4R5P5Hs/5Etv44wf5Hs/41w/4uyv47vv49vP5Ftf5GtP4c2f4rzP4tyv4m0f5Etv5Nrv4xxv4xxv4xx/4W3/5KsP5Mr/4/u/4uyv5Isv4K6f4l0f4qzv4W3/4V3/5Nrv5Mrv5Mrv5Mr/4W3v4e2P5BuP5Hsv4N5v4K6f4O5v42w/5Dt/4E7/4uyf4C8P4nz/4M5/4K6v4oz/4P5f4k0v4b2v5Gs/4E7v4I6/5Nrf4e1/4H7P4E7v5Auv5Dtv4sy/5Isv5GtP4wx/49vP4zxf47vv44wP42w/5LsP5Jsf4i1P4n0P4N5v4k0v4a2v4S4v4X3v6OfcqkAAAAVnRSTlMACo7CjQWN/VczjgIJMfIXJzHtjj5iVekR71Hvtz7CjelXjre2wiJj2PCFIWbR7+fEnXaodz3544/USfOC22Tm7CXOnqfUZ+/3VTV9bsTzqGDahpb2tyRB6bIAAAIDSURBVDjLrZVpV9pAFIYntdFiQkZsLCQECtJSlqAsFRBU3Kuta1sncYGuJEDt///aISkkkyHo6enzLTlP5s5758wNAC526pd3d1++/fzx/evNze1tp210wxURUMTWBz2v2EWtLc7jBTPmoJfNrqy8i0ajixgB00VISJIeW9JMKbcWDAYDNiFMQN1EqAAJcUfSBif0fsQWQjLxpjGnXUJa5CoIbTiP8KJ0OqfNMLQIZhGad/Ke3t///vWwGKv1+yPxfW55+TnmJWZW5ggxcqX3m6WSVTpSdPcxHCLExmf97AI8e1j8cK1f8X9Fq/Sotrf0k2v9KRiJ08L8mwhf2CQx8oK/yJyPw3Q67ULaV4Tr7tRCwFfkllLF4ushccwGPyUMzwzhMQz/X1Kz+QVMmh2LcjgsTxDZ3OpqIpFYfDu+KGwoxE5JvTtpF9NX9BEB792jn0gD4eNEsVAQHyXOO7fQFmNNLZOnPV5BqEyI+Yxm1qkluS0BCWRp8FEze6mTJQtVVd8MUfcEhBSGFOGMOWmaoc0AmRoXP5cmiHEReEXANOopzCsLRYlXjWolGXE2jK/r/ujEWAdOFIxWGrjO8ljXazG6MeynthEn2gAP9P7B4XCE2thzdG2v2jbK5LfHZ3hINbclSco6o/kIh1Einq4e1qxp5m2PkqZ/CPvbXvFot+xe7w/EpaiUrJ24NAAAAABJRU5ErkJggg==);
-    }                        
+    }
   .paste
     {padding:2px;width:24px;height:24px;border:1px solid gray;cursor:pointer;border-radius:3px;
       content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==);
@@ -164,7 +164,7 @@
     
   #output
     {border-top:1px solid lightgray;padding-top:10px}
-
+    
   #output section
     {display:flex;align-items:center;gap:20px}
   #output section label
@@ -186,19 +186,59 @@
   input[type=button]
     {cursor:pointer}
     
+    
+  .description
+    {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
+      background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
+  .description>p
+    {margin:0}
+  .description > p+p
+    {margin:10px 0}
+    
+    
+  a
+    {color:#4a90e2;text-decoration:none;font-weight:500}
+  a:hover
+    {text-decoration:underline}
+  .link-domain
+    {font-size:0.85rem;color:#777;margin-left:0.25rem}
+  .link-domain::before
+    {content:'['}
+  .link-domain::after
+    {content:']'}
+  .link-txt
+    {}
+  .no-underline
+    {display:inline-block;text-decoration:none;color:black}
+    
+    
             </style>
-      
+            
       </head>
       
       
       <body>
       
-            
-            
+      
+      
             <hdr-network component=grp>
                   <img class=title src='image/fetch-title-50.png' style='top:5px;height:40px'>
-                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+                  <time slot=date datetime=2026-01-07>07 Jan 2026</time>
             </hdr-network>
+            
+            
+            <div class=description>
+                  Note : To access the fetch response a cors header will be required for cross-origin access.
+                  <br>
+                  a cors extension to inject the header is available
+                  <br>
+                  <a href='utils/browser-extensions/cors/cors.html'>
+                        cors extension
+                        <span class=link-domain>
+                              ext-code.com
+                        </span>
+                  </a>
+            </div>
             
             
             <div id=url-root>
@@ -206,22 +246,22 @@
                   <div id=url-label>
                         url
                   </div>
-
+                  
                   <img class=copy>
                   <img class=paste>
                   
                   <input id=url>
                   
             </div>
-
+            
             <div id=btns>
                   <input value=fetch type=button>
             </div>
             
             <div>
-
+            
                   <file-mod component></file-mod>
-
+                  
             </div>
             
             <div id=output>
@@ -256,8 +296,8 @@
                         </section>
                         
                   </div>
-
-                        
+                  
+                  
                   <div id=headers>
                         <div class=hdr>
                               <div class=name>
@@ -268,38 +308,38 @@
                   </div>
                   
             </div>
-
+            
             
             <log-mod component></log-mod>
-
-
+            
+            
       </body>
-
       
-
-
+      
+      
+      
       <script>
-
-
-
+      
+      
+      
       
         var cur           = {};
-
-
-        var root;        
+        
+        
+        var root;
         var output;
         var hdrs          = {};
         
         var btn           = {};
-      
-
+        
+        
   //:
   
   
         function initdom(rootnode){
-          
+        
               root                                  = rootnode;
-
+              
               
               hdr.initdom();
               
@@ -308,30 +348,30 @@
               $(root,'.paste').onclick              = btn.paste;
               
               $(root,'[value=fetch]').onclick       = btn.fetch;
-          
-
+              
+              
               output                                = $(root,'#output');
               
               hdrs.root                             = $(output,'#headers');
               
               hdrs.item                             = $(hdrs.root,'.hdr');
               hdrs.item.remove();
-
-
+              
+              
               filemod.initdom(root);
-          
-          
+              
+              
               log.initdom(root);
               
-          
+              
         }//initdom
         
-
+        
   //:
   
   
         btn.copy    = async function(){
-          
+        
               var url   = $(root,'#url').value;
               await navigator.clipboard.writeText(url);
               
@@ -339,15 +379,15 @@
         
         
         btn.paste   = async function(){
-          
+        
               var txt                 = await navigator.clipboard.readText();
               $(root,'#url').value    = txt;
               
         }//paste
         
-  
+        
         btn.fetch   = async function(){
-          
+        
               var url         = $(root,'#url').value;
               
               var i           = url.lastIndexOf('/');
@@ -361,21 +401,21 @@
               display(url,res,blob);
               
               log.green(filename+' downloaded');
-
+              
               
         }//fetch
-
-
+        
+        
   //:
   
   
         function source(){
-          
+        
               return cur.blob;
               
         }//source
-
-  
+        
+        
         function complete(){
         }//complete
         
@@ -383,12 +423,12 @@
         complete.save   = function(file){
         }//save
         
-
+        
   //:
   
   
         function display(url,res,blob){
-  
+        
               var i           = url.lastIndexOf('/');
               var filename    = url.slice(i+1);
               
@@ -402,7 +442,7 @@
         
         
         display.hdrs   = function(res){
-          
+        
               hdrs.root.replaceChildren();
               
               for(var [name,value] of res.headers){
@@ -417,10 +457,10 @@
               }//for
               
         }//headers
-
-
-
-
+        
+        
+        
+        
       </script>
       
 </html>
