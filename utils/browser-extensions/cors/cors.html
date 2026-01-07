@@ -180,15 +180,19 @@
               }
               
               var resolve,promise=new Promise(res=>resolve=res);
-              var ct=0,total=0;
-              add(dir);
-              await promise;
               
+              var ct      = 0;
+              var total   = 0;
+              
+              add(dir);
+              
+              await promise;
+              console.log('xxx');
               var blob;
-              if(zip){
+              if(zip){console.log(1);
                     blob      = await zip.generateAsync({type:'blob'});
-                    
-                    if(download){
+                    console.log(2);
+                    if(download){console.log(3);
                           var url       = window.URL.createObjectURL(blob);
                           var a         = document.createElement('a');
                           a.download    = download;
@@ -203,7 +207,9 @@
               
                     for(let key in dir){
                     
-                          ct++;
+                          total++;
+                                                                                df && console.log(total,key);
+                                                                                
                           var o   = dir[key];
                           
                           if(o.directory){
@@ -255,7 +261,8 @@
                     
                     function complete(){
                     
-                          total++;
+                          ct++;
+                                                                                df && console.log(ct,total);
                           if(ct==total){
                                 resolve();
                           }
