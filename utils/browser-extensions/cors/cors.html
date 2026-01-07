@@ -142,12 +142,9 @@
               
               initdom();
               
-        }//onload
+        }//init
         
         
-  //:
-  
-  
         async function libs(){
         
               jszip       = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
@@ -160,6 +157,9 @@
   //:
   
   
+        var tabs;
+        
+        
         var btn   = {};
         
         
@@ -170,6 +170,10 @@
         
               $('#chrome').onclick        = btn.chrome;
               $('#firefox').onclick       = btn.firefox;
+              
+              tabs                        = $('#tabs');
+              tabs.onclick                = btn.tabs;
+              
               
         }//initdom
         
@@ -207,6 +211,14 @@
         }//firefox
         
         
+        btn.tabs   = function(e){
+        
+              var node    = e.target;
+              var name    = node.textContent.trim();
+                                                                                debug(name);
+        }//tabs
+        
+        
   //:
   
   
@@ -214,10 +226,10 @@
   
   
         async function create(dir,{download=true,test,df=false}={}){
-                                                                                df && console.log('download',download);
-                                                                                df && console.log('test',!!test);
-                                                                                df && console.json(dir);
-                                                                                df && console.log();
+                                                                                df && debug('download',download);
+                                                                                df && debug('test',!!test);
+                                                                                df && debug.json(dir);
+                                                                                df && debug();
               var zip;
               if(!test){
                     zip   = new jszip();
@@ -250,12 +262,12 @@
                     for(let key in dir){
                     
                           total++;
-                                                                                df && console.log(total,key);
+                                                                                df && debug(total,key);
                                                                                 
                           var o   = dir[key];
                           
                           if(o.directory){
-                                                                                df && console.log('dir :',abs+key);
+                                                                                df && debug('dir :',abs+key);
                                 if(zip){
                                       zip.folder(abs+key);
                                 }
@@ -264,7 +276,7 @@
                           }
                           
                           if(o.file?.contents){
-                                                                                df && console.log('file create :',abs+key);
+                                                                                df && debug('file create :',abs+key);
                                 if(zip){
                                       zip.file(abs+key,o.file.contents);
                                 }
@@ -284,8 +296,8 @@
                                 if(path.startsWith('/')){
                                       path    = path.slice(1);
                                 }
-                                                                                df && console.log('file github :',abs+key);
-                                                                                df && console.log(owner,repo,branch,path);
+                                                                                df && debug('file github :',abs+key);
+                                                                                df && debug(owner,repo,branch,path);
                                 if(zip){
                                       fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`)
                                         .then(res=>res.text().then(txt=>{
@@ -304,7 +316,7 @@
                     function complete(){
                     
                           ct++;
-                                                                                df && console.log(ct,total);
+                                                                                df && debug(ct,total);
                           if(ct==total){
                                 resolve();
                           }
