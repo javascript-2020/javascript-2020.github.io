@@ -43,15 +43,12 @@
   #download-root
     {display:flex;gap:30px;margin-left:50px}
   .download
-    {text-decoration:underline;cursor:pointer;border:1px solid whitesmoke;padding:5px 10px}
-    
-  #view
-    {margin-top:50px}
+    {text-decoration:underline;cursor:pointer;border:1px solid lightgray;padding:5px 10px;border-radius:5px}
     
   #tabs
-    {display:flex;margin-bottom:10px}
+    {display:flex;margin-top:50px}
   #tabs>div
-    {flex:1;text-align:center;padding:5px 10px;cursor:pointer}
+    {flex:1;text-align:center;padding:7px 20px;cursor:pointer}
     
   .active
     {background:lightyellow;border:1px solid lightblue}
@@ -105,23 +102,20 @@
             </div>
             
             
-            <div id=view>
-                  <div id=tabs>
-                        <div class=active>
-                              chrome
-                        </div>
-                        <div class=inactive>
-                              firefox
-                        </div>
+            <div id=tabs>
+                  <div class=active>
+                        chrome
                   </div>
-                  
-                  <dir-tree component></dir-tree>
-                  
-                  <snippet-editor id=one component v2.0 src='github:javascript-2020:browser-extensions:main:/cors/chrome/manifest.json'></snippet-editor>
-                  <snippet-editor id=two component v2.0 src='github:javascript-2020:browser-extensions:main:/cors/chrome/extension.js'></snippet-editor>
-                  
-                  
+                  <div class=inactive>
+                        firefox
+                  </div>
             </div>
+            
+            <dir-tree component></dir-tree>
+            
+            <snippet-editor id=manifest component v2.0 src='github:javascript-2020:browser-extensions:main:/cors/chrome/manifest.json'></snippet-editor>
+            <snippet-editor id=extension component v2.0 src='github:javascript-2020:browser-extensions:main:/cors/chrome/extension.js'></snippet-editor>
+            
             
             
             <log-mod component></log-mod>
@@ -134,8 +128,10 @@
         var version='v1.0';
         var df=true,did='html';
         
-        var $   = (root,css)=>(!css && (css=root,root=document),root.querySelector(css));
+        var github;
         
+        var manifest;
+        var extension;
         var dirtree;
         var log;
         
@@ -144,8 +140,10 @@
                                                                                 debug('init');
               await libs();
               
-              dirtree   = mod['dir-tree'];
-              log       = mod['log-mod'];
+              manifest        = mod.manifest;
+              extension       = mod.extension;
+              dirtree         = mod['dir-tree'];
+              log             = mod['log-mod'];
               
               await mod.auto();
               
@@ -172,6 +170,9 @@
   //:
   
   
+        var cache   = {};
+        
+        
         var tabs;
         
         
@@ -253,7 +254,8 @@
               dirtree.clear();
               dirtree.display(files[name]);
               
-              
+              load_github(url.manifest(name)).then(txt=>manifest.editor.setvalue(txt)),
+              load_github(url.extension(name)).then(txt=>extension.editor.setvalue(txt));
               
         }//tabs
         
@@ -267,17 +269,53 @@
                                 chrome    : {
                                                   'maniferst.json'    : null,
                                                   'extension.js'      : null,
+                                                  'asterisk.png'      : null,
                                 }
                           };
         files.firefox   = {
                                 firefox   : {
                                                   'maniferst.json'    : null,
-                                                  'extension.js'      : null
+                                                  'extension.js'      : null,
+                                                  'asterisk.png'      : null,
                                             }
                           };
                           
                           
-                          
+        var url   = {
+              manifest    : name=>`github:javascript-2020:browser-extensions:main:/cors/${name}/manifest.json`,
+              extension   : name=>`github:javascript-2020:browser-extensions:main:/cors/${name}/extension.js`,
+        };
+        
+        
+        async function load_github(src){
+        
+              if(cache[src]){
+                    return cache[src];
+              }
+              
+              if(!github){
+                    [github]    = await ext.load.libs('js/io/github/github.js');
+              }
+              
+              var [a,owner,repo,branch,path]    = src.split(':');
+              
+              var {txt,error}   = await github.file.load.text({owner,repo,branch,path});
+              if(error){
+                                                                                console.log('error',error);
+                    return error;
+                    return;
+              }
+              
+              cache[src]    = txt;
+              return txt;
+              
+        }//load_github
+        
+        
+  //:
+  
+  
+  
         async function create(dir,{download=true,test,df=false}={}){
                                                                                 df && debug('download',download);
                                                                                 df && debug('test',!!test);
