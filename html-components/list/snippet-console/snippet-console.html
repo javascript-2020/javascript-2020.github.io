@@ -35,7 +35,7 @@
         ;
         
         var base        = 'https://libs.ext-code.com/html/';
-        var component   = 'dir-tree';
+        var component   = 'snippet-console';
         
         var ace;
         var md;
@@ -142,7 +142,9 @@
       
       
             <html-components-hdr v2.0 component=grp1>
-                  <h2 class=title style='top:20px'>dir-tree</h2>
+                  <h2 class=title style='top:20px'>
+                        snippet-console
+                  </h2>
                   <time slot=date datetime=2026-01-08>08 Jan 2026</time>
             </html-components-hdr>
             
@@ -189,10 +191,10 @@
         var files    = {
               'source'    : {
                     'latest'    : null,
+                    'v2.0'      : null,
               },
               'examples'    : {
-                    'dir-tree-min.html'       : null,
-                    'dir-tree-simple.html'    : null,
+                    'snippet-console-v2.0-min.html'   : null,
               },
         };
         
@@ -214,7 +216,7 @@
               dirtree.display(files,{callback});
               
               
-              await show.examples('dir-tree-min.html');
+              await show.examples();
               $('#view').style.display    = '';
               
               
@@ -261,6 +263,10 @@
         
         show.examples    = async function(file){
         
+              if(!file){
+                    file   = Object.keys(files[1].list[0].name;
+              }
+              
               $('#view-hdr').textContent                = 'examples : '+file;
               $('web-editor').style.display             = 'none';
               $('snippet-html-console').style.display   = '';
