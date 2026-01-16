@@ -12,6 +12,9 @@
   #hdr
     {display:flex}
     
+  .radio
+    {border:1px solid lightgray;padding:2px 10px;border-radius:5px}
+    
   #hldr
     {flex:1;box-sizing:border-box;position:relative}
   iframe
@@ -22,6 +25,10 @@
             </style>
             
             <div id=hdr>
+                  <span id=allow-scripts class=radio>
+                        <input type=checkbox>
+                        allow-scripts
+                  </span>
                   <div style='flex:1'></div>
                   <button id=kill style='margin-right:20px'>kill</button>
             </div>
@@ -58,6 +65,8 @@
         
   //vars:-
   
+        var chk   = {};
+        
         var hldr;
         var iframe;
         var glass;
@@ -78,20 +87,21 @@
   
         obj.initdom   = function(rootnode){
         
-              shadow          = host.shadowRoot;
+              shadow                          = host.shadowRoot;
               
-              var style       = $(shadow,'style');
+              var style                       = $(shadow,'style');
               $.stylesheet.insert(style,'button','.icon');
               
               
-              var hdr         = $(shadow,'#hdr');
+              var hdr                         = $(shadow,'#hdr');
+              chk['allow-scripts']            = $.chkbox(hdr,'#allow-scripts');
+              console.log(chk);
+              $(hdr,'#kill').onclick          = btn.kill;
               
-              $(hdr,'#kill').onclick    = btn.kill;
               
-              
-              hldr            = $(shadow,'#hldr');
-              iframe          = $(shadow,'iframe');
-              glass           = $(shadow,'#glass');
+              hldr                            = $(shadow,'#hldr');
+              iframe                          = $(shadow,'iframe');
+              glass                           = $(shadow,'#glass');
               
               
         }//initdom
@@ -137,6 +147,15 @@
         
         obj.srcdoc    = function(html){
         
+              var attr      = iframe.getAttribute('sandbox');
+              var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
+              if(chk['allow-scripts'].checked){
+                    tokens.add('allow-scripts');
+              }
+              var attr      = [...tokens].join(' ');
+              console.log(attr);
+              iframe.setAttribute('sandbox',attr);
+              
               iframe.srcdoc   = html;
               
         }//srcdoc
