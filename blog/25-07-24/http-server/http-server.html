@@ -203,9 +203,8 @@
                         </p>
                         <p>
                               The server is typically accessed via
-                              <br>
-                              <a href='http://localhost:3002/hello' target='_blank'>
-                                    http://localhost:3002/hello
+                              <a href='http://localhost:3002/' target='_blank'>
+                                    http://localhost:3002/
                               </a>
                         </p>
                         
@@ -322,19 +321,31 @@
         }//server-ready
         
         
+        minimal.on['init']    = async function({webcontainer}){
+                                                                                console.log('minimal.on.init',webcontainer);
+              await webcontainer.mount(minimal.files);
+              
+        }//init
+        
         minimal.on['server-ready']    = function({url,port}){
                                                                                 console.log('server-ready',url,port);
               minimal.server.url     = url;
               minimal.server.port    = port;
               
-              var path              = '/hello';
+              var path              = '/index.html';
               $(minimal.root,'#web-page-url').value    = path;
               
               minimal.iframe.src     = `${url}${path}`;
               
         }//server-ready
         
-        
+        minimal.files   = {
+              'index.html'        : {file:{contents:`
+                                          <style>html{font-family:arial}body{margin:20px}</style>
+                                          <h3>HTTPS Works!</h3>
+                                          <h4 style='color:blue'>/hello</h4>
+                                    `}},
+        };
         
         
       </script>
