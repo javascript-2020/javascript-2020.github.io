@@ -176,7 +176,6 @@
         
         
         img.favicon   =
-        
               'iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABsFBMVEVHcEzY'   +
               'yZrsuEbkjh7rrDb2ujDwph3bhSTmiRPpggjrrTDgoEHlvmHqhQnbji/shATq'   +
               'nyfzsRntryb3th33uR3iiBnrkRLvkQjogwrtjAnoixLmgwzzrRz0sB7rnSHy'   +
