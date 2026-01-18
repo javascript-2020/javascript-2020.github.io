@@ -10,7 +10,7 @@
               var type    = mime(path);
               
               res.writeHead(200,{'content-type':type});
-              require('fs').createReadStream(url).pipe(res);
+              require('fs').createReadStream(path).pipe(res);
               
         }//request
         
