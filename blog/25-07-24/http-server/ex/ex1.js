@@ -3,7 +3,7 @@
 
         var fs      = require('fs');
         var path    = require('path');
-
+        
         
         var img   = {};
         
@@ -13,8 +13,8 @@
         
         var server    = require('http').createServer(request).listen({host,port});
                                                                                 console.log(`http://${host}:${port}/`);
-        
-        
+                                                                                
+                                                                                
         function request(req,res){
         
               if(cors(req,res)){
@@ -25,8 +25,8 @@
               var handled   = true;
               
               switch(req.url){
-
-                case '/hello'         : hello(req,res);         break;              
+              
+                case '/hello'         : hello(req,res);         break;
                 case '/favicon.ico'   : favicon(req,res);       break;
                 
                 default               : handled   = false;
@@ -34,8 +34,8 @@
               }//switch
               
               if(handled)return;
-
-
+              
+              
               var abs   = resolve(req.url);
               if(!abs){
                     badrequest(req,res);
@@ -46,8 +46,8 @@
                     notfound(req,res);
                     return;
               }
-
-
+              
+              
               var stream    = fs.createReadStream(abs);
               
               var type    = mime(abs);
@@ -56,7 +56,7 @@
               
         }//request
         
-
+        
   //:
   
   
@@ -70,6 +70,7 @@
               
               res.writeHead(200);
               res.end();
+              return true;
               
         }//cors
         
@@ -80,7 +81,7 @@
               
         }//headers
         
-  
+        
   //:
   
   
@@ -94,14 +95,14 @@
         
         function notfound(req,res){
         
-              res.writeHEad(400);
+              res.writeHead(400);
               res.end(`${req.url} not found`);
               
         }//notfound
         
-  
+        
   //:
-
+  
   
         resolve.df    = false;
         
@@ -130,15 +131,15 @@
               }
                                                                                 resolve.df && console.log('ok',file);
               return file;
-
+              
         }//resolve
-
-
+        
+        
   //:
   
   
         function hello(req,res){
-          
+        
               res.writeHead(200,{'content-type':'text/html'});
               res.end(`
               
@@ -161,7 +162,7 @@
         
   //:
   
-        
+  
         function mime(fn){
         
               var ext   = fn;
@@ -171,7 +172,7 @@
               }
               
               switch(ext){
-                
+              
                 case 'html'   : return 'text/html';
                 case 'css'    : return 'text/css';
                 case 'js'     : return 'text/javascript';
@@ -179,11 +180,11 @@
               }//switch
               
         }//mime
-
-
         
-        img.favicon   = 
-
+        
+        
+        img.favicon   =
+        
               'iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABsFBMVEVHcEzY'   +
               'yZrsuEbkjh7rrDb2ujDwph3bhSTmiRPpggjrrTDgoEHlvmHqhQnbji/shATq'   +
               'nyfzsRntryb3th33uR3iiBnrkRLvkQjogwrtjAnoixLmgwzzrRz0sB7rnSHy'   +
@@ -209,4 +210,5 @@
               'skQ0vl3zEWzad1DObLEsq5Jz5aAYt1qJWs2XtkKItK8Eg7HB62pSj2sIk4ng'   +
               'gKFsqL8WFdL7JoeJw6EZFf5R58KJB44uGpVU/dc9UAqlEyqZTDZ6e0hy8zXi'   +
               'qyUSiYL3//wC2BenWkIiIBYAAAAASUVORK5CYII='
+              
               
