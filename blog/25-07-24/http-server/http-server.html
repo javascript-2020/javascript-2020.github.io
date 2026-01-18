@@ -7,7 +7,7 @@
 
       <head>
             <meta charset=utf-8>
-
+            
             <title>
                   How to Set Up a nodejs http server
             </title>
@@ -16,13 +16,13 @@
             
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
-
-
+            
+            
             <base href='https://ext-code.com/blog/25-07-24/http-server/'>
             <link rel=canonical href='https://ext-code.com/blog/25-07-24/http-server/http-server.html'>
             
             
-
+            
             <script type='application/ld+json'>
             
                   {
@@ -36,24 +36,24 @@
                         "mainEntityOfPage"    : {"@type":"WebPage","@id":"https://ext-code.com/blog/25-07-23/http2-server/http2-server.html"},
                         "publisher"           : {"@type":"Organization","name":"Your Blog or Company Name","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
                   }
-            
+                  
             </script>
-
-
+            
+            
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
-
-
+            
+            
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
-            <script init>            
+            
+            <script init>
                                                                                 console.clear();
                                                                                 console.log('http-server.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var df=true,version='v2.0'
         ;
-
-
+        
+        
         var ext;
         var $;
         var datatype;
@@ -63,22 +63,22 @@
         var debug;
         
         var menu;
-            
+        
         var hdr;
         var snippet;
-
+        
         
     //:
-
-              
+    
+    
         async function init(){
                                                                                 //debug('init',version);
-              
+                                                                                
               menu          = menumod();
-
+              
               mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
               
-
+              
               hdr           = mod['blog-hdr'];
               snippet       = mod.snippet;
               
@@ -90,14 +90,14 @@
                     hdr.init(),
                     snippet.init(),
               ]);
-
-
+              
+              
               initdom(document.body);
-
+              
               
         }//init
-
-
+        
+        
   //:
   
   
@@ -106,7 +106,7 @@
         mod.stack.add;
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
+        
         var promise   = ext.load.libs(
               'js/dom/$.js.api',
               'js/core/datatype.js',
@@ -116,26 +116,26 @@
               'js/debug/debug.js',
         );
         [$,datatype,menumod,keydown,code]   = await promise;
-  
+        
         code.initmod({ext,$,datatype,menumod});
         
         mod.stack.complete;
-              
+        
 })();
 
-                  
+
             </script init>
-
-
-
-
-
+            
+            
+            
+            
+            
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             
             <link rel=stylesheet href='/blog/css/blog.css'>
-
+            
             <style>
-
+            
   html
     {height:100%;font-family:arial}
   body
@@ -144,17 +144,28 @@
     }
   body>*
     {max-width:1400px;width:100%;padding:0 20px;}
-
-
+    
+    
   #snippet-root
     {border:1px solid lightblue;padding:10px}
   #snippet-root>div
     {margin:10px}
     
+    
+  #web-page
+    {display:flex;flex-direction:column;gap:10px}
+    
+  #web-page-hdr
+    {display:flex;gap:10px}
+  #web-page-url
+    {flex:1}
+  #web-page-go
+    {border:1px solid lightgray;cursor:pointer;padding:1px}
+    
   iframe
     {height:500px;border:1px solid lightgray;box-sizing:border-box;margin:10px}
-
-
+    
+    
   input
     {font-size:16px;padding:5px 10px;box-sizing:border-box}
   input[type=button]
@@ -166,9 +177,9 @@
       
       
       <body>
-
-
-            <blog-hdr component=grp1 v2.0>      
+      
+      
+            <blog-hdr component=grp1 v2.0>
                   <h1 class=title>
                         How To Set Up A Basic HTTP Server In Node.js
                   </h1>
@@ -176,13 +187,13 @@
                         18 Oct 2025
                   </time>
             </blog-hdr>
-
-      
+            
+            
             <p id=desc>
                   Learn how to set up a basic HTTP server in Node.js with this hands-on tutorial featuring an interactive, editable code demo you can run in your browser.
             </p>
-
-
+            
+            
             <div id=snippet-root>
             
                   <div id=btns>
@@ -192,16 +203,27 @@
                   <snippet-terminal-console id=snippet type=nodejs src='ex/ex1.js' component></snippet-terminal-console>
                   
             </div>
-
             
-            <iframe></iframe>
-
-      
+            <div id=web-page>
+                  <div id=web-page-hdr>
+                        <input id=web-page-url>
+                        <img id=web-page-go src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAfCAMAAADHso01AAAARVBMVEVHcEwGBuEGBuEJCdQCAvQFBegDA/ACAvYEBOwBAfgEBeoDBO4BAfgBAvYHCNsNDMEEBeoCAvMCAvQFBuQDBe8AAP4AAfx2UBTrAAAAFXRSTlMANikQ0lym33zxaov36BoGTrnIQZUTyCZ3AAABHUlEQVQoz41T2Q7DIAwjlJty9Mr/f+oWoB2snbQ8ITmXY8PYvzGBNN4bCdMDyM1qEY/jQLsa/l1pdMFKIGozdODLhbWEBaiooiBGlEIA23wqtSeKJdpbmLAQPClsE5WT0imNZ+5K3V0tsL7ty71t+SIyFqk1YpCfTWWoDQiWVIyz7Jm4CmvOUpmMKg0863qBv3uXwVuHXjwDMLD0WPsrgVm0JYrvojwTrMYbp7g5JazNTBZ4f1aQP1d3g+6z+3jYnIZDI5rUceNNd/OtnywkZ9ejOSCq2HUfbp41sV6qRK7s/lEsmqoIVra93jm7vbkOxSmwuCyC82kr1HDToDOj3gan4mBUXOHb5x0cfHz8JUVG4eHHH9t377bp72/5Al4LH5UQD4MbAAAAAElFTkSuQmCC'>
+                  </div>
+                  <iframe></iframe>
+            </div>
+            
+            
       </body>
       
       <script>
       
-
+        var server    = {};
+        server.url    = null;
+        server.port   = null;
+        
+        var iframe;
+        
+        
         var btn   = {};
         var on    = {};
         
@@ -211,21 +233,26 @@
   
         function initdom(rootnode){
         
-
+        
               $('[value=download]').onclick           = btn.download;
+              
+              
+              $('#web-page-go').onclick               = btn.go;
+              
+              iframe    = $('iframe');
               
               
               snippet.initdom();
               
-        
+              
         }//initdom
-
-
+        
+        
   //:
   
   
         btn.download    = function(){
-          
+        
               var txt       = snippet.editor.getvalue();
               var blob      = new Blob([txt]);
               var url       = window.URL.createObjectURL(blob);
@@ -237,12 +264,27 @@
               
         }//download
         
+        
+        btn.go    = function(){
+        
+              var path      = $('#web-page-url').value;
+              iframe.src    = `${server.url}${path}`;
+              
+        }//go
+        
+        
   //:
   
   
-        on['server-ready']    = function(port,url){
-                                                                                console.log('server-ready',port,url);
-              $('iframe').src   = `${url}/hello`;
+        on['server-ready']    = function({url,port}){
+                                                                                console.log('server-ready',url,port);
+              server.url    = url;
+              server.port   = port;
+              
+              var path                    = '/hello';
+              $('#web-page-url').value    = path;
+              
+              iframe.src   = `${url}${path}`;
               
         }//server-ready
         
