@@ -45,14 +45,26 @@
             <script>
             
             
-        var snippet;
+        var simple        = {};
+        simple.server     = {};
+        simple.root;
+        simple.iframe;
+        simple.on         = {};
+        
+        var minimal        = {};
+        minimal.server     = {};
+        minimal.root;
+        minimal.iframe;
+        minimal.on         = {};
         
         
         async function start(){
         
-              snippet   = mod.snippet;
+              simple.snippet   = mod.simple;
+              simple.snippet.initmod({on:simple.on});
               
-              snippet.initmod({on});
+              minimal.snippet   = mod.minimal;
+              minimal.snippet.initmod({on:minimal.on});
               
               
               initdom(document.body);
@@ -68,11 +80,10 @@
             
             <style>
             
-  #snippet-root
+  .example-root
     {border:1px solid lightblue;padding:10px}
-  #snippet-root>div
+  .example-root>div
     {margin:10px}
-    
     
   #web-page
     {display:flex;flex-direction:column;gap:10px;margin-top:30px}
@@ -101,8 +112,8 @@
                   <h1 class=title>
                         How To Set Up A Basic HTTP Server In Node.js
                   </h1>
-                  <time slot=date datetime=2025-10-15>
-                        18 Oct 2025
+                  <time slot=date datetime=2026-01-18>
+                        18 Jan 2026
                   </time>
             </blog-hdr>
             
@@ -113,7 +124,7 @@
             </p>
             
             
-            <div id=snippet-root>
+            <div id=simple-root class=example-root>
             
                   <div class=blog-text>
                   
@@ -136,6 +147,13 @@
                         <p>
                               The mime function will need to built up if it were required.
                         </p>
+                        <p>
+                              The server is typically accessed via
+                              <br>
+                              <a href='http://localhost:3001/hello' target='_blank'>
+                                    http://localhost:3001/hello
+                              </a>
+                        </p>
                         
                         <div id=btns>
                               <input value=download type=button>
@@ -144,33 +162,83 @@
                   </div>
                   
                   
+                  <snippet-terminal-console component id=simple type=nodejs src='ex/http-server-simple-example.js' web-console='h=100'></snippet-terminal-console>
                   
-                  <snippet-terminal-console component id=snippet type=nodejs src='ex/http-server-simple-example.js' web-console='h=100'></snippet-terminal-console>
+                  
+                  <div id=web-page>
+                        <div id=web-page-hdr>
+                              <img id=web-page-go src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAfCAMAAADHso01AAAARVBMVEVHcEwGBuEGBuEJCdQCAvQFBegDA/ACAvYEBOwBAfgEBeoDBO4BAfgBAvYHCNsNDMEEBeoCAvMCAvQFBuQDBe8AAP4AAfx2UBTrAAAAFXRSTlMANikQ0lym33zxaov36BoGTrnIQZUTyCZ3AAABHUlEQVQoz41T2Q7DIAwjlJty9Mr/f+oWoB2snbQ8ITmXY8PYvzGBNN4bCdMDyM1qEY/jQLsa/l1pdMFKIGozdODLhbWEBaiooiBGlEIA23wqtSeKJdpbmLAQPClsE5WT0imNZ+5K3V0tsL7ty71t+SIyFqk1YpCfTWWoDQiWVIyz7Jm4CmvOUpmMKg0863qBv3uXwVuHXjwDMLD0WPsrgVm0JYrvojwTrMYbp7g5JazNTBZ4f1aQP1d3g+6z+3jYnIZDI5rUceNNd/OtnywkZ9ejOSCq2HUfbp41sV6qRK7s/lEsmqoIVra93jm7vbkOxSmwuCyC82kr1HDToDOj3gan4mBUXOHb5x0cfHz8JUVG4eHHH9t377bp72/5Al4LH5UQD4MbAAAAAElFTkSuQmCC'>
+                              <input id=web-page-url>
+                        </div>
+                        <iframe></iframe>
+                  </div>
+                  
                   
             </div>
             
-            <div id=web-page>
-                  <div id=web-page-hdr>
-                        <input id=web-page-url>
-                        <img id=web-page-go src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAfCAMAAADHso01AAAARVBMVEVHcEwGBuEGBuEJCdQCAvQFBegDA/ACAvYEBOwBAfgEBeoDBO4BAfgBAvYHCNsNDMEEBeoCAvMCAvQFBuQDBe8AAP4AAfx2UBTrAAAAFXRSTlMANikQ0lym33zxaov36BoGTrnIQZUTyCZ3AAABHUlEQVQoz41T2Q7DIAwjlJty9Mr/f+oWoB2snbQ8ITmXY8PYvzGBNN4bCdMDyM1qEY/jQLsa/l1pdMFKIGozdODLhbWEBaiooiBGlEIA23wqtSeKJdpbmLAQPClsE5WT0imNZ+5K3V0tsL7ty71t+SIyFqk1YpCfTWWoDQiWVIyz7Jm4CmvOUpmMKg0863qBv3uXwVuHXjwDMLD0WPsrgVm0JYrvojwTrMYbp7g5JazNTBZ4f1aQP1d3g+6z+3jYnIZDI5rUceNNd/OtnywkZ9ejOSCq2HUfbp41sV6qRK7s/lEsmqoIVra93jm7vbkOxSmwuCyC82kr1HDToDOj3gan4mBUXOHb5x0cfHz8JUVG4eHHH9t377bp72/5Al4LH5UQD4MbAAAAAElFTkSuQmCC'>
+            
+            
+            
+            <div id=minimal-root class=example-root>
+            
+                  <div class=blog-text>
+                  
+                        <h4 class=blog-hdr>
+                              http-server-minimal.js
+                        </h4>
+                        
+                        <p>
+                              This example demonstrates a minimal https server.  It has built in https certificate.
+                        </p>
+                        <p>
+                              It serves files local to the base directory where the server was run and produces
+                              a 400 badrequest when the requested url maps to a directory outside the directory where the server is located
+                              such as '../test.txt'.
+                        </p>
+                        <p>
+                              It produces a 404 Not Found should the request url not exists.
+                        </p>
+                        <p>
+                              The mime function will need to built up if it were required.
+                        </p>
+                        <p>
+                              The server is typically accessed via
+                              <br>
+                              <a href='http://localhost:3002/hello' target='_blank'>
+                                    http://localhost:3002/hello
+                              </a>
+                        </p>
+                        
+                        <div id=btns>
+                              <input value=download type=button>
+                        </div>
+                        
                   </div>
-                  <iframe></iframe>
+                  
+                  
+                  <snippet-terminal-console component id=minimal type=nodejs src='ex/http-server-minimal.js' web-console='h=100'></snippet-terminal-console>
+                  
+                  
+                  <div id=web-page>
+                        <div id=web-page-hdr>
+                              <img id=web-page-go src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAfCAMAAADHso01AAAARVBMVEVHcEwGBuEGBuEJCdQCAvQFBegDA/ACAvYEBOwBAfgEBeoDBO4BAfgBAvYHCNsNDMEEBeoCAvMCAvQFBuQDBe8AAP4AAfx2UBTrAAAAFXRSTlMANikQ0lym33zxaov36BoGTrnIQZUTyCZ3AAABHUlEQVQoz41T2Q7DIAwjlJty9Mr/f+oWoB2snbQ8ITmXY8PYvzGBNN4bCdMDyM1qEY/jQLsa/l1pdMFKIGozdODLhbWEBaiooiBGlEIA23wqtSeKJdpbmLAQPClsE5WT0imNZ+5K3V0tsL7ty71t+SIyFqk1YpCfTWWoDQiWVIyz7Jm4CmvOUpmMKg0863qBv3uXwVuHXjwDMLD0WPsrgVm0JYrvojwTrMYbp7g5JazNTBZ4f1aQP1d3g+6z+3jYnIZDI5rUceNNd/OtnywkZ9ejOSCq2HUfbp41sV6qRK7s/lEsmqoIVra93jm7vbkOxSmwuCyC82kr1HDToDOj3gan4mBUXOHb5x0cfHz8JUVG4eHHH9t377bp72/5Al4LH5UQD4MbAAAAAElFTkSuQmCC'>
+                              <input id=web-page-url>
+                        </div>
+                        <iframe></iframe>
+                  </div>
+                  
+                  
             </div>
+            
             
             
       </body>
       
       <script>
       
-        var server    = {};
-        server.url    = null;
-        server.port   = null;
-        
-        var iframe;
-        
-        
+      
+      
         var btn   = {};
-        var on    = {};
         
         
   //:
@@ -179,12 +247,16 @@
         function initdom(rootnode){
         
         
-              $('[value=download]').onclick           = btn.download;
+              simple.root                                         = $('#simple-root');
+              $(simple.root,'[value=download]').onclick           = btn.download;
+              $(simple.root,'#web-page-go').onclick               = btn.go;
+              simple.iframe                                       = $(simple.root,'iframe');
               
               
-              $('#web-page-go').onclick               = btn.go;
-              
-              iframe    = $('iframe');
+              minimal.root                                        = $('#minimal-root');
+              $(minimal.root,'[value=download]').onclick          = btn.download;
+              $(minimal.root,'#web-page-go').onclick              = btn.go;
+              minimal.iframe                                      = $(minimal.root,'iframe');
               
               
         }//initdom
@@ -193,9 +265,24 @@
   //:
   
   
-        btn.download    = function(){
+        function find(name){
         
-              var txt       = snippet.editor.getvalue();
+              switch(name){
+              
+                case 'simple'   : return simple;
+                
+              }//switch
+              
+        }//find
+        
+        
+        btn.download    = function(e){
+        
+              var root      = e.target.closest('.example-root');
+              var name      = root.id.split('-').at(0);
+              var ex        = find(name);
+              
+              var txt       = ex.snippet.editor.getvalue();
               var blob      = new Blob([txt]);
               var url       = window.URL.createObjectURL(blob);
               
@@ -207,10 +294,14 @@
         }//download
         
         
-        btn.go    = function(){
+        btn.go    = function(e){
         
-              var path      = $('#web-page-url').value;
-              iframe.src    = `${server.url}${path}`;
+              var root          = e.target.closest('.example-root');
+              var name          = root.id.split('-').at(0);
+              var ex            = find(name);
+              
+              var path          = $(ex.root,'#web-page-url').value;
+              ex.iframe.src     = `${ex.server.url}${path}`;
               
         }//go
         
@@ -218,15 +309,28 @@
   //:
   
   
-        on['server-ready']    = function({url,port}){
+        simple.on['server-ready']    = function({url,port}){
                                                                                 console.log('server-ready',url,port);
-              server.url    = url;
-              server.port   = port;
+              simple.server.url     = url;
+              simple.server.port    = port;
               
-              var path                    = '/hello';
-              $('#web-page-url').value    = path;
+              var path              = '/hello';
+              $(simple.root,'#web-page-url').value    = path;
               
-              iframe.src   = `${url}${path}`;
+              simple.iframe.src     = `${url}${path}`;
+              
+        }//server-ready
+        
+        
+        minimal.on['server-ready']    = function({url,port}){
+                                                                                console.log('server-ready',url,port);
+              minimal.server.url     = url;
+              minimal.server.port    = port;
+              
+              var path              = '/hello';
+              $(minimal.root,'#web-page-url').value    = path;
+              
+              minimal.iframe.src     = `${url}${path}`;
               
         }//server-ready
         
