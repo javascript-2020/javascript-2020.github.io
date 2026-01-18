@@ -144,7 +144,7 @@
               res.end(`
                     <style>html{font-family:arial}body{margin:20px}</style>
                     <h3>It Works!</h3>
-                    <h4 style='color:blue'>hello</h4>
+                    <h4 style='color:blue'>/hello</h4>
               `);
               
         }//hello
