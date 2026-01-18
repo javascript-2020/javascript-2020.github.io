@@ -140,7 +140,7 @@
               res.writeHead(200,{'content-type':'text/html'});
               res.end(`
                     <style>html{font-family:arial}body{margin:20px}</style>
-                    <h3>It Works!</h3>
+                    <h3>HTTPS Works!</h3>
                     <h4 style='color:blue'>/hello</h4>
               `);
               
