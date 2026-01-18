@@ -16,7 +16,7 @@
                                                                                 
                                                                                 
         function request(req,res){
-        
+                                                                                console.log(req.method,req.url);
               if(cors(req,res)){
                     return;
               }
@@ -67,7 +67,7 @@
               if(req.method!='OPTIONS'){
                     return;
               }
-              
+                                                                                console.log('cors');
               res.writeHead(200);
               res.end();
               return true;
@@ -86,7 +86,7 @@
   
   
         function badrequest(req,res){
-        
+                                                                                console.log('bad request');
               res.writeHead(400);
               res.end(`${req.url} bad request`);
               
@@ -94,7 +94,7 @@
         
         
         function notfound(req,res){
-        
+                                                                                console.log('not found');
               res.writeHead(400);
               res.end(`${req.url} not found`);
               
@@ -165,12 +165,7 @@
   
         function mime(fn){
         
-              var ext   = fn;
-              var i     = fn.lastIndexOf('.');
-              if(i!=-1){
-                    ext   = fn.slice(i+1);
-              }
-              
+              var ext   = fn.split('.').at(-1);
               switch(ext){
               
                 case 'html'   : return 'text/html';
