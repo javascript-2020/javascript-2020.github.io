@@ -1,6 +1,5 @@
 
 
-
         var port        = 3002;
         var server      = require('http').createServer(request).listen(port);
                                                                                 console.log(`http://localhost:${port}/`);
@@ -27,6 +26,5 @@
               return 'application/octet-stream';
               
         }//mime
-        
         
         
