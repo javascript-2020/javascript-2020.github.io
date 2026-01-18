@@ -17,6 +17,8 @@
                                                                                 
         function request(req,res){
                                                                                 console.log(req.method,req.url);
+              cors.headers(res);
+              
               if(cors(req,res)){
                     return;
               }
@@ -69,8 +71,6 @@
         
         function cors(req,res){
         
-              cors.headers(res);
-              
               if(req.method!='OPTIONS'){
                     return;
               }
