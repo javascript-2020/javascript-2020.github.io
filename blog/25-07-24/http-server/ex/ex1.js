@@ -142,9 +142,9 @@
         
               res.writeHead(200,{'content-type':'text/html'});
               res.end(`
-              
-                    <h3>hello</h3>
-                    
+                    <style>html{font-family:arial}</style>
+                    <h3>It Works!</h3>
+                    <h4 style='color:blue'>hello</h4>
               `);
               
         }//hello
