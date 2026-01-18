@@ -17,11 +17,8 @@
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
             
-            
             <base href='https://ext-code.com/blog/25-07-24/http-server/'>
             <link rel=canonical href='https://ext-code.com/blog/25-07-24/http-server/http-server.html'>
-            
-            
             
             <script type='application/ld+json'>
             
@@ -43,109 +40,34 @@
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js?hdr'></script>
             
-            <script init>
-                                                                                console.clear();
-                                                                                console.log('http-server.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
-        ;
-        
-        
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
-        var code;
-        var debug;
-        
-        var menu;
-        
-        var hdr;
+            <script>
+            
+            
         var snippet;
         
         
-    //:
-    
-    
-        async function init(){
-                                                                                //debug('init',version);
-                                                                                
-              menu          = menumod();
+        async function start(){
+        
+              snippet   = mod.snippet;
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
-              
-              
-              hdr           = mod['blog-hdr'];
-              snippet       = mod.snippet;
-              
-              hdr.initmod({ext,$});
-              snippet.initmod({ext,$,menu,ace,on});
-              
-              
-              await Promise.all([
-                    hdr.init(),
-                    snippet.init(),
-              ]);
+              snippet.initmod({on});
               
               
               initdom(document.body);
               
               
-        }//init
+        }//start
         
         
-  //:
-  
-  
-(async()=>{
-
-        mod.stack.add;
-        
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-        
-        var promise   = ext.load.libs(
-              'js/dom/$.js.api',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/dom/code/v2.0/code-v2.0.js.api',
-              'js/debug/debug.js',
-        );
-        [$,datatype,menumod,keydown,code]   = await promise;
-        
-        code.initmod({ext,$,datatype,menumod});
-        
-        mod.stack.complete;
-        
-})();
-
-
-            </script init>
+            </script>
             
             
-            
-            
-            
-            <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
-            
-            <link rel=stylesheet href='/blog/css/blog.css'>
+            <link rel=stylesheet href='/blog/css/blog-2.css'>
             
             <style>
             
-  html
-    {height:100%;font-family:arial}
-  body
-    {min-height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px;margin:20px;align-items:center;
-      padding-bottom:200px;box-sizing:border-box;
-    }
-  body>*
-    {max-width:1400px;width:100%;padding:0 20px;}
-    
-    
   #snippet-root
     {border:1px solid lightblue;padding:10px}
   #snippet-root>div
@@ -162,14 +84,10 @@
   #web-page-go
     {border:1px solid lightgray;cursor:pointer;padding:4px;box-sizing:border-box;width:32px;height:32px}
     
-  iframe
+  #web-page iframe
     {height:500px;border:1px solid lightgray;box-sizing:border-box}
     
     
-  input
-    {font-size:16px;padding:5px 10px;box-sizing:border-box}
-  input[type=button]
-    {cursor:pointer}
     
             </style>
             
@@ -183,14 +101,15 @@
                   <h1 class=title>
                         How To Set Up A Basic HTTP Server In Node.js
                   </h1>
-                  <time slot=date datetime="2025-10-15">
+                  <time slot=date datetime=2025-10-15>
                         18 Oct 2025
                   </time>
             </blog-hdr>
             
             
-            <p id=desc>
-                  Learn how to set up a basic HTTP server in Node.js with this hands-on tutorial featuring an interactive, editable code demo you can run in your browser.
+            <p class=description>
+                  Learn how to set up a basic HTTP server in Node.js with this hands-on tutorial featuring an interactive,
+                  editable code demo you can run in your browser.
             </p>
             
             
@@ -200,7 +119,7 @@
                         <input value=download type=button>
                   </div>
                   
-                  <snippet-terminal-console id=snippet type=nodejs src='ex/ex1.js' component></snippet-terminal-console>
+                  <snippet-terminal-console component id=snippet type=nodejs src='ex/http-server-simple-example.js' web-console='h=100'></snippet-terminal-console>
                   
             </div>
             
@@ -242,9 +161,6 @@
               iframe    = $('iframe');
               
               
-              snippet.initdom();
-              
-              
         }//initdom
         
         
@@ -258,7 +174,7 @@
               var url       = window.URL.createObjectURL(blob);
               
               var a         = document.createElement('a');
-              a.download    = 'http-example-server.js';
+              a.download    = 'http-server-simple-example.js';
               a.href        = url;
               a.click();
               
@@ -292,6 +208,7 @@
         
         
       </script>
+      
 </html>
 
 
