@@ -1,14 +1,11 @@
 
 
 
-        var fs    = require('fs');
+        var fs          = require('fs');
         
-        setup();
-        
-        var key,cert;
-        var port    = 3002;
-        
-        var server    = require('https').createServer({key,cert},request).listen(port);
+        var key,cert    = setup();
+        var port        = 3002;
+        var server      = require('https').createServer({key,cert},request).listen(port);
                                                                                 console.log(`https://localhost:${port}/`);
                                                                                 
         function request(req,res){
@@ -51,7 +48,7 @@
         }//hello
         
         
-        function setup(){
+        //function setup(){
         
               key   =
                     '-----BEGIN RSA PRIVATE KEY-----\n'                                   +
@@ -105,5 +102,12 @@
                     'AZpOcmiSQO2WFjUS/N5y9g+zJs/Osw==\n'                                  +
                     '-----END CERTIFICATE-----\n'
               ;
+              return {key,cert};
               
-        }//setup
+        //}//setup
+        
+        
+        
+        
+        
+        
