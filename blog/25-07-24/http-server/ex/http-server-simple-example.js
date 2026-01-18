@@ -60,6 +60,13 @@
   //:
   
   
+        cors.headers    = function(res){
+        
+              res.setHeader('access-control-allow-origin','*');
+              
+        }//headers
+        
+        
         function cors(req,res){
         
               cors.headers(res);
@@ -75,16 +82,6 @@
         }//cors
         
         
-        cors.headers    = function(res){
-        
-              res.setHeader('access-control-allow-origin','*');
-              
-        }//headers
-        
-        
-  //:
-  
-  
         function badrequest(req,res){
                                                                                 console.log('bad request');
               res.writeHead(400);
