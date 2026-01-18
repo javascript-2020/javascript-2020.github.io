@@ -48,7 +48,7 @@
         }//hello
         
         
-        //function setup(){
+        function setup(){
         
               key   =
                     '-----BEGIN RSA PRIVATE KEY-----\n'                                   +
@@ -104,7 +104,7 @@
               ;
               return {key,cert};
               
-        //}//setup
+        }//setup
         
         
         
