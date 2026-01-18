@@ -85,15 +85,15 @@
         function badrequest(req,res){
                                                                                 console.log('bad request');
               res.writeHead(400);
-              res.end(`${req.url} bad request`);
+              res.end(`400 bad request : ${req.url}`);
               
         }//bad
         
         
         function notfound(req,res){
                                                                                 console.log('not found');
-              res.writeHead(400);
-              res.end(`${req.url} not found`);
+              res.writeHead(404);
+              res.end(`404 not found : ${req.url}`);
               
         }//notfound
         
