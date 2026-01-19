@@ -60,17 +60,19 @@
               var json    = post(req);
               var user    = users.find(user=>user.name===json.name);
               if(!user){
+                                                                                console.log('user not found');
                     error();
                     return;
               }
               if(user.password!==json.password){
+                                                                                console.log('invalid password');
                     error();
                     return;
               }
-              
+                                                                                console.log('ok');
               user.cookie   = cookie();
               res.setHeader('set-cookie',`session=${user.id};HttpOnly;Secure;SameSite=Strict;Max-Age=60`);
-              res.setHeader('Location','/admin');
+              res.setHeader('Location','/admin.html');
               res.statusCode    = 303;
               res.end('ok');
               
