@@ -8,7 +8,7 @@
         ];
         
         function request(req,res){
-                                                                                console.log(req.method,req.url);
+                                                                                console.log(req.method,req.url,req.headers.cookie);
               var path    = req.url.slice(1);
               
               switch(path){
@@ -119,7 +119,7 @@
         }//logout
         
         
-        function parseCookies(hdr){
+        function parse(hdr){
         
               var cookies   = {};
               
