@@ -40,7 +40,7 @@
         async function post(req){
         
               var body    = '';
-              for(await data of req)body+=data;
+              for await(data of req)body+=data;
               var json    = JSON.parse(body);
               return json;
               
