@@ -49,7 +49,7 @@
         }//read
         
         
-        function login(req,res){
+        async function login(req,res){
         
               if(req.method=='GET'){
                     res.writeHead(200,{'content-type':'text/html'});
@@ -57,8 +57,8 @@
                     return;
               }
               
-              var json    = post(req);
-              var user    = users.find(user=>{console.log(user);return(user.name===json.name)});
+              var json    = await post(req);
+              var user    = users.find(user=>user.name===json.name);
               if(!user){
                                                                                 console.log('user not found');
                     error();
