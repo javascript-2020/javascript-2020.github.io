@@ -75,7 +75,8 @@
               
               function error(){
               
-                    var i   = html.login.indexOf('</h4>')+5;
+                    var i     = html.login.indexOf('</h4>')+5;
+                    var err   = '<p style="color:red">Invalid username or password</p>';
                     var txt   = html.login.slice(0,i)+err+html.login.slice(i+1);
                     res.writeHead(200,{'content-type':'text/html'});
                     res.end(txt);
