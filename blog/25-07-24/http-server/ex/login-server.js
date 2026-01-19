@@ -103,6 +103,7 @@
         
               var cookies   = parse(req.headers.cookie);
               var user      = users.find(user=>user.cookie===cookies.session);
+                                                                                console.log(user);
               if(user){
                     res.setHeader('set-cookie',`session=${user.cookie}; HttpOnly; Secure; SameSite=Strict; Max-Age=0`);
                     user.cookie   = null;
