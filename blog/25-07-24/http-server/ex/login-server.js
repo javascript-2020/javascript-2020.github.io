@@ -144,7 +144,7 @@
         
               var cookie    = req.headers.cookie;
                                                                                 console.log('cookie >',cookie);
-              var cookes    = parse(cookie);
+              var cookies   = parse(cookie);
               if(!cookies){
                     redirect();
                     return;
