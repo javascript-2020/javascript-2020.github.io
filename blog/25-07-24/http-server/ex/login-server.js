@@ -102,16 +102,13 @@
         
         function logout(req,res){
         
-              var json    = post(req);
-              var user    = users.find(user=>user.name===json.name);
-              if(!user){
-                    res.end('error');
-                    return;
+              var cookies   = parse(req.headers.cookie);
+              var user      = users.find(user=>user.cookie===cookies.session);
+              if(user){
+                    res.setHeader('set-cookie',`session=${user.cookie}; HttpOnly; Secure; SameSite=Strict; Max-Age=0`);
+                    user.cookie   = null;
               }
               
-              var cookie    = user.cookie;
-              res.setHeader('set-cookie',`session=${cookie}; HttpOnly; Secure; SameSite=Strict; Max-Age=0`);
-              //res.setHeader('set-cookie',`name=john;HttpOnly;Secure;SameSite=Strict;Max-Age=0`);
               res.setHeader('Location','/login.html');
               res.statusCode    = 303;
               res.end('ok');
