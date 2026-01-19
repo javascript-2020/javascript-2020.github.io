@@ -172,7 +172,7 @@
         
         html.home   = `
       <style>
-            body{font-family:arial;background:whitesmoke}
+            body{font-family:arial;background:rgba(252,210,153,0.07)}
             h3{display:flex;align-items:center;gap:10px}
             a{margin:10px}
       </style>
@@ -188,7 +188,7 @@
         
         html.login    = `
       <style>
-            body{font-family:arial;background:whitesmoke}
+            body{font-family:arial;background:rgba(252,210,153,0.07)}
             form{border:1px solid lightgray;padding:10px;display:inline-flex;flex-direction:column;gap:10px}
             label{width:60px;text-align:right;display:inline-block;margin:10px}
             h4,span{text-align:center;margin:0}
@@ -213,7 +213,7 @@
         
         html.admin    = `
       <style>
-            body{font-family:arial;background:whitesmoke}
+            body{font-family:arial;background:rgba(252,210,153,0.07)}
             h3{color:green;font-style:italic}
             a{margin:10px}
       </style>
@@ -226,7 +226,7 @@
         
         html.notfound   = `
       <style>
-            body{font-family:arial;background:whitesmoke}
+            body{font-family:arial;background:rgba(252,210,153,0.07)}
             a{margin:10px}
       </style>
       <h3>not found</h3>
