@@ -41,7 +41,16 @@
         
               var body    = '';
               for await(data of req)body+=data;
-              var json    = JSON.parse(body);
+              try{
+              
+                    var json    = JSON.parse(body);
+                    
+              }//try
+              catch(err){
+              
+                    return {};
+                    
+              }//catch
               return json;
               
         }//read
