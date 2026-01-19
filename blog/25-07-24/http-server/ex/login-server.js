@@ -58,7 +58,7 @@
               }
               
               var json    = post(req);
-              var user    = users.find(user=>user.name===json.name);
+              var user    = users.find(user=>{console.log(user);return(user.name===json.name)});
               if(!user){
                                                                                 console.log('user not found');
                     error();
