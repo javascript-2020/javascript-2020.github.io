@@ -83,6 +83,16 @@
                     
               }//erorr
               
+              
+              function cookie(){
+              
+                    var rnd   = ()=>Math.floor(Math.random()*10);
+                    var str   = '';
+                    for(var i=0;i<10;i++)str+=rnd();
+                    return str;
+                    
+              }//cookie
+              
         }//login
         
         
