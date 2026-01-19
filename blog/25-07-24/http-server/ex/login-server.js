@@ -37,7 +37,7 @@
         }//request
         
         
-        function post(req){
+        async function post(req){
         
               var body    = '';
               for(await data of req)body+=data;
