@@ -19,27 +19,22 @@
                 
               }//switch
               
-              var type    = mime(path);
+              var txt;
+              var code    = 200;
+              switch(oath){
               
-              res.writeHead(200,{'content-type':type});
-              require('fs').createReadStream(path).pipe(res);
+                case 'home.html'      : txt=html.home;      break;
+                case 'login.html'     : txt=html.login;     break;
+                
+                default               : txt=html.notfound;
+                                        code=404;
+                                        
+              }//switch
+              
+              res.writeHead(code,{'content-type':'text/html'});
+              res.end(txt);
               
         }//request
-        
-        
-        function mime(path){
-        
-              var ext     = path.split('.').at(-1),type;
-              switch(ext){
-              
-                case 'html'   : return 'text/html';
-                case 'js'     : return 'text/javascript';
-                case 'css'    : return 'text/css';
-                
-              }//switch
-              return 'application/octet-stream';
-              
-        }//mime
         
         
         function post(req){
@@ -119,4 +114,63 @@
               
         }//admin
         
+  //:
+  
+        var html    = {};
         
+        html.home   = `
+      <style>
+            h3{display:flex;align-items:center;gap:10px}
+            a{margin:10px}
+      </style>
+      <h3>
+            <img src='data:image/webp;base64,UklGRsYCAABXRUJQVlA4WAoAAAAQAAAAHQAAGQAAQUxQSEQBAAABgLNt2/F2Q88RvlttW5v5ZaxtrtGeOd28BVttTsGmudYU1HYb1NGnNiImAP4r428KUwEY8VhLC5aMaEiVZaHq+SPb15ftSN3rRwYVVkUBf71+yuYi/FJnk2Dz1tYL+617vy6yR9VEgHg7O2suqkcYXnCVmN9v/SBnu7+/mffzQc2ydavV6iJ/alQrhzAftl9UVGHVFgVcYwDgo/4POl4xAv7jxvoTNZcYz092eH3ppEGKF9U84qJ+b1S34LFR7y+198ujXjwA7JWay/XbQhSwTsdRPBFUK3Wum1sKSiCJlCbXk43cUbYPI7igQyQSaV1Uv8TgG9ExsLJ++eGi+jWEACAiisFgsINTq6SqS1LPUj8UXCAR+QEhSu0YPbQT3KpU+sN1kR+QZkSU9akOL+0fHx/2S70kFWhkR6QWVFWVFaQi+I9WUDggXAEAAHAJAJ0BKh4AGgA+kUCaSiWjoiGoCACwEglsAJ0yhHV3s3CGbEmSPsB4un+A/gHYA3hreNv249JYwATPYXkhwRyxHA4AtmKE3v8Fe1hEjGxF8yTViAD+93f7uzp/cY6ee3cA/ABmw2BiLBBVJKJz/g+cTgthx8Ebkftx2bQEJ3MflzgosWtuKltj/hI3RMoAwFxeBmu+eSJtbRgZ61ptIxyi2MdEDCHjPj3jX/opDt6LYy9ANPrxM63NhtMHlfxAVPpzvXcXYj84f1o/Lm7EYg5vf/264/ub16UBvELBYFRTSG1Q6wi37a7tFWHTD8aa9H5txf/ovVaLWiyh7unAHE2QicwcSI90vHadzi8AAqKMc8FXPp/6Vr/JoQOFEyOav3ySNoeHDpeofn5plRg2Kp2pgj7OAxFkvtfut7l5r0N7JZcZOXQoMv5ML/VcchnpevFx9GBdPtEtrDwAAA=='>
+            home
+      </h3>
+      <div>
+            <a href='login.html'>login</a>
+            <a href='admin.html'>admin</a>
+      </div>
+        `;
+        html.login    = `
+      <style>
+            form{border:1px solid lightgray;padding:10px;display:inline-flex;flex-direction:column;gap:10px}
+            label{width:60px;text-align:right;display:inline-block;margin:10px}
+            h4,span{text-align:center;margin:0}
+            input{font-size:16;padding:5px 10px}
+      </style>
+      <form action='login' method=post>
+            <h4>login</h4>
+            <div>
+                  <label for=name>name</label>
+                  <input name=name>
+            </div>
+            <div>
+                  <label for=password>password</label>
+                  <input name=password>
+            </div>
+            <span>
+                  <input type=submit>
+            </span>
+      </form>
+        `;
+        html.admin    = `
+      <style>
+            h3{color:green;font-style:italic}
+            a{margin:10px}
+      </style>
+      <h3>admin</h3>
+      <div>
+            <a href='home.html'>home</a>
+            <a href='logout'>logout</a>
+      </div>
+        `;
+        html.notfound   = `
+      <style>
+            a{margin:10px}
+      </style>
+      <h3>not found</h3>
+      <a href='home.html'>home</a>
+      <a href='login.html'>login</a>
+      <a href='admin.html'>admin</a>
+        `;
