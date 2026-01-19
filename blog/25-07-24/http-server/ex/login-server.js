@@ -221,6 +221,9 @@
             <a href='home.html'>home</a>
             <a href='logout'>logout</a>
       </div>
+      <script>
+            console.log(document.cookie);
+      </scr`+`ipt>
         `;
         
         html.notfound   = `
