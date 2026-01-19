@@ -122,6 +122,7 @@
         function admin(req,res){
         
               var cookie    = req.headers.cookie;
+                                                                                console.log(cookie);
               if(!cookie){
                     redirect();
                     return;
