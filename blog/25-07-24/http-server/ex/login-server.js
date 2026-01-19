@@ -194,6 +194,7 @@
       </style>
       <form action='login' method=post>
             <h4>login</h4>
+            <a href='home.html'>home</a>
             <div>
                   <label for=name>name</label>
                   <input name=name autocomplete=off spellcheck=false>
@@ -218,9 +219,6 @@
             <a href='home.html'>home</a>
             <a href='logout'>logout</a>
       </div>
-      <script>
-            console.log(document.cookie);
-      </scr`+`ipt>
         `;
         
         html.notfound   = `
