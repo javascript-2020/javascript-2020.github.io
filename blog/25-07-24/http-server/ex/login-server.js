@@ -174,11 +174,11 @@
             <h4>login</h4>
             <div>
                   <label for=name>name</label>
-                  <input name=name>
+                  <input name=name autocomplete=off spellcheck=false>
             </div>
             <div>
                   <label for=password>password</label>
-                  <input name=password>
+                  <input name=password autocomplete=off spellcheck=false>
             </div>
             <span>
                   <input type=submit>
