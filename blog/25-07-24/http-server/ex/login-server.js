@@ -109,9 +109,8 @@
                     return;
               }
               
-              user.status   = Date.now();
-              user.id       = id();
-              res.setHeader('set-cookie',`session=${user.id};HttpOnly;Secure;SameSite=Strict;Max-Age=0`);
+              var cookie    = user.cookie;
+              res.setHeader('set-cookie',`session=${cookie};HttpOnly;Secure;SameSite=Strict;Max-Age=0`);
               res.setHeader('Location','/login.html');
               res.statusCode    = 303;
               res.end('ok');
@@ -122,7 +121,7 @@
         function admin(req,res){
         
               var cookie    = req.headers.cookie;
-                                                                                console.log(cookie);
+                                                                                console.log('cookie >',cookie);
               if(!cookie){
                     redirect();
                     return;
