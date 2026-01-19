@@ -68,11 +68,17 @@
         simple.iframe;
         simple.on         = {};
         
-        var minimal        = {};
-        minimal.server     = {};
+        var minimal       = {};
+        minimal.server    = {};
         minimal.root;
         minimal.iframe;
-        minimal.on         = {};
+        minimal.on        = {};
+        
+        var login         = {};
+        login.server      = {};
+        login.root;
+        login.iframe;
+        login.on          = {};
         
         
         async function start(){
@@ -84,6 +90,9 @@
               
               minimal.snippet   = mod.minimal;
               minimal.snippet.initmod({on:minimal.on});
+              
+              login.snippet   = mod.login;
+              login.snippet.initmod({on:login.on});
               
               
               initdom(document.body);
@@ -117,7 +126,8 @@
   #web-page iframe
     {height:150px;border:1px solid lightgray;box-sizing:border-box}
     
-    
+  #login-root iframe
+    {height:300px}
     
             </style>
             
@@ -239,8 +249,6 @@
             </div>
             
             
-            
-            
             <div id=minimal-root class=example-root>
             
                   <div class=blog-text>
@@ -281,6 +289,52 @@
                   
             </div>
             
+            
+            <div id=login-root class=example-root>
+            
+                  <div class=blog-text>
+                  
+                        <h4 class=blog-hdr>
+                              http-server-login-example.js
+                        </h4>
+                        
+                        <p>
+                              This example demonstrates a simple login server, it demonstrates the use of cookies to maintain state.
+                        </p>
+                        <p>
+                        </p>
+                        <p>
+                        </p>
+                        <p>
+                        </p>
+                        <p>
+                              The server is typically accessed via
+                              <br>
+                              <a href='http://localhost:3003/home.html' target='_blank'>
+                                    http://localhost:3003/home.html
+                              </a>
+                        </p>
+                        
+                        <div id=btns>
+                              <input value=download type=button>
+                        </div>
+                        
+                  </div>
+                  
+                  
+                  <snippet-terminal-console component id=login type=nodejs src='ex/login-server.js' web-console='h=100'></snippet-terminal-console>
+                  
+                  
+                  <div id=web-page>
+                        <div id=web-page-hdr>
+                              <img id=web-page-go src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAfCAMAAADHso01AAAARVBMVEVHcEwGBuEGBuEJCdQCAvQFBegDA/ACAvYEBOwBAfgEBeoDBO4BAfgBAvYHCNsNDMEEBeoCAvMCAvQFBuQDBe8AAP4AAfx2UBTrAAAAFXRSTlMANikQ0lym33zxaov36BoGTrnIQZUTyCZ3AAABHUlEQVQoz41T2Q7DIAwjlJty9Mr/f+oWoB2snbQ8ITmXY8PYvzGBNN4bCdMDyM1qEY/jQLsa/l1pdMFKIGozdODLhbWEBaiooiBGlEIA23wqtSeKJdpbmLAQPClsE5WT0imNZ+5K3V0tsL7ty71t+SIyFqk1YpCfTWWoDQiWVIyz7Jm4CmvOUpmMKg0863qBv3uXwVuHXjwDMLD0WPsrgVm0JYrvojwTrMYbp7g5JazNTBZ4f1aQP1d3g+6z+3jYnIZDI5rUceNNd/OtnywkZ9ejOSCq2HUfbp41sV6qRK7s/lEsmqoIVra93jm7vbkOxSmwuCyC82kr1HDToDOj3gan4mBUXOHb5x0cfHz8JUVG4eHHH9t377bp72/5Al4LH5UQD4MbAAAAAElFTkSuQmCC'>
+                              <input id=web-page-url>
+                        </div>
+                        <iframe></iframe>
+                  </div>
+                  
+                  
+            </div>
             
             
             <div class=blog-text>
@@ -334,6 +388,11 @@
               $(minimal.root,'#web-page-go').onclick              = btn.go;
               minimal.iframe                                      = $(minimal.root,'iframe');
               
+              login.root                                          = $('#login-root');
+              $(login.root,'[value=download]').onclick            = btn.download;
+              $(login.root,'#web-page-go').onclick                = btn.go;
+              login.iframe                                        = $(login.root,'iframe');
+              
               
         }//initdom
         
@@ -347,6 +406,7 @@
               
                 case 'simple'         : return simple;
                 case 'minimal'        : return minimal;
+                case 'login'          : return login;
                 
               }//switch
               
@@ -424,6 +484,18 @@
                                           <h4>It Works!</h4>
                                     `}},
         };
+        
+        login.on['server-ready']    = function({url,port}){
+                                                                                console.log('server-ready',url,port);
+              login.server.url     = url;
+              login.server.port    = port;
+              
+              var path              = '/home.html';
+              $(login.root,'#web-page-url').value    = path;
+              
+              login.iframe.src     = `${url}${path}`;
+              
+        }//server-ready
         
         
       </script>
