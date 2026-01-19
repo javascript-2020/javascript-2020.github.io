@@ -105,7 +105,7 @@
               var user      = users.find(user=>user.cookie===cookies.session);
                                                                                 console.log(user);
               if(user){
-                    res.setHeader('set-cookie',`session=; HttpOnly; Secure; SameSite=Strict; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT`);
+                    res.setHeader('set-cookie',`session=; HttpOnly; Secure; SameSite=Strict; Expires=Thu, 01 Jan 1970 00:00:00 GMT`);
                     user.cookie   = null;
               }
               
