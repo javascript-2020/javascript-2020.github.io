@@ -71,7 +71,7 @@
               }
                                                                                 console.log('ok');
               user.cookie   = cookie();
-              res.setHeader('set-cookie',`session=${user.cookie};HttpOnly;Secure;SameSite=Strict;Max-Age=60`);
+              res.setHeader('set-cookie',`session=${user.cookie}; HttpOnly; Secure; SameSite=Strict; Max-Age=60`);
               res.setHeader('Location','/admin.html');
               res.statusCode    = 303;
               res.end('ok');
@@ -110,7 +110,7 @@
               }
               
               var cookie    = user.cookie;
-              res.setHeader('set-cookie',`session=${cookie}; HttpOnly; Secure; SameSite=Strict; Max-Age=0;`);
+              res.setHeader('set-cookie',`session=${cookie}; HttpOnly; Secure; SameSite=Strict; Max-Age=0`);
               //res.setHeader('set-cookie',`name=john;HttpOnly;Secure;SameSite=Strict;Max-Age=0`);
               res.setHeader('Location','/login.html');
               res.statusCode    = 303;
