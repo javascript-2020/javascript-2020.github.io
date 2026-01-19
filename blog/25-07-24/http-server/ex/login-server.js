@@ -41,16 +41,8 @@
         
               var body    = '';
               for await(data of req)body+=data;
-              try{
-              
-                    var json    = JSON.parse(body);
-                    
-              }//try
-              catch(err){
-              
-                    return {};
-                    
-              }//catch
+              var params    = new URLSearchParams(body);
+              var json      = Object.fromEntries(params);
               return json;
               
         }//read
