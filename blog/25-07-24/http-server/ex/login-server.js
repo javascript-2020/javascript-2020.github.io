@@ -13,8 +13,8 @@
               
               switch(path){
               
-                case 'login'          : return login(req,res);
-                case 'lougout'        : return logout(req,res);
+                case 'login.html'     : return login(req,res);
+                case 'logout.html'    : return logout(req,res);
                 case 'admin.html'     : return admin(req,res);
                 
               }//switch
@@ -24,7 +24,6 @@
               switch(path){
               
                 case 'home.html'      : txt=html.home;      break;
-                case 'login.html'     : txt=html.login;     break;
                 
                 default               : txt=html.notfound;
                                         code=404;
@@ -194,7 +193,7 @@
             h4,span{text-align:center;margin:0}
             input{font-size:16;padding:5px 10px}
       </style>
-      <form action='login' method=post>
+      <form action='login.html' method=post>
             <a href='home.html'>home</a>
             <h4>login</h4>
             <div>
