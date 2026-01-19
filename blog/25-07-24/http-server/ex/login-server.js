@@ -217,7 +217,7 @@
       <h3>admin</h3>
       <div>
             <a href='home.html'>home</a>
-            <a href='logout'>logout</a>
+            <a href='logout.html'>logout</a>
       </div>
         `;
         
