@@ -49,14 +49,20 @@
         
         function login(req,res){
         
+              if(req.method=='GET'){
+                    res.writeHead(200,{'content-type':'text/html'});
+                    res.end(html.login);
+                    return;
+              }
+              
               var json    = post(req);
               var user    = users.find(user=>user.name===json.name);
               if(!user){
-                    res.end('error');
+                    error();
                     return;
               }
               if(user.password!==json.password){
-                    res.end('error');
+                    error();
                     return;
               }
               
@@ -66,7 +72,18 @@
               res.statusCode    = 303;
               res.end('ok');
               
+              
+              function error(){
+              
+                    var i   = html.login.indexOf('</h4>')+5;
+                    var txt   = html.login.slice(0,i)+err+html.login.slice(i+1);
+                    res.writeHead(200,{'content-type':'text/html'});
+                    res.end(txt);
+                    
+              }//erorr
+              
         }//login
+        
         
         function logout(req,res){
         
@@ -85,6 +102,7 @@
               res.end('ok');
               
         }//logout
+        
         
         function admin(req,res){
         
@@ -132,6 +150,7 @@
             <a href='admin.html'>admin</a>
       </div>
         `;
+        
         html.login    = `
       <style>
             form{border:1px solid lightgray;padding:10px;display:inline-flex;flex-direction:column;gap:10px}
@@ -154,6 +173,7 @@
             </span>
       </form>
         `;
+        
         html.admin    = `
       <style>
             h3{color:green;font-style:italic}
@@ -165,6 +185,7 @@
             <a href='logout'>logout</a>
       </div>
         `;
+        
         html.notfound   = `
       <style>
             a{margin:10px}
@@ -174,3 +195,7 @@
       <a href='login.html'>login</a>
       <a href='admin.html'>admin</a>
         `;
+        
+        
+        
+        
