@@ -110,7 +110,7 @@
               }
               
               var cookie    = user.cookie;
-              res.setHeader('set-cookie',`session=${cookie}; HttpOnly; Secure; SameSite=Strict; Max-Age=0`);
+              res.setHeader('set-cookie',`session=${cookie}; HttpOnly; Secure; SameSite=Strict; Max-Age=0;`);
               //res.setHeader('set-cookie',`name=john;HttpOnly;Secure;SameSite=Strict;Max-Age=0`);
               res.setHeader('Location','/login.html');
               res.statusCode    = 303;
