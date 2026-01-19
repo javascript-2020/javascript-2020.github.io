@@ -43,6 +43,7 @@
               for await(data of req)body+=data;
               var params    = new URLSearchParams(body);
               var json      = Object.fromEntries(params);
+                                                                                console.log(json);
               return json;
               
         }//read
