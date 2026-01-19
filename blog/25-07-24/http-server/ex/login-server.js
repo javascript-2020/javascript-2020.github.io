@@ -21,7 +21,7 @@
               
               var txt;
               var code    = 200;
-              switch(oath){
+              switch(path){
               
                 case 'home.html'      : txt=html.home;      break;
                 case 'login.html'     : txt=html.login;     break;
