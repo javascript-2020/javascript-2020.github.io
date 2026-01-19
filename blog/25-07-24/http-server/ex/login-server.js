@@ -71,7 +71,7 @@
               }
                                                                                 console.log('ok');
               user.cookie   = cookie();
-              res.setHeader('set-cookie',`session=${user.id};HttpOnly;Secure;SameSite=Strict;Max-Age=60`);
+              res.setHeader('set-cookie',`session=${user.cookie};HttpOnly;Secure;SameSite=Strict;Max-Age=60`);
               res.setHeader('Location','/admin.html');
               res.statusCode    = 303;
               res.end('ok');
@@ -128,7 +128,7 @@
                     return;
               }
               
-              var cookie    = cookie.split('=').at(0);
+              var cookie    = cookie.split('=').at(1);
               var user      = users.find(user=>user.cookie===cookie);
               if(!user){
                     redirect();
