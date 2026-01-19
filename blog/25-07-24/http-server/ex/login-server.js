@@ -193,8 +193,8 @@
             input{font-size:16;padding:5px 10px}
       </style>
       <form action='login' method=post>
-            <h4>login</h4>
             <a href='home.html'>home</a>
+            <h4>login</h4>
             <div>
                   <label for=name>name</label>
                   <input name=name autocomplete=off spellcheck=false>
