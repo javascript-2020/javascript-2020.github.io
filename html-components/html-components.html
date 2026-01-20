@@ -174,7 +174,7 @@
     {display:block;white-space:pre;background:whitesmoke;padding:10px;font-family:monospace;font-size:16px}
     
     
-  ui li
+  ul li, ol li
     {margin-bottom:10px}
     
     
@@ -310,28 +310,28 @@
                           </p>
                           <ul>
                                 <li>
-                                      mod.onReady();
+                                      mod.onReady()
                                 </li>
                                 <li>
-                                      mod.onready();
+                                      mod.onready()
                                 </li>
                                 <li>
-                                      mod.ready();
+                                      mod.ready()
                                 </li>
                                 <li>
-                                      mod.start();
+                                      mod.start()
                                 </li>
                                 <li>
-                                      onReady();
+                                      onReady()
                                 </li>
                                 <li>
-                                      onready();
+                                      onready()
                                 </li>
                                 <li>
-                                      ready();
+                                      ready()
                                 </li>
                                 <li>
-                                      start();
+                                      start()
                                 </li>
                           </ul>
                           
@@ -373,6 +373,81 @@
                           </p>
                           
                     </div>
+                    
+                    
+                    <div style='display:block;margin-top:100px'>
+                          <p>
+                                the code for a component, note
+                          </p>
+                          
+                          <ul>
+                                <li>
+                                      the function that defines the module is wrapped in parentheses () making it a function expression,
+                                      this is required.
+                                      <code>
+                                      
+                                            (function({mod,host}){
+                                            })
+                                            
+                                      </code>
+                                </li>
+                                <li>
+                                      the arguments to the function ({mod,host})
+                                      
+                                      <ul>
+                                            <li>
+                                                  <b>
+                                                        mod
+                                                  </b>
+                                                  <br>
+                                                  the modules own namespaced component module reference
+                                            </li>
+                                            <li>
+                                                  <b>
+                                                        host
+                                                  </b>
+                                                  <br>
+                                                  the root element of the component
+                                            </li>
+                                      </ul>
+                                </li>
+                                <li>
+                                      the function defines an object that is returned, note : the variable name <b>obj</b>, is purely an internal reference.
+                                      <code>
+                                      
+                                            var obj   = {
+                                                  version   : 'v2.0'
+                                            };
+                                            
+                                      </code>
+                                      <br>
+                                      <code>
+                                      
+                                            return obj;
+                                            
+                                      </code>
+                                </li>
+                                <li>
+                                      any methods and properties that are exposed to the public are added as properties to the obj
+                                      <br>
+                                      <code>
+                                      
+                                            obj.initmod   = function(){}
+                                            
+                                            obj.init      = function(){}
+                                            
+                                            obj.initdom   = function(){}
+                                            
+                                      </code>
+                                </li>
+                                
+                          </ul>
+                          
+                          <web-editor id=ex2 component fullsize src='https://libs.ext-code.com/html/log-mod/log-mod.html'></web-editor>
+                          
+                    </div>
+                    
+                    
                     
                     
                     <div>
@@ -436,77 +511,6 @@
                           
                     </div>
                     
-                    <div style='display:block;margin-top:100px'>
-                          <p>
-                                the code for the log-mod component, note
-                          </p>
-                          
-                          <ul>
-                                <li>
-                                      the function that defines the api for the log-mod is wrapped in parenthesis' () making it a function expression,
-                                      this is required.
-                                      <code>
-                                      
-                                            (function({mod,host}){
-                                            })
-                                            
-                                      </code>
-                                </li>
-                                <li>
-                                      the arguments to the function ({mod,host})
-                                      
-                                      <ul>
-                                            <li>
-                                                  <b>
-                                                        mod
-                                                  </b>
-                                                  <br>
-                                                  the modules own namespaced component module reference
-                                            </li>
-                                            <li>
-                                                  <b>
-                                                        host
-                                                  </b>
-                                                  <br>
-                                                  the root component element
-                                            </li>
-                                      </ul>
-                                </li>
-                                <li>
-                                      the function defines an object that is returned, note : the variable name <b>obj</b> is purely an internal reference.
-                                      <code>
-                                      
-                                            var obj   = {
-                                                  version   : 'v2.0'
-                                            };
-                                            
-                                      </code>
-                                      <br>
-                                      <code>
-                                      
-                                            return obj;
-                                            
-                                      </code>
-                                </li>
-                                <li>
-                                      any methods and properties that are exposed to the public are added as properties to the obj
-                                      <br>
-                                      <code>
-                                      
-                                            obj.initmod   = function(){}
-                                            
-                                            obj.init      = function(){}
-                                            
-                                            obj.initdom   = function(){}
-                                            
-                                      </code>
-                                </li>
-                                
-                          </ul>
-                          
-                          <web-editor id=ex2 component fullsize src='https://libs.ext-code.com/html/log-mod/log-mod.html'></web-editor>
-                          
-                    </div>
                     
                     
                     
