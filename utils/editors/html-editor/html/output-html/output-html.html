@@ -13,7 +13,7 @@
     {display:flex}
     
   .radio
-    {border:1px solid lightgray;padding:2px 10px;border-radius:5px}
+    {border:1px solid lightgray;padding:2px 10px;border-radius:5px;cursor:pointer}
     
   #hldr
     {flex:1;box-sizing:border-box;position:relative}
@@ -26,15 +26,24 @@
             
             <div id=hdr>
                   <span id=allow-scripts class=radio>
-                        <input type=checkbox>
+                        <input type=checkbox checked>
                         allow-scripts
                   </span>
+                  <span id=allow-modals class=radio>
+                        <input type=checkbox checked>
+                        allow-modals
+                  </span>
+                  <span id=allow-popups class=radio>
+                        <input type=checkbox checked>
+                        allow-popups
+                  </span>
+                  
                   <div style='flex:1'></div>
                   <button id=kill style='margin-right:20px'>kill</button>
             </div>
             
             <div id=hldr>
-                  <iframe sandbox='allow-scripts allow-forms allow-popups allow-modals allow-downloads allow-pointer-lock allow-same-origin'></iframe>
+                  <iframe sandbox='allow-forms allow-downloads allow-pointer-lock allow-popups-to-escape-sandbox allow-same-origin'></iframe>
                   <div id=glass></div>
             </div>
             
@@ -69,6 +78,7 @@
         
         var hldr;
         var iframe;
+        var def_sandbox;
         var glass;
         
         
@@ -95,12 +105,15 @@
               
               var hdr                         = $(shadow,'#hdr');
               chk['allow-scripts']            = $.chkbox(hdr,'#allow-scripts');
-              console.log(chk);
+              chk['allow-modals']             = $.chkbox(hdr,'#allow-modals');
+              chk['allow-popups']             = $.chkbox(hdr,'#allow-popups');
+              
               $(hdr,'#kill').onclick          = btn.kill;
               
               
               hldr                            = $(shadow,'#hldr');
               iframe                          = $(shadow,'iframe');
+              def_sandbox                     = iframe.getAttribute('sandbox');
               glass                           = $(shadow,'#glass');
               
               
@@ -147,13 +160,22 @@
         
         obj.srcdoc    = function(html){
         
-              var attr      = iframe.getAttribute('sandbox');
+              var attr      = def_sandbox;
+                                                                                console.log(attr);
               var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
+              
               if(chk['allow-scripts'].checked){
                     tokens.add('allow-scripts');
               }
+              if(chk['allow-modals'].checked){
+                    tokens.add('allow-modals');
+              }
+              if(chk['allow-popups'].checked){
+                    tokens.add('allow-popups');
+              }
+              
               var attr      = [...tokens].join(' ');
-              console.log(attr);
+                                                                                console.log(attr);
               iframe.setAttribute('sandbox',attr);
               
               iframe.srcdoc   = html;
