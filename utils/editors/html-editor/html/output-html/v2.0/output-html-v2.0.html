@@ -43,7 +43,7 @@
             </div>
             
             <div id=hldr>
-                  <iframe sandbox='allow-forms allow-downloads allow-pointer-lock allow-popups-to-escape-sandbox allow-same-origin'></iframe>
+                  <iframe sandbox='allow-forms allow-downloads allow-pointer-lock allow-popups-to-escape-sandbox'></iframe>
                   <div id=glass></div>
             </div>
             
@@ -74,6 +74,8 @@
         
   //vars:-
   
+        var allow_save_origin   = false;
+        
         var chk   = {};
         
         var hldr;
@@ -113,6 +115,10 @@
               
               hldr                            = $(shadow,'#hldr');
               iframe                          = $(shadow,'iframe');
+              if(allow_same_origin){
+                    var attr    = iframe.getAttribute('sandbox');
+                    attr       += ' allow-same-origin';
+              }
               def_sandbox                     = iframe.getAttribute('sandbox');
               glass                           = $(shadow,'#glass');
               
