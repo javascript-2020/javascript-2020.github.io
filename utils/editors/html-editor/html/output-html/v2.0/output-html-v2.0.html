@@ -78,6 +78,7 @@
         
         var hldr;
         var iframe;
+        var def_sandbox;
         var glass;
         
         
@@ -112,6 +113,7 @@
               
               hldr                            = $(shadow,'#hldr');
               iframe                          = $(shadow,'iframe');
+              def_sandbox                     = iframe.getAttribute('sandbox');
               glass                           = $(shadow,'#glass');
               
               
@@ -158,7 +160,7 @@
         
         obj.srcdoc    = function(html){
         
-              var attr      = iframe.getAttribute('sandbox');
+              var attr      = def_sandbox;
                                                                                 console.log(attr);
               var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
               console.log(chk['allow-scripts']);
