@@ -203,14 +203,44 @@
                   <div id=center>
                   
                     <div>
+                    
                           <h3>
                                 Getting Started
                           </h3>
+                          
+                          
                           <p>
                                 to get web components working include the component library
                           </p>
                           
                           <code-src src='ex/component-include.js'></code-src>
+                          
+                          
+                          <h4>
+                                mod
+                          </h4>
+                          
+                          <p>
+                                the component.js library exposes a
+                                <b>
+                                      mod
+                                </b>
+                                object, which holds as its keys the component modules, the key is either the element nodename,
+                                or its id, the id can be used when the page contains multiple of the same component
+                          </P>
+                          
+                          <code>
+                          
+                                var editor    = mod['web-editor'];
+                                
+                                var editor2   = mod.test;
+                                
+                          </code>
+                          
+                          
+                          <h4>
+                                the [component] attribute
+                          </h4>
                           
                           <p>
                                 after that any elements with a
@@ -230,22 +260,8 @@
                                 </script>
                           </code>
                           
-                          <p>
-                                the component.js library exposes a
-                                <b>
-                                      mod
-                                </b>
-                                object, which holds as its keys the component modules, the key is either the element nodename,
-                                or its id, the id can be used when the page contains multiple of the same component
-                          </P>
                           
-                          <code>
                           
-                                var editor    = mod['web-editor'];
-                                
-                                var editor2   = mod.test;
-                                
-                          </code>
                           
                           <snippet-html id=web-editor-demo component src='ex/web-editor-demo.html' style='display:block;margin-top:50px'></snippet-html>
                           
@@ -266,10 +282,14 @@
                           </p>
                           <p>
                                 <code>
-                                      http://libs.ext-code.com/js/dom/component/component.js?init
+                                      http://libs.ext-code.com/js/dom/component/v2.0/component.js?hdr
                                 </code>
                                 <br>
-                                adding the init search parameter automatically sets up the default boilerplate, which for most of the official
+                                adding the
+                                <b>
+                                      ?hdr
+                                </b>
+                                search parameter automatically sets up the default boilerplate, which for most of the official
                                 components is all that is required.
                           </p>
                           
@@ -309,7 +329,7 @@
                     
                     <div>
                           <p>
-                                a component / module will has a standard lifecycle that is
+                                a component / module typically has a standard lifecycle that is
                           </p>
                           
                           <ul>
@@ -320,7 +340,8 @@
                                       <br>
                                       This is where local depencies are / can be passed to the component
                                       <br>
-                                      They fundamentally should not be relying on global state to receive their local depencies
+                                      They fundamentally should not be relying on global state to receive their local depencies, this method is not always
+                                      needed
                                 </li>
                                 <li>
                                       <b>
@@ -335,7 +356,7 @@
                                             initdom
                                       </b>
                                       <br>
-                                      This is where the component is able to set up its ui, internally build the references it needs to run effeiciently,
+                                      This is where the component is able to set up its ui / dom, internally build the references it needs to run effeiciently,
                                       it should be treated potentially as asynchronous
                                 </li>
                           </ul>
