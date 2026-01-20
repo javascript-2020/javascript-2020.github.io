@@ -4,27 +4,13 @@
 
   var obj   = {};
   
-  
-        obj.initmod   = function(params){
-        }//initmod
-        
+        obj.initmod   = function(params){}
         
   //vars:
   
-  
-  //:
-  
-  
-        obj.init    = async function(){
-        }//init
+        obj.init    = async function(){}
         
-        
-  //:
-  
-  
-        obj.initdom   = async function(){
-        }//initdom
-        
+        obj.initdom   = async function(){}
         
         
   return obj;
