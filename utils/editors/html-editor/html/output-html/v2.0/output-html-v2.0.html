@@ -39,6 +39,20 @@
                   </span>
                   
                   <div style='flex:1'></div>
+                  
+                  <span id=console-show class=radio>
+                        <input type=checkbox checked>
+                        console
+                  </span>
+                  <span id=console-echo class=radio>
+                        <input type=checkbox checked>
+                        echo
+                  </span>
+                  <span id=console-persist class=radio>
+                        <input type=checkbox checked>
+                        persist
+                  </span>
+                  
                   <button id=kill style='margin-right:20px'>kill</button>
             </div>
             
@@ -126,9 +140,14 @@
               
               
               var hdr                         = $(shadow,'#hdr');
+              
               chk['allow-scripts']            = $.chkbox(hdr,'#allow-scripts');
               chk['allow-modals']             = $.chkbox(hdr,'#allow-modals');
               chk['allow-popups']             = $.chkbox(hdr,'#allow-popups');
+              
+              chk['console-show']             = $.chkbox(hdr,'#console-show',btn.show_console);
+              chk['console-echo']             = $.chkbox(hdr,'#console-echo');
+              chk['console-persist']          = $.chkbox(hdr,'#console-persist');
               
               $(hdr,'#kill').onclick          = btn.kill;
               
@@ -150,6 +169,15 @@
               kill();
               
         }//kill
+        
+        
+        btn.show_console    = function(chk){
+        
+              console.log(chk);
+              
+              //webconsole.host.s
+              
+        }//show_console
         
         
         obj.glass   = function(show=true){
@@ -180,7 +208,7 @@
         
         
         
-        obj.srcdoc    = function(html){
+        build.sandbox   = function(){
         
               var attr      = def_sandbox;
                                                                                 //console.log(attr);
@@ -200,6 +228,17 @@
                                                                                 //console.log(attr);
               iframe.setAttribute('sandbox',attr);
               
+        }//sandbox
+        
+        
+        obj.srcdoc    = function(html){
+        
+              build.sandbox();
+              
+              if(!chk['console-persist'].checked){
+                    console.clear();
+              }
+              
               iframe.srcdoc   = html;
               
         }//srcdoc
@@ -207,7 +246,13 @@
         
         obj.sandbox   = function(html){
                                                                                 debug('sandbox');
-              iframe.contentWindow.postMessage({type:'run',html},'*');
+              build.sandbox();
+              
+              if(!chk['console-persist'].checked){
+                    console.clear();
+              }
+              var echo    = chk['console-echo'].checked;
+              iframe.contentWindow.postMessage({type:'run',html,echo},'*');
               
         }//sandbox
         
