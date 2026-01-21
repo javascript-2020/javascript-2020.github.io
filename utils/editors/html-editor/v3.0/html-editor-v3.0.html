@@ -236,7 +236,7 @@
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
-                  <output-html component=page></output-html>
+                  <output-html v2.0 component=page></output-html>
                   
             </div>
             
@@ -327,7 +327,7 @@
         
         btn.run   = function(){
         
-              run();
+              run.sandbox();
               
         }//run
         
@@ -499,6 +499,24 @@
               
               
         }//run
+        
+        
+        run.sandbox   = function(){
+        
+              var html    = editor.getValue();
+              output.sandbox(html);
+              
+        }//sandbox
+        
+        
+        window.addEventListener('message',e=>{
+        
+              var json    = e.data;
+              if(json.sandbox){
+                    output.on.message(json);
+              }
+              
+        });
         
         
   //:
