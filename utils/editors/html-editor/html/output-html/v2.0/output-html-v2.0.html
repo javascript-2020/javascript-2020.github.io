@@ -52,6 +52,9 @@
                         <input type=checkbox>
                         persist
                   </span>
+                  <span id=console-clear class=radio>
+                        clear
+                  </span>
                   
                   <button id=kill style='margin-right:20px'>kill</button>
             </div>
@@ -148,6 +151,7 @@
               chk['console-show']             = $.chkbox(hdr,'#console-show',btn.show_console);
               chk['console-echo']             = $.chkbox(hdr,'#console-echo');
               chk['console-persist']          = $.chkbox(hdr,'#console-persist');
+              $('#console-clear').onclick     = btn.clear_console;
               
               $(hdr,'#kill').onclick          = btn.kill;
               
@@ -180,6 +184,16 @@
               }
               
         }//show_console
+        
+        
+        btn.clear_console   = function(){
+        
+              webconsole.clear();
+              if(chk['console-echo'].checked){
+                    console.clear();
+              }
+              
+        }//clear_console
         
         
         obj.glass   = function(show=true){
@@ -238,7 +252,10 @@
               build.sandbox();
               
               if(!chk['console-persist'].checked){
-                    console.clear();
+                    webconsole.clear();
+                    if(chk['console-echo'].checked){
+                          console.clear();
+                    }
               }
               
               iframe.srcdoc   = html;
@@ -251,8 +268,10 @@
               build.sandbox();
               
               if(!chk['console-persist'].checked){
-                    console.clear();
                     webconsole.clear();
+                    if(chk['console-echo'].checked){
+                          console.clear();
+                    }
               }
               
               var echo    = chk['console-echo'].checked;
