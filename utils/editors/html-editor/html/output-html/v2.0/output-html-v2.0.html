@@ -44,7 +44,7 @@
             
             <div id=hldr>
                   <iframe src='https://sandbox-ext-code-com-1024713184986.us-central1.run.app/html-sandbox/html-sandbox.html'
-                          sandbox='allow-forms allow-downloads allow-pointer-lock allow-popups-to-escape-sandbox'
+                          sandbox='allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock allow-popups-to-escape-sandbox'
                   ></iframe>
                   <div id=glass></div>
             </div>
@@ -173,8 +173,8 @@
                                                                                 console.log(attr);
               var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
               
-              if(chk['allow-scripts'].checked){
-                    tokens.add('allow-scripts');
+              if(!chk['allow-scripts'].checked){
+                    tokens.delete('allow-scripts');
               }
               if(chk['allow-modals'].checked){
                     tokens.add('allow-modals');
