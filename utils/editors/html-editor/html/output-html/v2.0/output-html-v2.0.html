@@ -275,19 +275,22 @@
               iframe    = iframe.cloneNode();
               
               build.sandbox();
-              
+              iframe.onload   = onload;
               hldr.append(iframe);
               
+              function onload(){
               
-              if(!chk['console-persist'].checked){
-                    webconsole.clear();
-                    if(chk['console-echo'].checked){
-                          console.clear();
+                    if(!chk['console-persist'].checked){
+                          webconsole.clear();
+                          if(chk['console-echo'].checked){
+                                console.clear();
+                          }
                     }
-              }
-              
-              var echo    = chk['console-echo'].checked;
-              iframe.contentWindow.postMessage({type:'run',html,echo},'*');
+                    
+                    var echo    = chk['console-echo'].checked;
+                    iframe.contentWindow.postMessage({type:'run',html,echo},'*');
+                    
+              }//onload
               
         }//sandbox
         
