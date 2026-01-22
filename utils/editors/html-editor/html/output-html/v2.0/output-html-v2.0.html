@@ -67,7 +67,7 @@
             https://ext-code-test.com/html-sandbox/html-sandbox.html
             -->
             <div id=hldr>
-                  <iframe src='https://ext-code-test.com/html-sandbox/html-sandbox.html'
+                  <iframe src=''
                           sandbox='allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock allow-popups-to-escape-sandbox'
                           allow='clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
                                   xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share'
@@ -226,6 +226,13 @@
         
         
         
+  //:
+  
+  
+        obj.run   = function(html){
+        }//run
+        
+        
         build.sandbox   = function(){
         
               var attr      = def_sandbox;
@@ -292,11 +299,21 @@
                     }
                     
                     var echo    = chk['console-echo'].checked;
-                    iframe.contentWindow.postMessage({type:'run',html,echo},'*');
+                    //iframe.contentWindow.postMessage({type:'run',html,echo},'*');
+                    
+                    var blob=new Blob([html],{type:'text/html'});
+                    var url=URL.createObjectURL(blob);
+                    iframe.src=url;
                     
               }//onload
               
         }//sandbox
+        
+        
+        obj.blob    = function(html){
+        
+        
+        }//blob
         
         
         obj.kill    = function(){return kill()}    //d
