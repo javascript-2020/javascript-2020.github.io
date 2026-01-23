@@ -299,13 +299,11 @@
                     }
                     
                     var echo    = chk['console-echo'].checked;
-                    //iframe.contentWindow.postMessage({type:'run',html,echo},'*');
+                    iframe.contentWindow.postMessage({type:'run',html,echo},'*');
                     
-console.log(html);
-debugger;
-                    var blob=new Blob([html],{type:'text/html'});
-                    var url=URL.createObjectURL(blob);
-                    iframe.src=url;
+                    //var blob=new Blob([html],{type:'text/html'});
+                    //var url=URL.createObjectURL(blob);
+                    //iframe.src=url;
                     
               }//onload
               
@@ -323,7 +321,7 @@ debugger;
         function kill(){
         
               var niframe       = iframe.cloneNode(true);
-              niframe.srcdoc    = null;
+              //niframe.srcdoc    = null;
               hldr.replaceChild(niframe,iframe);
               iframe            = niframe;
               
