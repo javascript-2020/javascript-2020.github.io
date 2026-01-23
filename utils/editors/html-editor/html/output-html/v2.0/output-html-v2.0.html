@@ -35,9 +35,13 @@
                         <input type=checkbox checked>
                         allow-modals
                   </span>
-                  <span id=allow-popups class=radio>
+                  <span id=allow-popups class=radio style='margin-right:30px'>
                         <input type=checkbox checked>
                         allow-popups
+                  </span>
+                  <span id=isolate class=radio>
+                        <input type=checkbox checked>
+                        isolate
                   </span>
                   
                   <div style='flex:1'></div>
@@ -116,8 +120,12 @@
         var glass;
         
         
-        var btn   = {};
-        obj.on    = {};
+        var sandbox_url;
+        
+        
+        var btn         = {};
+        btn.console     = {};
+        obj.on          = {};
         
         
   //:
@@ -136,7 +144,7 @@
   //:
   
   
-        obj.initdom   = function(rootnode){
+        obj.initdom   = function(){
         
               shadow                                    = host.shadowRoot;
               
@@ -149,11 +157,12 @@
               chk['allow-scripts']                      = $.chkbox(hdr,'#allow-scripts');
               chk['allow-modals']                       = $.chkbox(hdr,'#allow-modals');
               chk['allow-popups']                       = $.chkbox(hdr,'#allow-popups');
+              chk['isolate']                            = $.chkbox(hdr,'#isolate',btn.isolate);
               
-              chk['console-show']                       = $.chkbox(hdr,'#console-show',btn.show_console);
+              chk['console-show']                       = $.chkbox(hdr,'#console-show',btn.console.show);
               chk['console-echo']                       = $.chkbox(hdr,'#console-echo');
               chk['console-persist']                    = $.chkbox(hdr,'#console-persist');
-              $(shadow,'#console-clear').onclick        = btn.clear_console;
+              $(shadow,'#console-clear').onclick        = btn.console.clear;
               
               $(hdr,'#kill').onclick                    = btn.kill;
               
@@ -161,6 +170,7 @@
               hldr                                      = $(shadow,'#hldr');
               iframe                                    = $(shadow,'iframe');
               def_sandbox                               = iframe.getAttribute('sandbox');
+              sandbox_url                               = iframe.src;
               glass                                     = $(shadow,'#glass');
               
               
@@ -177,7 +187,20 @@
         }//kill
         
         
-        btn.show_console    = function(chk){
+        btn.isolate   = function(chk){
+        
+              var url   = new URL(sandbox_url);
+              if(chk.checked){
+                    sanbox_url   += '?isolate';
+              }else{
+                    var i         = sandbox_url.indexOf('?');
+                    sandbox_url   = sandbox_url.slice(0,i);
+              }
+              
+        }//isolate
+        
+        
+        btn.console.show    = function(chk){
         
               if(chk.checked){
                     webconsole.host.style.display   = '';
@@ -185,17 +208,18 @@
                     webconsole.host.style.display   = 'none';
               }
               
-        }//show_console
+        }//show
         
         
-        btn.clear_console   = function(){
+        btn.console.clear   = function(){
         
               webconsole.clear();
               if(chk['console-echo'].checked){
                     console.clear();
               }
               
-        }//clear_console
+        }//clear
+        
         
         
         obj.glass   = function(show=true){
