@@ -40,35 +40,20 @@
             <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js?hdr'></script>
             
-            <script init>
-                                                                                console.clear();
-                                                                                console.log('markdown-editor-v2.0.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var version='v2.0';
+            <script>
+                                                                                console.log('markdown-editor-v3.0.html');
+        var version='v3.0';
         var df=true,did='html';
         
         
         var ace;
         
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
-        var debug;
-        
-        var menu;
-        
         var hdr;
-        var mainmenu;
         var filemod;
         var publish;
         var editor;
-        var output;
-        var log;
         
         
         
@@ -77,47 +62,24 @@
   
         async function init(){
                                                                                 debug('init',version);
-              //keydown                   = keydown();
-              menu                      = menumod();
-              
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
-              
-              
+                                                                                
               hdr                       = mod['editors-hdr'];
-              mainmenu                  = mod['main-menu']
               filemod                   = mod['file-mod'];
               publish                   = mod['publish-ui'];
               editor                    = mod['web-editor'];
-              output                    = mod['output-md'];
-              log                       = mod['log-mod'];
               
-              menu.initmod({keydown});
+              mod.base.add({complete,source,focus,filemod});
               
-              hdr.initmod({ext,$,menumod,menu});
-              mainmenu.initmod({ext,$,menumod,menu,editor});
-              filemod.initmod({ext,$,menumod,menu,complete,focus,source,log});
-              publish.initmod({ext,$,ui,menumod,menu,source,complete,log});
-              editor.initmod({ext,$,menumod,menu,on});
-              output.initmod({ext,$,editor});
-              log.initmod({ext,$});
+              publish.initmod({ui});
+              editor.initmod({on,mode:'markdown'});
               
-              await Promise.all([
-                    hdr.init(),
-                    mainmenu.init(),
-                    filemod.init(),
-                    publish.init(),
-                    editor.init(),
-                    output.init(),
-                    log.init(),
-              ]);
-              
+              await mod.auto();
               
   //:
   
-  
+              hdr['page-source'].url('v3.0/markdown-editor-v3.0.html');
+              
               icon.def    = $('[rel*=icon]').href;
-              
-              
               
               window.onfocus            = ()=>editor && editor.focus();
               keydown.add(kd);
@@ -130,27 +92,7 @@
         }//init
         
         
-(async()=>{
-
-        mod.stack.add;
-        
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-        
-        var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js',
-        );
-        [$,datatype,menumod,keydown,debug]   = await promise;
-        
-        mod.stack.complete;
-        
-})();
-
-
-            </script init>
+            </script>
             
             
             <link rel=stylesheet href='/utils/css/utils.css'>
@@ -208,9 +150,10 @@
       
       <body>
       
-            <editors-hdr component=grp>
-                  <img class=title src='images/markdown-editor.png' style='top:-5px;height:55px'>
-                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+            <editors-hdr v2.0 component=grp>
+                  <img slot=title src='images/markdown-editor.png' style='top:-5px;height:55px'>
+                  <h4 slot=version>v3.0</h4>
+                  <time slot=date datetime=2026-01-24>24 Jan 2026</time>
             </editors-hdr>
             
             
@@ -295,13 +238,6 @@
               menu.add.style();
               
               
-              hdr.initdom(root);
-              
-              
-              mainmenu.initdom(root);
-//debugger;
-              filemod.initdom(root);
-              
               
               $(root,'#save').onclick               = btn.save;
               
@@ -310,8 +246,6 @@
               
               autosave                              = $(root,'#autosave');
               
-              
-              publish.initdom(root);
               
               $('#run').onclick             = run;
               
@@ -322,16 +256,8 @@
               var view                      = $('#view');
               ui.root                       = view;
               
-              editor.initdom(root,{mode:'markdown'});
-              
               slider.node                   = $.slider('web-editor','#page-slider','output-md',slider,ui);
               
-              output.initdom(root);
-              
-              
-              await Promise.all([
-                    log.initdom(),
-              ]);
               
               
               //ui.setup(view);
