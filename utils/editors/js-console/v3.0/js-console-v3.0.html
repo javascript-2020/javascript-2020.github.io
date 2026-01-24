@@ -47,38 +47,25 @@
             <script src="https://cdn.jsdelivr.net/npm/terser/dist/bundle.min.js"></script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js?hdr'></script>
             
-            <script init>
-                                                                                console.clear();
-                                                                                console.log('js-console-v2.0.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var version='v2.0';
+            <script>
+                                                                                console.log('js-console-v3.0.html');
+        var version='v3.0';
         var df=true,did='js-console';
         
         var ace;
         var obfuscator;
         var espree;
         
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
-        var debug;
-        var ls;
-        
         var menu;
         
         var hdr;
-        var mainmenu;
         var filemod;
         var autosave;
         var publish;
         var editor;
         var output;
-        var log;
         
         
   //:
@@ -86,51 +73,23 @@
   
         async function init(){
                                                                                 debug('init',version);
-              //keydown                   = keydown();
-              menu                      = menumod();
-              
-              
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace,ls});
-              
-              
               hdr                       = mod['editors-hdr'];
-              mainmenu                  = mod['main-menu'];
               filemod                   = mod['file-mod'];
               autosave                  = mod['auto-save'];
               publish                   = mod['publish-ui'];
               editor                    = mod['web-editor'];
-              output                    = mod['output-console']
-              log                       = mod['log-mod'];
+              output                    = mod['output-html'];
               
+              mod.base.add({filemod,complete,source,focus});
               
-              menu.initmod({keydown});
+              autosave.initmod({save:btn.save});
+              editor.initmod({on,mode:'javascript'});
               
-              hdr.initmod({ext,$,menu});
-              mainmenu.initmod({ext,$,menu,editor,filemod});
-              filemod.initmod({ext,$,menu,menumod,complete,source,focus,log});
-              autosave.initmod({$,menu,keydown,log,save:btn.save});
-              publish.initmod({ext,$,ui,menu,source,complete,log});
-              editor.initmod({ext,$,menu,ace,on});
-              output.initmod({ext,$});
-              log.initmod({ext,$});
+              await mod.auto();
               
+              hdr['page-source'].url('v3.0/js-console-v3.0.html');
               
-              await Promise.all([
-                    mainmenu.init(),
-                    hdr.init(),
-                    filemod.init(),
-                    autosave.init(),
-                    publish.init(),
-                    editor.init(),
-                    output.init(),
-                    log.init(),
-              ]);
-              
-              
-  //:
-  
-  
-              icon.def    = $('[rel*=icon]').href;
+              icon.def                    = $('[rel*=icon]').href;
               
               window.onfocus              = ()=>editor && editor.focus();
               keydown.add(kd);
@@ -146,35 +105,7 @@
         }//init
         
         
-  //:
-  
-  
-(async()=>{
-
-        mod.stack.add;
-        
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-        
-        var lsmod;
-        
-        var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js',
-              'js/core/ls-mod/ls-mod.js',
-        );
-        [$,datatype,menumod,keydown,debug,lsmod]   = await promise;
-        
-        ls    = lsmod();
-        
-        mod.stack.complete;
-        
-})();
-
-
-            </script init>
+            </script>
             
             
             <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymous>
@@ -256,9 +187,10 @@
       
       <body>
       
-            <editors-hdr component=grp>
-                  <img class=title src='images/js-console.png' style='top:5px;height:35px'>
-                  <time slot=date datetime=2025-10-30>30 Oct 2025</time>
+            <editors-hdr v2.0 component=grp>
+                  <img slot=title src='images/js-console.png' style='top:-10px;height:75px'>
+                  <h4 slot=version>v3.0</h4>
+                  <time slot=date datetime=2026-01-24>24 Jan 2026</time>
             </editors-hdr>
             
             
@@ -346,6 +278,12 @@
               keydown.initdom();
               menu.add.style();
               
+              var btn   = document.createElement('input');
+              btn.type    = 'button';
+              btn.value   = 'isolate';
+              $(hdr.__host.shadowRoot,'#btns').append(btn);
+              btn.onclick                           = btn.isolate;
+              
               
               $(root,'#save').onclick               = btn.save;
               
@@ -377,7 +315,7 @@
               
               slider.node                           = $.slider('web-editor','#page-slider','output-console',slider,ui);
               
-              
+              /*
               await Promise.all([
                     hdr.initdom(),
                     mainmenu.initdom(root),
@@ -388,6 +326,7 @@
                     output.initdom(root),
                     log.initdom(),
               ]);
+              */
               
               
               
@@ -454,6 +393,20 @@
   //:
   
   
+        btn.isolate   = function(){
+        
+              var url   = window.location.toString();
+              
+              if(url.indexOf('?')!=-1){
+                    return;
+              }
+              
+              url              += '?isolate';
+              window.location   = url;
+              
+        }//isolate
+        
+        
         btn.save    = function(e){
         
               filemod.save();
