@@ -169,7 +169,7 @@
               shadow                                    = host.shadowRoot;
               
               
-              chk.isolate                               = $.chkbox(shadow,'#isolate');
+              chk.isolate                               = $.chkbox(shadow,'#isolate',btn.isolate);
               
               chk['allow-modals']                       = $.chkbox(shadow,'#allow-modals');
               chk['allow-popups']                       = $.chkbox(shadow,'#allow-popups');
@@ -194,6 +194,19 @@
         }//initdom
         
         
+  //:
+  
+  
+        btn.isolate   = function(chk){
+        
+              if(chk.checked){
+                    sandbox_url  += '?isolate';
+              }else{
+                    var i         = ssandbox_url.indexOf('?');
+                    sandbox_url   = sandbox_url.slice(0,i);
+              }
+              
+        }//isolate
         
         
         btn.console.clear   = function(){
