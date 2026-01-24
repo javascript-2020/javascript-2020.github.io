@@ -266,6 +266,13 @@
               
               menu.add.style();
               
+              var btn     = document.createElement('input');
+              btn.type    = 'button';
+              btn.value   = 'isolate';
+              $(hdr.__host.shadowRoot,'#btns').append(btn);
+              btn.onclick                           = btn.isolate;
+              
+              
               $(root,'#save').onclick               = btn.save;
               $('#run').onclick                     = btn.run;
               $(root,'#prettier').onclick           = btn.prettier;
@@ -313,6 +320,20 @@
               }
 */
         }//keydown
+        
+        
+        btn.isolate   = function(){
+        
+              var url   = window.location.toString();
+              var i1    = url.indexOf('?');
+              if(i1!=-1){
+                    url   = urls.lice(0,i1);
+              }else{
+                    url  += '?isolate';
+              }
+              window.location   = url;
+              
+        }//isolate
         
         
         btn.save    = function(e){
