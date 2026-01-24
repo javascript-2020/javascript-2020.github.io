@@ -99,7 +99,7 @@
         var version='v3.0';
         var df=true,did='html-editor';
         
-        
+        var hdr;
         var filemod;
         var autosave;
         var publish;
@@ -110,6 +110,7 @@
         
         async function init(){
                                                                                 debug('init',version);
+              hdr                       = mod['editors-hdr'];
               log                       = mod['log-mod'];
               filemod                   = mod['file-mod'];
               autosave                  = mod['auto-save'];
@@ -123,6 +124,8 @@
               
               mod.base.add({log,complete,source,focus,editor,filemod});
               await mod.auto();
+              
+              hdr['page-source'].url('v3.0/html-editor-v3.0.html');
               
               window.onfocus            = focus;
               keydown.add(kd);
