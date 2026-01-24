@@ -1,0 +1,715 @@
+
+
+<output-console v2.0>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  :host
+    {font-family:arial}
+    
+  #root
+    {height:100%;display:flex;flex-direction:column}
+  #hdr
+    {display:flex;align-items:center;margin:0;margin-bottom:5px}
+    
+  #spc
+    {flex:1}
+    
+  .ext-button
+    {border:1px solid lightgray;padding:2px 5px;cursor:pointer;display:flex;align-items:center;margin-right:10px}
+  .ext-button [type=checkbox]
+    {margin:0;margin-left:5px;cursor:pointer}
+    
+  button
+    {font-size:16px;margin-right:10px}
+    
+  #output
+    {flex:1;
+      overflow:auto;border:2px solid lightgray;box-sizing:border-box;
+      padding:10px;margin:0;
+      word-break:break-all;
+      font-size:16px;line-height:1.5;
+    }
+    
+            </style>
+            
+            <div id=root>
+                  <div id=hdr>
+                        <span id=spc></span>
+                        <div id=console-persist class=ext-button>console.persist<input type=checkbox></div>
+                        <div id=console-log class=ext-button>console.log<input type=checkbox checked></div>
+                        <div id=word-wrap class=ext-button>wrap<input type=checkbox checked></div>
+                        <button id=clear>clear</button>
+                        <button id=kill>kill</button>
+                  </div>
+                  
+                  <pre id=output>
+                  </pre>
+            </div>
+            
+      </template>
+      
+      <script>
+      
+(function output_console({mod,dom,host}){
+
+  var obj   = {
+        version   : 'v2.0',
+  };
+  
+        var df=false,did='output-console'
+        ;
+        
+        
+        
+        var ext,$
+        ;
+        
+        obj.initmod   = function(params){
+        
+              ext   = params.ext;
+              $     = params.$;
+              
+        }//initmod
+        
+        
+  //vars:-
+  
+        var inspect;
+        
+        var con             = {};
+        con.log             = console.log;
+        con.clear           = console.clear;
+        con.error           = console.error;
+        
+        
+        var root;
+        var shadow;
+        
+        var output;
+        var cur             = {};
+        
+        var iframe;
+        obj.iframe;
+        var sandbox_url     = 'https://sandbox-ext-code-com-1024713184986.us-central1.run.app/html-sandbox/html-sandbox.html';
+        var sandbox_def     = 'allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock allow-popups-to-escape-sandbox';
+        var sandbox_allow   = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
+                                  xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
+                                  
+                                  
+        var chk             = {};
+        var btn             = {};
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+                                                                                debug('init',obj.version);
+              await libs();
+              
+        }//init
+        
+        
+        async function libs(){
+        
+              [inspect]   = await ext.load.libs('js/string/inspect.js');
+              console.log(inspect);
+              
+        }//libs
+        
+        
+  //:
+  
+  
+        obj.initdom   = function(rootnode){
+                                                                                debug('initdom');
+              shadow                          = host.shadowRoot;
+              
+              chk.persist                     = $.chkbox(shadow,'#console-persist',false);
+              chk.log                         = $.chkbox(shadow,'#console-log',false);
+              chk.wrap                        = $.chkbox(shadow,'#word-wrap',wrap);
+              
+              $(shadow,'#clear').onclick      = btn.clear;
+              $(shadow,'#kill').onclick       = btn.kill;
+              
+              
+              output                          = $(shadow,'#output');
+              cur.root                        = output;
+              
+              
+              wrap(chk.wrap.checked);
+              
+              
+        }//initdom
+        
+        
+        btn.kill    = function(){
+                                                                                debug('btn.kill');
+              kill();
+              
+        }//kill
+        
+        
+        btn.clear   = function(){
+                                                                                debug('btn.clear');
+              clear();
+              
+        }//clear
+        
+        
+        function wrap(chk){
+                                                                      //console.log('wrap',v);
+              if(chk.checked){
+                    output.style.whiteSpace   = 'pre-wrap';
+              }else{
+                    output.style.whiteSpace   = '';
+              }
+              
+        }//wrap
+        
+        
+        obj.run   = async function(js,params={}){
+                                                                                debug('run');
+              var sandbox   = (()=>{
+              
+                    var console                 = {};
+                    console.log                 = log;
+                    console.clear               = clear;
+                    console.error               = error;
+                    console.write               = write;
+                    
+                    console.group               = window.console.group.bind(window.console);
+                    console.groupCollapsed      = window.console.groupCollapsed.bind(window.console);
+                    console.groupEnd            = window.console.groupEnd.bind(window.console);
+                    console.trace               = window.console.trace.bind(window.console);
+                    console.info                = window.console.info.bind(window.console);
+                    
+                    
+                    async function run(js){
+                    
+                          if(!chk.persist){
+                                clear();
+                          }
+                          
+                          if(params.async){
+                                js      = '(async()=>{\n'+js+'\n})()';
+                          }
+                          
+                          var result    = await eval(js);
+                          return result;
+                          
+                    }//run
+                    
+                    
+                    run.kill    = function(){
+                    }//kill
+                    
+                    
+                    return run;
+                    
+              })();
+              
+              var result    = await sandbox(js);
+              
+              if(result){
+                    console.log(result);
+              }
+              
+              //console.log     = con.log;
+              //console.clear   = con.clear;
+              //console.error   = con.error;
+              
+              
+              
+        }//run
+        
+        
+        build.sandbox   = function(){
+        
+              var attr      = def_sandbox;
+                                                                                //console.log(attr);
+              var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
+              
+              if(!chk['allow-scripts'].checked){
+                    tokens.delete('allow-scripts');
+              }
+              if(chk['allow-modals'].checked){
+                    tokens.add('allow-modals');
+              }
+              if(chk['allow-popups'].checked){
+                    tokens.add('allow-popups');
+              }
+              
+              var attr      = [...tokens].join(' ');
+                                                                                //console.log(attr);
+              iframe.setAttribute('sandbox',attr);
+              
+        }//sandbox
+        
+        
+        obj.run.iframe2    = async function(js,params={}){
+                                                                                debug('run.iframe2');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              if(iframe){
+                    iframe.remove();
+              }
+              
+              iframe            = document.createElement('iframe');
+              obj.iframe        = iframe;
+              
+              build.sandbox();
+              iframe.setAttribute('allow',sandbox_allow);
+              iframe.src              = sandbox_url;
+              iframe.style.cssText    = 'display:none';
+              iframe.onload           = onload;
+              
+              document.body.append(iframe)
+              //cur.root.append(iframe);
+              
+              
+              return promise;
+              
+              
+              async function onload(){
+              
+                    var win             = iframe.contentWindow;
+                    
+                    win.focus();
+                    win.console.log                 = log;
+                    win.console.clear               = clear;
+                    win.console.error               = error;
+                    win.console.write               = write;
+                    win.console.groupCollapsed      = groupCollapsed;
+                    
+                    if(!chk.persist){
+                          clear();
+                    }
+                    
+                    
+                    if(params.async){
+                          js      = '(async()=>{\n'+js+'\n})()';
+                    }
+                    var result    = await win.eval(js);
+                    
+                    
+                    resolve(result);
+                    
+                    
+              }//onload
+              
+        }//iframe
+        
+        
+        obj.kill    = function(){return kill()}
+        
+        function kill(){
+        
+              if(!iframe)return;
+              iframe.remove();
+              
+        }//kill
+        
+        
+        
+        obj.set   = function(root){
+        
+              if(root){
+                    cur.root    = root;
+              }else{
+                    cur.root    = output;
+              }
+              
+        }//set
+        
+        
+  //:
+  
+  
+        function disp(){
+        
+              var txt           = build(arguments);
+              var div           = document.createElement('div');
+              div.textContent   = txt;
+              cur.root.append(div);
+              
+              cur.node    = div;
+              
+              if(txt==''){
+                    div.style.height    = '16px';
+              }
+              
+              cur.root.scrollTop    = 999999999;
+              
+              return div;
+              
+        }//disp
+        
+        
+        obj.clear   = function(){return clear()}
+        
+        function clear(){
+        
+              if(chk.log.checked){
+                    con.clear.call(window.console);
+              }
+              
+              cur.root.replaceChildren();
+              
+        }//clear
+        
+        
+        obj.log   = function(){return log.apply(log,arguments)};
+        
+        function log(){
+        
+              if(chk.log.checked){
+                    //con.log.apply(window.console,arguments);
+                    window.console.groupCollapsed.apply(window.console,arguments);
+                    window.console.trace();
+                    window.console.groupEnd();
+              }
+              
+              var div   = disp.apply(null,arguments);
+              return div;
+              
+/*
+              var txt           = build(arguments);
+              var div           = document.createElement('div');
+              div.textContent   = txt;
+              cur.root.append(div);
+              
+              cur.node    = div;
+              
+              if(txt==''){
+                    div.style.height    = '16px';
+              }
+              
+              cur.root.scrollTop    = 999999999;
+*/
+
+              return div;
+              
+        }//log
+        
+        
+        obj.groupCollapsed    = function(){return groupCollapsed.apply(null,arguments)}
+        
+        function groupCollapsed(...args){
+        
+              if(chk.log.checked){
+                    window.console.groupCollapsed.apply(window.console,args);
+              }
+              
+              var out   = format(arguments);
+              var div   = disp.apply(null,out);
+              return div;
+              
+        }//groupCollapsed
+        
+        
+        obj.error   = function(){return error.apply(null,arguments)}
+        
+        function error(){
+        
+              if(chk.log.checked){
+                    con.error.apply(window.console,arguments);
+              }
+              var node            = log.apply(null,arguments);
+              node.style.color    = 'red';
+              return node;
+              
+        }//error
+        
+        
+        
+        
+        obj.node    = function(){return node.apply(null,arguments)}
+        
+        function node(node){
+        
+              node    = create(node);
+              
+              cur.root.append(node);
+              
+              return node;
+              
+        }//node
+        
+        
+        
+        obj.write    = function(){return write.apply(null,arguments)}
+        
+        function write(){
+        
+              var txt   = build(arguments);
+              
+              var span            = document.createElement('span');
+              span.textContent    = txt;
+              
+              if(cur.node){
+                    cur.node.append(span);
+              }else{
+                    cur.root.append(span);
+              }
+              return span;
+              
+        }//write
+        
+        
+        
+        
+  //:
+  
+  
+        function datatype(v){return Object.prototype.toString.call(v).slice(8,-1).toLowerCase()}
+        
+        
+        function format(args){
+        
+              if(typeof args[0]!=='string')return args;
+              
+              let fmt         = args[0];
+              let out         = [];
+              let argIndex    = 1;
+              
+              out.push(fmt.replace(/%[sdifoO]/g,match=>{
+              
+                    var val   = args[argIndex++];
+                    
+                    switch (match) {
+                    
+                      case '%s'   : return ''+val;
+                      case '%d'   :
+                      case '%i'   : return parseInt(val, 10);
+                      case '%f'   : return parseFloat(val);
+                      case '%o'   :
+                      case '%O'   : return format.fn(val);
+                      default     : return match;
+                      
+                    }//switch
+                    
+              }));
+              
+              
+              while(argIndex<args.length){
+              
+                    var v   = args[argIndex++];
+                    out.push(v);
+                    
+              }//while
+              
+              return out;
+              
+              
+              function fn(val){
+              
+                    if(val===null)return 'null';
+                    if(val===undefined)return 'undefined';
+                    
+                    switch(typeof val){
+                    
+                      case 'number'   : return val;
+                      case 'string'   : return val;
+                      
+                    }//switch
+                    
+                    return JSON.stringify(val,null,4);
+              }//fn
+              
+        }//format
+        
+        
+        format.fn   = function(val,seen=new WeakSet()){
+        
+              if(val === null)return 'null';
+              if(val === undefined)return 'undefined';
+              
+                                                                                  // Prevent circular references
+              if(typeof val==='object' || typeof val==='function'){
+                    if(seen.has(val))return '[ Circular ]';
+                    seen.add(val);
+              }
+              
+                                                                                  // Primitive types
+              switch(typeof val){
+              
+                case 'number'     : return String(val);
+                case 'string'     : return val;
+                case 'boolean'    : return String(val);
+                case 'bigint'     : return val.toString() + 'n';
+                case 'symbol'     : return val.toString();
+                case 'function'   : return `[Function${val.name ? ': '+val.name : ''}]`;
+                
+              }//switch
+              
+              
+              var type    = datatype(val);
+                                                                                console.log('format.fn',type);
+              if(type=='array'){
+                    val       = val.map(v=>format.fn(v,seen));
+                    var str   = val.join(', ')
+                    return '['+str+']';
+              }
+              
+              if(type=='date'){//val instanceof Date){
+                    return `Date("${val.toISOString()}")`;
+              }
+              
+              if(val instanceof RegExp){
+                    return val.toString();
+              }
+              
+              if(val instanceof Error){
+                    return `${val.name}: ${val.message}`;
+              }
+              
+              if(val instanceof Map){
+                    const entries = [];
+                    for (const [k, v] of val.entries()) {
+                      entries.push(`${fn(k, seen)} => ${format.fn(v, seen)}`);
+                    }
+                    return `Map { ${entries.join(', ')} }`;
+              }
+              
+              if(val instanceof Set){
+                    const entries   = [...val].map(v=>format.fn(v,seen));
+                    return `Set { ${entries.join(', ')} }`;
+              }
+              
+              if(ArrayBuffer.isView(val) && !(val instanceof DataView)){
+                    return `${val.constructor.name} [ ${Array.from(val).join(', ')} ]`;
+              }
+              
+              if(val instanceof Node){
+                    if(val.nodeType===1){
+                          return `<${val.tagName.toLowerCase()}>`;
+                    }
+                    return val.toString();
+              }
+              
+              if(typeof val==='object'){
+                    const entries   = Object.entries(val).map(([k,v])=>{
+                    
+                          return `${k}: ${format.fn(v,seen)}`;
+                          
+                    });
+                    return `{ ${entries.join(', ')} }`;
+              }
+              
+              try{
+              
+                    return JSON.stringify(val);
+                    
+              }//try
+              catch{
+              
+                    return String(val);
+                    
+              }//catch
+              
+        }//fn
+        
+        
+        
+        function build(args){
+        
+              var str     = '';
+              var args    = [...args];
+              args        = args.map(v=>{
+              
+                    var type    = datatype(v);
+                    switch(type){
+                    
+                      case 'function'         :
+                      case 'asyncfunction'    : str   = v.toString();       break;
+                      case 'string'           : str   = v;                  break;
+                      default                 : str   = inspect(v);         break;
+                      
+                    }//switch
+                    return str;
+                    
+              });
+              
+              var txt   = args.join(' ');
+              return txt;
+              
+        }//build
+        
+        
+        function create(node){
+        
+              var type    = datatype(node);
+              switch(type){
+              
+                case 'string'   : node    = create.string(node);        break;
+                
+              }//switch
+              return node;
+              
+        }//create
+        
+        
+        create.string   = function(str){
+        
+              var node    = document.createElement(str);
+              return node;
+              
+        }//string
+        
+        
+  //:
+  
+  
+        obj.horiz   = function(){
+        
+              host.style.width    = '100%';
+              host.style.height   = '50%';
+              
+        }//horiz
+        
+        
+        obj.vert    = function(){
+        
+              host.style.width    = '50%';
+              host.style.height   = '100%';
+              
+        }//vert
+        
+        
+  //:
+  
+  
+  
+        function debug(...args){
+        
+              if(!df && !obj.df)return;
+              args.unshift(`[ ${did} ]`);
+              var fmt     = Array.from({length:args.length}).fill('%O').join(' ');
+              var args2   = [fmt].concat(args);
+              console.groupCollapsed.apply(console,args2);
+              console.trace();
+              console.groupEnd();
+              
+        }//debug
+        
+        
+        
+        
+        
+  return obj;
+  
+//output_console
+})
+
+
+      </script>
+      
+      
+</output-console>
+
+
+
