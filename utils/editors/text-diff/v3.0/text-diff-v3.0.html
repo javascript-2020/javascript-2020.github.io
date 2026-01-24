@@ -38,33 +38,17 @@
             <script src='https://cdn.jsdelivr.net/npm/diff@latest/dist/diff.min.js'></script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js?hdr'></script>
             
-            <script init>
-                                                                                console.clear();
-                                                                                console.log('text-diff-v2.0.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
+            <script>
+                                                                                console.log('text-diff-v3.0.html');
+        var version='v2.0';
+        var df=true,did='html'
         ;
-        
-        var ace;
-        
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
-        var debug;
-        
-        var menu;
         
         var hdr;
         var primary     = {};
         var secondary   = {};
-        
-        var output;
-        var log;
         
         
         
@@ -75,53 +59,24 @@
                                                                                   debug('init',version);
                                                                                   
                                                                                   
-              //keydown                   = keydown();
-              menu                      = menumod();
-              
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
-              
-              
+                                                                                  
+                                                                                  
               hdr                       = mod['editors-hdr'];
-              //mod.menu.main             = mod.menu.main();
-              //debugger;
               primary.filemod           = mod.file1;
               primary.editor            = mod.editor1;
-              
               secondary.filemod         = mod.file2;
               secondary.editor          = mod.editor2;
               
-              output                    = mod.output;
-              log                       = mod['log-mod'];
+              mod.base.add({});
               
+              primary.filemod.initmod({complete:primary.complete});
+              secondary.filemod.initmod({complete:secondary.complete});
               
-              hdr.initmod({ext,$,menu,menumod});
-              //mod.menu.main.initmod({menumod,editor});
+              await mod.auto();
               
-              primary.filemod.initmod({ext,$,menu,menumod,complete:primary.complete,log});
-              primary.editor.initmod({ext,$,menu,ace});
-              
-              secondary.filemod.initmod({ext,$,menu,menumod,complete:secondary.complete,log});
-              secondary.editor.initmod({ext,$,menu,ace});
-              
-              output.initmod({ext,$,menu});
-              log.initmod({ext,$});
-              
-              await Promise.all([
-                    hdr.init(),
-                    //mod.menu.main.init(),
-                    primary.filemod.init(),
-                    primary.editor.init(),
-                    
-                    secondary.filemod.init(),
-                    secondary.editor.init(),
-                    
-                    //publish.init(),
-                    
-                    output.init(),
-                    log.init(),
-              ]);
-              
-              
+  //:
+  
+              hdr['page-source'].url('v3.0/text-diff-v3.0.html');
               
               window.onfocus            = ()=>primary.editor && primary.editor.focus();
               keydown.add(kd);
@@ -134,27 +89,7 @@
         }//init
         
         
-(async()=>{
-
-        mod.stack.add;
-        
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-        
-        var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js',
-        );
-        [$,datatype,menumod,keydown,debug]   = await promise;
-        
-        mod.stack.complete;
-        
-})();
-
-
-            </script init>
+            </script>
             
             
             <link rel=stylesheet href='/utils/css/utils.css'>
@@ -240,9 +175,10 @@
       
       <body>
       
-            <editors-hdr component=grp>
-                  <img class=title src='images/text-diff.png' style='top:5px;height:45px'>
-                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+            <editors-hdr v2.0 component=grp>
+                  <img slot=title src='images/text-diff.png' style='top:5px;height:45px'>
+                  <h4 slot=version>v3.0</h4>
+                  <time slot=date datetime=2026-01-24>24 Jan 2026</time>
             </editors-hdr>
             
             <div id=output-hdr>
@@ -314,62 +250,44 @@
   
         async function initdom(rootnode){
                                                                                 debug('initdom');
-              var root                      = rootnode;
-              
-              keydown.initdom();
-              
-              
-              hdr.initdom();
-              
-              //mod.menu.main.initdom();
+              var root                                        = rootnode;
               
               $('#output-hdr [type=checkbox]').onclick        = btn['output-chk'];
               $('[value=check]').onclick                      = btn.check;
               
               
               var view1                                       = $('#view1');
-              primary.filemod.initdom(view1);
-              primary.editor.initdom();
-              
               var view2                                       = $('#view2');
-              secondary.filemod.initdom(view2);
-              secondary.editor.initdom();
-              var w               = view2.offsetWidth;
-              view2.style.flex    = 'none';
-              view2.style.width   = w+'px';
+              var w                                           = view2.offsetWidth;
+              view2.style.flex                                = 'none';
+              view2.style.width                               = w+'px';
               
               
               var node                                        = $('#output');
-              output.initdom();
+              
               setTimeout(()=>{
-                    var w               = node.offsetHeight;console.log('w',w);
-                    node.style.flex     = 'none';
-                    node.style.height   = w+'px';
+              
+                    var w                                     = node.offsetHeight;
+                    node.style.flex                           = 'none';
+                    node.style.height                         = w+'px';
+                    
               },500);
               
               
-              slider1.node    = $.slider('#view1','#slider-1','#view2',null,slider1);
-              slider2.node    = $.slider('#main','#slider-2','#output',null,slider2);
-              
-              
-              
-              
+              slider1.node                                    = $.slider('#view1','#slider-1','#view2',null,slider1);
+              slider2.node                                    = $.slider('#main','#slider-2','#output',null,slider2);
               
               
               
               var style                                       = document.createElement('style');
               style.textContent   = `
-  .red
-    {position:absolute;background:var(--red);z-index:20}
-  .green
-    {position:absolute;background:var(--green);z-index:20}
+                    .red
+                      {position:absolute;background:var(--red);z-index:20}
+                    .green
+                      {position:absolute;background:var(--green);z-index:20}
               `;
               
               output.shadowRoot.append(style);
-              
-              
-              
-              
               
               
               
