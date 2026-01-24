@@ -13,9 +13,17 @@
     {height:100%;display:flex;flex-direction:column}
   #hdr
     {display:flex;align-items:center;margin:0;margin-bottom:5px}
-    
   #spc
     {flex:1}
+    
+  #isolate
+    {margin-right:10px}
+  #console-clear
+    {margin-right:10px}
+  #word-wrap
+    {margin-right:20px;/*color:gray*/}
+    
+    
     
   .ext-button
     {border:1px solid lightgray;padding:2px 5px;cursor:pointer;display:flex;align-items:center;margin-right:10px}
@@ -37,11 +45,47 @@
             
             <div id=root>
                   <div id=hdr>
-                        <span id=spc></span>
-                        <div id=console-persist class=ext-button>console.persist<input type=checkbox></div>
-                        <div id=console-log class=ext-button>console.log<input type=checkbox checked></div>
-                        <div id=word-wrap class=ext-button>wrap<input type=checkbox checked></div>
-                        <button id=clear>clear</button>
+                        <span id=isolate class=radio>
+                              <input type=checkbox>
+                              isolate
+                        </span>
+                        
+                        <span id=allow-scripts class=radio>
+                              <input type=checkbox checked disabled>
+                              allow-scripts
+                        </span>
+                        <span id=allow-modals class=radio>
+                              <input type=checkbox checked>
+                              allow-modals
+                        </span>
+                        <span id=allow-popups class=radio style='margin-right:30px'>
+                              <input type=checkbox checked>
+                              allow-popups
+                        </span>
+                        
+                        <div style='flex:1'></div>
+                        
+                        <span id=console-show class=radio>
+                              <input type=checkbox checked>
+                              console
+                        </span>
+                        <span id=console-echo class=radio>
+                              <input type=checkbox checked>
+                              echo
+                        </span>
+                        <span id=console-persist class=radio>
+                              <input type=checkbox>
+                              persist
+                        </span>
+                        <span id=console-clear class=radio>
+                              clear
+                        </span>
+                        
+                        <span id=word-wrap class=ext-button>
+                              <input type=checkbox checked>
+                              wrap
+                        </div>
+                        
                         <button id=kill>kill</button>
                   </div>
                   
@@ -276,15 +320,8 @@
               
               async function onload(){
               
-                    var win             = iframe.contentWindow;
-                    
-                    win.focus();
-                    win.console.log                 = log;
-                    win.console.clear               = clear;
-                    win.console.error               = error;
-                    win.console.write               = write;
-                    win.console.groupCollapsed      = groupCollapsed;
-                    
+              
+              
                     if(!chk.persist){
                           clear();
                     }
