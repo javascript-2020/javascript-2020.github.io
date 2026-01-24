@@ -52,10 +52,6 @@
                               isolate
                         </span>
                         
-                        <span id=allow-scripts class=radio>
-                              <input type=checkbox checked disabled>
-                              allow-scripts
-                        </span>
                         <span id=allow-modals class=radio>
                               <input type=checkbox checked>
                               allow-modals
@@ -67,7 +63,7 @@
                         
                         <div style='flex:1'></div>
                         
-                        <span id=console-show class=radio>
+                        <span id=console class=radio>
                               <input type=checkbox checked>
                               console
                         </span>
@@ -105,7 +101,7 @@
         version   : 'v2.0',
   };
   
-        var df=false,did='output-console'
+        var df=true,did='output-console'
         ;
         
         
@@ -144,9 +140,11 @@
         var sandbox_allow   = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
                                   xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
                                   
-                                  
+        var fn              = {};
         var chk             = {};
         var btn             = {};
+        var btn.console     = {};
+        obj.on              = {};
         
         
   //:
@@ -174,11 +172,19 @@
                                                                                 debug('initdom');
               shadow                          = host.shadowRoot;
               
-              chk.persist                     = $.chkbox(shadow,'#console-persist',false);
-              chk.log                         = $.chkbox(shadow,'#console-log',false);
+              
+              chk.isolate                     = $.chkbox(shadow,'#isolate');
+              
+              chk['allow-modals']             = $.chkbox(shadow,'#allow-modals');
+              chk['allow-popups']             = $.chkbox(shadow,'#allow-popups');
+              
+              chk.console                     = $.chkbox(shadow,'#console');
+              chk['console-echo']             = $.chkbox(shadow,'#console-echo');
+              chk['console-persist']          = $.chkbox(shadow,'#console-persist',false);
+              $.chkbox(shadow,'#console-clear',btn.console.clear);
+              
               chk.wrap                        = $.chkbox(shadow,'#word-wrap',wrap);
               
-              $(shadow,'#clear').onclick      = btn.clear;
               $(shadow,'#kill').onclick       = btn.kill;
               
               
@@ -192,21 +198,16 @@
         }//initdom
         
         
-        btn.kill    = function(){
-                                                                                debug('btn.kill');
-              kill();
-              
-        }//kill
         
         
-        btn.clear   = function(){
+        btn.console.clear   = function(){
                                                                                 debug('btn.clear');
               clear();
               
         }//clear
         
         
-        function wrap(chk){
+        btn.wrap    = function(chk){
                                                                       //console.log('wrap',v);
               if(chk.checked){
                     output.style.whiteSpace   = 'pre-wrap';
@@ -217,6 +218,28 @@
         }//wrap
         
         
+        btn.kill    = function(){
+                                                                                debug('btn.kill');
+              kill();
+              
+        }//kill
+        
+        
+  //:
+  
+  
+        obj.on.message    = function(json){
+                                                                                console.log('output.message',json);
+              var {name,args}   = json;
+              //webconsole[name].apply(null,args);
+              fn[name].apply(null,args);
+              
+        }//message
+        
+        
+  //:
+  
+  
         obj.run   = async function(js,params={}){
                                                                                 debug('run');
               var sandbox   = (()=>{
@@ -310,6 +333,7 @@
               build.sandbox();
               iframe.setAttribute('allow',sandbox_allow);
               iframe.src              = sandbox_url;
+                                                                                debug(sandbox_url);
               iframe.style.cssText    = 'display:none';
               iframe.onload           = onload;
               
@@ -323,8 +347,7 @@
               async function onload(){
               
               
-              
-                    if(!chk.persist){
+                    if(!chk['console-persist'].checked){
                           clear();
                     }
                     
@@ -332,7 +355,9 @@
                     if(params.async){
                           js      = '(async()=>{\n'+js+'\n})()';
                     }
-                    var result    = await win.eval(js);
+                    
+                    iframe.contentWindow.postMessage({type:'run',js});
+                    //var result    = await win.eval(js);
                     
                     
                     resolve(result);
@@ -389,6 +414,7 @@
         
         
         obj.clear   = function(){return clear()}
+        fn.clear    = function(){return clear.apply(null,arguments)};
         
         function clear(){
         
@@ -402,6 +428,7 @@
         
         
         obj.log   = function(){return log.apply(log,arguments)};
+        fn.log    = function(){return log.apply(null,arguments)};
         
         function log(){
         
@@ -436,6 +463,7 @@
         
         
         obj.groupCollapsed    = function(){return groupCollapsed.apply(null,arguments)}
+        fn[groupCollapsed     = function(){return groupCollapsed.apply(null,arguments)}
         
         function groupCollapsed(...args){
         
@@ -451,6 +479,7 @@
         
         
         obj.error   = function(){return error.apply(null,arguments)}
+        fn.error    = function(){return error.apply(null,arguments)}
         
         function error(){
         
@@ -467,6 +496,7 @@
         
         
         obj.node    = function(){return node.apply(null,arguments)}
+        fn.node     = function(){return node.apply(null,arguments)}
         
         function node(node){
         
@@ -481,6 +511,7 @@
         
         
         obj.write    = function(){return write.apply(null,arguments)}
+        fn.write    = function(){return write.apply(null,arguments)}
         
         function write(){
         
