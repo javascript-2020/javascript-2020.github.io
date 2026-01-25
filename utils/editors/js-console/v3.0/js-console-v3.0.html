@@ -45,7 +45,7 @@
             <script src="https://cdn.jsdelivr.net/npm/prettier@2.8.8/standalone.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/prettier@2.8.8/parser-babel.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/terser/dist/bundle.min.js"></script>
-            
+            <script type=module>import {espree} from 'https://ext-code.com/libs/js/external/espree/espree.m.js';window.espree=espree;</script>
             
             <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js?hdr'></script>
             
@@ -66,6 +66,7 @@
         var publish;
         var editor;
         var output;
+        var log;
         
         
   //:
@@ -79,6 +80,7 @@
               publish                   = mod['publish-ui'];
               editor                    = mod['web-editor'];
               output                    = mod['output-html'];
+              log                       = mod['log-mod'];
               
               mod.base.add({filemod,complete,source,focus});
               
@@ -273,17 +275,17 @@
         
         
         async function initdom(rootnode){   //c
-                                                                                console.log('initdom');
+                                                                                debug('initdom');
               root                                  = rootnode;
               
               keydown.initdom();
               menu.add.style();
               
-              var btn     = document.createElement('input');
-              btn.type    = 'button';
-              btn.value   = 'isolate';
-              $(hdr.__host.shadowRoot,'#btns').append(btn);
-              btn.onclick                           = btn.isolate;
+              var btn1                              = document.createElement('input');
+              btn1.type                             = 'button';
+              btn1.value                            = 'isolate';
+              $(hdr.__host.shadowRoot,'#btns').append(btn1);
+              btn1.onclick                          = btn.isolate;
               
               
               $(root,'#save').onclick               = btn.save;
@@ -416,7 +418,7 @@
         
         
         btn.syntax    = function(){
-        
+        console.log('btn.syntax');
               var js        = editor.getValue();
               var result    = syntax(js);
               var str       = JSON.stringify(result,null,4);
