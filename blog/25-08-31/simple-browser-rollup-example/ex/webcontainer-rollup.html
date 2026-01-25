@@ -1,8 +1,8 @@
-        
-      <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css'>
-        
-      <style>
 
+      <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css'>
+      
+      <style>
+      
   body
     {margin:20px;display:flex;flex-direction:column;gap:10px;font-family:arial}
     
@@ -11,45 +11,66 @@
     
   #terminal
     {height:500px}
-        
+    
       </style>
-
+      
       <h3>rollup example</h3>
       
       <iframe id=iframe></iframe>
       
       <div id=terminal></div>
-
       
-      <script>        
-
+      
+      <script>
+      
 (()=>{
 
         var term;
         var webcontainer;
         var files   = {};
-
+        
         
         var packages          = ['espree'];
         var filename          = 'espree.m.js';
-
+        
         files['entry.js']   = `
         
               import * as espree from 'espree';
               export {espree};
               
+              //export default espree;  // iife / umd
+              
         `;
         
         
         files['index.html']   = `
-                          
+        
               <div style='display:flex;flex-direction:column;gap:10px'>
               
-                    <a href='/download' download='${filename}'>${filename}</a>
+                    <input value=download type=button onclick='download()'>
+                    <br>
                     <a href='/test.html'>test</a>
+                    <br>
+                    <a href='/test2.html'>test-2</a>
                     
               </div>
+              
+              <script>
+              
+                    function download(){
+                    
+                          var res       = await fetch('${filename}');
+                          var blob      = await res.blob();
+                          var url       = URL.createObjectURL(blob);
+                          var a         = document.createElement('a');
+                          a.href        = url;
+                          a.download    = '${filename}';
+                          a.click();
                           
+                    }//download
+                    
+              </scr`+`ipt>
+              
         `;
         
         
@@ -58,11 +79,11 @@
               <script type=module>
               
                     import {espree} from '/espree.m.js';
-
+                    
                     var js    = 'let a=42';
                     test(js);
                     
-
+                    
                     function test(js){
                     
                           log(js);
@@ -104,7 +125,58 @@
               </div>
               
         `;
-
+        
+        files['test2.html']    = `
+        
+              <script src='espree.js'></scr`+`ipt>
+              <script>
+                                                                                console.log(espree);
+                    var js    = 'let a=42';
+                    test(js);
+                    
+                    
+                    function test(js){
+                    
+                          log(js);
+                          
+                          var err;
+                          try{
+                          
+                                var result            = espree.parse(js,{ecmaVersion:'latest'});
+                                
+                          }
+                          catch(err2){
+                          
+                                err   = err2;
+                                
+                          }
+                          if(err){
+                                log(err.toString());
+                                return;
+                          }
+                          
+                          var str   = JSON.stringify(result,null,4);
+                          log(str);
+                          
+                    }//test
+                    
+                    
+                    function log(){
+                    
+                          var str   = [...arguments].join(' ');
+                          output.textContent   += str+'\\n';
+                          
+                    }//log
+                    
+              </scr`+`ipt>
+              
+              <div style='display:flex;flex-direction:column;gap:10px'>
+                    <a href='/'>home</a>
+                    <div id=output style='white-space:pre;font-family:monospace'></div>
+              </div>
+              
+        `;
+        
         
         async function setup(){
         
@@ -118,7 +190,7 @@
               fitAddon.fit();
                                                                                 console.clear();
                                                                                 console.log('rollup example');
-                                                                                console.log();        
+                                                                                console.log();
         }//setup
         
         
@@ -126,18 +198,18 @@
         
         
         async function start(){
-                                                                                
+        
               await setup();
-
+              
               
               for(var key in files){
               
                     files[key]   = {file:{contents:files[key]}};
                     
               }//for
-
-
-                                                                                console.log('download ...');              
+              
+              
+                                                                                console.log('download ...');
               var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
               
                                                                                 console.log('booting ...');
@@ -151,13 +223,13 @@
               await package_json();
               await install_rollup();
               
-                                                                                
-              await rollup();                                                                        
-                                                                                
+              
+              await rollup();
+              
               await server();
                                                                                 console.log('done.');
                                                                                 
-              
+                                                                                
               async function install(){
                                                                                 var str   = packages.join(' ');
                                                                                 console.log('npm install',str,'...');
@@ -184,10 +256,10 @@
                                                                                 console.log('an error occurred');
                     }
                     return code;
-              
+                    
               }//package_json
-
-
+              
+              
               async function install_rollup(){
               
                     var packages    = [
@@ -208,7 +280,7 @@
                                                                                 console.log('an error occurred');
                     }
                     return code;
-              
+                    
               }//install_rollup
               
               
@@ -224,18 +296,18 @@
                                                                                 console.log('an error occurred');
                     }
                     return code;
-              
+                    
               }//rollup
               
-
+              
               async function server(){
                                                                                 console.log('launching server ...');
                     webcontainer.on('server-ready',(port,url)=>{
                                                                                 console.log('server : ',url,port);
                           iframe.src    = url;
-                            
+                          
                     });
-              
+                    
                     var process   = await webcontainer.spawn('node',['server.js']);
                     
                     var stream    = new WritableStream({write(data){term.write(data)}});
@@ -251,10 +323,10 @@
               
         }//start
         
-
+        
   //:
   
-        
+  
         files['package.json']   = `
         
               {
@@ -263,27 +335,27 @@
                     "scripts": {
                     }
               }
-        
+              
         `;
         
         
         files['rollup.config.js']   = `
-
+        
               import resolve from '@rollup/plugin-node-resolve';
               import commonjs from '@rollup/plugin-commonjs';
-              import json from '@rollup/plugin-json';              
+              import json from '@rollup/plugin-json';
               import nodePolyfills from 'rollup-plugin-polyfill-node';
-
+              
               export default {
                 input     : 'entry.js',
                 output    : {
                                   file      : '${filename}',
                                   format    : 'es'
                                   
-                                  //format    : 'iife', // or 'umd'
-                                  //name      : 'EspreeBundle'    // This becomes window.EspreeBundle
-
-
+                                  //format    : 'iife',         // or 'umd'
+                                  //name      : 'espree',       // This becomes window.espree
+                                  //exports   : 'default',
+                                  
                 },
                 plugins   : [
                                   commonjs(),
@@ -292,29 +364,22 @@
                                   resolve({preferBuiltins:false})
                             ]
               };
-
+              
         `;
-
-
+        
+        
         files['server.js']    = `
         
               var port          = 3000;
-          
+              
               require('http').createServer(request).listen(port);
               
               var fs    = require('fs');
                                                                                           console.log('listening',port);
-          
+                                                                                          
               function request(req,res){
                                                                                           console.log(req.method,req.url);
                     if(cors(req,res))return;
-                    
-                    if(req.url==='/download'){
-                          var stream    = fs.createReadStream('${filename}');
-                          res.writeHead(200,{'content-type':'application/octet-stream'});
-                          stream.pipe(res);
-                          return;
-                    }
                     
                     if(req.url==='/${filename}'){
                           var stream    = fs.createReadStream('${filename}');
@@ -329,13 +394,19 @@
                           stream.pipe(res);
                           return;
                     }
-          
+                    if(req.url==='/test2.html'){
+                          var stream    = fs.createReadStream('test2.html');
+                          res.writeHead(200,{'content-type':'text/html'});
+                          stream.pipe(res);
+                          return;
+                    }
+                    
                     var stream    = fs.createReadStream('index.html');
                     res.writeHead(200,{'content-type':'text/html'});
                     stream.pipe(res);
-          
+                    
               }//request
-        
+              
               
               function cors(req,res){
               
@@ -344,17 +415,17 @@
                     if(req.method!=='OPTIONS'){
                           return;
                     }
-                          
+                    
                     res.writeHead(204);
                     res.end();
                     return true;
-              
+                    
               }//cors
               
               
         `;
         
-
+        
 })();
 
 
