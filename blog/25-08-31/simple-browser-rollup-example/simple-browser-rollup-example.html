@@ -8,11 +8,11 @@
 <!DOCTYPE html>
 
 
-<html>
+<html lang=en>
 
       <head>
             <meta charset=UTF-8>
-
+            
             <title>
                   simple browser rollup example
             </title>
@@ -21,10 +21,10 @@
             
             <base href='https://ext-code.com/blog/25-08-31/simple-browser-rollup-example/'>
             <link rel=canonical href='https://ext-code.com/blog/25-08-31/simple-browser-rollup-example/simple-browser-rollup-example.html'>
-
+            
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
-
+            
             <script type='application/ld+json'>
                   {
                         "@context"            : "https://schema.org",
@@ -38,96 +38,46 @@
                         "publisher"           : {"@type":"Organization","name":"ext-code.com","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
                   }
             </script>
-
-
+            
+            
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
-
-
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
-            <script init>
-                                                                                console.clear();
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js?hdr'></script>
+            
+            <script>
                                                                                 console.log('simple-browser-rollup-example.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v1.0'
-        ;
-
+                                                                                
+        var df=true,did='html';
+        
         var ace;
-
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
-        var debug;
         
         var hdr;
         var rollup;
         var test;
         var log;
-
-
+        
+        
   //:
-
-              
+  
+  
         async function init(){
                                                                                 //debug('init',version);
-              
-              menu    = menumod();
-
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
-              
-
-              hdr       = mod['blog-hdr'];              
-              rollup    = mod.rollup;
-              test      = mod.test;
+                                                                                
+              hdr       = mod['blog-hdr'];
               log       = mod['log-mod'];
               
-              hdr.initmod({ext,$});
-              rollup.initmod({ext,$,ace,menu});
-              test.initmod({ext,$,ace,menu});
-              log.initmod({ext,$});
-              
-              await Promise.all([
-                    hdr.init(),
-                    rollup.init(),
-                    test.init(),
-                    log.init(),
-              ]);
+              await mod.auto();
               
               
               initdom(document.body);
-
-
-        }//init
-
-
-  //:
-  
-  
-(async()=>{
-
-        mod.stack.add;
-        
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
-        var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js',
-        );
-        [$,datatype,menumod,keydown,code]   = await promise;
-  
-        mod.stack.complete;
               
-})();
-
-                  
-            </script init>
-
+              
+        }//init
+        
+        
+            </script>
+            
             
             <link rel=stylesheet href='/blog/css/blog.css'>
             
@@ -145,51 +95,51 @@
   [component]
     {display:none}
     
-  .description 
+  .description
     {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
       background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
   .description>p
     {margin:0}
   .description > p+p
     {margin:10px 0}
-
+    
   code
     {font-family:monospace;background:whitesmoke}
   code.inline
     {display:inline;padding:5px 10px}
-
+    
   a
     {color:#4a90e2;text-decoration:none;font-weight:500}
-  a:hover 
+  a:hover
     {text-decoration:underline}
   .link-domain
     {font-size:0.85rem;color:#777;margin-left:0.25rem}
-  .link-domain::before 
+  .link-domain::before
     {content:'['}
   .link-domain::after
     {content:']'}
   .link-txt
     {}
-
+    
   input
     {font-size:16px;padding:5px 7px;box-sizing:border-box;}
   input[type=button]
     {cursor:pointer}
-
-
-
-
+    
+    
+    
+    
   #rollup
     {margin-bottom:100px}
     
-
+    
   a.link-stable
     {color:blue}
   .link-domain
     {font-size:12px}
   .link-txt
     {}
-
+    
     
             </style>
             
@@ -197,9 +147,9 @@
       
       
       <body>
-
-
-            <blog-hdr component=grp1>      
+      
+      
+            <blog-hdr component=grp1>
                   <h1 class=title>
                         simple browser rollup example
                   </h1>
@@ -207,10 +157,10 @@
                         29 Oct 2025
                   </time>
             </blog-hdr>
-
-
+            
+            
             <div class=description>
-
+            
                   <p>
                         Learn how to use Rollup directly in the browser with a live tool and example.
                         Bundle JavaScript modules client-side without installing anything.
@@ -226,51 +176,43 @@
                         
                         in a browser to rollup nodejs libraries for client side use
                   </p>
-            
+                  
             </div>
-
-
+            
+            
             <snippet-html-console id=rollup src='ex/webcontainer-rollup.html' component></snippet-html-console>
-
-
+            
+            
             <div>
                   if you download the espree.m.js code and host it on a local server, you can use the following the code to test it
             </div>
-
+            
             
             <snippet-html-console id=test src='ex/test.html' component></snippet-html-console>
-
-
+            
+            
             <log-mod component></log-mod>
             
             
       </body>
-
-
+      
+      
       <script>
-
-
+      
+      
   //:
   
   
         async function initdom(rootnode){
-
+        
               var root    = rootnode;
-
               
-              hdr.init();
               
-              rollup.initdom();
-              test.initdom();
-
-              log.initdom();
-
-              
-        }//initdom      
-
-
+        }//initdom
+        
+        
       </script>
-            
+      
 </html>
 
 
