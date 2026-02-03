@@ -359,12 +359,16 @@
               iframe            = document.createElement('iframe');
               obj.iframe        = iframe;
               
+              iframe.onload           = onload;
+              
               build.sandbox();
               iframe.setAttribute('allow',sandbox_allow);
               iframe.src              = sandbox_url;
                                                                                 debug(sandbox_url);
-              iframe.style.cssText    = 'display:none;box-sizing:border-box';
-              iframe.onload           = onload;
+              iframe.style.cssText    = 'box-sizing:border-box';
+              if(!chk.iframe.checked){
+                    iframe.style.display    = 'none';
+              }
               
               root.append(iframe);
               //document.body.append(iframe)
