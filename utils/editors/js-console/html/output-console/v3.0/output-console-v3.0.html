@@ -79,6 +79,11 @@
                               wrap
                         </span>
                         
+                        <span id=iframe-show class=radio>
+                              <input type=checkbox checked>
+                              iframe
+                        </span>
+                        
                         <button id=kill>kill</button>
                         
                   </div>
@@ -141,6 +146,7 @@
         var chk             = {};
         var btn             = {};
         btn.console         = {};
+        btn.iframe          = {};
         obj.on              = {};
         
         
@@ -182,6 +188,8 @@
               $(shadow,'#console-clear').onclick        = btn.console.clear;
               
               chk.wrap                                  = $.chkbox(shadow,'#word-wrap',btn.wrap);
+              
+              chk.iframe                                = $.chkbox(shadow,'#iframe-show',btn.iframe.show);
               
               $(shadow,'#kill').onclick                 = btn.kill;
               
@@ -234,6 +242,17 @@
               kill();
               
         }//kill
+        
+        
+        btn.iframe.show   = function(chk){
+        
+              if(chk.checked){
+                    iframe.style.display    = '';
+              }else{
+                    iframe.style.display    = 'none';
+              }
+              
+        }//show
         
         
   //:
