@@ -169,6 +169,7 @@
                                                                                 debug('initdom');
               shadow                                    = host.shadowRoot;
               
+              root                                      = $(shadow,'#root');
               
               chk.isolate                               = $.chkbox(shadow,'#isolate',btn.isolate);
               
@@ -345,10 +346,11 @@
               iframe.setAttribute('allow',sandbox_allow);
               iframe.src              = sandbox_url;
                                                                                 debug(sandbox_url);
-              iframe.style.cssText    = 'display:none';
+              //iframe.style.cssText    = 'display:none';
               iframe.onload           = onload;
               
-              document.body.append(iframe)
+              root.append(iframe);
+              //document.body.append(iframe)
               //cur.root.append(iframe);
               
               
