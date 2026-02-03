@@ -80,7 +80,7 @@
                         </span>
                         
                         <span id=iframe-show class=radio>
-                              <input type=checkbox checked>
+                              <input type=checkbox>
                               iframe
                         </span>
                         
@@ -199,6 +199,8 @@
               
               
               //btn.wrap(chk.wrap);
+              
+              create.iframe();
               
               
         }//initdom
@@ -352,14 +354,8 @@
         }//sandbox
         
         
-        obj.run.iframe2    = async function(js,params={}){
-                                                                                debug('run.iframe2');
-              var resolve,promise=new Promise(res=>resolve=res);
-              
-              if(iframe){
-                    iframe.remove();
-              }
-              
+        create.iframe   = function({onload}={}){
+        
               iframe            = document.createElement('iframe');
               obj.iframe        = iframe;
               
@@ -374,6 +370,18 @@
               //document.body.append(iframe)
               //cur.root.append(iframe);
               
+        }//iframe
+        
+        
+        obj.run.iframe2    = async function(js,params={}){
+                                                                                debug('run.iframe2');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              if(iframe){
+                    iframe.remove();
+              }
+              
+              create.iframe({onload});
               
               return promise;
               
