@@ -5,7 +5,7 @@
 
       <head>
             <meta charset=utf-8>
-      
+            
             <title>
                   Text Diff
             </title>
@@ -17,7 +17,7 @@
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAnFBMVEVHcEwAAAEHBg9gNqsEAwlXMZwUCyMAAAA1RJkAAAAAAAAAAAAfKFsAAAAdEDQAAAAAAAAAAAAKCRgkFEAAAABlObUVGz04SKIAAABBJHM+UbUAAAAAAAAAAAAvPYk0HV0AAAARFjIAAABPLI0AAAAAAAAmMW4aIUwAAAApNHYAAAAAAABnOrg/UbUAAAFAUrdoO7k7TKsMECVpO7uPyrl7AAAALHRSTlMA/P39//z95vzdQPb64fsWsCT9+17+/f3S+v41ju7++pz7UfsKd/r7KvzFaJeOgx8AAAGbSURBVCjPXZPttmswEEATgqqPolUUpUV7eq474tz3f7c7I47S/SPWshMzGTOMsbxO7Zm03rMP7h4IbUaAddravSXc3YIryu35ANzL8OYBwfT68KV0GSXDX+JCy5BE9oFs4OWT5j/jZJPnizaMP1bIWFvD92Gth52mPS6zbgtI54//nr48Jj/pjts5W/RwPRMRaK+B9MmxlvRJuzDzJN2V5fvypMcr8orglqDmjvOHrTUmNgzjmSzGBgj2RH7YZB6RxQeAM1GmXfvOfNyRTW7gHxW+4EXLbHFVVcOVIvh6r4gbE5Po+G33W/DxCb4h+16qDY1IsboQPV3FGUyyuhFPWjcdrH5h8enSuGqN7KV+jAypNKfkv+4nIgAwY7IY/5+Ui567xuLc1Hu0UWYg+kbvPaewUFeAvcWRSq50nvIuRC0zDpqPHLOVDr+hYKT7OONaFiOr2GEAdas0eqFtMmesgAB/gNLoj0a/0fcipP6zI1VRVRVpROVHU1e9XMBLBNuRKEXVGDNNJayPkTptBsq7fw4cjqM3k9bYrf8B50dH+JJaGO8AAAAASUVORK5CYII='>
-
+            
             <script type='application/ld+json'>
                   {
                         "@context"              : "https://schema.org",
@@ -33,145 +33,82 @@
                         "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
                   }
             </script>
-
+            
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
             <script src='https://cdn.jsdelivr.net/npm/diff@latest/dist/diff.min.js'></script>
-
             
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
-            <script init>
-                                                                                console.clear();
-                                                                                console.log('text-diff-v2.0.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js?hdr'></script>
+            
+            <script>
+                                                                                console.log('text-diff-v3.0.html');
+        var version='v2.0';
+        var df=true,did='html'
         ;
-        
-        var ace;
-        
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
-        var debug;
-        
-        var menu;
         
         var hdr;
         var primary     = {};
         var secondary   = {};
+        var output;
         
-        var output;                  
-        var log;
-
-
-
+        
+        
   //:
-
-
+  
+  
         async function init(){
                                                                                   debug('init',version);
-                                                                      
-          
-              //keydown                   = keydown();
-              menu                      = menumod();
-
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
-              
-              
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
               hdr                       = mod['editors-hdr'];
-              //mod.menu.main             = mod.menu.main();
-              //debugger;
               primary.filemod           = mod.file1;
               primary.editor            = mod.editor1;
-              
               secondary.filemod         = mod.file2;
               secondary.editor          = mod.editor2;
-              
               output                    = mod.output;
-              log                       = mod['log-mod'];
+              
+              mod.base.add({});
+              
+              primary.filemod.initmod({complete:primary.complete});
+              secondary.filemod.initmod({complete:secondary.complete});
+              
+              await mod.auto();
+              
+  //:
   
-          
-              hdr.initmod({ext,$,menu,menumod});
-              //mod.menu.main.initmod({menumod,editor});
+              hdr['page-source'].url('v3.0/text-diff-v3.0.html');
               
-              primary.filemod.initmod({ext,$,menu,menumod,complete:primary.complete,log});
-              primary.editor.initmod({ext,$,menu,ace});
-              
-              secondary.filemod.initmod({ext,$,menu,menumod,complete:secondary.complete,log});
-              secondary.editor.initmod({ext,$,menu,ace});
-              
-              output.initmod({ext,$,menu});
-              log.initmod({ext,$});
-  
-              await Promise.all([
-                    hdr.init(),
-                    //mod.menu.main.init(),
-                    primary.filemod.init(),
-                    primary.editor.init(),
-              
-                    secondary.filemod.init(),
-                    secondary.editor.init(),
-              
-                    //publish.init(),
-              
-                    output.init(),
-                    log.init(),
-              ]);
-              
-  
-          
               window.onfocus            = ()=>primary.editor && primary.editor.focus();
               keydown.add(kd);
               //menu.on.close             = ()=>editor.focus();
-  
+              
               
               initdom(document.body);
-  
-  
-        }//init
-
-
-(async()=>{
-
-        mod.stack.add;
-        
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
-        var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js',
-        );
-        [$,datatype,menumod,keydown,debug]   = await promise;
-  
-        mod.stack.complete;
               
-})();
-
-
-            </script init>
-
-
-            <link rel=stylesheet href='/utils/css/utils.css'>
+              
+        }//init
+        
+        
+            </script>
+            
+            
+            <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymous>
             
             <style>
             
   :root
     {--red:rgba(209,153,153,0.5);--green:rgba(153,204,153,0.5)}
-  
+    
   html
     {height:100%;font-family:arial}
   body
     {display:flex;flex-direction:column;height:calc(100% - 40px);margin:20px;gap:10px}
-
+    
   #output-hdr
     {display:flex;gap:10px;}
-  #output-hdr>div    
+  #output-hdr>div
     {display:flex;gap:10px;align-items:center;border:1px solid lightgray;border-radius:5px;padding:3px 5px}
   [type=checkbox]
     {width:20px;height:20px;margin:0}
@@ -180,7 +117,7 @@
     
   input
     {font-size:16px;padding:5px;cursor:pointer}
-  
+    
   #hdr
     {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
     
@@ -188,17 +125,17 @@
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
   .spc
     {flex:1}
-
-  
+    
+    
   #run
     {color:blue;font-weight:bold}
   #horiz
     {margin-left:50px;border:none}
   #vert
     {border:none}
-  
-  
-  
+    
+    
+    
   #main
     {display:flex;flex:1;margin:5px 0;gap:10px}
     
@@ -220,31 +157,32 @@
     
   #output
     {border:1px solid lightgray;padding:5px;box-sizing:border-box}
-
-/*    
+    
+/*
   #output-hldr
     {flex:1;border:1px solid lightgray;overflow:auto;margin:0;padding:5px;box-sizing:border-box}
-*/    
+*/
 
-  
+
   .red
     {position:absolute;background:var(--red);z-index:20}
   .green
     {position:absolute;background:var(--green);z-index:20}
-
+    
     
             </style>
             
       </head>
-
+      
       
       <body>
-
-            <editors-hdr component=grp>
-                  <img class=title src='images/text-diff.png' style='top:5px;height:45px'>
-                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+      
+            <editors-hdr v2.0 component=grp>
+                  <img slot=title src='images/text-diff.png' style='top:5px;height:45px'>
+                  <h4 slot=version>v3.0</h4>
+                  <time slot=date datetime=2026-01-24>24 Jan 2026</time>
             </editors-hdr>
-
+            
             <div id=output-hdr>
                   <div>
                         show output
@@ -272,115 +210,97 @@
                         <web-editor id=editor2 component mode=text></web-editor>
                   </div>
             </div>
-
-            <div id=slider-2 style='height:10px;cursor:ns-resize'></div>
-
             
-            <web-editor id=output component mode=text></web-editor>
+            <div id=slider-2 style='height:10px;cursor:ns-resize'></div>
+            
+            
+            <web-editor component id=output mode=text></web-editor>
             <!--
             <div id=output-hldr>
                   <web-editor id=output component></web-editor>
             </div>
             -->
-
-
+            
+            
             
             <log-mod component></log-mod>
-
-
+            
+            
             <checkbox-one-template>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
             </checkbox-one-template>
-
-
-      </body>        
             
             
+      </body>
+      
+      
       <script>
-
-
+      
+      
         var slider1     = {mode:'vert'};
         var slider2     = {mode:'horiz'};
         
         var ui          = {};
         ui.mode         = 'vert';
-
-
+        
+        
         var btn         = {};
         
-
+        
   //:
   
   
         async function initdom(rootnode){
                                                                                 debug('initdom');
-              var root                      = rootnode;
+              var root                                        = rootnode;
               
-              keydown.initdom();
-        
-        
-              hdr.initdom();
-        
-              //mod.menu.main.initdom();
-
               $('#output-hdr [type=checkbox]').onclick        = btn['output-chk'];
               $('[value=check]').onclick                      = btn.check;
               
               
               var view1                                       = $('#view1');
-              primary.filemod.initdom(view1);
-              primary.editor.initdom();
-              
               var view2                                       = $('#view2');
-              secondary.filemod.initdom(view2);
-              secondary.editor.initdom();
-              var w               = view2.offsetWidth;
-              view2.style.flex    = 'none';
-              view2.style.width   = w+'px';
+              var w                                           = view2.offsetWidth;
+              view2.style.flex                                = 'none';
+              view2.style.width                               = w+'px';
               
               
               var node                                        = $('#output');
-              output.initdom();
+              
               setTimeout(()=>{
-                    var w               = node.offsetHeight;console.log('w',w);
-                    node.style.flex     = 'none';
-                    node.style.height   = w+'px';
+              
+                    var w                                     = node.offsetHeight;
+                    node.style.flex                           = 'none';
+                    node.style.height                         = w+'px';
+                    
               },500);
-
-
-              slider1.node    = $.slider('#view1','#slider-1','#view2',null,slider1);
-              slider2.node    = $.slider('#main','#slider-2','#output',null,slider2);
-  
-  
-  
-  
-  
-  
-  
+              
+              
+              slider1.node                                    = $.slider('#view1','#slider-1','#view2',null,slider1);
+              slider2.node                                    = $.slider('#main','#slider-2','#output',null,slider2);
+              
+              
+              
               var style                                       = document.createElement('style');
               style.textContent   = `
-  .red
-    {position:absolute;background:var(--red);z-index:20}
-  .green
-    {position:absolute;background:var(--green);z-index:20}
+                    .red
+                      {position:absolute;background:var(--red);z-index:20}
+                    .green
+                      {position:absolute;background:var(--green);z-index:20}
               `;
               
               output.shadowRoot.append(style);
-
-
-
-
-
-
+              
+              
               
         }//initdom
-
-
+        
+        
   //:
   
   
         btn['output-chk']   = function(){
-          
+        
               var output    = $('#output');
               var chk       = $('#output-hdr [type=checkbox]');
               if(chk.checked){
@@ -391,47 +311,47 @@
               
         }//output-chk
         
-  
+        
         btn.check   = function(){
-          
+        
               check();
               
         }//check
         
         
   //:
-
+  
   
         function kd(e){
-
+        
               if(e.key=='Enter' && e.ctrlKey){
                     e.preventDefault();
                     run();
               }
-
+              
               if(e.key==' ' && e.ctrlKey){
                     e.preventDefault();
                     menu.open();
               }
-
+              
               if(e.key=='s' && e.ctrlKey){
                     e.preventDefault();
                     filemod.save();
               }
-
+              
               if(e.key=='Delete' && e.ctrlKey){
                     e.preventDefault();
                     jsonblob.util.delete()
               }
               
         }//keydown
-
-  
+        
+        
   //:
-
-
+  
+  
         primary.complete   = function(file){
-
+        
               primary.editor.filename(file);
               primary.editor.filename.save.hide();
               primary.cur   = file;
@@ -439,8 +359,8 @@
               primary.editor.focus();
               
         }//complete
-
-
+        
+        
         primary.complete.load   = async function(file,blob){
         
               var txt   = await blob.text();
@@ -450,10 +370,10 @@
               primary.complete(file);
               
         }//complete.load
-
+        
         
         primary.complete.save   = function(file,confirm=true){
-
+        
               primary.complete(file);
               
               if(confirm){
@@ -461,10 +381,10 @@
               }
               
         }//save
-
-
+        
+        
         secondary.complete   = function(file){
-
+        
               secondary.editor.filename(file);
               secondary.editor.filename.save.hide();
               secondary.cur   = file;
@@ -472,8 +392,8 @@
               secondary.editor.focus();
               
         }//complete
-
-
+        
+        
         secondary.complete.load   = async function(file,blob){
         
               var txt   = await blob.text();
@@ -483,10 +403,10 @@
               secondary.complete(file);
               
         }//complete.load
-
+        
         
         secondary.complete.save   = function(file,confirm=true){
-
+        
               secondary.complete(file);
               
               if(confirm){
@@ -495,10 +415,10 @@
               
         }//save
         
-
-
-
-
+        
+        
+        
+        
 /*
 
         function complete(file){
@@ -510,7 +430,7 @@
               editor.focus();
               
         }//complete
-
+        
         
         complete.load   = function(file,txt){
         
@@ -520,10 +440,10 @@
               complete(file);
               
         }//complete.load
-
+        
         
         complete.save   = function(file,confirm=true){
-
+        
               complete(file);
               
               if(confirm){
@@ -531,14 +451,14 @@
               }
               
         }//save
-
+        
 */
 
 
 
   //:
-
-
+  
+  
         function check(){
         
               var txt1        = primary.editor.getValue();
@@ -560,7 +480,7 @@
                     
               });
               
-              output.editor.setValue(txt,-1);
+              output.setValue(txt,-1);
               
               list.forEach(part=>{
               console.log(part);
@@ -571,16 +491,16 @@
                     output.editor.getSession().addMarker(range,part.color,'text');
                     
               });
-        
+              
         }//check
-
-
-
-
-      
+        
+        
+        
+        
+        
       </script>
-
-
+      
+      
 </html>
 
 
