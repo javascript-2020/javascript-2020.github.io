@@ -185,8 +185,6 @@
               
               hldr                                      = $(shadow,'#hldr');
               iframe                                    = $(shadow,'iframe');
-              def_sandbox                               = iframe.getAttribute('sandbox');
-              sandbox_url                               = iframe.src;
               glass                                     = $(shadow,'#glass');
               
               
@@ -278,7 +276,7 @@
         
         build.sandbox   = function(){
         
-              var attr      = def_sandbox;
+              var attr      = iframe_sandbox;
                                                                                 //console.log(attr);
               var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
               
@@ -308,7 +306,7 @@
               
               iframe.setAttribute('allow',iframe_allow);
                                                                                 debug(iframe_allow);
-              var src         = iframe.src;
+              var src         = iframe_src;
               if(chk.isolate.checked){
                     src  += '?isolate';
               }
