@@ -177,7 +177,8 @@
               
               root                                      = $(shadow,'#root');
               
-              chk.isolate                               = $.chkbox(shadow,'#isolate',btn.isolate);
+              chk.isolate                               = $.chkbox(shadow,'#isolate');
+              chk.isolate.checked                       = window.crossOriginIsolated;
               
               chk['allow-modals']                       = $.chkbox(shadow,'#allow-modals');
               chk['allow-popups']                       = $.chkbox(shadow,'#allow-popups');
@@ -209,6 +210,7 @@
   //:
   
   
+/*
         btn.isolate   = function(chk){
         
               if(chk.checked){
@@ -219,8 +221,9 @@
               }
               
         }//isolate
-        
-        
+*/
+
+
         btn.console.clear   = function(){
                                                                                 debug('btn.clear');
               clear();
@@ -348,7 +351,7 @@
               }
               
               var attr      = [...tokens].join(' ');
-                                                                                //console.log(attr);
+                                                                                debug(attr);
               iframe.setAttribute('sandbox',attr);
               
         }//sandbox
@@ -362,9 +365,15 @@
               iframe.onload           = onload;
               
               build.sandbox();
+              
               iframe.setAttribute('allow',sandbox_allow);
-              iframe.src              = sandbox_url;
-                                                                                debug(sandbox_url);
+                                                                                debug(sandbox_allow);
+              var src              = sandbox_url;
+              if(chk.isolate.checked){
+                    src  += '?isolate';
+              }
+              iframe.src    = src;
+                                                                                debug(src);
               iframe.style.cssText    = 'box-sizing:border-box';
               if(!chk.iframe.checked){
                     iframe.style.display    = 'none';
