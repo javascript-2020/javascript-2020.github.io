@@ -202,7 +202,7 @@
                               <file-mod id=file1 component></file-mod>
                               <div id=label>primary</div>
                         </div>
-                        <web-editor id=editor1 component mode=text></web-editor>
+                        <web-editor v2.0 component id=editor1 mode=text></web-editor>
                   </div>
                   
                   <div id=slider-1 style='width:10px;cursor:ew-resize'></div>
@@ -212,7 +212,7 @@
                               <file-mod id=file2 component></file-mod>
                               <div id=label>secondary</div>
                         </div>
-                        <web-editor id=editor2 component mode=text></web-editor>
+                        <web-editor v2.0 component id=editor2 mode=text></web-editor>
                   </div>
             </div>
             
@@ -419,46 +419,6 @@
         }//save
         
         
-        
-        
-        
-/*
-
-        function complete(file){
-        
-              editor.filename(file);
-              editor.filename.save.hide();
-              filemod.cur   = file;
-              menu.close();
-              editor.focus();
-              
-        }//complete
-        
-        
-        complete.load   = function(file,txt){
-        
-              editor.clear();
-              output.kill();
-              editor.setValue(txt,-1);
-              complete(file);
-              
-        }//complete.load
-        
-        
-        complete.save   = function(file,confirm=true){
-        
-              complete(file);
-              
-              if(confirm){
-                    log.green(file.filename,'saved');
-              }
-              
-        }//save
-        
-*/
-
-
-
   //:
   
   
@@ -484,13 +444,14 @@
               });
               
               output.setValue(txt,-1);
+              output.mode   = primary.editor.mode;
               
               list.forEach(part=>{
-              console.log(part);
+                                                                                console.log(part);
                     var start   = output.editor.getSession().doc.indexToPosition(part.start);
                     var end     = output.editor.getSession().doc.indexToPosition(part.end);
                     var range   = new ace.Range(start.row,start.column,end.row,end.column);
-                    console.log(range);
+                                                                                console.log(range);
                     output.editor.getSession().addMarker(range,part.color,'text');
                     
               });
