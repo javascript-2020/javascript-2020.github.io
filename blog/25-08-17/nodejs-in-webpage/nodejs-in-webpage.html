@@ -1,7 +1,7 @@
 
 
 <!-- headers
-      cross-origin-isolate
+      cross-origin-isolate:require-corp
 -->
 
 
@@ -9,11 +9,11 @@
 
       <head>
             <meta charset=utf-8>
-
+            
             <title>
                   Node.js In Webpage
             </title>
-
+            
             <meta name=desctiption content='Discover how to run Node.js-like code directly in the browser using WebContainers and other tools. This guide includes a live, editable demo so you can experiment with server-side JavaScript in a webpage—no local setup required.'>
             
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
@@ -22,7 +22,7 @@
             <base href='https://ext-code.com/blog/25-08-17/nodejs-in-webpage/'>
             <link rel=canonical href='https://ext-code.com/blog/25-08-17/nodejs-in-webpage/nodejs-in-webpage.html'>
             
-            <script type='application/ld+json'>            
+            <script type='application/ld+json'>
                   {
                         "@context"            : "https://schema.org",
                         "@type"               : "TechArticle",
@@ -33,18 +33,18 @@
                         "dateModified"        : "2025-10-29",
                         "mainEntityOfPage"    : {"@type":"WebPage","@id":"https://ext-code.com/blog/25-08-17/nodejs-in-webpage/nodejs-in-webpage.html"},
                         "publisher"           : {"@type":"Organization","name":"Your Blog or Company Name","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
-                  }            
+                  }
             </script>
 <!--
                         "image"               : "https://yourdomain.com/images/http2-nodejs-demo.png"
 -->
 
-            
+
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
-
-
+            
+            
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
+            
             <script init>
                                                                                 console.clear();
                                                                                 console.log('nodejs-in-webpage.html');
@@ -53,8 +53,8 @@
                                                                                 
         var df=true,version='v1.0'
         ;
-
-            
+        
+        
         var ace;
         
         var ext;
@@ -63,25 +63,25 @@
         var menumod;
         var keydown;
         var debug;
-
+        
         var menu;
         
         var hdr;
         var snippet;
         var log;
         
-
+        
   //:
-
-
+  
+  
         async function init(){
                                                                                 debug('init',version);
               menu    = menumod();
               
               mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
               
-
-              hdr       = mod['blog-hdr'];              
+              
+              hdr       = mod['blog-hdr'];
               snippet   = mod.ex1;
               log       = mod['log-mod'];
               
@@ -97,11 +97,11 @@
               
               
               initdom(document.body);
-
-
+              
+              
         }//init
-
-
+        
+        
   //:
   
   
@@ -110,7 +110,7 @@
         mod.stack.add;
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
+        
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
@@ -119,18 +119,18 @@
               'js/debug/debug.js',
         );
         [$,datatype,menumod,keydown,debug]   = await promise;
-  
+        
         mod.stack.complete;
-              
+        
 })();
 
-                  
+
             </script init>
-
-
-
+            
+            
+            
             <link rel=stylesheet href='/blog/css/blog.css'>
-
+            
             <style>
             
   html
@@ -145,50 +145,50 @@
   [component]
     {display:none}
     
-  .description 
+  .description
     {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
       background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
   .description>p
     {margin:0}
   .description > p+p
     {margin:10px 0}
-
+    
   code
     {font-family:monospace;background:whitesmoke}
   code.inline
     {display:inline;padding:5px 10px}
-
+    
   a
     {color:#4a90e2;text-decoration:none;font-weight:500}
-  a:hover 
+  a:hover
     {text-decoration:underline}
   .link-domain
     {font-size:0.85rem;color:#777;margin-left:0.25rem}
-  .link-domain::before 
+  .link-domain::before
     {content:'['}
   .link-domain::after
     {content:']'}
   .link-txt
     {}
-
+    
   input
     {font-size:16px;padding:5px 7px;box-sizing:border-box;}
   input[type=button]
     {cursor:pointer}
-
-
+    
+    
     
     
     
     
             </style>
-      
+            
       </head>
       
       
       <body>
-
-            <blog-hdr component=grp1 v2.0>      
+      
+            <blog-hdr component=grp1 v2.0>
                   <h1 class=title>
                         Node.js In Webpage
                   </h1>
@@ -196,10 +196,10 @@
                         29 Oct 2025
                   </time>
             </blog-hdr>
-
-
+            
+            
             <div class=description>
-
+            
                   <p>
                         running nodejs code in a webpage
                   </p>
@@ -211,33 +211,33 @@
                   <p>
                         the containing page requires the following headers
                   </p>
-
+                  
                   <p style='font-family:monospace;white-space:pre'>
                         cross-origin-embedder-policy    : require-corp || credentialless
                         cross-origin-opener-policy      : same-origin
                   </p>
-
-
+                  
+                  
             </div>
-
-
+            
+            
             <snippet-terminal-console id=ex1 src='ex/ex1.js' component></snippet-terminal-console>
-
-      
+            
+            
             <log-mod component></log-mod>
             
             
       </body>
-
-
+      
+      
 <!-- ----- -->
 
 
       <script>
-
-
+      
+      
         function initdom(rootnode){
-
+        
               root    = rootnode;
               
               
@@ -246,10 +246,10 @@
               snippet.initdom(root);
               
               log.initdom();
-
-        }//initdom      
-
-
+              
+        }//initdom
+        
+        
       </script>
       
 </html>
