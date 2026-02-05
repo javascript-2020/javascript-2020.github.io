@@ -44,10 +44,27 @@
                     return;
               }
               
-              if(!fs.existsSync(abs)){
+              
+              var err;
+              try{
+              
+                    var stat    = fs.statSync(abs);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
                     notfound(req,res);
                     return;
               }
+              if(!stat.isFile()){
+                    notfound(req,res);
+                    return;
+              }
+              
               
               
               var stream    = fs.createReadStream(abs);
