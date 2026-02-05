@@ -82,11 +82,7 @@
             https://ext-code-test.com/html-sandbox/html-sandbox.html
             -->
             <div id=hldr>
-                  <iframe src='https://sandbox-ext-code-com-1024713184986.us-central1.run.app/html-sandbox/html-sandbox.html'
-                          sandbox='allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock allow-popups-to-escape-sandbox'
-                          allow='clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
-                                  xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share'
-                  ></iframe>
+                  <iframe></iframe>
                   <div id=glass></div>
             </div>
             
@@ -134,8 +130,13 @@
         
         
         var sandbox_url;
-        
-        
+        var iframe_src        = 'https://sandbox-ext-code-com-1024713184986.us-central1.run.app/html-sandbox/html-sandbox.html'
+        var iframe_sandbox    = 'allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock allow-popups-to-escape-sandbox'
+        var iframe_allow      = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
+                                  xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
+                                  
+                                  
+                                  
         var btn         = {};
         btn.console     = {};
         obj.on          = {};
@@ -167,10 +168,12 @@
               
               var hdr                                   = $(shadow,'#hdr');
               
+              chk.isolate                               = $.chkbox(hdr,'#isolate');
+              chk.isolate.checked                       = window.crossOriginIsolated;
+              
               chk['allow-scripts']                      = $.chkbox(hdr,'#allow-scripts');
               chk['allow-modals']                       = $.chkbox(hdr,'#allow-modals');
               chk['allow-popups']                       = $.chkbox(hdr,'#allow-popups');
-              chk['isolate']                            = $.chkbox(hdr,'#isolate',btn.isolate);
               
               chk['console-show']                       = $.chkbox(hdr,'#console-show',btn.console.show);
               chk['console-echo']                       = $.chkbox(hdr,'#console-echo');
@@ -201,7 +204,7 @@
               
         }//kill
         
-        
+/*
         btn.isolate   = function(chk){
         
               var url   = new URL(sandbox_url);
@@ -213,8 +216,9 @@
               }
               
         }//isolate
-        
-        
+*/
+
+
         btn.console.show    = function(chk){
         
               if(chk.checked){
@@ -289,12 +293,51 @@
               }
               
               var attr      = [...tokens].join(' ');
-                                                                                //console.log(attr);
+                                                                                debug(attr);
               iframe.setAttribute('sandbox',attr);
               
         }//sandbox
         
         
+        obj.sandbox   = function(html){
+                                                                                debug('sandbox');
+              iframe.remove();
+              iframe    = iframe.cloneNode();
+                                                                                debug(sandbox_url);
+              build.sandbox();
+              
+              iframe.setAttribute('allow',iframe_allow);
+                                                                                debug(iframe_allow);
+              var src         = iframe.src;
+              if(chk.isolate.checked){
+                    src  += '?isolate';
+              }
+              iframe.src      = src;
+                                                                                debug(src);
+              iframe.onload   = onload;
+              hldr.append(iframe);
+              
+              
+              function onload(){
+                                                                                debug('onload');
+                    iframe.onload   = null;
+                    
+                    if(!chk['console-persist'].checked){
+                          webconsole.clear();
+                          if(chk['console-echo'].checked){
+                                console.clear();
+                          }
+                    }
+                    
+                    var echo    = chk['console-echo'].checked;
+                    iframe.contentWindow.postMessage({type:'run',html,echo},'*');
+                    
+              }//onload
+              
+        }//sandbox
+        
+        
+/*
         obj.srcdoc    = function(html){
         
               iframe.remove();
@@ -315,47 +358,19 @@
               iframe.srcdoc   = html;
               
         }//srcdoc
-        
-        
-        obj.sandbox   = function(html){
-                                                                                debug('sandbox');
-              iframe.remove();
-              iframe    = iframe.cloneNode();
-                                                                                debug(sandbox_url);
-              build.sandbox();
-              iframe.src      = sandbox_url;
-              iframe.onload   = onload;
-              hldr.append(iframe);
-              
-              function onload(){
-                                                                                debug('onload');
-                    iframe.onload   = null;
-                    
-                    if(!chk['console-persist'].checked){
-                          webconsole.clear();
-                          if(chk['console-echo'].checked){
-                                console.clear();
-                          }
-                    }
-                    
-                    var echo    = chk['console-echo'].checked;
-                    iframe.contentWindow.postMessage({type:'run',html,echo},'*');
-                    
-                    //var blob=new Blob([html],{type:'text/html'});
-                    //var url=URL.createObjectURL(blob);
-                    //iframe.src=url;
-                    
-              }//onload
-              
-        }//sandbox
-        
-        
+*/
+
+
+/*
         obj.blob    = function(html){
         
-        
+              var blob=new Blob([html],{type:'text/html'});
+              var url=URL.createObjectURL(blob);
+              iframe.src=url;
+              
         }//blob
-        
-        
+*/
+
         obj.kill    = function(){return kill()}    //d
         
         function kill(){
