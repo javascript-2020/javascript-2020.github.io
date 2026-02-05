@@ -118,7 +118,7 @@
   //:
   
   
-        resolve.df    = true;
+        resolve.df    = false;
         
         function resolve(url,docroot='.'){
                                                                                 resolve.df && console.log('=== resolve ===');
