@@ -171,6 +171,8 @@
                 
               }//switch
               
+              return 'application/octet-stream';
+              
         }//mime
         
         
