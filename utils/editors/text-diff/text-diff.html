@@ -1,7 +1,7 @@
 
 
 
-<html>
+<html lang=en>
 
       <head>
             <meta charset=utf-8>
@@ -110,6 +110,9 @@
     {display:flex;gap:10px;}
   #output-hdr>div
     {display:flex;gap:10px;align-items:center;border:1px solid lightgray;border-radius:5px;padding:3px 5px}
+  #output-show
+    {cursor:pointer}
+    
   [type=checkbox]
     {width:20px;height:20px;margin:0}
   [value=check]
@@ -184,7 +187,7 @@
             </editors-hdr>
             
             <div id=output-hdr>
-                  <div>
+                  <div id=output-show>
                         show output
                         <input type=checkbox checked>
                   </div>
@@ -215,22 +218,18 @@
             
             
             <web-editor component id=output mode=text></web-editor>
-            <!--
-            <div id=output-hldr>
-                  <web-editor id=output component></web-editor>
-            </div>
-            -->
             
             
             
             <log-mod component></log-mod>
             
-            
+<!--
             <checkbox-one-template>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
             </checkbox-one-template>
-            
-            
+-->
+
+
       </body>
       
       
@@ -254,7 +253,8 @@
                                                                                 debug('initdom');
               var root                                        = rootnode;
               
-              $('#output-hdr [type=checkbox]').onclick        = btn['output-chk'];
+              var r                                           = $('#output-hdr');
+              $.chkbox(r,'#output-show',btn['output-chk']);
               $('[value=check]').onclick                      = btn.check;
               
               
