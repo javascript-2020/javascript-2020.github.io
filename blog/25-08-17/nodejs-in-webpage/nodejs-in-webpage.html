@@ -16,7 +16,7 @@
             
             <meta name=desctiption content='Discover how to run Node.js-like code directly in the browser using WebContainers and other tools. This guide includes a live, editable demo so you can experiment with server-side JavaScript in a webpage—no local setup required.'>
             
-            <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
+            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABLFBMVEVHcEwopnMfpm8epm4epm4hpm81pHgfpm8ipnAhpm8ipnAfpm8gpm8jpnAsquAqpXQhpnAjpnEspXQhpnDr3Mgtqt8epm8fpm8kpnEgpm8rpXPr6OkqquAqquEjpnF/xagnqHTr6OlUtY7m5ubm5ub/9//m5uYbpWyXzLZ1s4UPnmRbqrkdpm7m5ubp5+gbpm0bpWwsq3fC29GXzbaMyrEwrOFHtIYnquHb4+Cz1uUkp3LT4ebi5ejwhhL3jhj7mSO72eXkhB12w+T4pDd8xafF3NKfijLWsrDc3diHlIzyr07et4jq07fqmkfhqFfyv3dauuJnveE2rn1AnFltkULIx8dQomPMfxXvjbNuo4xylYXu0KZqr7fOwrFaueL9yoTI1MatqHQwqtqDrqPS97zrAAAALHRSTlMAHtX5958F0l+Pfe2lXa4QgGAPjf6b8fBbzw9Y0L1h6t3NR9HhDPzLh/QusFA6UqkAAAGESURBVCjPdZNnW8IwEIDTtKVQKHsj7u21RUVREBFQ2SjuPf//fzBt0gFPfT+0z9M3vVwudwhZcLEQzvB8Bof8HJqFi2IeGLwkTy/w+TFMgRWfYyMBAfSShW54IZG3bFwEqJ6XLRYWzQBinEUOAOi7F5rF0rJErA4JGl8RDL2nqYyVte2Nau+lKmTNnI2s3Hq1UNjc6jz1ABv5yzCj1XU12R93nnWQyc+SrdneZMFVo35ZBZA4pPCWrh1Tatpr+/Tx1qhPFonAtNo6oLSS/Ubzjh4OSZY+ua5QJkbokvk5h4IuPZcqhsPF3/Zp88EsHQQRb+sPosOp8M64UR8c0r8FR9O9Kz/fjfqoa2s7uFY7I0zeSOjhEdNBJzV67trX52igWTrnHIxV7X2YVG0tuspC9X2XPJgmZXEV1cR8MU2K6nEltpadC3XagUC1eaHIT9qBNNO+i/INqZqg2M3kBWsmFBG9rJh3GpmflUIi7hqD2OwY+H3/DxGOekzZfAinAdI4FHPkH67FfQ17kRvyAAAAAElFTkSuQmCC'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
             
             <base href='https://ext-code.com/blog/25-08-17/nodejs-in-webpage/'>
@@ -40,19 +40,19 @@
 -->
 
 
-            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js' crossorigin=anonymous></script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js' crossorigin=anonymous></script>
             
             <script init>
                                                                                 console.clear();
                                                                                 console.log('nodejs-in-webpage.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-                                                                                
-        var df=true,version='v1.0'
-        ;
+        var version='v1.0';
+        var df=true,did='html';
+        
         
         
         var ace;
@@ -75,7 +75,7 @@
   
   
         async function init(){
-                                                                                debug('init',version);
+                                                                                debug('init',version,window.crossOriginIsolated);
               menu    = menumod();
               
               mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
@@ -129,7 +129,7 @@
             
             
             
-            <link rel=stylesheet href='/blog/css/blog.css'>
+            <link rel=stylesheet href='/blog/css/blog.css' crossorigin=anonymous>
             
             <style>
             
@@ -188,8 +188,8 @@
       
       <body>
       
-            <blog-hdr component=grp1 v2.0>
-                  <h1 class=title>
+            <blog-hdr v2.0 component=grp1>
+                  <h1 slot=title>
                         Node.js In Webpage
                   </h1>
                   <time slot=date datetime=2025-10-29>
@@ -221,7 +221,7 @@
             </div>
             
             
-            <snippet-terminal-console id=ex1 src='ex/ex1.js' component></snippet-terminal-console>
+            <snippet-terminal-console v2.0 component id=ex1 src='ex/ex1.js' ></snippet-terminal-console>
             
             
             <log-mod component></log-mod>
