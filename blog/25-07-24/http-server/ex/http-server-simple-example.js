@@ -127,28 +127,32 @@
               url         = decodeURI(url);
               url         = url.slice(1);
                                                                                 resolve.df && console.log('url :',url);
-              var p2      = path.resolve(docroot);
-                                                                                resolve.df && console.log('p2 :',p2);
-              var file    = path.resolve(docroot,url);
-                                                                                resolve.df && console.log('file :',file);
-              var s       = file.substring(0,p2.length);
-                                                                                resolve.df && console.log('s :',s);
-              var p1      = path.resolve(s);
-                                                                                resolve.df && console.log('p1 :',p1);
-              if(p1!==p2){
+              var root    = path.resolve(docroot);
+              root       += path.sep;
+                                                                                resolve.df && console.log('root :',root);
+              var abs     = path.resolve(docroot,url);
+                                                                                resolve.df && console.log('abs :',abs);
+                                                                                
+              if(!abs.startsWith(root)){
                                                                                 resolve.df && console.log('fail');
                     return false;
               }
               
               if(url.endsWith('/')){
-                    file   += '/';
+                    abs  += '/';
               }
-                                                                                resolve.df && console.log('ok',file);
-              return file;
+                                                                                resolve.df && console.log('ok',abs);
+              return abs;
               
         }//resolve
         
         
+        
+/*
+              if(!file.startsWith(p2)){
+              }
+*/
+
   //:
   
   
