@@ -13,12 +13,12 @@
             
             <meta name=description content='A fast, distraction-free online text editor for writing, coding, and note-taking. Built for developers and creators who value simplicity and speed.'>
             
-            <base href='https://ext-code.com/utils/editors/editor/'>
+            <base href='https://ext-code.com/utils/editors/editor/html-editor.html'>
             <link rel=canonical href='https://ext-code.com/utils/editors/editor/editor.html'>
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABm1BMVEVHcEzhnCznsmDloTPlni/cUVWuim3xoSbyoCTiSUngTE3lR0jdlynlmSPOUlfd3+EoKCgkJCThlBvjkxnxpjHwoyvmlRnh09PrmyLiT1Hr6+vuybLfkBf59O3iTE7ilRzrpDjwpTDxoyvvpjTmSEfdTEzlSEj35MTf3+D8/Pzw+vt2b4EVFRXdo0srKyvt6egpKSnikxv7/PzckRvypCzxoiju6ubllh7fV1rpmB3hTU7k5OT8/PznzablSkrjTkzw8PDg4eHunCDyyIXxqTnZbnD47drffn3w6d3gkBX+/v7gRUXgza4nJyeqqqrfU1P///8mJiZTU1MoKCgnJycqKipBQUFBQUHtmh3vnSDplxrolhnnlRjjQ0PsmRzmlBfkkhX6+/vumx7jkBPmkxX39/fiQEDqmBvxnyLmRUbz8/PhjhLs6OX9/f3yoSbpqUbs2trrmBv06dbw4MTy1aXvvW7sypblnJ3gV1ficnHn28nhtXPzxXrxpjHeSkrnv8Dky6TflSXnkZHimizqurykpKR9fX3FxcVISEgmqyd1AAAAZHRSTlMADQQjGhMC4fXGWug5XwYW/TN22kiG8rrMT792xfqNkf11pTj6OfAIIZYiAQX+VfformpMtL7toiXqdmqAnt2u82Dz2NE+Pf725w2lr5Zz1KfZyM97QMwl///////////////+3U9RHgAAAatJREFUKM91k1dbE0EUhpcEEkgMCb1Kk64QpCgWVDrSlTZtZyab3exmN6TQVBBBEfBnM/GO2ezcvs9558w35yiKdCo6+j/2BRSPUx0Kp3urQhUeeLEqpabT4Y7pknS4aflXSlWFoKXaTX1tK/lv3wVX0x/eui94tnB6nLn6oRYF4RaZlvdktdxZpihIqf0hWd1dCU3+++I881cI1mR5fdCiRHecketM/s9Wn0T9kxbAjDsOv7k4j7dJnZc1VGoYk6TDCeMj68OPaaA+CBFBzHEY1pPtT2T1FDQJQtxhJuGfIwGXmhIESJKbiCU7yyR1JAgIAabOEcW83S/H1axhBjTMMTBZ3YQrLg3pFFLGAECNtZJ6oHvO1LElOgdaAb8sl4qX5rt03RKhUAhQnfwmZfzpSQ5mIaVQKzTW+uSveJ8wjn5eahSK4teyWhkYSiQSRYEFabNLrawKbBj28WkWvIn4XDi6fSiwYR+ddclx/cdNtii3bfvVjL/EeB58vbu3DftT62y01PTWfIn9u423vht8XnK498Zisf3NQa/NGR3b2a154bVWgdENT/gANP5uhp+UdMEAAAAASUVORK5CYII='>
-
+            
             <script type='application/ld+json'>
                   {
                         "@context"              : "https://schema.org",
@@ -34,144 +34,118 @@
                         "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
                   }
             </script>
-
-
+            
+            
             <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
-
             
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>            
             
-            <script init>
-                                                                                console.clear();
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
+            
+            <script>
                                                                                 console.log('editor-v2.0.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
-        ;
+        var version='v3.0';
+        var df=true,did='editor';
         
         var ace;
         
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
-        var debug;
-                
         var menu;
         
-        var filemod;                                                                                
+        var hdr;
+        var filemod;
         var publish;
         var editor;
         var output;
         var log;
-  
+        
+        var openfile;
+        
         
         var icon    = {};
         
         
   //:
-
   
+  
+        window.electronAPI?.onOpenFile(async({path})=>{
+                                                                                console.log('electronAPI.openfile',path);
+              if(path[1]==':'){
+                    path    = path.slice(2);
+              }
+              path    = path.replaceAll('\\','/');
+              
+              openfile    = path;
+              
+        });
+        
+        
+        
         async function init(){
                                                                                 debug('init',version);
-              //keydown                   = keydown();
-              menu                      = menumod();
-
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
-              
+                                                                                
               hdr                       = mod['editors-hdr'];
-              mainmenu                  = mod['main-menu'];
               filemod                   = mod['file-mod']
               publish                   = mod['publish-ui'];
               editor                    = mod['web-editor'];
-              log                       = mod['log-mod'];
               
-              menu.initmod({keydown});
-              hdr.initmod({ext,$,menu});
-              mainmenu.initmod({ext,$,menu,editor,filemod});
-              filemod.initmod({ext,$,menumod,menu,complete,focus,source,log});
-              publish.initmod({ext,$,ui,menu,source,complete,log});
-              editor.initmod({ext,$,menu,on});
-              log.initmod({ext,$});
+              mod.base.add({complete,source,focus,filemod});
               
-              await Promise.all([
-                    mainmenu.init(),
-                    hdr.init(),
-                    filemod.init(),
-                    publish.init(),
-                    editor.init(),
-                    log.init(),
-              ]);
-
-
+              editor.initmod({on,mode:'text'});
+              
+              await mod.auto();
+              
+              
+              hdr['page-source'].url('v3.0/editor-v3.0.html');
+              
               icon.def    = $('[rel*=icon]').href;
-              console.log(icon.def);
-  
+              
               window.onfocus            = ()=>editor && editor.focus();
               keydown.add(kd);
               menu.on.close        = ()=>editor.focus();
-  
+              
               
               initdom(document.body);
-
-
-              window.electronAPI?.onOpenFile(async filePath=>{
-                
-                    var txt   = await window.electronAPI.readFile(filePath);
-                    console.log(txt);
-                
-              });
-
-  
-        }//init
-
-  
-(async()=>{
-
-        mod.stack.add;
-        
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
-        var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js',
-        );
-        [$,datatype,menumod,keydown,debug]   = await promise;
-  
-        mod.stack.complete;
               
-})();
-
-            </script init>
-
-
+              
+              if(openfile){
+                    var parts   = openfile.split('/').filter(s=>s!='');
+                    var path    = '/'+parts.slice(0,-1).join('/');
+                    if(path.length>1){
+                          path   += '/';
+                    }
+                    var filename    = parts.at(-1);
+                                                                                console.log('openfile',path,filename);
+                    filemod.electron.load.ui(path,filename);
+              }
+              
+        }//init
+        
+        
+            </script>
+            
+            
             <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymous>
             
             <style id=page-inline>
             
   #hdr
     {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
-  
+    
   .icon
-    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}                  
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
   .spc
     {flex:1;max-width:200px}
-
-
+    
+    
   #save-root
     {margin-left:5px;display:flex}
-  
+    
   #save-menu
     {position:absolute;left:0;top:30px}
-
-
+    
+    
   #help
     {padding:2px}
-  
+    
   #clear
     {margin-left:20px}
   #run
@@ -180,36 +154,37 @@
     {margin-left:50px;border:none}
   #vert
     {border:none}
-
+    
   #view
     {flex:1}
-
+    
   button
     {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
-
+    
   .visually-hidden
     {position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0}
     
             </style>
             
       </head>
-
+      
       
       <body>
-
-            <editors-hdr component=grp>
-                  <img class=title src='images/editor.png' style='top:-5px;height:55px'>
+      
+            <editors-hdr v2.0 component=grp>
+                  <img slot=title src='images/editor.png' style='top:0px;height:45px'>
                   <h1 slot=seo-hdr class=visually-hidden>editor</h1>
-                  <time slot=date datetime=2025-10-30>30 Oct 2025</time>
+                  <h4 slot=version>v3.0</h4>
+                  <time slot=date datetime=2026-01-24>24 Jan 2026</time>
             </editors-hdr>
-
-
+            
+            
             <div id=hdr>
-                                          
+            
                   <main-menu component=page></main-menu>
-                                    
+                  
                   <file-mod component></file-mod>
-
+                  
                   <div id=save-root>
                         <button id=save>save</button>
                         <checkbox-one id=autosave></checkbox-one>
@@ -219,9 +194,9 @@
                               </div>
                         </div>
                   </div>
-
+                  
                   <publish-ui component></publish-ui>
-
+                  
             </div>
             
             <div id=view>
@@ -229,27 +204,27 @@
                   <web-editor component></web-editor>
                   
             </div>
-
-
+            
+            
             <log-mod component></log-mod>
-
-
-
+            
+            
+            
             <checkbox-one-template>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
             </checkbox-one-template>
             
-
-
+            
+            
       </body>
-
+      
       <script>
-
-
+      
+      
         var root;
         var autosave;
-
-  
+        
+        
         
         
         
@@ -257,78 +232,61 @@
         var btn         = {};
         var on          = {};
         var set         = {};
-
-
+        
+        
   //:
   
-
+  
         async function initdom(rootnode){   //c
                                                                                 debug('initdom');
               root                                  = rootnode;
               
               keydown.initdom();
               menu.add.style();
-  
-  
-              hdr.initdom(root);
-  
               
-              mainmenu.initdom(root);
-  
-              filemod.initdom(root);
-
-
+              
               $(root,'#save').onclick               = btn.save;
-
+              
               var card                              = $(root,'#save-root .menu');
               $(root,'.menu-icon').onclick          = menu.click(card,false,false);
-
+              
               autosave                              = $(root,'#autosave');
-
-
               
-              publish.initdom(root);
-  
-  
+              
               var view                              = $('#view');
-  
-              await editor.initdom(view,{mode:'text'});
-  
-              
-              log.initdom(root);
               
               
               publish.query();
               editor.focus();
-  
+              
         }//initdom
-
-
+        
+        
   //:
   
   
         function focus(){
-          
+        
               editor.focus();
               
         }//focus
-
-
+        
+        
   //:
   
-        
-        function kd(e){
   
+        function kd(e){
+        
               if(e.key==' ' && e.ctrlKey){
                     e.preventDefault();
                     menu.open();
               }
-  
+              
               if(e.key=='s' && e.ctrlKey){
                     e.preventDefault();
                     filemod.save();
               }
-  
+              
               if(e.key=='Delete' && e.ctrlKey){
                     e.preventDefault();
                     jsonblob.util.delete()
@@ -336,31 +294,31 @@
               
         }//keydown
         
-
+        
   //:
   
   
         btn.save    = function(){
-          
+        
               filemod.save();
               
         }//save
-
-
+        
+        
   //:
   
   
         on.change   = function(){
-          
+        
               set.favicon(icon.save);
               
         }//change
         
         
         set.title   = function(title){
-          
+        
               document.title    = title;
-          
+              
         }//title
         
         
@@ -368,14 +326,14 @@
   
   
         function source(){
-          
+        
               var txt     = editor.getValue();
               var blob    = new Blob([txt]);
               return blob;
               
         }//source
         
-
+        
         function complete(file){
         
               if(file){
@@ -391,7 +349,7 @@
               editor.focus();
               
         }//complete
-
+        
         
         complete.load   = async function(file,blob){
         
@@ -407,10 +365,10 @@
               complete(file);
               
         }//complete.load
-
+        
         
         complete.save   = function(file,confirm=true){
-
+        
               complete(file);
               
               if(confirm){
@@ -418,44 +376,44 @@
               }
               
         }//save
-
-
+        
+        
   //:
-
+  
   
         window.onmessage    = function(e){
                                                                                 //console.log('window.onmessage',e);
                                                                                 //console.trace();
               var json    = JSON.parse(e.data);
-  
+              
               var txt   = json.code||json.text||json.txt;
               if(txt){
                     editor.setValue(txt,-1);
               }
-  
+              
         }//onmessage
-
-
+        
+        
   //:
-
-
-        ui.read   = function(){
   
+  
+        ui.read   = function(){
+        
               var txt     = editor.getValue();
               var json    = {v:1,txt};
               return json;
-  
+              
         }//read
-
-
+        
+        
   //:
-
-
+  
+  
         icon.save   = 'data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAKlBMVEX/pQD/////qhH/pAD/rhr/zHH/yGT/wlP//vz/8dn/tjD/+u//6MD/2ZUL9bZAAAAA30lEQVQoz2OQvuWihARUMgUFBRlamRkYlqXBQLoy10Sg4CUGBisgDQLSu3dLXGBeAxRczMBg3ggR3LZqaeMhBquDggzOCMFdxuZAQWYfQQYHuKDELgOQINA0JEFBqCDzSiwqGdiwqGRgYlDAVIksSIpKYyyC28E+ggoi/L5D8AJMkGFZKAyEKcAFjRGAAS6IBsCCzMbGKGpBgkwqLshAASzoOxMFHDEACjJXCKKANmyCYkNI0IEGgs7YBBdjCpowXGBejSq43YCVYSszV1ooEkgrMMhmkL6lhAIUlJZuBAAfSYTf2T2EkwAAAABJRU5ErkJggg==';
-
-
+        
+        
         set.favicon   = function(dataUrl){
-          
+        
               $.all('link[rel*="icon"]').forEach(node=>node.remove());
               var link    = document.createElement('link');
               link.rel    = 'icon';
@@ -463,13 +421,13 @@
               document.head.appendChild(link);
               
         }//favicon
-
-
-
-
-
-
+        
+        
+        
+        
+        
+        
       </script>
-
+      
 </html>
 
