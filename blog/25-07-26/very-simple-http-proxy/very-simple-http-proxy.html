@@ -12,19 +12,19 @@
 
       <head>
             <meta charset=utf-8>
-      
+            
             <title>
                   Very Simple Proxy
             </title>
-
+            
             <meta name=description content='Learn how to build a simple Node.js proxy server that forwards HTTP requests. Explore editable, runnable code via web containers to inspect headers and relay responses seamlessly.'>
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
-
+            
             <base href='https://ext-code.com/blog/25-07-26/very-simple-http-proxy/'>
             <link rel=canonical href='https://ext-code.com/blog/25-07-26/very-simple-http-proxy/very-simple-http-proxy.html'>
             
-
+            
             <script type='application/ld+json'>
             
                   {
@@ -38,26 +38,26 @@
                         "mainEntityOfPage"    : {"@type":"WebPage","@id":"https://ext-code.com/blog/25-07-25/http-streaming-download/http-streaming-download.html"},
                         "publisher"           : {"@type":"Organization","name":"ext-code.com","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
                   }
-            
+                  
             </script>
-
-
-
-            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
-
-
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
             
-
-            <script init>            
+            
+            
+            <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            
+            
+            <script init>
                                                                                 console.clear();
                                                                                 console.log('very-simple-http-proxy.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var df=true,version='v2.0'
         ;
-
-
+        
+        
         var ace;
         
         var ext;
@@ -66,25 +66,25 @@
         var menumod;
         var keydown;
         var debug;
-
+        
         var menu;
-            
+        
         var hdr;
         var example;
         var log;
         
         
     //:
-
-              
+    
+    
         async function init(){
                                                                                 //debug('init',version);
-              
+                                                                                
               menu    = menumod();
-
+              
               mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
               
-
+              
               hdr       = mod['blog-hdr'];
               example   = mod.example;
               log       = mod['log-mod'];
@@ -100,15 +100,15 @@
                     example.init(),
                     log.init(),
               ]);
-
-
-
+              
+              
+              
               initdom(document.body);
-
+              
               
         }//init
-
-
+        
+        
   //:
   
   
@@ -117,7 +117,7 @@
         mod.stack.add;
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
+        
         var promise   = ext.load.libs(
               'js/dom/$.js.api',
               'js/core/datatype.js',
@@ -126,25 +126,25 @@
               'js/debug/debug.js',
         );
         [$,datatype,menumod,keydown,debug]   = await promise;
-  
+        
         
         [srcdoc]    = await ext.text.github('javascript-2020:javascript-2020.github.io:main:blog/25-07-25/http-streaming-download/ex/srcdoc.html');
         
         mod.stack.complete;
-              
+        
 })();
 
-                  
+
             </script init>
-
-
+            
+            
 <!--
   //:
 -->
 
-            
-            <link rel=stylesheet href='/blog/css/blog.css'>
 
+            <link rel=stylesheet href='/blog/css/blog.css'>
+            
             <style>
             
   html
@@ -159,54 +159,54 @@
   [component]
     {display:none}
     
-  .description 
+  .description
     {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem;
       background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
   .description>p
     {margin:0}
   .description > p+p
     {margin:10px 0}
-
+    
   code
     {font-family:monospace;background:whitesmoke}
   code.inline
     {display:inline;padding:5px 10px}
-
+    
   a
     {color:#4a90e2;text-decoration:none;font-weight:500}
-  a:hover 
+  a:hover
     {text-decoration:underline}
   .link-domain
     {font-size:0.85rem;color:#777;margin-left:0.25rem}
-  .link-domain::before 
+  .link-domain::before
     {content:'['}
   .link-domain::after
     {content:']'}
   .link-txt
     {}
-
+    
   input
     {font-size:16px;padding:5px 7px;box-sizing:border-box;}
   input[type=button]
     {cursor:pointer}
-
-
-
-
+    
+    
+    
+    
     
   iframe
     {width:100%}
-
-
-
+    
+    
+    
             </style>
             
       </head>
       
       
       <body>
-
-
+      
+      
             <blog-hdr component=grp1>
                   <h1 class=title>
                         Very Simple Proxy
@@ -215,15 +215,15 @@
                         22 Oct 2025
                   </time>
             </blog-hdr>
-
-      
+            
+            
             <div class=description>
             
                   <p>
                         Learn how to build a simple Node.js proxy server that forwards HTTP requests.
                         Explore editable, runnable code via web containers to inspect headers and relay responses seamlessly.
                   </p>
-
+                  
                   <p>
                         notes:
                   </p>
@@ -244,7 +244,7 @@
                               </span>
                         </a>
                   </p>
-                        
+                  
                   <p>
                         <a href='https://nodejs.org/api/http.html#httprequesturl-options-callback' class=link-stable>
                               http.request
@@ -262,7 +262,7 @@
                               </span>
                         </a>
                   </p>
-                        
+                  
                   <p>
                   </p>
                   
@@ -276,7 +276,7 @@
                   </p>
                   
                   <p>
-                        a working version of the nodejs https proxy server will be available 
+                        a working version of the nodejs https proxy server will be available
                         <a href='/code/nodejs/servers/very-simple-proxy.nodejs.js'>
                               /code/nodejs/servers/very-simple-proxy.nodejs.js
                               <span class=link-domain>
@@ -289,37 +289,37 @@
             
             
             
-
+            
             <snippet-terminal-console id=example type=nodejs src='ex/very-simple-http-proxy.js' component></snippet-terminal-console>
-
-
+            
+            
             <iframe id=iframe></iframe>
-
-
+            
+            
             <log-mod component></log-mod>
-
-
+            
+            
       </body>
-
-
+      
+      
       <script>
-
+      
       
         var webcontainer;
         var process;
-
+        
         var urls        = {};
         
         
         var btn         = {};
         var on          = {};
         
-
+        
   //:
   
   
         function initdom(rootnode){
-          
+        
               hdr.initdom();
               
               example.initdom();
@@ -329,13 +329,13 @@
               
               
         }//initdom
-            
-
+        
+        
   //:
-
-
+  
+  
         btn.run   = async function(){
-          
+        
               if(process){
                     await process.kill();
               }
@@ -344,9 +344,9 @@
               
         }//run
         
-
+        
         on.init   = function({webcontainer:wc}){
-          
+        
               webcontainer    = wc;
               
         }//init
@@ -366,9 +366,9 @@
               }
               
         }//server-ready
-  
-  
-  
+        
+        
+        
       </script>
       
 </html>
