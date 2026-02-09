@@ -2,11 +2,9 @@
 <div id=root>
 
       <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
-
-
-      <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
-      <script src='https://libs.ext-code.com/js/dom/init-hdr/init-hdr.js'></script>
+      
+      
+      <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
       
       <style>
       
@@ -18,12 +16,12 @@
             terminal-root {}
             terminal-root::part(root) {}
             terminal-root::part(terminal) {height:200px}
-      
+            
             console-root {flex:1}
             console-root::part(console) {height:100%}
             
       </style>
-            
+      
       <div id=view>
       
             <iframe id=iframe-3000></iframe>
@@ -38,65 +36,65 @@
       
       <log-mod component></log-mod>
       
-
-
+      
+      
       <script>
       
       
 (()=>{
-  
+
         var console;
         var terminal;
-
-
-
+        
+        
+        
         var webcontainer;
         var urls    = {};
         
         
         window.start    = async function(){
-          
+        
               console         = mod['web-console'];
               console.echo    = false;
               terminal        = mod['web-terminal'];
-
+              
                                                                                 console.clear();
                                                                                 console.log('webcontainer example');
                                                                                 console.log();
-              
-        
+                                                                                
+                                                                                
                                                                                 console.log('loading ...');
               var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
                                                                                 console.log('booting ...');
               webcontainer          = await WebContainer.boot();
                                                                                 console.log('mounting file system ...');
               await webcontainer.mount(files);
-      
+              
               webcontainer.on('server-ready',ready);
                                                                                 console.log('launching server ...');
               spawn('server.js');
               spawn('test.js');
               
         }//start
-
+        
         
         window.onmessage    = e=>{
-          
+        
               var json    = e.data;
               switch(json.type){
-                
+              
                 case 'log'    : console.log.apply(null,json.args);        break;
                 
               }//switch
               
         }//onmessage
-
-
+        
+        
   //:
-
-      
+  
+  
         window['iframe-3001'].onload    = e=>{
-          
+        
             var js    = `
                   (async()=>{
                   
@@ -108,7 +106,7 @@
                           while(true){
                           
                                 const {value,done}    = await reader.read();
-                                                                                console.log('fetch',value);                                                                          
+                                                                                console.log('fetch',value);
                                 if(done)break;
                                 
                           }//while
@@ -126,7 +124,7 @@
         
         
         async function spawn(fn){
-          
+        
               var process   = await webcontainer.spawn('node',[fn]);
               
               var stream    = new WritableStream({write(data){terminal.write(data)}});
@@ -146,10 +144,10 @@
             window[`iframe-${port}`].src    = url;
             
         }//ready
-
-
+        
+        
         function fnstr(fn){
-          
+        
               var s     = fn.toString();
               var i1    = s.indexOf('{');
               var i2    = s.lastIndexOf('}');
@@ -157,26 +155,26 @@
               return str;
               
         }//fnstr
-
-
-
+        
+        
+        
         var files    = {};
         
         files['server.js']   = function(){
-          
+        
               require('http').createServer(request).listen(3000);
                                                                                 console.log('listening',3000)
               function request(req,res){
                                                                                 console.log('server.js',req.method,req.url);
                     res.end('helloworld');
-          
+                    
               }//request
               
         }//server.js
         
         
         files['test.js']    = function(){
-          
+        
               require('http').createServer(request).listen(3001);
                                                                                 console.log('listening',3001)
               function request(req,res){
@@ -184,9 +182,9 @@
                     res.writeHead(200,{'content-type':'text/html'});
                     res.end(`
                           <h3>test.js</h3>
-                          <script>                    
-                          (()=>{  
-                            
+                          <script>
+                          (()=>{
+                          
                                       var console   = {};
                                       console.log   = (...args)=>window.parent.postMessage({type:'log',args},'*');
                                       
@@ -194,7 +192,7 @@
                                                                                       window.console.log('rec',e.data);
                                             var json    = e.data;
                                             switch(json.type){
-                                              
+                                            
                                               case 'run'    : run(json.js);       break;
                                               
                                             }//switch
@@ -203,28 +201,28 @@
                                       
                                       
                                       function run(js){
-                                        
+                                      
                                             eval(js);
                                             
                                       }//run
                                       
                           })();
-                          </scr`+`ipt>                    
+                          </scr`+`ipt>
                     `);
-          
+                    
               }//request
               
         }//test.js
         
-
+        
         for(var[key,fn] of Object.entries(files))files[key]={file:{contents:fnstr(fn)}};
-
-
+        
+        
 })();
 
 
       </script>
-
+      
 </div root>
 
 
