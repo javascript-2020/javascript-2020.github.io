@@ -6,15 +6,13 @@
       <h3>
             override createServer
       </h3>
-
+      
       <base href='https://ext-code.com/code-dev/25-10-21/override-createserver/'>
-
+      
       <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
-
-
-      <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
-      <script src='https://libs.ext-code.com/js/dom/init-hdr/init-hdr.js'></script>
+      
+      
+      <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
       
       <style>
       
@@ -22,34 +20,34 @@
   body {margin:20px;padding-bottom:200px}
   
   #root {display:flex;flex-direction:column;gap:20px;height:100%}
-
+  
   input {font-size:16px;padding:5px 10px;box-sizing:border-box}
   input[typebutton] {cursor:pointer}
-
+  
   #test::part(root) {height:500px}
   /*
   #setup::part(root) {height:1000px}
   #patch::part(root) {height:1500px}
   */
-
+  
   .filename {background:lightgray;padding:5px 10px}
-
+  
   .file
     {border:1px solid black;padding:10px;border-radius:10px}
-  
+    
       </style>
       
-
+      
             <div class=file>
             
                   <div class=filename>
                         server.js
                   </div>
-      
+                  
                   <snippet-terminal-console id=server type=nodejs src='ex/server.js' component v2.0></snippet-terminal-console>
                   
             </div>
-                  
+            
             
             <div class=file>
                   <div class=filename>
@@ -58,19 +56,19 @@
                   
                   <web-editor id=test src='ex/test.js' component v2.0></web-editor>
             </div>
-
+            
             
             <div id=btns>
                   <input value=run type=button>
             </div>
-
-
+            
+            
             
             <iframe id=iframe></iframe>
             
             <web-console h=150 component></web-console>
-                  
-
+            
+            
             <div class=file>
             
                   <div class=filename>
@@ -80,11 +78,11 @@
                   <web-editor id=setup mode=html fullsize src='ex/setup.html' component></web-editor>
                   
             </div>
-
+            
             
             <div class=file>
             
-                  <div class=filename>            
+                  <div class=filename>
                         patch.js
                   </div>
                   
@@ -95,12 +93,12 @@
             
             
             <log-mod component></log-mod>
-      
-      
+            
+            
       <script>
       
 (()=>{
-  
+
         var webcontainer;
         
         var console;
@@ -117,50 +115,50 @@
         var btn   = {};
         var on    = {};
         
-
+        
         window.start    = async function(){
-          
+        
               con       = mod['web-console'];
               console   = con;
               
               server    = mod.server;
                                                                                 console.log(server);
-              
+                                                                                
               test      = mod.test;
               
               setup     = mod.setup;
               patch     = mod.patch;
               
               log       = mod['log-mod'];
-
-              server.on         = on;              
+              
+              server.on         = on;
               server.btn.run    = run;
               
               $('[value=run]').onclick    = btn.run;
-          
+              
         }//start
-
-
+        
+        
   //:
   
-
+  
         window.onmessage    = e=>{
-          
+        
               var json    = e.data;
               switch(json.type){
-                
+              
                 case 'log'    : console.log.apply(null,json.args);        break;
                 
               }//switch
               
         }//onmessage
-
-  
+        
+        
   //:
   
   
         btn.run   = function(){
-
+        
                                                                                 console.log('btn.run');
               if(!webcontainer){
                     log.red('web container instance unavailable');
@@ -172,10 +170,10 @@
                                                                                 console.log('write');
               iframe.contentWindow.postMessage({type:'run',js},'*');
                                                                                 console.log('load');
-          
+                                                                                
         }//run
         
-      
+        
   //:
   
   
@@ -185,12 +183,12 @@
               var pre   = patch.getvalue();
               js        = pre+js;
               server.run.nodejs({js});
-          
+              
         }//run
         
         
         on.init   = async function({webcontainer:wc}){
-          
+        
               webcontainer    = wc;
                                                                                 console.log('init',webcontainer);
                                                                                 //console.log(srcdoc);
@@ -201,9 +199,9 @@
               console.log('init complete');
               
         }//init
-  
+        
         on.run    = function({process}){
-          
+        
               console.log('on.run',process);
               
         }//on.run
@@ -219,17 +217,17 @@
         
         
         on.complete   = function({code}){
-          
+        
               console.log('complete',code);
               
         }//complete
-
-
+        
+        
   //:
   
   
         function fnstr(fn){
-          
+        
               var s     = fn.toString();
               var i1    = s.indexOf('{');
               var i2    = s.lastIndexOf('}');
@@ -237,13 +235,13 @@
               return str;
               
         }//fnstr
-
-
+        
+        
 })();
 
-      
-      </script>
 
+      </script>
+      
 </div root>
 
 
