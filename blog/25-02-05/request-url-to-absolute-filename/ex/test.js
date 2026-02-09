@@ -38,7 +38,12 @@
         test.tests.forEach((item,i)=>{
         
               var abs   = resolve(item.url,test.docroot);
-              console.log(i,item.url,abs,item.expected,(abs===item.expected));
+              console.log();
+              console.log(i);
+              console.log('value',item.url);
+              console.log('result',abs);
+              console.log('expected',item.expected,(abs===item.expected));
+              console.log();
               
         });
         
