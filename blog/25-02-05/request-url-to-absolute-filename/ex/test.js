@@ -1,9 +1,5 @@
 
 
-        var path      = require('path');
-        
-        
-        
         resolve.df    = false;
         
         function resolve(url,docroot='.'){
@@ -35,7 +31,9 @@
         
         
         
-        var test    = setup();
+        var path      = require('path');
+        var test      = setup();
+        
         
         test.tests.forEach((item,i)=>{
         
