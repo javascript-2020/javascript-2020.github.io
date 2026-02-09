@@ -15,15 +15,15 @@
             <title>
                   FFMPEG In The Browser
             </title>
-
+            
             <meta name=description content='Learn how to run FFmpeg directly in the browser using WebAssembly. This guide covers setup, performance tips, and practical examples for video and audio processing without server-side dependencies.'>
-
+            
             <base href='https://ext-code.com/blog/25-11-15/ffmpeg-in-the-browser/'>
             <link rel=canonical href='https://ext-code.com/blog/25-11-15/ffmpeg-in-the-browser/ffmpeg-in-the-browser.html'>
             
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
-
+            
             <script type='application/ld+json'>
                   {
                         "@context"            : "https://schema.org",
@@ -37,11 +37,11 @@
                         "publisher"           : {"@type":"Organization","name":"ext-code.com","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
                   }
             </script>
-
+            
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
-
-
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
             
             <script init>
                                                                                 console.clear();
@@ -61,7 +61,7 @@
         var debug;
         
         var menu;
-
+        
         var hdr;
         var log;
         var vcdemo;
@@ -78,12 +78,12 @@
   
   
         async function init(){
-          
+        
               menu            = menumod();
               
               mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
               
-
+              
               hdr             = mod['blog-hdr'];
               log             = mod['log-mod'];
               
@@ -104,7 +104,7 @@
               ffprobe.initmod({ext,$,menu,ace});
               m4demo.initmod({ext,$,menu,ace});
               webcodec.initmod({ext,$,menumod,menu,ace});
-
+              
               
               await Promise.all([
                     hdr.init(),
@@ -142,18 +142,18 @@
         [$,datatype,menumod,keydown,debug]    = await promise;
         
         mod.stack.complete;
-
+        
 })();
-  
+
             </script init>
-
-
+            
+            
             
             <link rel=stylesheet href='/blog/css/blog.css'>
-
+            
             <style>
-
-
+            
+            
             
   html
     {height:100%;font-family:arial}
@@ -167,62 +167,62 @@
   [component]
     {display:none}
     
-  .description 
+  .description
     {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
       background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
   .description>p
     {margin:0}
   .description > p+p
     {margin:10px 0}
-
-
-  .blog-text 
+    
+    
+  .blog-text
     {margin:1.5rem auto;padding:1.25rem 1.75rem;background-color:#fcfcfc;/*#f9f9f9*/font-family:system-ui, sans-serif;font-size:1rem;line-height:2;
-      color:#333;text-align:justify;border-radius:4px}      
-  .blog-text h2,.blog-text h3 
+      color:#333;text-align:justify;border-radius:4px}
+  .blog-text h2,.blog-text h3
     {margin-top:1.5rem;margin-bottom:0.75rem;font-weight:600;color:#222;}
-  .blog-text p 
+  .blog-text p
     {margin:0 0 1rem 0;}
-
-
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
   code
     {font-family:monospace;background:whitesmoke}
   code.inline
     {display:inline;padding:5px 10px}
-
-
-
+    
+    
+    
   a
     {color:#4a90e2;text-decoration:none;font-weight:500}
-  a:hover 
+  a:hover
     {text-decoration:underline}
   .link-domain
     {font-size:0.85rem;color:#777;margin-left:0.25rem}
-  .link-domain::before 
+  .link-domain::before
     {content:'['}
   .link-domain::after
     {content:']'}
   .link-txt
     {}
-
+    
   input
     {font-size:16px;padding:5px 7px;box-sizing:border-box;}
   input[type=button]
     {cursor:pointer}
-
-
+    
+    
   snippet-html-console,snippet-console
     {margin:30px 0;display:block}
-
-
+    
+    
   .br
-    {margin-top:0.8em}            
+    {margin-top:0.8em}
     
             </style>
             
@@ -230,17 +230,17 @@
       
       
       <body>
-
-
-            <blog-hdr component=grp1>      
+      
+      
+            <blog-hdr component=grp1>
                   <h1 class=title>
-                       FFMPEG In The Browser 
+                       FFMPEG In The Browser
                   </h1>
                   <time slot=date datetime=2025-11-15>
                         15 Nov 2025
                   </time>
             </blog-hdr>
-      
+            
             <div class=description>
                   <p>
                         Learn how to run FFmpeg directly in the browser using WebAssembly. This guide covers setup, performance tips,
@@ -267,7 +267,7 @@
                         </span>
                   </a>
             </div>
-
+            
             <section class=blog-text>
                   <h3>
                         videoconverter.js
@@ -281,7 +281,7 @@
                         </span>
                   </a>
                   <p>
-                        there are two variants, both are 
+                        there are two variants, both are
                         <br>
                         <b>
                               ffmpeg version 2.2.1 Copyright (c) 2000-2014 the FFmpeg developers
@@ -313,7 +313,7 @@
                         <br>
                         note. there was mention of
                         <a href=''>
-                              muaz-khan / Ffmpeg.js 
+                              muaz-khan / Ffmpeg.js
                               <span class=link-domain>
                                     github.com
                               </span>
@@ -387,8 +387,8 @@
                   <snippet-console id=ffmpeg-wasm-tldr component src='ex/ffmpeg-wasm/demo-tldr.js'></snippet-console>
                   
             </section>
-
-
+            
+            
             <hr>
             
             
@@ -403,10 +403,10 @@
                   ive noticed this addition library, but havent had time to look at it further, i'll try to come back to it, and see if
                   it is actually an independent version
                   <br>
-            
+                  
             </section>
-
-
+            
+            
             <hr>
             
             <section class=blog-text>
@@ -418,13 +418,13 @@
                         <br>
                         <a href='https://www.npmjs.com/package/ffprobe-wasm'>
                               https://www.npmjs.com/package/ffprobe-wasm
-                        </a>                        
+                        </a>
                   </p>
                   
                   <snippet-html-console id=ffprobe src='ex/ffprobe/ffrobe.html' component></snippet-html-console>
                   
             </section>
-
+            
             <hr>
             
             <section class=blog-text>
@@ -445,12 +445,12 @@
                   </p>
                   
                   <snippet-html-console id=mp4box-demo src='ex/mp4box/ex.html' component></snippet-html-console>
-            
+                  
             </section>
-
-
-
-
+            
+            
+            
+            
             <section class=blog-text>
                   <h3>
                         Further Reading : Minimal h.264-in-javascript overview
@@ -501,7 +501,7 @@
                               </b>
                               A historical JavaScript H.264 decoder compiled from Android’s C decoder via Emscripten.
                               Runs fully in JS without browser codecs, but is heavier and slower compared to hardware/native paths.
-                              Useful if WebCodecs isn’t available or you need a pure-JS path.                  
+                              Useful if WebCodecs isn’t available or you need a pure-JS path.
                         </li>
                   </ul>
                   <h3>
@@ -509,7 +509,7 @@
                   </h3>
                   
                   <snippet-editor id=webcodec component fullsize src='ex/webcodec-api.js'></snippet-editor>
-
+                  
                   <h4>
                         Tips:
                   </h4>
@@ -569,7 +569,7 @@
                                     Alternatives:
                               </b>
                               Use VideoFrame directly with HTMLVideoElement/WebGL for preview and only snapshot when needed;
-                              then export via canvas as above. Guides and examples show decode pipelines using WebCodecs for both playback and encoding.                        
+                              then export via canvas as above. Guides and examples show decode pipelines using WebCodecs for both playback and encoding.
                               <br>
                               <a href='https://www.slingacademy.com/article/decode-and-encode-video-with-the-webcodecs-api-in-javascript/'>
                                     Decode and Encode Video with the WebCodecs API in JavaScript
@@ -579,8 +579,8 @@
                               </a>
                         </li>
                   </ul>
-
-                  <h4>                  
+                  
+                  <h4>
                         Pure-js fallback: broadway
                   </h4>
                   <p>
@@ -597,26 +597,26 @@
                   </p>
                   
             </section>
-
-
-
-
-
-
-                        
-
+            
+            
+            
+            
+            
+            
+            
+            
             <log-mod component></log-mod>
-
+            
             
       </body>
-
+      
       
       <script>
       
-
+      
         function initdom(rootnode){
-
-          
+        
+        
               hdr.initdom();
               log.initdom();
               
@@ -636,7 +636,7 @@
               
         }//initdom
         
-
+        
   //:
   
   
