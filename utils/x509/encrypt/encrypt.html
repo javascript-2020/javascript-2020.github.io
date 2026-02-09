@@ -7,7 +7,7 @@
 
       <head>
             <meta charset=utf-8>
-      
+            
             <title>
                   Encrypt / Decrypt File Or Text
             </title>
@@ -19,7 +19,7 @@
             
             <link rel=icon type='image/x-icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABKVBMVEVHcEzSc2Dgd0/lpD/Nhl7hkkjorTbopzjihkvji0TptzXfcFPea1bhfkzosznllj/npDrYilbnsDrorjflmT/psjXmnzzmozvlqT7mnD7mozvnqjndYVfgeE/qsjThgUrprTTqsjXosDXjiUbmnD3ij0bklkHnnzzqrzXpqjbdYFneZlfeb1XjikXig0nprDbnnj3nqznlkj/kkUPlkEHnoDvqtjHqtTPpszLlkkHopTnoqzjqtjLbZ1bdZFfjhUffdE/kkUPjhkfnoTzllz/jjUXji0bprDblkUHjkULqsTTkkULkjULklD/opzfnmzznnTvfb1HcXVzdXVvkjkPifEvhe03mnjzqsjXquzPopTfquTDcjkvhfEzhf0vquDLqujHpqjbopDmLy+L0AAAAY3RSTlMAAjcSAQs4lDkmIZk4mRtHZAIWKpFVWTEGUkc/NZl6LYlaSH92IyqLppyYmBuXk6OjDnBUdX2VS42poyWkEk+jIpCKkZZjp4OXQq1svmSzx7JkQa23kVxCbl6qggWtfGWb3ctRuHp/AAABeklEQVQoz62TV3eCQBCFVwUEKwKCYC80e+/RqLHHkt7r//8RWR4QTYhP3pc5Z75zZ3fnngXgxPIdg9hLvRm3/QNLnP/DH48VOubY8YTVlQJJtk39VIJeNChaJWXWDDeakUdY6CIrm+F4JJaAxVbkL3zHcMUU+yNTARY05Z2Z7IOOFZ5rD16o8i2O/vEu7Hb7aMQwzGCQ6w8NHvBAORQ/ZbTQftTYxme3qyhf67ZgnOS26t4O7XBgWHCNlQIAEOP56wH21LsNTFXb39qmpVZyMtZwWMdIgILeoLDFOAosqyCaD+xj6G+q8NIbnpmDSg4lRARip47RYKLjEQR+KwEEoBM8T8Cm5epcz2lqD3KyzGy0ti+Hu7UnIa6z3XAbz7K82KpWRIDk3980H9LLGjmnarWU1JolcQCid/daHEhId5dYkhNXq+UlsbdhSzqkjyZTnFQuVw8w2GFdwySOW6FcUKHeTfYXzibd7nDYCZXJpNPXJonrsliQE3yoHxMyLW60QFkPAAAAAElFTkSuQmCC'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
-
+            
             <script type='application/ld+json'>
                   {
                         "@context"              : "https://schema.org",
@@ -35,10 +35,10 @@
                         "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
                   }
             </script>
-
             
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            
             <script init>
                                                                                 console.clear();
                                                                                 console.log('encrypt-v2.0.html');
@@ -46,46 +46,46 @@
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var df=true,did='encrypt'
         ;
-
+        
         var ext;
         var $;
         var datatype;
         var menumod;
         var keydown;
         var encrypt;
-
+        
         var hdr;
         var filemod;
         var editor;
         var log;
         
-
-
+        
+        
         
   //:
   
   
         async function init(){
-
+        
               menu                      = menumod();
               encrypt                   = encrypt();
-          
+              
               mod.base.add({ext,$,datatype,keydown,menu,menumod});
               
-
+              
               hdr                       = mod['x509-hdr'];
               filemod                   = mod['file-mod'];
               editor                    = mod['web-editor'];
               log                       = mod['log-mod'];
-
-
+              
+              
               encrypt.initmod({ext});
               
               hdr.initmod({ext,$,menu});
               filemod.initmod({ext,$,menu,menumod,complete,focus,source,editor,log});
               editor.initmod({ext,$,menu,menumod});
               log.initmod({ext,$});
-
+              
               await Promise.all([
                     encrypt.init(),
                     hdr.init(),
@@ -93,23 +93,23 @@
                     editor.init(),
                     log.init(),
               ]);
-
-
+              
+              
               menu.on.close          = focus;
-
-          
+              
+              
               initdom(document.body);
-
-
+              
+              
         }//init
-
-      
+        
+        
 (async()=>{
 
         mod.stack.add;
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
+        
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
@@ -118,27 +118,27 @@
               'js/crypto/encrypt/encrypt.js',
         );
         [$,datatype,menumod,keydown,encrypt]   = await promise;
-  
+        
         mod.stack.complete;
-              
+        
 })();
-      
+
 
             </script init>
             
-
+            
             <style>
-           
+            
   html
     {height:100%}
   body
     {height:calc(100% - 40px);margin:20px;display:flex;flex-direction:column;
       font-family:arial;
     }
-  
+    
   x509-hdr
     {margin-bottom:20px}
-
+    
   #encrypt-root
     {margin-bottom:10px;display:flex;gap:10px}
     
@@ -174,27 +174,27 @@
     
   #view
     {flex:1}
-      
+    
   input
     {font-size:16px;padding:5px 10px}
   input[type=button]
     {cursor:pointer}
   input[type=checkbox]
     {cursor:pointer;width:18px;height:18px;margin:0}
-      
+    
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
   .spc
     {flex:1}
-
-
+    
+    
   .visually-hidden
     {position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;
       clip:rect(0 0 0 0) !important;white-space:nowrap !important;border:0 !important}
-
-            
+      
+      
             </style>
-
+            
       </head>
       
       <body>
@@ -209,16 +209,16 @@
                         15 Nov 2025
                   </time>
             </x509-hdr>
-
-<!--      
+            
+<!--
             <div>
                   <h3>encrypt</h3>
                   <div>
                         note : encrypt before save
                   </div>
             </div>
--->            
-            
+-->
+
             <div id=hdr>
             
                   <div id=encrypt-root>
@@ -236,7 +236,7 @@
                               </div password-root>
                               
                         </div>
-
+                        
                         <div id=keys-root>
                         
                               <div style='display:flex;align-items:center;justify-content:center'>
@@ -247,13 +247,13 @@
                               
                               <span id=private-fn>
                               </span>
-                        
+                              
                               <div></div>
                               
                               <input value='public key' type=button>
                               <span id=public-fn>
                               </span>
-                                    
+                              
                         </div>
                         
                   </div>
@@ -264,46 +264,46 @@
                         <input id=decrypt value=decrypt type=button>
                         
                   </div>
-                        
+                  
                   <file-mod component></file-mod>
                   
             </div>
             
             <div id=view>
-
-                  <web-editor component></web-editor>
             
+                  <web-editor component></web-editor>
+                  
             </div>
-
+            
             <log-mod component></log-mod>
             
       </body>
       
       
       <script>
-
-
+      
+      
         var ui            = {};
         ui.password       = {};
         ui.private        = {};
         ui.public         = {};
-
         
-
+        
+        
         
         var chk           = {};
         var btn           = {};
         var rd            = {};
         var set           = {};
         
-
+        
   //:
   
   
         function initdom(rootnode){
-          
+        
               var root                                  = rootnode;
-
+              
               hdr.initdom();
               
               
@@ -334,33 +334,33 @@
               
               view                      = $('#view');
               
-
+              
               editor.initdom(view,'text');
               
               
-
+              
               log.initdom();
-
+              
               
               editor.setValue('helloworld');
               editor.focus();
               
-          
+              
         }//initdom
         
-
+        
   //:
   
   
         function focus(){
-          
+        
               editor.focus();
               
         }//focus
-
+        
         
         rd.type   = function(){
-          
+        
               if(ui.password.chk.checked){
                     return 'password';
               }
@@ -372,7 +372,7 @@
         
         
         set.password    = function(){
-          
+        
               ui.password.chk.checked   = true;
               ui.key.chk.checked        = false;
               
@@ -380,7 +380,7 @@
         
         
         set.key   = function(){
-          
+        
               ui.password.chk.checked   = false;
               ui.key.chk.checked        = true;
               
@@ -391,16 +391,16 @@
   
   
         function source(){
-          
+        
               var txt     = editor.getValue();
               var blob    = new Blob([txt]);
               return blob;
               
         }//source
         
-
+        
         function complete(file){
-          
+        
               editor.filename(file);
               editor.filename.save.hide();
               filemod.cur   = file;
@@ -408,8 +408,8 @@
               editor.focus();
               
         }//complete
-
-
+        
+        
         complete.load   = async function(file,blob){
         
               var txt;
@@ -424,10 +424,10 @@
               complete(file);
               
         }//complete.load
-
+        
         
         complete.save   = function(file,confirm=true){
-
+        
               complete(file);
               
               if(confirm){
@@ -435,20 +435,20 @@
               }
               
         }//save
-
+        
         
   //:
   
   
         chk.password    = function(){
-          
+        
               set.password();
               
         }//password
         
         
         btn.private   = function(){
-          
+        
               var input         = document.createElement('input');
               input.type        = 'file';
               input.onchange    = onchange;
@@ -456,7 +456,7 @@
               
               
               function onchange(){
-                
+              
                     var file                    = input.files[0];
                     private                     = file;
                     ui.private.fn.textContent   = file.name;
@@ -468,7 +468,7 @@
         
         
         btn.public    = function(){
-          
+        
               var input         = document.createElement('input');
               input.type        = 'file';
               input.onchange    = onchange;
@@ -476,7 +476,7 @@
               
               
               function onchange(){
-                
+              
                     var file                    = input.files[0];
                     public                      = file;
                     ui.public.fn.textContent    = file.name;
@@ -493,12 +493,12 @@
               
               var type    = rd.type();
               switch(type){
-                
-                case 'password'   : 
+              
+                case 'password'   :
                                     var password    = ui.password.input.value;
                                     fn.encrypt.password(password,txt);
-                                                                                      break;                                    
-                case 'key'        : 
+                                                                                      break;
+                case 'key'        :
                                     fn.encrypt.key(public,txt);
                                                                                       break;
               }//switch
@@ -514,7 +514,7 @@
               
               var type    = rd.type();
               switch(type){
-                  
+              
                 case 'password' :
                                   var password    = ui.password.input.value;
                                   fn.decrypt.password(password,buf);
@@ -525,10 +525,10 @@
               }//switch
               
         }//decrypt
-
-
+        
+        
         btn.show    = function(){
-          
+        
               if(ui.password.input.hasAttribute('type')){
                     ui.password.input.removeAttribute('type');
               }else{
@@ -539,22 +539,22 @@
         
         
   //:
-
-
+  
+  
         var fn    = {};
         
         fn.encrypt    = async function(key,txt){
-          
+        
               txt   = encrypt.str_buf(txt);
               
               var err;
               try{
-                
+              
                     var cipher      = await encrypt.encrypt.crypto['aes-gcm'](key,txt);
                     
               }
               catch(err2){
-                
+              
                     err   = err2;
                     
               }//catch
@@ -566,23 +566,23 @@
               
               var b64         = encrypt.buf_b64(cipher);
               editor.setValue(b64,-1);
-          
+              
         }//encrypt
         
         
         fn.encrypt.password   = async function(password,txt){
-
-              txt           = encrypt.str_buf(txt);          
+        
+              txt           = encrypt.str_buf(txt);
               password      = encrypt.str_buf(password);
-          
+              
               var err;
               try{
-                
+              
                     var cipher    = await encrypt.encrypt.crypto['aes-gcm'].password(password,txt);
                     
               }//try
               catch(err2){
-                
+              
                     err   = err2;
                     
               }//catch
@@ -600,17 +600,17 @@
         
         
         fn.decrypt    = async function(key,txt){
-          
+        
               txt             = encrypt.str_buf(txt);
               
               var err;
               try{
-                
+              
                     var decrypted   = await encrypt.decrypt.crypto['aes-gcm'](key,buf);
                     
               }
               catch(err2){
-                
+              
                     err   = err2;
                     
               }//catch
@@ -627,18 +627,18 @@
         
         
         fn.decrypt.password   = async function(password,txt){
-          
+        
               password        = encrypt.str_buf(password);
               var buf         = encrypt.str_buf(txt);
               
               var err;
               try{
-                
+              
                     var decrypted   = await encrypt.decrypt.crypto['aes-gcm'].password(password,buf);
                     
               }//try
               catch(err2){
-                
+              
                     err   = err2;
                     
               }//catch
@@ -652,17 +652,17 @@
               editor.setValue(txt,-1);
               
         }//password
-
-
-
-
-
+        
+        
+        
+        
+        
         
   //:
-
-
+  
+  
         async function convert(){
-          
+        
               var type    = datatype(text);
               var buf     = text;
               switch(type){
@@ -674,13 +674,13 @@
               }//switch
               
         }//convert
-
-  
-
-
-
-
-  
+        
+        
+        
+        
+        
+        
+        
   //:
   
   
@@ -695,8 +695,8 @@
         
         
         function output_str(name,buf){
-
-              var str;        
+        
+              var str;
               if(typeof buf=='string'){
                     str   = buf;
               }else{
@@ -706,8 +706,8 @@
               console.log(pad,':',str);
               
         }//output_str
-
-
+        
+        
         function buf_str(buf){
         
               var txt   = decoder.decode(buf);
@@ -722,10 +722,10 @@
               var bin     = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
               var b64     = btoa(bin);
               return b64;
-        
+              
         }//blob_b64
-            
-  
+        
+        
         function b64_buf(b64,type='text/plain'){
         
               var bin     = atob(b64);
@@ -735,10 +735,10 @@
               return buf;
               
         }//b64_blob
-
-
+        
+        
         function buf_blob(buf){
-          
+        
               var uint8   = new Uint8Array(buf);
               var blob    = new Blob([uint8]);
               return blob;
@@ -747,13 +747,13 @@
         
         
         async function blob_buf(blob){
-          
+        
               var buf   = await blob.arrayBuffer();
               return buf;
-          
+              
         }//blob_buf
         
-      
+        
         function b64_blob(b64,type='text/plain'){
         
               var bin       = atob(b64);
@@ -763,8 +763,8 @@
               return blob;
               
         }//b64_blob
-  
-  
+        
+        
         async function blob_b64(blob){
         
               var buf       = await blob.arrayBuffer();
@@ -772,16 +772,16 @@
               var bin       = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
               var b64       = btoa(bin);
               return b64;
-        
+              
         }//blob_b64
-
-
+        
+        
   //:
   
   
   
         function debug(){
-          
+        
               if(!df)return;
               var str   = [...arguments].join(' ');
               console.log(`[ ${did} ]`,str);
@@ -791,7 +791,6 @@
         
         
       </script>
-            
+      
 </html>
-      
-      
+
