@@ -38,6 +38,7 @@
         test.tests.forEach((item,i)=>{
         
               var abs   = resolve(item.url,test.docroot);
+              
               console.log();
               console.log(i,item.note);
               console.log('value',item.url);
