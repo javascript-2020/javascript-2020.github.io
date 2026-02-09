@@ -1,10 +1,5 @@
 
 
-<!-- headers
-      cross-origin-isolate
--->
-
-
 <!DOCTYPE html>
 
 <html lang=en>
@@ -58,7 +53,7 @@
             <script src='https://cdn.jsdelivr.net/npm/prettier@2.8.8/parser-html.js'></script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js?init'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
             
             
@@ -99,12 +94,12 @@
             
             
             
-            <script init>
+            <script>
                                                                                 console.log('html-editor-v3.0.html');
         var version='v3.0';
         var df=true,did='html-editor';
         
-        
+        var hdr;
         var filemod;
         var autosave;
         var publish;
@@ -115,18 +110,24 @@
         
         async function init(){
                                                                                 debug('init',version);
+              hdr                       = mod['editors-hdr'];
               log                       = mod['log-mod'];
               filemod                   = mod['file-mod'];
               autosave                  = mod['auto-save'];
               publish                   = mod['publish-ui'];
               editor                    = mod['web-editor'];
               output                    = mod['output-html'];
+              output.df                 = true;
               
               editor.initmod({mode:'html',on});
               autosave.initmod({save:btn.save});
               
               mod.base.add({log,complete,source,focus,editor,filemod});
+              
               await mod.auto();
+              
+              
+              hdr['page-source'].url('v3.0/html-editor-v3.0.html');
               
               window.onfocus            = focus;
               keydown.add(kd);
@@ -137,10 +138,11 @@
               
               publish.query();
               
+              
         }//init
         
         
-            </script init>
+            </script>
             
             
             <link rel=stylesheet href='/utils/css/utils.css' crossorigin=anonymous>
@@ -201,9 +203,10 @@
       <body>
       
             <editors-hdr component=grp>
-                  <img class=title src='images/html-editor.png' style='top:-5px;height:55px' alt='html editor'>
+                  <img slot=title src='images/html-editor.png' style='top:-5px;height:55px' alt='html editor'>
                   <h1 slot=seo-hdr class=visually-hidden>html editor</h1>
-                  <time slot=date datetime=2026-01-04>04 Jan 2026</time>
+                  <h4 slot=version>v3.0</h4>
+                  <time slot=date datetime=2026-01-24>24 Jan 2026</time>
             </editors-hdr>
             
             
@@ -220,7 +223,8 @@
                   
                   <publish-ui component></publish-ui>
                   
-                  <button id=run>run</button>
+                  <button id=run title='ctrl+enter'>run</button>
+                  
                   <img id=prettier class=icon title=prettier>
                   
                   <span class=spc></span>
@@ -236,7 +240,7 @@
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
-                  <output-html component=page></output-html>
+                  <output-html v2.0 component=page></output-html>
                   
             </div>
             
@@ -269,6 +273,13 @@
               
               menu.add.style();
               
+              var btn1    = document.createElement('input');
+              btn1.type    = 'button';
+              btn1.value   = 'isolate';
+              $(hdr.__host.shadowRoot,'#btns').append(btn1);
+              btn1.onclick                          = btn.isolate;
+              
+              
               $(root,'#save').onclick               = btn.save;
               $('#run').onclick                     = btn.run;
               $(root,'#prettier').onclick           = btn.prettier;
@@ -297,7 +308,7 @@
                                                                               //console.log('[ html-editor ]','kd');
               if(e.key=='Enter' && e.ctrlKey){
                     e.preventDefault();
-                    run();
+                    btn.run();
               }
               
               if(e.key==' ' && e.ctrlKey){
@@ -318,6 +329,20 @@
         }//keydown
         
         
+        btn.isolate   = function(){
+        
+              var url   = window.location.toString();
+              var i1    = url.indexOf('?');
+              if(i1!=-1){
+                    url   = urls.lice(0,i1);
+              }else{
+                    url  += '?isolate';
+              }
+              window.location   = url;
+              
+        }//isolate
+        
+        
         btn.save    = function(e){
         
               filemod.save();
@@ -326,8 +351,8 @@
         
         
         btn.run   = function(){
-        
-              run();
+                                                                                debug('btn.run');
+              run.sandbox();
               
         }//run
         
@@ -380,6 +405,19 @@
   //:
   
   
+        window.addEventListener('message',e=>{
+        
+              var json    = e.data;
+              if(json.sandbox){
+                    output.on.message(json);
+              }
+              
+        });
+        
+        
+  //:
+  
+  
         function source(file){
         
               var txt     = editor.getValue();
@@ -415,7 +453,7 @@
         
               var txt   = await blob.text();
               editor.clear();
-              output.kill();
+              //output.kill();
               editor.setValue(txt,-1);
               complete(file);
               
@@ -499,6 +537,15 @@
               
               
         }//run
+        
+        
+        run.sandbox   = function(){
+                                                                                debug('run.sandbox');
+              var html    = editor.getValue();
+              output.sandbox(html);
+              
+        }//sandbox
+        
         
         
   //:
