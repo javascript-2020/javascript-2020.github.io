@@ -3,17 +3,17 @@
 <html>
 
       <head>
-
+      
             <title>file-transfer</title>
             
             <base href='https://ext-code.com/utils/webrtc/file-transfer/'>
             <base href='https://javascript-2020.github.io/utils/webrtc/file-transfer/'>
             
             <link rel=icon type='image/png' href='image/file-transfer-30.png'>
-
-
-            <script src='https://libs.ext-code.com/js/dom/component/component.js?{mod}'></script>
-
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            
             <script init>
                                                                                 console.clear();
                                                                                 console.log('webrtc-file-transfer.html');
@@ -27,63 +27,63 @@
         var datatype;
         var menumod;
         var keydown;
-
+        
         var menu;
         
-        var filemod;                                                                                
+        var filemod;
         var log;
-
-
+        
+        
   //:
   
-        
+  
         mod.stack.add   = init;
         
         async function init(){
-
-
+        
+        
               //keydown                   = keydown();
               menu                      = menumod();
               
               filemod                   = mod.filemod;
               log                       = mod.log;
-
+              
               filemod.initmod({ext,$,menumod,menu,complete});
-
-
+              
+              
               log.initmod({ext,$});
-
-
-
+              
+              
+              
               await filemod.init();
-
-
+              
+              
               await log.init();
-
-
+              
+              
   //:
-          
-
-
+  
+  
+  
   
   
               await initdom(document.body);
-
+              
               focus();
               ready();
-
               
-
-
+              
+              
+              
         }//init
-
-
+        
+        
 (async()=>{
 
         mod.stack.add;
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
+        
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
@@ -91,16 +91,16 @@
               'js/dom/keydown/keydown.js',
         );
         [$,datatype,menumod,keydown]   = await promise;
-  
+        
         mod.stack.complete;
-              
+        
 })();
 
-                  
+
 
             </script init>
-
-
+            
+            
             <style id=page-inline>
             
   html
@@ -113,7 +113,7 @@
     {font-size:16px;padding:5px 10px}
   input[type=button]
     {cursor:pointer}
-
+    
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
     
@@ -155,7 +155,7 @@
   #view>div
     {display:flex;gap:10px;border-radius:5px;padding:5px 10px;white-space:pre-wrap;align-items:center;
       }
-    
+      
   .sys
     {background:whitesmoke;font-family:monospace;border:1px solid gray}
     
@@ -184,22 +184,22 @@
     }
     
             </style>
-      
-
+            
+            
       </head>
       
       
       <body>
-
-            
-            
+      
+      
+      
 <!--
             <hdr-grp-api>
                   <script src='https://html-loader-1024713184986.us-central1.run.app/'></script>
                   <img class=title src='images/html-editor.png' style='top:-5px;height:55px'>
                   <span slot=date>11 Jun 2025</span>
             </hdr-grp-api>
--->            
+-->
 
             <div id=server-root>
             
@@ -208,18 +208,18 @@
                   </label>
                   
                   <input id=server>
-            
+                  
                   <input value=connect type=button>
-
+                  
                   <img id=status class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAPFBMVEVHcEzmSD/vQTbsQjjvQTbvQTbqRDruQjftQzjsRDnuQjftQjftQzjuQTbjSD7rRDnqRTvuQjftQzjvQTaizp94AAAAE3RSTlMAD/lh5fEg1p5Pp5GC2AY7J8ZuteK7EAAAAQdJREFUKM+Fk1mShSAMRcMYGRRb9r/XDkgivNdd3g/L4kC4GQBgeRPR1eowGg+f8hl1HdKY1w2H2eui3RwPVUnXD+mkhG71D22DH2ledc1fV7rjmzmyMypzfNM97/ch2uSIAlzir/m/N2eVaiyRaLASKtNh7H9RKaoGuSkPrejl5mF0pu32uCZy/rR/e+XuPwLWb24DqL4NYWSpNyucKIS+7oDzLUF4eewz1gWET8lx8Jaj8IP9OrGG58Q5PZTEbAHh0uDIZXGGLyUetJRlFLXh0w/Op6mooyXEy45XOVOrz12UZnc0lLjtn5ZJvKw0dB2HtSHfw/RoDNPLKL4N8tszeHtE/z7BX1bhJ1cDwoQWAAAAAElFTkSuQmCC'>
                   <img id=server-init class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAPFBMVEVHcEzmSD/vQTbsQjjvQTbvQTbqRDruQjftQzjsRDnuQjftQjftQzjuQTbjSD7rRDnqRTvuQjftQzjvQTaizp94AAAAE3RSTlMAD/lh5fEg1p5Pp5GC2AY7J8ZuteK7EAAAAQdJREFUKM+Fk1mShSAMRcMYGRRb9r/XDkgivNdd3g/L4kC4GQBgeRPR1eowGg+f8hl1HdKY1w2H2eui3RwPVUnXD+mkhG71D22DH2ledc1fV7rjmzmyMypzfNM97/ch2uSIAlzir/m/N2eVaiyRaLASKtNh7H9RKaoGuSkPrejl5mF0pu32uCZy/rR/e+XuPwLWb24DqL4NYWSpNyucKIS+7oDzLUF4eewz1gWET8lx8Jaj8IP9OrGG58Q5PZTEbAHh0uDIZXGGLyUetJRlFLXh0w/Op6mooyXEy45XOVOrz12UZnc0lLjtn5ZJvKw0dB2HtSHfw/RoDNPLKL4N8tszeHtE/z7BX1bhJ1cDwoQWAAAAAElFTkSuQmCC'>
                   
             </div>
-
-
+            
+            
             <filemod component v2.0></filemod>
-
-
+            
+            
             <div id=message>
             
                   <textarea id=txt></textarea>
@@ -229,13 +229,13 @@
                   </div>
                   
             </div>
-
-
+            
+            
             <div id=view-hdr>
                   <div class=spc></div>
                   <img id=view-clear class=icon>
             </div>
-
+            
             
             <div id=view style='display:none'>
             
@@ -257,7 +257,7 @@
                         <div class=txt></div>
                         <img class=rem>
                   </div>
-
+                  
                   <div class=transfer>
                         <img class=down>
                         <div class=size></div>
@@ -267,21 +267,21 @@
                   </div>
                   
             </div>
-                  
             
-
+            
+            
             <log component v2.0></log>
-
             
-      
+            
+            
       </body>
-
-
-
+      
+      
+      
       <script>
-
-        
-        
+      
+      
+      
         var img                             = {};
         
         var url                             = 'https://localhost:3001';
@@ -291,7 +291,7 @@
         var ignoreOffer                     = false;
         var isSettingRemoteAnswerPending    = false;
         
-
+        
         var inf                             = Number.MAX_SAFE_INTEGER;
         
         var ui                              = {};
@@ -320,13 +320,13 @@
         var send            = {};
         var server          = {};
         var kd              = {};
-
-
+        
+        
   //:
   
-
+  
         function ready(){
-
+        
               ui.view.sys('ready');
               
         }//ready
@@ -337,21 +337,21 @@
   
         async function initdom(rootnode){   //c
                                                                                 debug('initdom');
-
+                                                                                
                                                                                 
               root                                    = rootnode;
               
               keydown.initdom();
               menu.add.style();
-
+              
               img.disconnected                        = $(root,'#status').src;
               $(root,'#server').value                 = url;
               $(root,'[value=connect]').onclick       = btn.connect;
               $(root,'#server-init').onclick          = btn['server-init'];
-
+              
               filemod.initdom(root);
-
-
+              
+              
               //message                                 = $(root,'#message');
               txt                                     = $(root,'#txt');
               txt.onkeydown                           = kd.txt;
@@ -373,28 +373,28 @@
               transfer.remove();
               
               
-
+              
               log.initdom();
-
-
+              
+              
               view.style.display    = '';
               
-
+              
         }//initdom
-
-
+        
+        
         function focus(){
-          
+        
               txt.focus();
               
         }//focus
         
-
+        
   //:
   
   
         kd.txt    = function(e){
-          
+        
               if(e.ctrlKey){
                     if(e.key=='Enter'){
                           btn.send();
@@ -408,7 +408,7 @@
         
   //:
   
-
+  
         btn.connect   = async function(){
                                                                                 console.clear();
               focus();
@@ -420,9 +420,9 @@
               
         }//connect
         
-  
+        
         btn['server-init']    = async function(){
-          
+        
               focus();
               
               var url       = $(root,'#server').value;
@@ -432,12 +432,12 @@
               
               var err;
               try{
-                
+              
                     var res       = await fetch(url,{headers});
                     
               }//try
               catch(err2){
-                
+              
                     err   = err2;
                     
               }//catch
@@ -454,29 +454,29 @@
         
         
         btn.send    = function(){
-          
+        
               var str   = txt.value;
               ui.view.local(str);
               dc.send.txt(str);
               txt.value   = '';
               focus();
-          
+              
         }//send
         
         
         btn['view-clear']   = function(){
-          
+        
               view.replaceChildren();
               focus();
               
         }//view-clear
-  
-  
+        
+        
   //:
   
   
         ui.view.add   = function(node){
-          
+        
               var img    = $(node,'.rem');
               if(img){
                     img.onclick    = e=>node.remove();
@@ -491,7 +491,7 @@
         
         
         ui.view.sys   = function(str){
-          
+        
               var nsys    = sys.cloneNode(true);
               
               $(nsys,'.txt').textContent    = str;
@@ -504,7 +504,7 @@
         
         
         ui.view.sys.green   = function(str){
-          
+        
               var nsys    = ui.view.sys.apply(null,arguments);
               nsys.style.borderColor    = 'rgb(102,255,0)';
               return nsys;
@@ -513,38 +513,38 @@
         
         
         ui.view.sys.red   = function(str){
-          
+        
               var nsys    = ui.view.sys.apply(null,arguments);
               nsys.style.borderColor    = 'red';
               return nsys;
-                
+              
         }//red
         
         
         ui.view.local   = function(txt){
-          
+        
               var nlocal            = local.cloneNode(true);
               
               $(nlocal,'.txt').textContent    = txt;
               
               ui.view.add(nlocal);
-          
+              
         }//local
         
         
         ui.view.remote    = function(txt){
-          
+        
               var nremote           = remote.cloneNode(true);
               
               $(nremote,'.txt').textContent   = txt;
               
               ui.view.add(nremote);
-          
+              
         }//remote
         
         
         ui.view.transfer    = function(name,blob){
-          
+        
               var size    = hs(blob.size);
               
               var ntransfer                       = transfer.cloneNode(true);
@@ -554,10 +554,10 @@
               $(ntransfer,'.size').textContent    = size;
               
               ui.view.add(ntransfer);
-
+              
               
               function click(e){
-                
+              
                     var href      = window.URL.createObjectURL(blob);
                     
                     var a         = document.createElement('a');
@@ -569,9 +569,9 @@
               
         }//transfer
         
-  
+        
   //:
-
+  
   
         ws.create   = function(url){
                                                                                 debug('ws.create');
@@ -586,8 +586,8 @@
               return promise;
               
         }//create.ws
-
-
+        
+        
         ws.on.open    = function(){
                                                                                 debug('ws.on.open');
               ui.view.sys('signalling open');
@@ -602,7 +602,7 @@
         
         
         ws.on.error   = function(){
-                                                                                debug('ws.on.error');          
+                                                                                debug('ws.on.error');
         }//error
         
         
@@ -612,14 +612,14 @@
               data    = JSON.parse(data);
               
               switch(data.type){
-                
+              
                 case 'init'       : ws.on.message.init(data);         break;
                 case 'remote'     : ws.on.message.remote(data);       break;
                 case 'offer'      : ws.on.message.offer(data);        break;
                 case 'answer'     : ws.on.message.answer(data);       break;
                 case 'sdp'        : ws.on.message.sdp(data);          break;
                 case 'ice'        : ws.on.message.ice(data);          break;
-                                      
+                
                 default           :
                                                                                 debug('ws.on.message unknown');
               }//switch
@@ -638,7 +638,7 @@
               }
               
               ws.create.resolve();
-
+              
               
         }//init
         
@@ -646,7 +646,7 @@
         ws.on.message.remote    = function(){
         }//remotee
         
-          
+        
         ws.on.message.offer   = async function({offer}){
                                                                                 debug('ws.on.message.offer');
               ui.view.sys('offer received');
@@ -673,17 +673,17 @@
         
         ws.on.message.ice   = async function({candidate}){
                                                                                 debug('ws.on.message.ice');
-                                                                                console.log(candidate);              
+                                                                                console.log(candidate);
               ui.view.sys('ice candidate received');
               
               var err;
               try{
-                
+              
                     await pc.con.addIceCandidate(candidate);
                     
               }//try
               catch(err2){
-                
+              
                     err   = err2;
                     
               }//catch
@@ -697,12 +697,12 @@
               
         }//ice
         
-
+        
   //:
   
   
         ws.send.json    = function(json){
-          
+        
               var str   = JSON.stringify(json);
               ws.con.send(str);
               
@@ -715,18 +715,18 @@
               ws.send.json({type:'offer',offer});
               
         }//offer
-
-
+        
+        
         ws.send.answer    = function(answer){
                                                                                 debug('ws.send.answer');
                                                                                 //debug.log(answer);
               ws.send.json({type:'answer',answer});
               
         }//answer
-
-
+        
+        
         ws.send.ice    = function(candidate){
-          
+        
               ws.send.json({type:'ice',candidate});
               
         }//ice
@@ -734,17 +734,17 @@
         
   //:
   
-        
+  
         pc.create   = function(){
                                                                                 debug('pc.create',mode);
               var promise   = new Promise(res=>pc.create.resolve=res);
               
               var config    = {
-                
+              
                     //iceServers: [{ urls: "stun:stun.my-stun-server.tld" }],
                     
               };
-
+              
               pc.con                            = new RTCPeerConnection(config);
               pc.con.onnegotiationneeded        = pc.on.negotiationneeded;
               pc.con.onicecandidate             = pc.on.ice;
@@ -759,7 +759,7 @@
                     pc.create.offer();
               }
               
-
+              
               return promise;
               
         }//create
@@ -778,7 +778,7 @@
         
         
         pc.create.answer    = async function(){
-                                                                                debug('pc.create.answer');  
+                                                                                debug('pc.create.answer');
               ui.view.sys('answer created');
               
               var answer    = await pc.con.createAnswer();
@@ -787,31 +787,31 @@
               
         }//answer
         
-
+        
   //:
   
-
+  
         pc.on.connectionstatechange   = function(e){
-    
-    
+        
+        
               var state   = peerConnection.connectionState;
               
               switch(state){
-                
+              
                 case 'new'              : ui.view.sys('pc new');                      break;
                 case 'connecting'       : ui.view.sys('pc connecting');               break;
                 case 'connected'        : ui.view.sys('pc connected');                break;
                 case 'disconnected'     : ui.view.sys('pc disconnecting');            break;
                 case 'closed'           : ui.view.sys('pc closed');                   break;
                 case 'failed'           : ui.view.sys('pc failed');                   break;
-                  
+                
                 default                 : ui.view.sys('pc unknown');                  break;
-                  
+                
               }//switch
               
         }//connectionstatechange
-
-
+        
+        
         pc.on.ice   = async function(e){
                                                                                 debug('pc.on.ice');
                                                                                 console.log(e);
@@ -823,13 +823,13 @@
               ui.view.sys('ice candidate created');
               
               try{
-                
+              
                     await pc.con.addIceCandidate(candidate);
-                
+                    
               }//try
               
               catch(err){
-                
+              
                     ui.view.sys.red('add ice error');
                     ui.view.sys.red(err.toString());
                     
@@ -837,32 +837,32 @@
                     if(!ignoreOffer){
                           throw err;
                     }
-
+                    
                     
               }//catch
-
-      
+              
+              
               ws.send.ice(candidate);
-    
+              
               
         }//onice
         
-
+        
         pc.on.negotiationneeded   = async function(){
                                                                                 debug('pc.on.negotiationneeded');
               ui.view.sys('negotiation needed');
               
               //makingOffer = true;
               //pc.create.offer();
-    
+              
         }//onnegotiationneeded
-
+        
         
         async function onsdp({description}){
                                                                                 debug('onsdp');
               var readyForOffer     = !makingOffer && (pc.signalingState==='stable' || isSettingRemoteAnswerPending);
               var offerCollision    = description.type === 'offer' && !readyForOffer;
-          
+              
               ignoreOffer           = !polite && offerCollision;
               if(ignoreOffer){
                     return;
@@ -879,12 +879,12 @@
                     send.sdp(pc.localDescription);
                     
               }
-      
+              
         }//sdp
-
-
-
-
+        
+        
+        
+        
         pc.on.datachannel   = function(e){
                                                                                 debug('pc.on.datachannel');
               dc.con                = e.channel;
@@ -892,10 +892,10 @@
               dc.con.onopen         = dc.on.open;
               dc.con.onclose        = dc.on.close;
               dc.con.onerror        = dc.on.error;
-                                                                                
+              
         }//ondatachannel
-
-
+        
+        
         pc.on.track   = function({track,streams}){
                                                                                 debug('pc.on.track');
                                                                                 
@@ -912,7 +912,7 @@
               dc.con.onclose        = dc.on.close;
               dc.con.onerror        = dc.on.error;
               dc.con.onmessage      = dc.on.message;
-
+              
         }//create
         
         
@@ -930,14 +930,14 @@
               ui.view.sys('data channel closed');
               
         }//close
-
-
+        
+        
         dc.on.error   = function(){
                                                                                 console.log('dc.on.error');
               ui.view.sys('data channel error');
               
         }//dc.on.error
-          
+        
         
         dc.on.message   = function(e){
                                                                                 debug('dc.on.message');
@@ -954,10 +954,10 @@
         
         
         dc.on.message.string    = function(data){
-          
+        
               data    = JSON.parse(data);
               switch(data.type){
-                
+              
                 case 'hello'          : dc.hello(data);           break;
                 case 'msg'            : dc.msg(data);             break;
                 case 'transfer'       : dc.transfer(data);        break;
@@ -965,13 +965,13 @@
               }//switch
               
         }//string
-
-
+        
+        
   //:
   
-        
+  
         dc.hello    = function(){
-          
+        
               ui.view.sys.green('remote connected');
               
               $(root,'#status').src   = img.connected;
@@ -980,7 +980,7 @@
         
         
         dc.msg    = function(data){
-          
+        
               if('txt' in data){
                     var txt   = data.txt;
                     ui.view.remote(txt);
@@ -991,22 +991,22 @@
         
         
         dc.transfer   = function(data){
-          
+        
               var name                  = data.name;
               
               dc.on.message.callback    = callback;
               
               
               function callback(e){
-                
+              
                     dc.on.message.callback    = null;
                     
                     var buf     = e.data;
                     var blob    = buf_blob(buf);
                     ui.view.transfer(name,blob);
-
+                    
               }//callback
-
+              
         }//transfer
         
         
@@ -1014,7 +1014,7 @@
   
   
         dc.send.json    = function(json){
-          
+        
               var str   = JSON.stringify(json);
               dc.con.send(str);
               
@@ -1022,21 +1022,21 @@
         
         
         dc.send.txt   = function(txt){
-          
+        
               dc.send.json({type:'msg',txt});
               
         }//txt
-
+        
         
   //:
   
   
         function complete(){
         }//complete
-
-
+        
+        
         complete.load   = function(file,blob){
-          
+        
               var name    = file.filename;
               var size    = hs(blob.size);
               
@@ -1057,16 +1057,16 @@
   
   
         function buf_blob(buf){
-          
+        
               var uint8   = new Uint8Array(buf);
               var blob    = new Blob([uint8]);
               return blob;
               
         }//buf_blob
-
-
+        
+        
         function hs(size){
-
+        
               size        = Number(size);
               
               var i       = 0;
@@ -1082,20 +1082,20 @@
               return str;
               
         }//hs
-
+        
         
   //:
   
   
         img.connected       = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAARVBMVEVHcEwBpDcJoTwMoD4BpDcFojkCpDgEozkRnUIEozkCpDgCpDgEozkEpDgHozsHojsCpDgDpDgLoD0FozkDozgLoj4BpDfMtSLJAAAAFnRSTlMA+SEQ/mHWpAeT8dyCsVVC6Lsad8gwX3sn2gAAAQNJREFUKM+FU1myhCAMZAmrbDoO9z/qQzaDNa/Ml9Ik6U4HQkYwoaQFsFIJRp7BnKS5B5VuvaCFzEtIoW+UG5ofQQ2fqMo/QnVcmzVvfJhWX+DKoKIf90TljFlBaRlg8Lv4u5uuSwU99nngcPIWybegHsljd2cbrlYYvboPUfCpPGOqP/tZCSgyap9dZkiV4FHPJbFLcsOLYrbVhqSroHGOODhOWKMPA7Zx8a+Lg1lcYAMHXzup7RzhoSfJKYzi6iF118ZYkL83WsbSh7qV8evmIP9Y5EmzBPzBlflqzaMHZMn0xJdpp92fFjvyXIfVkB/LlB/L9LKKb4v89gzeHtG/T/APK5Aru0Zgf4kAAAAASUVORK5CYII=';
         img.disconnected    = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAPFBMVEVHcEzmSD/vQTbsQjjvQTbvQTbqRDruQjftQzjsRDnuQjftQjftQzjuQTbjSD7rRDnqRTvuQjftQzjvQTaizp94AAAAE3RSTlMAD/lh5fEg1p5Pp5GC2AY7J8ZuteK7EAAAAQdJREFUKM+Fk1mShSAMRcMYGRRb9r/XDkgivNdd3g/L4kC4GQBgeRPR1eowGg+f8hl1HdKY1w2H2eui3RwPVUnXD+mkhG71D22DH2ledc1fV7rjmzmyMypzfNM97/ch2uSIAlzir/m/N2eVaiyRaLASKtNh7H9RKaoGuSkPrejl5mF0pu32uCZy/rR/e+XuPwLWb24DqL4NYWSpNyucKIS+7oDzLUF4eewz1gWET8lx8Jaj8IP9OrGG58Q5PZTEbAHh0uDIZXGGLyUetJRlFLXh0w/Op6mooyXEy45XOVOrz12UZnc0lLjtn5ZJvKw0dB2HtSHfw/RoDNPLKL4N8tszeHtE/z7BX1bhJ1cDwoQWAAAAAElFTkSuQmCC';
-
+        
         
   //:
   
   
         function debug(){
-          
+        
           if(!df)return;
           var str   = [...arguments].join(' ');
           console.log(`[ ${did} ]`,str);
@@ -1104,9 +1104,9 @@
         
         
         
-
-  
-  
+        
+        
+        
       </script>
       
       
