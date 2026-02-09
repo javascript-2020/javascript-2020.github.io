@@ -56,8 +56,8 @@
               
               console.log();
               console.log(i,item.note);
-              console.log('expected  :',item.expected);
               console.log('value     :',item.url);
+              console.log('expected  :',item.expected);
               console.log('result    : ',abs);
               console.log();
               
