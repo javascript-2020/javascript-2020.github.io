@@ -41,7 +41,7 @@
         
               var abs   = resolve(item.url,test.docroot);
               console.log();
-              console.log(i);
+              console.log(i,item.note);
               console.log('value',item.url);
               console.log('result',abs);
               console.log('expected',item.expected,(abs===item.expected));
