@@ -12,11 +12,11 @@
 
       <head>
             <meta charset=utf-8>
-      
+            
             <title>
                   Using XMLHttpRequest in Modern JavaScript
             </title>
-
+            
             <meta name=description content='Learn how to use XMLHttpRequest to send and receive HTTP requests in JavaScript. This guide covers setup, request methods, response handling, and practical examples for AJAX-style communication.'>
             
             <base href='https://ext-code.com/blog/25-07-31/xml-http-request/'>
@@ -38,13 +38,13 @@
                         "publisher"           : {"@type":"Organization","name":"Your Blog or Company Name","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
                   }
             </script>
-
-
+            
+            
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
-
-
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            
             <script init>
                                                                                 console.clear();
                                                                                 console.log('xml-http-request.html');
@@ -52,12 +52,12 @@
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var df=true,version='v2.0'
         ;
-
-
+        
+        
         var ace;
         var jszip;
-
-
+        
+        
         var ext;
         var $;
         var datatype;
@@ -65,29 +65,29 @@
         var keydown;
         var debug;
         var sandbox;
-
+        
         var menu;
-            
+        
         var ex        = {};
-
+        
         var terminal;
         var webconsole;
         var log;
-
         
-
+        
+        
     //:
-
-              
+    
+    
         async function init(){
                                                                                 //debug('init',version);
-              
-
+                                                                                
+                                                                                
               menu    = menumod();
-
+              
               mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
               
-
+              
               ex['xhr-upload']          = mod['xhr-upload'];
               ex['upload-server']       = mod['upload-server'];
               ex['xhr-download']        = mod['xhr-download'];
@@ -103,7 +103,7 @@
               terminal.initmod({ext,$,menu});
               webconsole.initmod({ext,$,menu,ace});
               log.initmod({ext,$});
-
+              
               await Promise.all([
                     ex['xhr-upload'].init(),
                     ex['upload-server'].init(),
@@ -113,15 +113,15 @@
                     webconsole.init(),
                     log.init(),
               ]);
-                
-
-
+              
+              
+              
               initdom(document.body);
-
+              
               
         }//init
-
-
+        
+        
   //:
   
   
@@ -130,7 +130,7 @@
         mod.stack.add;
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
+        
         var promise   = ext.load.libs(
               'js/dom/$.js.api',
               'js/core/datatype.js',
@@ -139,30 +139,30 @@
               'js/debug/debug.js',
         );
         [$,datatype,menumod,keydown,debug]   = await promise;
-  
+        
         await Promise.all([
               import('https://cdn.jsdelivr.net/npm/jszip/+esm').then(mod=>jszip=mod.default),
               ext.load.libs('js/sandbox/sandbox.js.api').then(result=>[sandbox]=result),
               /*
               ext.text.libs('nodejs/server-cert/server-cert.js').then(result=>{
-                
+              
                     files['node_modules'].directory['server-cert.js']   = {file:{contents:result[0]}};
                     
               })
               */
               
         ]);
-
+        
         mod.stack.complete;
-              
+        
 })();
 
-            
+
             </script init>
-
-
+            
+            
             <link rel=stylesheet href='/blog/css/blog.css'>
-
+            
             <style>
             
   html
@@ -177,41 +177,41 @@
   [component]
     {display:none}
     
-  .description 
+  .description
     {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
       background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
   .description>p
     {margin:0}
   .description > p+p
     {margin:10px 0}
-
+    
   code
     {font-family:monospace;background:whitesmoke}
   code.inline
     {display:inline;padding:5px 10px}
-
+    
   a
     {color:#4a90e2;text-decoration:none;font-weight:500}
-  a:hover 
+  a:hover
     {text-decoration:underline}
   .link-domain
     {font-size:0.85rem;color:#777;margin-left:0.25rem}
-  .link-domain::before 
+  .link-domain::before
     {content:'['}
   .link-domain::after
     {content:']'}
   .link-txt
     {}
-
+    
   input
     {font-size:16px;padding:5px 7px;box-sizing:border-box;}
   input[type=button]
     {cursor:pointer}
-
-      
+    
+    
   .flex-col
     {display:flex;flex-direction:column;gap:20px}
-  
+    
   #demo
     {border:2px solid green;padding:20px;margin-bottom:50px}
   #demo>div:first-of-type
@@ -227,14 +227,14 @@
     {width:200px}
   #view>div>div:last-of-type
     {flex:1}
-
+    
   iframe
     {width:100%;height:250px;border:1px solid gray}
-
-
+    
+    
   .file
     {border:2px solid #4a90e2;padding:10px}
-
+    
   .filename
     {background:whitesmoke;padding:5px 10px;margin-bottom:10px;display:flex;justify-content:space-between}
     
@@ -244,7 +244,7 @@
       
       
       <body>
-
+      
             <blog-hdr component=grp1>
                   <h1 class=title>
                         Using XMLHttpRequest in Modern JavaScript
@@ -253,7 +253,7 @@
                         23 Oct 2025
                   </time>
             </blog-hdr>
-
+            
             <div class=description>
                   <p>
                         Learn how to use XMLHttpRequest to send and receive HTTP requests in JavaScript. This guide covers setup, request methods, response handling,
@@ -281,7 +281,7 @@
                         The code can be downloaded and run locally to see them working, the files are editable and runnable.
                   </p>
             </div>
-
+            
             <div id=demo class=flex-col>
                   <div>
                         demo
@@ -299,7 +299,7 @@
                               </div>
                               <div></div>
                         </div>
-      
+                        
                         <div xhr-upload-root>
                               <div>
                                     xhr-upload.html
@@ -311,7 +311,7 @@
                                     <iframe></iframe>
                               </div>
                         </div>
-      
+                        
                         <div download-server-root>
                               <div>
                                     download-server.js
@@ -335,12 +335,12 @@
                         </div>
                         
                   </div view>
-      
+                  
                   <web-terminal component></web-terminal>
                   <web-console component></web-console>
             </div demo>
-
-
+            
+            
             
             <div>
                   files
@@ -356,7 +356,7 @@
                   </div>
                   <web-editor id=xhr-upload fullsize mode=html src='ex/xhr-upload.html' component></web-editor>
             </div>
-      
+            
             
             <section class=file>
                   <div class=filename>
@@ -364,37 +364,37 @@
                   </div>
                   <web-editor id=upload-server fullsize src='ex/upload-server.js' component></web-editor>
             </section>
-
-
+            
+            
             <section class=file>
                   <div class=filename>
                         xhr-download.html
                   </div>
                   <web-editor id=xhr-download fullsize mode=html src='ex/xhr-download.html' component></web-editor>
             </section>
-
-
+            
+            
             <section class=file>
                   <div class=filename>
                         download-server.js
                   </div>
-                  <web-editor id=download-server fullsize src='ex/download-server.js' component></web-editor>            
+                  <web-editor id=download-server fullsize src='ex/download-server.js' component></web-editor>
             </section>
             
             
             
             <log-mod component></log-mod>
-
+            
       </body>
-
-
+      
+      
       <script>
       
         var wc        = {};
         var process   = {};
         var urls      = {};
         var iframe    = {};
-
+        
         
         var files   = {};
         files['node_modules']   = {directory: {}};
@@ -402,8 +402,8 @@
         files['.jshrc']         = {file:{contents:`
                                         export NODE_PATH=./node_modules
                                   `}};
-        */                                  
-
+        */
+        
         var download    = {};
         var dir         = {};
         download['xml-http-request']    = {directory:dir};
@@ -411,25 +411,25 @@
         dir['upload-server.js']         = {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/upload-server.js'}}};
         dir['xhr-download.html']        = {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/xhr-download.html'}}};
         dir['download-server.js']       = {file:{github:{repo:'javascript-2020.github.io',path:'/blog/25-07-31/xml-http-request/ex/download-server.js'}}};
-
+        
         
         var btn                     = {};
         
-
+        
   //:
   
   
         function initdom(rootnode){
-
-
+        
+        
               ex['upload-server'].initdom();
               ex['xhr-upload'].initdom();
               ex['download-server'].initdom();
               ex['xhr-download'].initdom();
               
-
+              
               $('#demo>div:first-of-type [value=download]').onclick   = btn.demo_download;
-
+              
               
               $('[xhr-upload-root] [value=run]').onclick            = btn['xhr-upload'];
               iframe['xhr-upload']                                  = $('[xhr-upload-root] iframe');
@@ -442,7 +442,7 @@
               iframe['xhr-download']                                = $('[xhr-download-root] iframe');
               
               $('[download-server-root] [value=run]').onclick       = btn['download-server'];
-
+              
               
               
               
@@ -451,47 +451,47 @@
               
               webconsole.initdom();
               log.initdom();
-          
-          
+              
+              
         }//initdom
         
         
         window.addEventListener('message',e=>{
-          
+        
               var key   = Object.keys(iframe).find(k=>iframe[k].contentWindow===e.source);
               if(!key)return;
-
+              
               var {type,args}   = e.data;
               args.unshift(`[ ${key} ]`);
               webconsole[type].apply(null,args);
-
+              
         })//onmessage
-
+        
         
   //:
   
   
         btn.demo_download    = async function(){
-          
+        
               create_archive(download,{df:true});
               
         }//demo_download
         
-  
+        
         btn['upload-server']    = async function(){
-          
+        
               if(process['upload-server']){
                                                                                 webconsole.log('kill existing upload-server ...');
                     await process['upload-server'].kill();
                     process['upload-server']    = null;
                                                                                 webconsole.log('ok');
               }
-
+              
               
               var on    = {};
               
               on.init   = async function({webcontainer}){
-                
+              
                     wc['upload-server']   = webcontainer;
                                                                                 webconsole.log('mount file system ...');
                     await webcontainer.mount(files);
@@ -505,23 +505,23 @@
               }//server-ready
               
               on.run    = function({process:p}){
-                
+              
                     process['upload-server']    = p;
                     
               }//run
               
               on.complete   - function({code}){
               }//complete
-
+              
               
               var js    = ex['upload-server'].getvalue();
               sandbox.nodejs(js,{console:webconsole,ctx:{terminal},on});
               
         }//upload-server
         
-
+        
         btn['xhr-upload']   = async function(){
-          
+        
               if(!process['upload-server']){
                     var msg   = 'upload-server not started';
                                                                                 webconsole.log(msg);
@@ -529,7 +529,7 @@
                     return;
               }
               
-              iframe['xhr-upload'].src    = 'about:blank';              
+              iframe['xhr-upload'].src    = 'about:blank';
               
               var html    = ex['xhr-upload'].getvalue();
               html        = inject+html;
@@ -540,21 +540,21 @@
               
         }//run
         
-  
+        
         btn['download-server']    = async function(){
-          
+        
               if(process['download-server']){
                                                                                 webconsole.log('kill existing download-server ...');
                     await process['download-server'].kill();
                     process['download-server']    = null;
                                                                                 webconsole.log('ok');
               }
-
+              
               
               var on    = {};
               
               on.init   = async function({webcontainer}){
-                
+              
                     wc['download-server']   = webcontainer;
                                                                                 webconsole.log('mount file system ...');
                     await webcontainer.mount(files);
@@ -568,14 +568,14 @@
               }//server-ready
               
               on.run    = function({process:p}){
-                
+              
                     process['download-server']    = p;
                     
               }//run
               
               on.complete   - function({code}){
               }//complete
-
+              
               
               var js    = ex['download-server'].getvalue();
               sandbox.nodejs(js,{console:webconsole,ctx:{terminal},on});
@@ -584,7 +584,7 @@
         
         
         btn['xhr-download']   = async function(){
-          
+        
               if(!process['download-server']){
                     var msg   = 'download-server not started';
                                                                                 webconsole.log(msg);
@@ -592,7 +592,7 @@
                     return;
               }
               
-              iframe['xhr-download'].src    = 'about:blank';              
+              iframe['xhr-download'].src    = 'about:blank';
               
               var html    = ex['xhr-download'].getvalue();
               html        = inject+html;
@@ -610,7 +610,7 @@
         var inject    = `
         
               <script>
-                    
+              
                     var con   = window.console;
                     window.console    = {
                           log     : (...args)=>window.parent.postMessage({type:'log',args},'*'),
@@ -623,7 +623,7 @@
         `;
         
         async function sha256(txt) {
-          
+        
               var msg   = new TextEncoder().encode(txt);
               var buf   = await crypto.subtle.digest('SHA-256',msg);
               var arr   = Array.from(new Uint8Array(buf));
@@ -631,10 +631,10 @@
               return hex;
               
         }//sha256
-
-
+        
+        
   //:
-
+  
   
         async function create_archive(dir,{download=true,test,df=false}={}){
                                                                                 df && console.log('download',!!download);
@@ -665,11 +665,11 @@
               }
               return blob;
               
-        
+              
               async function add(dir,abs=''){
-                
+              
                     for(let key in dir){
-                      
+                    
                           ct++;
                           var o   = dir[key];
                           
@@ -681,7 +681,7 @@
                                 add(o.directory,abs+key+'/');
                                 complete();
                           }
-
+                          
                           if(o.file?.contents){
                                                                                 df && console.log('file create :',abs+key);
                                 if(zip){
@@ -708,7 +708,7 @@
                                 if(zip){
                                       fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`)
                                         .then(res=>res.text().then(txt=>{
-                                          
+                                        
                                               zip.file(abs+key,txt);
                                               complete();
                                               
@@ -718,10 +718,10 @@
                           
                           
                     }//for
-
+                    
                     
                     function complete(){
-                      
+                    
                           total++;
                           if(ct==total){
                                 resolve();
@@ -730,9 +730,9 @@
                     }//complete
                     
               }//add
-
+              
         }//create
-  
+        
         
       </script>
       
