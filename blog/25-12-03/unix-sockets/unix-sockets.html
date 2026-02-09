@@ -10,15 +10,15 @@
             <title>
                   Beyond HTTP: Node.js with Unix Sockets and Named Pipes
             </title>
-
+            
             <meta name=description content='Discover how to use Unix domain sockets and Windows named pipes in Node.js as a faster, lightweight alternative to HTTP requests for local inter‑process communication.'>
-
+            
             <base href='https://ext-code.com/blog/25-12-03/unix-sockets/'>
             <link rel=canonical href='https://ext-code.com/blog/25-12-03/unix-sockets/unix-sockets.html'>
             
             <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABLFBMVEVHcEwopnMfpm8epm4epm4hpm81pHgfpm8ipnAhpm8ipnAfpm8gpm8jpnAsquAqpXQhpnAjpnEspXQhpnDr3Mgtqt8epm8fpm8kpnEgpm8rpXPr6OkqquAqquEjpnF/xagnqHTr6OlUtY7m5ubm5ub/9//m5uYbpWyXzLZ1s4UPnmRbqrkdpm7m5ubp5+gbpm0bpWwsq3fC29GXzbaMyrEwrOFHtIYnquHb4+Cz1uUkp3LT4ebi5ejwhhL3jhj7mSO72eXkhB12w+T4pDd8xafF3NKfijLWsrDc3diHlIzyr07et4jq07fqmkfhqFfyv3dauuJnveE2rn1AnFltkULIx8dQomPMfxXvjbNuo4xylYXu0KZqr7fOwrFaueL9yoTI1MatqHQwqtqDrqPS97zrAAAALHRSTlMAHtX5958F0l+Pfe2lXa4QgGAPjf6b8fBbzw9Y0L1h6t3NR9HhDPzLh/QusFA6UqkAAAGESURBVCjPdZNnW8IwEIDTtKVQKHsj7u21RUVREBFQ2SjuPf//fzBt0gFPfT+0z9M3vVwudwhZcLEQzvB8Bof8HJqFi2IeGLwkTy/w+TFMgRWfYyMBAfSShW54IZG3bFwEqJ6XLRYWzQBinEUOAOi7F5rF0rJErA4JGl8RDL2nqYyVte2Nau+lKmTNnI2s3Hq1UNjc6jz1ABv5yzCj1XU12R93nnWQyc+SrdneZMFVo35ZBZA4pPCWrh1Tatpr+/Tx1qhPFonAtNo6oLSS/Ubzjh4OSZY+ua5QJkbokvk5h4IuPZcqhsPF3/Zp88EsHQQRb+sPosOp8M64UR8c0r8FR9O9Kz/fjfqoa2s7uFY7I0zeSOjhEdNBJzV67trX52igWTrnHIxV7X2YVG0tuspC9X2XPJgmZXEV1cR8MU2K6nEltpadC3XagUC1eaHIT9qBNNO+i/INqZqg2M3kBWsmFBG9rJh3GpmflUIi7hqD2OwY+H3/DxGOekzZfAinAdI4FHPkH67FfQ17kRvyAAAAAElFTkSuQmCC'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
-
+            
             <script type='application/ld+json'>
                   {
                         "@context"            : "https://schema.org",
@@ -32,11 +32,11 @@
                         "publisher"           : {"@type":"Organization","name":"ext-code.com","logo":{"@type":"ImageObject","url":"https://ext-code.com/favicon.ico"}},
                   }
             </script>
-
+            
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
-
-
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
             
             <script init>
                                                                                 console.clear();
@@ -56,7 +56,7 @@
         var debug;
         
         var menu;
-
+        
         var hdr;
         var log;
         var ex    = {};
@@ -66,12 +66,12 @@
   
   
         async function init(){
-          
+        
               menu                            = menumod();
               
               mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
               
-
+              
               hdr                             = mod['blog-hdr'];
               log                             = mod['log-mod'];
               
@@ -97,7 +97,7 @@
               ex['client-linux-c'].initmod({ext,$,menu,ace,menu,menumod});
               ex['client-linux-nodejs'].initmod({ext,$,menu,ace,menu,menumod});
               ex['client-win-c'].initmod({ext,$,menu,ace,menu,menumod});
-
+              
               
               await Promise.all([
                     hdr.init(),
@@ -139,18 +139,18 @@
         [$,datatype,menumod,keydown,debug]    = await promise;
         
         mod.stack.complete;
-
+        
 })();
-  
+
             </script init>
-
-
+            
+            
             <link rel=stylesheet href='https://fonts.googleapis.com/css2?family=Pacifico&display=swap' crossorigin=anonymous>
             <link rel=stylesheet href='/blog/css/blog.css'>
-
+            
             <style>
-
-
+            
+            
             
   html
     {height:100%;font-family:arial}
@@ -164,78 +164,78 @@
   [component]
     {display:none}
     
-  .description 
+  .description
     {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
       background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
   .description>p
     {margin:0}
   .description > p+p
     {margin:10px 0}
-
-
+    
+    
   .blog-hdr
     {color:blue}
     
-  .blog-text 
+  .blog-text
     {margin:1.5rem auto;padding:1.25rem 1.75rem;background-color:#fcfcfc;/*#f9f9f9*/font-family:system-ui, sans-serif;font-size:1rem;line-height:2;
-      color:#333;text-align:justify;border-radius:4px}      
-  .blog-text h2,.blog-text h3 
+      color:#333;text-align:justify;border-radius:4px}
+  .blog-text h2,.blog-text h3
     {margin-top:1.5rem;margin-bottom:0.75rem;font-weight:600;color:#222;}
-  .blog-text p 
+  .blog-text p
     {margin:0 0 1rem 0;}
-
-
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
   code
     {font-family:monospace;background:whitesmoke}
   code.inline
     {display:inline;padding:5px 10px}
-
-
-
+    
+    
+    
   a
     {color:#4a90e2;text-decoration:none;font-weight:500}
-  a:hover 
+  a:hover
     {text-decoration:underline}
   .link-domain
     {font-size:0.85rem;color:#777;margin-left:0.25rem}
-  .link-domain::before 
+  .link-domain::before
     {content:'['}
   .link-domain::after
     {content:']'}
   .link-txt
     {}
-
+    
   input
     {font-size:16px;padding:5px 7px;box-sizing:border-box;}
   input[type=button]
     {cursor:pointer}
-
-
+    
+    
   snippet-editor,web-editor
     {margin:30px 0;display:block}
-
-
+    
+    
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
-
+    
   blog-hdr h1
     {font-family:pacifico}
-            
+    
             </style>
             
       </head>
       
       
       <body>
-
-
-            <blog-hdr component=grp1>      
+      
+      
+            <blog-hdr component=grp1>
                   <h1 class=title style='position:absolute;left:0;right:0;margin:auto;top:-10px'>
                        Beyond HTTP: Node.js with Unix Sockets and Named Pipes
                   </h1>
@@ -243,7 +243,7 @@
                         03 Dec 2025
                   </time>
             </blog-hdr>
-      
+            
             <div class=description>
                   <p>
                         Discover how to use Unix domain sockets and Windows named pipes in Node.js as a faster, lightweight alternative to HTTP requests for local inter‑process communication.
@@ -265,13 +265,13 @@
                         </code>
                   </p>
             </div>
-
-
+            
+            
             <h3 class=blog-hdr>
                   ipc socket servers
             </h3>
             
-
+            
             <section class=blog-text>
                   <h3>
                         ipc server linux nodejs
@@ -283,8 +283,8 @@
                   <snippet-editor id=linux-server-js src='ex/ipc-server-linux.node.js' fullsize component></snippet-editor>
                   
             </section>
-
-
+            
+            
             <section class=blog-text>
                   <h3>
                         ipc server linux c
@@ -296,7 +296,7 @@
                   <snippet-editor id=linux-server-c src='ex/ipc-server-linux.c' mode=c fullsize component></snippet-editor>
                   
             </section>
-                        
+            
             
             <section class=blog-text>
                   <h3>
@@ -309,7 +309,7 @@
                   <snippet-editor id=win-server-js src='ex/ipc-server-win.node.js' fullsize component></anippet-editor>
                   
             </section>
-                        
+            
             
             <section class=blog-text>
                   <h3>
@@ -340,8 +340,8 @@
                   <snippet-editor id=client-win-js src='ex/ipc-client-win.node.js' fullsize component></snippet-editor>
                   
             </section>
-
-
+            
+            
             <section class=blog-text>
                   <h3>
                         ipc client linux c
@@ -353,8 +353,8 @@
                   <snippet-editor id=client-linux-c src='ex/ipc-client-linux.c' mode=c fullsize component></snippet-editor>
                   
             </section>
-
-
+            
+            
             <section class=blog-text>
                   <h3>
                         ipc client linux nodejs
@@ -366,8 +366,8 @@
                   <snippet-editor id=client-linux-nodejs src='ex/ipc-client-linux.node.js' fullsize component></snippet-editor>
                   
             </section>
-
-
+            
+            
             <section class=blog-text>
                   <h3>
                         ipc client windows c
@@ -380,11 +380,6 @@
                   
             </section>
             
-
-
-
-
-
             
             
             
@@ -392,7 +387,12 @@
             
             
             
-
+            
+            
+            
+            
+            
+            
             <log-mod component></log-mod>
             
       </body>
@@ -401,7 +401,7 @@
       
       
         function initdom(){
-          
+        
               hdr.initdom();
               log.initdom();
               
@@ -414,7 +414,7 @@
               ex['client-linux-c'].initdom();
               ex['client-linux-nodejs'].initdom();
               ex['client-win-c'].initdom();
-
+              
               
         }//initdom
         
