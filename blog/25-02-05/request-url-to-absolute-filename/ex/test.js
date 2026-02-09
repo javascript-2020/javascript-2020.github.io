@@ -6,7 +6,22 @@
                                                                                 resolve.df && console.log('=== resolve v2.0 ===');
                                                                                 resolve.df && console.log('url :',url);
                                                                                 resolve.df && console.log('docroot :',docroot);
-              url         = decodeURI(url);
+              var err;
+              try{
+              
+                    url         = decodeURI(url);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                resolve.df && console.error(err);
+                    return false;
+              }
+              
               url         = url.slice(1);
                                                                                 resolve.df && console.log('url :',url);
               var root    = path.resolve(docroot);
