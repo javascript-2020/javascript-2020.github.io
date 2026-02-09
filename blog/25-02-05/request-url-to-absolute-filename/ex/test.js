@@ -56,9 +56,9 @@
               
               console.log();
               console.log(i,item.note);
-              console.log('value',item.url);
-              console.log('result',abs);
-              console.log('expected',item.expected,(abs===item.expected));
+              console.log('expected  :',item.expected);
+              console.log('value     :',item.url);
+              console.log('result    : ',abs);
               console.log();
               
         });
