@@ -1,4 +1,4 @@
 
-      <script src='https://libs.ext-code.com/js/dom/component/v2.0/component.js'></script>
+      <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
       
       
