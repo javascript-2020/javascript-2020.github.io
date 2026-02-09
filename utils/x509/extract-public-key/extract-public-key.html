@@ -7,7 +7,7 @@
 
       <head>
             <meta charset=utf-8>
-    
+            
             <title>
                   Extract Public Key
             </title>
@@ -19,7 +19,7 @@
             
             <link rel=icon type='image/x-icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAz1BMVEVHcExFjOkWsvNGjug9jOxBhesulvAMtfsqofAvoO4pn+8hqPA0j+4WtvQhoPQfuvENuPkYrPchsfMYrPcepfVFiOgqnPE5jO1CguofrfEbrPULufoLu/kIu/sUtfMRsfljr/Q+h+0tl/JmufcJuPwVrfiTz/kZqvcknPNRoPKky/um0vobp/YcpfZmo/NltfY1nvKUxvl7vvdJtPYtqPVDvfms1/o3q/VEku9Ki+09mfFZlfCb1/mfxPu54PmEx/q64/lsw/dTqvOUvflcsvflva1XAAAAH3RSTlMAKFwUi9XO/jUfW1zpJf4KqOcY1+1BrNHsPaPJhNJObHCDBwAAAM1JREFUKM/lkUcSgkAURAEJIyoK5sjA4ICggBJMiPH+Z5IRq3SBxQHs7avf1d2fov5aFZqu/IQ026/XebZaTLuctlssDjoPCm85zV3bsQN1vuie1fwguME49fSeKAIFAGrINJqzRp6K22/O5zVEaeJbltRpd+SRrLZbwvjF6cHxhCIHh9fLxvO87WppzueqKhhGq/nGjxDHUYYRQl94quTmdxtCjBNMzKUMmwQLxuQdzbVteAuikEQTa0QMUfVTzHHwj2Ils5SNWvaSP9QTHZEaQktZsJwAAAAASUVORK5CYII='>
             <meta name=viewport content='width=device-width, initial-scale=1'>
-
+            
             <script type='application/ld+json'>
                   {
                         "@context"              : "https://schema.org",
@@ -35,10 +35,10 @@
                         "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
                   }
             </script>
-
-
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            
             <script init>
                                                                                 console.clear();
                                                                                 console.log('extract-public-key-v2.0.html');
@@ -46,63 +46,63 @@
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var df=true,did='html'
         ;
-
+        
         var ext;
         var $;
         var datatype;
         var menumod;
         var keydown;
-
+        
         var hdr;
         var filemod;
         var log;
         
-
-
+        
+        
         
   //:
   
   
         async function init(){
-
-
+        
+        
               await load();
-
-
+              
+              
               menu                      = menumod();
-
+              
               mod.base.add({ext,$,datatype,keydown,menu,menumod});
               
-          
+              
               hdr                       = mod['x509-hdr'];
               //filemod                   = mod['file-mod'];
               log                       = mod['log-mod'];
-
-
+              
+              
               hdr.initmod({ext,$,menu});
               //filemod.initmod({ext,$,menu,menumod,complete,focus,source,editor,log});
               log.initmod({ext,$});
-
+              
               await Promise.all([
                     hdr.init(),
                     //filemod.init(),
                     log.init(),
               ]);
-
-
-          
+              
+              
+              
               initdom(document.body);
-
-
+              
+              
         }//init
-
-      
+        
+        
 (async()=>{
 
         mod.stack.add;
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
+        
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
@@ -110,19 +110,19 @@
               'js/dom/keydown/keydown.js',
         );
         [$,datatype,menumod,keydown]   = await promise;
-  
+        
         mod.stack.complete;
-              
+        
 })();
 
 
 
-  
-        async function load(){
 
-              //var nodeForge   = await import('https://cdn.jsdelivr.net/npm/node-forge/+esm');              
+        async function load(){
+        
+              //var nodeForge   = await import('https://cdn.jsdelivr.net/npm/node-forge/+esm');
               var txt         = localStorage['node-forge'];
-                            
+              
               if(!txt){
                     var url   = 'https://cdn.jsdelivr.net/npm/node-forge/+esm';
                                                                                 console.log(url);
@@ -137,42 +137,42 @@
               pki             = nodeforge.default.pki;
                                                                                 console.log(pki);
         }//load
-      
-
+        
+        
             </script init>
             
-
+            
             <style>
-        
+            
     html
                           {height:100%}
     body
                           {height:calc(100% - 42px);margin:20px;display:flex;flex-direction:column;font-family:arial}
-
+                          
   x509-hdr
     {margin-bottom:20px}
-                          
-    .hdr                  
+    
+    .hdr
                           {font-family:arial;position:relative;margin-top:0;margin-bottom:20px;background:white;
                             padding-bottom:10px;border-bottom:3px solid lightblue}
-    .hdr-icon             
+    .hdr-icon
                           {display:inline-block;text-align:center;background:whitesmoke;border-radius:5px;
                             border:1px solid lightgray;padding:5px 3px 0px;cursor:pointer;margin-right:10px;
                             min-width:50px}
-    .hdr-icon-img         
+    .hdr-icon-img
                           {width:25px;height:25px}
-    .hdr-icon-label       
+    .hdr-icon-label
                           {margin:2px 0 0}
-    .hdr-title            
+    .hdr-title
                           {position:absolute;left:0;right:0;z-index:0;margin:0 auto}
     .hdr-date
                           {float:right}
-
+                          
     input
                           {padding:5px 10px;font-size:16px}
     input[type=button]
                           {cursor:pointer}
-
+                          
     #view
                           {flex:1;display:flex;gap:10px}
     #cert-root
@@ -185,20 +185,20 @@
                           {flex:1}
     pre
                           {border:1px solid lightgray;font-size:16px;font-family:monospace}
-
-
+                          
+                          
   .visually-hidden
     {position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;
       clip:rect(0 0 0 0) !important;white-space:nowrap !important;border:0 !important}
-
-                          
+      
+      
             </style>
-                
+            
       </head>
-    
-    
+      
+      
       <body>
-
+      
             <x509-hdr component=grp>
                   <h1 class=visually-hidden>
                         extract public key
@@ -208,8 +208,8 @@
                         15 Nov 2025
                   </time>
             </x509-hdr>
-
-
+            
+            
 <!--
         <div class=hdr>
             <a class=hdr-icon href='https://javascript-2020.github.io/'>
@@ -261,40 +261,40 @@
                     </div>
                     <pre id=key>
                     </pre>
-              
+                    
               </div>
-        
+              
         </div>
-
+        
             <log-mod component></log-mod>
             
       </body>
-    
-    
+      
+      
       <script>
-
-
+      
+      
         var pki;
         
         var cert;
         var key;
-
+        
         
         var btn     = {};
         btn.cert    = {};
         btn.key     = {};
-
-
-  //:  
         
+        
+  //:
+  
         function initdom(){
-          
+        
               var rootnode                              = document.body;
               
-
+              
               hdr.initdom(rootnode);
-
-
+              
+              
               var root                                  = {};
               
               root.cert                                 = $(rootnode,'#cert-root');
@@ -312,19 +312,19 @@
               $(root.key,'[value=save]').onclick        = btn.key.save;
               
               key                                       = $(root.key,'#key');
-
-
-
+              
+              
+              
               log.initdom();
               
         }//initdom
-
-
+        
+        
   //:
   
   
         btn.cert.paste    = async function(e){
-          
+        
               var txt             = await navigator.clipboard.readText();
               cert.textContent    = txt;
               
@@ -332,15 +332,15 @@
         
         
         btn.cert.load   = function(e){
-          
+        
               var input         = document.createElement('input');
               input.type        = 'file';
               input.onchange    = onchange;
               input.click();
-
+              
               
               async function onchange(){
-                
+              
                     var file            = input.files[0];
                     var txt             = await file.text();
                     cert.textContent    = txt;
@@ -351,7 +351,7 @@
         
         
         btn.cert.extract    = async function(e){
-          
+        
               var pem           = cert.textContent.trim();
               var pem           = await extract(pem);
               key.textContent   = pem;
@@ -360,7 +360,7 @@
         
         
         btn.key.copy    = async function(e){
-          
+        
               var txt   = key.textContent.trim();
               await navigator.clipboard.writeText(txt);
               
@@ -368,7 +368,7 @@
         
         
         btn.key.save    = function(e){
-          
+        
               var txt       = key.textContent.trim();
               var blob      = new Blob([txt]);
               var url       = window.URL.createObjectURL(blob);
@@ -383,22 +383,22 @@
         
         
         async function extract(pem){
-          
+        
               var cert    = pki.certificateFromPem(pem);
               var key     = cert.publicKey;
               var pem     = pki.publicKeyToPem(key);
               return pem;
-
+              
         }//extract
         
         
-
-
-
+        
+        
+        
       </script>
-
-
-    
+      
+      
+      
 </html>
 
 
