@@ -121,7 +121,7 @@
         resolve.df    = false;
         
         function resolve(url,docroot='.'){
-                                                                                resolve.df && console.log('=== resolve ===');
+                                                                                resolve.df && console.log('=== resolve v2.0 ===');
                                                                                 resolve.df && console.log('url :',url);
                                                                                 resolve.df && console.log('docroot :',docroot);
               url         = decodeURI(url);
