@@ -1,6 +1,8 @@
 
 
-
+        var path      = require('path');
+        
+        
         resolve.df    = false;
         
         function resolve(url,docroot='.'){
