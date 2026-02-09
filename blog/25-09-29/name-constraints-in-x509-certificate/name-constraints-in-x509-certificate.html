@@ -11,15 +11,15 @@
             <title>
                   Name Constraints In x509 Certificate
             </title>
-
+            
             <meta name=description content='Learn how to configure name constraints in an X.509 certificate using OpenSSL. This hands-on guide features editable, runnable code directly in the browser, allowing you to generate and download custom certificates with ease.'>
-
+            
             <base href='https://ext-code.com/blog/25-09-29/name-constraints-in-x509-certificate/'>
             <link rel=canonical href='https://ext-code.com/blog/25-09-29/name-constraints-in-x509-certificate/name-constraints-in-x509-certificate.html'>
             
             <link rel=icon type='image/png' href='/blog/image/blog-30.png'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
-
+            
             <script type='application/ld+json'>
                   {
                         "@context"            : "https://schema.org",
@@ -35,18 +35,18 @@
             </script>
             
             
-
-
+            
+            
             <!--
             <script src='https://www.cryptool.org/wasm/openssl.js'></script>
             -->
             <script src='https://javascript-2020.github.io/libs/js/external/openssl/openssl.js'></script>
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
-
-
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
             
-
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            
+            
             <script init>
                                                                                 console.clear();
                                                                                 console.log('name-constraints-in-x509-certificate');
@@ -66,24 +66,24 @@
         var debug;
         
         var menu;
-
+        
         var hdr;
         var config;
         var cmd;
         var log;
-
-
+        
+        
   //:
   
   
         async function init(){
-
-
+        
+        
               menu                = menumod();
               
               mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
               
-
+              
               hdr                 = mod['blog-hdr'];
               config              = mod.config;
               cmd                 = mod.cmd;
@@ -103,11 +103,11 @@
               
               
               initdom(document.body);
-
+              
               
         }//init
-
-
+        
+        
 (async()=>{
 
         mod.stack.add;
@@ -126,7 +126,7 @@
         [$,datatype,menumod,keydown,debug,opensslmod]    = await promise;
         
         mod.stack.complete;
-
+        
 })();
 
             </script init>
@@ -135,8 +135,8 @@
             <link rel=stylesheet href='/blog/css/blog.css'>
             
             <style>
-
-
+            
+            
   html
     {height:100%;font-family:arial}
   body
@@ -149,42 +149,42 @@
   [component]
     {display:none}
     
-  .description 
+  .description
     {max-width:1000px;text-align:justify;border-left:4px solid #4a90e2;padding:1rem 2rem;
       background-color:#f9f9f9;font-family:system-ui,sans-serif;font-size:1rem;line-height:1.6;color:#333}
   .description>p
     {margin:0}
   .description > p+p
     {margin:10px 0}
-
+    
   code
     {font-family:monospace;background:whitesmoke}
   code.inline
     {display:inline;padding:5px 10px}
-
+    
   a
     {color:#4a90e2;text-decoration:none;font-weight:500}
-  a:hover 
+  a:hover
     {text-decoration:underline}
   .link-domain
     {font-size:0.85rem;color:#777;margin-left:0.25rem}
-  .link-domain::before 
+  .link-domain::before
     {content:'['}
   .link-domain::after
     {content:']'}
   .link-txt
     {}
-
+    
   input
     {font-size:16px;padding:5px 7px;box-sizing:border-box;}
   input[type=button]
     {cursor:pointer}
-
-
-
+    
+    
+    
   editor-root
     {border:2px solid #4a90e2;padding:10px}
-          
+    
   #desc
     {margin-bottom:30px}
   .sub-desc
@@ -198,18 +198,18 @@
     
   #cmd
     {display:block;margin-bottom:30px}
-
+    
     
   #fs
     {font-family:monospace;white-space:pre-wrap;margin:10px;padding:10px;border:1px solid lightblue;
       display:flex;flex-direction:column;line-height:1.4}
-
-
-    
+      
+      
+      
   #output
     {font-family:monospace;white-space:pre-wrap;margin:10px;padding:10px;border:1px solid lightgray;line-height:1.4}
-
-
+    
+    
     
   #ftr-hldr
     {position:relative}
@@ -219,16 +219,16 @@
   .hr
     {border-top:1px solid lightgray;margin:20px}
     
-
+    
     
             </style>
       </head>
       
       
       <body>
-
-
-            <blog-hdr component=grp1>      
+      
+      
+            <blog-hdr component=grp1>
                   <h1 class=title>
                         Add Name Constraints To A x509 Certificate
                   </h1>
@@ -236,7 +236,7 @@
                         29 Oct 2025
                   </time>
             </blog-hdr>
-
+            
             
             <div class=description>
             
@@ -359,14 +359,14 @@
                         Learn how to prevent abuse, tighten your PKI, and experiment with constraint generation using our interactive certificate builder tool.
                   </div>
             </div>
-
+            
             
             <div>
                   <div class=label>
                         ca-ext.ini
                   </div>
             </div>
-
+            
             
             <web-editor id=config fullsize src='ex/config.txt' component></web-editor>
             
@@ -387,8 +387,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
             
             <div id=output></div>
             
-
-
+            
+            
             <div id=ftr-hldr>
                   <div id=ftr></div>
             </div>
@@ -396,13 +396,13 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
             
             <log-mod component></log-mod>
             
-      
+            
       </body>
-
+      
       
       <script>
-
-
+      
+      
         var openssl;
         
         var root;
@@ -411,14 +411,14 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
         
         var btn   = {};
         
-
+        
   //:
   
-        
+  
         function initdom(rootnode){
         
               root                          = rootnode;
-
+              
               
               hdr.initdom();
               config.initdom({mode:'text'});
@@ -434,11 +434,11 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               config.focus();
               
         }//initdom
-
-
+        
+        
   //:
-
-
+  
+  
         btn.run   = async function(){
         
               output.clear();
@@ -465,8 +465,8 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                     return args;
                     
               });
-
-
+              
+              
               var n   = cmds.length;
               for(var i=0;i<n;i++){
               
@@ -476,7 +476,7 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                     output.disp(str);
                     
                     await openssl.run(...args);
-              
+                    
               }//for
               
               $('#fs').replaceChildren();
@@ -494,9 +494,9 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
                     $('#fs').append(a);
                     
               }//for
-        
+              
         }//run
-
+        
         
         
         output.clear    = function(){
@@ -535,12 +535,12 @@ openssl x509 -req -in ca.csr -signkey ca.key.pem -extfile ca-ext.ini -extensions
               console.log(str);
               
         }//stderr
-
-
-  
-  
-      </script>      
-            
+        
+        
+        
+        
+      </script>
+      
 </html>
 
 
