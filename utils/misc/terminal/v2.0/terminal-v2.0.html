@@ -13,7 +13,7 @@
 
       <head>
             <meta charset=utf-8>
-        
+            
             <title>
                   Node.js Terminal
             </title>
@@ -25,7 +25,7 @@
             
             <link rel='shortcut icon' type='image/x-icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAcCAMAAABBJv+bAAAAQlBMVEVHcEwyODg0ODkzNzgxNzc0ODk0ODkzODgzODgzNzgyNzgzODg0ODkzODgyNzgzODgzODgzODk0ODk0ODkyNzg0ODmObyvDAAAAFXRSTlMABvaSDbPHe15GL5u9hRxvO6rn2VJXM6DpAAAAxElEQVQoz71TyRbDIAh0Ie6J2fz/Xy3Y2pDktZ5aTiODCAMK0QxAPoFsgNk0JrMEQmEwyU5ndt4K2khQEzLhdNeQTznCWREegNEOOe18fRO8i6ooz+gRw1k9gMkyo/E9zY5yKMX+ihbLq8mjFB5N4UepYLGRmdM7OnLlpYtJXWQQkFCIpHcpfBVpCxeRV/KuodHzmfaNxuTmlpxmoEzc5bs0rnGdQQZeybWxRX6Vxf5rJJ116CxTZxX5Isf7Ive+wadP9AAuFg97y3bd7gAAAABJRU5ErkJggg=='>
             <meta name=viewport content='width=device-width, initial-scale=1'>
-
+            
             <script type='application/ld+json'>
                   {
                         "@context"              : "https://schema.org",
@@ -40,11 +40,11 @@
                         "softwareVersion"       : "1.0.0",
                         "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
                   }
-            </script>            
-
-
-            <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
+            </script>
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            
             <script init>
                                                                                 console.clear();
                                                                                 console.log('terminal-v2.0.html');
@@ -63,20 +63,20 @@
         var menu;
         
         var hdr;
-
-
+        
+        
         async function init(){
-
-          
+        
+        
               menu    = menumod();
-
+              
               mod.base.add({ext,$,datatype,keydown,menu,menumod});
               
               
               hdr     = mod['misc-hdr'];
               
               hdr.initmod({ext,$});
-
+              
               
               await Promise.all([
                     hdr.init(),
@@ -84,7 +84,7 @@
               
               
               initdom();
-
+              
               
         }//init
         
@@ -94,7 +94,7 @@
         mod.stack.add;
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
+        
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
@@ -103,21 +103,21 @@
               'js/debug/debug.js',
         );
         [$,datatype,menumod,keydown,debug]   = await promise;
-  
+        
         mod.stack.complete;
-              
+        
 })();
 
 
             </script>
-
-
+            
+            
             
             
             <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css'>
             
             <style>
-
+            
   html
     {height:100%;font-family:arial}
   body
@@ -129,35 +129,35 @@
     {padding:10px;border:2px solid lightgray;box-sizing:border-box}
     
             </style>
-      
+            
       </head>
       
       
       <body>
-
-
+      
+      
             <misc-hdr component=grp>
                   <img class=title src='images/terminal.png' style='top:-15px;height:50px' alt='Node.js Terminal'>
                   <time slot=date datetime=2025-10-31>31 Oct 2025</time>
             </misc-hdr>
-
-
+            
+            
             <div id=terminal></div>
-
-
+            
+            
       </body>
-
-
+      
+      
       <script>
-
+      
       
         function initdom(){
-          
+        
         }//initdom
-
-
-
-
+        
+        
+        
+        
         var theme   = {};
         
         theme.light   = {
@@ -182,12 +182,12 @@
               brightCyan            : '#00938d',
               brightWhite           : '#ffffff'
         };
-
-
+        
+        
         var x   = {
-          
+        
               reset                 : '\x1b[0m',
-            
+              
               black                 : '\x1b[30m',
               red                   : '\x1b[31m',
               green                 : '\x1b[32m',
@@ -196,7 +196,7 @@
               magenta               : '\x1b[35m',
               cyan                  : '\x1b[36m',
               white                 : '\x1b[37m',
-            
+              
               brightBlack           : '\x1b[90m',
               brightRed: '\x1b[91m',
               brightGreen: '\x1b[92m',
@@ -205,7 +205,7 @@
               brightMagenta: '\x1b[95m',
               brightCyan: '\x1b[96m',
               brightWhite: '\x1b[97m',
-            
+              
               bgRed: '\x1b[41m',
               bgGreen: '\x1b[42m',
               bgYellow: '\x1b[43m',
@@ -213,7 +213,7 @@
               bgMagenta: '\x1b[45m',
               bgCyan: '\x1b[46m',
               bgWhite: '\x1b[47m',
-            
+              
               bgBrightRed       : '\x1b[101m',
               bgBrightGreen     : '\x1b[102m',
               bgBrightYellow    : '\x1b[103m',
@@ -221,7 +221,7 @@
               bgBrightMagenta   : '\x1b[105m',
               bgBrightCyan      : '\x1b[106m',
               bgBrightWhite     : '\x1b[107m',
-            
+              
               bold              : '\x1b[1m',
               dim               : '\x1b[2m',
               italic            : '\x1b[3m',
@@ -229,11 +229,11 @@
               inverse           : '\x1b[7m',
               hidden            : '\x1b[8m',
               strikethrough     : '\x1b[9m',
-          
+              
               gray              : '\x1b[38;5;245m',
               
         };
-
+        
         var chr   = {
               warn          : '\u26A0',
               cross         : '\u274C',
@@ -245,26 +245,26 @@
               ok            : '\u1F197',
         };
         
-
+        
       </script>
       
       
       <script type=module>
                                                                                       console.clear();
               import {Terminal} from 'https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm';
-              import {FitAddon} from 'https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'              
+              import {FitAddon} from 'https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'
               import {WebContainer} from 'https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm'
               
               var term            = new Terminal({
-                
+              
                     fontFamily      : 'monospace',
                     fontSize        : 16,
                     lineHeight      : 1.0,
-
-                
+                    
+                    
                     theme           : theme.light,
                     rendererType    : 'dom',
-                
+                    
               });
               var fitAddon        = new FitAddon();
               term.loadAddon(fitAddon);
@@ -276,13 +276,13 @@
               var shell           = await webcontainer.spawn('jsh');
               var output          = new WritableStream({write(data){term.write(data)}});
               shell.output.pipeTo(output);
-      
+              
               var input           = shell.input.getWriter();
               term.onData(data=>input.write(data));
               
               term.focus();
-      
+              
       </script>
-
-</html>
       
+</html>
+
