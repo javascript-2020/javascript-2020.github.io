@@ -15,499 +15,313 @@
             
             <meta name=description content=''>
             
-            <base href='https://ext-code.com/html-components/list/file-mod/'>
-            <link rel=canonical href='https://ext-code.com/html-components/list/file-mod/file-mod.html'>
+            <base href='https://ext-code.com/html-components/list/dir-tree/'>
+            <link rel=canonical href='https://ext-code.com/html-components/list/dir-tree/dir-tree.html'>
             
-            <meta>
-            <link rel=icon href=''>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAaVBMVEVHcExfpvhYpPxapPtZo/lZpfxYpPtZpfxjp/Rxsv1ZpPpZpPtZpPpZpfxbpPheqPxcpvxorf1jqvxoputao/lbpPhmrP1ZpPtYo/tZo/hZpPtZpPqcyf+Rw/6Xxv+KwP6EvP53tf19uf1CLkbiAAAAHHRSTlMADp1YNLp7swf+YpU/wizc0vrpAiIX84VvHKlK4cmJ4wAAAVdJREFUKM+1ktmShCAMRVU2ARFxb5tF/f+PHIK92j1vM6myKuQYkns1y/4i8mEof6dlobX4hWHc09GtzfVSDZ/0qlvNg/Wr0SO7nOmlWb2zEN55Lj+WUsFat3O+ems3+g2HViLBuLfbdKaz8X5EkMnNBl2961tMsOuSanXr7N6iHOL+klqt3Y8r8yZuwRtGCCPyxgl3di0ODdrZYGgdA5H8wLXk1rUVpBQykeqY5Q/dcXgjajyNcfRNN2Z9P3TJbhKnB96OWzSHzzesCSGyThOjodEyeOxWpJZsEHioKcGxW4zc7LEzbCNv8KtoCit3SFwX40NLq7l+8wSRu3fEGLC7r/p07mDxYXl8gZ7RWBGKKXEcJ0GJzB8XFdH2SuESK/AAN5Ocri/2A5Yga5ZJ9+nPi7hk0FgBebr2xN2S8NJ9wxIhBZtShRCi5IRREQO2FpAUc5n9e/wA3jcXGxBAlmMAAAAASUVORK5CYII='>
             
             
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
+            <script src='https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js'></script>
+            <link rel=stylesheet href='/css/github-markdown-light.css'>
             
-            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
             
-            <script init>
-                                                                                console.clear();
-                                                                                console.log('file-mod.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var version   = 'v2.0'
-        ;
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
+            
+            <script>
+            
         var df=true,did='html'
         ;
         
+        var base        = 'https://libs.ext-code.com/html/';
+        var component   = 'file-mod';
+        
         var ace;
-        
-        var ext,$,datatype,keydown,menumod,debug
-        ;
-        
-        var menu;
-        
-        var hdr;
-        var log;
-        
+        var md;
+        var dirtree;
+        var snippet;
         var editor;
+        var log;
         
         
         async function init(){
-        
-              var menu    = menumod();
+                                                                                console.log('init');
+                                                                                
+              md    = markdownit();
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
+              await load();
               
-              
-              hdr         = mod['html-components-hdr'];
-              log         = mod['log-mod'];
-              
-              editor      = mod['editor'];
-              
-              
-              hdr.initmod({ext,$,menu});
-              log.initmod({ext,$});
-              
-              editor.initmod({ext,$,menu,ace});
+              dirtree       = mod['dir-tree'];
+              snippet       = mod['snippet-html-console'];
+              editor        = mod['web-editor'];
+              log           = mod['log-mod'];
               
               
-              await Promise.all([
-                    hdr.init(),
-                    log.init(),
-                    editor.init(),
-              ]);
+              await mod.auto();
               
               
               initdom();
               
+              
         }//init
         
         
-(async()=>{
-
-        mod.stack.add;
+        async function load(){
         
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+              var {error,txt}   = await get(base+component+'/readme.md');
+              
+              if(error){
+                    md_txt    = error;
+              }else{
+                    md_txt    = txt;
+              }
+              
+        }//load
         
-        var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js',
-        );
-        [$,datatype,menumod,keydown,debug]   = await promise;
         
-        mod.stack.complete;
-        
-})();
-
             </script>
-            
             
             <style>
             
+            
   html
-    {font-family:arial}
-    
-  #latest
-    {display:block;margin-top:50px;border:1px solid blue;border-radius:10px;padding:10px}
-    
-  h3
-    {color:blue}
-    
-  code
-    {display:block;white-space:pre;background:whitesmoke}
+    {height:100%;font-family:arial}
     
     
-  th {
-    text-align: left;margin-bottom:10px
-  }
-td, th {
-  padding: 5px 0px;
-}
+  body
+    {/*height:calc(100% - 40px);*/display:flex;flex-direction:column;gap:20px;align-items:center;margin:20px;padding-bottom:200px}
+    
+    
+  body>*
+    {max-width:1400px;width:100%;padding:0 20px;}
+    
+  [component],config
+    {display:none}
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+  input[type=checkbox]
+    {width:15px;height:15px;margin:0}
+    
+    
+  #demo-tree
+    {margin:20px 0;height:auto !important;overflow:visible;box-sizing:border-box;outline:none;border-radius:5px;
+      border:none !important;
+      /*border:1px solid lightgray !important;*/
+    }
+    
+  #view-hdr
+    {padding:10px;font-weight:bold;background:rgba(173,216,230,0.5);border:1px solid lightgray;border-radius:5px}
+    
+  #view
+    {border:1px solid lightgray;border-radius:5px;padding:10px}
+  web-editor
+    {}
+    
+    
+  .wunderbaum .wb-expander
+    {opacity:1 !important;transition:none !important}
+  .wb-row
+    {cursor:pointer}
+    
+    
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+  .spc
+    {flex:1;max-width:200px}
+    
+    
             </style>
             
       </head>
       
-      <script>
-      
-        var data    = {};
-        data.readmd   = `
-# description
-
-        `;
-        
-      </script>
-      
       <body>
       
-            <html-components-hdr component=grp1>
-                  <h2 class=title style='top:10px'>file-mod</h2>
-                  <time slot=date datetime=2025-12-11>11 Dec 2025</time>
+      
+            <html-components-hdr v2.0 component=grp1>
+                  <h2 class=title style='top:20px'>
+                        file-mod
+                  </h2>
+                  <time slot=date datetime=2026-02-09>
+                        09 Feb 2026
+                  </time>
             </html-components-hdr>
             
             
-            <h3>
-                  Description
-            </h3>
+            <div id=readme class=markdown-body></div>
             
-            <div class=description>
-            
-                  The file-mod manages various file access
-                  
-            </div>
-            
-            
-            <h3>
-                  Include
-            </h3>
-            
-            <code>
-                  <script type=text/html>
-                  
-                        <file-mod component></file-mod>
-                        
-                  </script>
-            </code>
-            
-            
-            <h3>
-                  initmod
-            </h3>
-              ext             = params.ext;
-              $               = params.$;
-              menumod         = params.menumod;
-              
-              menu            = params.menu;
-              complete        = params.complete;
-              source          = params.source;
-              focus           = params.focus;
-              log             = params.log;
-              
-            <div>
-                  <p>
-                        the web-editor is setup as the main demo component and as such to simplify the demo's, all options within its
-                        initmod are optional
-                  </p>
-                  <table>
-                        <tr>
-                              <th>
-                                    name
-                              </th>
-                              <th>
-                                    description
-                              </th>
-                        </tr>
-                        <tr>
-                              <td>
-                                    ext
-                              </td>
-                              <td>
-                                    the default loader helper
-                              </td>
-                        </tr>
-                        <tr>
-                              <td>
-                                    $
-                              </td>
-                              <td>
-                                    the dom helper module
-                              </td>
-                        </tr>
-                        <tr>
-                              <td>
-                                    menu | menumod
-                              </td>
-                              <td>
-                                    either the main menu or the menumod module
-                              </td>
-                        </tr>
-                        <tr>
-                              <td>
-                                    complete
-                              </td>
-                              <td>
-                                    an object with keys
-                                    <br>
-                                    load
-                                    <br>
-                                    complete.load, this is called when a file is loaded, the callback is called with parameters
-                                    <br>
-                                    file  an object representing the file
-                                    <br>
-                                    blob
-                                    <br>
-                                    a blob, the file data
-                              </td>
-                        </tr>
-                        <tr>
-                              <td>
-                                    source
-                              </td>
-                              <td>
-                                    a function called when save is called from outside the file-mod itself, it returns a blob
-                                    of the current file
-                              </td>
-                        </tr>
-                        <tr>
-                              <td>
-                                    focus
-                              </td>
-                              <td>
-                                    when menu's close, it is sometimes useful for user experience to refocus the active work area,
-                                    this function is called when that needs to happen
-                              </td>
-                        </tr>
-                        <tr>
-                              <td>
-                                    log
-                              </td>
-                              <td>
-                                    a reference to global log-mod, in case there is anything that needs to be communicated back to the user,
-                                    such as file not found, no current file
-                              </td>
-                        </tr>
-                  </table>
-                  
-            </div>
-            
-            
-                  <style>
-  [api] [attribute] [item], [api] [module] [item]
-    {margin:20px;white-space:pre}
-    
-                  </style>
-                  
-            <section api>
-                  <h3>
-                        API
-                  </h3>
-                  
-                  <div attribute>
-                        <h4>
-                              [attribute]
-                        </h4>
-                        
-                        <div item>
-                              no supported attributes
-                        </div>
-                  </div>
-                  
-                  <div module>
-                        <h4>
-                              [module]
-                        </h4>
-                        
-                        <div item>
-                              <div class=label>
-                                    name
-                              </div>
-                              <div class=name>
-                                    save ( file )
-                              </div>
-                              <div class=label>
-                                    parameters
-                              </div>
-                              <div class=params>
-                                    file, optional
-                                    
-                                    object : file object
-                              </div>
-                              <div class=return>
-                                    no return value
-                              </div>
-                              <div class=description>
-                                    save the current file, the blob is obtained from calling source
-                              </div>
-                        </div>
-                        
-                        <div item>
-                              <div class=name>
-                                    clear ()
-                              </div>
-                              <div class=params>
-                                    none
-                              </div>
-                              <div class=return>
-                                    does not return a value
-                              </div>
-                              <div class=description>
-                                    clear the current file
-                              </div>
-                        </div>
-                        
-                        <div item>
-                              <div class=name>
-                                    new(
-                                          filetype,ft,
-                                          
-                                          abs,path,
-                                          name,filename,
-                                          rel,
-                                          
-                                          kind,
-                                          size,
-                                          ctime,mtime,
-                                          
-                                          title,icon
-                                    )
-                                    
-                                    alias : newfile
-                              </div>
-                              <div class=parameters>
-                                    filetype | ft       string    : represents the filetype
-                                    
-                                    abs | path          string    : holds the file path
-                                    name | filename     string    : holds the filename, name is preferred, filename deprecated
-                                    rel                 string    : holds a relative path
-                                    kind                string    : file type
-                                    size                int       : holds file size in bytes
-                                    ctime               int       : file creation time, unix timestamp
-                                    mtime               int       : file modified time, unix timestamp
-                                    title               string    : used for a tooltip for the file, usually path+filename
-                                    icon                string    : url for file icon, usually data url
-                              </div>
-                              <div class=return>
-                                    file    : object, the file object
-                              </div>
-                              <div class=description>
-                                    creates a file object
-                              </div>
-                        </div>
-                        
-                        <div item>
-                              <div class=name>
-                                    export
-                              </div>
-                              <div class=parameters>
-                                    no parameters
-                              </div>
-                              <div class=return>
-                                    object, the exported file object, usually the serialised file object
-                              </div>
-                              <div class=description>
-                                    creates a file object
-                              </div>
-                        </div>
-                        
-                        <div item>
-                              <div class=name>
-                                    import
-                              </div>
-                              <div class=parameters>
-                                    file, object an exported file object
-                              </div>
-                              <div class=return>
-                                    object, file object
-                              </div>
-                              <div class=description>
-                                    imports an exported file object ( not yet implemented )
-                              </div>
-                        </div>
-                        
-                        
-                  </div>
-            </section>
-            
+            <hr>
             
             <section>
-                  <h3>
-                        Examples
-                  </h3>
-                  <div>
-                  </div>
-            </section>
             
-            
-            <section files>
-                  <style>
-                  
-  [files] [tabs]
-    {display:flex;text-align:center}
-    
-  [files] [tabs] div
-    {cursor:pointer;margin-bottom:10px;flex:1;border:1px solid lightgray;padding:5px 10px}
-    
-                  </style>
                   <h3>
-                        Files
+                        files
                   </h3>
                   
-                  <div tabs>
-                        <div>
-                              latest
-                        </div>
-                        <div>
-                              v2.0
-                        </div>
-                  </div>
-                  
-                  <script>
-                  
-        mod.stack.push(()=>{
-        
-              var base    = 'https://libs.ext-code.com/html/file-mod/';
-              var get     = url=>fetch(url).then(res=>res.text());
-              
-              $.all('[files] [tabs] div').forEach(div=>{
-              
-                    div.onclick   = async e=>{
-                    
-                          var txt     = div.textContent.trim();
-                          var src;
-                          switch(txt){
-                          
-                            case 'latest'   : src='file-mod.html';                  break;
-                            case 'v2.0'     : src='v2.0/file-mod-v2.0.html';        break;
-                            
-                          }//switch
-                          
-                          var txt   = await get(base+src);
-                          editor.setValue(txt);
-                          editor.filename(src);
-                          editor.filename.save.hide();
-                          
-                    }//onclick
-                    
-              });
-              
-        });
-        
-                  </script>
-                  
-                  <web-editor component id=editor mode=html fullsize src='https://libs.ext-code.com/html/file-mod/file-mod.html'></web-editor>
+                  <dir-tree component></dir-tree>
                   
             </section>
+            
+            <div id=view-hdr>
+            </div>
+            
+            <div id=view style='display:none'>
+                  <snippet-html-console component></snippet-html-console>
+                  <web-editor component fullsize></web-editor>
+            </div>
             
             
             <log-mod component></log-mod>
             
       </body>
       
-      
       <script>
       
       
-        document.querySelectorAll('code script').forEach(node=>node.parentNode.textContent=node.textContent);
+        var md_txt;
+        var cache   = {};
+        
+        
+        var callback    = {};
+        var show        = {};
+        
+        
+        
+        var files    = {
+              'source'    : {
+                    'v2.0'      : null,
+                    'latest'    : null,
+              },
+              'examples'    : {
+                    'filemod-v2.0-test.html'    : null,
+              },
+        };
+        
         
         
   //:
   
   
-  //:
-  
-        function initdom(){
-        
-              hdr.initdom();
-              log.initdom();
+        async function initdom(){
+                                                                                debug('initdom');
+                                                                                
+              var html                      = md.render(md_txt);
+              $('#readme').innerHTML        = html;
               
-              editor.initdom();
+              
+              //var node    = $('#demo-tree');
+              
+              files   = dirtree.build(files);
+              dirtree.display(files,{callback});
+              
+              
+              await show.examples('filemod-v2.0-test.html');
+              $('#view').style.display    = '';
+              
               
         }//initdom
         
+        
   //:
   
   
+        callback.file   = function(name,o){
+        
+              var par   = o.parent.name;
+                                                                                debug(par,name);
+              switch(par){
+              
+                case 'source'     : show.source(name);         break;
+                case 'examples'   : show.examples(name);       break;
+                
+              }//switch
+              
+        }//show
+        
+        
+        show.source   = async function(file){
+        
+              $('#view-hdr').textContent                = 'source : '+file;
+              $('web-editor').style.display             = '';
+              $('snippet-html-console').style.display   = 'none';
+              
+              var url   = base+component+'/';
+              if(file=='latest'){
+                    url  += `${component}.html`;
+              }else{
+                    url  += `${file}/${component}-${file}.html`;
+              }
+              
+              var {txt}   = await get(url);
+              if(!txt)return;
+              editor.setvalue(txt);
+              editor.filename(file);
+              
+        }//source
+        
+        
+        show.examples    = async function(file){
+        
+              $('#view-hdr').textContent                = 'examples : '+file;
+              $('web-editor').style.display             = 'none';
+              $('snippet-html-console').style.display   = '';
+              
+              var url     = base+component+'/examples/'+file;
+              var {txt}   = await get(url);
+              if(!txt)return;
+              
+              snippet.editor.setvalue(txt);
+              snippet.editor.filename(file);
+              snippet.clear();
+              
+        }//example
+        
+        
+        async function get(url){
+                                                                                debug('get',url);
+              if(cache[url]){
+                                                                                debug('cache');
+                    return {txt:cache[url]};
+              }
+              
+              var err;
+              try{
+              
+                    var res   = await fetch(url);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    return {error};
+              }
+              if(!res.ok){
+                    var error   = await res.text();
+                    log.red(error);
+                    return {error};
+              }
+              
+              var txt       = await res.text();
+              cache[url]    = txt;
+              return {txt};
+              
+        }//get
+        
+        
+        
+        
+        
+        
       </script>
       
-      
 </html>
+
 
