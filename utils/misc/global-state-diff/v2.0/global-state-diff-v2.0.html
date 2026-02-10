@@ -267,6 +267,10 @@
         function process(src){
                                                                                 console.log('process.script',src);
                                                                                 
+              var nitem   = item.cloneNode(true);
+              var $       = nitem.querySelector.bind(nitem);
+              $('#url').textContent       = src;
+              
               var iframe      = document.createElement('iframe');
               iframe.onload   = onload;
               document.body.append(iframe);
@@ -287,17 +291,23 @@
                     win.onerror       = err=>{
                                                                                 console.log('window.onerror');
                                                                                 console.error(err);
+                          $('#values').textContent    = err.toString();
+                          
                     }//onerror
                     
                     
                     win.onunhandledrejection    = e=>{
-                                                                                console.warn(`UNHANDLED PROMISE REJECTION: ${event.reason}`);
+                                                                                console.warn(`UNHANDLED PROMISE REJECTION: ${e.reason}`);
+                          $('#values').textContent    = e.reason;
+                          
                     }//onunhandledrejection
                     
                     
                     script.onerror    = err=>{
                                                                                 console.log('script.onerror');
                                                                                 console.error(err);
+                          $('#values').textContent    = err.toString();
+                          
                     }//onerror
                     
                     
@@ -320,9 +330,6 @@
                                                                                 
                           });
                           
-                          var nitem   = item.cloneNode(true);
-                          var $   = nitem.querySelector.bind(nitem);
-                          $('#url').textContent       = src;
                           $('#values').textContent    = str;
                           
                           output.append(nitem);
