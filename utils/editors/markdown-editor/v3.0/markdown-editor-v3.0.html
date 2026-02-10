@@ -12,9 +12,9 @@
                   Markdown Editor
             </title>
             
-            <meta name=description content='Write and preview Markdown instantly in your browser. A clean, fast, and distraction-free editor built for developers, writers, and technical bloggers.'>
+            <meta name=description content='Write and preview Markdown instantly in your browser. A fast, and distraction-free editor built for developers, writers, and technical bloggers.'>
             
-            <base href='https://ext-code.com/utils/editors/markdown-editor/'>
+            <base href='https://ext-code.com/utils/editors/markdown-editor/markdown-editor.html'>
             <link rel=canonical href='https://ext-code.com/utils/editors/markdown-editor/markdown-editor.html'>
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
@@ -51,6 +51,7 @@
         var ace;
         
         var hdr;
+        var mainmenu;
         var filemod;
         var publish;
         var editor;
@@ -64,6 +65,7 @@
                                                                                 debug('init',version);
                                                                                 
               hdr                       = mod['editors-hdr'];
+              mainmenu                  = mod['main-menu'];
               filemod                   = mod['file-mod'];
               publish                   = mod['publish-ui'];
               editor                    = mod['web-editor'];
@@ -71,18 +73,21 @@
               
               mod.base.add({complete,source,focus,filemod});
               
+              mainmenu.initmod({editor});
               publish.initmod({ui});
               editor.initmod({on,mode:'markdown'});
+              output.initmod({debug:debug.mod});
               
               await mod.auto();
               
   //:
   
-              hdr['page-source'].url('v3.0/markdown-editor-v3.0.html');
+              //hdr['page-source'].url('v3.0/markdown-editor-v3.0.html');
               
               icon.def    = $('[rel*=icon]').href;
               
-              window.onfocus            = ()=>editor && editor.focus();
+              
+              window.onfocus            = ()=>editor.focus();
               keydown.add(kd);
               menu.on.close             = ()=>editor.focus();
               
@@ -96,7 +101,7 @@
             </script>
             
             
-            <link rel=stylesheet href='/utils/css/utils.css'>
+            <link rel=stylesheet href='../css/utils.css' crossorigin=anonymous>
             
             <style id=page-inline>
             
@@ -160,7 +165,7 @@
             
             <div id=hdr>
             
-                  <main-menu component=page></main-menu>
+                  <main-menu v2.0 component=page></main-menu>
                   
                   <file-mod component></file-mod>
                   
