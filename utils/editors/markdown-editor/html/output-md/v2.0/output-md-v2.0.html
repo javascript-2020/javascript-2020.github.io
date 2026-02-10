@@ -31,7 +31,14 @@
                               <input type=checkbox checked>
                               html
                         </span>
-                        
+                        <span id=breaks class=radio>
+                              <input type=checkbox checked>
+                              breaks
+                        </span>
+                        <span id=linkify class=radio>
+                              <input type=checkbox checked>
+                              linkify
+                        </span>
                   </div>
                   
                   <div id=output class=markdown-body>
@@ -44,17 +51,22 @@
       <script>
       
 (function output_md({mod,dom,host}){
-                                                                    console.log('output');
+
   var obj   = {
         version   : 'v2.0',
   };
   
-      var $
+      var df=true,did='output_mod'
+      ;
+      
+      
+      var $,debug
       ;
       
       obj.initmod   = function(params){
       
-            $       = params.$;
+            $       = mod.rd(params,'$',$);
+            debug   = mod.rd(params,'debug',debug);
             
       }//initmod
       
@@ -73,6 +85,9 @@
   
       obj.init    = async function(){
       
+            debugger;
+            debug   = eval(debug);
+            
             await libs();
             
       }//init
@@ -119,13 +134,36 @@
   //:
   
   
-  
+/*
+
+      html            : true, // allow raw HTML
+      xhtmlOut        : false, // use <br> instead of <br />
+      breaks          : false, // convert \n to <br>
+      langPrefix      : 'language-', // CSS class prefix for fenced code blocks
+      linkify         : false, // autolink plain URLs
+      typographer     : false, // smart quotes, dashes, ellipses
+      quotes          : '“”‘’', // quote characters when typographer is on
+      highlight       : (str, lang) => { // custom code highlighting
+                              return ''; // return HTML or empty string to skip
+                        },
+      maxNesting      : 100, // block nesting limit
+      validateLink    : (url) => true,// custom link validation
+      linkTarget      : '', // e.g. '_blank' to force new tab
+      renderer        : null, // custom renderer instance
+      inline          : null // custom inline parser instance
+      
+*/
+
       obj.display   = async function(txt){
                                                                                 debug('display');
             await libs;
             
-            var opts            = {};
+            var opts            = {
+                  linkTarget    : '_blank',
+            };
             opts.html           = chk.html.checked;
+            opts.breaks         = chk.breaks.checked;
+            opts.linkify        = chk.linkify.checked;
                                                                                 debug(opts);
             var md              = markdownit(opts);
             var html            = md.render(txt);
@@ -151,8 +189,11 @@
       }//vert
       
       
-      
-      
+  //:
+  
+  
+  
+  
   return obj;
   
 //output_md
