@@ -58,26 +58,6 @@ import ( file )   | deserialise *file*
 test()|display test data
 
 
-## api
-
-
-### save ( file )
-
-reads a blob from source and saves it according to the file descriptor, then calls complete.save( file )
-
-
-### clear ( )
-
-clear the current file.  file-mod maintains a reference to the current file so that save can be called
-externally, ie say ctrl-s
-
-
-### new ()
-
-alias for newfile
-
-
-
 
 <!--
 
@@ -109,6 +89,24 @@ The promise rejects with:
 
 -->
 
+
+## api
+
+
+### save ( file )
+
+reads a blob from source and saves it according to the file descriptor, then calls complete.save( file )
+
+
+### clear ( )
+
+clear the current file.  file-mod maintains a reference to the current file so that save can be called
+externally, ie say ctrl-s
+
+
+### new ()
+
+alias for newfile
 
 
 <div id=file-descriptor style='scroll-margin-top: 80px'>
@@ -155,3 +153,9 @@ create a file descriptor object
 ### export ( [file] )
 
 serialise and return file or the current file
+
+
+
+
+
+
