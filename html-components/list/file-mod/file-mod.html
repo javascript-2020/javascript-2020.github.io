@@ -61,16 +61,15 @@
         
         
         async function init(){
-                                                                                console.log('init');
+                                                                                debug('init');
                                                                                 
               md    = markdownit({
                     html          : true,
                     breaks        : false,
-                    linkify       : true
+                    linkify       : true,
                     linkTarget    : '_blank',
               });
               
-              await load();
               
               dirtree       = mod['dir-tree'];
               snippet       = mod['snippet-html-console'];
@@ -78,7 +77,10 @@
               log           = mod['log-mod'];
               
               
-              await mod.auto();
+              await Promise.all([
+                    load(),
+                    mod.auto(),
+              ]);
               
               
               initdom();
