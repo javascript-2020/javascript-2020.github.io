@@ -105,16 +105,9 @@
             </script>
             
             
-            <link rel=stylesheet href='../css/component.css'>
+            <link rel=stylesheet href='../css/component.css' crossorigin=anonymous>
             
             <style>
-            
-  body
-    {margin-top:90px}
-    
-  html-components-hdr
-    {position:fixed;z-index:1;background:white;top:0px;padding-top:20px}
-    
             </style>
             
       </head>
@@ -196,12 +189,14 @@
               var html                      = md.render(md_txt);
               $('#readme').innerHTML        = html;
               
+              var keys      = Object.keys(files.examples);
+              var initial   = keys[0];
               
               files   = dirtree.build(files);
               dirtree.display(files,{callback});
               
+              await show.examples(initial);
               
-              await show.examples('filemod-v2.0-test.html');
               $('#view').style.display    = '';
               
               
