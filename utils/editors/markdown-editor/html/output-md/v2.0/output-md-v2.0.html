@@ -19,7 +19,7 @@
     {margin-right:5px}
     
     
-  #output
+  #output, web-editor
     {height:100%;border:2px solid lightgray;box-sizing:border-box;padding:10px}
     
     
@@ -61,6 +61,8 @@
                   <div id=output class=markdown-body>
                   </div>
                   
+                  <web-editor component mode=html style='display:none'></web-editor>
+                  
             </div>
             
       </template>
@@ -82,8 +84,8 @@
       
       obj.initmod   = function(params){
       
-            $       = mod.rd(params,'$',$);
-            debug   = mod.rd(params,'debug',debug);
+            $           = mod.rd(params,'$',$);
+            debug       = mod.rd(params,'debug',debug);
             
       }//initmod
       
@@ -92,12 +94,18 @@
   
       var md;
       
+      var cur         = {};
+      cur.mode        = 'md';
+      cur.txt         = null;
+      
       var shadow;
       var output;
       var chk         = {};
       
+      var editor;
       
       var btn         = {};
+      var show        = {};
       
       
   //:
@@ -106,8 +114,13 @@
       obj.init    = async function(){
                                                                                 debug=eval(debug);
                                                                                 debug('init',obj.version);
-                                                                                
-            await libs();
+            editor    = mod['web-editor'];
+            
+            
+            await Promise.all([
+                  libs(),
+                  mod.auto(),
+            ]);
             
             
       }//init
@@ -161,6 +174,14 @@
   
       btn.mode    = function(chk,id){
                                                                                 debug('btn.mode',id);
+            switch(id){
+            
+              case 'mode-md'      : cur.mode='md';          break;
+              case 'mode-html'    : cur.mode='html';        break;
+              
+            }//switch
+            display();
+            
       }//mode
       
       
@@ -187,9 +208,20 @@
       
 */
 
-      obj.display   = async function(txt){
+
+      obj.display   = async function(txt){return display(txt)}
+      
+      function displayt(txt){
                                                                                 debug('display');
             await libs;
+            
+            output.replaceChildren();
+            
+            txt   = txt||cur.txt;
+            if(!txt){
+                  return;
+            }
+            cur.txt   = txt;
             
             var opts            = {
                   linkTarget    : '_blank',
@@ -201,13 +233,36 @@
             var md              = markdownit(opts);
             var html            = md.render(txt);
             
-            output.innerHTML    = html;
+            display[cur.mode](html);
             
       }//show
       
       
-      obj.horiz   = function(){
+      display.md    = function(html){
+                                                                                debug('display.md');
+            output.innerHTML              = html;
+            
+            output.style.display          = '';
+            editor.__host.style.display   = 'none';
+            
+      }//md
       
+      
+      display.html    = function(html){
+                                                                                debug('display.html');
+            editor.set(html);
+            
+            output.style.display          = '';
+            editor.__host.style.display   = 'none';
+            
+      }//html
+      
+      
+  //:
+  
+  
+      obj.horiz   = function(){
+                                                                                debug('horiz');
             host.style.width    = '100%';
             host.style.height   = '50%';
             
@@ -215,11 +270,13 @@
       
       
       obj.vert    = function(){
-      
+                                                                                debug('vert');
             host.style.width    = '50%';
             host.style.height   = '100%';
             
       }//vert
+      
+      
       
       
   //:
