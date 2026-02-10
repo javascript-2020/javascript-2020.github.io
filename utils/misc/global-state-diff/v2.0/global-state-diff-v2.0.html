@@ -323,6 +323,15 @@
                     var script    = document.createElement('script');
                     script.src    = src;
                     
+                    
+                    script.onerror    = err=>{
+                    
+                                                                                console.log('script.onerror');
+                                                                                console.error(err);
+                                                                                
+                    }//onerror
+                    
+                    
                     script.onload   = ()=>{
                     
                           var afterKeys   = new Set(Object.keys(win));
@@ -350,9 +359,9 @@
                           output.append(nitem);
                           
                           
-                          console.log('🔍 New globals added by script:', added);
-                          
-                          
+                                                                                console.log('🔍 New globals added by script:', added);
+                                                                                
+                                                                                
                     }//onload
                     
                     doc.head.appendChild(script);
