@@ -15,10 +15,10 @@
             
             <meta name=description content='Inspect what scripts and modules really expose. Enter a url and see global changes from script tags and explore actual exports from imports.'>
             
-            <base href='https://ext-code.com/utils/misc/global-state-diff/'>
+            <base href='https://ext-code.com/utils/misc/global-state-diff/global-state-diff.html'>
             <link rel=canonical href='https://ext-code.com/utils/misc/global-state-diff/global-state-diff.html'>
             
-            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAB41BMVEVHcExEPzkoWIEtobIxrLcud5M+cYQtfJUrjKIqe5grgZ0upLMmTHsmS3cpu8MvpbMqZ4o4ZXwzkaQveJMsn7Aob48nf50qhZ8qnLAlVYIppLUsma0mW4YspLUlN2coYIYxo7EqgJwohKEoSnciGVMjKWMyoK8kMmQumaoytLstj6Q1mqg0sLoyr7kuiqAzq7coOGUqNmAmOmc6oqwqWYE2lacwrbcqc5IoiKItjKMvlqgpobIsZoQrhJsqhZ8pcpIoiKIqgJkqSHElPG0vjqMnYYguqrcoYIcnS3cndZcsaYgpjKQmWoQpgZwuobImOm8ogp8qe5ktqbcnWIImVH4ro7QlOGwrmq0tq7glOW0odpUlS3omQnQpaowqpbYnUXwrpbUkJV4gFE8iG1wjHFskMWgiG1gvtsAru8Mus7wttL4rYIcqf50raIswlKgrkKcpf5wtlqsvl6otjKEpaYkplKopZYUuZIImQ3Aqk6k1iJ0mQXErqLYrYIMpi6I0qbYlX4gkQ3EspLQslKkojKYlOGsskacrmKsrYoUmWoQpeJcnY4spgZ0xh54ro7UocpUofp0lU34sa4glWYYmaJAnpbcnm7Amf54ngqAniKMnjacnhaEleJojJ2YniaQoobQlXogCX05qAAAAk3RSTlMAAc3TZSwJVLbC0sveOf44OQMoFte59sXm7PjG9t6ruK7C92lApmg6OUFpF3hSNTAZDmoOayCEZ+hkcvojisuw9Ycpe6TW08zI9YTd2dq63fTO4Oi939De3NvQ2NKe8cPZZUz668x5neuix2fjZJa7yZ5NQnD6j0xP6E9h1aXNsfqm4sz2xr23SODZ6NN97OXs1pCs7VkWAAABjElEQVQoz2NgoBdgMxZyMmTDISls2dvO7SHvZS6MRZJRQFExcJps9BQuTvFiTOmO/gnyc6YlRE+Z1W5RWYQuaxMbZT8RIh3K4e1iiiorGKskMimEU1qh0V3cz5FJrFAQRdqpe2Zf/GSlOO5WyQApacnpEvoo0tULZobHTJ49Nch/8oypNT7T57OgSDvLODSHyShJuYXJBEi5uYtZm6FIGzHZucgxcTErgIj62kARHVTdC+aFRwINj4gEGh7hOn0+qu6KhpkSYLtB0syd0611UaQNXGfGyQf7igAN7wnlkJwugubxEt82r/guCW6Pbm9uW1EuK/TIKvOM8pkzTZZnyiyRutI8jGizERUT9QRJt3A45AthiU9HccVpTTxTODlttbHFN6NQlZV0iEk5KyPO9MLOjlUjPmnDNFV1CIu1wE4PwtJP1zGGSiclz001UlY2yc61nzGPw1JLTY2FJYuPDxZwKilzVdV5eXkFBMxzLLT0NDT4+fkz+TI0YUlFJdEA6gZWmLO1WTQFaZ1vAIUhYF6nuTxlAAAAAElFTkSuQmCC'>
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAB41BMVEVHcExEPzkoWIEtobIxrLcud5M+cYQtfJUrjKIqe5grgZ0upLMmTHsmS3cpu8MvpbMqZ4o4ZXwzkaQveJMsn7Aob48nf50qhZ8qnLAlVYIppLUsma0mW4YspLUlN2coYIYxo7EqgJwohKEoSnciGVMjKWMyoK8kMmQumaoytLstj6Q1mqg0sLoyr7kuiqAzq7coOGUqNmAmOmc6oqwqWYE2lacwrbcqc5IoiKItjKMvlqgpobIsZoQrhJsqhZ8pcpIoiKIqgJkqSHElPG0vjqMnYYguqrcoYIcnS3cndZcsaYgpjKQmWoQpgZwuobImOm8ogp8qe5ktqbcnWIImVH4ro7QlOGwrmq0tq7glOW0odpUlS3omQnQpaowqpbYnUXwrpbUkJV4gFE8iG1wjHFskMWgiG1gvtsAru8Mus7wttL4rYIcqf50raIswlKgrkKcpf5wtlqsvl6otjKEpaYkplKopZYUuZIImQ3Aqk6k1iJ0mQXErqLYrYIMpi6I0qbYlX4gkQ3EspLQslKkojKYlOGsskacrmKsrYoUmWoQpeJcnY4spgZ0xh54ro7UocpUofp0lU34sa4glWYYmaJAnpbcnm7Amf54ngqAniKMnjacnhaEleJojJ2YniaQoobQlXogCX05qAAAAk3RSTlMAAc3TZSwJVLbC0sveOf44OQMoFte59sXm7PjG9t6ruK7C92lApmg6OUFpF3hSNTAZDmoOayCEZ+hkcvojisuw9Ycpe6TW08zI9YTd2dq63fTO4Oi939De3NvQ2NKe8cPZZUz668x5neuix2fjZJa7yZ5NQnD6j0xP6E9h1aXNsfqm4sz2xr23SODZ6NN97OXs1pCs7VkWAAABjElEQVQoz2NgoBdgMxZyMmTDISls2dvO7SHvZS6MRZJRQFExcJps9BQuTvFiTOmO/gnyc6YlRE+Z1W5RWYQuaxMbZT8RIh3K4e1iiiorGKskMimEU1qh0V3cz5FJrFAQRdqpe2Zf/GSlOO5WyQApacnpEvoo0tULZobHTJ49Nch/8oypNT7T57OgSDvLODSHyShJuYXJBEi5uYtZm6FIGzHZucgxcTErgIj62kARHVTdC+aFRwINj4gEGh7hOn0+qu6KhpkSYLtB0syd0611UaQNXGfGyQf7igAN7wnlkJwugubxEt82r/guCW6Pbm9uW1EuK/TIKvOM8pkzTZZnyiyRutI8jGizERUT9QRJt3A45AthiU9HccVpTTxTODlttbHFN6NQlZV0iEk5KyPO9MLOjlUjPmnDNFV1CIu1wE4PwtJP1zGGSiclz001UlY2yc61nzGPw1JLTY2FJYuPDxZwKilzVdV5eXkFBMxzLLT0NDT4+fkz+TI0YUlFJdEA6gZWmLO1WTQFaZ1vAIUhYF6nuTxlAAAAAElFTkSuQmCC'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
             
             <script type='application/ld+json'>
@@ -41,27 +41,15 @@
             <script src='https://javascript-2020.github.io/stackoverflow/libs/stringify.js'></script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
-            <script init>
-                                                                                console.clear();
+            <script>
                                                                                 console.log('global-state-diff.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
-        ;
+        var version='v2.0';
         
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
-        var debug;
         var inspect;
         
         var hdr;
-        
-        
         
         var detect;
         
@@ -70,20 +58,13 @@
   //:
   
   
-        async function init(){
+        async function ready(){
                                                                                 debug('init',version);
                                                                                 
-              var menu    = menumod();
-              
-              mod.base.add({ext,$,datatype,keydown,menu,menumod});
-              
-              
               hdr   = mod['misc-hdr'];
               
-              hdr.initmod({ext,$});
-              
               await Promise.all([
-                    hdr.init(),
+                    mod.auto(),
               ]);
               
               
@@ -93,30 +74,6 @@
         }//init
         
         
-  //:
-  
-  
-(async()=>{
-
-        mod.stack.add;
-        
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-        
-        var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js.api',
-              'js/string/inspect/inspect.js'
-        );
-        [$,datatype,menumod,keydown,debug,inspect]   = await promise;
-        
-        mod.stack.complete;
-        
-})();
-
-
             </script>
             
             
@@ -184,7 +141,9 @@
       
             <misc-hdr component=grp style='position:relative'>
                   <img class=title src='images/global-state-diff.png' style='top:-5px;height:40px' alt=global-state-diff>
-                  <time slot=date datetime=2025-10-18>18 Oct 2025</time>
+                  <time slot=date datetime=2025-10-18>
+                        18 Oct 2025
+                  </time>
             </misc-hdr>
             
             <section id=script>
