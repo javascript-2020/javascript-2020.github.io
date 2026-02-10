@@ -8,11 +8,33 @@
             
             <style>
             
-                  #output {height:100%;border:2px solid lightgray;box-sizing:border-box;padding:10px}
-                  
+  #root
+    {height:100%;display:flex;flex-direction:column;gap:10px}
+    
+  #hdr
+    {display:flex}
+  .radio
+    {border:1px solid lightgray;padding:2px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center}
+    
+    
+  #output
+    {height:100%;border:2px solid lightgray;box-sizing:border-box;padding:10px}
+    
             </style>
             
-            <div id=output class=markdown-body>
+            <div id=root>
+            
+                  <div id=hdr>
+                        <span id=html class=radio>
+                              <input type=checkbox checked>
+                              html
+                        </span>
+                        
+                  </div>
+                  
+                  <div id=output class=markdown-body>
+                  </div>
+                  
             </div>
             
       </template>
@@ -40,8 +62,8 @@
       var md;
       
       var shadow;
-      
       var output;
+      var chk         = {};
       
       
   //:
@@ -69,7 +91,6 @@
             
             function onload(){
             
-                  md    = markdownit();
                   resolve();
                   
             }//onload
@@ -84,6 +105,9 @@
       
             shadow              = host.shadowRoot;
             
+            var hdr             = $(shadow,'#hdr');
+            chk.html            = $.chkbox(shadow,'#html');
+            
             output              = $(shadow,'#output');
             
             
@@ -95,10 +119,15 @@
   
   
       obj.display   = async function(txt){
-      
+                                                                                debug('display');
             await libs;
             
+            var opts            = {};
+            opts.html           = chk.html.checked;
+                                                                                debug(opts);
+            var md              = markdownit(opts);
             var html            = md.render(txt);
+            
             output.innerHTML    = html;
             
       }//show
@@ -120,9 +149,13 @@
       }//vert
       
       
+      
+      
   return obj;
   
-})//output_md
+//output_md
+})
+
 
       </script>
       
