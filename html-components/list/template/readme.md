@@ -1,13 +1,15 @@
 ## Description
 
-The web-console provides a console ( like dev tools ) in a webpage
+The file-mod manages file access
 
 
 ## Include
 
+requires component v3.0
+
 ```
 
-      <web-console component></web-console>
+      <file-mod component></file-mod>
       
 ```
 
@@ -16,28 +18,28 @@ The web-console provides a console ( like dev tools ) in a webpage
 
 name      | description
 ----------|------------
-$         |	the dom helper library
-ace       | a global reference to ace editor, otherwise each instance of the web-console will load its own ace editor, specifying this ensures its only loaded once
-embed     | allows reading the supported attributes from another node
-config    | config parameters, see below
-echo      | whether to echo the output to the dev tools console
+ext       |       helper loader library
+$         |       various dom helper functions
+menumod   |       the menumod library
+ |
+menu      |       reference to the menu to add its menu's to
+source    |       the source text
+focus     |       function to reset focus
+log       |       reference to log-mod component
+ |
+complete  |       handles loading ( complete.load ) and saving ( complete.save )
 
 
-## api
-
-### attribute
+## attribute
 
 these attribute can be defined on the html tag itself
 
 attribute     | description
 ---------     |-----------
-fullsize      | the console will keep expanding to show all content
-h \| height   | sets the height of the console
+none | no supported attributes
 
 
-### module
-
-methods without a description are not currently implmented and are passed through to dev tools
+## module
 
 
 name|description
@@ -47,33 +49,109 @@ initmod|standard function for importing local dependencies
 init|standard initialisation function
 initdom|standard function to setup the dom
  | 
-**console** | 
-assert|
-clear|clear the console
-count|
-countReset|
-debug|write debug information to the console
-dir|
-dirxml|
-error|display error information in the console
-group|
-groupCollapsed|
-groupEnd|
-info|
-log|log data to the console
-profile|
-profileEnd|
-table|
-time|
-timeEnd|
-timeLog|
-timeStamp|
-trace|
-warn|display warn information in the console
- | 
-**extended** | 
-write|write to the console, without adding a newline character at the end of the output
-json|write json stringified output to the console
- | 
- | 
-test|display test data in the console, for quick tests
+save ( file )   | read source blob and save under *file* or current file
+clear ()        | clear the current file
+new ( ...opts )   | alias for newfile
+[newfile](#file-descriptor) ( ...opts )   | create a new file desciptor object
+export ( file )   | serialise *file*
+import ( file )   | deserialise *file*
+test()|display test data
+
+
+## api
+
+
+### save ( file )
+
+reads a blob from source and saves it according to the file descriptor, then calls complete.save( file )
+
+
+### clear ( )
+
+clear the current file.  file-mod maintains a reference to the current file so that save can be called
+externally, ie say ctrl-s
+
+
+### new ()
+
+alias for newfile
+
+
+
+
+<!--
+
+### doThing(input, [options], ...extras)
+
+Performs the main operation.
+
+#### Parameters
+- **input** — string or object to process  
+- **[options]** — optional settings  
+  - **[options.mode="fast"]** — processing mode  
+  - **[options.verbose=false]** — enable verbose output  
+- **...extras** — additional values appended to the operation
+
+#### Returns
+- **Promise<Result>**
+
+#### Result
+- **success** — boolean indicating whether the operation succeeded  
+- **value** — the processed output  
+- **warnings** — array of strings describing non‑fatal issues  
+- **durationMs** — number of milliseconds the operation took  
+
+#### Errors
+The promise rejects with:
+- **TypeError** — thrown when `input` is missing or invalid  
+- **OperationError** — thrown when processing fails internally  
+- **TimeoutError** — thrown when the operation takes too long
+
+-->
+
+
+
+<div id=file-descriptor style='scroll-margin-top: 80px'>
+
+### newfile ({filetype,path,name,rel,kind,size,ctime,mtime,atime,title,icon})
+
+</div>
+
+create a file descriptor object
+
+#### Parameters
+
+- **filetype || ft** = the filetype ( localfile,github,googlestorage ... )
+
+- **abs**     = the absolute path of the file
+
+- **path**    = path of the file
+
+- **name**    = the name of the file
+
+- **rel**     = relative path for the file, should this be relevant
+
+- **kind**    = kind of file structure this file object represents ( file,directory )
+
+- **size**    = the size of the file in bytes
+
+- **ctime**   = the create time of the file 
+
+- **mtime**   = the modified time of the file
+
+- **atime**   = the last access time of the file
+
+- **title**   = the title for the file
+
+- **icon**    = an icon for the file
+
+#### Returns
+
+- **Object** — the file descriptor
+
+#### Errors
+- **none**
+
+### export ( [file] )
+
+serialise and return file or the current file
