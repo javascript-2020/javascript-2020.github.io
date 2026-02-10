@@ -237,7 +237,6 @@
               item.remove();
               
               go.onclick    = function(){
-              console.log('go.onclick');
               
                     process(src.value);
                     
@@ -285,11 +284,20 @@
                     script.src    = src;
                     
                     
-                    script.onerror    = err=>{
+                    win.onerror       = err=>{
+                                                                                console.log('window.onerror');
+                                                                                console.error(err);
+                    }//onerror
                     
+                    
+                    win.onunhandledrejection    = e=>{
+                                                                                console.warn(`UNHANDLED PROMISE REJECTION: ${event.reason}`);
+                    }//onunhandledrejection
+                    
+                    
+                    script.onerror    = err=>{
                                                                                 console.log('script.onerror');
                                                                                 console.error(err);
-                                                                                
                     }//onerror
                     
                     
