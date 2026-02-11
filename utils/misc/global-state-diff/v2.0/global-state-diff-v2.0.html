@@ -121,13 +121,13 @@
     
     
   #output, #output2
-    {white-space:pre;font-family:monospace;font-size:16px}
+    {font-family:monospace;font-size:16px}
   #item, #item2
     {margin:20px 0;border:1px solid lightgray;padding:10px;overflow:auto}
   #src
     {}
   #values
-    {}
+    {white-space:pre}
   #values.error
     {color:red}
     
@@ -224,6 +224,8 @@
         var item2;
         
         
+        var process   = {};
+        
   //:
   
   
@@ -234,14 +236,15 @@
               $('#script .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src.value=txt};
               $('#script .copy').onclick    = e=>navigator.clipboard.writeText(src.value);
               
+              src.onkeydown                 = e=>e.key=='Enter' && process.script(src.value);
+              //src.value='https://cdn.jsdelivr.net/npm/markdown-it-container@4.0.0/+esm';
+              
               item    = $('#item');
               item.remove();
               
-              go.onclick    = function(){
+              go.onclick                    = e=>process.script(src.value);
+              src.focus();
               
-                    process(src.value);
-                    
-              }//onclick
               
               
               
@@ -253,7 +256,7 @@
               
               go2.onclick    = function(){
               
-                    process2(src2.value);
+                    process.import(src2.value);
                     
               }//onclick
               
@@ -265,12 +268,17 @@
   //:
   
   
-        function process(src){
+        process.script    = function(src){
                                                                                 console.log('process.script',src);
                                                                                 
-              var nitem   = item.cloneNode(true);
-              var $       = nitem.querySelector.bind(nitem);
+              var nitem                   = item.cloneNode(true);
+              var $                       = nitem.querySelector.bind(nitem);
               $('#url').textContent       = src;
+              var values                  = $('#values');
+              values.remove();
+              var nvalues;
+              var clone                   = ()=>(nvalues=values.cloneNode(true),nitem.append(nvalues));
+              output.append(nitem);
               
               var iframe      = document.createElement('iframe');
               iframe.onload   = onload;
@@ -287,64 +295,72 @@
                     
                     var script    = document.createElement('script');
                     script.src    = src;
+                    doc.head.appendChild(script);
                     
                     
-                    win.onerror       = err=>{
+                    win.onerror       = function(err){
                                                                                 console.log('window.onerror');
+                                                                                console.log(arguments);
                                                                                 console.error(err);
-                          $('#values').textContent    = err.toString();
-                          $('#values').classList.add('error');
+                          clone();
+                          nvalues.textContent    = err;
+                          nvalues.classList.add('error');
                           
                     }//onerror
                     
                     
-                    win.onunhandledrejection    = e=>{
+                    win.onunhandledrejection    = function(e){
                                                                                 console.warn(`UNHANDLED PROMISE REJECTION: ${e.reason}`);
-                          $('#values').textContent    = e.reason;
-                          $('#values').classList.add('error');
+                                                                                console.log(arguments);
+                          clone();
+                          nvalues.textContent    = e.reason;
+                          nvalues.classList.add('error');
                           
                     }//onunhandledrejection
                     
                     
-                    script.onerror    = err=>{
+                    script.onerror    = function(err){
                                                                                 console.log('script.onerror');
+                                                                                console.log(arguments);
                                                                                 console.error(err);
-                          $('#values').textContent    = err.toString();
-                          $('#values').classList.add('error');
+                          clone();
+                          nvalues.textContent    = err.toString();
+                          nvalues.classList.add('error');
                           
                     }//onerror
                     
                     
-                    script.onload   = ()=>{
+                    script.onload   = function(){
                                                                                 console.log('script.onload');
+                                                                                console.log(arguments);
                           var afterKeys   = new Set(Object.keys(win));
                           var added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
                           
                           var str   = '';
                           added.forEach(key=>{
                           
+                                clone();
+                                
                                 var s     = win[key].toString();
                                 var s1    = s.slice(0,80);
                                 if(s.length>s1.length){
                                       s1   += ` ... ( ${s.length} )`;
                                 }
-                                str  += `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
                                 
+                                var str  = `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
+                                nvalues.textContent   = str;
                                                                                 console.log(`window.${key} =`,win[key]);
                                                                                 
                           });
                           
-                          $('#values').textContent    = str;
-                          
-                          output.append(nitem);
+                          //$('#values').textContent    = str;
                           
                           
-                                                                                console.log('🔍 New globals added by script:', added);
+                          
+                                                                                console.log('New globals :', added);
                                                                                 
                                                                                 
                     }//onload
-                    
-                    doc.head.appendChild(script);
                     
               }//onload
               
@@ -353,7 +369,7 @@
         
         
         
-        async function process2(src){
+        process.import    = async function(src){
         
               var mod   = await import(src);
                                                                                 //console.log(inspect(mod));
