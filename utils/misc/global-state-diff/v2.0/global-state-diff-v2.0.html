@@ -128,7 +128,8 @@
     {}
   #values
     {}
-    
+  #values.error
+    {color:red}
     
   iframe
     {display:none}
@@ -292,6 +293,7 @@
                                                                                 console.log('window.onerror');
                                                                                 console.error(err);
                           $('#values').textContent    = err.toString();
+                          $('#values').classList.add('error');
                           
                     }//onerror
                     
@@ -299,6 +301,7 @@
                     win.onunhandledrejection    = e=>{
                                                                                 console.warn(`UNHANDLED PROMISE REJECTION: ${e.reason}`);
                           $('#values').textContent    = e.reason;
+                          $('#values').classList.add('error');
                           
                     }//onunhandledrejection
                     
@@ -307,6 +310,7 @@
                                                                                 console.log('script.onerror');
                                                                                 console.error(err);
                           $('#values').textContent    = err.toString();
+                          $('#values').classList.add('error');
                           
                     }//onerror
                     
