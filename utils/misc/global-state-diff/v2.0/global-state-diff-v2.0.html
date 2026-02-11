@@ -123,7 +123,7 @@
   #output, #output2
     {font-family:monospace;font-size:16px}
   #item, #item2
-    {margin:20px 0;border:1px solid lightgray;padding:10px;overflow:auto}
+    {margin:20px 0;border:1px solid lightgray;padding:10px;overflow:auto;display:flex;flex-direction:column;gap:10px}
   #src
     {}
   #values
@@ -293,7 +293,7 @@
                     var beforeKeys    = new Set(Object.keys(win));
                     
                     
-                    var script    = document.createElement('script');
+                    var script    = doc.createElement('script');
                     script.src    = src;
                     doc.head.appendChild(script);
                     
@@ -341,94 +341,180 @@
                           
                                 clone();
                                 
-                                var s     = win[key].toString();
-                                var s1    = s.slice(0,80);
-                                if(s.length>s1.length){
-                                      s1   += ` ... ( ${s.length} )`;
-                                }
+                                var s1    = toString(win[key]);
+                                var str   = `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
                                 
-                                var str  = `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
                                 nvalues.textContent   = str;
                                                                                 console.log(`window.${key} =`,win[key]);
-                                                                                
                           });
                           
-                          //$('#values').textContent    = str;
-                          
-                          
-                          
                                                                                 console.log('New globals :', added);
-                                                                                
-                                                                                
                     }//onload
                     
               }//onload
               
-        }//process
+        }//script
         
         
         
         
-        process.importx    = async function(src){
+        process.import    = async function(src){
         
-              var mod   = await import(src);
-                                                                                //console.log(inspect(mod));
-                                                                                
-              var str   = '';
-              for(var key in mod){
-              
-              
-                    var s1    = '[ null ]';
-                    
-                    if(!mod[key]){
-                          str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
-                    }else{
-                          if(datatype(mod[key])=='object'){
-                                s1    = tostring(mod[key]);
-                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
-                                for(var prop in mod[key]){
-                                
-                                      var s2    = tostring(mod[key][prop]);
-                                      str  += '      '+prop+`   [ ${typeof mod[key][prop]} ]      :   ${s2}`+'\n';
-                                      
-                                }//for
-                          }else{
-                                s1    = tostring(mod[key]);
-                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
-                          }
-                    }
-                    
-              }//for
-              
-              
-              var nitem   = item2.cloneNode(true);
-              
-              var $   = nitem.querySelector.bind(nitem);
+              var nitem                   = item2.cloneNode(true);
+              var $                       = nitem.querySelector.bind(nitem);
               $('#url').textContent       = src;
-              $('#values').textContent    = str;
-              
+              var values                  = $('#values');
+              var nvalues;
+              var clone                   = ()=>(nvalues=values.cloneNode(true),nitem.append(nvalues));
               output2.append(nitem);
               
               
-              function tostring(v){
+              var {win,doc}   = await niframe();
               
-                    var s     = v.toString();
-                    var s1    = s.slice(0,80);
-                    if(s.length>s1.length){
-                          s1   += ` ... ( ${s.length} )`;
-                    }
-                    return s1;
+              var output      = str=>(clone(),nvalues.textContent=str);
+              var js          = fnstr(fn);
+                                                                                console.log(js);
+              win.eval(js);
+              win.fn(src,output,datatype,tostring);
+              
+              
+              async function fn(src,output,datatype,tostring){
+              
+                    var mod   = await import(src);
+                                                                                //console.log(inspect(mod));
+                                                                                
+                    var str   = '';
+                    for(var key in mod){
                     
-              }//tostring
+                          var s1      = '[ null ]';
+                          var type    = datatype(mod[key]);
+                          
+                          if(!mod[key]){
+                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                          }else{
+                                if(datatype(mod[key])=='object'){
+                                      s1    = tostring(mod[key]);
+                                      str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                                      for(var prop in mod[key]){
+                                      
+                                            var s2    = tostring(mod[key][prop]);
+                                            str  += '      '+prop+`   [ ${typeof mod[key][prop]} ]      :   ${s2}`+'\n';
+                                            
+                                      }//for
+                                }else{
+                                      s1    = tostring(mod[key]);
+                                      str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                                }
+                          }
+                          
+                    }//for
+                    
+                    output(str);
+                    
+              }//fn
               
-        }//process
+        }//import
+        
+        
+  //:
+  
+  
+        function niframe(){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var iframe    = document.createElement('iframe');
+              iframe.style.cssText    = 'display:none';
+              iframe.onload           = onload;
+              document.body.append(iframe);
+              
+              return promise;
+              
+              
+              function onload(){
+              
+                    var win   = iframe.contentWindow;
+                    var doc   = iframe.contentDocument;
+                    resolve({win,doc,iframe});
+                    
+              }//onload
+              
+        }//niframe
+        
+        
+        function datatype(v,short=true){
+        
+              var str   = Object.prototype.toString.call(v);
+              
+              if(short){
+                    str   = str.slice(8,-1);
+                    str   = str.toLowerCase();
+              }
+              
+              return str;
+              
+        }//datatype
+        
+        
+        function tostring(v){
+        
+              var s     = v.toString();
+              var s1    = s.slice(0,80);
+              if(s.length>s1.length){
+                    s1   += ` ... ( ${s.length} )`;
+              }
+              return s1;
+              
+        }//tostring
+        
+        
+        function fnstr(fn,full=true){
+        
+              var str   = fn.toString();
+              if(full){
+                    return str;
+              }
+              var i1    = str.indexOf('{');
+              var i2    = str.lastIndexOf('}');
+              var fnstr   = str.slice(i1+1,i2);
+              return fnstr;
+              
+        }//fnstr
+        
+        
+        async function get(url){
+        
+              var err;
+              try{
+              
+                    var res   = await fetch(url);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    return {error};
+              }
+              
+              var txt   = await res.text();
+              if(!res.ok){
+                    var error   = `[ ( ${res.status} ) ${res.statusText} ] ${txt}`;
+                    return {error};
+              }
+              
+              return {txt};
+              
+        }//get
         
         
         
         
         
-        
-(async()=>{
+!(async()=>{
 
         var {init,parse}    = await import('https://unpkg.com/es-module-lexer?module');
         
