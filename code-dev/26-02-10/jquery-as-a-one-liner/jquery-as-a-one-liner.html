@@ -1,0 +1,239 @@
+
+      <style>
+            div {border:1px solid lightgray;padding:10px}
+      </style>
+      
+      <div id=test></div>
+      
+      <script>
+      
+            var $=function(root,css,_,node,alias,set,get,v,r){return (
+                  node=(!css&&(css=root,root=this),root.querySelector(css)),
+                  alias={txt:'textContent'},
+                  get=(_,prop)=>(r=v=node[alias[prop]||prop],(typeof v=='function'&&(r=(...args)=>v.apply(node,args))),r),
+                  set=(_,prop,v)=>node[alias[prop]||prop]=v,
+                  new Proxy(node,{set,get})
+            )}.bind(document);
+            
+            
+            $('#test').txt=123
+                                                                                console.log($('#test').txt);
+            $('#test').style.color='red';
+            
+            var tn=document.createTextNode('hello');
+            $('#test').append(tn);
+            
+            var n=$('#test').cloneNode(true);
+                                                                                console.log(n);
+                                                                                
+      </script>
+      
+      
+      <div id=test2>
+            <h3>test</h3>
+      </div>
+      
+      <script>
+      
+            var $=function(root,css,_,node,alias,set,get,v,r){return (
+                  node=(!css&&(css=root,root=this),root.querySelector(css)),
+                  alias={txt:'textContent'},
+                  get=(_,prop)=>(r=v=node[alias[prop]||prop],(typeof v=='function'&&(r=(...args)=>v.apply(node,args))),r),
+                  set=(_,prop,v)=>node[alias[prop]||prop]=v,
+                  new Proxy(node,{set,get})
+            )}.bind(test2);
+            
+            
+            $('h3').txt='my-test'
+                                                                                console.log($('h3').txt);
+      </script>
+      
+      
+      <div id=test3>
+            <h3>test3</h3>
+      </div>
+      
+      <script>
+      
+            var $=function(root,css,_,node,alias,set,get,v,r){return(
+                  $._list=[],$._this=document.documentElement,
+                  node=(!css&&(css=root,root=$._this),css||=':scope',root.matches(css)&&root||root.querySelector(css)),
+                  alias={txt:'textContent'},
+                  get=(value,prop,rec)=>{
+                        if (prop === Symbol.toPrimitive) { // Make instanceof Node checks pass
+                                                                                console.log('toPrim');debugger;
+                              return () => node;
+                        }
+                        if (prop === Symbol.hasInstance) {
+                                                                                console.log('hasInstance');
+                              return (value) => value === rec || value instanceof Node;
+                        }
+                        
+                        if(prop=='clone')return node.cloneNode(true);
+                        if(prop=='html')return node.innerHTML;
+                        if(prop=='on')return new Proxy(node,{set:(_,prop,v)=>($._list.push({prop,fn:v}),node.addEventListener(prop,v,false))});
+                        if(prop=='rem'||prop=='remove')return new Proxy(()=>{},{
+                              apply:(_,__,args)=>($._list=$._list.filter(({prop,fn,r})=>(r=fn!==args[0],!r&&node.removeEventListener(prop,fn,false))))
+                        });
+                        return (r=v=node[alias[prop]||prop],(typeof v=='function'&&(r=(...args)=>v.apply(node,args))),r)
+                  },
+                  set=(_,prop,v)=>node[alias[prop]||prop]=v,
+                  new Proxy(node,{set,get,getPrototypeOf(){return Node.prototype}})
+            )};
+            $._this=test3;
+            
+            
+            var clone=$('h3').clone
+            $().append(clone);
+            
+            var fn    = e=>console.log('hello');
+            $('h3').on.click  = fn;
+            $('h3').rem(fn);
+            
+            
+      </script>
+      
+      
+      
+      
+      <script>
+      
+      
+      
+            function _get(target,prop){
+            
+                  var datatype    = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
+                  var node        = document.createElement(prop);
+                  
+                  function set(...args){
+                  
+                        args.forEach(arg=>{
+                        
+                              var type    = datatype(arg);
+                              set[type](arg);
+                              
+                        });
+                        
+                        return node;
+                        
+                  }//set
+                  
+                  
+                  set.object    = function(attr){
+                  
+                        var keys    = Object.keys(attr);
+                        keys.forEach(name=>{
+                        
+                              if(name=='text'){
+                                    var tn    = document.createTextNode(attr['text']);
+                                    node.append(tn);
+                                    return;
+                              }
+                              if(name=='par'){
+                                    var par    = attr['par'];
+                                    switch(par){
+                                      case par===null     : par=$._this;              break;
+                                      case par==='body'   : par=document.body;        break;
+                                      case par==='head'   : par=document.head;        break;
+                                    }//switch
+                                    par.append(node);
+                                    return;
+                              }
+                              if(name=='append'){debugger;
+                                    node.append(attr.append);
+                                    return;
+                              }
+                              if(name=='style'){
+                                    if(typeof attr.style=='string'){
+                                          node.style    = attr.style;
+                                    }else{
+                                          for(var sname in attr.style){
+                                          
+                                                node.style[sname]    = attr.style[sname];
+                                                
+                                          }//for
+                                    }
+                                    return;
+                              }
+                              
+                              //if(name==='onclick')debugger;
+                              node[name]    = attr[name];
+                              
+                        })//for
+                        
+                  }//object
+                  
+                  
+                  set.string    = function(str){
+                  
+                        var tn    = document.createTextNode(str);
+                        node.append(tn);
+                        
+                  }//string
+                  
+                  
+                  return set;
+                  
+            }//get
+            
+            var node    = document.createElement('div');
+            $.create    = new Proxy(node,{get:_get});
+//debugger;
+            var div=$.create.div({append:$('#test3'),text:'helloworld',style:{color:'green',fontWeight:'bold'}});
+            console.log(div);
+            
+            
+      </script>
+      
+      
+      
+      
+      <div id=test4>
+            <h3>test4</h3>
+      </div>
+      
+      
+      <script>
+      
+            var $=function $(root,css,_,node,alias,set,get,v,r){return(
+                  !$._list&&($._list=[]),!$._this&&($._this=document.documentElement),
+                  node=(!css&&(css=root,root=$._this),css||=':scope',root.matches(css)&&root||root.querySelector(css)),
+                  alias={txt:'textContent'},
+                  get=(_,prop)=>{
+                        if(prop=='clone')return node.cloneNode(true);
+                        if(prop=='html')return node.innerHTML;
+                        if(prop=='on')return new Proxy(node,{set:(_,prop,v)=>($._list.push({prop,fn:v}),node.addEventListener(prop,v,false))});
+                        if(prop=='rem'||prop=='remove')return new Proxy(()=>{},{
+                              apply:(_,__,args)=>($._list=$._list.filter(({prop,fn,r})=>(r=fn!==args[0],!r&&node.removeEventListener(prop,fn,false))))
+                        });
+                        return (r=v=node[alias[prop]||prop],(typeof v=='function'&&(r=(...args)=>v.apply(node,args))),r)
+                  },
+                  set=(_,prop,v)=>node[alias[prop]||prop]=v,
+                  new Proxy(node,{set,get})
+            )};
+            $.new=function(v,$2){return ($2=eval(`(${this.toString()})`),$2._this=v||document.documentElement,$2.new=eval(`(${this.new.toString()})`),$2.create=new Proxy({},{get:_get}),$2.bind=v=>($this._this=v,this),$2)};
+            
+            
+            
+            
+            
+            var $2    = $.new(test4);
+            $2().txt='hello';
+            
+            var $3    = $2.new($2());
+            $3().txt='bye';
+            
+            
+            
+      </script>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
