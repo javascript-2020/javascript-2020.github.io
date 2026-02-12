@@ -183,15 +183,16 @@
       <script>
       {
       
+      
             let $=function $(root,css,_,node,alias,set,get,v,r){return(
                   !$._list&&($._list=[]),!$._this&&($._this=document.documentElement),
                   node=(!css&&(css=root,root=$._this),css||=':scope',root.matches(css)&&root||root.querySelector(css)),
-                  Object.defineProperty(node,'txt',{get:()=>node.textContent,set:v=>node.textContent=v}),
-                  Object.defineProperty(node,'clone',{get:()=>node.cloneNode(true)}),
-                  Object.defineProperty(node,'on',{get:()=>new Proxy(node,{set:(_,prop,v)=>($._list.push({prop,fn:v}),node.addEventListener(prop,v,false))})}),
+                  Object.defineProperty(node,'txt',{get:()=>node.textContent,set:v=>node.textContent=v,configurable:true,enumerable:true}),
+                  Object.defineProperty(node,'clone',{get:()=>node.cloneNode(true),configurable:true,enumerable:true}),
+                  Object.defineProperty(node,'on',{get:()=>new Proxy(node,{set:(_,prop,v)=>($._list.push({prop,fn:v}),node.addEventListener(prop,v,false))}),configurable:true,enumerable:true}),
                   Object.defineProperty(node,'rem',{get:()=>new Proxy(()=>{},{
                         apply:(_,__,args)=>($._list=$._list.filter(({prop,fn,r})=>(r=fn!==args[0],!r&&node.removeEventListener(prop,fn,false))))
-                  })}),
+                  }),configurable:true,enumerable:true}),
                   node
             )};
             $.new=function(v,$2){return ($2=eval(`(${this.toString()})`),$2._this=v||document.documentElement,$2.new=eval(`(${this.new.toString()})`),$2.bind=eval(`(${this.new.toString()})`),$2.create=new Proxy({},{get:_get}),$2)};
@@ -205,7 +206,8 @@
             $2().txt='hello';
             
             let $3    = $2.new($2());
-            $3().txt='bye';
+            debugger;
+            $3().txt='bye2';
             
             
       }
