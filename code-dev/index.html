@@ -28,92 +28,30 @@
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
-            <script init>
+            <script>
                                                                                 console.clear();
                                                                                 console.log('code-dev.index.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
-        ;
-        
-        var ace;
         var jdenticon
         
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
-        var code;
-        var debug;
-        
-        var menu;
-        
-        var hdr;
-        var log;
         
         
     //:
     
     
-        async function init(){
+        async function ready(){
                                                                                 //debug('init',version);
-                                                                                
-              menu    = menumod();
-              
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,ace});
-              
-              
-              hdr     = mod['main-hdr'];
-              log     = mod['log-mod'];
-              
-              hdr.initmod({ext,$});
-              log.initmod({ext,$});
-              
-              await Promise.all([
-                    hdr.init(),
-                    log.init(),
-              ]);
-              
+              jdenticon   = await import('https://cdn.jsdelivr.net/npm/jdenticon/+esm');
               
               initdom(document.body);
-              
               
         }//init
         
         
-  //:
-  
-  
-(async()=>{
-
-        mod.stack.add;
-        
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-        
-        var promise   = ext.load.libs(
-              'js/dom/$.js.api',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/dom/code/v2.0/code-v2.0.js.api',
-              'js/debug/debug.js',
-        );
-        [$,datatype,menumod,keydown,code,debug]   = await promise;
-        
-        code.initmod({ext,$,datatype,menumod});
-        
-        
-        jdenticon   = await import('https://cdn.jsdelivr.net/npm/jdenticon/+esm');
-        
-        mod.stack.complete;
-        
-})();
-
-
-            </script init>
+            </script>
             
 <!--
             <link rel=stylesheet href='/blog/css/blog.css'>
@@ -158,6 +96,15 @@
                   Dont expect explanations, tutorials — just raw, readable snippets. Think of it as a scratchpad, a stream, a place to muse through ideas in motion. Every listing is runnable and editable, so you can poke around, learn something new, or take it somewhere else.
             </p>
             
+            
+            
+            <a href='26-02-11/jquery-as-a-one-liner/jquery-as-a-one-liner.html'>
+                  <span class=date>
+                  </span>
+                  <img>
+                  <span class=title>
+                  </span>
+            </a>
             
             
             <a href='25-11-29/scrolling-nav-side-bar/scrolling-nav-side-bar.html'>
@@ -229,8 +176,6 @@
         function initdom(rootnode){
         
         
-              hdr.initdom();
-              
               var list    = rootnode.querySelectorAll('a');
               list.forEach(a=>{
               
@@ -254,9 +199,6 @@
                       }//onclick
                       
               });
-              
-              
-              log.initdom();
               
               
         }//initdom
