@@ -128,6 +128,38 @@
   #item, #item2
     {margin:20px 0;border:1px solid lightgray;padding:10px;overflow:auto;display:flex;flex-direction:column;gap:10px}
     
+    
+.#item, #item2 {
+  display: grid;
+  grid-template-columns: 120px 0 300px 1fr;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+  text-decoration: none;
+  color: inherit;
+}
+
+.#item:hover, #item2:hover {
+  background: #f7f7f7;
+}
+
+.#item #name, #item2 #name
+  {}
+  
+.#item #type, #item2 #type {
+  font-weight: bold;
+  color: #555;
+  font-family: monospace;
+  font-size:16px;
+}
+
+.#item #desc, #item2 #desc {
+  line-height: 1.4;
+}
+
+
+
+
   #url
     {font-weight:bold}
     
@@ -179,6 +211,12 @@
                               <div id=url>
                               </div>
                               <div id=values>
+                                    <div id=name>
+                                    </div>
+                                    <div id=type>
+                                    </div>
+                                    <div id=desc>
+                                    </div>
                               </div>
                         </div>
                   </div>
@@ -212,6 +250,12 @@
                               <div id=url>
                               </div>
                               <div id=values>
+                                    <div id=name>
+                                    </div>
+                                    <div id=type>
+                                    </div>
+                                    <div id=desc>
+                                    </div>
                               </div>
                         </div>
                   </div>
@@ -279,12 +323,15 @@
                                                                                 console.log('process.script',src);
                                                                                 
               var nitem                   = item.cloneNode(true);
-              var $                       = nitem.querySelector.bind(nitem);
-              $('#url').textContent       = src;
-              var values                  = $('#values');
+              
+              //var $=nitem.querySelector.bind(nitem);
+              var $=(root,css)=>(!css&&(css=root,root=nitem),root.querySelector(css));
+              
+              $('#url').textContent   = src;
+              var values      = $('#values');
               values.remove();
               var nvalues;
-              var clone                   = ()=>(nvalues=values.cloneNode(true),nitem.append(nvalues));
+              var clone       = ()=>(nvalues=values.cloneNode(true),nitem.append(nvalues));
               output.append(nitem);
               
               var iframe      = document.createElement('iframe');
@@ -348,7 +395,8 @@
                           
                                 clone();
                                 
-                                var s1    = toString(win[key]);
+                                var s1    = tostring(win[key]);
+                                $(nvalues,'#name').textContent
                                 var str   = `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
                                 
                                 nvalues.textContent   = str;
