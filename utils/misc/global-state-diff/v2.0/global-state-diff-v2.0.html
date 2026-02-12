@@ -130,7 +130,7 @@
     
     
   #item #values, #item2 #values
-    {display:grid;grid-template-columns:300px 300px 1fr;gap:0.5rem 1rem}
+    {display:grid;grid-template-columns:max-content max-content 1fr;gap:1rem 2rem}
     
   #item:hover, #item2:hover
     {background: #f7f7f7}
@@ -148,7 +148,7 @@
     
     
   #url
-    {font-weight:bold}
+    {font-weight:bold;margin-bottom:10px}
     
   #values
     {white-space:pre}
@@ -309,17 +309,18 @@
         process.script    = function(src){
                                                                                 console.log('process.script',src);
                                                                                 
-              var nitem                   = item.cloneNode(true);
-              
-              //var $=nitem.querySelector.bind(nitem);
-              var $=(root,css)=>(!css&&(css=root,root=nitem),root.querySelector(css));
-              
-              $('#url').textContent   = src;
-              var values      = $('#values');
-              values.remove();
-              var nvalues;
-              var clone       = ()=>(nvalues=values.cloneNode(true),nitem.append(nvalues),nvalues);
+              var nitem               = item.cloneNode(true);
+              $(nitem,'#url').textContent   = src;
               output.append(nitem);
+              
+              var values      = $(nitem,'#values');
+              var ui          = {};
+              ui.name         = $(values,'#name');
+              ui.name.remove();
+              ui.type         = $(values,'#type');
+              ui.type.remove();
+              ui.desc         = $(values,'#desc');
+              ui.desc.remove();
               
               var iframe      = document.createElement('iframe');
               iframe.onload   = onload;
@@ -343,9 +344,8 @@
                                                                                 console.log('window.onerror');
                                                                                 console.log(arguments);
                                                                                 console.error(err);
-                          clone();
-                          nvalues.textContent    = err;
-                          nvalues.classList.add('error');
+                          values.textContent    = err;
+                          values.classList.add('error');
                           
                     }//onerror
                     
@@ -353,9 +353,8 @@
                     win.onunhandledrejection    = function(e){
                                                                                 console.warn(`UNHANDLED PROMISE REJECTION: ${e.reason}`);
                                                                                 console.log(arguments);
-                          clone();
-                          nvalues.textContent    = e.reason;
-                          nvalues.classList.add('error');
+                          values.textContent    = e.reason;
+                          values.classList.add('error');
                           
                     }//onunhandledrejection
                     
@@ -364,9 +363,8 @@
                                                                                 console.log('script.onerror');
                                                                                 console.log(arguments);
                                                                                 console.error(err);
-                          clone();
-                          nvalues.textContent    = err.toString();
-                          nvalues.classList.add('error');
+                          values.textContent    = err.toString();
+                          values.classList.add('error');
                           
                     }//onerror
                     
@@ -380,22 +378,21 @@
                           var str   = '';
                           added.forEach(key=>{
                           
-                                clone();
-                                
                                 var dtype   = datatype(win[key]);
                                 var type    = typeof win[key];
                                 var desc    = tostring(win[key]);
                                 
-                                $(nvalues,'#name').textContent    = key;
-                                $(nvalues,'#type').textContent    = dtype + `( ${type} )`;
-                                $(nvalues,'#desc').textContent    = desc;
+                                var nname           = ui.name.cloneNode(true);
+                                nname.textContent   = key;
+                                values.append(nname);
                                 
-                                /*
-                                var str   = `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
+                                var ntype           = ui.type.cloneNode(true);
+                                ntype.textContent   = dtype + `( ${type} )`;
+                                values.append(ntype);
                                 
-                                nvalues.textContent   = str;
-                                                                                console.log(`window.${key} =`,win[key]);
-                                */
+                                var ndesc           = ui.desc.cloneNode(true);
+                                ndesc.textContent   = desc;
+                                values.append(ndesc);
                                 
                           });
                           
