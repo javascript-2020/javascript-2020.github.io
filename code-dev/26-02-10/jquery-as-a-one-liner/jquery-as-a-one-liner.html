@@ -6,8 +6,9 @@
       <div id=test></div>
       
       <script>
+      {
       
-            var $=function(root,css,_,node,alias,set,get,v,r){return (
+            let $=function(root,css,_,node,alias,set,get,v,r){return (
                   node=(!css&&(css=root,root=this),root.querySelector(css)),
                   alias={txt:'textContent'},
                   get=(_,prop)=>(r=v=node[alias[prop]||prop],(typeof v=='function'&&(r=(...args)=>v.apply(node,args))),r),
@@ -20,12 +21,12 @@
                                                                                 console.log($('#test').txt);
             $('#test').style.color='red';
             
-            var tn=document.createTextNode('hello');
+            let tn=document.createTextNode('hello');
             $('#test').append(tn);
             
-            var n=$('#test').cloneNode(true);
+            let n=$('#test').cloneNode(true);
                                                                                 console.log(n);
-                                                                                
+      }
       </script>
       
       
@@ -34,8 +35,8 @@
       </div>
       
       <script>
-      
-            var $=function(root,css,_,node,alias,set,get,v,r){return (
+      {
+            let $=function(root,css,_,node,alias,set,get,v,r){return (
                   node=(!css&&(css=root,root=this),root.querySelector(css)),
                   alias={txt:'textContent'},
                   get=(_,prop)=>(r=v=node[alias[prop]||prop],(typeof v=='function'&&(r=(...args)=>v.apply(node,args))),r),
@@ -46,6 +47,7 @@
             
             $('h3').txt='my-test'
                                                                                 console.log($('h3').txt);
+      }
       </script>
       
       
@@ -54,21 +56,12 @@
       </div>
       
       <script>
-      
-            var $=function(root,css,_,node,alias,set,get,v,r){return(
+      {
+            let $=function(root,css,_,node,alias,set,get,v,r,proxy){return(
                   $._list=[],$._this=document.documentElement,
                   node=(!css&&(css=root,root=$._this),css||=':scope',root.matches(css)&&root||root.querySelector(css)),
                   alias={txt:'textContent'},
                   get=(value,prop,rec)=>{
-                        if (prop === Symbol.toPrimitive) { // Make instanceof Node checks pass
-                                                                                console.log('toPrim');debugger;
-                              return () => node;
-                        }
-                        if (prop === Symbol.hasInstance) {
-                                                                                console.log('hasInstance');
-                              return (value) => value === rec || value instanceof Node;
-                        }
-                        
                         if(prop=='clone')return node.cloneNode(true);
                         if(prop=='html')return node.innerHTML;
                         if(prop=='on')return new Proxy(node,{set:(_,prop,v)=>($._list.push({prop,fn:v}),node.addEventListener(prop,v,false))});
@@ -78,28 +71,22 @@
                         return (r=v=node[alias[prop]||prop],(typeof v=='function'&&(r=(...args)=>v.apply(node,args))),r)
                   },
                   set=(_,prop,v)=>node[alias[prop]||prop]=v,
-                  new Proxy(node,{set,get,getPrototypeOf(){return Node.prototype}})
+                  proxy=new Proxy(node,{set,get}),
+                  proxy.node=node,
+                  proxy
             )};
             $._this=test3;
             
             
-            var clone=$('h3').clone
+            let clone=$('h3').clone
             $().append(clone);
             
-            var fn    = e=>console.log('hello');
+            let fn    = e=>console.log('hello');
             $('h3').on.click  = fn;
             $('h3').rem(fn);
             
             
-      </script>
-      
-      
-      
-      
-      <script>
-      
-      
-      
+            
             function _get(target,prop){
             
                   var datatype    = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
@@ -176,13 +163,13 @@
                   
             }//get
             
-            var node    = document.createElement('div');
+            let node    = document.createElement('div');
             $.create    = new Proxy(node,{get:_get});
 //debugger;
-            var div=$.create.div({append:$('#test3'),text:'helloworld',style:{color:'green',fontWeight:'bold'}});
+            let div=$.create.div({append:$('#test3').node,text:'helloworld',style:{color:'green',fontWeight:'bold'}});
             console.log(div);
             
-            
+      }
       </script>
       
       
@@ -194,37 +181,34 @@
       
       
       <script>
+      {
       
-            var $=function $(root,css,_,node,alias,set,get,v,r){return(
+            let $=function $(root,css,_,node,alias,set,get,v,r){return(
                   !$._list&&($._list=[]),!$._this&&($._this=document.documentElement),
                   node=(!css&&(css=root,root=$._this),css||=':scope',root.matches(css)&&root||root.querySelector(css)),
-                  alias={txt:'textContent'},
-                  get=(_,prop)=>{
-                        if(prop=='clone')return node.cloneNode(true);
-                        if(prop=='html')return node.innerHTML;
-                        if(prop=='on')return new Proxy(node,{set:(_,prop,v)=>($._list.push({prop,fn:v}),node.addEventListener(prop,v,false))});
-                        if(prop=='rem'||prop=='remove')return new Proxy(()=>{},{
-                              apply:(_,__,args)=>($._list=$._list.filter(({prop,fn,r})=>(r=fn!==args[0],!r&&node.removeEventListener(prop,fn,false))))
-                        });
-                        return (r=v=node[alias[prop]||prop],(typeof v=='function'&&(r=(...args)=>v.apply(node,args))),r)
-                  },
-                  set=(_,prop,v)=>node[alias[prop]||prop]=v,
-                  new Proxy(node,{set,get})
+                  Object.defineProperty(node,'txt',{get:()=>node.textContent,set:v=>node.textContent=v}),
+                  Object.defineProperty(node,'clone',{get:()=>node.cloneNode(true)}),
+                  Object.defineProperty(node,'on',{get:()=>new Proxy(node,{set:(_,prop,v)=>($._list.push({prop,fn:v}),node.addEventListener(prop,v,false))})}),
+                  Object.defineProperty(node,'rem',{get:()=>new Proxy(()=>{},{
+                        apply:(_,__,args)=>($._list=$._list.filter(({prop,fn,r})=>(r=fn!==args[0],!r&&node.removeEventListener(prop,fn,false))))
+                  })}),
+                  node
             )};
-            $.new=function(v,$2){return ($2=eval(`(${this.toString()})`),$2._this=v||document.documentElement,$2.new=eval(`(${this.new.toString()})`),$2.create=new Proxy({},{get:_get}),$2.bind=v=>($this._this=v,this),$2)};
+            $.new=function(v,$2){return ($2=eval(`(${this.toString()})`),$2._this=v||document.documentElement,$2.new=eval(`(${this.new.toString()})`),$2.bind=eval(`(${this.new.toString()})`),$2.create=new Proxy({},{get:_get}),$2)};
+            $.bind=function(v){$this._this=v;return v};
             
             
             
             
             
-            var $2    = $.new(test4);
+            let $2    = $.new(test4);
             $2().txt='hello';
             
-            var $3    = $2.new($2());
+            let $3    = $2.new($2());
             $3().txt='bye';
             
             
-            
+      }
       </script>
       
       
