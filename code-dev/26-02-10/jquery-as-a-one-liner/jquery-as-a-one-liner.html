@@ -7,7 +7,7 @@
             <style>
                   body {display:flex;flex-direction:column;gap:20px}
                   #title {text-align:center}
-                  div {border:1px solid lightgray;padding:10px}
+                  section {border:1px solid lightgray;padding:10px}
                   #links {display:flex;flex-direction:column;gap:10px;font-family:monospace;font-size:16px}
             </style>
             
@@ -37,9 +37,11 @@
       <hr>
       
       
-      <div id=test>
-            test
-      </div>
+      <section id=test>
+            <div>
+                  test
+            </div>
+      </section>
       
       <script>
       {
@@ -53,14 +55,14 @@
             )}.bind(document);
             
             
-            $('#test').txt=123
+            $('#test div').txt=123
                                                                                 console.log($('#test').txt);
-            $('#test').style.color='red';
+            $('#test div').style.color='red';
             
             let tn=document.createTextNode('hello');
-            $('#test').append(tn);
+            $('#test div').append(tn);
             
-            let n=$('#test').cloneNode(true);
+            let n=$('#test div').cloneNode(true);
                                                                                 console.log(n);
       }
       </script>
@@ -69,10 +71,10 @@
       <hr>
       
       
-      <div id=test2>
+      <section id=test2>
             test2
             <h3>test</h3>
-      </div>
+      </section>
       
       <script>
       {
@@ -95,10 +97,10 @@
       <hr>
       
       
-      <div id=test3>
+      <section id=test3>
             test3
             <h3>test3</h3>
-      </div>
+      </section>
       
       <script>
       {
@@ -123,16 +125,17 @@
             )};
             $._this=test3;
             
-            
+/*
             let clone=$('h3').clone
             $().append(clone);
             
             let fn    = e=>console.log('hello');
             $('h3').on.click  = fn;
             $('h3').rem(fn);
-            
-            
-            
+*/
+
+
+
             function _get(target,prop){
             
                   var datatype    = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
@@ -172,7 +175,8 @@
                                     par.append(node);
                                     return;
                               }
-                              if(name=='append'){debugger;
+                              if(name=='append'){
+                                                                                debugger;
                                     node.append(attr.append);
                                     return;
                               }
@@ -209,17 +213,18 @@
                   
             }//get
             
-            let node    = document.createElement('div');
-            $.create    = new Proxy(node,{get:_get});
+            $.create    = new Proxy({},{get:_get});
             
-debugger;
-
+            
+                                                                                debugger;
+                                                                                // cant use the proxy as node, fundamental limitation of this method
+                                                                                // $().node
             let div=$.create.div({
-                  append    : $('#test3').node,
+                  par       : $('#test3').node,
                   text      : 'helloworld',
                   style     : {color:'green',fontWeight:'bold'}
             });
-            console.log(div);
+            //console.log(div);
             
       }
       </script>
@@ -228,10 +233,10 @@ debugger;
       <hr>
       
       
-      <div id=test4>
+      <section id=test4>
             test4
             <h3>test4</h3>
-      </div>
+      </section>
       
       
       <script>
@@ -257,11 +262,11 @@ debugger;
             
             
             let $2    = $.new(test4);
-            $2().txt='hello';
+            $2('h3').txt='hello';
             
-            let $3    = $2.new($2());
+            let $3    = $2.new($2('h3'));
             
-debugger;
+            
             $3().txt='bye2';
             
             
