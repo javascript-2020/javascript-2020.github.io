@@ -126,40 +126,27 @@
     {font-family:monospace;font-size:16px}
     
   #item, #item2
-    {margin:20px 0;border:1px solid lightgray;padding:10px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+    {margin:20px 0;border:1px solid lightgray;padding:10px;display:flex;flex-direction:column;gap:10px}
     
     
-.#item, #item2 {
-  display: grid;
-  grid-template-columns: 120px 0 300px 1fr;
-  gap: 0.5rem 1rem;
-  padding: 0.75rem;
-  border-bottom: 1px solid #ddd;
-  text-decoration: none;
-  color: inherit;
-}
-
-.#item:hover, #item2:hover {
-  background: #f7f7f7;
-}
-
-.#item #name, #item2 #name
-  {}
-  
-.#item #type, #item2 #type {
-  font-weight: bold;
-  color: #555;
-  font-family: monospace;
-  font-size:16px;
-}
-
-.#item #desc, #item2 #desc {
-  line-height: 1.4;
-}
-
-
-
-
+  #item #values, #item2 #values
+    {display:grid;grid-template-columns:300px 300px 1fr;gap:0.5rem 1rem}
+    
+  #item:hover, #item2:hover
+    {background: #f7f7f7}
+    
+  #item #name, #item2 #name
+    {font-weight:bold}
+    
+  #item #type, #item2 #type
+    {}
+    
+  #item #desc, #item2 #desc
+    {line-height:1.4}
+    
+    
+    
+    
   #url
     {font-weight:bold}
     
@@ -331,7 +318,7 @@
               var values      = $('#values');
               values.remove();
               var nvalues;
-              var clone       = ()=>(nvalues=values.cloneNode(true),nitem.append(nvalues));
+              var clone       = ()=>(nvalues=values.cloneNode(true),nitem.append(nvalues),nvalues);
               output.append(nitem);
               
               var iframe      = document.createElement('iframe');
@@ -389,21 +376,29 @@
                                                                                 console.log(arguments);
                           var afterKeys   = new Set(Object.keys(win));
                           var added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
-                          
+                                                                                //console.log('New globals :', added);
                           var str   = '';
                           added.forEach(key=>{
                           
                                 clone();
                                 
-                                var s1    = tostring(win[key]);
-                                $(nvalues,'#name').textContent
+                                var dtype   = datatype(win[key]);
+                                var type    = typeof win[key];
+                                var desc    = tostring(win[key]);
+                                
+                                $(nvalues,'#name').textContent    = key;
+                                $(nvalues,'#type').textContent    = dtype + `( ${type} )`;
+                                $(nvalues,'#desc').textContent    = desc;
+                                
+                                /*
                                 var str   = `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
                                 
                                 nvalues.textContent   = str;
                                                                                 console.log(`window.${key} =`,win[key]);
+                                */
+                                
                           });
                           
-                                                                                console.log('New globals :', added);
                     }//onload
                     
               }//onload
@@ -614,17 +609,20 @@
               var isNode        = /process\.|__dirname|require\(/.test(code);
               var isBrowser     = /window\.|document\.|navigator\./.test(code);
               
+              
               var type      = 'Unknown';
               if (isESM){
                     type    = 'ESM';
-              }else if(isCommonJS){
+              }
+              if(isCommonJS){
                     type    = 'CommonJS';
               }
               
               if(isNode){
-                    type   += ' (Node.js)';
-              }else if(isBrowser){
-                    type   += ' (Browser)';
+                    type   += ' ( Node.js )';
+              }
+              if(isBrowser){
+                    type   += ' ( Browser )';
               }
               
               return type;
