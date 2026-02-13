@@ -150,7 +150,7 @@
     {display:flex}
     
   #info
-    {margin-bottom:20px}
+    {margin-bottom:20px;display:flex;gap:20px}
     
   #url
     {font-weight:bold;margin-bottom:10px}
@@ -218,6 +218,10 @@
                                     <img class=close>
                               </div>
                               <div id=info>
+                                    <div id=detect>
+                                    </div>
+                                    <div id=hdrs>
+                                    </div>
                               </div>
                               <div id=values>
                                     <div id=name>
@@ -484,11 +488,12 @@
         
         display.info    = async function(nitem,src){
         
-              var {txt,error}   = await get(src);
+              var {txt,hdrs,error}   = await get(src);
               if(error)return;
               
               var str                         = await detect(txt);
-              $(nitem,'#info').textContent    = str;
+              $(nitem,'#info #detect').textContent    = str;
+              $(nitem,'#info #hdrs').textContent      = hdrs;
                                                                                 console.log(str);
                                                                                 
         }//info
@@ -538,11 +543,11 @@
               for(var key in value){
               
                     var dtype   = datatype(value[key]);
-                    desc       += `${key}:${dtype},`;
+                    desc       += `${key}:${dtype}, `;
                     
               }//for
               if(desc){
-                    desc    = desc.slice(0,-1);
+                    desc    = desc.slice(0,-2);
               }
               desc    = tostring(desc);
               return desc
@@ -623,7 +628,7 @@
         
         function tostring(v){
         
-              var max   = 140;
+              var max   = 240;
               var s     = v.toString();
               var s1    = s.slice(0,max);
               if(s.length>s1.length){
@@ -669,14 +674,24 @@
                     return {error};
               }
               
+              var hdrs    = '';
+              for(var [key,value] of res.headers){
+                                                                                console.log(key,value);
+                    hdrs   += `${key}=${value}, `;
+                    
+              }//for
+              if(hdrs){
+                    hdrs    = hdrs.slice(0,-2);
+              }
+              
               var txt   = await res.text();
               if(!res.ok){
                     var error   = `[ ( ${res.status} ) ${res.statusText} ] ${txt}`;
                                                                                 console.log(error);
-                    return {error};
+                    return {error,hdrs};
               }
               
-              return {txt};
+              return {txt,hdrs};
               
         }//get
         
