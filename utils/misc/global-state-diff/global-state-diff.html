@@ -15,10 +15,10 @@
             
             <meta name=description content='Inspect what scripts and modules really expose. Enter a url and see global changes from script tags and explore actual exports from imports.'>
             
-            <base href='https://ext-code.com/utils/misc/global-state-diff/'>
+            <base href='https://ext-code.com/utils/misc/global-state-diff/global-state-diff.html'>
             <link rel=canonical href='https://ext-code.com/utils/misc/global-state-diff/global-state-diff.html'>
             
-            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAB41BMVEVHcExEPzkoWIEtobIxrLcud5M+cYQtfJUrjKIqe5grgZ0upLMmTHsmS3cpu8MvpbMqZ4o4ZXwzkaQveJMsn7Aob48nf50qhZ8qnLAlVYIppLUsma0mW4YspLUlN2coYIYxo7EqgJwohKEoSnciGVMjKWMyoK8kMmQumaoytLstj6Q1mqg0sLoyr7kuiqAzq7coOGUqNmAmOmc6oqwqWYE2lacwrbcqc5IoiKItjKMvlqgpobIsZoQrhJsqhZ8pcpIoiKIqgJkqSHElPG0vjqMnYYguqrcoYIcnS3cndZcsaYgpjKQmWoQpgZwuobImOm8ogp8qe5ktqbcnWIImVH4ro7QlOGwrmq0tq7glOW0odpUlS3omQnQpaowqpbYnUXwrpbUkJV4gFE8iG1wjHFskMWgiG1gvtsAru8Mus7wttL4rYIcqf50raIswlKgrkKcpf5wtlqsvl6otjKEpaYkplKopZYUuZIImQ3Aqk6k1iJ0mQXErqLYrYIMpi6I0qbYlX4gkQ3EspLQslKkojKYlOGsskacrmKsrYoUmWoQpeJcnY4spgZ0xh54ro7UocpUofp0lU34sa4glWYYmaJAnpbcnm7Amf54ngqAniKMnjacnhaEleJojJ2YniaQoobQlXogCX05qAAAAk3RSTlMAAc3TZSwJVLbC0sveOf44OQMoFte59sXm7PjG9t6ruK7C92lApmg6OUFpF3hSNTAZDmoOayCEZ+hkcvojisuw9Ycpe6TW08zI9YTd2dq63fTO4Oi939De3NvQ2NKe8cPZZUz668x5neuix2fjZJa7yZ5NQnD6j0xP6E9h1aXNsfqm4sz2xr23SODZ6NN97OXs1pCs7VkWAAABjElEQVQoz2NgoBdgMxZyMmTDISls2dvO7SHvZS6MRZJRQFExcJps9BQuTvFiTOmO/gnyc6YlRE+Z1W5RWYQuaxMbZT8RIh3K4e1iiiorGKskMimEU1qh0V3cz5FJrFAQRdqpe2Zf/GSlOO5WyQApacnpEvoo0tULZobHTJ49Nch/8oypNT7T57OgSDvLODSHyShJuYXJBEi5uYtZm6FIGzHZucgxcTErgIj62kARHVTdC+aFRwINj4gEGh7hOn0+qu6KhpkSYLtB0syd0611UaQNXGfGyQf7igAN7wnlkJwugubxEt82r/guCW6Pbm9uW1EuK/TIKvOM8pkzTZZnyiyRutI8jGizERUT9QRJt3A45AthiU9HccVpTTxTODlttbHFN6NQlZV0iEk5KyPO9MLOjlUjPmnDNFV1CIu1wE4PwtJP1zGGSiclz001UlY2yc61nzGPw1JLTY2FJYuPDxZwKilzVdV5eXkFBMxzLLT0NDT4+fkz+TI0YUlFJdEA6gZWmLO1WTQFaZ1vAIUhYF6nuTxlAAAAAElFTkSuQmCC'>
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAB41BMVEVHcExEPzkoWIEtobIxrLcud5M+cYQtfJUrjKIqe5grgZ0upLMmTHsmS3cpu8MvpbMqZ4o4ZXwzkaQveJMsn7Aob48nf50qhZ8qnLAlVYIppLUsma0mW4YspLUlN2coYIYxo7EqgJwohKEoSnciGVMjKWMyoK8kMmQumaoytLstj6Q1mqg0sLoyr7kuiqAzq7coOGUqNmAmOmc6oqwqWYE2lacwrbcqc5IoiKItjKMvlqgpobIsZoQrhJsqhZ8pcpIoiKIqgJkqSHElPG0vjqMnYYguqrcoYIcnS3cndZcsaYgpjKQmWoQpgZwuobImOm8ogp8qe5ktqbcnWIImVH4ro7QlOGwrmq0tq7glOW0odpUlS3omQnQpaowqpbYnUXwrpbUkJV4gFE8iG1wjHFskMWgiG1gvtsAru8Mus7wttL4rYIcqf50raIswlKgrkKcpf5wtlqsvl6otjKEpaYkplKopZYUuZIImQ3Aqk6k1iJ0mQXErqLYrYIMpi6I0qbYlX4gkQ3EspLQslKkojKYlOGsskacrmKsrYoUmWoQpeJcnY4spgZ0xh54ro7UocpUofp0lU34sa4glWYYmaJAnpbcnm7Amf54ngqAniKMnjacnhaEleJojJ2YniaQoobQlXogCX05qAAAAk3RSTlMAAc3TZSwJVLbC0sveOf44OQMoFte59sXm7PjG9t6ruK7C92lApmg6OUFpF3hSNTAZDmoOayCEZ+hkcvojisuw9Ycpe6TW08zI9YTd2dq63fTO4Oi939De3NvQ2NKe8cPZZUz668x5neuix2fjZJa7yZ5NQnD6j0xP6E9h1aXNsfqm4sz2xr23SODZ6NN97OXs1pCs7VkWAAABjElEQVQoz2NgoBdgMxZyMmTDISls2dvO7SHvZS6MRZJRQFExcJps9BQuTvFiTOmO/gnyc6YlRE+Z1W5RWYQuaxMbZT8RIh3K4e1iiiorGKskMimEU1qh0V3cz5FJrFAQRdqpe2Zf/GSlOO5WyQApacnpEvoo0tULZobHTJ49Nch/8oypNT7T57OgSDvLODSHyShJuYXJBEi5uYtZm6FIGzHZucgxcTErgIj62kARHVTdC+aFRwINj4gEGh7hOn0+qu6KhpkSYLtB0syd0611UaQNXGfGyQf7igAN7wnlkJwugubxEt82r/guCW6Pbm9uW1EuK/TIKvOM8pkzTZZnyiyRutI8jGizERUT9QRJt3A45AthiU9HccVpTTxTODlttbHFN6NQlZV0iEk5KyPO9MLOjlUjPmnDNFV1CIu1wE4PwtJP1zGGSiclz001UlY2yc61nzGPw1JLTY2FJYuPDxZwKilzVdV5eXkFBMxzLLT0NDT4+fkz+TI0YUlFJdEA6gZWmLO1WTQFaZ1vAIUhYF6nuTxlAAAAAElFTkSuQmCC'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
             
             <script type='application/ld+json'>
@@ -41,27 +41,15 @@
             <script src='https://javascript-2020.github.io/stackoverflow/libs/stringify.js'></script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
-            <script init>
-                                                                                console.clear();
+            <script>
                                                                                 console.log('global-state-diff.html');
-                                                                                console.log();
-                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
-        ;
+        var version='v2.0';
         
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
-        var debug;
         var inspect;
         
         var hdr;
-        
-        
         
         var detect;
         
@@ -70,53 +58,22 @@
   //:
   
   
-        async function init(){
-                                                                                debug('init',version);
+        async function ready(){
+                                                                                debug('ready',version);
                                                                                 
-              var menu    = menumod();
-              
-              mod.base.add({ext,$,datatype,keydown,menu,menumod});
-              
-              
               hdr   = mod['misc-hdr'];
               
-              hdr.initmod({ext,$});
-              
               await Promise.all([
-                    hdr.init(),
+                    mod.auto(),
               ]);
               
               
               initdom();
               
               
-        }//init
+        }//ready
         
         
-  //:
-  
-  
-(async()=>{
-
-        mod.stack.add;
-        
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-        
-        var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js.api',
-              'js/string/inspect/inspect.js'
-        );
-        [$,datatype,menumod,keydown,debug,inspect]   = await promise;
-        
-        mod.stack.complete;
-        
-})();
-
-
             </script>
             
             
@@ -162,16 +119,53 @@
       content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAABSlBMVEVHcEwnz/4C8P4g1P4L6P43wf5Mr/4a2v4Y3P4/uv5PrP4+vf5Auv4ozv5KsP4vyv45wP5Jsf5Auf49vP5Mrv4zxf44wf5Lr/46wP4h1P5Lr/46vv5Jsv4R5P5Hs/5Etv44wf5Hs/41w/4uyv47vv49vP5Ftf5GtP4c2f4rzP4tyv4m0f5Etv5Nrv4xxv4xxv4xx/4W3/5KsP5Mr/4/u/4uyv5Isv4K6f4l0f4qzv4W3/4V3/5Nrv5Mrv5Mrv5Mr/4W3v4e2P5BuP5Hsv4N5v4K6f4O5v42w/5Dt/4E7/4uyf4C8P4nz/4M5/4K6v4oz/4P5f4k0v4b2v5Gs/4E7v4I6/5Nrf4e1/4H7P4E7v5Auv5Dtv4sy/5Isv5GtP4wx/49vP4zxf47vv44wP42w/5LsP5Jsf4i1P4n0P4N5v4k0v4a2v4S4v4X3v6OfcqkAAAAVnRSTlMACo7CjQWN/VczjgIJMfIXJzHtjj5iVekR71Hvtz7CjelXjre2wiJj2PCFIWbR7+fEnXaodz3544/USfOC22Tm7CXOnqfUZ+/3VTV9bsTzqGDahpb2tyRB6bIAAAIDSURBVDjLrZVpV9pAFIYntdFiQkZsLCQECtJSlqAsFRBU3Kuta1sncYGuJEDt///aISkkkyHo6enzLTlP5s5758wNAC526pd3d1++/fzx/evNze1tp210wxURUMTWBz2v2EWtLc7jBTPmoJfNrqy8i0ajixgB00VISJIeW9JMKbcWDAYDNiFMQN1EqAAJcUfSBif0fsQWQjLxpjGnXUJa5CoIbTiP8KJ0OqfNMLQIZhGad/Ke3t///vWwGKv1+yPxfW55+TnmJWZW5ggxcqX3m6WSVTpSdPcxHCLExmf97AI8e1j8cK1f8X9Fq/Sotrf0k2v9KRiJ08L8mwhf2CQx8oK/yJyPw3Q67ULaV4Tr7tRCwFfkllLF4ushccwGPyUMzwzhMQz/X1Kz+QVMmh2LcjgsTxDZ3OpqIpFYfDu+KGwoxE5JvTtpF9NX9BEB792jn0gD4eNEsVAQHyXOO7fQFmNNLZOnPV5BqEyI+Yxm1qkluS0BCWRp8FEze6mTJQtVVd8MUfcEhBSGFOGMOWmaoc0AmRoXP5cmiHEReEXANOopzCsLRYlXjWolGXE2jK/r/ujEWAdOFIxWGrjO8ljXazG6MeynthEn2gAP9P7B4XCE2thzdG2v2jbK5LfHZ3hINbclSco6o/kIh1Einq4e1qxp5m2PkqZ/CPvbXvFot+xe7w/EpaiUrJ24NAAAAABJRU5ErkJggg==);
     }
     
+  #src, #src2
+    {}
     
   #output, #output2
-    {white-space:pre;font-family:monospace;font-size:16px}
-  #item, #item2
-    {margin:20px 0;border:1px solid lightgray;padding:10px;overflow:auto}
-  #src
-    {}
-  #values
+    {font-family:monospace;font-size:16px}
+    
+  #item
+    {margin:20px 0;border:1px solid lightgray;padding:10px;
+      /*display:flex;flex-direction:column;gap:10px*/
+    }
+    
+    
+  #item #values
+    {display:grid;grid-template-columns:max-content max-content 1fr;gap:1rem 2rem}
+    
+  #item #name
+    {font-weight:bold}
+    
+  #item #type
     {}
     
+  #item #desc
+    {line-height:1.4}
+    
+    
+  #hdr
+    {display:flex}
+    
+  #info
+    {margin-bottom:20px}
+    
+  #url
+    {font-weight:bold;margin-bottom:10px}
+    
+  #values
+    {white-space:pre;margin-top:10px}
+  #values.error
+    {color:red}
+    
+    
+  .spc
+    {flex:1}
+    
+  .close
+    {width:20px;height:20px;cursor:pointer;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAmVBMVEVHcEzfLSLbNi3bNy7VRj7ZNy3eLiTdMijYNy7fQDfnU0nhPzb7j4b55eTf1t/rmpT/+ffoZFv/7uz+x8P9zMj9vbjnWU/+6ujfLCL/8/L//fzqe3PnXlXpbGT/3tz/5OH/5uT92NX8oZnpgHn9p5/+sqv+1ND/wr3vdm3/t7H+0MzrUUb+m5H+rKX+lIn+hHn+jYPgMCbnQDUSY6fgAAAAEHRSTlMA+UZHDDbxsibegbJOnwHMeI8KrAAAASFJREFUKM+10tt2gjAQBVDu0JslAhPQROTaFNpa/f+P6yRRAvjQJ8/rXknOmoxlPTye76zie0ajMLBXCcJoOhuegcsQQhgDGDGXc3g77weQ9EOafGSf3Xdbf/38nk7iEvhXdm1xqNY+2u6M73ycny7Rk0R7W0sXz97E+2N5GAjJpLcAyl8tw/RYViRn6B3k0OL94iWaMXoqPZMq3wfbMbzdagfUTvVjcy60szyHTPdfsvJBse5Ploze4+NM9UM3HD3VMTpWJ0NKrm5481bEcUF5TnrVj8j58BtvvPdqF8eU80r3JwnOd2LLsRvkmFLdvxrk/PmsWrOTXuj+pfqfFa/dsB8wapwqT2D6UFwm1ujsVYQQYJbpn1VUi+wusljkR+UPukUvOrcXXRAAAAAASUVORK5CYII=);
+    }
     
   iframe
     {display:none}
@@ -184,8 +178,11 @@
       
             <misc-hdr component=grp style='position:relative'>
                   <img class=title src='images/global-state-diff.png' style='top:-5px;height:40px' alt=global-state-diff>
-                  <time slot=date datetime=2025-10-18>18 Oct 2025</time>
+                  <time slot=date datetime=2026-02-13>
+                        13 Feb 2026
+                  </time>
             </misc-hdr>
+            
             
             <section id=script>
             
@@ -201,18 +198,30 @@
                   </div>
                   
                   <div class=input>
-                        <img class='paste icon'>
                         <img class='copy icon'>
+                        <img class='paste icon'>
                         <input id=src value='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.min.js'>
                   </div>
                   
                   <input id=go value=fetch type=button>
                   
                   <div id=output>
-                        <div id=item>
-                              <div id=url>
+                        <div id=item style='display:none'>
+                              <div id=hdr>
+                                    <div id=url>
+                                    </div>
+                                    <div class=spc></div>
+                                    <img class=close>
+                              </div>
+                              <div id=info>
                               </div>
                               <div id=values>
+                                    <div id=name>
+                                    </div>
+                                    <div id=type>
+                                    </div>
+                                    <div id=desc>
+                                    </div>
                               </div>
                         </div>
                   </div>
@@ -233,8 +242,8 @@
                   </div>
                   
                   <div class=input>
-                        <img class='paste icon'>
                         <img class='copy icon'>
+                        <img class='paste icon'>
                         <input id=src2 value='https://cdn.jsdelivr.net/npm/codemirror/+esm'>
                   </div>
                   
@@ -242,12 +251,6 @@
                   <input id=go2 value=fetch type=button>
                   
                   <div id=output2>
-                        <div id=item2>
-                              <div id=url>
-                              </div>
-                              <div id=values>
-                              </div>
-                        </div>
                   </div>
                   
             </section>
@@ -260,39 +263,50 @@
       
       
         var item;
-        var item2;
+        var ui        = {};
+        
+        
+        var process   = {};
+        var setup     = {};
         
         
   //:
   
   
         function initdom(){
-        
-        
-        
-              $('#script .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src.value=txt};
+                                                                                debug('initdom');
+                                                                                
+                                                                                
               $('#script .copy').onclick    = e=>navigator.clipboard.writeText(src.value);
+              $('#script .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src.value=txt};
+              
+              src.onkeydown                 = e=>e.key=='Enter' && process.script(src.value);
+              //src.value                   = 'https://cdn.jsdelivr.net/npm/markdown-it-container@4.0.0/+esm';
+              src.focus();
               
               item    = $('#item');
               item.remove();
+              item.style.display            = '';
               
-              go.onclick    = function(){
+              var values                    = $(item,'#values');
+              ui.name                       = $(values,'#name');
+              ui.name.remove();
+              ui.type                       = $(values,'#type');
+              ui.type.remove();
+              ui.desc                       = $(values,'#desc');
+              ui.desc.remove();
               
-                    process(src.value);
-                    
-              }//onclick
+              go.onclick                    = e=>process.script(src.value);
               
               
-              
-              $('#import .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src2.value=txt};
               $('#import .copy').onclick    = e=>navigator.clipboard.writeText(src2.value);
+              $('#import .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src2.value=txt};
               
-              item2    = $('#item2');
-              item2.remove();
+              src2.value    = 'https://unpkg.com/es-module-lexer?module';
               
               go2.onclick    = function(){
               
-                    process2(src2.value);
+                    process.import(src2.value);
                     
               }//onclick
               
@@ -304,132 +318,351 @@
   //:
   
   
-        function process(src){
+        process.script    = async function(src){
+                                                                                console.log('process.script',src);
+              var nitem                     = display(output,src);
+              var values                    = $(nitem,'#values');
+              
+              var {win,doc}                 = await niframe();
+              setup.win(win,values);
+              
+              var beforeKeys                = new Set(Object.keys(win));
+              
+              var script                    = doc.createElement('script');
+              script.src                    = src;
+              doc.head.appendChild(script);
+              
+              
+              script.onerror    = function(err){
+                                                                          console.log('script.onerror');
+                                                                          console.log(arguments);
+                                                                          console.error(err);
+                    values.textContent    = err.toString();
+                    values.classList.add('error');
+                    
+              }//onerror
+              
+              
+              script.onload   = function(){
+                                                                          console.log('script.onload');
+                                                                          console.log(arguments);
+                    var afterKeys   = new Set(Object.keys(win));
+                    var added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
+                                                                          //console.log('New globals :', added);
+                    added.forEach(name=>{
+                    
+                          display.value(values,name,win[name]);
+                          
+                    });
+                    
+              }//onload
+              
+        }//script
         
         
-              var iframe    = document.createElement('iframe');
+        
+        
+        process.import    = async function(src){
+                                                                                console.log('process.import');
+              var nitem                     = display(output2,src);
+              var values                    = $(nitem,'#values');
+              
+              var {win,doc}                 = await niframe();
+              setup.win(win,values);
+              
+              var script    = document.createElement('script');
+              script.textContent    = fnstr(fn);
+              doc.head.append(script);
+              
+              //var js                        = fnstr(fn);
+              //win.eval(js);
+              
+              var {mod,err}               = await win.fn(src);
+              
+              if(err){
+                    display.error(values,err);
+                    return;
+              }
+              
+              if(mod===null || typeof mod!='object'){
+                    display.mod(values,mod);
+                    return;
+              }
+              
+              for(var name in mod){
+              
+                    display.value(values,name,mod[name]);
+                    
+              }//for
+              
+              
+              async function fn(src){
+              
+                    var err;
+                    try{
+                    
+                          var mod   = await import(src);
+                          
+                    }//try
+                    catch(err2){
+                    
+                          err   = err2;
+                          
+                    }//catch
+                    if(err){
+                                                                                console.error(err);
+                          return {err};
+                    }
+                                                                                console.log(mod);
+                    return {mod};
+                    
+              }//fn
+              
+        }//import
+        
+        
+        
+        
+/*
+
+                    var str   = '';
+                    for(var key in mod){
+                    
+                          var value   = mod[key];
+                          
+                          var name    = key;
+                          var type    = datatype(mod[key]);
+                          var desc    = '';
+                          
+                          if(!mod[key]){
+                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                          }else{
+                                if(datatype(mod[key])=='object'){
+                                      s1    = tostring(mod[key]);
+                                      str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                                      for(var prop in mod[key]){
+                                      
+                                            var s2    = tostring(mod[key][prop]);
+                                            str  += '      '+prop+`   [ ${typeof mod[key][prop]} ]      :   ${s2}`+'\n';
+                                            
+                                      }//for
+                                }else{
+                                      s1    = tostring(mod[key]);
+                                      str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
+                                }
+                          }
+                          
+                    }//for
+                    
+                    output(str);
+                    
+*/
+
+
+
+  //:
+  
+  
+        function display(root,src){
+        
+              var nitem                     = item.cloneNode(true);
+              
+              $(nitem,'#url').textContent   = src;
+              $(nitem,'.close').onclick     = e=>nitem.remove();
+              root.append(nitem);
+              
+              display.info(nitem,src);
+              
+              return nitem;
+              
+        }//display
+        
+        
+        display.info    = async function(nitem,src){
+        
+              var {txt,error}   = await get(src);
+              if(error)return;
+              
+              var str                         = await detect(txt);
+              $(nitem,'#info').textContent    = str;
+                                                                                console.log(str);
+                                                                                
+        }//info
+        
+        
+        display.mod   = function(root,v){
+        
+              var str             = String(v);
+              root.textContent    = str;
+              
+        }//mod
+        
+        display.value   = function(root,name,value){
+        
+              var nname   = ui.name.cloneNode(true);
+              nname.textContent   = name;
+              root.append(nname);
+              
+              var dtype   = datatype(value);
+              var type    = typeof value;
+              var str     = dtype+(dtype!=type ? ` ( ${type} )` : '');
+              var ntype   = ui.type.cloneNode(true);
+              ntype.textContent   = str;
+              root.append(ntype);
+              
+              var desc;
+              if(value===null){
+                    desc    = 'NULL';
+              }else{
+                    desc    = tostring(value);
+              }
+              var ndesc   = ui.desc.cloneNode(true);
+              ndesc.textContent   = desc;
+              root.append(ndesc);
+              
+        }//display
+        
+        
+        display.error   = function(values,err){
+        
+              var error             = err.toString();
+              values.textContent    = error;
+              values.classList.add('error');
+              
+        }//error
+        
+        
+  //:
+  
+  
+        setup.win   = function(win,values){
+        
+              win.onerror       = function(message,source,lineno,colno,error){
+                                                                                console.log('window.onerror');
+                                                                                console.log(arguments);
+                                                                                console.error('error',error);
+                    values.textContent     = message;
+                    values.classList.add('error');
+                    
+              }//onerror
+              
+              
+              win.onunhandledrejection    = function(e){
+                                                                                console.warn(`UNHANDLED PROMISE REJECTION: ${e.reason}`);
+                                                                                console.log(arguments);
+                    values.textContent     = e.reason;
+                    values.classList.add('error');
+                    
+              }//onunhandledrejection
+              
+        }//win
+        
+        
+        function niframe(){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var iframe      = document.createElement('iframe');
               iframe.onload   = onload;
               document.body.append(iframe);
+              
+              return promise;
               
               
               function onload(){
               
                     var win   = iframe.contentWindow;
                     var doc   = iframe.contentDocument;
-                    
-                    var beforeKeys    = new Set(Object.keys(win));
-                    
-                    
-                    var script    = document.createElement('script');
-                    script.src    = src;
-                    
-                    script.onload   = ()=>{
-                    
-                          var afterKeys   = new Set(Object.keys(win));
-                          var added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
-                          
-                          var str   = '';
-                          added.forEach(key=>{
-                          
-                                var s     = win[key].toString();
-                                var s1    = s.slice(0,80);
-                                if(s.length>s1.length){
-                                      s1   += ` ... ( ${s.length} )`;
-                                }
-                                str  += `window.${key}   [ ${typeof win[key]} ]   :   ${s1}`+'\n';
-                                
-                                                                                console.log(`window.${key} =`,win[key]);
-                                                                                
-                          });
-                          
-                          var nitem   = item.cloneNode(true);
-                          var $   = nitem.querySelector.bind(nitem);
-                          $('#url').textContent       = src;
-                          $('#values').textContent    = str;
-                          
-                          output.append(nitem);
-                          
-                          
-                          console.log('🔍 New globals added by script:', added);
-                          
-                          
-                    }//onload
-                    
-                    doc.head.appendChild(script);
+                    resolve({win,doc,iframe});
                     
               }//onload
               
-        }//process
+        }//niframe
         
         
+        function datatype(v,short=true){
         
-        
-        async function process2(src){
-        
-              var mod   = await import(src);
-                                                                                //console.log(inspect(mod));
-                                                                                
-              var str   = '';
-              for(var key in mod){
+              var str   = Object.prototype.toString.call(v);
               
+              if(short){
+                    str   = str.slice(8,-1);
+                    str   = str.toLowerCase();
+              }
               
-                    var s1    = '[ null ]';
+              return str;
+              
+        }//datatype
+        
+        
+        function tostring(v){
+        
+              var s     = v.toString();
+              var s1    = s.slice(0,80);
+              if(s.length>s1.length){
+                    s1   += ` ... ( ${s.length} )`;
+              }
+              return s1;
+              
+        }//tostring
+        
+        
+        function fnstr(fn,full=true){
+        
+              var str   = fn.toString();
+              
+              if(full){
+                    return str;
+              }
+              
+              var i1        = str.indexOf('{');
+              var i2        = str.lastIndexOf('}');
+              var fnstr     = str.slice(i1+1,i2);
+              return fnstr;
+              
+        }//fnstr
+        
+        
+        async function get(url){
+                                                                                console.log('get',url);
+              var err;
+              try{
+              
+                    var res   = await fetch(url);
                     
-                    if(!mod[key]){
-                          str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
-                    }else{
-                          if(datatype(mod[key])=='object'){
-                                s1    = tostring(mod[key]);
-                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
-                                for(var prop in mod[key]){
-                                
-                                      var s2    = tostring(mod[key][prop]);
-                                      str  += '      '+prop+`   [ ${typeof mod[key][prop]} ]      :   ${s2}`+'\n';
-                                      
-                                }//for
-                          }else{
-                                s1    = tostring(mod[key]);
-                                str  += key+`   [ ${typeof mod[key]} ]      :   ${s1}`+'\n';
-                          }
-                    }
+              }//try
+              catch(err2){
+              
+                    err   = err2;
                     
-              }//for
+              }//catch
+              if(err){
+                                                                                console.error(err);
+                    var error   = err.toString();
+                    return {error};
+              }
               
+              var txt   = await res.text();
+              if(!res.ok){
+                    var error   = `[ ( ${res.status} ) ${res.statusText} ] ${txt}`;
+                                                                                console.log(error);
+                    return {error};
+              }
               
-              var nitem   = item2.cloneNode(true);
+              return {txt};
               
-              var $   = nitem.querySelector.bind(nitem);
-              $('#url').textContent       = src;
-              $('#values').textContent    = str;
-              
-              output2.append(nitem);
-              
-              
-              function tostring(v){
-              
-                    var s     = v.toString();
-                    var s1    = s.slice(0,80);
-                    if(s.length>s1.length){
-                          s1   += ` ... ( ${s.length} )`;
-                    }
-                    return s1;
-                    
-              }//tostring
-              
-        }//process
+        }//get
         
         
         
         
         
-        
-(async()=>{
+!(async()=>{
 
         var {init,parse}    = await import('https://unpkg.com/es-module-lexer?module');
         
         detect    = async function(code){
         
-              await init();
+              await init;
               
               var [imports,exports] = parse(code);
               
@@ -439,19 +672,24 @@
               var isNode        = /process\.|__dirname|require\(/.test(code);
               var isBrowser     = /window\.|document\.|navigator\./.test(code);
               
-              var type      = 'Unknown';
+              
+              var type      = [];
               if (isESM){
-                    type    = 'ESM';
-              }else if(isCommonJS){
-                    type    = 'CommonJS';
+                    type.push('ESM');
+              }
+              if(isCommonJS){
+                    type.push('CommonJS');
               }
               
               if(isNode){
-                    type   += ' (Node.js)';
-              }else if(isBrowser){
-                    type   += ' (Browser)';
+                    type.push('Node.js');
               }
+              if(isBrowser){
+                    type.push('Browser');
+              }
+              type    = type.join(',')
               
+              type  ||= 'unknown';
               return type;
               
         }//detect
