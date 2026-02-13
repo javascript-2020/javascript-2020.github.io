@@ -125,25 +125,30 @@
   #output, #output2
     {font-family:monospace;font-size:16px}
     
-  #item, #item2
-    {margin:20px 0;border:1px solid lightgray;padding:10px;display:flex;flex-direction:column;gap:10px}
+  #item
+    {margin:20px 0;border:1px solid lightgray;padding:10px;
+      /*display:flex;flex-direction:column;gap:10px*/
+    }
     
     
-  #item #values, #item2 #values
+  #item #values
     {display:grid;grid-template-columns:max-content max-content 1fr;gap:1rem 2rem}
     
-  #item #name, #item2 #name
+  #item #name
     {font-weight:bold}
     
-  #item #type, #item2 #type
+  #item #type
     {}
     
-  #item #desc, #item2 #desc
+  #item #desc
     {line-height:1.4}
     
     
   #hdr
-    {display:flex}
+    {display:flex;margin-bottom:10px}
+    
+  #info
+    {margin-bottom:10px}
     
   #url
     {font-weight:bold;margin-bottom:10px}
@@ -207,6 +212,8 @@
                                     </div>
                                     <div class=spc></div>
                                     <img class=close>
+                              </div>
+                              <div id=info>
                               </div>
                               <div id=values>
                                     <div id=name>
@@ -295,6 +302,8 @@
               $('#import .copy').onclick    = e=>navigator.clipboard.writeText(src2.value);
               $('#import .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src2.value=txt};
               
+              src2.value    = 'https://unpkg.com/es-module-lexer?module';
+              
               go2.onclick    = function(){
               
                     process.import(src2.value);
@@ -312,7 +321,6 @@
         process.script    = async function(src){
                                                                                 console.log('process.script',src);
               var nitem                     = display(output,src);
-              
               var values                    = $(nitem,'#values');
               
               var {win,doc}                 = await niframe();
@@ -355,15 +363,26 @@
         
         
         process.import    = async function(src){
-        
-              var nitem                         = display(output2,src);
+                                                                                console.log('process.import');
+              var nitem                     = display(output2,src);
+              var values                    = $(nitem,'#values');
               
-              var {win,doc}                     = await niframe();
+              var {win,doc}                 = await niframe();
               setup.win(win,values);
               
-              var js                            = fnstr(fn);
-              win.eval(js);
-              var mod                           = await win.fn(src);
+              var script    = document.createElement('script');
+              script.textContent    = fnstr(fn);
+              doc.head.append(script);
+              
+              //var js                        = fnstr(fn);
+              //win.eval(js);
+              
+              var {mod,err}               = await win.fn(src);
+              
+              if(err){
+                    display.error(values,err);
+                    return;
+              }
               
               if(mod===null || typeof mod!='object'){
                     display.mod(values,mod);
@@ -379,9 +398,23 @@
               
               async function fn(src){
               
-                    var mod   = await import(src);
+                    var err;
+                    try{
+                    
+                          var mod   = await import(src);
+                          
+                    }//try
+                    catch(err2){
+                    
+                          err   = err2;
+                          
+                    }//catch
+                    if(err){
+                                                                                console.error(err);
+                          return {err};
+                    }
                                                                                 console.log(mod);
-                    return mod;
+                    return {mod};
                     
               }//fn
               
@@ -438,9 +471,22 @@
               $(nitem,'.close').onclick     = e=>nitem.remove();
               root.append(nitem);
               
+              display.info(nitem,src);
+              
               return nitem;
               
         }//display
+        
+        
+        display.info    = async function(nitem,src){
+        
+              var {txt,error}   = await get(src);
+              if(error)return;
+              
+              var str   = detect(txt);
+              console.log(str);
+              
+        }//info
         
         
         display.mod   = function(root,v){
@@ -476,7 +522,12 @@
         }//display
         
         
-        display.error   = function(){
+        display.error   = function(values,err){
+        
+              var error             = err.toString();
+              values.textContent    = error;
+              values.classList.add('error');
+              
         }//error
         
         
@@ -510,9 +561,8 @@
         
               var resolve,promise=new Promise(res=>resolve=res);
               
-              var iframe    = document.createElement('iframe');
-              iframe.style.cssText    = 'display:none';
-              iframe.onload           = onload;
+              var iframe      = document.createElement('iframe');
+              iframe.onload   = onload;
               document.body.append(iframe);
               
               return promise;
@@ -558,19 +608,21 @@
         function fnstr(fn,full=true){
         
               var str   = fn.toString();
+              
               if(full){
                     return str;
               }
-              var i1    = str.indexOf('{');
-              var i2    = str.lastIndexOf('}');
-              var fnstr   = str.slice(i1+1,i2);
+              
+              var i1        = str.indexOf('{');
+              var i2        = str.lastIndexOf('}');
+              var fnstr     = str.slice(i1+1,i2);
               return fnstr;
               
         }//fnstr
         
         
         async function get(url){
-        
+                                                                                console.log('get',url);
               var err;
               try{
               
@@ -583,6 +635,7 @@
                     
               }//catch
               if(err){
+                                                                                console.error(err);
                     var error   = err.toString();
                     return {error};
               }
@@ -590,6 +643,7 @@
               var txt   = await res.text();
               if(!res.ok){
                     var error   = `[ ( ${res.status} ) ${res.statusText} ] ${txt}`;
+                                                                                console.log(error);
                     return {error};
               }
               
@@ -607,7 +661,7 @@
         
         detect    = async function(code){
         
-              await init();
+              await init;
               
               var [imports,exports] = parse(code);
               
