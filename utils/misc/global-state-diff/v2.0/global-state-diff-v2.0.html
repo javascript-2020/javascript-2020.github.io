@@ -132,7 +132,9 @@
     
     
   #item #values
-    {display:grid;grid-template-columns:max-content max-content 1fr;gap:1rem 2rem}
+    {display:grid;grid-template-columns:max-content max-content minmax(0, 1fr);gap:1rem 2rem}
+  #item #values > *:nth-child(3)
+    {min-width:0;overflow-wrap:break-word;word-break:break-word;}
     
   #item #name
     {font-weight:bold}
@@ -154,7 +156,7 @@
     {font-weight:bold;margin-bottom:10px}
     
   #values
-    {white-space:pre;margin-top:10px}
+    {white-space:pre-wrap;margin-top:10px}
   #values.error
     {color:red}
     
@@ -497,30 +499,53 @@
               
         }//mod
         
+        
         display.value   = function(root,name,value){
         
-              var nname   = ui.name.cloneNode(true);
+              var nname           = ui.name.cloneNode(true);
               nname.textContent   = name;
               root.append(nname);
               
-              var dtype   = datatype(value);
-              var type    = typeof value;
-              var str     = dtype+(dtype!=type ? ` ( ${type} )` : '');
-              var ntype   = ui.type.cloneNode(true);
-              ntype.textContent   = str;
+              var dtype           = datatype(value);
+              var ntype           = ui.type.cloneNode(true);
+              ntype.textContent   = dtype;
               root.append(ntype);
               
               var desc;
               if(value===null){
                     desc    = 'NULL';
               }else{
-                    desc    = tostring(value);
+                    switch(dtype){
+                    
+                      case 'object'         : desc=display.value.object(value);       break;
+                      case 'promise'        : desc='';                                break;
+                      default               : desc=tostring(value);
+                      
+                    }//switch
               }
-              var ndesc   = ui.desc.cloneNode(true);
+              var ndesc           = ui.desc.cloneNode(true);
               ndesc.textContent   = desc;
               root.append(ndesc);
               
-        }//display
+        }//value
+        
+        
+        display.value.object    = function(value){console.log(value);
+        
+              var desc    = '';
+              for(var key in value){
+              
+                    var dtype   = datatype(value[key]);
+                    desc       += `${key}:${dtype},`;
+                    
+              }//for
+              if(desc){
+                    desc    = desc.slice(0,-1);
+              }
+              desc    = tostring(desc);
+              return desc
+              
+        }//object
         
         
         display.error   = function(values,err){
@@ -596,8 +621,9 @@
         
         function tostring(v){
         
+              var max   = 140;
               var s     = v.toString();
-              var s1    = s.slice(0,80);
+              var s1    = s.slice(0,max);
               if(s.length>s1.length){
                     s1   += ` ... ( ${s.length} )`;
               }
