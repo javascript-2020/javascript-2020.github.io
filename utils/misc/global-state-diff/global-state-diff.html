@@ -132,7 +132,9 @@
     
     
   #item #values
-    {display:grid;grid-template-columns:max-content max-content 1fr;gap:1rem 2rem}
+    {display:grid;grid-template-columns:max-content max-content minmax(0, 1fr);gap:1rem 2rem}
+  #item #values > *:nth-child(3)
+    {min-width:0;overflow-wrap:break-word;word-break:break-word;}
     
   #item #name
     {font-weight:bold}
@@ -148,16 +150,18 @@
     {display:flex}
     
   #info
-    {margin-bottom:20px}
+    {display:grid;grid-template-columns:max-content 1fr;gap:20px}
     
   #url
-    {font-weight:bold;margin-bottom:10px}
+    {font-weight:bold;margin-top:0px;color:blue}
     
   #values
-    {white-space:pre;margin-top:10px}
+    {white-space:pre-wrap;margin-top:10px}
   #values.error
     {color:red}
     
+  hr
+    {margin:20px}
     
   .spc
     {flex:1}
@@ -188,13 +192,15 @@
             
                   <h3>
                         global state diff
+                        <div style='font-weight:normal;font-size:16px'>
+                              &lt;script src=''&gt;&lt;/script&gt;
+                        </div>
                   </h3>
                   
                   <div>
-                        Global State Diff is a browser-based utility that analyzes the impact of loading external JavaScript resources.
-                        When a  tag is injected, the tool compares the  object before and after execution to identify newly added globals
-                        — including functions, variables, and namespaces. This helps developers understand what a script exposes to the
-                        global scope.
+                        Analyze the impact of loading external JavaScript resources.  The tool compares the  global object
+                        before and after execution to identify newly added globals to help developers understand what
+                        a script exposes to the global scope.
                   </div>
                   
                   <div class=input>
@@ -208,13 +214,24 @@
                   <div id=output>
                         <div id=item style='display:none'>
                               <div id=hdr>
-                                    <div id=url>
-                                    </div>
+                                    <h3 id=url>
+                                    </h3>
                                     <div class=spc></div>
                                     <img class=close>
                               </div>
                               <div id=info>
+                                    <div>
+                                          headers
+                                    </div>
+                                    <div id=hdrs>
+                                    </div>
+                                    <div>
+                                          detect
+                                    </div>
+                                    <div id=detect>
+                                    </div>
                               </div>
+                              <hr>
                               <div id=values>
                                     <div id=name>
                                     </div>
@@ -480,11 +497,12 @@
         
         display.info    = async function(nitem,src){
         
-              var {txt,error}   = await get(src);
+              var {txt,hdrs,error}   = await get(src);
               if(error)return;
               
               var str                         = await detect(txt);
-              $(nitem,'#info').textContent    = str;
+              $(nitem,'#info #detect').textContent    = str;
+              $(nitem,'#info #hdrs').textContent      = hdrs;
                                                                                 console.log(str);
                                                                                 
         }//info
@@ -497,30 +515,53 @@
               
         }//mod
         
+        
         display.value   = function(root,name,value){
         
-              var nname   = ui.name.cloneNode(true);
+              var nname           = ui.name.cloneNode(true);
               nname.textContent   = name;
               root.append(nname);
               
-              var dtype   = datatype(value);
-              var type    = typeof value;
-              var str     = dtype+(dtype!=type ? ` ( ${type} )` : '');
-              var ntype   = ui.type.cloneNode(true);
-              ntype.textContent   = str;
+              var dtype           = datatype(value);
+              var ntype           = ui.type.cloneNode(true);
+              ntype.textContent   = dtype;
               root.append(ntype);
               
               var desc;
               if(value===null){
                     desc    = 'NULL';
               }else{
-                    desc    = tostring(value);
+                    switch(dtype){
+                    
+                      case 'object'         : desc=display.value.object(value);       break;
+                      case 'promise'        : desc='';                                break;
+                      default               : desc=tostring(value);
+                      
+                    }//switch
               }
-              var ndesc   = ui.desc.cloneNode(true);
+              var ndesc           = ui.desc.cloneNode(true);
               ndesc.textContent   = desc;
               root.append(ndesc);
               
-        }//display
+        }//value
+        
+        
+        display.value.object    = function(value){console.log(value);
+        
+              var desc    = '';
+              for(var key in value){
+              
+                    var dtype   = datatype(value[key]);
+                    desc       += `${key}:${dtype}, `;
+                    
+              }//for
+              if(desc){
+                    desc    = desc.slice(0,-2);
+              }
+              desc    = tostring(desc);
+              return desc
+              
+        }//object
         
         
         display.error   = function(values,err){
@@ -596,8 +637,9 @@
         
         function tostring(v){
         
+              var max   = 240;
               var s     = v.toString();
-              var s1    = s.slice(0,80);
+              var s1    = s.slice(0,max);
               if(s.length>s1.length){
                     s1   += ` ... ( ${s.length} )`;
               }
@@ -641,14 +683,24 @@
                     return {error};
               }
               
+              var hdrs    = '';
+              for(var [key,value] of res.headers){
+                                                                                console.log(key,value);
+                    hdrs   += `${key}=${value}, `;
+                    
+              }//for
+              if(hdrs){
+                    hdrs    = hdrs.slice(0,-2);
+              }
+              
               var txt   = await res.text();
               if(!res.ok){
                     var error   = `[ ( ${res.status} ) ${res.statusText} ] ${txt}`;
                                                                                 console.log(error);
-                    return {error};
+                    return {error,hdrs};
               }
               
-              return {txt};
+              return {txt,hdrs};
               
         }//get
         
@@ -665,7 +717,7 @@
               await init;
               
               var [imports,exports] = parse(code);
-              
+                                                                              console.log(imports,exports);
               var isESM         = imports.length>0 || exports.length>0;
               var isCommonJS    = /require\(|module\.exports|exports\./.test(code);
               
