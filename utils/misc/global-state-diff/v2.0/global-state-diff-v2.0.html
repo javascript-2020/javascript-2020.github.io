@@ -145,7 +145,7 @@
     
     
   #hdr
-    {display:flex;margin-bottom:10px}
+    {display:flex}
     
   #info
     {margin-bottom:10px}
@@ -154,7 +154,7 @@
     {font-weight:bold;margin-bottom:10px}
     
   #values
-    {white-space:pre}
+    {white-space:pre;margin-top:10px}
   #values.error
     {color:red}
     
@@ -673,21 +673,23 @@
               var isBrowser     = /window\.|document\.|navigator\./.test(code);
               
               
-              var type      = 'Unknown';
+              var type      = [];
               if (isESM){
-                    type    = 'ESM';
+                    type.push('ESM');
               }
               if(isCommonJS){
-                    type    = 'CommonJS';
+                    type.push('CommonJS');
               }
               
               if(isNode){
-                    type   += ' ( Node.js )';
+                    type.push('Node.js');
               }
               if(isBrowser){
-                    type   += ' ( Browser )';
+                    type.push('Browser');
               }
+              type    = type.join(',')
               
+              type  ||= 'unknown';
               return type;
               
         }//detect
