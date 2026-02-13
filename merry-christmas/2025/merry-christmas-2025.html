@@ -19,10 +19,10 @@
             
             
             <link rel=stylesheet href='https://fonts.googleapis.com/css2?family=Allura&display=swap'>
-
-
+            
+            
             <style>
-      
+            
   html
     {font-family:allura;color:#c5a880;background:#00101a}
     
@@ -36,7 +36,7 @@
       --top-title:100px;
       --bottom-click:270px;
     }
-
+    
   @media(max-height:1200px){
     body
       { --fs-title:50px;
@@ -62,9 +62,9 @@
   
   
   
-  canvas 
+  canvas
     {position:fixed;width:100vw;height:100vh}
-
+    
   #link
     {position:absolute;left:0;right:0;top:20px;text-align:center;font-size:var(--fs-link);color:#c5a880}
     
@@ -73,8 +73,8 @@
     
   h2
     {position:absolute;left:0;right:0;top:var(--top-title);text-align:center;font-size:var(--fs-title)}
-
-  
+    
+    
   #info
     {position:absolute;bottom:0;left:0;right:0;margin:auto;text-align:center}
     
@@ -84,14 +84,14 @@
   #loading
     {position:absolute;bottom:20px;left:0;right:0;margin:auto;text-align:center;font-size:var(--fs-loading)}
     
-  
-
+    
+    
             </style>
-      
-      
+            
+            
       </head>
-
-
+      
+      
       <body>
       
             <canvas></canvas>
@@ -100,7 +100,7 @@
             <a id=link href='https://javascript-2020.github.io'>
                   javascript-2020.github.io
             </a>
-      
+            
             <a id=xmas-2024 href='https://javascript-2020.github.io/merry-christmas/2024/merry-christmas-2024.html'>
                   2024
             </a>
@@ -111,38 +111,45 @@
                   Merry Christmas
             </h2>
             
-       
+            
             <h3>
-                  click - 
+                  click -
                   <span id=play>
                         play
                   </span>
             </h3>
             
-
+            
             <div id=loading>
                   loading ...
             </div>
             
-
-
+            
+            <div class="image-grid" style='display:none'>
+              <figure>
+                <img src="/images/tmp/image1.jpg">
+                <figcaption>Caption text 1</figcaption>
+              </figure>
+            </div>
+            
+            
       </body>
-
-
+      
+      
       <script type=module>
                                                                                 console.clear();
                                                                                 console.log('xmas3');
-
-
-
+                                                                                
+                                                                                
+                                                                                
         import * as THREE from "https://cdn.skypack.dev/three@0.135.0";
         
-
+        
         var $   = (root,css)=>((!css && (css=root,root=document)),root.querySelector(css));
         $.all   = (root,css)=>((!css && (css=root,root=document)),root.querySelectorAll(css));
         
         var canvas            = $('canvas');
-
+        
         var fieldOfView       = 75;
         var nearPlane         = 0.1;
         var farPlane          = 100;
@@ -156,16 +163,16 @@
         
         var aspectRatio        = width/height;
         var pixelRatio         = Math.min(window.devicePixelRatio,2);
-
-
+        
+        
         var clock             = new THREE.Clock();
         var sound;
         var analyser;
-
-
+        
+        
         var scene             = new THREE.Scene();
         scene.background      = new THREE.Color("#00101a");
-
+        
         var camera             = new THREE.PerspectiveCamera(fieldOfView,aspectRatio,nearPlane,farPlane);
         camera.position.set(cameraPosition.x,cameraPosition.y,cameraPosition.z);
         scene.add(camera);
@@ -178,26 +185,26 @@
                                   });
         renderer.setPixelRatio(pixelRatio);
         renderer.setSize(width,height);
-
-
+        
+        
         var spiralMaterial;
         var spiral;
         var starMesh;
         var starMaterial;
         
-
-
+        
+        
         var parameters   = {
               count   : 1500,
               max     : 12.5*Math.PI,
         };
-
+        
         var isRunning;
-
-
+        
+        
         
         var step=0;
-
+        
         var uniforms          = {
                                       time          : {type:'f',value:0.0},
                                       step          : {type:'f',value:0.0},
@@ -214,11 +221,11 @@
                                 
         var listener          = new THREE.AudioListener();
         var audio             = new THREE.Audio(listener);
-
-
-
-
-
+        
+        
+        
+        
+        
         var sprites   = [
               'https://javascript-2020.github.io/storage/images/snowflake1.png',
               'https://javascript-2020.github.io/storage/images/snowflake2.png',
@@ -227,7 +234,7 @@
               'https://javascript-2020.github.io/storage/images/snowflake5.png',
         ];
         
-
+        
   //:
   
         window.onload             = e=>document.body.style.opacity=1;
@@ -252,58 +259,76 @@
                                       sound.play();
                                       time.t0     = time.elapsed;
                                       isRunning   = true;
-                                      $('#play').textContent    = 'pause';                                            
+                                      $('#play').textContent    = 'pause';
                                       
                                 }//play
-                
+                                
         $.all('a').forEach(a=>a.onclick=e=>e.stopImmediatePropagation());
-
-
-
+        
+        
+        
         loadMusic();
-
-
+        
+        
         
         setTimeout(start,50);
-
+        
         function start(){
-          
+        
               addSpiral();
               addSnow();
               addStar();
               
               loop(0);
               
+              easteregg();
+              
         }//start
-
-
+        
+        
         
   //:
   
+  
+  
+  
+        function easteregg(){
+        
+              var img   = new Image(50,50);
+              img.src='https://javascript-2020.github.io/storage/images/snowflake1.png';
+              img.style.cssText   = 'position:absolute;bottom:50px;right:50px;z-index:99';
+              img.onclick   = click;
+              document.body.append(img);
+              
+              
+              function click(e){
+              
+                    e.stopPropagation();
+                    window.open('https://javascript-2020.github.io/images/image-1.jpg');
+                    
+              }//click
+              
+        }//easteregg
         
         
-        
-        
-
-
         
         
         function resize(){
-          
+        
               width     = window.innerWidth;
               height    = window.innerHeight;
-        
+              
               camera.aspect   = width/height;
               camera.updateProjectionMatrix();
-        
+              
               renderer.setSize(width,height);
               //composer.setSize(width,height);
               
         }//resize
-
-
+        
+        
         function loadMusic() {
-          
+        
               var listener    = new THREE.AudioListener();
               sound           = new THREE.Audio(listener);
               camera.add(listener);
@@ -312,25 +337,25 @@
               audioLoader.load('https://assets.codepen.io/74321/short-snow_01.mp3',
               
                     buffer=>{
-                      
+                    
                           sound.setBuffer(buffer);
                           sound.setLoop(false);
                           sound.setVolume(1.0);
                           analyser    = new THREE.AudioAnalyser(sound,32);
                           $('#loading').style.display   = 'none';
-                      
+                          
                     },
                     
                     progress=>{},
                     error=>console.log(error)
                     
               );
-            
+              
         }//loadMusic
-  
-
-
-  
+        
+        
+        
+        
 /*
 
 function postProcessing() {
@@ -353,24 +378,24 @@ function postProcessing() {
     
 }
 */
-  
 
 
 
 
 
 
-  
-  
+
+
+
               function loop(time2){
-                
+              
                     time.elapsed    = clock.getElapsedTime();
                     time.delta      = Math.min(60,(time.current-time.elapsed)*1000);
                     
                     var avg         = 1;
                     var data        = 0;
-
-
+                    
+                    
                     
                     if(analyser && isRunning){
                           time.t      = time.elapsed-time.t0+time.t1;
@@ -378,7 +403,7 @@ function postProcessing() {
                           data        = avg;
                           data       *= data/2000;
                           
-                          var justFinished    = isRunning && !sound.isPlaying;                          
+                          var justFinished    = isRunning && !sound.isPlaying;
                           if(justFinished){
                                 time.t1                   = time.t;
                                 $('#play').textContent    = 'play';
@@ -392,65 +417,65 @@ function postProcessing() {
                     
                     
                     spiralMaterial.uniforms.uTime.value   += time.delta*time.frequency*(1+data*0.2);
-
-
+                    
+                    
                     
                     step                                    = (step+1)%1000;
                     uniforms.time.value                     = time2;
                     uniforms.step.value                     = step;
-            
-
-
-
-
-
+                    
+                    
+                    
+                    
+                    
+                    
                     var intensity   = avg/256.0;
                     
                     
                     starMaterial.uniforms.uSize.value       = 0.1+intensity*0.7;
                     starMaterial.uniforms.uOpacity.value    = 0.5+intensity*0.5;
                     starMaterial.uniforms.uTime.value       = time.elapsed;
-
+                    
                     
                     spiralMaterial.uniforms.uSize.value     = 0.045+intensity*0.05;
                     spiralMaterial.uniforms.uAudio.value    = intensity;
                     
                     
                     starMesh2.rotation.y+=0.01;
-            
-
-
-
-
-
-
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     renderer.render(scene,camera);
                     
                     
-                
+                    
                     time.current    = time.elapsed;
-
+                    
                     
                     requestAnimationFrame(loop);
-
-
-            
+                    
+                    
+                    
               }//loop
-
-
-
-
-
-
-
-
-
-
-
-        
-        
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
         function addSpiral(world){
-          
+        
               var vertexShader    = `
               
                       uniform float uTime;
@@ -464,10 +489,10 @@ function postProcessing() {
                       varying vec2 vUv;
                       varying vec3 vColor;
                       varying float vRandom;
-
+                      
                       
                       void main() {
-                        
+                      
                             float angle     = phi;
                             angle          += uTime*random*1.2;
                             angle           = mod(angle,39.3);
@@ -480,17 +505,17 @@ function postProcessing() {
                                               );
                             vec3 myPosition       = myOffset;
                             vec4 modelPosition    = modelMatrix*vec4(myPosition,1.0);
-                          
+                            
                             vec4 viewPosition     = viewMatrix*modelPosition;
                             viewPosition.xyz     += position*aScale*uSize;
                             gl_Position           = projectionMatrix*viewPosition;
-                          
+                            
                             vColor    = aColor;
                             vUv       = uv;
                             vRandom   = random;
                             
                       }//main
-                          
+                      
               `;
               
               var fragmentShader    = `
@@ -504,22 +529,22 @@ function postProcessing() {
                       
                       
                       void main() {
-                        
+                      
                             vec2 uv           = vUv;
-                                                                          
+                            
                             float strength    = distance(uv,vec2(0.5));
                             strength         *= 2.0;
                             strength          = 1.0-strength;
-                          
+                            
                             float sparkle     = 0.75+0.25*sin(uTime*30.0+vRandom*20.0);
                             //sparkle          *= (0.5+uAudio);
                             sparkle           = pow(sparkle, 2.0);
-                          
+                            
                             vec3 color        = vColor*strength*sparkle;
                             gl_FragColor      = vec4(color,1.0);
                             
                       }//main
-              
+                      
               `;
               
               var uniforms    = {
@@ -536,7 +561,7 @@ function postProcessing() {
               var randoms                 = new Float32Array(count);
               var randoms1                = new Float32Array(count);
               var colorChoices            = ['pink','green','cyan','wheat','red'];
-          
+              
               var squareGeometry          = new THREE.PlaneGeometry(1,1);
               var instancedGeometry       = new THREE.InstancedBufferGeometry();
               
@@ -544,9 +569,9 @@ function postProcessing() {
               
               instancedGeometry.index              = squareGeometry.index;
               instancedGeometry.maxInstancedCount  = count;
-          
+              
               for(let i=0;i<count;i++){
-                
+              
                     var i3              = 3*i;
                     var colorIndex      = Math.floor(Math.random()*colorChoices.length);
                     var color           = new THREE.Color(colorChoices[colorIndex]);
@@ -565,17 +590,17 @@ function postProcessing() {
               instancedGeometry.setAttribute('aColor',new THREE.InstancedBufferAttribute(colors,3,false));
               
               spiral   = new THREE.Mesh(instancedGeometry,spiralMaterial);
-
+              
               spiral.position.set(0,-1,0);
               //spiral.rotation.y = Math.PI/4;
               spiral.scale.set(1,1,1);
-
+              
               scene.add(spiral);
               
         }//addSprial
         
-
-
+        
+        
         function addSnow(world){
         
               const vertexShader    = `
@@ -596,21 +621,21 @@ function postProcessing() {
                           return (value-min)/(max-min);
                           
                     }//norm
-
+                    
                     
                     float lerp(float norm,float min,float max){
                     
                             return (max-min)*norm+min;
                             
                     }//lerp
-
+                    
                     
                     float map(float value,float sourceMin,float sourceMax,float destMin,float destMax){
                     
                           return lerp(norm(value,sourceMin,sourceMax),destMin,destMax);
                           
                     }//map
-
+                    
                     
                     mat3 rotateX(float angle) {
                     
@@ -636,7 +661,7 @@ function postProcessing() {
                         
                     }//rotateY
                     
-
+                    
                     void main() {
                     
                         float t           = time*0.0006;
@@ -649,7 +674,7 @@ function postProcessing() {
                         p.z              += sin(t+phaseSecondary);
                         
                         //p                 = rotateX(radians(20.0)) * p;
-
+                        
                         opacity           = map(p.z,-150.0,15.0,0.0,1.0);
                         vec4 mvPosition   = modelViewMatrix*vec4(p,1.0);
                         gl_PointSize      = size*(100.0/-mvPosition.z);
@@ -746,18 +771,18 @@ function postProcessing() {
               }//createSnowSet
               
         }//addSnow
-
-
-
+        
+        
+        
         function rand(max,min=0){return min+Math.random()*(max-min)}
         function randChoise(arr){return arr[randInt(arr.length)]}
         function randInt(max,min=0){return Math.floor(min+Math.random()*(max-min))}
-
-
+        
+        
         function addStar(world){
-          
+        
               var vertexShader    = `
-
+              
                     uniform float uTime;
                     uniform float uSize;
                     varying vec2 vUv;
@@ -767,11 +792,11 @@ function postProcessing() {
                     
                           vUv = uv;
                           vColor = vec3(1.0, 0.84, 0.0); // gold color
-                        
+                          
                           vec3 scaledPosition = position * uSize;
                           vec4 mvPosition = modelViewMatrix * vec4(scaledPosition, 1.0);
                           gl_Position = projectionMatrix * mvPosition;
-                      
+                          
                     }//main
                     
               `;
@@ -789,11 +814,11 @@ function postProcessing() {
                           float strength = distance(uv, vec2(0.5));
                           strength *= 2.0;
                           strength = 1.0 - strength;
-                        
+                          
                           float sparkle = 0.75 + 0.25 * 1.0;
                           sparkle = pow(sparkle, 2.0);
                           //sparkle=2.0
-                        
+                          
                           vec3 color = vColor * strength * sparkle;
                           gl_FragColor = vec4(color,uOpacity);
                           
@@ -819,12 +844,12 @@ function postProcessing() {
 addStar2();
 
         }//addStar
-
+        
 var starMesh2;
 
 
         function addStar2(){
-          
+        
               // Create a 2D star shape
               const starShape = new THREE.Shape();
               const spikes = 5;
@@ -848,8 +873,8 @@ var starMesh2;
               const starMesh = new THREE.Mesh(geometry, material);
               
               starMesh.position.set(0,1.95,0);
-              starMesh.scale.set(0.015,0.015,0.015);              
-
+              starMesh.scale.set(0.015,0.015,0.015);
+              
               starMesh2   = starMesh;
               
               var ambient   = new THREE.AmbientLight(0xffffff, 0.5);
@@ -860,18 +885,18 @@ var starMesh2;
               scene.add(point);
               
               starMesh.rotation.y   = Math.PI/4;
-
+              
               scene.add(starMesh);
-          
+              
               addPlane();
               
         }//addStar2
-
-
-
+        
+        
+        
         var spark   = 'https://javascript-2020.github.io/storage/images/spark1.png';
-
-
+        
+        
         function addPlane(){
         
               //vertex:-
@@ -925,7 +950,7 @@ var starMesh2;
                                               transparent     : true,
                                               vertexColors    : true,
                                         });
-              
+                                        
               var totalPoints   = 10000;
               var positions     = [];
               var colors        = [];
@@ -973,11 +998,11 @@ var starMesh2;
               scene.add(plane);
               
         }//addPlane
-
-
-
-
-
+        
+        
+        
+        
+        
       </script>
       
 </html>
