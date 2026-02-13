@@ -297,13 +297,15 @@
               var img   = new Image(50,50);
               img.src='https://javascript-2020.github.io/storage/images/snowflake1.png';
               img.style.cssText   = 'position:absolute;bottom:50px;right:50px;z-index:99';
-              img.onclick   = click;
+              img.tabIndex=0;
+              img.onclick   = e=>e.stopPropagation();
+              img.onkeydown   = e=>e.key=='m' && show();
+              
               document.body.append(img);
               
               
-              function click(e){
+              function show(){
               
-                    e.stopPropagation();
                     window.open('https://javascript-2020.github.io/images/image-1.jpg');
                     
               }//click
