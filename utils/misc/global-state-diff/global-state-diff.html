@@ -91,10 +91,12 @@
     
     
   section
-    {border:1px solid lightblue;padding:10px;border-radius:10px;display:flex;flex-direction:column;gap:20px}
+    {border:1px solid lightblue;padding:10px;border-radius:10px;display:flex;flex-direction:column}
+  section>:not(:first-child)
+    {margin-bottom:10px}
     
   h3
-    {text-align:center;color:blue}
+    {text-align:center;color:blue;margin:0}
     
   input
     {font-size:16px;padding:5px 10px;box-sizing:border-box}
@@ -151,7 +153,7 @@
     
   #info
     {display:grid;grid-template-columns:max-content minmax(0, 1fr);gap:20px}
-  #item #values > *:nth-child(2)
+  #item > *:nth-child(2)
     {min-width:0;overflow-wrap:break-word;word-break:break-word;}
     
   #url
@@ -164,6 +166,27 @@
     
   hr
     {margin:20px}
+    
+    
+  .links
+    {display:flex;flex-direction:column;gap:10px;text-align:right}
+    
+  a
+    {color:#4a90e2;text-decoration:none;font-weight:500}
+  a:hover
+    {text-decoration:underline}
+  .link-domain
+    {font-size:0.85rem;color:#777;margin-left:0.25rem}
+  .link-domain::before
+    {content:'['}
+  .link-domain::after
+    {content:']'}
+  .link-txt
+    {}
+  .no-underline
+    {display:inline-block;text-decoration:none;color:black}
+    
+    
     
   .spc
     {flex:1}
@@ -182,8 +205,11 @@
       
       <body>
       
-            <misc-hdr component=grp style='position:relative'>
-                  <img class=title src='images/global-state-diff.png' style='top:-5px;height:40px' alt=global-state-diff>
+            <misc-hdr v2.0 component=grp>
+                  <img slot=title src='images/global-state-diff.png' style='top:-5px;height:40px' alt=global-state-diff>
+                  <div slot=version>
+                        v2.0
+                  </div>
                   <time slot=date datetime=2026-02-13>
                         13 Feb 2026
                   </time>
@@ -198,6 +224,21 @@
                               &lt;script src=''&gt;&lt;/script&gt;
                         </div>
                   </h3>
+                  
+                  <div class=links>
+                        <a href='https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script' target=_blank>
+                              &lt;script&gt;: The Script element
+                              <span class=link-domain>
+                                    developer.mozilla.org
+                              </span>
+                        </a>
+                        <a href='https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement' target=_blank>
+                              HTMLScriptElement
+                              <span class=link-domain>
+                                    developer.mozilla.org
+                              </span>
+                        </a>
+                  </div>
                   
                   <div>
                         Analyze the impact of loading external JavaScript resources.  The tool compares the  global object
@@ -253,6 +294,21 @@
                   <h3>
                         Import Inspector
                   </h3>
+                  
+                  <div class=links>
+                        <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import' target=_blank>
+                              import
+                              <span class=link-domain>
+                                    developer.mozilla.org
+                              </span>
+                        </a>
+                        <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import' target=_blank>
+                              import()
+                              <span class=link-domain>
+                                    developer.mozilla.org
+                              </span>
+                        </a>
+                  </div>
                   
                   <div>
                      Import Inspector complements global state diff by allowing users to specify a module URL and inspecting its
