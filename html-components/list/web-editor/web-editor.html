@@ -330,7 +330,9 @@
                     return {error};
               }
               if(!res.ok){
-                    var error   = await res.text();
+                    error         = `( ${res.status} ) ${res.statusText}`;
+                    cache[url]    = error;
+                    //var error   = await res.text();
                     log.red(error);
                     return {error};
               }
