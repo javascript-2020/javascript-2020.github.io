@@ -112,6 +112,19 @@
             <link rel=stylesheet href='../css/component.css' crossorigin=anonymous>
             
             <style>
+            
+  #tabs
+    {display:flex}
+    
+  .tab
+    {border-radius:5px 5px 0 0;cursor:pointer;flex:1;padding:5px 10px;border:1px solid transparent;text-align:center}
+    
+  .active
+    {background:lightyellow;border-color:lightblue}
+    
+  .inactive
+    {background:lightgray;border-color:gray}
+    
             </style>
             
       </head>
@@ -128,44 +141,48 @@
                   </time>
             </html-components-hdr>
             
-            <script>
-/*
-        {
-              let hdr   = document.querySelector('html-components-hdr');
-              hdr.querySelector('h2').textContent   = component;
-              hdr.querySelector('time').setAttribute('datetime',date);
-              let d           = new Date(date);
-              let formatted   = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-              hdr.querySelector('time').textContent   = formatted;
-        }
-*/
-            </script>
             
-            
-            <div id=readme class=markdown-body></div>
-            
-            <hr>
-            
-            <section>
-            
-                  <h3>
+            <div id=tabs>
+                  <div id=readme class='tab active'>
+                        readme
+                  </div>
+                  <div id=api class='tab inactive'>
+                        api
+                  </div>
+                  <div id=files class='tab inactive'>
                         files
-                        <span style='font-size:16px;font-weight:normal'>
-                              ( click to view )
-                        </span>
-                  </h3>
-                  
-                  <dir-tree component></dir-tree>
-                  
-            </section>
-            
-            <div id=view-hdr>
+                  </div>
             </div>
             
-            <div id=view style='display:none'>
-                  <snippet-html-console component></snippet-html-console>
-                  <web-editor component fullsize></web-editor>
+            <div id=view>
+            
+                  <div id=readme class=markdown-body></div>
+                  
+                  <div id=api class=markdown-body style='display:none'></div>
+                  
+                  <section id=files style='display:none'>
+                  
+                        <h3>
+                              files
+                              <span style='font-size:16px;font-weight:normal'>
+                                    ( click to view )
+                              </span>
+                        </h3>
+                        
+                        <dir-tree component></dir-tree>
+                        
+                        <div id=files-view-hdr>
+                        </div>
+                        
+                        <div id=files-view>
+                              <snippet-html-console component></snippet-html-console>
+                              <web-editor component fullsize></web-editor>
+                        </div>
+                        
+                  </section>
+                  
             </div>
+            
             
             
             <log-mod component></log-mod>
@@ -179,6 +196,7 @@
         var cache   = {};
         
         
+        var btn         = {};
         var callback    = {};
         var show        = {};
         
@@ -190,8 +208,10 @@
         async function initdom(){
                                                                                 debug('initdom');
                                                                                 
+              $('#tabs').onclick      = btn.tabs;
+              
               var html                      = md.render(md_txt);
-              $('#readme').innerHTML        = html;
+              $('#view #readme').innerHTML        = html;
               
               var keys      = Object.keys(files.examples);
               var initial   = keys[0];
@@ -201,11 +221,33 @@
               
               await show.examples(initial);
               
-              $('#view').style.display    = '';
-              
               
         }//initdom
         
+        
+  //:
+  
+  
+        btn.tabs    = function(e){debugger;
+        
+              var tab   = e.target;
+              
+              var list    = $.all('#tabs .tab');
+              list.forEach(tab2=>{
+              
+                    if(tab.id!==tab2.id){
+                          tab2.classList.remove('active');
+                          tabs2.classList.add('inactive');
+                          $(`#view #${tab2.id}`).style.display    = 'none';
+                    }
+                    
+              });
+              
+              tab.classList.remove('inactive');
+              tab.classList.add('active');
+              tabs.style.display    = '';
+              
+        }//tabss
         
   //:
   
@@ -226,7 +268,7 @@
         
         show.source   = async function(file){
         
-              $('#view-hdr').textContent                = 'source : '+file;
+              $('#files-view-hdr').textContent                = 'source : '+file;
               $('web-editor').style.display             = '';
               $('snippet-html-console').style.display   = 'none';
               
@@ -248,7 +290,7 @@
         
         show.examples    = async function(file){
         
-              $('#view-hdr').textContent                = 'examples : '+file;
+              $('#files-view-hdr').textContent                = 'examples : '+file;
               $('web-editor').style.display             = 'none';
               $('snippet-html-console').style.display   = '';
               
