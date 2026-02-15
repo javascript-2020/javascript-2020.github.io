@@ -96,12 +96,10 @@
         async function load(){
         
               var {error,txt}   = await get(base+component+'/readme.md');
+              mdtxt.readme      = txt||error;
               
-              if(error){
-                    md_txt    = error;
-              }else{
-                    md_txt    = txt;
-              }
+              var {error,txt}   = await get(base+component+'/api.md');
+              mdtxt.api         = txt||error;
               
         }//load
         
@@ -192,13 +190,16 @@
       <script>
       
       
-        var md_txt;
-        var cache   = {};
+        var mdtxt         = {};
+        mdtxt.readme      = '';
+        mdtxt.api         = '';
+        
+        var cache         = {};
         
         
-        var btn         = {};
-        var callback    = {};
-        var show        = {};
+        var btn           = {};
+        var callback      = {};
+        var show          = {};
         
         
         
@@ -210,7 +211,7 @@
                                                                                 
               $('#tabs').onclick      = btn.tabs;
               
-              var html                      = md.render(md_txt);
+              var html                            = md.render(mdtxt.readme);
               $('#view #readme').innerHTML        = html;
               
               var keys      = Object.keys(files.examples);
