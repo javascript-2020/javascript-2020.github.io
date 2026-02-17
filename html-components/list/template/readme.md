@@ -1,158 +1,113 @@
+
+
 ## Description
 
-The file-mod manages file access
+<div class=desc-txt>
 
+The web-editor component produces an editor in the webpage
+
+A modern, feature‑rich text editor built directly into the browser, this component is designed to make writing and editing feel effortless. Whether you’re building documentation tools, note‑taking apps, or custom content interfaces, it provides a smooth, polished experience that fits naturally into any webpage. Its clean interface keeps the focus on the text, while thoughtful details make everyday editing tasks quicker and more intuitive.
+
+Under the hood, the editor offers a flexible architecture that adapts to a wide range of use cases. It supports rich formatting, keyboard shortcuts, custom styling, and extensible behaviours, giving developers the freedom to tailor the writing environment to their needs. Despite its capabilities, it remains lightweight and responsive, ensuring fast load times and a fluid typing experience even in complex layouts.
+
+This component is built with usability in mind, making it just as comfortable for casual writing as it is for more structured content creation. Whether you’re embedding it in a small widget or using it as the core of a larger application, it provides a dependable, modern editing foundation that feels right at home on the web.
+
+</div>
+
+
+--- {.hr-main}
 
 ## Include
 
-requires component v3.0
-
 ```
 
-      <file-mod component></file-mod>
+      <web-editor component></web-editor>
       
 ```
+
+
+--- {.hr-main}
 
 ## initmod
 
 
 name      | description
 ----------|------------
-ext       |       helper loader library
-$         |       various dom helper functions
-menumod   |       the menumod library
- |
-menu      |       reference to the menu to add its menu's to
-source    |       the source text
-focus     |       function to reset focus
-log       |       reference to log-mod component
- |
-complete  |       handles loading ( complete.load ) and saving ( complete.save )
+ext       | reference to ext-loader
+$         | reference to $ library
+ace       | reference to ace editor, else each instance of snippet-console loads its own
+menu      | reference to the menu group snippet-console should use, else it creates its own
+menumod   | reference to menumod library, only required if menu is not given
+config    | config parameters, see below
+fullsize  | true|false whether the editor should display the entire document
+kd        | callback for keydown event
+on        | callback for various events, see below
+mode      | the mode for the editor, javascript,css,html etc
+embed     | a dom node that the component will take its attributes from
 
+
+#### config
+
+config.mode    - set the mode for the editor, javascript,css,html,python etc
+
+config.fullsize - true|false whether the editor should display the entire document
+
+config.height - set the height of the editor
+
+
+#### on
+
+on.change - callback when the editor has a change event
+
+
+--- {.hr-main}
 
 ## attribute
+
+
 
 these attribute can be defined on the html tag itself
 
 attribute     | description
 ---------     |-----------
-none | no supported attributes
+src         | src url to load 
+h \|\| height    | set the height of the editor
+mode        | set the mode for the editor
+fullsize    | boolean attribute, whether the editor display the entire document
 
+
+--- {.hr-main}
 
 ## module
-
 
 name|description
 ---|---
 **standard** |
-initmod|standard function for importing local dependencies
-init|standard initialisation function
-initdom|standard function to setup the dom
+initmod   | standard function for importing local dependencies
+init      | standard initialisation function
+initdom   | standard function to setup the dom
  | 
-save ( file )   | read source blob and save under *file* or current file
-clear ()        | clear the current file
-new ( ...opts )   | alias for newfile
-[newfile](#file-descriptor) ( ...opts )   | create a new file desciptor object
-export ( file )   | serialise *file*
-import ( file )   | deserialise *file*
-test()|display test data
+filename ( file )    | set the filename that the editor display, also sets the mode
+filename.getname ( path )    | helper function to return the filename from a path
+filename.save ( status ) | show or hide the save status icon
+filename.save.show () | show the save status icon
+filename.save.hide () | hide the save status icon
+filename.clear () | clear the filename
+filename.read () | read the current filename
+clear () | clear the editor
+set \|\| setvalue \|\| setValue ( txt ) | set the text of the editor
+get \|\| getvalue \|\| getValue () | get the text of the editor
+focus () | set focus to the editor
+resize () | update the editor dimensions ( width / height )
+load ( src ) |
+horiz () | set the editor to horizontal mode
+vert () | set the editor to vertical mode
+height | setter to set the height of the editor
+mode | getter / setter to get and set the mode of the editor
 
 
 
-<!--
 
-### doThing(input, [options], ...extras)
-
-Performs the main operation.
-
-#### Parameters
-- **input** — string or object to process  
-- **[options]** — optional settings  
-  - **[options.mode="fast"]** — processing mode  
-  - **[options.verbose=false]** — enable verbose output  
-- **...extras** — additional values appended to the operation
-
-#### Returns
-- **Promise<Result>**
-
-#### Result
-- **success** — boolean indicating whether the operation succeeded  
-- **value** — the processed output  
-- **warnings** — array of strings describing non‑fatal issues  
-- **durationMs** — number of milliseconds the operation took  
-
-#### Errors
-The promise rejects with:
-- **TypeError** — thrown when `input` is missing or invalid  
-- **OperationError** — thrown when processing fails internally  
-- **TimeoutError** — thrown when the operation takes too long
-
--->
-
-
-## api
-
-
-### save ( file )
-
-reads a blob from source and saves it according to the file descriptor, then calls complete.save( file )
-
-
-### clear ( )
-
-clear the current file.  file-mod maintains a reference to the current file so that save can be called
-externally, ie say ctrl-s
-
-
-### new ()
-
-alias for newfile
-
-
-<div id=file-descriptor style='scroll-margin-top: 80px'>
-
-### newfile ({filetype,path,name,rel,kind,size,ctime,mtime,atime,title,icon})
-
-</div>
-
-create a file descriptor object
-
-#### Parameters
-
-- **filetype || ft** = the filetype ( localfile,github,googlestorage ... )
-
-- **abs**     = the absolute path of the file
-
-- **path**    = path of the file
-
-- **name**    = the name of the file
-
-- **rel**     = relative path for the file, should this be relevant
-
-- **kind**    = kind of file structure this file object represents ( file,directory )
-
-- **size**    = the size of the file in bytes
-
-- **ctime**   = the create time of the file 
-
-- **mtime**   = the modified time of the file
-
-- **atime**   = the last access time of the file
-
-- **title**   = the title for the file
-
-- **icon**    = an icon for the file
-
-#### Returns
-
-- **Object** — the file descriptor
-
-#### Errors
-- **none**
-
-### export ( [file] )
-
-serialise and return file or the current file
 
 
 
