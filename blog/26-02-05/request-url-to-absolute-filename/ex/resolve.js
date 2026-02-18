@@ -9,7 +9,7 @@
         
         function resolve(requrl,docroot='.'){
                                                                                 resolve.df && console.log('=== resolve v2.0 ===');
-                                                                                resolve.df && console.log('url     : ',url);
+                                                                                resolve.df && console.log('requrl  : ',requrl);
                                                                                 resolve.df && console.log('docroot : ',docroot);
               var err;
               try{
