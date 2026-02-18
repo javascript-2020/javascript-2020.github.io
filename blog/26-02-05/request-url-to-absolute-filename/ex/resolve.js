@@ -6,14 +6,14 @@
 
         resolve.df    = false;    //  true
         
-        function resolve(url,docroot='.'){
+        function resolve(requrl,docroot='.'){
                                                                                 resolve.df && console.log('=== resolve v2.0 ===');
                                                                                 resolve.df && console.log('url :',url);
                                                                                 resolve.df && console.log('docroot :',docroot);
               var err;
               try{
               
-                    url         = decodeURI(url);
+                    requrl    = decodeURI(requrl);
                     
               }//try
               catch(err2){
@@ -27,7 +27,10 @@
                     return {error};
               }
               
+              var url   = requrl;
+              
               if(url.indexOf('\\')!=-1){
+                                                                                resolve.df && console.log('invalid url ( backslash )');
                     var error   = 'invalid url ( backslash )';
                     return {error};
               }
@@ -53,12 +56,12 @@
                           return {error};
                     }
               }
-/*
-              if(url.endsWith('/')){
+              
+              if(requrl.endsWith('/')){
                     abs  += '/';
               }
-*/
-
+              
+              
                                                                                 resolve.df && console.log('ok',abs);
               return {abs};
               
