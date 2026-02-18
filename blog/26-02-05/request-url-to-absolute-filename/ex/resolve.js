@@ -4,7 +4,7 @@
     path,fs
 */
 
-        resolve.df    = false;
+        resolve.df    = false;    //  true
         
         function resolve(url,docroot='.'){
                                                                                 resolve.df && console.log('=== resolve v2.0 ===');
