@@ -37,14 +37,14 @@
                                                                                 
               if(!abs.startsWith(root)){
                                                                                 resolve.df && console.log('not docroot');
-                    var error   = 'resolve';
+                    var error   = 'invalid docroot';
                     return {error};
               }
               
               if(abs.length>root.length){
                     if(abs[root.length]!=path.sep){
                                                                                 resolve.df && console.log('not docroot2');
-                          var error   = 'not docroot2';
+                          var error   = 'invalid docroot-2';
                           return {error};
                     }
               }
