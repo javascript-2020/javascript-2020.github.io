@@ -37,12 +37,12 @@
               }
               
               url         = url.slice(1);
-                                                                                resolve.df && console.log('url ...... :',url);
+                                                                                resolve.df && console.log('url ...... : ',url);
               var root    = path.resolve(docroot);
               //root       += path.sep;
-                                                                                resolve.df && console.log('root ..... :',root);
+                                                                                resolve.df && console.log('root ..... : ',root);
               var abs     = path.resolve(docroot,url);
-                                                                                resolve.df && console.log('abs ...... :',abs);
+                                                                                resolve.df && console.log('abs ...... : ',abs);
                                                                                 
               if(!abs.startsWith(root)){
                                                                                 resolve.df && console.log('error .... : ','invalid docroot');
