@@ -8,8 +8,8 @@
         
         function resolve(requrl,docroot='.'){
                                                                                 resolve.df && console.log('=== resolve v2.0 ===');
-                                                                                resolve.df && console.log('url :',url);
-                                                                                resolve.df && console.log('docroot :',docroot);
+                                                                                resolve.df && console.log('url     : ',url);
+                                                                                resolve.df && console.log('docroot : ',docroot);
               var err;
               try{
               
@@ -22,7 +22,7 @@
                     
               }//catch
               if(err){
-                                                                                resolve.df && console.error(err.message);
+                                                                                resolve.df && console.log('error   : ',err.message);
                     var error   = 'invalid url';
                     return {error};
               }
@@ -30,28 +30,28 @@
               var url   = requrl;
               
               if(url.indexOf('\\')!=-1){
-                                                                                resolve.df && console.log('invalid url ( backslash )');
+                                                                                resolve.df && console.log('error   : ','invalid url ( backslash )');
                     var error   = 'invalid url ( backslash )';
                     return {error};
               }
               
               url         = url.slice(1);
-                                                                                resolve.df && console.log('url :',url);
+                                                                                resolve.df && console.log('url     :',url);
               var root    = path.resolve(docroot);
               //root       += path.sep;
-                                                                                resolve.df && console.log('root :',root);
+                                                                                resolve.df && console.log('root    :',root);
               var abs     = path.resolve(docroot,url);
-                                                                                resolve.df && console.log('abs :',abs);
+                                                                                resolve.df && console.log('abs     :',abs);
                                                                                 
               if(!abs.startsWith(root)){
-                                                                                resolve.df && console.log('invalid docroot');
+                                                                                resolve.df && console.log('error   : ','invalid docroot');
                     var error   = 'invalid docroot';
                     return {error};
               }
               
               if(abs.length>root.length){
                     if(abs[root.length]!=path.sep){
-                                                                                resolve.df && console.log('invlaid docroot-2');
+                                                                                resolve.df && console.log('error   : ','invlaid docroot-2');
                           var error   = 'invalid docroot-2';
                           return {error};
                     }
@@ -62,7 +62,7 @@
               }
               
               
-                                                                                resolve.df && console.log('ok',abs);
+                                                                                resolve.df && console.log('ok      : ',abs);
               return {abs};
               
         }//resolve
