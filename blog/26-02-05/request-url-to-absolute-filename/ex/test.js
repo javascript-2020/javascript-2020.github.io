@@ -1,10 +1,11 @@
 
 
-(async()=>{
-
         var path      = require('path');
         var fs        = require('fs');
         
+        
+(async()=>{
+
         var test      = setup();
         var docroot   = test.docroot;
         
