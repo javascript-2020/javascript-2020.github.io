@@ -42,7 +42,7 @@
               }
               
               if(abs.length>root.length){
-                    if(abs[root.length]!=path.sep){
+                    if(abs[root.length-1]!=path.sep){
                                                                                 resolve.df && console.log('invlaid docroot-2');
                           var error   = 'invalid docroot-2';
                           return {error};
