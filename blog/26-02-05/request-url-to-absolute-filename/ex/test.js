@@ -13,15 +13,17 @@
               var item      = test.tests[i];
               var url       = item.url;
               
-              var {abs,error}   = resolve(url,docroot);
               
               console.log();
               console.log(i,item.note);
               console.log('docroot    :',docroot);
               console.log('value      :',item.url);
               //console.log('expected   :',item.expected);
+              
+              var {abs,error}   = resolve(url,docroot);
               abs && console.log('abs        : ',abs);
               error && console.log('error      : ',error);
+              
               console.log();
               
         }//for
