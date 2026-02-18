@@ -7,13 +7,14 @@
         
         test.tests.forEach((item,i)=>{
         
-              var abs   = resolve(item.url,test.docroot);
+              var {abs,error}   = resolve(item.url,test.docroot);
               
               console.log();
               console.log(i,item.note);
-              console.log('value     :',item.url);
-              console.log('expected  :',item.expected);
-              console.log('result    : ',abs);
+              console.log('value      :',item.url);
+              console.log('expected   :',item.expected);
+              abs && console.log('abs        : ',abs);
+              error && console.log('error      : ',error);
               console.log();
               
         });
