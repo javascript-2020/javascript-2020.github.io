@@ -24,7 +24,7 @@
               error && console.log('error      : ',error);
               console.log();
               
-        });
+        }//for
         
 })();
 
