@@ -48,7 +48,7 @@
             
         var df=true,did='html';
         
-        var base        = 'https://libs.ext-code.com/html/';
+        var base        = 'https://ext-code.com/code/';
         
         var ace;
         var md;
@@ -92,8 +92,8 @@
         async function load(){
         
               var list          = [];
-              list.push(get(base+component+'/readme.md'));
-              list.push(get(base+component+'/api.md'));
+              list.push(get(base+path+'/readme.md'));
+              list.push(get(base+path+'/api.md'));
               var result        = await Promise.all(list);
               
               var {error,txt}   = result[0];
@@ -129,17 +129,15 @@
             
             <html-components-hdr v2.0 component=grp1>
                   <h2 slot=title>
-                        web-editor-x
                   </h2>
                   <time slot=date datetime=2026-02-10>
-                        10 Feb 2026-x
                   </time>
             </html-components-hdr>
             
             <script>
         {
               let $   = css=>document.querySelector(css);
-              $('[slot=title]').textContent   = component;
+              $('[slot=title]').textContent   = filename;
               $('time').setAttribute('datetime',date);
               var str                 = new Date(date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
               $('time').textContent   = str;
@@ -277,16 +275,17 @@
         
         
         show.source   = async function(file){
-        
+                                                                                debug('show.source',file);
               $('#files-view-hdr').textContent                = 'source : '+file;
               $('web-editor').style.display             = '';
               $('snippet-html-console').style.display   = 'none';
               
-              var url   = base+component+'/';
+              var fn    = filename.split('.').at(-1);
+              var url   = base+path;
               if(file=='latest'){
-                    url  += `${component}.html`;
+                    url  += filename;
               }else{
-                    url  += `${file}/${component}-${file}.html`;
+                    url  += `${file}/${fn}-${file}.html`;
               }
               
               var {txt}   = await get(url);
@@ -299,12 +298,12 @@
         
         
         show.examples    = async function(file){
-        
+                                                                                debug('show.examples',file);
               $('#files-view-hdr').textContent                = 'examples : '+file;
               $('web-editor').style.display             = 'none';
               $('snippet-html-console').style.display   = '';
               
-              var url     = base+component+'/examples/'+file;
+              var url     = base+path+'/examples/'+file;
               var {txt}   = await get(url);
               if(!txt)return;
               
