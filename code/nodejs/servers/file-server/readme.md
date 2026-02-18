@@ -3,7 +3,7 @@
 <h1 style='display:flex'>
       file-server.js
       <div style='flex:1'></div>
-      <input type=button value=download onclick='btn.download()'>
+      <input type=button value=download onclick='btn.download()' style='font-size:16px'>
 </h1>
 
 
