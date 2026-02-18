@@ -48,11 +48,12 @@
                           return {error};
                     }
               }
-              
+/*
               if(url.endsWith('/')){
                     abs  += '/';
               }
-              
+*/
+
                                                                                 resolve.df && console.log('ok',abs);
               return {abs};
               
