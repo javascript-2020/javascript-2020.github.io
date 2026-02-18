@@ -17,8 +17,9 @@
               
               console.log();
               console.log(i,item.note);
+              console.log('docroot    :',docroot);
               console.log('value      :',item.url);
-              console.log('expected   :',item.expected);
+              //console.log('expected   :',item.expected);
               abs && console.log('abs        : ',abs);
               error && console.log('error      : ',error);
               console.log();
