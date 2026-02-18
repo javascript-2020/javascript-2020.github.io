@@ -2,12 +2,18 @@
 
 
         var path      = require('path');
+        var fs        = require('fs');
+        
         var test      = setup();
+        var docroot   = test.docroot;
         
+        var n         = test.tests.length;
+        for(var i=0;i<n;i++){
         
-        test.tests.forEach((item,i)=>{
-        
-              var {abs,error}   = resolve(item.url,test.docroot);
+              var item      = test.tests[i];
+              var url       = item.url;
+              
+              var {abs,error}   = await resolve(url,docroot);
               
               console.log();
               console.log(i,item.note);
