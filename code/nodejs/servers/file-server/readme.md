@@ -1,9 +1,10 @@
 
 
-<h1 style='display:flex'>
+<h1 style='display:flex;gap:20px'>
       file-server.js
       <div style='flex:1'></div>
-      <input type=button value=download onclick='btn.download()' style='font-size:16px'>
+      <input type=button value='download file' onclick='btn.download()' style='font-size:16px'>
+      <input type=button value='download complete' onclick='btn.download.complete()' style='font-size:16px'>
 </h1>
 
 
@@ -24,3 +25,7 @@ the client-side library can found at
 [file-server.js](/libs/js/io/file-server/file-server.html)
       
       
+## requires
+
+- getmime.js
+- keys.js
