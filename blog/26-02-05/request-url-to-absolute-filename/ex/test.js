@@ -1,5 +1,5 @@
 
-
+/*
         resolve.df    = false;
         
         async function resolve(url,docroot='.'){
@@ -42,10 +42,10 @@
               return abs;
               
         }//resolve
-        
-        
-        
-        
+*/
+
+
+
         var path      = require('path');
         var test      = setup();
         
