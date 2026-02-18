@@ -241,6 +241,24 @@
   //:
   
   
+        btn.download    = function(){
+        
+              var {txt,error}   = get(base+path+filename);
+              if(error){
+                    log.red(error);
+                    return;
+              }
+              var blob          = new Blob([txt]);
+              var url           = window.URL.createObjectURL(blob);
+              
+              var a             = document.createElement('a');
+              a.download        = filename;
+              a.href            = url;
+              a.click();
+              
+        }//download
+        
+        
         btn.tabs    = function(e){
         
               var tab   = e.target;
@@ -260,7 +278,7 @@
               tab.classList.add('active');
               $(`#view #${tab.id}`).style.display    = '';
               
-        }//tabss
+        }//tabs
         
   //:
   
@@ -344,7 +362,7 @@
               }
               if(!res.ok){
                     error         = `( ${res.status} ) ${res.statusText}`;
-                    cache[url]    = error;
+                    //cache[url]    = error;
                     //var error   = await res.text();
                     //log.red(error);
                     return {error};
