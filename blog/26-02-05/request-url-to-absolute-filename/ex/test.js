@@ -37,6 +37,11 @@
                 "docroot"   : "/var/www",
                 "tests"     : [
                   {
+                    "url": "/",
+                    //"expected": "/var/www/index.html",
+                    "note": "root directory"
+                  },
+                  {
                     "url": "/index.html",
                     "expected": "/var/www/index.html",
                     "note": "Basic file"
