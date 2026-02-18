@@ -46,9 +46,15 @@
             
             <script>
                                                                                 console.log('request-url-to-absolute-filename.html');
-                                                                                
+        var editor;
+        var snippet;
+        
+        
         async function ready(){
                                                                                 debug('ready',window.crossOriginIsolated);
+              editor    = mod['web-editor'];
+              snippet   = mod['snippet-terminal-console'];
+              
               initdom(document.body);
               
         }//init
@@ -86,6 +92,7 @@
                   </p>
             </div>
             
+            <web-editor component src='ex/resolve.js' fullsize></web-editor>
             
             <snippet-terminal-console component src='ex/test.js' mode=nodejs web-terminal='h=450px'></snippet-terminal-console>
             
@@ -99,13 +106,27 @@
       <script>
       
       
+        var btn   = {};
+        
+        
         function initdom(rootnode){
+        
+              snippet.btn.run   = btn.run;
+              
         }//initdom
         
         
-  //:
-  
-  
+        btn.run   = function(){
+        
+              var js1   = editor.getvalue();
+              var js2   = snippet.editor.getvalue();
+              var js    = js1+'\n\n'+js2;
+              return js;
+              
+        }//run
+        
+        
+        
       </script>
       
 </html>
