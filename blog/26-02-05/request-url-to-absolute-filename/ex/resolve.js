@@ -27,6 +27,11 @@
                     return {error};
               }
               
+              if(url.indexOf('\\')!=-1){
+                    var error   = 'invalid url ( backslash )';
+                    return {error};
+              }
+              
               url         = url.slice(1);
                                                                                 resolve.df && console.log('url :',url);
               var root    = path.resolve(docroot);
