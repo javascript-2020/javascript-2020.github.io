@@ -8,7 +8,7 @@
         //resolve.df    = true
         
         function resolve(requrl,docroot='.'){
-                                                                                resolve.df && console.log('=== resolve v2.0 ===');
+                                                                                resolve.df && console.log('=== resolve v3.0 ===');
                                                                                 resolve.df && console.log('requrl ... : ',requrl);
                                                                                 resolve.df && console.log('docroot .. : ',docroot);
               var err;
