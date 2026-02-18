@@ -4,8 +4,6 @@
         var fs        = require('fs');
         
         
-(async()=>{
-
         var test      = setup();
         var docroot   = test.docroot;
         
@@ -15,7 +13,7 @@
               var item      = test.tests[i];
               var url       = item.url;
               
-              var {abs,error}   = await resolve(url,docroot);
+              var {abs,error}   = resolve(url,docroot);
               
               console.log();
               console.log(i,item.note);
@@ -27,9 +25,8 @@
               
         }//for
         
-})();
-
-
+        
+        
         function setup(){
         
               return {
