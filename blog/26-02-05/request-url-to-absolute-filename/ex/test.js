@@ -17,7 +17,7 @@
               console.log();
               console.log(i,item.note);
               console.log('docroot    :',docroot);
-              console.log('value      :',item.url);
+              console.log('req.url    :',item.url);
               //console.log('expected   :',item.expected);
               
               var {abs,error}   = resolve(url,docroot);
