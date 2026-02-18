@@ -30,7 +30,7 @@
               url         = url.slice(1);
                                                                                 resolve.df && console.log('url :',url);
               var root    = path.resolve(docroot);
-              root       += path.sep;
+              //root       += path.sep;
                                                                                 resolve.df && console.log('root :',root);
               var abs     = path.resolve(docroot,url);
                                                                                 resolve.df && console.log('abs :',abs);
@@ -42,7 +42,7 @@
               }
               
               if(abs.length>root.length){
-                    if(abs[root.length-1]!=path.sep){
+                    if(abs[root.length]!=path.sep){
                                                                                 resolve.df && console.log('invlaid docroot-2');
                           var error   = 'invalid docroot-2';
                           return {error};
