@@ -1,5 +1,6 @@
 
 
+(async()=>{
 
         var path      = require('path');
         var fs        = require('fs');
@@ -25,8 +26,9 @@
               
         });
         
-        
-        
+})();
+
+
         function setup(){
         
               return {
