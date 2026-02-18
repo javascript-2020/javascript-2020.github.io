@@ -22,7 +22,7 @@
                     
               }//catch
               if(err){
-                                                                                resolve.df && console.error(err);
+                                                                                resolve.df && console.error(err.message);
                     var error   = 'invalid url';
                     return {error};
               }
