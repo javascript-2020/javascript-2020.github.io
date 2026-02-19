@@ -19,9 +19,11 @@
               console.log('docroot    :',docroot);
               console.log('req.url    :',item.url);
               //console.log('expected   :',item.expected);
-              console.log();
+              
+              resolve.df && console.log();
               var {abs,error}   = resolve(url,docroot);
-              console.log();
+              resolve.df && console.log();
+              
               abs && console.log('abs        : ',abs);
               error && console.log('error      : ',error);
               
