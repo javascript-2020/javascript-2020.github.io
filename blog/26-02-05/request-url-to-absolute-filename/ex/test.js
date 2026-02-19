@@ -43,6 +43,16 @@
                     "note": "root directory"
                   },
                   {
+                    "url": "//var/www2/",
+                    //"expected": "/var/www/index.html",
+                    "note": "similar directory"
+                  },
+                  {
+                    "url": "//var/ww",
+                    //"expected": "/var/www/index.html",
+                    "note": "similar directory 2"
+                  },
+                  {
                     "url": "/index.html",
                     "expected": "/var/www/index.html",
                     "note": "Basic file"
