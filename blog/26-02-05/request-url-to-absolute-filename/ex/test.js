@@ -24,8 +24,8 @@
               var {abs,error}   = resolve(url,docroot);
               resolve.df && console.log();
               
-              abs && console.log('abs        : ',abs);
-              error && console.log('error      : ',error);
+              abs && console.log('abs        :',abs);
+              error && console.log('error      :',error);
               
               console.log();
               
