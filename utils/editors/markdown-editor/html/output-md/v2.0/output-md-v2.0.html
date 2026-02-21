@@ -41,7 +41,7 @@
                               allow-html
                         </span>
                         <span id=breaks class=radio>
-                              <input type=checkbox checked>
+                              <input type=checkbox>
                               breaks
                         </span>
                         <span id=linkify class=radio>
@@ -149,9 +149,15 @@
       function libs(){
       
             var resolve,promise=new Promise(res=>resolve=res);
+            var ct          = 0;
             
             var script      = document.createElement('script');
             script.src      = 'https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js';
+            script.onload   = onload;
+            document.head.append(script);
+            
+            var script      = document.createElement('script');
+            script.src      = 'https://cdn.jsdelivr.net/npm/markdown-it-attrs@4.3.1/markdown-it-attrs.browser.min.js';
             script.onload   = onload;
             document.head.append(script);
             
@@ -160,6 +166,8 @@
             
             function onload(){
             
+                  ct++;
+                  if(ct!=2)return;
                   resolve();
                   
             }//onload
@@ -251,6 +259,8 @@
             opts.linkify        = chk.linkify.checked;
                                                                                 debug.json(opts);
             var md              = markdownit(opts);
+            md.use(markdownItAttrs,{leftDelimiter:'{',rightDelimiter:'}',allowedAttributes:['id','class',/^data-.*$/]});
+            
             var html            = md.render(txt);
             
             display[cur.mode](html);
