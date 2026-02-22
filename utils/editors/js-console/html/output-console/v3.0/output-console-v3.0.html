@@ -155,7 +155,9 @@
         var shadow;
         
         var output;
+        var pretty;
         var cur             = {};
+        var mode            = 'pretty';
         
         var iframe;
         obj.iframe;
@@ -255,6 +257,7 @@
               
               output                                    = $(shadow,'#output');
               cur.root                                  = output;
+              pretty                                    = $(shadow,'#output-console');
               
               shadow.append(style);
               
@@ -542,18 +545,27 @@
         }//disp
         
         
+  //:
+  
+  
         obj.clear   = function(){return clear()}
         fn.clear    = function(){return clear.apply(null,arguments)}
         
         function clear(){
         
-        /*
+              /*
               if(chk['console-echo'].checked){
                     con.clear.call(window.console);
               }
-        */
-        
-              cur.root.replaceChildren();
+              */
+              
+              
+              switch(mode){
+              
+                case 'pretty'     : cur.root.replaceChildren();       break;
+                case 'console'    : jsconsole.clear();                break;
+                
+              }//switch
               
         }//clear
         
@@ -572,24 +584,16 @@
               }
               */
               
-              var div   = disp.apply(null,arguments);
-              return div;
               
-/*
-              var txt           = build(arguments);
-              var div           = document.createElement('div');
-              div.textContent   = txt;
-              cur.root.append(div);
+              var div;
               
-              cur.node    = div;
+              switch(mode){
               
-              if(txt==''){
-                    div.style.height    = '16px';
-              }
+                case 'pretty'     : div   = disp.apply(null,arguments);       break;
+                case 'console'    : jsconsole.log.apply(jsconsole,arguments);       break;
+                
+              }//switch
               
-              cur.root.scrollTop    = 999999999;
-*/
-
               return div;
               
         }//log
@@ -606,9 +610,18 @@
               }
               */
               
-              var out   = format(arguments);
-              var div   = disp.apply(null,out);
-              return div;
+              switch(mode){
+              
+                case 'pretty'   :
+                                  var out   = format(arguments);
+                                  var div   = disp.apply(null,out);
+                                  return div;
+                                  
+                case 'console'    : jsconsole.groupCollapsed.apply(jsconsole,arguments);
+                                    break;
+                                    
+              }//switch
+              
               
         }//groupCollapsed
         
@@ -624,8 +637,20 @@
               }
               */
               
-              var node            = log.apply(null,arguments);
-              node.style.color    = 'red';
+              var node;
+              
+              switch(mode){
+              
+                case 'pretty'     :
+                                    node                = log.apply(null,arguments);
+                                    node.style.color    = 'red';
+                                                                                          break;
+                case 'console'    :
+                                    jsconsole.error.apply(jsconsole,arguments);
+                                                                                          break;
+                                                                                          
+              }//switch
+              
               return node;
               
         }//error
@@ -653,7 +678,8 @@
         
         function write(){
         
-              var txt   = build(arguments);
+        
+              var txt             = build(arguments);
               
               var span            = document.createElement('span');
               span.textContent    = txt;
@@ -663,6 +689,8 @@
               }else{
                     cur.root.append(span);
               }
+              
+              
               return span;
               
         }//write
