@@ -25,6 +25,8 @@
   #word-wrap
     {margin-right:20px;/*color:gray*/}
     
+  #iframe-show
+    {margin-right:20px}
     
   #kill
     {font-size:16px;padding:5px 10px;min-width:60px}
@@ -58,10 +60,17 @@
                         
                         <div style='flex:1'></div>
                         
-                        <span id=console class=radio>
-                              <input type=checkbox>
-                              console
+                        <span id=output-type>
+                              <span id=pretty-print class=radio>
+                                    <input type=checkbox checked>
+                                    prettyPrint
+                              </span>
+                              <span id=console class=radio>
+                                    <input type=checkbox>
+                                    console
+                              </span>
                         </span>
+                        
                         <span id=console-echo class=radio>
                               <input type=checkbox checked>
                               echo
@@ -183,7 +192,14 @@
               chk['allow-modals']                       = $.chkbox(shadow,'#allow-modals');
               chk['allow-popups']                       = $.chkbox(shadow,'#allow-popups');
               
+              var r                                     = $(shadow,'#output-type');
+              chk.type                                  = $.chkbox.group(r,'#pretty-print','#console');
+              chk.type.callback                         = btn.type;
+              /*
+              chk.pretty                                = $.chkbox(shadow,'#pretty-print');
               chk.console                               = $.chkbox(shadow,'#console');
+              */
+              
               chk['console-echo']                       = $.chkbox(shadow,'#console-echo');
               chk['console-persist']                    = $.chkbox(shadow,'#console-persist',false);
               $(shadow,'#console-clear').onclick        = btn.console.clear;
@@ -224,6 +240,13 @@
 */
 
 
+        btn.type    = function(){
+        
+              console.log(arguments);
+              
+        }//type
+        
+        
         btn.console.clear   = function(){
                                                                                 debug('btn.clear');
               clear();
@@ -266,7 +289,7 @@
   
   
         obj.on.message    = function(json){
-                                                                                console.log('output.message',json);
+                                                                                //console.log('output.message',json);
               var {name,args}   = json;
               //webconsole[name].apply(null,args);
               fn[name].apply(null,args);
