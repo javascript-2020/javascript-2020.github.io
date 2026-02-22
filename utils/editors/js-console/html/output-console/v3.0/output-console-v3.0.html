@@ -142,6 +142,7 @@
   //vars:-
   
         var inspect;
+        var jsconsolemod;
         var jsconsole;
         var style;
         
@@ -197,9 +198,9 @@
               
               var promise   = ext.load.libs('js/dom/web-console/web-console.js').then(result=>{
               
-                    [jsconsole]   = result;
-                    jsconsole.initmod({ace});
-                    jsconsole.init();
+                    [jsconsolemod]   = result;
+                    jsconsolemod.initmod({ace});
+                    jsconsolemod.init();
                     
               });
               list.push(promise);
@@ -257,7 +258,9 @@
               
               output                                    = $(shadow,'#output');
               cur.root                                  = output;
+              
               output_console                            = $(shadow,'#output-console');
+              jsconsole                                 = jsconsolemod.create(output_console);
               
               shadow.append(style);
               
