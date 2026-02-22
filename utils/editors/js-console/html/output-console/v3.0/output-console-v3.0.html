@@ -131,6 +131,8 @@
   //vars:-
   
         var inspect;
+        var jsconsole;
+        var style;
         
         var con             = {};
         con.log             = console.log;
@@ -171,7 +173,36 @@
         
         async function libs(){
         
-              [inspect]   = await ext.load.libs('js/string/inspect.js');
+              var list      = [];
+              
+              var promise   = ext.load.libs('js/string/inspect.js'),then(result=>{
+              
+                   [inspect]    = result;
+                   
+              });
+              list.push(promise);
+              
+              var promise   = ext.load.libs('js/dom/web-console/web-console.js').then(result=>{
+              
+                    [jsconsole]   = result;
+                    jsconsole.initmod({ace});
+                    jsconsole.init();
+                    
+              });
+              list.push(promise);
+              
+              var promise   = ext.text.libs('js/dom/web-console/web-console.css').then(result=>{
+              
+                    var [css]           = result;
+                    style               = document.createElement('style');
+                    style.textContent   = css;
+                    
+                    
+              });
+              list.push(promise);
+              
+              
+              await Promise.all(list);
                                                                                 //console.log(inspect);
                                                                                 
         }//libs
@@ -214,8 +245,7 @@
               output                                    = $(shadow,'#output');
               cur.root                                  = output;
               
-              
-              //btn.wrap(chk.wrap);
+              shadow.append(style);
               
               create.iframe();
               
@@ -499,10 +529,12 @@
         
         function clear(){
         
+        /*
               if(chk['console-echo'].checked){
                     con.clear.call(window.console);
               }
-              
+        */
+        
               cur.root.replaceChildren();
               
         }//clear
@@ -513,12 +545,14 @@
         
         function log(){
         
+              /*
               if(chk['console-echo'].checked){
                     //con.log.apply(window.console,arguments);
                     window.console.groupCollapsed.apply(window.console,arguments);
                     window.console.trace();
                     window.console.groupEnd();
               }
+              */
               
               var div   = disp.apply(null,arguments);
               return div;
@@ -548,9 +582,11 @@
         
         function groupCollapsed(...args){
         
+              /*
               if(chk['console-echo'].checked){
                     window.console.groupCollapsed.apply(window.console,args);
               }
+              */
               
               var out   = format(arguments);
               var div   = disp.apply(null,out);
@@ -564,9 +600,12 @@
         
         function error(){
         
+              /*
               if(chk['console-echo'].checked){
                     con.error.apply(window.console,arguments);
               }
+              */
+              
               var node            = log.apply(null,arguments);
               node.style.color    = 'red';
               return node;
