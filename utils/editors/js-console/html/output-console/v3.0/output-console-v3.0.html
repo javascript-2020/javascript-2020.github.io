@@ -155,7 +155,7 @@
         var shadow;
         
         var output;
-        var pretty;
+        var output_console;
         var cur             = {};
         var mode            = 'pretty';
         
@@ -257,7 +257,7 @@
               
               output                                    = $(shadow,'#output');
               cur.root                                  = output;
-              pretty                                    = $(shadow,'#output-console');
+              output_console                            = $(shadow,'#output-console');
               
               shadow.append(style);
               
@@ -291,10 +291,17 @@
               
               switch(id){
               
-                case 'console'        : break;
-                case 'pretty-print'   : break;
-                
+                case 'console'        :
+                                        output.style.display            = 'none';
+                                        output_console.style.display    = '';
+                                                                                        break;
+                case 'pretty-print'   :
+                                        output.style.display            = '';
+                                        output_console.style.display    = 'none';
+                                                                                        break;
+                                                                                        
               }//switch
+              
         }//type
         
         
