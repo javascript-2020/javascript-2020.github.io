@@ -419,6 +419,11 @@
         }//run
         
         
+        
+        
+  //:
+  
+  
         build.sandbox   = function(){
         
               var attr      = sandbox_def;
@@ -472,7 +477,7 @@
         }//iframe
         
         
-        obj.run.iframe2    = async function(js,params={}){
+        obj.run.iframe    = async function(js,params={}){
                                                                                 debug('run.iframe2');
               var resolve,promise=new Promise(res=>resolve=res);
               
@@ -512,6 +517,55 @@
         }//iframe
         
         
+  //:
+  
+  
+        obj.run.iframe.host   = async function(js,params={}){
+                                                                                debug('run.iframe.host');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              if(iframe){
+                    iframe.remove();
+              }
+              
+              iframe          = document.createElement('iframe');
+              iframe.srcdoc   = '';
+              iframe.onload   = onload;
+              root.append(iframe);
+              
+              return promise;
+              
+              
+              async function onload(){
+              
+                    var win             = iframe.contentWindow;
+                    win.focus();
+                    win.console.log     = log;
+                    win.console.clear   = clear;
+                    win.console.error   = error;
+                    win.console.write   = write;
+                    
+                    if(!chk.persist){
+                          clear();
+                    }
+                    
+                    if(params.async){
+                          js      = '(async()=>{\n'+js+'\n})()';
+                    }
+                    
+                    var result    = await win.eval(js);
+                    resolve(result);
+                    
+                    //iframe.remove();
+                    
+              }//onload
+              
+        }//host
+        
+        
+  //:
+  
+  
         obj.kill    = function(){return kill()}
         
         function kill(){
