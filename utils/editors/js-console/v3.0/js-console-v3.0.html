@@ -131,6 +131,8 @@
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
   .spc
     {flex:1}
+  .flex
+    {display:flex;align-items:center}
     
     
   #save-root
@@ -228,11 +230,13 @@
                         run
                   </button>
                   
-                  <div id=run-opts style='display:none'>
-                        <span id=host>
-                              host
+                  <div id=run-opts class=flex style='display:none'>
+                        <div id=host class=flex>
+                              <span>
+                                    host
+                              </span>
                               <input type=checkbox>
-                        </span>
+                        </div>
                   </div>
                   
                   <div id=async-root>
@@ -325,7 +329,7 @@
               $(root,'#run').onclick                = run;
               
               var r                                 = $('#run-opts');
-              if(window.electronAPI){
+              if(window.electronAPI||localStorage['electron']){
                     $('#run-opts').style.display    = '';
               }
               ui.host                               = $.chkbox(r,'#host');
