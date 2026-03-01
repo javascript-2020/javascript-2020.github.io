@@ -199,9 +199,15 @@
       
             <editors-hdr component=grp>
                   <img slot=title src='images/js-console.png' style='top:-10px;height:75px'>
-                  <h1 slot=seo-hdr class=visually-hidden>html editor</h1>
-                  <h4 slot=version>v3.0</h4>
-                  <time slot=date datetime=2026-01-24>24 Jan 2026</time>
+                  <h1 slot=seo-hdr class=visually-hidden>
+                        js console
+                  </h1>
+                  <h4 slot=version>
+                        v3.0
+                  </h4>
+                  <time slot=date datetime=2026-02-22>
+                        22 Feb 2026
+                  </time>
             </editors-hdr>
             
             
@@ -218,7 +224,16 @@
                   
                   <publish-ui component></publish-ui>
                   
-                  <button id=run title='ctrl+enter'>run</button>
+                  <button id=run title='ctrl+enter'>
+                        run
+                  </button>
+                  
+                  <div id=run-opts style='display:none'>
+                        <span id=host>
+                              host
+                              <input type=checkbox>
+                        </span>
+                  </div>
                   
                   <div id=async-root>
                         <span>
@@ -308,7 +323,15 @@
               
               
               $(root,'#run').onclick                = run;
+              
+              var r                                 = $('#run-opts');
+              if(window.electronAPI){
+                    $('#run-opts').style.display    = '';
+              }
+              ui.host                               = $.chkbox(r,'#host');
+              
               mode.async                            = $.chkbox(root,'#async-root');
+              
               
               $(root,'#syntax-chk').onclick         = btn.syntax;
               $(root,'#prettier').onclick           = btn.prettier;
@@ -325,24 +348,6 @@
               
               
               slider.node                           = $.slider('web-editor','#page-slider','output-console',slider,ui);
-              
-              /*
-              await Promise.all([
-                    hdr.initdom(),
-                    mainmenu.initdom(root),
-                    filemod.initdom(root),
-                    autosave.initdom(),
-                    publish.initdom(root),
-                    editor.initdom(view,{mode:'javascript'}),
-                    output.initdom(root),
-                    log.initdom(),
-              ]);
-              */
-              
-              
-              
-              //ui.setup(view);
-              
               
               
               editor.focus();
@@ -571,6 +576,7 @@
         window.addEventListener('message',e=>{console.log(e);
         
               var json    = e.data;
+              
               if(json.sandbox){
                     output.on.message(json);
               }
@@ -748,8 +754,13 @@
               
               var js    = editor.getValue();
               
-              output.run.iframe2(js,{async:mode.async.checked});
+              if(ui.host.checked){
+                                                                                debug('host');
+                    output.run.host(js,{async:mode.async.checked});
+                    return;
+              }
               
+              output.run.iframe(js,{async:mode.async.checked});
               
         }//run
         
