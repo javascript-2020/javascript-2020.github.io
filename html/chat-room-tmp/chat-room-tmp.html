@@ -176,6 +176,9 @@
   //:
   
   
+        var shadow;
+        
+        
         //var server    = 'https://localhost:3009/chat/';
         var server    = '';
                                                                                 console.log('server',server);
@@ -199,7 +202,10 @@
         
         obj.initdom   = async function(){
         
-              view    = $('#view');
+              shadow                          = host.shadowRoot;
+              
+              
+              view    = $(shadow,'#view');
               
               msg     = $(view,'.msg');
               msg.remove();
@@ -207,15 +213,15 @@
               view.style.display              = '';
               
               
-              var info                        = $('#info');
+              var info                        = $(shadow,'#info');
               
               $.chkbox(info,'#show-password',btn.password);
               
-              $('#txt').onkeydown             = kd.user;
-              $('#txt').focus();
+              $(shadow,'#txt').onkeydown             = kd.user;
+              $(shadow,'#txt').focus();
               
-              $('[value=send]').onclick       = btn.send;
-              $('[value=abort]').onclick      = ()=>poll.abort=true;
+              $(shadow,'[value=send]').onclick       = btn.send;
+              $(shadow,'[value=abort]').onclick      = ()=>poll.abort=true;
               
               
               post.start();
@@ -226,9 +232,9 @@
         
         btn.password    = function(){
         
-              $('#txt').focus();
+              $(shadow,'#txt').focus();
               
-              var node    = $('#password');
+              var node    = $(shadow,'#password');
               if(node.getAttribute('type')=='password'){
                     node.removeAttribute('type');
               }else{
@@ -251,10 +257,10 @@
         
               $('#txt').focus();
               
-              var txt             = $('#txt').value;
+              var txt             = $(shadow,'#txt').value;
               $('#txt').value     = '';
-              var user            = $('#user').value;
-              var password        = $('#password').value;
+              var user            = $(shadow,'#user').value;
+              var password        = $(shadow,'#password').value;
               
               post.msg({user,password,txt});
               
@@ -354,7 +360,7 @@
               
               async function del(){
               
-                    var password    = $('#password').value;
+                    var password    = $(shadow,'#password').value;
                     var result      = await post.del({password,id})
                     if(!result)return;
                     
