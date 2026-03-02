@@ -180,6 +180,19 @@
         }//room
         
         
+        rd.attr['poll-time']    = function(){
+        
+              if(!target.hasAttribute('poll-time'))return;
+              var str   = target.getAttribute('poll-time');
+              if(int(str)){
+                    var num   = Number(str);
+                    if(num<poll.min)num   = poll.min;
+                    polltime    = num;
+              }
+              
+        }//poll-time
+        
+        
   //:
   
   
@@ -493,6 +506,7 @@
         
         post.update.initial   = function(){
         
+              if(!Number.isFinite(poll.time))return;
               post.timer    = setTimeout(post.update,poll.time);
               
         }//initial
@@ -576,6 +590,13 @@
               }
               
         }//get
+        
+        
+        
+  //:
+  
+  
+        function int(str){return (/^\d+$/.test(str))}
         
         
         
