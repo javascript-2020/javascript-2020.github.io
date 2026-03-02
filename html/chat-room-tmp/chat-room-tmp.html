@@ -110,7 +110,7 @@
                   
                   <div id=btns>
                         <input value=send type=button title=ctrl+enter>
-                        <input value=abort type=button>
+                        <input value=pause type=button>
                   </div>
                   
             </section>
@@ -142,6 +142,8 @@
   //:
   
         var target;
+        
+        var ui    = {};
         
         
         var rd    = {};
@@ -205,26 +207,27 @@
         
         obj.initdom   = async function(){
         
-              shadow                          = host.shadowRoot;
+              shadow                                      = host.shadowRoot;
               
               
-              view    = $(shadow,'#view');
+              view                                        = $(shadow,'#view');
               
-              msg     = $(view,'.msg');
+              msg                                         = $(view,'.msg');
               msg.remove();
               
-              view.style.display              = '';
+              view.style.display                          = '';
               
               
-              var info                        = $(shadow,'#info');
+              var info                                    = $(shadow,'#info');
               
               $.chkbox(info,'#show-password',btn.password);
               
-              $(shadow,'#txt').onkeydown             = kd.user;
+              $(shadow,'#txt').onkeydown                  = kd.user;
               $(shadow,'#txt').focus();
               
-              $(shadow,'[value=send]').onclick       = btn.send;
-              $(shadow,'[value=abort]').onclick      = ()=>poll.abort=true;
+              $(shadow,'[value=send]').onclick            = btn.send;
+              ui.pause                                    = $(shadow,'[value=abort]');
+              ui.pause.onclick                            = btn.pause;
               
               
               post.start();
@@ -268,6 +271,19 @@
               post.msg({user,password,txt});
               
         }//send
+        
+        btn.pause   = function(){
+        
+              if(poll.abort){
+                    ui.pause.value    = 'pause';
+                    poll.abort        = false;
+                    poll.update.initial();
+              }else{
+                    ui.pause.value    = 'resume';
+                    poll.abort        = true;
+              }
+              
+        }//pause
         
         
   //:
