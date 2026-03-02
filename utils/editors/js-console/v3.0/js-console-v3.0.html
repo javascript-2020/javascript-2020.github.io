@@ -535,16 +535,26 @@
                                                                                 debug('btn.obfuscator');
               var js    = editor.getvalue();
               
-              var err;
-              try{
-              
-                    var obfuscated    = JavaScriptObfuscator.obfuscate(js,{
+              var opts    = {
                           compact                 : true,
                           controlFlowFlattening   : true,
                           deadCodeInjection       : true,
                           stringArrayEncoding     : ['base64'],
-                          renameGlobals           : false
-                    });
+                          renameGlobals           : true,
+              };
+              var opts    = {
+                    compact                 : true,
+                    stringArray             : true,
+                    stringArrayEncoding     : ['base64'],
+                    stringArrayThreshold    : 0.75,
+                    renameGlobals           : false,
+                    controlFlowFlattening   : false,
+                    deadCodeInjection       : false,
+              };
+              var err;
+              try{
+              
+                    var obfuscated    = JavaScriptObfuscator.obfuscate(js,opts);
                     
               }//try
               catch(err2){
