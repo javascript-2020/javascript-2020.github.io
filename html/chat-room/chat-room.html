@@ -34,12 +34,13 @@
         var df=true,did='chat-room';
         
         
-        var debug
+        var debug,input
         ;
         
         obj.initmod   = function(params){
         
-              debug   = mod.rd(params,'debug',debug);
+              debug       = mod.rd(params,'debug',debug);
+              input       = mod.rd(params,'input',input);
               
         }//initmod
         
@@ -76,8 +77,9 @@
               hdr           = mod['chat-room-hdr'];
               display       = mod['chat-room-display'];
               
-              hdr.df=display.df=df;
+              hdr.df=display.df=input.df=df;
               display.initmod({poll});
+              input.initmod({post});
               
               
               await mod.auto();
