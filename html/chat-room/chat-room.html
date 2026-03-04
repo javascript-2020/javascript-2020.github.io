@@ -40,9 +40,17 @@
         
   //:
   
+  
         var hdr;
         var display;
         
+        var server    = '';
+        var room      = 'main';
+        
+        
+  //:
+  
+  
         obj.init    = async function(){
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init');
@@ -56,7 +64,41 @@
         }//init
         
         
+  //:
+  
+  
+        rd.attr.server    = function(){
         
+              if(!target.hasAttribute('server'))return;
+              server    = target.getAttribute('server');console.log('rd.attr.server',server);
+              
+        }//server
+        
+        
+        rd.attr.room    = function(){
+        
+              if(!target.hasAttribute('room'))return;
+              room    = target.getAttribute('room');
+              
+        }//room
+        
+        
+        rd.attr['poll-time']    = function(){
+        
+              if(!target.hasAttribute('poll-time'))return;
+              var str   = target.getAttribute('poll-time');
+              if(int(str)){
+                    var num   = Number(str);
+                    if(num<poll.min)num   = poll.min;
+                    polltime    = num;
+              }
+              
+        }//poll-time
+        
+        
+  //:
+  
+  
         obj.initdom   = async function(){
         
               post.start();
