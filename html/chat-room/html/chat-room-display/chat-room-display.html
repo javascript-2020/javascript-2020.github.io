@@ -1,0 +1,220 @@
+
+
+<chat-room-display>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  #view
+    {flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;white-space:pre}
+  #view > div:nth-child(odd)
+    {background: #f5f5f5}
+  #view > div:nth-child(even)
+    {background: #e0e0e0}
+    
+  .msg
+    {display:flex;gap:30px;align-items:center;padding:10px 20px}
+  .msg:hover
+    {background:lightyellow}
+    
+  .msg .user
+    {width:120px}
+  .msg .txt
+    {flex:1}
+  .msg .ts
+    {font-family:monospace}
+  .msg .del
+    {width:20px;height:20px;border:1px solid lightgray;border-radius:3px;padding:1px;box-sizing:border-box;cursor:pointer;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAJFBMVEVHcEzfIB/ZKyrcKSjcIB/gHh3cJiXhHh3hHRzhHRvbJybiHBvYPD9wAAAAC3RSTlMAuyBkVelW6enpVsZbFRsAAACuSURBVBjTZZE9EoIwEIXfIGMvLY3xBDaOLQ3jAXQsrGwcD6C34Ag0XoEO5l3OZJNFstJ8Q94X2B8AqwrxcXtBO2yFRf0OWHeMguN093iQIhQ1eQXKjhTBeU4NDh5BCDH5gsALTjgod3oePW6Y7iWBKYYKGi+FKtWZxT9B+0qCxn/vxrffM/+z9Zh6bT+2XzuPYzavM8p+Mc+xAZ6Led/CPvp5H+Mn8DTv6yLM9vkFA8yuIQSFYnAAAAAASUVORK5CYII=);
+    }
+    
+            </style>
+            
+            
+            <section id=view style='display:none'>
+            
+                  <div class=msg>
+                        <div class=user>
+                        </div>
+                        <div class=txt>
+                        </div>
+                        <div class=ts>
+                        </div>
+                        <img class=del>
+                  </div>
+                  
+            </section>
+            
+            
+      </template>
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {};
+  
+        var df=true,did='chat-room-display';
+        
+        var $
+        ;
+        
+        obj.initmod   = function(params){
+        
+              $   = mod.rd(params,'$',$);
+              
+        }//initmod
+        
+        
+  //:
+  
+        var shadow;
+        var view;
+        var msg;
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+        }//init
+        
+        
+        obj.initdom   = async function(){
+        
+              shadow                                      = host.shadowRoot;
+              
+              
+              view                                        = $(shadow,'#view');
+              
+              msg                                         = $(view,'.msg');
+              msg.remove();
+              
+              view.style.display                          = '';
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        display.list    = function(list){
+        
+              list.forEach(item=>{
+              
+                    var result    = msgs.find(msg=>msg.id===item.id);
+                    if(!result){
+                    
+                          var insert    = false;
+                          var n         = msgs.length;
+                          for(var i=0;i<n;i++){
+                          
+                                var msg   = msgs[i];
+                                if(msg.ts>item.ts){
+                                      insert    = msg;
+                                      msgs.splice(i,0,item);
+                                      break;
+                                }
+                                
+                          }//for
+                          if(!insert){
+                                msgs.push(item);
+                          }
+                          
+                          var node    = display(item,insert?.node);
+                          item.node   = node;
+                          
+                    }
+                    
+              });
+              
+        }//list
+        
+        
+        function display(data,insert){
+        
+              var node;
+              
+              switch(data.type){
+              
+                case 'message'    : node    = display.message(data);        break;
+                case 'delete'     : display.delete(data);                   break;
+                
+              }//switch
+              
+              if(node){
+                    view.insertBefore(node,insert);
+              }
+              
+              return node;
+              
+        }//display
+        
+        
+        display.message   = function({id,user,txt,ts}){
+        
+              var config          = {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false};
+              var format          = new Intl.DateTimeFormat(undefined,config);
+              
+              var err;
+              try{
+              
+                    ts            = Number(ts);
+                    var local     = format.format(new Date(ts));
+                    var parts     = local.split(',');
+                    local         = parts[2]+'  '+parts[0]+parts[1];
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.log(name,txt,ts);
+                    local   = err.toString();
+              }
+              
+              
+              var nmsg                        = msg.cloneNode(true);
+              nmsg.id   = id;
+              $(nmsg,'.user').textContent     = user;
+              $(nmsg,'.txt').textContent      = txt;
+              $(nmsg,'.ts').textContent       = local;
+              $(nmsg,'.del').onclick          = del;
+              
+              return nmsg;
+              
+              
+              async function del(){
+              
+                    var password    = $(shadow,'#password').value;
+                    var result      = await post.del({password,id})
+                    if(!result)return;
+                    
+              }//del
+              
+        }//message
+        
+        
+        display.delete    = function({id,del,ts}){
+                                                                                console.log('delete',del);
+              var item    = msgs.find(data=>data.id===del);
+              if(!item)return;
+              $(item.node,'.txt').textContent   = 'deleted';
+              
+        }//delete
+        
+        
+        
+        
+  return obj;
+  
+//chat-room-display
+})();
+
+      </script>
+      
+</chat-room-display>
+
