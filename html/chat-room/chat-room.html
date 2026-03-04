@@ -53,7 +53,15 @@
         var server    = '';
         var room      = 'main';
         
-        
+        var poll    = {
+                            abort   : false,
+                            time    : 2000,
+                            min     : 2000,
+                            timer   : null,
+                      };
+                      
+                      
+                      
         var rd        = {};
         rd.attr       = {};
         
@@ -66,6 +74,7 @@
                                                                                 debug('init');
               hdr           = mod['chat-room-hdr'];
               display       = mod['chat-room-display'];
+              display.initmod({poll});
               
               
               await mod.auto();
