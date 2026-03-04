@@ -38,18 +38,171 @@
         }//initmod
         
         
+  //:
+  
+        var hdr;
+        var display;
         
         obj.init    = async function(){
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init');
+              hdr           = mod['chat-room-hdr'];
+              display       = mod['chat-room-display'];
+              
+              
               await mod.auto();
+              
               
         }//init
         
         
         
         obj.initdom   = async function(){
+        
+              post.start();
+              
         }//initdom
+        
+        
+  //:
+  
+  
+        async function post(path,json){
+        
+              post.promise    = new Promise(fn);
+              return post.promise;
+              
+              
+              async function fn(resolve){
+              
+                    var url       = server+path;
+                    var body      = JSON.stringify(json);
+                    var headers   = {};
+                                                                                debug(url,body);
+                    var err;
+                    try{
+                    
+                          var res   = await fetch(url,{headers,method:'post',body});
+                          
+                    }//try
+                    catch(err2){
+                    
+                          err   = err2;
+                          
+                    }//catch
+                    if(err){
+                          var error   = err.toString();
+                          log.red(error);
+                          exit();
+                          return;
+                    }
+                    if(!res.ok){
+                          var txt     = await res.text();
+                          var error   = `${res.status} ${res.statusText||txt}`;
+                                                                                console.log(error);
+                                                                                console.log(txt);
+                          log.red(error);
+                          exit();
+                          return;
+                    }
+                    
+                    var result    = await res.json();
+                    if(result.error){
+                          log.red(result.error);
+                          exit();
+                          return;
+                    }
+                    exit(result);
+                    
+                    
+                    function exit(result){
+                                                                                //console.log(4);
+                          post.promise    = null;
+                          resolve(result);
+                          
+                    }//exit
+                    
+              }//fn
+              
+        }//post
+        
+        
+        post.start    = async function(){
+        
+              var result    = await post('start',{room});
+              if(!result)return;
+              
+              var list      = result.list;
+              display.list(list);
+              
+              post.update.initial();
+              
+        }//start
+        
+        
+        post.update   = async function(){
+        
+              var ts          = msgs.at(-1).ts;
+              var result      = await post('update',{room,ts});
+              if(!result)return;
+              
+              var list      = result.list;
+              display.list(list);
+              
+              if(poll.abort)return;
+              
+              post.timer    = setTimeout(post.update,poll.time);
+              
+        }//update
+        
+        
+        post.update.initial   = function(){
+        
+              if(!Number.isFinite(poll.time))return;
+              post.timer    = setTimeout(post.update,poll.time);
+              
+        }//initial
+        
+        
+        post.msg    = async function({user,password,txt}){
+                                                                                //console.log('post.msg');
+              clearTimeout(post.timer);
+              if(post.promise){
+                                                                                //console.log('post.promise');
+                    await post.promise;
+              }
+              
+              var ts          = msgs.at(-1).ts;
+              var result      = await post('msg',{room,user,password,txt,ts});
+              if(!result)return;
+              
+              var list    = result.list;
+              display.list(list);
+              
+              post.update.initial();
+              
+        }//msg
+        
+        
+        post.del    = async function({id,password}){
+        
+              clearTimeout(post.timer);
+              if(post.promise){
+                    await post.promise;
+              }
+              
+              var ts          = msgs.at(-1).ts;
+              var result      = await post('del',{room,id,password,ts});
+              if(!result)return;
+              
+              var list      = result.list;
+              display.list(list);
+              
+              post.update.initial();
+              return true;
+              
+        }//del
+        
         
         
         
