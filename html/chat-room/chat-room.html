@@ -53,7 +53,7 @@
         var input;
         
         var server    = '';
-        var room      = 'main';
+        var room_id   = 'main';
         
         var poll    = {
                             abort   : false,
@@ -113,7 +113,9 @@
               var str   = target.getAttribute('poll-time');
               if(int(str)){
                     var num   = Number(str);
-                    if(num<poll.min)num   = poll.min;
+                    if(num<poll.min){
+                          num   = poll.min;
+                    }
                     polltime    = num;
               }
               
@@ -133,87 +135,127 @@
   //:
   
   
+        post.list   = [];
+        
+        
         async function post(path,json){
         
-              post.promise    = new Promise(fn);
-              return post.promise;
+              clearTimeout(post.timer);
+              var resolve,promise=new Promise(res=>resolve=res);
               
+              if(post.pending){
+                    post.list.push([arguments,resolve]);
+              }else{
+                    post.send(arguments,resolve);
+              }
               
-              async function fn(resolve){
-              
-                    var url       = server+path;
-                    var body      = JSON.stringify(json);
-                    var headers   = {};
-                                                                                debug(url,body);
-                    var err;
-                    try{
-                    
-                          var res   = await fetch(url,{headers,method:'post',body});
-                          
-                    }//try
-                    catch(err2){
-                    
-                          err   = err2;
-                          
-                    }//catch
-                    if(err){
-                          var error   = err.toString();
-                          log.red(error);
-                          exit();
-                          return;
-                    }
-                    if(!res.ok){
-                          var txt     = await res.text();
-                          var error   = `${res.status} ${res.statusText||txt}`;
-                                                                                console.log(error);
-                                                                                console.log(txt);
-                          log.red(error);
-                          exit();
-                          return;
-                    }
-                    
-                    var result    = await res.json();
-                    if(result.error){
-                          log.red(result.error);
-                          exit();
-                          return;
-                    }
-                    exit(result);
-                    
-                    
-                    function exit(result){
-                                                                                //console.log(4);
-                          post.promise    = null;
-                          resolve(result);
-                          
-                    }//exit
-                    
-              }//fn
+              return promise;
               
         }//post
         
         
+        post.send   = async function([path,json],resolve){
+        
+              post.pending      = true;
+              var url           = server+path;
+              var body          = JSON.stringify(json);
+              var headers       = {};
+                                                                          debug(url,body);
+              var err;
+              try{
+              
+                    var res   = await fetch(url,{headers,method:'post',body});
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    exit();
+                    return;
+              }
+              if(!res.ok){
+                    var txt     = await res.text();
+                    var error   = `${res.status} ${res.statusText||txt}`;
+                                                                          console.log(error);
+                                                                          console.log(txt);
+                    log.red(error);
+                    exit();
+                    return;
+              }
+              
+              var result    = await res.json();
+              if(result.error){
+                    log.red(result.error);
+                    exit();
+                    return;
+              }
+              exit(result);
+              
+              
+              function exit(result){
+                                                                          //console.log(4);
+                    post.pending    = false;
+                    resolve(result);
+                    
+                    if(post.list.length){
+                          var [args,resolve]    = post.list.shift();
+                          post.send.call(null,args,resolve);
+                          return;
+                    }
+                    
+                    post.update.initial();
+                    
+              }//exit
+              
+        }//send
+        
+        
         post.start    = async function(){
         
-              var result    = await post('start',{room});
+              var result    = await post('start',{room_id});
               if(!result)return;
               
-              var list      = result.list;
-              display.list(list);
+              display.result(result);
               
               post.update.initial();
               
         }//start
         
         
-        post.update   = async function(){
-        
-              var ts          = display.msgs.at(-1).ts;
-              var result      = await post('update',{room,ts});
+        post.msg    = async function({user,password,txt}){
+                                                                                //console.log('post.msg');
+              var ts          = display.last;
+              var result      = await post('msg',{room_id,user,password,txt,ts});
               if(!result)return;
               
-              var list      = result.list;
-              display.list(list);
+              display.result(result);
+              
+        }//msg
+        
+        
+        post.del    = async function({msg_id,password}){
+        
+              var ts          = display.last;
+              var result      = await post('del',{room_id,msg_id,password,ts});
+              if(!result)return;
+              
+              display.result(result);
+              
+        }//del
+        
+        
+        post.update   = async function(){
+        
+              var ts          = display.last;
+              var result      = await post('update',{room_id,ts});
+              if(!result)return;
+              
+              display.result(result);
               
               if(poll.abort)return;
               
@@ -230,44 +272,10 @@
         }//initial
         
         
-        post.msg    = async function({user,password,txt}){
-                                                                                //console.log('post.msg');
-              clearTimeout(post.timer);
-              if(post.promise){
-                                                                                //console.log('post.promise');
-                    await post.promise;
-              }
-              
-              var ts          = display.msgs.at(-1).ts;
-              var result      = await post('msg',{room,user,password,txt,ts});
-              if(!result)return;
-              
-              var list    = result.list;
-              display.list(list);
-              
-              post.update.initial();
-              
-        }//msg
         
         
-        post.del    = async function({id,password}){
         
-              clearTimeout(post.timer);
-              if(post.promise){
-                    await post.promise;
-              }
-              
-              var ts          = display.msgs.at(-1).ts;
-              var result      = await post('del',{room,id,password,ts});
-              if(!result)return;
-              
-              var list      = result.list;
-              display.list(list);
-              
-              post.update.initial();
-              return true;
-              
-        }//del
+        
         
         
         
