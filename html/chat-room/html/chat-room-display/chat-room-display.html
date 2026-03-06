@@ -117,35 +117,38 @@
   //:
   
   
-        display.result    = function({list}){display.list(list)}
+        display.result    = function({list}){
+        
+              display.list(list)
+              
+        }//result
+        
         
         display.list    = function(list){
         
               list.forEach(item=>{
               
                     var result    = msgs.find(msg=>msg.id===item.id);
-                    if(!result){
+                    if(result)return;
                     
-                          var insert    = false;
-                          var n         = msgs.length;
-                          for(var i=0;i<n;i++){
-                          
-                                var msg   = msgs[i];
-                                if(msg.ts>item.ts){
-                                      insert    = msg;
-                                      msgs.splice(i,0,item);
-                                      break;
-                                }
-                                
-                          }//for
-                          if(!insert){
-                                msgs.push(item);
+                    var insert    = false;
+                    var n         = msgs.length;
+                    for(var i=0;i<n;i++){
+                    
+                          var msg   = msgs[i];
+                          if(msg.ts>item.ts){
+                                insert    = msg;
+                                msgs.splice(i,0,item);
+                                break;
                           }
                           
-                          var node    = display(item,insert?.node);
-                          item.node   = node;
-                          
+                    }//for
+                    if(!insert){
+                          msgs.push(item);
                     }
+                    
+                    var node    = display(item,insert?.node);
+                    item.node   = node;
                     
               });
               
