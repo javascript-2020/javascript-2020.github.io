@@ -57,7 +57,7 @@
   
         var df=false,did='chat-room-display';
         
-        var $,debug,poll
+        var $,debug,poll,input
         ;
         
         obj.initmod   = function(params){
@@ -65,6 +65,7 @@
               debug       = mod.rd(params,'debug',debug);
               $           = mod.rd(params,'$',$);
               poll        = mod.rd(params,'poll',poll);
+              input       = mod.rd(params,'input',input);
               
         }//initmod
         
@@ -213,7 +214,7 @@
               
               async function del(){
               
-                    var password    = $(shadow,'#password').value;
+                    var password    = input.password;
                     var result      = await post.del({password,id})
                     if(!result)return;
                     
