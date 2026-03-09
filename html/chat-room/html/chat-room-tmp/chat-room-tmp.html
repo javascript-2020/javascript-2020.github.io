@@ -9,10 +9,13 @@
             
   #user-root
     {height:150px;display:flex;gap:20px;border-top:1px solid lightgray;padding-top:10px}
+    
   #txt
     {height:100%;border:1px solid lightgray;border-radius:5px;padding:10px;flex:1;box-sizing:border-box;resize:none}
+    
   #info
     {display:flex;flex-direction:column;gap:10px}
+    
   #show-password
     {cursor:pointer}
   #show-password > *
@@ -22,6 +25,7 @@
     
   [value=send]
     {margin-right:20px;min-width:80px}
+    
   #pause
     {min-width:80px}
     
@@ -44,9 +48,9 @@
                   <div id=info>
                         <div>
                               <span class=label>
-                                    user
+                                    username
                               </span>
-                              <input id=user value=test>
+                              <input id=username value=test>
                         </div>
                         <div>
                               <span class=label>
@@ -106,6 +110,7 @@
         var ui        = {};
         
         
+        Object.defineProperty(obj,'username',{get:()=>$(shadow,'#username').value});
         Object.defineProperty(obj,'password',{get:()=>$(shadow,'#password').value});
         
         
@@ -177,10 +182,10 @@
               
               var txt             = $(shadow,'#txt').value;
               $(shadow,'#txt').value     = '';
-              var user            = $(shadow,'#user').value;
+              var username        = $(shadow,'#username').value;
               var password        = $(shadow,'#password').value;
               
-              post.msg({user,password,txt});
+              post.msg({username,password,txt});
               
         }//send
         
