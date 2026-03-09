@@ -230,10 +230,10 @@
         }//start
         
         
-        post.msg    = async function({user,password,txt}){
+        post.msg    = async function({username,password,txt}){
                                                                                 //console.log('post.msg');
               var ts          = display.last;
-              var result      = await post('simple/msg',{room_id,user,password,txt,ts});
+              var result      = await post('simple/msg',{room_id,username,password,txt,ts});
               if(!result)return;
               
               display.result(result);
@@ -241,10 +241,10 @@
         }//msg
         
         
-        post.del    = async function({id,password}){
+        post.del    = async function({msg_id,username,password}){
         
               var ts          = display.last;
-              var result      = await post('simple/del',{room_id,id,password,ts});
+              var result      = await post('simple/del',{room_id,msg_id,username,password,ts});
               if(!result)return;
               
               display.result(result);
