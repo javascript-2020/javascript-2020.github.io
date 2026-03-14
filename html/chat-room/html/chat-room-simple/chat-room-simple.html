@@ -88,7 +88,7 @@
 
   var obj   = {};
   
-        var df=true,did='chat-room-tmp';
+        var df=true,did='chat-room-simple';
         
         
         var debug,$,post,poll
@@ -118,6 +118,8 @@
         
         var btn       = {};
         var kd        = {};
+        var send      = {};
+        
         
   //:
   
@@ -208,10 +210,27 @@
         }//pause
         
         
+  //:
+  
+  
+        send.msg    = async function({username,password,txt}){
+                                                                                //console.log('post.msg');
+              var ts          = display.last;
+              var result      = await post('simple/msg',{room_id,username,password,txt,ts});
+              if(!result)return;
+              
+              display.result(result);
+              
+        }//msg
+        
+        
+        
+        
+        
         
   return obj;
   
-//chat-room-tmp
+//chat-room-simple
 })
 
 
