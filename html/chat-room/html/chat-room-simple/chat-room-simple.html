@@ -91,7 +91,7 @@
         var df=true,did='chat-room-simple';
         
         
-        var debug,$,post,poll
+        var debug,$,post,poll,display
         ;
         
         obj.initmod   = function(params){
@@ -100,6 +100,7 @@
               $           = mod.rd(params,'$',$);
               post        = mod.rd(params,'post',post);
               poll        = mod.rd(params,'poll',poll);
+              display     = mod.rd(params,'display',display);
               
         }//initmod
         
@@ -213,6 +214,19 @@
   //:
   
   
+  
+        msg.del    = async function({username,password,del_id}){
+        
+              var ts          = display.last;
+              var result      = await post('simple/del',{room_id,username,password,del_id,ts});
+              console.log('del',result);
+              if(!result)return;
+              
+              display.result(result);
+              
+        }//del
+        
+        
         msg.send    = async function({username,password,txt}){
                                                                                 //console.log('post.msg');
               var ts          = display.last;
