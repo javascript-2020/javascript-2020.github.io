@@ -1,0 +1,204 @@
+
+
+<chat-room-open>
+
+      <template shadowrootmode=open>
+      
+      
+            <style>
+            
+  #input-root
+    {height:150px;display:flex;gap:20px;border-top:1px solid lightgray;padding-top:10px}
+    
+  #txt
+    {height:100%;border:1px solid lightgray;border-radius:5px;padding:10px;flex:1;box-sizing:border-box;resize:none;outline:none}
+    
+  #info
+    {display:flex;flex-direction:column;gap:10px}
+    
+    
+  .label
+    {display:inline-block;width:100px;text-align:right;margin-right:20px}
+    
+  [value=send]
+    {margin-right:20px;min-width:80px}
+    
+  #pause
+    {min-width:80px}
+    
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+  input[type=checkbox]
+    {width:15px;height:15px;margin:0}
+  textarea
+    {font-size:16px}
+    
+    
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+    
+    
+            </style>
+            
+            
+            <section id=input-root>
+            
+                  <div id=info>
+                  </div>
+                  
+                  <textarea id=txt></textarea>
+                  
+                  <div id=btns>
+                        <input value=send type=button title=ctrl+enter>
+                        <input id=pause value=pause type=button>
+                  </div>
+                  
+            </section>
+            
+            
+      </template>
+      
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {};
+  
+        var df=true,did='chat-room-open';
+        
+        
+        var debug,$,post,poll
+        ;
+        
+        obj.initmod   = function(params){
+        
+              debug       = mod.rd(params,'debug',debug);
+              $           = mod.rd(params,'$',$);
+              post        = mod.rd(params,'post',post);
+              poll        = mod.rd(params,'poll',poll);
+              
+        }//initmod
+        
+        
+  //:
+  
+  
+        var shadow;
+        
+        var ui        = {};
+        
+        
+        Object.defineProperty(obj,'username',{get:()=>$(shadow,'#username').value});
+        Object.defineProperty(obj,'password',{get:()=>$(shadow,'#password').value});
+        
+        
+        var btn       = {};
+        var kd        = {};
+        
+  //:
+  
+  
+        obj.init    = async function(){
+                                                                                debug=eval(debug.mod);
+                                                                                debug('init');
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = async function(){
+                                                                                debug('initdom');
+              shadow                                      = host.shadowRoot;
+              
+              var info                                    = $(shadow,'#info');
+              $(info,'#show').onclick                     = btn.password;
+              
+              $(shadow,'#txt').onkeydown                  = kd.user;
+              $(shadow,'#txt').focus();
+              
+              $(shadow,'[value=send]').onclick            = btn.send;
+              ui.pause                                    = $(shadow,'[value=pause]');
+              ui.pause.onclick                            = btn.pause;
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        btn.password    = function(){
+        
+              $(shadow,'#txt').focus();
+              
+              var node    = $(shadow,'#password');
+              if(node.getAttribute('type')=='password'){
+                    node.removeAttribute('type');
+              }else{
+                    node.setAttribute('type','password');
+              }
+              
+        }//password
+        
+        
+        kd.user   = function(e){
+                                                                                //console.log(e.ctrlKey,e.key);
+              if(e.ctrlKey && e.key=='Enter'){
+                    btn.send();
+              }
+              if(e.ctrlKey && e.key==' '){
+                    btn.pause();
+              }
+              
+        }//user
+        
+        
+        btn.send    = function(){
+        
+              $(shadow,'#txt').focus();
+              
+              var txt             = $(shadow,'#txt').value;
+              $(shadow,'#txt').value     = '';
+              var username        = $(shadow,'#username').value;
+              var password        = $(shadow,'#password').value;
+              
+              post.msg({username,password,txt});
+              
+        }//send
+        
+        
+        btn.pause   = function(){
+        
+              $(shadow,'#txt').focus();
+              
+              if(poll.abort){
+                    ui.pause.value    = 'pause';
+                    poll.abort        = false;
+                    post.update.initial();
+              }else{
+                    ui.pause.value    = 'resume';
+                    poll.abort        = true;
+              }
+              
+        }//pause
+        
+        
+        
+  return obj;
+  
+//chat-room-open
+})
+
+
+      </script>
+      
+      
+</chat-room-open>
+
+
+
