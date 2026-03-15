@@ -50,6 +50,17 @@
             </style>
             
             
+            <div class=msg style='display:none'>
+                  <div class=username>
+                  </div>
+                  <div class=txt>
+                  </div>
+                  <div class=ts>
+                  </div>
+                  <img class=del>
+            </div>
+            
+            
             <section id=user-root>
             
                   <div id=info>
@@ -112,6 +123,7 @@
         var shadow;
         
         var ui        = {};
+        var msg;
         
         
         Object.defineProperty(obj,'username',{get:()=>$(shadow,'#username').value});
@@ -138,6 +150,12 @@
         obj.initdom   = async function(){
                                                                                 debug('initdom');
               shadow                                      = host.shadowRoot;
+              
+              
+              msg                                         = $(view,'.msg');
+              msg.remove();
+              msg.style.display                           = '';
+              
               
               var info                                    = $(shadow,'#info');
               $(info,'#show').onclick                     = btn.password;
