@@ -12,13 +12,30 @@
   chat-room-display
     {flex:1}
     
+  #tabs
+    {display:flex}
+  .tab
+    {padding:5px 10px;cursor:pointer;flex:1}
+    
+  .active
+    {background:lightyellow;border-color:lightblue}
+  .inactive
+    {background:lightgray;border-color:gray}
+    
             </style>
             
             <chat-room-hdr component=parent></chat-room-hdr>
             
             <chat-room-display component=parent></chat-room-display>
             
-            <slot></slot>
+            <div id=tabs>
+                  <div class=tab style='display:none'>
+                  </div>
+            </div>
+            
+            <div id=view>
+                  <slot></slot>
+            </div>
             
       </template>
       
@@ -67,6 +84,10 @@
                       
         var rd        = {};
         rd.attr       = {};
+        
+        
+        var tabs;
+        var view;
         
         
   //:
@@ -139,9 +160,41 @@
   
         obj.initdom   = async function(){
         
+        
+              var shadow                = host.shadowRoot;
+              
+              
+              var tabs                  = $(shadow,'#tabs');
+              tab                       = $(tabs,'.tab');
+              tab.remove();
+              tab.style.display         = '';
+              
+              
+              var first;
+              for(let key in input){
+              
+                    let ntab            = tab.cloneNode(true);
+                    ntab.textContent    = key;
+                    tabs.append(ntab);
+                    ntab.onclick        = e=>console.log('click',key);
+                    if(!first){
+                          first   = ntab;
+                          first.classList.add('active');
+                    }else{
+                          ntab.classList.add('inactive');
+                    }
+                    
+              }//for
+              
+              
               post.start();
               
+              
         }//initdom
+        
+        
+        function show(){
+        }//show
         
         
   //:
