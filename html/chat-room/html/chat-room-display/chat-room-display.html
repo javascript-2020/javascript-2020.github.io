@@ -178,52 +178,6 @@
         }//display
         
         
-        display.message   = function({msg_id,username,txt,ts}){
-        
-              var config          = {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false};
-              var format          = new Intl.DateTimeFormat(undefined,config);
-              
-              var err;
-              try{
-              
-                    ts            = Number(ts);
-                    var local     = format.format(new Date(ts));
-                    var parts     = local.split(',');
-                    local         = parts[2]+'  '+parts[0]+parts[1];
-                    
-              }//try
-              catch(err2){
-              
-                    err   = err2;
-                    
-              }//catch
-              if(err){
-                                                                                console.log(name,txt,ts);
-                    local   = err.toString();
-              }
-              
-              
-              var nmsg                            = msg.cloneNode(true);
-              nmsg.msg_id                         = msg_id;
-              $(nmsg,'.username').textContent     = username;
-              $(nmsg,'.txt').textContent          = txt;
-              $(nmsg,'.ts').textContent           = local;
-              $(nmsg,'.del').onclick              = del;
-              
-              return nmsg;
-              
-              
-              async function del(){
-              
-                    var username    = input.username;
-                    var password    = input.password;
-                    var del_id      = msg_id;
-                    var result      = await post.del({username,password,del_id})
-                    if(!result)return;
-                    
-              }//del
-              
-        }//message
         
         
         display.delete    = function({del_id,ts}){
