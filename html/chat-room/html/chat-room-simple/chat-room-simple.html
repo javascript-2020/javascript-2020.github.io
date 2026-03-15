@@ -120,6 +120,7 @@
         
         var btn       = {};
         var kd        = {};
+        var display   = {};
         
         
   //:
@@ -217,6 +218,15 @@
   
         obj.display   = function(data){
         
+              var type      = data.type;
+              var result    = display[type](data);
+              return result;
+              
+        }//display
+        
+        
+        display.message   = function(data){
+        
               var {msg_id,m_type,username,txt,ts}   = data;
               
               var config          = {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false};
@@ -253,6 +263,15 @@
               return nmsg;
               
         }//display
+        
+        
+        display.delete    = function({del_id,ts}){
+                                                                                console.log('delete',del_id);
+              var item    = msgs.find(data=>data.msg_id===del_id);
+              if(!item)return;
+              $(item.node,'.txt').textContent   = 'deleted';
+              
+        }//delete
         
         
         async function del({username:m_username,msg_id}){
