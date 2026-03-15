@@ -73,6 +73,11 @@
         obj.init    = async function(){
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init');
+              rd.attr.server();
+              rd.attr.room();
+              rd.attr['poll-time']();
+              
+              
               hdr           = mod['chat-room-hdr'];
               display       = mod['chat-room-display'];
               
@@ -81,7 +86,7 @@
               Object.keys(input).forEach(key=>{
               
                     input[key].df   = df;
-                    input[key].initmod({post,poll,display})
+                    input[key].initmod({post,poll,display,room_id})
                     
               });
               
@@ -105,7 +110,7 @@
         rd.attr.room    = function(){
         
               if(!target.hasAttribute('room'))return;
-              room    = target.getAttribute('room');
+              room_id   = target.getAttribute('room');
               
         }//room
         
@@ -119,7 +124,7 @@
                     if(num<poll.min){
                           num   = poll.min;
                     }
-                    polltime    = num;
+                    poll.time    = num;
               }
               
         }//poll-time
