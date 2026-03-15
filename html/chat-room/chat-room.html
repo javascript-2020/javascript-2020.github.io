@@ -175,7 +175,7 @@
                     let nn              = 'chat-room-'+key;
                     let ntab            = tab.cloneNode(true);
                     ntab.textContent    = key;
-                    ntab.onclick        = e=>console.log('click',key);
+                    ntab.onclick        = e=>show(nn);
                     tabs.append(ntab);
                     
                     let node            = $(host,nn);
@@ -199,7 +199,20 @@
         }//initdom
         
         
-        function show(){
+        function show(nn){
+        
+              view.childNodes.forEach(node=>{
+              
+                      if(node.nodeType!==Node.ELEMENT_NODE)return;
+                      
+                      var d   = 'none';
+                      if(node.nodeName.toLowerCase()===nn){
+                            d   = '';
+                      }
+                      node.style.display    = d;
+                      
+              });
+              
         }//show
         
         
