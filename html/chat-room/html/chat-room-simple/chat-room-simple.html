@@ -120,7 +120,7 @@
         
         var btn       = {};
         var kd        = {};
-        var display   = {};
+        var disp      = {};
         
         
   //:
@@ -219,14 +219,13 @@
         obj.display   = function(data){
         
               var type      = data.type;
-              debugger;
-              var result    = display[type](data);
+              var result    = disp[type](data);
               return result;
               
         }//display
         
         
-        display.message   = function(data){
+        disp.message   = function(data){
         
               var {msg_id,m_type,username,txt,ts}   = data;
               
@@ -266,7 +265,7 @@
         }//display
         
         
-        display.delete    = function({del_id,ts}){
+        disp.delete    = function({del_id,ts}){
                                                                                 console.log('delete',del_id);
               var item    = msgs.find(data=>data.msg_id===del_id);
               if(!item)return;
