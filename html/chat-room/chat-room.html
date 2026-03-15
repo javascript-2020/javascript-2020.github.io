@@ -162,26 +162,32 @@
         
               var shadow                = host.shadowRoot;
               
-              console.log(host.childNodes);
-              
               var tabs                  = $(shadow,'#tabs');
               tab                       = $(tabs,'.tab');
               tab.remove();
               tab.style.display         = '';
               
+              view                      = $(shadow,'#view');
               
               var first;
               for(let key in input){
               
+                    ley nn              = 'chat-room-'+key;
                     let ntab            = tab.cloneNode(true);
                     ntab.textContent    = key;
-                    tabs.append(ntab);
                     ntab.onclick        = e=>console.log('click',key);
+                    tabs.append(ntab);
+                    
+                    let node            = $(host,nn);
+                    view.append(node);
+                    
                     if(!first){
                           first   = ntab;
                           first.classList.add('active');
+                          node.style.display    = '';
                     }else{
                           ntab.classList.add('inactive');
+                          node.style.display    = 'none';
                     }
                     
               }//for
