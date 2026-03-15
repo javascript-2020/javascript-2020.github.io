@@ -160,14 +160,17 @@
         
         function display(data,insert){
         
-              var node;
+              var m_type    = data.m_type;
+              var node      = input[m_type].display(data);
               
+              /*
               switch(data.type){
               
                 case 'message'    : node    = display.message(data);        break;
                 case 'delete'     : display.delete(data);                   break;
                 
               }//switch
+              */
               
               if(node){
                     view.insertBefore(node,insert);
@@ -179,14 +182,6 @@
         
         
         
-        
-        display.delete    = function({del_id,ts}){
-                                                                                console.log('delete',del_id);
-              var item    = msgs.find(data=>data.msg_id===del_id);
-              if(!item)return;
-              $(item.node,'.txt').textContent   = 'deleted';
-              
-        }//delete
         
         
         
