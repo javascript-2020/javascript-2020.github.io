@@ -119,7 +119,6 @@
         
         var btn       = {};
         var kd        = {};
-        var send      = {};
         
         
   //:
@@ -190,7 +189,7 @@
               var username        = $(shadow,'#username').value;
               var password        = $(shadow,'#password').value;
               
-              msg.send({username,password,txt});
+              send({username,password,txt});
               
         }//send
         
@@ -215,9 +214,57 @@
   
   
   
-        msg.del    = async function({username,password,del_id}){
+        obj.display   = function(data){
         
-              var ts          = display.last;
+              var {msg_id,m_type,username,txt,ts}   = data;
+              
+              var config          = {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false};
+              var format          = new Intl.DateTimeFormat(undefined,config);
+              
+              var err;
+              try{
+              
+                    ts            = Number(ts);
+                    var local     = format.format(new Date(ts));
+                    var parts     = local.split(',');
+                    local         = parts[2]+'  '+parts[0]+parts[1];
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.log(name,txt,ts);
+                    local   = err.toString();
+              }
+              
+              
+              var nmsg                            = msg.cloneNode(true);
+              nmsg.msg_id                         = msg_id;
+              $(nmsg,'.username').textContent     = username;
+              $(nmsg,'.txt').textContent          = txt;
+              $(nmsg,'.ts').textContent           = local;
+              $(nmsg,'.del').onclick              = e=>del(data);
+              
+              return nmsg;
+              
+        }//display
+        
+        
+        async function del({username:m_username,msg_id}){
+        
+              var username        = $(shadow,'#username').value;
+              if(username!==m_username){
+                    log.red('invalid username');
+                    return;
+              }
+              
+              var password        = $(shadow,'#password').value;
+              var del_id          = msg_id;
+              var ts              = display.last;
+              
               var result      = await post('simple/del',{room_id,username,password,del_id,ts});
               console.log('del',result);
               if(!result)return;
@@ -227,7 +274,7 @@
         }//del
         
         
-        msg.send    = async function({username,password,txt}){
+        async function send({username,password,txt}){
                                                                                 //console.log('post.msg');
               var ts          = display.last;
               var result      = await post('simple/msg',{room_id,username,password,txt,ts});
