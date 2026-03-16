@@ -75,6 +75,8 @@
         
         var shadow;
         var view;
+        var empty;
+        
         
         
         Object.defineProperty(obj,'last',{get:()=>msgs.at(-1)?.ts||null});
@@ -89,7 +91,6 @@
               obj.list      = display.list;
               obj.result    = display.result;
               
-              
         }//init
         
         
@@ -98,9 +99,10 @@
   
         obj.initdom   = async function(){
                                                                                 debug('initdom');
-              shadow                                      = host.shadowRoot;
+              shadow                    = host.shadowRoot;
               
-              view                                        = $(shadow,'#view');
+              view                      = $(shadow,'#view');
+              empty                     = $(view,'#empty');
               
         }//initdom
         
