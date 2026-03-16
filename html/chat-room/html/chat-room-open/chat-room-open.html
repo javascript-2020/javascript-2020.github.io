@@ -157,12 +157,13 @@
         
         btn.send    = function(){
         
+              var txt                   = $(shadow,'#txt').value;
+              var ts                    = display.last;
+              
+              send.msg({txt,ts});
+              
+              $(shadow,'#txt').value    = '';
               $(shadow,'#txt').focus();
-              
-              var txt             = $(shadow,'#txt').value;
-              $(shadow,'#txt').value     = '';
-              
-              msg.send({username,password,txt});
               
         }//send
         
@@ -248,12 +249,10 @@
   //:
   
   
-        send.msg    = async function({}){
+        send.msg    = async function({txt,ts}){
                                                                                 //console.log('post.msg');
-              var ts          = display.last;
               var result      = await post('open/msg',{room_id,txt,ts});
               if(!result)return;
-              
               display.result(result);
               
         }//send
