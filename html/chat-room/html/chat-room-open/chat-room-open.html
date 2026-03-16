@@ -44,6 +44,17 @@
             </style>
             
             
+            <div class=msg style='display:none'>
+                  <div class=username>
+                  </div>
+                  <div class=txt>
+                  </div>
+                  <div class=ts>
+                  </div>
+                  <img class=del>
+            </div>
+            
+            
             <section id=input-root>
             
                   <div id=info>
@@ -92,14 +103,12 @@
         var shadow;
         
         var ui        = {};
-        
-        
-        Object.defineProperty(obj,'username',{get:()=>$(shadow,'#username').value});
-        Object.defineProperty(obj,'password',{get:()=>$(shadow,'#password').value});
+        var msg;
         
         
         var btn       = {};
         var kd        = {};
+        var send      = {};
         
         
   //:
@@ -178,18 +187,78 @@
   
   
         obj.display   = function(data){
+        
+              var type      = data.type;
+              var result    = disp[type](data);
+              return result;
+              
         }//display
         
         
-        obj.del   = function(){
+        disp.message    = function(){
         
-              log.red('open messages cannot be deleted');
+              var {msg_id,txt,ts}   = data;
+              
+              var config          = {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false};
+              var format          = new Intl.DateTimeFormat(undefined,config);
+              
+              var err;
+              try{
+              
+                    ts            = Number(ts);
+                    var local     = format.format(new Date(ts));
+                    var parts     = local.split(',');
+                    local         = parts[2]+'  '+parts[0]+parts[1];
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.log(name,txt,ts);
+                                                                                console.log(err);
+                    local   = err.toString();
+              }
+              
+              
+              var nmsg                            = msg.cloneNode(true);
+              nmsg.msg_id                         = msg_id;
+              $(nmsg,'.username').textContent     = username;
+              $(nmsg,'.txt').textContent          = txt;
+              $(nmsg,'.ts').textContent           = local;
+              $(nmsg,'.del').onclick              = e=>del(data);
+              
+              return nmsg;
+              
+        }//message
+        
+        
+        disp.del    = function(){
+        
+              var item    = msgs.find(data=>data.msg_id===del_id);
+              if(!item)return;
+              $(item.node,'.txt').textContent   = 'deleted';
               
         }//del
         
         
-        async function send({}){
+        
+  //:
+  
+  
+        send.msg    = async function({}){
+                                                                                //console.log('post.msg');
+              var ts          = display.last;
+              var result      = await post('open/msg',{room_id,txt,ts});
+              if(!result)return;
+              
+              display.result(result);
+              
         }//send
+        
+        
         
         
         
