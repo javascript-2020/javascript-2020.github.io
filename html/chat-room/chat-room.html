@@ -176,7 +176,7 @@
                     let ntab            = tab.cloneNode(true);
                     ntab.id             = key;
                     ntab.textContent    = key;
-                    ntab.onclick        = e=>show(key,nn);
+                    ntab.onclick        = e=>show(key);
                     tabs.append(ntab);
                     
                     let node            = $(host,nn);
@@ -198,11 +198,19 @@
               post.start();
               
               
+              
         }//initdom
         
         
-        function show(id,nn){
+  //:
+  
+  
+        obj.show    = function(id){return show(id)}
         
+        function show(id){
+        
+              var nn    = 'chat-room-'+id;
+              
               $.all(tabs,'.tab').forEach(node=>{
               
                     if(node.id===id){
