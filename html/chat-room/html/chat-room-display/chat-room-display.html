@@ -131,6 +131,30 @@
   //:
   
   
+        display.node    = function({msg_id}){
+        
+              var nmsg              = msg.cloneNode(true);
+              nmsg.msg_id           = data.msg_id;
+              nmsg.onmouseenter     = me;
+              nmsg.onmouseleave     = ml;
+              
+              
+              function me(e){
+              
+                    $(nmsg,'.icons').style.display    = '';
+                    
+              }//me
+              
+              
+              function ml(e){
+              
+                    $(nmsg,'.icons').style.display    = 'none';
+                    
+              }//ml
+              
+        }//node
+        
+        
         display.result    = function({list}){
         
               display.list(list)
@@ -175,31 +199,12 @@
         
         function display(data,insert){
         
-              var nmsg              = msg.cloneNode(true);
-              nmsg.msg_id           = data.msg_id;
-              nmsg.onmouseenter     = me;
-              nmsg.onmouseleave     = ml;
-              
               var m_type            = data.m_type;
-              var node              = input[m_type].display(data,nmsg);
+              var node              = input[m_type].display(data);
               if(node){
                     view.insertBefore(node,insert);
               }
               return node;
-              
-              
-              function me(e){
-              
-                    $(msg,'.icons').style.display   = '';
-                    
-              }//me
-              
-              
-              function ml(e){
-              
-                    $(nmsg,'.icons').style.display    = 'none';
-                    
-              }//ml
               
         }//display
         
