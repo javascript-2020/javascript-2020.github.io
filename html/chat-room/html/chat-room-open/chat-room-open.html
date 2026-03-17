@@ -192,7 +192,7 @@
         }//display
         
         
-        disp.message    = function(data){
+        disp.message    = function(data,nmsg){
         
               var {msg_id,txt,ts}   = data;
               
@@ -220,7 +220,6 @@
               }
               
               
-              var nmsg                            = msg.cloneNode(true);
               $(nmsg,'.txt').textContent          = txt;
               $(nmsg,'.ts').textContent           = local;
               $(nmsg,'.del').onclick              = e=>del(data);
@@ -230,7 +229,7 @@
         }//message
         
         
-        disp.del    = function({del_id}){
+        disp.del    = function({del_id},nmsg){
         
               var item    = msgs.find(data=>data.msg_id===del_id);
               if(!item)return;
