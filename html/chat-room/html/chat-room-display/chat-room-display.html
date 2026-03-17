@@ -108,10 +108,7 @@
         obj.init    = async function(){
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init');
-              obj.list      = display.list;
-              obj.result    = display.result;
-              obj.node      = display.node;
-              
+                                                                                
         }//init
         
         
@@ -132,6 +129,8 @@
   //:
   
   
+        obj.node    = function(){return display.node.apply(null,arguments)}
+        
         display.node    = function({msg_id}){
         
               var nmsg              = msg.cloneNode(true);
@@ -156,6 +155,8 @@
         }//node
         
         
+        obj.result    = function(){return display.result.apply(null,arguments)}
+        
         display.result    = function({list}){
         
               display.list(list)
@@ -166,6 +167,8 @@
               
         }//result
         
+        
+        obj.list      = function(){return display.list.apply(null,arguments)}
         
         display.list    = function(list){
                                                                                 console.json(list);
