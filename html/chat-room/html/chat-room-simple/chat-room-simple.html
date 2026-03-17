@@ -50,17 +50,6 @@
             </style>
             
             
-            <div class=msg style='display:none'>
-                  <div class=username>
-                  </div>
-                  <div class=txt>
-                  </div>
-                  <div class=ts>
-                  </div>
-                  <img class=del>
-            </div>
-            
-            
             <section id=user-root>
             
                   <div id=info>
@@ -123,11 +112,7 @@
         var shadow;
         
         var ui        = {};
-        var msg;
         
-        
-        //Object.defineProperty(obj,'username',{get:()=>$(shadow,'#username').value});
-        //Object.defineProperty(obj,'password',{get:()=>$(shadow,'#password').value});
         
         
         var btn       = {};
@@ -151,11 +136,6 @@
         obj.initdom   = async function(){
                                                                                 debug('initdom');
               shadow                                      = host.shadowRoot;
-              
-              
-              msg                                         = $(shadow,'.msg');
-              msg.remove();
-              msg.style.display                           = '';
               
               
               var info                                    = $(shadow,'#info');
@@ -243,16 +223,16 @@
   
   
   
-        obj.display   = function(data){
+        obj.display   = function(data,nmsg){
         
               var type      = data.type;
-              var result    = disp[type](data);
+              var result    = disp[type](data,nmsg);
               return result;
               
         }//display
         
         
-        disp.message   = function(data){
+        disp.message   = function(data,nmsg){
         
               var {msg_id,username,txt,ts}   = data;
               
@@ -280,7 +260,6 @@
               }
               
               
-              var nmsg                            = msg.cloneNode(true);
               nmsg.msg_id                         = msg_id;
               $(nmsg,'.username').textContent     = username;
               $(nmsg,'.txt').textContent          = txt;
@@ -308,7 +287,7 @@
         }//display
         
         
-        disp.delete    = function({del_id}){
+        disp.delete    = function({del_id},nmsg){
                                                                                 console.log('delete',del_id);
               var item    = msgs.find(data=>data.msg_id===del_id);
               if(!item)return;
