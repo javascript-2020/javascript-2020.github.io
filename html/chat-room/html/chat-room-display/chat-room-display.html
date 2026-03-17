@@ -40,10 +40,24 @@
             <div id=title>
                   messages
             </div>
-            <section id=view>
+            
+            <section id=view >
                   <div id=empty>
                         Empty
                   </div>
+                  
+                  <div class=msg style='display:none'>
+                        <div class=username>
+                        </div>
+                        <div class=txt>
+                        </div>
+                        <div class=ts>
+                        </div>
+                        <div class=icons>
+                              <img class=del>
+                        </div>
+                  </div>
+                  
             </section>
             
             
@@ -81,6 +95,7 @@
         var shadow;
         var view;
         var empty;
+        var msg;
         
         
         
@@ -108,6 +123,7 @@
               
               view                      = $(shadow,'#view');
               empty                     = $(view,'#empty');
+              msg                       = $(view,'.msg');
               
         }//initdom
         
@@ -159,12 +175,31 @@
         
         function display(data,insert){
         
-              var m_type    = data.m_type;
-              var node      = input[m_type].display(data);
+              var nmsg              = msg.cloneNode(true);
+              nmsg.msg_id           = msg_id;
+              nmsg.onmouseenter     = me;
+              nmsg.onmouseleave     = ml;
+              
+              var m_type            = data.m_type;
+              var node              = input[m_type].display(data,nmsg);
               if(node){
                     view.insertBefore(node,insert);
               }
               return node;
+              
+              
+              function me(e){
+              
+                    $(msg,'.icons').style.display   = '';
+                    
+              }//me
+              
+              
+              function ml(e){
+              
+                    $(nmsg,'.icons').style.display    = 'none';
+                    
+              }//ml
               
         }//display
         
