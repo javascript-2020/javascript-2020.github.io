@@ -8,11 +8,17 @@
             
   #hdr
     {}
+  #title
+    {text-align:center;font-size:20px;font-weight:bold;color:gray;text-align:center;padding:20px}
     
             </style>
             
             
             <section id=hdr>
+            
+                  <div id=title>
+                  </div>
+                  
             </section>
             
             
@@ -37,15 +43,45 @@
         }//initmod
         
         
+  //:
+  
+  
+        var ui    = {};
+        
+        
+  //:
+  
+  
         obj.init    = async function(){
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init');
         }//init
         
         
+  //:
+  
+  
         obj.initdom   = async function(){
                                                                                 debug('initdom');
+              shadow    = host.shadowRoot;
+              
+              ui.title    = $(shadow,'#title');
+              
+              
+              
         }//initdom
+        
+        
+  //:
+  
+  
+        obj.title   = function(title){
+        
+              $(ui.title).textContent   = title;
+              
+        }//title
+        
+        
         
         
   return obj;
