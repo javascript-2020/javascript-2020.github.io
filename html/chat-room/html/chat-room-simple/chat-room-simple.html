@@ -223,16 +223,16 @@
   
   
   
-        obj.display   = function(data,nmsg){
+        obj.display   = function(data){
         
-              var type      = data.type;
-              var result    = disp[type](data,nmsg);
-              return result;
+              var type    = data.type;
+              var node    = disp[type](data);
+              return node;
               
         }//display
         
         
-        disp.message   = function(data,nmsg){
+        disp.message   = function(data){
         
               var {msg_id,username,txt,ts}   = data;
               
@@ -260,7 +260,8 @@
               }
               
               
-              nmsg.msg_id                         = msg_id;
+              var nmsg                            = display.node(data);
+              
               $(nmsg,'.username').textContent     = username;
               $(nmsg,'.txt').textContent          = txt;
               $(nmsg,'.ts').textContent           = local;
@@ -287,7 +288,7 @@
         }//display
         
         
-        disp.delete    = function({del_id},nmsg){
+        disp.delete    = function({del_id}){
                                                                                 console.log('delete',del_id);
               var item    = msgs.find(data=>data.msg_id===del_id);
               if(!item)return;
