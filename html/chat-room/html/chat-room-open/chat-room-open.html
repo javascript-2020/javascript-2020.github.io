@@ -44,18 +44,6 @@
             </style>
             
             
-            <div class=msg style='display:none'>
-                  <div class=username>open</div>
-                  <div class=txt>
-                  </div>
-                  <div class=ts>
-                  </div>
-                  <div class=icons>
-                        <img class=del>
-                  </div>
-            </div>
-            
-            
             <section id=input-root>
             
                   <div id=info>
@@ -104,7 +92,6 @@
         var shadow;
         
         var ui        = {};
-        var msg;
         
         
         var btn       = {};
@@ -128,10 +115,6 @@
         obj.initdom   = async function(){
                                                                                 debug('initdom');
               shadow                                      = host.shadowRoot;
-              
-              msg                                         = $(shadow,'.msg');
-              msg.remove();
-              msg.style.display                           = '';
               
               var info                                    = $(shadow,'#info');
               
@@ -200,10 +183,10 @@
   //:
   
   
-        obj.display   = function(data){
+        obj.display   = function(data,nmsg){
         
               var type      = data.type;
-              var result    = disp[type](data);
+              var result    = disp[type](data,nmsg);
               return result;
               
         }//display
@@ -238,7 +221,6 @@
               
               
               var nmsg                            = msg.cloneNode(true);
-              nmsg.msg_id                         = msg_id;
               $(nmsg,'.txt').textContent          = txt;
               $(nmsg,'.ts').textContent           = local;
               $(nmsg,'.del').onclick              = e=>del(data);
