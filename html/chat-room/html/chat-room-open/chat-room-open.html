@@ -183,16 +183,16 @@
   //:
   
   
-        obj.display   = function(data,nmsg){
+        obj.display   = function(data){
         
-              var type      = data.type;
-              var result    = disp[type](data,nmsg);
-              return result;
+              var type    = data.type;
+              var node    = disp[type](data);
+              return node;
               
         }//display
         
         
-        disp.message    = function(data,nmsg){
+        disp.message    = function(data){
         
               var {msg_id,txt,ts}   = data;
               
@@ -219,6 +219,7 @@
                     local   = err.toString();
               }
               
+              var nmsg                            = display.node(data);
               
               $(nmsg,'.txt').textContent          = txt;
               $(nmsg,'.ts').textContent           = local;
