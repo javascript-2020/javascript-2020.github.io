@@ -110,17 +110,19 @@
   //:
   
         var def   = {
-              username    : 'test',
-              password    : 'test-123'
+              username            : 'test',
+              password            : 'test-123',
+              'password-show'     : false,
         };
         
-        var shadow;
         
+        var shadow;
         var ui        = {};
         
         
         
         var btn       = {};
+        var set       = {};
         var kd        = {};
         var disp      = {};
         var send      = {};
@@ -157,6 +159,11 @@
               }
               $(info,'#password').value                   = value;
               $(info,'#show').onclick                     = btn.password;
+              var {value,error}                           = ls.read['chat-simple-password-show'];
+              if(error){
+                    value                                 = def['password-show'];
+              }
+              set.password(value);
               
               $(shadow,'#txt').onkeydown                  = kd.txt;
               $(shadow,'#txt').focus();
@@ -178,13 +185,24 @@
               
               var node    = $(shadow,'#password');
               if(node.getAttribute('type')=='password'){
-                    node.removeAttribute('type');
+                    set.password(false);
               }else{
-                    node.setAttribute('type','password');
+                    set.password(true);
               }
               
         }//password
         
+        
+        set.password    = function(v){
+        
+              var node    = $(shadow,'#password');
+              if(v){
+                    node.setAttribute('type','password');
+              }else{
+                    node.removeAttribute('type');
+              }
+              
+        }//password
         
         kd.txt   = function(e){
                                                                                 //console.log(e.ctrlKey,e.key);
