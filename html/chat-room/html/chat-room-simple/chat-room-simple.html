@@ -275,7 +275,7 @@
         
         obj.focus   = function(){
         
-              $(shadow,'#txt').focus();
+              ui.txt.focus();
               
         }//focus
         
@@ -333,16 +333,17 @@
               
               function del(){
               
-                    var name        = $(shadow,'#username').value;
+                    var name        = ui.username.value;
                     if(username!==name){
                           log.red('invalid username');
                           return;
                     }
                     
-                    var password        = $(shadow,'#password').value;
+                    var password        = ui.password.value;
                     var del_id          = msg_id;
                     var ts              = display.last;
                     send.del({username,password,del_id,ts});
+                    ui.write();
                     
               }//del
               
