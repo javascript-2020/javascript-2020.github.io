@@ -151,13 +151,16 @@
               if(error){
                     value                                 = def.username;
               }
-              $(info,'#username').value                   = value;
+              ui.username                                 = $(info,'#username');
+              ui.username.value                           = value;
               
               var {value,error}                           = ls.read['chat-simple-password'];
               if(error){
                     value                                 = def.password;
               }
-              $(info,'#password').value                   = value;
+              ui.password                                 = $(info,'#password');
+              ui.password.value                           = value;
+              
               $(info,'#show').onclick                     = btn.password;
               var {value,error}                           = ls.read['chat-simple-password-show'];
               if(error){
@@ -165,15 +168,29 @@
               }
               set.password(value);
               
-              $(shadow,'#txt').onkeydown                  = kd.txt;
-              $(shadow,'#txt').focus();
+              ui.txt                                      = $(shadow,'#txt');
+              ui.txt.onkeydown                            = kd.txt;
               
               $(shadow,'[value=send]').onclick            = btn.send;
               ui.pause                                    = $(shadow,'[value=pause]');
               ui.pause.onclick                            = btn.pause;
               
               
+              ui.read();
+              
         }//initdom
+        
+        
+  //:
+  
+  
+        ui.write    = function(){
+        
+              ls.write['chat-simple-username']        = ui.username.value;
+              ls.write['chat-simple-password']        = ui.password.value;
+              ls.write['chat-simple-password-show']   = (ui.password.getAttribute('type')==='password')
+              
+        }//write
         
         
   //:
@@ -186,11 +203,10 @@
               var node    = $(shadow,'#password');
               if(node.getAttribute('type')=='password'){
                     set.password(false);
-                    ls.write['chat-simple-password-show']   = false;
               }else{
                     set.password(true);
-                    ls.write['chat-simple-password-show']   = true;
               }
+              ui.write();
               
         }//password
         
@@ -209,11 +225,18 @@
         
         kd.txt   = function(e){
                                                                                 //console.log(e.ctrlKey,e.key);
+              var f   = false;
               if(e.ctrlKey && e.key=='Enter'){
                     btn.send();
+                    f   = true;
               }
               if(e.ctrlKey && e.key==' '){
                     btn.pause();
+                    f   = true;
+              }
+              
+              if(f){
+                    e.preventDefault();
               }
               
         }//user
@@ -221,15 +244,14 @@
         
         btn.send    = function(){
         
-              $(shadow,'#txt').focus();
+              ui.txt.focus();
+              ui.write();
               
-              var txt                   = $(shadow,'#txt').value;
-              $(shadow,'#txt').value    = '';
-              var username              = $(shadow,'#username').value;
-              ls.write.username         = username;
-              var password              = $(shadow,'#password').value;
-              ls.write.password         = password;
-              var ts                    = display.last;
+              var txt                             = ui.txt.value;
+              ui.txt.value                        = '';
+              var username                        = ui.username.value;
+              var password                        = ui.password.value;
+              var ts                              = display.last;
               
               send.msg({username,password,txt,ts});
               
@@ -239,6 +261,7 @@
         btn.pause   = function(){
         
               $(shadow,'#txt').focus();
+              ui.write();
               
               if(poll.abort){
                     ui.pause.value    = 'pause';
