@@ -95,7 +95,7 @@
         obj.init    = async function(){
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init');
-              target    = host;
+              target        = host;
               
               rd.attr.server();
               rd.attr.room();
@@ -103,10 +103,13 @@
               
               
               hdr           = mod['chat-room-hdr'];
-              display       = mod['chat-room-display'];
+              hdr.df        = df;
               
-              hdr.df=display.df=df;
+              display       = mod['chat-room-display'];
+              display.df    = df;
               display.initmod({poll,post,input});
+              
+              
               Object.keys(input).forEach(key=>{
               
                     input[key].df   = df;
