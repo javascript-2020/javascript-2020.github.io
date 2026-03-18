@@ -108,7 +108,11 @@
         
   //:
   
-  
+        var def   = {
+              username    : 'test',
+              password    : 'test-123'
+        };
+        
         var shadow;
         
         var ui        = {};
@@ -139,6 +143,12 @@
               
               
               var info                                    = $(shadow,'#info');
+              
+              var str                                     = lsmod.read('username')||def.username;
+              $(info,'#username').value                   = str;
+              
+              var str                                     = lsmod.read('password')||def.password;
+              $(info,'#password').value                   = str;
               $(info,'#show').onclick                     = btn.password;
               
               $(shadow,'#txt').onkeydown                  = kd.txt;
