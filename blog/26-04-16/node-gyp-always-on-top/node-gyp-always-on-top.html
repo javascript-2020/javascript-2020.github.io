@@ -44,10 +44,13 @@
                                                                                 console.log('node-gyp-always-on-top.html');
                                                                                 
         var project;
+        var min;
+        
         
         async function ready(){
                                                                                 debug('ready');
               project   = mod['project'];
+              min       = mod['min-project'];
               
               initdom(document.body);
               
@@ -63,6 +66,18 @@
               
               var ndata   = project.build(data);
               project.display(ndata,{});
+              
+              
+              var data    = {
+                    'always-on-top'   : {
+                          'always-on-top.js'      : null,
+                          'always-on-top.node'    : null,
+                    }
+              };
+              
+              var ndata   = min.build(data);
+              min.display(ndata,{});
+              
               
         }//init
         
@@ -460,6 +475,9 @@
                   </p>
                   
             </div>
+            
+            
+            <dir-tree component id=min-project></dir-tree>
             
             
             
