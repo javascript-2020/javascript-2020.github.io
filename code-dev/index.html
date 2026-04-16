@@ -70,7 +70,10 @@
     
     
   a
-    {display:flex;align-items:center;cursor:pointer;gap:20px}
+    {display:flex;align-items:center;cursor:pointer;gap:20px;padding:10px}
+  a:hover
+    {background:lightyellow}
+    
   a>img
     {width:30px;height:30px;margin-left:20px}
     
@@ -212,7 +215,9 @@
                       $(a,'.date').textContent    = date;
                       var i       = href.lastIndexOf('/');
                       var fn      = href.slice(i+1);
-                      $(a,'.title').textContent   = fn;
+                      
+                      var str     = title(fn);
+                      $(a,'.title').textContent   = str;
                       
                       var svg       = jdenticon.toSvg(href,30);
                       var dataurl   = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
@@ -229,6 +234,29 @@
               
               
         }//initdom
+        
+        
+        
+        function title(fn){
+        
+              var ext
+              var str   = fn;
+              
+              var i     = fn.lastIndexOf('.');
+              if(i!=-1){
+                    ext   = fn.slice(i+1);
+                    str   = fn.slice(0,i);
+              }
+              
+              str   = str.replaceAll('-',' ');
+              str   = str.replaceAll('_',' ');
+              
+              return str;
+              
+        }//fn
+        
+        
+        
         
         
   //:
