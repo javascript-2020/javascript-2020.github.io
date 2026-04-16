@@ -48,6 +48,7 @@
         var cpp;
         var js;
         var gyp;
+        var minjs;
         
         
         async function ready(){
@@ -57,6 +58,8 @@
               cpp       = mod['cpp'];
               js        = mod['js'];
               gyp       = mod['gyp'];
+              minjs     = mod['min-js'];
+              
               
               initdom(document.body);
               
@@ -577,6 +580,43 @@
         }//download
         
         
+        btn.reset   = async function(){
+        
+              load('ex/always-on-top.cpp',cpp);
+              load('ex/always-on-top.js',js);
+              load('ex/binding.gyp',gyp);
+              load('ex/always-on-top-min.js',minjs);
+              
+        }//reset
+        
+        
+        async function load(url,ed){
+        
+              var err;
+              try{
+              
+                    var res   = await fetch(url);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//err
+              if(err){
+                    log.red(err.message);
+                    return;
+              }
+              if(!res.ok){
+                    var error   = res.status+(res.statusText||'an error ocurred');
+                    log.red(error);
+                    return;
+              }
+              
+              var txt   = await res.text();
+              ed.setValue(txt);
+              
+        }//load
         
         
         
