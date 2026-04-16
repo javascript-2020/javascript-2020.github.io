@@ -43,11 +43,24 @@
             <script>
                                                                                 console.log('node-gyp-always-on-top.html');
                                                                                 
-                                                                                
+        var project;
+        
         async function ready(){
                                                                                 debug('ready');
-                                                                                
+              project   = mod['project'];
+              
               initdom(document.body);
+              
+              
+              var data    = {
+                    'always-on-top.cpp'   : null,
+                    'always-on-top.js'    : null,
+                    'binding.gyp'         : null,
+                    'node_modules'        : {},
+              };
+              
+              var ndata   = project.build(data);
+              project.display(ndata,{});
               
         }//init
         
@@ -93,16 +106,86 @@
                   </div>
                   
                   <p>
-                        In this example we will create a tool to be able to keep a window on top.  First the source code we will be using.
+                        In this example we will create a tool to be able to keep a window on top.
                   </p>
                   
             </div>
             
             
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        Environment
+                  </div>
+                  
+                  <p>
+                  
+                        Windows environment ( Windows 10 or 11 )
+                        <br>
+                        Node.js installed (version you used)
+                        <br>
+                        
+                        Python installed (3.8–3.12)
+                        
+                        <br>
+                        <br>
+                        
+                        we'll set the following up in the course of this blog
+                        <br>
+                        
+                        Visual Studio Build Tools installed
+                        <br>
+                        
+                        MSVC v14.x
+                        <br>
+                        
+                        Windows 10/11 SDK
+                        <br>
+                        
+                        MSBuild
+                        
+                  </p>
+                  
+            </div>
+            
+            
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        Directory Structure
+                  </div>
+                  
+                  <p>
+                  
+                        The project will be using the following directory structure
+                        
+                  </p>
+                  
+            </div>
+            
+            <dir-tree component id=project></dir-tree>
+            
+            
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        Source Code
+                  </div>
+                  
+                  <p>
+                  
+                        Will be using the following source code
+                        
+                  </p>
+                  
+            </div>
+            
             
             <web-editor component id=cpp src='ex/always-on-top.cpp' fullsize></web-editor>
             
+            
             <web-editor component id=js src='ex/always-on-top.js' fullsize></web-editor>
+            
             
             <web-editor component id=gyp src='ex/binding.gyp' fullsize></web-editor>
             
@@ -115,50 +198,31 @@
                   </div>
                   
                   <p>
-                  
-                        Windows environment
-                        Windows 10 or 11
-                        
-                        Node.js installed (version you used)
-                        
-                        Python installed (3.8–3.12)
-                        
-                        Visual Studio Build Tools installed
-                        
-                        MSVC v14.x
-                        
-                        Windows 10/11 SDK
-                        
-                        MSBuild
-                        
-                  </p>
-                  
-            </div>
-            
-            
-            <div class=blog-text>
-            
-                  <div class=blog-hdr>
-                        node-addon-api
-                  </div>
-                  
-                  <p>
                         node-addon-api is not a library in the usual sense.
+                        <br>
                         It’s not a DLL, not a binary, not something you “run”.
                         
+                        <br>
                         It’s a header‑only C++ wrapper around Node’s native C API (N‑API).
+                        <br>
                         
                         Meaning:
+                        <br>
                         
                         It gives you C++ classes instead of raw C functions
+                        <br>
                         
                         It makes writing addons much easier
+                        <br>
                         
                         It handles memory safety, exceptions, type conversions
+                        <br>
                         
                         It hides the ugly parts of N‑API
+                        <br>
                         
                         It compiles into your addon — nothing is loaded at runtime
+                        <br>
                         
                         It’s basically a helper layer that makes writing C++ addons sane.
                   </p>
@@ -171,25 +235,35 @@
                   
                   <p>
                         Inside node-addon-api, you’ll find:
+                        <br>
                         
                         napi.h
+                        <br>
                         
                         napi-inl.h
+                        <br>
                         
                         C++ classes like Napi::Env, Napi::Object, Napi::Function
+                        <br>
                         
                         Templates for converting JS ↔ C++ types
+                        <br>
                         
                         Exception wrappers
+                        <br>
                         
                         ThreadSafeFunction helpers
+                        <br>
                         
                         Async worker helpers
+                        <br>
                         
                         There is no compiled code.
+                        <br>
                         It’s all headers.
+                        <br>
                         
-                        Your addon compiles these headers into your .node binary.
+                        The addon compiles these headers into your .node binary.
                   </p>
                   
                   <p>
@@ -214,30 +288,47 @@
                   
                   <p>
                         When installing Visual Studio Build Tools, you only need:
+                        <br>
                         
                         MSVC v14.x C++ Build Tools
+                        <br>
                         This gives you:
+                        <br>
                         
                         cl.exe (the compiler)
+                        <br>
                         
                         link.exe (the linker)
+                        <br>
                         
                         Standard C++ headers
                         
+                        <br>
+                        <br>
+                        
                         Windows 10/11 SDK (any version)
+                        <br>
                         This gives you:
+                        <br>
                         
                         user32.lib (for RegisterHotKey, SetWindowPos, etc.)
+                        <br>
                         
                         kernel32.lib
+                        <br>
                         
                         windows.h
+                        <br>
+                        <br>
                         
                         Win32 API headers
+                        <br>
                         
                         MSBuild Tools
+                        <br>
                         
                         Used internally by node‑gyp to orchestrate the build.
+                        <br>
                         
                         That’s it.
                   </p>
