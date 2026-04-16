@@ -8,7 +8,7 @@
                         "target_name"     : "always-on-top",
                         "sources"         : ["always-on-top.cpp"],
                         
-                        "include_dirs"    : ["C:/work/code/win/always-on-top/node_modules/node-addon-api"],
+                        "include_dirs"    : ["node_modules/node-addon-api"],
                         
                         "dependencies"    : ["<!(node -p \"require('node-addon-api').gyp\")"],
                         
