@@ -13,7 +13,13 @@
     {display:flex}
     
   .radio
-    {border:1px solid lightgray;padding:2px 10px;border-radius:5px;cursor:pointer}
+    {border:1px solid lightgray;padding:2px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center}
+  #isolate
+    {margin-right:10px}
+  #allow-scripts
+    {color:gray}
+  #console-clear
+    {margin-right:20px}
     
   #hldr
     {flex:1;box-sizing:border-box;position:relative}
@@ -22,30 +28,67 @@
   #glass
     {position:absolute;left:0;top:0;width:100%;height:100%;display:none}
     
+  #slider
+    {height:10px;cursor:ns-resize}
+    
+  #kill
+    {padding:5px 10px;min-width:60px}
+    
             </style>
             
             <div id=hdr>
+                  <span id=isolate class=radio>
+                        <input type=checkbox>
+                        isolate
+                  </span>
+                  
                   <span id=allow-scripts class=radio>
-                        <input type=checkbox checked>
+                        <input type=checkbox checked disabled>
                         allow-scripts
                   </span>
                   <span id=allow-modals class=radio>
                         <input type=checkbox checked>
                         allow-modals
                   </span>
-                  <span id=allow-popups class=radio>
+                  <span id=allow-popups class=radio style='margin-right:30px'>
                         <input type=checkbox checked>
                         allow-popups
                   </span>
                   
                   <div style='flex:1'></div>
-                  <button id=kill style='margin-right:20px'>kill</button>
+                  
+                  <span id=console-show class=radio>
+                        <input type=checkbox checked>
+                        console
+                  </span>
+                  <span id=console-echo class=radio>
+                        <input type=checkbox checked>
+                        echo
+                  </span>
+                  <span id=console-persist class=radio>
+                        <input type=checkbox>
+                        persist
+                  </span>
+                  <span id=console-clear class=radio>
+                        clear
+                  </span>
+                  
+                  <button id=kill>kill</button>
             </div>
             
+            
+            <!--
+            https://sandbox-ext-code-com-1024713184986.us-central1.run.app/html-sandbox/html-sandbox.html
+            https://ext-code-test.com/html-sandbox/html-sandbox.html
+            -->
             <div id=hldr>
-                  <iframe sandbox='allow-forms allow-downloads allow-pointer-lock allow-popups-to-escape-sandbox'></iframe>
+                  <iframe></iframe>
                   <div id=glass></div>
             </div>
+            
+            <div id=slider></div>
+            
+            <web-console component h=150></web-console>
             
       </template>
       
@@ -74,7 +117,9 @@
         
   //vars:-
   
-        var allow_same_origin   = false;
+  
+        var webconsole;
+        
         
         var chk   = {};
         
@@ -84,44 +129,67 @@
         var glass;
         
         
-        var btn   = {};
+        var sandbox_url;
+        var iframe_src        = 'https://sandbox.ext-code.com/html-sandbox/html-sandbox.html';
+        var iframe_sandbox    = 'allow-scripts allow-same-origin allow-forms';//allow-downloads allow-pointer-lock';//allow-popups-to-escape-sandbox
+        var iframe_allow      = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
+                                  xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
+                                  
+                                  
+                                  
+        var btn         = {};
+        btn.console     = {};
+        obj.on          = {};
+        var build       = {};
         
         
   //:
   
   
         obj.init    = async function(){
+        
+              await mod.auto();
+              
+              webconsole    = mod['web-console'];
+              
+              
         }//init
         
         
   //:
   
   
-        obj.initdom   = function(rootnode){
+        obj.initdom   = function(){
         
-              shadow                          = host.shadowRoot;
+              shadow                                    = host.shadowRoot;
               
-              var style                       = $(shadow,'style');
+              var style                                 = $(shadow,'style');
               $.stylesheet.insert(style,'button','.icon');
               
               
-              var hdr                         = $(shadow,'#hdr');
-              chk['allow-scripts']            = $.chkbox(hdr,'#allow-scripts');
-              chk['allow-modals']             = $.chkbox(hdr,'#allow-modals');
-              chk['allow-popups']             = $.chkbox(hdr,'#allow-popups');
+              var hdr                                   = $(shadow,'#hdr');
               
-              $(hdr,'#kill').onclick          = btn.kill;
+              chk.isolate                               = $.chkbox(hdr,'#isolate');
+              chk.isolate.checked                       = window.crossOriginIsolated;
+              
+              chk['allow-scripts']                      = $.chkbox(hdr,'#allow-scripts');
+              chk['allow-modals']                       = $.chkbox(hdr,'#allow-modals');
+              chk['allow-popups']                       = $.chkbox(hdr,'#allow-popups');
+              
+              chk['console-show']                       = $.chkbox(hdr,'#console-show',btn.console.show);
+              chk['console-echo']                       = $.chkbox(hdr,'#console-echo');
+              chk['console-persist']                    = $.chkbox(hdr,'#console-persist');
+              $(shadow,'#console-clear').onclick        = btn.console.clear;
+              
+              $(hdr,'#kill').onclick                    = btn.kill;
               
               
-              hldr                            = $(shadow,'#hldr');
-              iframe                          = $(shadow,'iframe');
-              if(allow_same_origin){
-                    var attr    = iframe.getAttribute('sandbox');
-                    attr       += ' allow-same-origin';
-              }
-              def_sandbox                     = iframe.getAttribute('sandbox');
-              glass                           = $(shadow,'#glass');
+              hldr                                      = $(shadow,'#hldr');
+              iframe                                    = $(shadow,'iframe');
+              glass                                     = $(shadow,'#glass');
               
+              
+              $.slider(hldr,'#slider',webconsole.host,null,{root:shadow,mode:'horiz'});
               
         }//initdom
         
@@ -134,6 +202,42 @@
               kill();
               
         }//kill
+        
+/*
+        btn.isolate   = function(chk){
+        
+              var url   = new URL(sandbox_url);
+              if(chk.checked){
+                    sanbox_url   += '?isolate';
+              }else{
+                    var i         = sandbox_url.indexOf('?');
+                    sandbox_url   = sandbox_url.slice(0,i);
+              }
+              
+        }//isolate
+*/
+
+
+        btn.console.show    = function(chk){
+        
+              if(chk.checked){
+                    webconsole.host.style.display   = '';
+              }else{
+                    webconsole.host.style.display   = 'none';
+              }
+              
+        }//show
+        
+        
+        btn.console.clear   = function(){
+        
+              webconsole.clear();
+              if(chk['console-echo'].checked){
+                    console.clear();
+              }
+              
+        }//clear
+        
         
         
         obj.glass   = function(show=true){
@@ -164,14 +268,21 @@
         
         
         
-        obj.srcdoc    = function(html){
+  //:
+  
+  
+        obj.run   = function(html){
+        }//run
         
-              var attr      = def_sandbox;
-                                                                                console.log(attr);
+        
+        build.sandbox   = function(){
+        
+              var attr      = iframe_sandbox;
+                                                                                //console.log(attr);
               var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
               
-              if(chk['allow-scripts'].checked){
-                    tokens.add('allow-scripts');
+              if(!chk['allow-scripts'].checked){
+                    tokens.delete('allow-scripts');
               }
               if(chk['allow-modals'].checked){
                     tokens.add('allow-modals');
@@ -181,24 +292,105 @@
               }
               
               var attr      = [...tokens].join(' ');
-                                                                                console.log(attr);
+                                                                                debug(attr);
               iframe.setAttribute('sandbox',attr);
+              
+        }//sandbox
+        
+        
+        obj.sandbox   = function(html){
+                                                                                debug('sandbox');
+              iframe.remove();
+              iframe    = iframe.cloneNode();
+                                                                                debug(sandbox_url);
+              build.sandbox();
+              
+              iframe.setAttribute('allow',iframe_allow);
+                                                                                debug(iframe_allow);
+              var src         = iframe_src;
+              if(chk.isolate.checked){
+                    src  += '?isolate';
+              }
+              iframe.src      = src;
+                                                                                debug(src);
+              iframe.onload   = onload;
+              hldr.append(iframe);
+              
+              
+              function onload(){
+                                                                                debug('onload');
+                    iframe.onload   = null;
+                    
+                    if(!chk['console-persist'].checked){
+                          webconsole.clear();
+                          if(chk['console-echo'].checked){
+                                console.clear();
+                          }
+                    }
+                    
+                    var echo    = chk['console-echo'].checked;
+                    iframe.contentWindow.postMessage({type:'run',html,echo},'*');
+                    
+              }//onload
+              
+        }//sandbox
+        
+        
+/*
+        obj.srcdoc    = function(html){
+        
+              iframe.remove();
+              iframe    = iframe.cloneNode();
+              
+              build.sandbox();
+              
+              hldr.append(iframe);
+              
+              
+              if(!chk['console-persist'].checked){
+                    webconsole.clear();
+                    if(chk['console-echo'].checked){
+                          console.clear();
+                    }
+              }
               
               iframe.srcdoc   = html;
               
         }//srcdoc
+*/
+
+
+/*
+        obj.blob    = function(html){
         
-        
+              var blob=new Blob([html],{type:'text/html'});
+              var url=URL.createObjectURL(blob);
+              iframe.src=url;
+              
+        }//blob
+*/
+
         obj.kill    = function(){return kill()}    //d
         
         function kill(){
         
               var niframe       = iframe.cloneNode(true);
-              niframe.srcdoc    = null;
+              //niframe.srcdoc    = null;
               hldr.replaceChild(niframe,iframe);
               iframe            = niframe;
               
         }//kill
+        
+        
+  //:
+  
+  
+        obj.on.message    = function(json){
+                                                                                console.log('output.message',json);
+              var {name,args}   = json;
+              webconsole[name].apply(null,args);
+              
+        }//message
         
         
   //:
