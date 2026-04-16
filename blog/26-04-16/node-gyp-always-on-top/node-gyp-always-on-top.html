@@ -79,9 +79,210 @@
             
             <div class=description>
                   <p>
-                        This blog post is about using node-gyp
+                        This blog post is about using node-gyp.  node-gyp is a build tool that lets Node.js compile and
+                        install native add-ons written in C or C++. It bridges the gap between JavaScript and lower‑level system code
+                        so Node packages can use fast, native functionality.
                   </p>
             </div>
+            
+            
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        Always on Top
+                  </div>
+                  
+                  <p>
+                        In this example we will create a tool to be able to keep a window on top.  First the source code we will be using.
+                  </p>
+                  
+            </div>
+            
+            
+            
+            <web-editor component id=cpp src='ex/always-on-top.cpp' fullsize></web-editor>
+            
+            <web-editor component id=js src='ex/always-on-top.js' fullsize></web-editor>
+            
+            <web-editor component id=gyp src='ex/binding.gyp' fullsize></web-editor>
+            
+            
+            
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        node-addon-api
+                  </div>
+                  
+                  <p>
+                  
+                        Windows environment
+                        Windows 10 or 11
+                        
+                        Node.js installed (version you used)
+                        
+                        Python installed (3.8–3.12)
+                        
+                        Visual Studio Build Tools installed
+                        
+                        MSVC v14.x
+                        
+                        Windows 10/11 SDK
+                        
+                        MSBuild
+                        
+                  </p>
+                  
+            </div>
+            
+            
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        node-addon-api
+                  </div>
+                  
+                  <p>
+                        node-addon-api is not a library in the usual sense.
+                        It’s not a DLL, not a binary, not something you “run”.
+                        
+                        It’s a header‑only C++ wrapper around Node’s native C API (N‑API).
+                        
+                        Meaning:
+                        
+                        It gives you C++ classes instead of raw C functions
+                        
+                        It makes writing addons much easier
+                        
+                        It handles memory safety, exceptions, type conversions
+                        
+                        It hides the ugly parts of N‑API
+                        
+                        It compiles into your addon — nothing is loaded at runtime
+                        
+                        It’s basically a helper layer that makes writing C++ addons sane.
+                  </p>
+                  
+                  
+                  <div class=blog-hdr>
+                        What it contains
+                  </div>
+                  
+                  
+                  <p>
+                        Inside node-addon-api, you’ll find:
+                        
+                        napi.h
+                        
+                        napi-inl.h
+                        
+                        C++ classes like Napi::Env, Napi::Object, Napi::Function
+                        
+                        Templates for converting JS ↔ C++ types
+                        
+                        Exception wrappers
+                        
+                        ThreadSafeFunction helpers
+                        
+                        Async worker helpers
+                        
+                        There is no compiled code.
+                        It’s all headers.
+                        
+                        Your addon compiles these headers into your .node binary.
+                  </p>
+                  
+                  <p>
+                        it needs to be installed locally, you will need a node_modules in the project directory
+                        
+                        <code>
+                        
+                              npm i node-addon-api
+                              
+                        </code>
+                        
+                  </p>
+                  
+            </div>
+            
+            
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        Minimum Windows SDK components required
+                  </div>
+                  
+                  <p>
+                        When installing Visual Studio Build Tools, you only need:
+                        
+                        MSVC v14.x C++ Build Tools
+                        This gives you:
+                        
+                        cl.exe (the compiler)
+                        
+                        link.exe (the linker)
+                        
+                        Standard C++ headers
+                        
+                        Windows 10/11 SDK (any version)
+                        This gives you:
+                        
+                        user32.lib (for RegisterHotKey, SetWindowPos, etc.)
+                        
+                        kernel32.lib
+                        
+                        windows.h
+                        
+                        Win32 API headers
+                        
+                        MSBuild Tools
+                        
+                        Used internally by node‑gyp to orchestrate the build.
+                        
+                        That’s it.
+                  </p>
+                  
+            </div>
+            
+            
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        Build the tool
+                  </div>
+                  
+                  <p>
+                  
+                        <code>
+                        
+                              node-gyp configure
+                              
+                        </code>
+                        
+                        <code>
+                        
+                              node-gyp build
+                              
+                        </code>
+                        
+                  </p>
+                  
+            </div>
+            
+            
+            <div class=blog-text>
+            
+                  <div class=blog-hdr>
+                        Minimum Configuration
+                  </div>
+                  
+                  <p>
+                  
+                  </p>
+                  
+            </div>
+            
+            
             
             
             <log-mod component></log-mod>
