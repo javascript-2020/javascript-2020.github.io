@@ -1,0 +1,961 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+
+      <head>
+            <meta charset=utf-8>
+            
+            <title>
+                  Encrypt / Decrypt File Or Text
+            </title>
+            
+            <meta name=description content='encrypt or decrypt a file or text with password or rsa key'>
+            
+            <base href='https://ext-code.com/utils/x509/encrypt/'>
+            <link rel=canonical href='https://ext-code.com/utils/x509/encrypt/encrypt.html'>
+            
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABaFBMVEVHcEzZ4/n1ynzf3v78mzb8uUPf3v/HyPjo6PrLzPbnnlNpu/zKwb7nxrppu/38mTHjx8Wbyfz6nTpdXor8mjNmY4n7nzZsl9NyZ3xisPxyl+v6oDz8mTP6nDlru/zIzv9ru/zTvcr6nDf5oEBwvPnLy/b4pErh2O1iZI5oksb+mzJCgv5hYYrJyfZfYo2qfGKrqp7S0fpou/3zmDnNiEz4mDTutlL8tz7e3f/8tj3W1fz+mC3S0fnT0vtluv/R0Pr9oDLY1/zX1vxlvP/c2/7/uDvf2/j1wG7TrGdfsf9Ahf/b2v7f3v9HgvXU0/rLy/b9mjD6uUr5u1Dl1tfIyPNXSVBjtvrp0Lvf3Pz6t0TzkzBHYZU0N1e1usxUjsZ6YmW1fFBZnNjsrT/tyb3j197dzNP9nzJIbZz8rzruyJRfqupdpOOkpcg7S3BNhO7NmUa4oHq2qJC3p42Ao+JwcJN2XEWqqs1RhLpnDFoAAAAAN3RSTlMABASsk6yr8wM5C5IC/qzwVhRPXcLOqaP9pgT+9HGLNn71hi0zNjS8MeHArN+KhMrjrq3P8cqsU6MJggAAAUdJREFUKM990/dXglAYgGGyUjMNtXK1994DGUaSVgqBmuBe2d67f78bYHCu4Pvrc75zv8s9IAioC86OaHnWtrqhrG6N52xEGM7q/Oc+G8FxMNv1zAoCxUda8TGIYzRNaDEws9ksTdGtKBae5nkmqgVPR8G0rrZpiiIYJZbh/87W7j0hb06ra7OUEGHDC/MzDkUd7qmrc9BlXrs250LRaeXLjI2OFNKgTE7PKXJIGe8hD3EMhGdyx2p5A8awzInaHecqFpdhxnC1dCUg1jbaWC3+Itbq9cC605jxr09w9u7qojFfiI/NFLkzPGjG302S3DPhwmvpo/L2vrnk9xhw/PQ5mTiQmzTks2RCatwD7jfjarkkdeBG+abTtPRUPWrxtQH/PKjTXjR1a7L5OGCL1+fr1bfvXwkOgLaDs/KjOC1QoZD8I4In+QWgK5d+YD8glAAAAABJRU5ErkJggg=='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Encrypt / Decrypt File Or Text",
+                        "url"                   : "https://ext-code.com/utils/x509/certificate-info/certificate-info.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Encrypt or Decrypt a file or text using password or rsa private key",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('encrypt-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,did='encrypt'
+        ;
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var encrypt;
+        
+        var hdr;
+        var filemod;
+        var editor;
+        var log;
+        
+        
+        
+        
+  //:
+  
+  
+        async function init(){
+        
+              menu                      = menumod();
+              encrypt                   = encrypt();
+              
+              mod.base.add({ext,$,datatype,keydown,menu,menumod});
+              
+              
+              hdr                       = mod['x509-hdr'];
+              filemod                   = mod['file-mod'];
+              editor                    = mod['web-editor'];
+              log                       = mod['log-mod'];
+              
+              
+              encrypt.initmod({ext});
+              
+              hdr.initmod({ext,$,menu});
+              filemod.initmod({ext,$,menu,menumod,complete,focus,source,editor,log});
+              editor.initmod({ext,$,menu,menumod});
+              log.initmod({ext,$});
+              
+              await Promise.all([
+                    encrypt.init(),
+                    hdr.init(),
+                    filemod.init(),
+                    editor.init(),
+                    log.init(),
+              ]);
+              
+              
+              menu.on.close          = focus;
+              
+              
+              initdom(document.body);
+              
+              
+        }//init
+        
+        
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+        
+        var promise   = ext.load.libs(
+              'js/dom/$.js',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/crypto/encrypt/encrypt.js',
+        );
+        [$,datatype,menumod,keydown,encrypt]   = await promise;
+        
+        mod.stack.complete;
+        
+})();
+
+
+            </script init>
+            
+            
+            <style>
+            
+  html
+    {height:100%}
+  body
+    {height:calc(100% - 40px);margin:20px;display:flex;flex-direction:column;
+      font-family:arial;
+    }
+    
+  x509-hdr
+    {margin-bottom:20px}
+    
+  #encrypt-root
+    {margin-bottom:10px;display:flex;gap:10px}
+    
+  #password-root
+    {display:flex;align-items:center;gap:10px;
+      border:1px solid lightgray;padding:5px 10px;border-radius:5px
+    }
+  #show
+    {padding:0 4px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABC1BMVEVHcEx0vfeNyfmOyflktfaQyvmMyfl+wvh1vfeNyfl/wvmQyvmQyvmQyvmQyvmQyvmGxfhcsfZquPdOpvBltfaQyvmQyvlzvPhKqfWQyvltuveOyflktfZktfZfsvVktfZgs/VktvZGou8uk+oii+eFxfhyvPdyvPeQyvmRy/lktfZktfZktfZMqvVcr/SRy/k5meuQyvlCpfZEWWORy/lCpvdltfZBpPTR2d1WrfRAo/IrkelPq/V9wfdEpvU7oPIljuiHxvlDl9k1mu67xcpEcZBDfKjG1NxrfIWgyOVEZXpCm+FFYnRNYWtJeJpadIRCgrNDjslWanN1r9y2z+GMwOirt7yGsM+QnaN+KCg5AAAAMXRSTlMA/coqMDA0AQb9HtATuJbk33H++/jnf119bic/0Mjc5T61W3J++6xpgbETf5b/9bL0wSmUewAAAT1JREFUKM/d0edywjAMAOAsZoGwyiwbutPWNk6ITQYJe3WP93+SOmEcLW+Afvn8nWRL4riTj3C0nE8VCql8ORr+byGxeJPMKiaEpvKQfCyKoUMNJGQw0OEmNMJ35URgj7HcOWCqQYihopuQuEYXyLnYRsU4YJH2Ep33j8msD92MdxMXPQ2eeedBn1V9eR72er1PaFGWDoAQZM/62jVMiF/RdMJ4ZmpU9TgiSJwAfOZZ6TV687K/Nc3WfeYrB6yNEJp+DX/WZMMRXq1wAWFXHI4RQqsVGmPLZsWZXkj7rykQO3PmaO5glxqgk/Z115jq9TVaLkcOS850eFVtSNuxXG/HgsliQTChNJtWa3e3+7kFE8mIwTrHGEPLprpau5f+rKR0dVnNEMtyqf1UbaRKoeOF1putdrvVrB8v9PTiFwZzQPWR9JMNAAAAAElFTkSuQmCC);
+    }
+  #keys-root
+    {flex:1;
+      display:grid;gap:10px;grid-template-columns:30px 200px 1fr;
+      border:1px solid lightgray;padding:5px 10px;border-radius:5px
+    }
+    
+  #private-root
+    {display:flex}
+  #private-root [type=button]
+    {width:200px}
+  #private-root span
+    {flex:1}
+  #public-root
+    {display:flex}
+  #public-root [type=button]
+    {width:200px}
+  #public-root span
+    {flex:1}
+    
+  #btns
+    {margin:10px 0}
+  #btns [type]
+    {width:200px}
+    
+  #view
+    {flex:1}
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type=button]
+    {cursor:pointer}
+  input[type=checkbox]
+    {cursor:pointer;width:18px;height:18px;margin:0}
+    
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
+  .spc
+    {flex:1}
+    
+    
+  .visually-hidden
+    {position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;
+      clip:rect(0 0 0 0) !important;white-space:nowrap !important;border:0 !important}
+      
+  web-editor
+    {height:100%}
+    
+    
+            </style>
+            
+      </head>
+      
+      <body>
+      
+      
+            <x509-hdr v2.0 component=grp>
+            
+                  <a href='../generate-key-pair/generate-key-pair.html' slot=slot-1 class=item target=_blank>
+                        Generate Keys
+                  </a>
+                  
+                  <img slot=title class=title src='images/encrypt-decrypt.png' style='top:-5px;height:90px' alt=encrypt-decrypt>
+                  
+                  <time slot=date datetime=2026-04-17>
+                        17 Apr 2026
+                  </time>
+                  
+                  
+                  <h1 class=visually-hidden>
+                        encrypt or decrypt a file or text
+                  </h1>
+            </x509-hdr>
+            
+<!--
+            <div>
+                  <h3>encrypt</h3>
+                  <div>
+                        note : encrypt before save
+                  </div>
+            </div>
+-->
+
+            <div id=hdr>
+            
+            
+                  <div id=encrypt-root>
+                  
+                  
+                        <div>
+                        
+                              <div id=password-root>
+                              
+                                    <input id=password-chk type=checkbox checked>
+                                    <label for=password-chk>
+                                          password
+                                    </label>
+                                    <input id=password type=password>
+                                    <img id=show class=icon>
+                                    
+                              </div password-root>
+                              
+                        </div>
+                        
+                        
+                        <div id=keys-root>
+                        
+                              <div style='display:flex;align-items:center;justify-content:center'>
+                                    <input id=keys-chk type=checkbox>
+                              </div>
+                              
+                              
+                              <input id=priv-key value='private key [ decrypt ]' type=button>
+                              
+                              <span id=private-fn>
+                              </span>
+                              
+                              <div></div>
+                              
+                              
+                              <input id=pub-key value='public key [ encrypt ]' type=button>
+                              
+                              <span id=public-fn>
+                              </span>
+                              
+                        </div>
+                        
+                        
+                  </div>
+                  
+                  <div id=btns>
+                  
+                        <input id=encrypt value=encrypt type=button>
+                        <input id=decrypt value=decrypt type=button>
+                        
+                  </div>
+                  
+                  <file-mod component></file-mod>
+                  
+                  
+            </div hdr>
+            
+            
+            
+            <div id=view>
+            
+                  <web-editor component></web-editor>
+                  
+            </div>
+            
+            <log-mod component></log-mod>
+            
+      </body>
+      
+      
+      <script>
+      
+      
+        var ui            = {};
+        ui.password       = {};
+        ui.private        = {};
+        ui.public         = {};
+        ui.key            = {};
+        
+        
+        
+        
+        var chk           = {};
+        var btn           = {};
+        var rd            = {};
+        var set           = {};
+        
+        
+  //:
+  
+  
+        function initdom(rootnode){
+        
+              var root                                  = rootnode;
+              
+              hdr.initdom();
+              
+              
+              ui.password.root                          = $(root,'#password-root');
+              ui.password.chk                           = $(root,'#password-chk');
+              ui.password.chk.onchange                  = set.password;
+              ui.password.input                         = $(root,'#password');
+              ui.password.input.value                   = 'abc';
+              
+              $(ui.password.root,'#show').onclick       = btn.show;
+              
+              
+              ui.key.chk                                = $(root,'#keys-chk');
+              ui.key.chk.onchange                       = set.key;
+              
+              ui.private.chk                            = $(root,'#private-chk');
+              var node                                  = $(root,'#priv-key');
+              node.onclick                              = btn.private;
+              ui.private.fn                             = $(root,'#private-fn');
+              
+              ui.public.chk                             = $(root,'#public-chk');
+              var node                                  = $(root,'#pub-key');
+              node.onclick                              = btn.public;
+              ui.public.fn                              = $(root,'#public-fn');
+              
+              
+              
+              
+              $('#encrypt').onclick                     = btn.encrypt;
+              $('#decrypt').onclick                     = btn.decrypt;
+              
+              
+              filemod.initdom(root);
+              
+              
+              view                      = $('#view');
+              
+              
+              editor.initdom(view,'text');
+              
+              
+              
+              log.initdom();
+              
+              
+              editor.setValue('helloworld');
+              editor.focus();
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        function focus(){
+        
+              editor.focus();
+              
+        }//focus
+        
+        
+        rd.type   = function(){
+        
+              if(ui.password.chk.checked){
+                    return 'password';
+              }
+              if(ui.key.chk.checked){
+                    return 'key';
+              }
+              
+        }//type
+        
+        
+        set.password    = function(){
+        
+              ui.password.chk.checked   = true;
+              ui.key.chk.checked        = false;
+              
+        }//password
+        
+        
+        set.key   = function(){
+        
+              ui.password.chk.checked   = false;
+              ui.key.chk.checked        = true;
+              
+        }//key
+        
+        
+  //:
+  
+  
+        function source(){
+        
+              var txt     = editor.getValue();
+              var blob    = new Blob([txt]);
+              return blob;
+              
+        }//source
+        
+        
+        function complete(file){
+        
+              editor.filename(file);
+              editor.filename.save.hide();
+              filemod.cur   = file;
+              menu.close();
+              editor.focus();
+              
+        }//complete
+        
+        
+        complete.load   = async function(file,blob){
+        
+              var txt;
+              if(typeof blob=='string'){
+                    txt   = blob;
+              }else{
+                    txt   = await blob.text();
+              }
+              
+              editor.clear();
+              editor.setValue(txt,-1);
+              complete(file);
+              
+        }//complete.load
+        
+        
+        complete.save   = function(file,confirm=true){
+        
+              complete(file);
+              
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
+        }//save
+        
+        
+  //:
+  
+  
+  
+  
+        btn.private   = function(){
+        
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              
+              async function onchange(){
+              
+                    var file                    = input.files[0];
+                    ui.private.fn.textContent   = file.name;
+                    var pem                     = await file.text();
+                    private                     = await importPrivateKey(pem);
+                    set.key();
+                    
+              }//onchange
+              
+        }//private
+        
+        
+        btn.public    = function(){
+        
+              var input         = document.createElement('input');
+              input.type        = 'file';
+              input.onchange    = onchange;
+              input.click();
+              
+              
+              async function onchange(){
+              
+                    var file                    = input.files[0];
+                    ui.public.fn.textContent    = file.name;
+                    var pem   = await file.text();
+                    public    = await importPublicKey(pem);
+                    set.key();
+                    
+              }//onchange
+              
+        }//public
+        
+        
+        btn.encrypt   = async function(){
+                                                                                console.clear();
+              var txt   = editor.getValue();
+              
+              var type    = rd.type();
+              switch(type){
+              
+                case 'password'   :
+                                    var password    = ui.password.input.value;
+                                    fn.encrypt.password(password,txt);
+                                                                                      break;
+                case 'key'        :
+                                    fn.encrypt(public,txt);
+                                                                                      break;
+              }//switch
+              
+        }//encrypt
+        
+        
+        btn.decrypt   = async function(){
+                                                                                console.clear();
+              var b64   = editor.getValue();
+              var buf   = encrypt.b64_buf(b64);
+              
+              
+              var type    = rd.type();
+              switch(type){
+              
+                case 'password' :
+                                  var password    = ui.password.input.value;
+                                  fn.decrypt.password(password,buf);
+                                                                                    break;
+                case 'key'      :
+                                  fn.decrypt(private,buf);
+                                                                                    break;
+              }//switch
+              
+        }//decrypt
+        
+        
+        btn.show    = function(){
+        
+              if(ui.password.input.hasAttribute('type')){
+                    ui.password.input.removeAttribute('type');
+              }else{
+                    ui.password.input.setAttribute('type','password');
+              }
+              
+        }//show
+        
+        
+  //:
+  
+  
+  
+        var fn    = {};
+        
+        
+        
+        
+        
+        
+        
+        fn.encrypt    = async function(key,txt){
+        
+              //const data = new TextEncoder().encode("hello");
+              var buf   = encrypt.str_buf(txt);
+              
+              
+              const encrypted = await crypto.subtle.encrypt(
+                { name: "RSA-OAEP" },
+                key,
+                buf
+              );
+              var uint8   = new Uint8Array(encrypted);
+              
+                            var b64         = encrypt.buf_b64(uint8);
+                            editor.setValue(b64,-1);
+                            
+                            
+        }//encrypt
+        
+        
+        
+        fn.decrypt    = async function(privateKey,encrypted){
+        
+          const decrypted = await crypto.subtle.decrypt(
+            { name: "RSA-OAEP" },
+            privateKey,
+            encrypted
+          );
+          
+          var txt   =  new TextDecoder().decode(decrypted);
+          editor.setValue(txt,-1);
+          
+        }//decrypt
+        
+        
+        
+/*
+        fn.encrypt    = async function(key,txt){
+        
+              txt   = encrypt.str_buf(txt);
+              
+              var err;
+              try{
+              
+                    var cipher      = await encrypt.encrypt.crypto['aes-gcm'](key,txt);
+                    
+              }
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.log(err);
+                    log.red('encrypt failed');
+                    log.error(err.toString());
+                    return;
+              }
+              
+              var b64         = encrypt.buf_b64(cipher);
+              editor.setValue(b64,-1);
+              
+        }//encrypt
+*/
+
+
+
+
+        fn.encrypt.password   = async function(password,txt){
+        
+              txt           = encrypt.str_buf(txt);
+              password      = encrypt.str_buf(password);
+              
+              var err;
+              try{
+              
+                    var cipher    = await encrypt.encrypt.crypto['aes-gcm'].password(password,txt);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    log.red('encrypt failed');
+                    log.red(err.toString());
+                    return;
+              }
+              
+              var b64       = encrypt.buf_b64(cipher);
+              editor.setValue(b64,-1);
+              
+        }//password
+        
+        
+/*
+
+        fn.decrypt    = async function(key,txt){
+        
+              txt             = encrypt.str_buf(txt);
+              
+              var err;
+              try{
+              
+                    var decrypted   = await encrypt.decrypt.crypto['aes-gcm'](key,buf);
+                    
+              }
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    log.red('decrypt failed ( invalid key? )');
+                    log.red(err.toString());
+                    return;
+              }
+              
+              var txt         = encrypt.buf_str(decrypted);
+              editor.setValue(txt,-1);
+              
+        }//decrypt
+        
+*/
+
+
+        fn.decrypt.password   = async function(password,txt){
+        
+              password        = encrypt.str_buf(password);
+              var buf         = encrypt.str_buf(txt);
+              
+              var err;
+              try{
+              
+                    var decrypted   = await encrypt.decrypt.crypto['aes-gcm'].password(password,buf);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    log.red('decrypt failed ( invalid password? )');
+                    log.red(err.toString());
+                    return;
+              }
+              
+              var txt         = encrypt.buf_str(decrypted);
+              editor.setValue(txt,-1);
+              
+        }//password
+        
+        
+        
+        
+        
+  //:
+  
+  
+  
+function pub_buf(pem) {
+
+  // Remove header, footer, and whitespace
+  const b64 = pem
+    .replace(/-----BEGIN PUBLIC KEY-----/, "")
+    .replace(/-----END PUBLIC KEY-----/, "")
+    .replace(/\s+/g, "");
+    
+  const raw = atob(b64);
+  const buffer = new ArrayBuffer(raw.length);
+  const view = new Uint8Array(buffer);
+  
+  for (let i = 0; i < raw.length; i++) {
+    view[i] = raw.charCodeAt(i);
+  }
+  
+  return buffer;
+}
+
+
+function priv_buf(pem) {
+
+  const b64 = pem
+    .replace(/-----BEGIN PRIVATE KEY-----/, "")
+    .replace(/-----END PRIVATE KEY-----/, "")
+    .replace(/\s+/g, "");
+    
+  const raw = atob(b64);
+  const buffer = new ArrayBuffer(raw.length);
+  const view = new Uint8Array(buffer);
+  
+  for (let i = 0; i < raw.length; i++) {
+    view[i] = raw.charCodeAt(i);
+  }
+  
+  return buffer;
+}
+
+
+
+
+async function importPublicKey(pem) {
+
+  const binary = pub_buf(pem);
+  
+  return crypto.subtle.importKey(
+    "spki",               // PEM public keys are SPKI
+    binary,
+    {
+      name: "RSA-OAEP",   // or "RSASSA-PKCS1-v1_5" for signatures
+      hash: "SHA-256"
+    },
+    true,                 // extractable
+    ["encrypt"]           // allowed usages
+  );
+  
+}
+
+
+async function importPrivateKey(pem) {
+
+  const binary = priv_buf(pem);
+  
+  return crypto.subtle.importKey(
+    "pkcs8",              // PEM private keys are PKCS#8
+    binary,
+    {
+      name: "RSA-OAEP",   // must match the public key algorithm
+      hash: "SHA-256"
+    },
+    true,                 // extractable
+    ["decrypt"]           // allowed usages
+  );
+  
+}
+
+
+
+
+
+
+
+  //:
+  
+  
+        async function convert(){
+        
+              var type    = datatype(text);
+              var buf     = text;
+              switch(type){
+              
+                case 'string'       : buf   = encoder.encode(text);           break;
+                case 'uint8array'   : buf   = text.buffer;                    break;
+                case 'blob'         : buf   = await text.arrayBuffer();       break;
+                
+              }//switch
+              
+        }//convert
+        
+        
+        
+        
+        
+        
+        
+  //:
+  
+  
+  
+        function output(name,buf){
+        
+              var b64   = buf_b64(buf);
+              var pad   = name.padStart(10);
+              console.log(pad,':',b64);
+              
+        }//output
+        
+        
+        function output_str(name,buf){
+        
+              var str;
+              if(typeof buf=='string'){
+                    str   = buf;
+              }else{
+                    str   = buf_str(buf);
+              }
+              var pad   = name.padStart(10);
+              console.log(pad,':',str);
+              
+        }//output_str
+        
+        
+        function buf_str(buf){
+        
+              var txt   = decoder.decode(buf);
+              return txt;
+              
+        }//buf_str
+        
+        
+        function buf_b64(buf){
+        
+              var bytes   = new Uint8Array(buf);
+              var bin     = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64     = btoa(bin);
+              return b64;
+              
+        }//blob_b64
+        
+        
+        function b64_buf(b64,type='text/plain'){
+        
+              var bin     = atob(b64);
+              var bytes   = [...bin].map(c=>c.charCodeAt(0));
+              var uint8   = new Uint8Array(bytes);
+              var buf     = uint8.buffer;
+              return buf;
+              
+        }//b64_blob
+        
+        
+        function buf_blob(buf){
+        
+              var uint8   = new Uint8Array(buf);
+              var blob    = new Blob([uint8]);
+              return blob;
+              
+        }//buf_blob
+        
+        
+        async function blob_buf(blob){
+        
+              var buf   = await blob.arrayBuffer();
+              return buf;
+              
+        }//blob_buf
+        
+        
+        function b64_blob(b64,type='text/plain'){
+        
+              var bin       = atob(b64);
+              var bytes     = [...bin].map(c=>c.charCodeAt(0));
+              var uint8     = new Uint8Array(bytes);
+              var blob      = new Blob([uint8],{type});
+              return blob;
+              
+        }//b64_blob
+        
+        
+        async function blob_b64(blob){
+        
+              var buf       = await blob.arrayBuffer();
+              var bytes     = new Uint8Array(buf);
+              var bin       = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64       = btoa(bin);
+              return b64;
+              
+        }//blob_b64
+        
+        
+  //:
+  
+  
+  
+        function debug(){
+        
+              if(!df)return;
+              var str   = [...arguments].join(' ');
+              console.log(`[ ${did} ]`,str);
+              
+        }//debug
+        
+        
+        
+      </script>
+      
+</html>
+
