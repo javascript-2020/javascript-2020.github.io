@@ -152,25 +152,27 @@
     }
   #keys-root
     {flex:1;
-      display:grid;gap:10px;grid-template-columns:30px 120px 1fr;
+      display:grid;gap:10px;grid-template-columns:30px 200px 1fr;
       border:1px solid lightgray;padding:5px 10px;border-radius:5px
     }
     
   #private-root
     {display:flex}
   #private-root [type=button]
-    {width:120px}
+    {width:200px}
   #private-root span
     {flex:1}
   #public-root
     {display:flex}
   #public-root [type=button]
-    {width:120px}
+    {width:200px}
   #public-root span
     {flex:1}
     
   #btns
     {margin:10px 0}
+  #btns [type]
+    {width:200px}
     
   #view
     {flex:1}
@@ -208,8 +210,8 @@
                         encrypt or decrypt a file or text
                   </h1>
                   <img class=title src='images/encrypt-decrypt.png' style='top:-5px;height:90px'>
-                  <time slot=date datetime=2025-11-15>
-                        15 Nov 2025
+                  <time slot=date datetime=2026-04-17>
+                        17 Apr 2026
                   </time>
             </x509-hdr>
             
@@ -224,7 +226,9 @@
 
             <div id=hdr>
             
+            
                   <div id=encrypt-root>
+                  
                   
                         <div>
                         
@@ -236,9 +240,11 @@
                                     </label>
                                     <input id=password type=password>
                                     <img id=show class=icon>
+                                    
                               </div password-root>
                               
                         </div>
+                        
                         
                         <div id=keys-root>
                         
@@ -246,18 +252,22 @@
                                     <input id=keys-chk type=checkbox>
                               </div>
                               
-                              <input value='private key' type=button>
+                              
+                              <input id=priv-key value='private key [ decrypt ]' type=button>
                               
                               <span id=private-fn>
                               </span>
                               
                               <div></div>
                               
-                              <input value='public key' type=button>
+                              
+                              <input id=pub-key value='public key [ encrypt ]' type=button>
+                              
                               <span id=public-fn>
                               </span>
                               
                         </div>
+                        
                         
                   </div>
                   
@@ -270,7 +280,10 @@
                   
                   <file-mod component></file-mod>
                   
-            </div>
+                  
+            </div hdr>
+            
+            
             
             <div id=view>
             
@@ -290,6 +303,7 @@
         ui.password       = {};
         ui.private        = {};
         ui.public         = {};
+        ui.key            = {};
         
         
         
@@ -310,23 +324,31 @@
               hdr.initdom();
               
               
+              
               ui.password.root                          = $(root,'#password-root');
               ui.password.chk                           = $(root,'#password-chk');
-              ui.password.chk.onchange                  = chk.password;
+              ui.password.chk.onchange                  = set.password;
               ui.password.input                         = $(root,'#password');
               ui.password.input.value                   = 'abc';
               
               $(ui.password.root,'#show').onclick       = btn.show;
               
+              
+              ui.key.chk                                = $(root,'#keys-chk');
+              ui.key.chk.onchange                       = set.key;
+              
               ui.private.chk                            = $(root,'#private-chk');
-              var node                                  = $(root,'[value="private key"]');
+              var node                                  = $(root,'#priv-key');
               node.onclick                              = btn.private;
               ui.private.fn                             = $(root,'#private-fn');
               
               ui.public.chk                             = $(root,'#public-chk');
-              var node                                  = $(root,'[value="public key"]');
+              var node                                  = $(root,'#pub-key');
               node.onclick                              = btn.public;
               ui.public.fn                              = $(root,'#public-fn');
+              
+              
+              
               
               $('#encrypt').onclick                     = btn.encrypt;
               $('#decrypt').onclick                     = btn.decrypt;
@@ -443,13 +465,8 @@
   //:
   
   
-        chk.password    = function(){
-        
-              set.password();
-              
-        }//password
-        
-        
+  
+  
         btn.private   = function(){
         
               var input         = document.createElement('input');
@@ -458,11 +475,12 @@
               input.click();
               
               
-              function onchange(){
+              async function onchange(){
               
                     var file                    = input.files[0];
-                    private                     = file;
                     ui.private.fn.textContent   = file.name;
+                    var pem                     = await file.text();
+                    private                     = await importPrivateKey(pem);
                     set.key();
                     
               }//onchange
@@ -478,11 +496,12 @@
               input.click();
               
               
-              function onchange(){
+              async function onchange(){
               
                     var file                    = input.files[0];
-                    public                      = file;
                     ui.public.fn.textContent    = file.name;
+                    var pem   = await file.text();
+                    public    = await importPublicKey(pem);
                     set.key();
                     
               }//onchange
@@ -502,7 +521,7 @@
                                     fn.encrypt.password(password,txt);
                                                                                       break;
                 case 'key'        :
-                                    fn.encrypt.key(public,txt);
+                                    fn.encrypt(public,txt);
                                                                                       break;
               }//switch
               
@@ -523,7 +542,7 @@
                                   fn.decrypt.password(password,buf);
                                                                                     break;
                 case 'key'      :
-                                  fn.decrypt.key(private,buf);
+                                  fn.decrypt(private,buf);
                                                                                     break;
               }//switch
               
@@ -544,8 +563,52 @@
   //:
   
   
+  
         var fn    = {};
         
+        
+        
+        
+        
+        
+        
+        fn.encrypt    = async function(key,txt){
+        
+              //const data = new TextEncoder().encode("hello");
+              var buf   = encrypt.str_buf(txt);
+              
+              
+              const encrypted = await crypto.subtle.encrypt(
+                { name: "RSA-OAEP" },
+                key,
+                buf
+              );
+              var uint8   = new Uint8Array(encrypted);
+              
+                            var b64         = encrypt.buf_b64(uint8);
+                            editor.setValue(b64,-1);
+                            
+                            
+        }//encrypt
+        
+        
+        
+        fn.decrypt    = async function(privateKey,encrypted){
+        
+          const decrypted = await crypto.subtle.decrypt(
+            { name: "RSA-OAEP" },
+            privateKey,
+            encrypted
+          );
+          
+          var txt   =  new TextDecoder().decode(decrypted);
+          editor.setValue(txt,-1);
+          
+        }//decrypt
+        
+        
+        
+/*
         fn.encrypt    = async function(key,txt){
         
               txt   = encrypt.str_buf(txt);
@@ -562,6 +625,7 @@
                     
               }//catch
               if(err){
+                                                                                console.log(err);
                     log.red('encrypt failed');
                     log.error(err.toString());
                     return;
@@ -571,8 +635,11 @@
               editor.setValue(b64,-1);
               
         }//encrypt
-        
-        
+*/
+
+
+
+
         fn.encrypt.password   = async function(password,txt){
         
               txt           = encrypt.str_buf(txt);
@@ -601,7 +668,8 @@
         }//password
         
         
-        
+/*
+
         fn.decrypt    = async function(key,txt){
         
               txt             = encrypt.str_buf(txt);
@@ -628,7 +696,9 @@
               
         }//decrypt
         
-        
+*/
+
+
         fn.decrypt.password   = async function(password,txt){
         
               password        = encrypt.str_buf(password);
@@ -660,7 +730,92 @@
         
         
         
-        
+  //:
+  
+  
+  
+function pub_buf(pem) {
+
+  // Remove header, footer, and whitespace
+  const b64 = pem
+    .replace(/-----BEGIN PUBLIC KEY-----/, "")
+    .replace(/-----END PUBLIC KEY-----/, "")
+    .replace(/\s+/g, "");
+    
+  const raw = atob(b64);
+  const buffer = new ArrayBuffer(raw.length);
+  const view = new Uint8Array(buffer);
+  
+  for (let i = 0; i < raw.length; i++) {
+    view[i] = raw.charCodeAt(i);
+  }
+  
+  return buffer;
+}
+
+
+function priv_buf(pem) {
+
+  const b64 = pem
+    .replace(/-----BEGIN PRIVATE KEY-----/, "")
+    .replace(/-----END PRIVATE KEY-----/, "")
+    .replace(/\s+/g, "");
+    
+  const raw = atob(b64);
+  const buffer = new ArrayBuffer(raw.length);
+  const view = new Uint8Array(buffer);
+  
+  for (let i = 0; i < raw.length; i++) {
+    view[i] = raw.charCodeAt(i);
+  }
+  
+  return buffer;
+}
+
+
+
+
+async function importPublicKey(pem) {
+
+  const binary = pub_buf(pem);
+  
+  return crypto.subtle.importKey(
+    "spki",               // PEM public keys are SPKI
+    binary,
+    {
+      name: "RSA-OAEP",   // or "RSASSA-PKCS1-v1_5" for signatures
+      hash: "SHA-256"
+    },
+    true,                 // extractable
+    ["encrypt"]           // allowed usages
+  );
+  
+}
+
+
+async function importPrivateKey(pem) {
+
+  const binary = priv_buf(pem);
+  
+  return crypto.subtle.importKey(
+    "pkcs8",              // PEM private keys are PKCS#8
+    binary,
+    {
+      name: "RSA-OAEP",   // must match the public key algorithm
+      hash: "SHA-256"
+    },
+    true,                 // extractable
+    ["decrypt"]           // allowed usages
+  );
+  
+}
+
+
+
+
+
+
+
   //:
   
   
