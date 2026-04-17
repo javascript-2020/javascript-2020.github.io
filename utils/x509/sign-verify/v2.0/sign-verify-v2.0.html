@@ -175,7 +175,7 @@
     {width:120px;padding:5px 20px}
     
   #result
-    {border:1px solid green;padding:5px 10px;width:100px}
+    {border:1px solid lightgray;padding:5px 10px;width:100px;border-radius:8px;text-align:center}
     
   #keys-root
     {display:flex;height:200px;gap:20px}
@@ -247,7 +247,7 @@
         <div id=btns>
               <input value=sign type=button style='margin-right:20px'>
               <input value=verify type=button style='margin-right:10px'>
-              <div id=result style='display:none'></div>
+              <div id=result></div>
         </div>
         
         <div id=keys-root>
@@ -315,8 +315,18 @@
       <script>
       
       
-        var $               = (root,sel)=>(!sel && (sel=root,root=document),root.querySelector(sel));
-        $.style             = (node,style)=>{
+      
+      
+        var style           = {};
+        style.ok            = {
+              borderColor   : 'green',
+              color         : 'green'
+        };
+        style.error         = {
+              borderColor   : 'red',
+              color         : 'red'
+        };
+        style.apply         = (node,style)=>{
         
                                     for(var key in style){
                                     
@@ -327,17 +337,6 @@
                               }//style
                               
                               
-        var style           = {};
-        style.ok            = {
-              borderColor   : 'green',
-              color         : 'green'
-        };
-        style.error         = {
-              borderColor   : 'red',
-              color         : 'red'
-        };
-        
-        
         var ui              = {};
         ui.private          = {};
         ui.public           = {};
@@ -495,7 +494,7 @@
               if(err){
                     display.result(false,'invalid key');
               }else{
-                    console.log('verified',verified);
+                                                                                console.log('verified',verified);
                     display.result(verified,'signature error');
               }
               
@@ -590,10 +589,10 @@
         display.result    = function(result,msg){
         
               if(result){
-                    $.style(ui.result,style.ok);
+                    style.apply(ui.result,style.ok);
                     ui.result.textContent   = 'ok';
               }else{
-                    $.style(ui.result,style.error);
+                    style.apply(ui.result,style.error);
                     ui.result.textContent   = 'error : '+msg;
               }
               ui.result.style.display    = 'block';
