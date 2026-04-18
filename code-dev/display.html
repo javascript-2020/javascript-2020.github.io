@@ -164,6 +164,8 @@
                   </div>
             </h1>
             
+            <div id=desc>
+            </div>
             
             
             
@@ -224,6 +226,9 @@
               
               $('#date').textContent    = date;
               $('#file').textContent    = fn;
+              
+              desc(rel);
+              
                                                                                 console.log(fext,fn);
               var dom;
               switch(fext){
@@ -232,6 +237,7 @@
                 case 'js'     : dom   = document.createElement('snippet-console');            break;
                 
               }//switch
+              
               
               dom.setAttribute('id','test');
               dom.toggleAttribute('component',true);
@@ -244,7 +250,90 @@
               await mod.test.init();
               mod.test.initdom();
               
+              
         }//query
+        
+        
+        async function desc(rel){
+        
+              var i       = rel.lastIndexOf('.');
+              var path    = rel.slice(0,i+1);
+              path       += 'md';
+              
+              var err;
+              try{
+              
+                    var res   = await fetch(path);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    return;
+              }
+              if(!res.ok){
+                    return;
+              }
+              
+              var txt   = await res.text();
+              
+              await libs();
+              
+              var opts                = {linkTarget:'_blank'};
+              opts.html               = true;
+              opts.breaks             = false;
+              opts.linkify            = true;
+              
+              var md                  = markdownit(opts);
+              var opts2               = {leftDelimiter:'{',rightDelimiter:'}',allowedAttributes:['id','class',/^data-.*$/]};
+              md.use(markdownItAttrs,opts2);
+              var html                = md.render(txt);
+              
+              $('#desc').innerHTML    = html;
+              
+              
+        }//desc
+        
+        
+        
+        function libs(){
+        
+              var link    = document.createElement('link');
+              link.setAttribute('rel','stylesheet');
+              link.setAttribute('href','css/github-markdown-light.css');
+              document.head.append(link);
+              
+              var resolve,promise=new Promise(res=>resolve=res);
+              var ct          = 0;
+              
+              var script      = document.createElement('script');
+              script.src      = 'https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js';
+              script.onload   = onload;
+              document.head.append(script);
+              
+              var script      = document.createElement('script');
+              script.src      = 'https://cdn.jsdelivr.net/npm/markdown-it-attrs@4.3.1/markdown-it-attrs.browser.min.js';
+              script.onload   = onload;
+              document.head.append(script);
+              
+              return promise;
+              
+              
+              function onload(){
+              
+                    ct++;
+                    if(ct!=2)return;
+                    resolve();
+                    
+              }//onload
+              
+        }//libs
+        
+        
+        
         
 /*
         query.html    = async function(src){
