@@ -62,6 +62,8 @@
         var filemod;
         var filenav;
         var add   = {};
+        var save;
+        
         var log;
         
         
@@ -84,6 +86,7 @@
               //mod.menu.main             = mod.menu.main();
               filemod                   = mod['file-mod'];
               add.file                  = mod['file-add'];
+              save                      = mod['save'];
               filenav                   = mod['file-nav'];
               log                       = mod['log-mod'];
               
@@ -91,6 +94,7 @@
               //mod.menu.main.initmod({ext,$,menu,editor,filemod});
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
               add.file.initmod({ext,$,menumod,menu,complete:add.complete,log});
+              save.initmod({ext.$,menumod,menu,complete:save.complete,log,source:save.source});
               filenav.initmod({ext,$,datatype});
               filenav.file    = file;
               filenav.dir     = dir;
@@ -266,7 +270,10 @@
                   
                   <div class=spc></div>
                   
-                  <input value=export type=button>
+                  <div>
+                        export
+                  </div>
+                  <file-mod id=save component></file-mod>
                   
             </div>
             
@@ -361,15 +368,6 @@
         }//test
         
         
-        btn.export    = async function(){
-                                                                                console.log(filenav.cur,zip);
-              var path    = filenav.cur.path+filenav.cur.name;
-              path        = path.slice(1);
-                                                                                console.log(path);
-              var blob    = await zip.file(path).async('blob');
-                                                                                console.log(blob);
-                                                                                
-        }//export
         
         
   //:
@@ -678,6 +676,40 @@
               return false;
               
         }//dblclick
+        
+        
+        
+  //:
+  
+  
+        save.source   = async function(){
+                                                                                console.log('save.source');
+                                                                                console.log(filenav.cur,zip);
+              var path    = filenav.cur.path+filenav.cur.name;
+              path        = path.slice(1);
+                                                                                console.log(path);
+              var blob    = await zip.file(path).async('blob');
+                                                                                console.log(blob);
+                                                                                
+        }//source
+        
+        
+        save.complete   = function(){
+                                                                                console.log('save.complete');
+        }//complete
+        
+        
+        save.complete.load    = function(){
+                                                                                console.log('save.complete.load');
+                                                                                
+        }//load
+        
+        
+        save.complete.save    = function(file,confirm=true){
+                                                                                console.log('save.complete.save');
+              console.log('save.complete',arguments);
+              
+        }//save
         
         
   //:
