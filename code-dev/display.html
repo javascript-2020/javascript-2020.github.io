@@ -227,6 +227,7 @@
               $('#date').textContent    = date;
               $('#file').textContent    = fn;
               
+              title(rel);
               desc(rel);
               
                                                                                 console.log(fext,fn);
@@ -252,6 +253,23 @@
               
               
         }//query
+        
+        
+        
+        function title(){
+        
+              var i1      = rel.lastIndexOf('.');
+              var i2      = rel.lastIndexOf('/');
+              var str     = rel.slice(i2+1,i1);
+              str         = str.replaceAll('-',' ');
+              str         = str.replaceAll('_',' ');
+              
+              var node    = $('display-hdr .title');
+              var s       = node.textContent;
+              s          += ' : '+str;
+              node.textContent    = s;
+              
+        }//title
         
         
         async function desc(rel){
@@ -335,33 +353,6 @@
         
         
         
-/*
-        query.html    = async function(src){
-        
-              var
-              dom.setAttribute('id','test');
-              dom.toggleAttribute('component',true);
-              dom.toggleAttribute('v2.0',true);
-              dom.setAttribute('src',src);
-              
-              document.body.append(dom);
-              await mod.build({root:dom,mod});
-              mod.test.initmod({ext,$,menu,ace});
-              await mod.test.init();
-              mod.test.initdom();
-              
-        }//html
-        
-        
-        query.js    = async function(src){
-        }//js
-*/
-
-
-  //:
-  
-  
-  
       </script>
       
 </html>
