@@ -61,8 +61,8 @@
         var hdr;
         var filemod;
         var filenav;
-        var add   = {};
-        var save;
+        var add     = {};
+        var save    = {};
         
         var log;
         
@@ -86,7 +86,7 @@
               //mod.menu.main             = mod.menu.main();
               filemod                   = mod['file-mod'];
               add.file                  = mod['file-add'];
-              save                      = mod['save'];
+              save.file                 = mod['save'];
               filenav                   = mod['file-nav'];
               log                       = mod['log-mod'];
               
@@ -95,7 +95,7 @@
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
               add.file.initmod({ext,$,menumod,menu,complete:add.complete,log});
               
-              save.initmod({ext,$,menumod,menu,complete:save.complete,log,source:save.source});
+              save.file.initmod({ext,$,menumod,menu,complete:save.complete,log,source:save.source});
               
               
               filenav.initmod({ext,$,datatype});
@@ -108,6 +108,7 @@
                     //mod.menu.main.init(),
                     filemod.init(),
                     add.file.init(),
+                    save.file.init(),
                     filenav.init(),
                     log.init(),
               ]);
@@ -331,6 +332,7 @@
               
               add.root                                      = $(root,'#add');
               add.file.initdom();
+              save.file.initdom();
               
               $(root,'[value=save]').onclick                = btn.save;
               $(root,'[value="list files"]').onclick        = btn['list-files'];
@@ -338,8 +340,6 @@
               
               view                                          = $(root,'#view');
               
-              
-              $('[value=export]').onclick                   = btn.export;
               
               
               filenav.initdom();
