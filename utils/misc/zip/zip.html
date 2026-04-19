@@ -61,7 +61,9 @@
         var hdr;
         var filemod;
         var filenav;
-        var add   = {};
+        var add     = {};
+        var save    = {};
+        
         var log;
         
         
@@ -84,6 +86,7 @@
               //mod.menu.main             = mod.menu.main();
               filemod                   = mod['file-mod'];
               add.file                  = mod['file-add'];
+              save.file                 = mod['save'];
               filenav                   = mod['file-nav'];
               log                       = mod['log-mod'];
               
@@ -91,6 +94,10 @@
               //mod.menu.main.initmod({ext,$,menu,editor,filemod});
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
               add.file.initmod({ext,$,menumod,menu,complete:add.complete,log});
+              
+              save.file.initmod({ext,$,menumod,menu,complete:save.complete,log,source:save.source});
+              
+              
               filenav.initmod({ext,$,datatype});
               filenav.file    = file;
               filenav.dir     = dir;
@@ -101,6 +108,7 @@
                     //mod.menu.main.init(),
                     filemod.init(),
                     add.file.init(),
+                    save.file.init(),
                     filenav.init(),
                     log.init(),
               ]);
@@ -214,8 +222,10 @@
             
             
             <misc-hdr component=grp>
-                  <img class=title src='images/zip.png' style='top:-15px;height:55px'>
-                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+                  <img class=title src='images/zip.png' style='top:-15px;height:80px'>
+                  <time slot=date datetime=2026-04-18>
+                        18 Apr 2026
+                  </time>
             </misc-hdr>
             
             
@@ -261,6 +271,13 @@
                   </div>
                   
                   <file-mod id=file-add component></file-mod>
+                  
+                  <div class=spc></div>
+                  
+                  <div>
+                        export
+                  </div>
+                  <file-mod id=save component></file-mod>
                   
             </div>
             
@@ -315,12 +332,15 @@
               
               add.root                                      = $(root,'#add');
               add.file.initdom();
+              save.file.initdom();
               
               $(root,'[value=save]').onclick                = btn.save;
               $(root,'[value="list files"]').onclick        = btn['list-files'];
               
               
               view                                          = $(root,'#view');
+              
+              
               
               filenav.initdom();
               
@@ -349,6 +369,8 @@
               console.json(list);
               
         }//test
+        
+        
         
         
   //:
@@ -536,6 +558,8 @@
               zip.file(abs,'');
               display(path);
               
+              return false;
+              
         }//add
         
         
@@ -548,6 +572,8 @@
               zip.remove(abs);
               display(path);
               
+              return false;
+              
         }//rem
         
         
@@ -559,6 +585,8 @@
               }
               zip.file(abs,blob);
               display(path);
+              
+              return false;
               
         }//upload
         
@@ -588,6 +616,8 @@
                                                                                 debug('dir.par',path);
               display(path);
               
+              return false;
+              
         }//par
         
         
@@ -615,6 +645,8 @@
               zip.remove(abs);
               display(path);
               
+              return false;
+              
         }//rem
         
         
@@ -634,6 +666,8 @@
               });
               */
               
+              return false;
+              
         }//clear
         
         
@@ -642,7 +676,44 @@
               path   += name;
               display(path);
               
+              return false;
+              
         }//dblclick
+        
+        
+        
+  //:
+  
+  
+        save.source   = async function(){
+                                                                                console.log('save.source');
+                                                                                console.log(filenav.cur,zip);
+              var path    = filenav.cur.path+filenav.cur.name;
+              path        = path.slice(1);
+                                                                                console.log(path);
+              var blob    = await zip.file(path).async('blob');
+                                                                                console.log(blob);
+              return blob;
+              
+        }//source
+        
+        
+        save.complete   = function(){
+                                                                                console.log('save.complete');
+        }//complete
+        
+        
+        save.complete.load    = function(){
+                                                                                console.log('save.complete.load');
+                                                                                
+        }//load
+        
+        
+        save.complete.save    = function(file,confirm=true){
+                                                                                console.log('save.complete.save');
+              console.log('save.complete',arguments);
+              
+        }//save
         
         
   //:
