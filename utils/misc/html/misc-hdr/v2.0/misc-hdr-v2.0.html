@@ -85,6 +85,8 @@
                   <page-source component></page-source>
                   
                   
+                  <slot name=filename></slot>
+                  
                   <slot name=version></slot>
                   
                   
@@ -139,6 +141,10 @@
         
               var shadow          = host.shadowRoot;
               
+              var str   = window.location.toString();
+              var i     = str.lastIndexOf('/');
+              var fn    = str.slice(i+1);
+              $('[name=filename']).textContent    = fn;
               
         }//initdom
         
