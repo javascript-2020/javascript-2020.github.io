@@ -509,6 +509,11 @@
         
         function decode(b64){
         
+              if(b64.startsWith('data:')){
+                    var i   = b64.indexOf(',');
+                    b64     = b64.slice(i+1);
+              }
+              
               var blob    = b64_blob(b64);
               cur.blob    = blob;
               return blob;
