@@ -602,7 +602,9 @@
               if(abs.startsWith('/')){
                     abs   = abs.slice(1);
               }
-              zip.file(abs,blob);
+              
+              archive.file.add(abs,path);
+              
               display(path);
               
               return false;
@@ -615,10 +617,9 @@
               if(path.startsWith('/')){
                     path    = path.slice(1);
               }
-              var blob    = await zip.file(path).async('blob');
               
-              console.log(blob);
-              
+              var blob    = await archive.file.read(path);
+                                                                              console.log(blob);
               return {blob};
               
         }//download
@@ -646,7 +647,8 @@
               if(abs.startsWith('/')){
                     abs   = abs.slice(1);
               }
-              zip.folder(abs);
+              
+              archive.dir.add(path);
               
               display(path);
               
@@ -661,7 +663,9 @@
               if(abs.startsWith('/')){
                     abs   = abs.slice(1);
               }
-              zip.remove(abs);
+              
+              archive.dir.rem(abs);
+              
               display(path);
               
               return false;
@@ -674,9 +678,7 @@
               var list    = read(path);
               list        = list.filter(fn=>fn.startsWith(path));
               list        = list.filter(Boolean);
-              
-              console.json(list);
-              
+                                                                                console.json(list);
               /*
               list.forEach(fn=>{
               
@@ -714,12 +716,7 @@
               var path    = filenav.cur.path+filenav.cur.name;
               path        = path.slice(1);
                                                                                 console.log(path);
-              var zf      = zip.file(path);
-              if(!zf){
-                    log.red(path+' not found');
-                    return;
-              }
-              var blob    = await zf.async('blob');
+              var blob    = await archive.file.read(path);
                                                                                 console.log(blob);
               return blob;
               
@@ -794,8 +791,31 @@
         }//rem
         
         
+        archive.file.read   = async function(path){
+        
+              var result    = await archive[archive.type].file.read(path);
+              return result;
+              
+        }//read
+        
+        
+        archive.dir.add   = function(path){
+        
+              archive[archive.type].dir.add(path);
+              
+        }//add
+        
+        
+        archive.dir.rem   = function(path){
+        
+              archive[archive.type].dir.rem(path);
+              
+        }//rem
+        
+        
         
   //archive.zip:
+  
   
         archive.zip.new   = function(){
         
@@ -806,7 +826,7 @@
         
         archive.zip.blob    = async function(){
         
-              var blob      = await zip.generateAsync({type:'blob'});
+              var blob      = await archive.cur.generateAsync({type:'blob'});
               return blob;
               
         }//blob
@@ -829,16 +849,43 @@
         
         archive.zip.file.add    = function(path,blob){
         
-              zip.file(path,blob);
+              archive.cur.file(path,blob);
               
         }//file
         
         
         archive.zip.file.rem    = function(path){
         
-              zip.remove(abs);
+              archive.cur.remove(abs);
               
         }//rem
+        
+        
+        archive.zip.file.read   = async function(path){
+        
+              var zf      = archive.cur.file(path);
+              if(!zf){
+                    return;
+              }
+              var blob    = await zf.async('blob');
+              return blob;
+              
+        }//read
+        
+        
+        archive.zip.dir.add   = function(path){
+        
+              archive.cur.folder(abs);
+              
+        }//add
+        
+        
+        archive.zip.dir.rem   = function(path){
+        
+              archive.cur.remove(abs);
+              
+        }//rem
+        
         
         
   //:
