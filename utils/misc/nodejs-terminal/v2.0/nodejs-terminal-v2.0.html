@@ -47,7 +47,7 @@
             
             <script init>
                                                                                 console.clear();
-                                                                                console.log('terminal-v2.0.html');
+                                                                                console.log('nodejs-terminal-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var version='v2.0';
@@ -193,6 +193,8 @@
         var cur         = {};
         
         
+        var webcontainer;
+        
         
         var complete    = {};
         
@@ -334,12 +336,21 @@
       </script>
       
       
-      <script type=module>
+      <script>
                                                                                       console.clear();
-              import {Terminal} from 'https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm';
-              import {FitAddon} from 'https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'
-              import {WebContainer} from 'https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm'
+                                                                                      
+              var [{Terminal},{FitAddon},{WebContainer}]    = await Promise.all(
+                    import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm'),
+                    import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'),
+                    import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm')
+              );
               
+/*
+              var [{Terminal}        = await import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm');
+              var {FitAddon}        = await import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm');
+              var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
+*/
+
               var term            = new Terminal({
               
                     fontFamily      : 'monospace',
