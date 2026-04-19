@@ -399,7 +399,9 @@
               $(info,'#filename').textContent   = str;
               
               var str     = '--';
+              
               var blob    = await source();
+              
               if(blob){
                     var size    = blob.size;
                     
@@ -718,6 +720,9 @@
                                                                                 console.log(path);
               var blob    = await archive.file.read(path);
                                                                                 console.log(blob);
+              if(!blob){
+                    log.red(path+' not found');
+              }
               return blob;
               
         }//source
