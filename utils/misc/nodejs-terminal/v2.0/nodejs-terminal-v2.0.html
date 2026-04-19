@@ -20,8 +20,8 @@
             
             <meta name=description content=''>
             
-            <base href='https://ext-code.com/utils/misc/terminal/'>
-            <link rel=canonical href='https://ext-code.com/utils/misc/terminal/terminal.html'>
+            <base href='https://ext-code.com/utils/misc/nodejs-terminal/nodejs-terminal.html'>
+            <link rel=canonical href='https://ext-code.com/utils/misc/nodejs-terminal/nodejs-terminal.html'>
             
             <link rel='shortcut icon' type='image/x-icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAcCAMAAABBJv+bAAAAQlBMVEVHcEwyODg0ODkzNzgxNzc0ODk0ODkzODgzODgzNzgyNzgzODg0ODkzODgyNzgzODgzODgzODk0ODk0ODkyNzg0ODmObyvDAAAAFXRSTlMABvaSDbPHe15GL5u9hRxvO6rn2VJXM6DpAAAAxElEQVQoz71TyRbDIAh0Ie6J2fz/Xy3Y2pDktZ5aTiODCAMK0QxAPoFsgNk0JrMEQmEwyU5ndt4K2khQEzLhdNeQTznCWREegNEOOe18fRO8i6ooz+gRw1k9gMkyo/E9zY5yKMX+ihbLq8mjFB5N4UepYLGRmdM7OnLlpYtJXWQQkFCIpHcpfBVpCxeRV/KuodHzmfaNxuTmlpxmoEzc5bs0rnGdQQZeybWxRX6Vxf5rJJ116CxTZxX5Isf7Ive+wadP9AAuFg97y3bd7gAAAABJRU5ErkJggg=='>
             <meta name=viewport content='width=device-width, initial-scale=1'>
@@ -63,9 +63,14 @@
         
         var menu;
         
-        var hdr;
+        var misc;
+        var filemod;
+        var log;
         
         
+  //:
+  
+  
         async function init(){
         
         
@@ -74,20 +79,30 @@
               mod.base.add({ext,$,datatype,keydown,menu,menumod});
               
               
-              hdr     = mod['misc-hdr'];
+              misc      = mod['misc-hdr'];
+              filemod   = mod['file-mod'];
+              log       = mod['log-mod'];
               
-              hdr.initmod({ext,$});
+              misc.initmod({ext,$});
+              filemod.initmod({ext,$,menumod,menu,complete,source,log});
+              log.initmod({ext,$});
               
               
               await Promise.all([
-                    hdr.init(),
+                    misc.init(),
+                    filemod.init(),
+                    log.init(),
               ]);
               
               
               initdom();
               
               
+              log.green('ready');
+              
+              
         }//init
+        
         
         
 (async()=>{
@@ -125,11 +140,19 @@
     {margin:20px;height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px}
     
     
-  #terminal
-    {flex:1}
+  #hdr
+    {}
     
-  .terminal
-    {padding:10px;border:2px solid lightgray;box-sizing:border-box}
+  #hldr
+    {padding:10px;border:2px solid lightgray;box-sizing:border-box;flex:1}
+    
+  #terminal
+    {height:100%}
+    
+    
+    
+  .icon
+    {width:32px;height:32px;border:1px solid gray;border-radius:3px;box-sizing:border-box;cursor:pointer}
     
     
             </style>
@@ -141,15 +164,25 @@
       
       
             <misc-hdr v2.0 component=grp>
-                  <img slot=title class=title src='images/terminal.png' style='top:-15px;height:50px' alt='Node.js Terminal'>
+                  <img slot=title class=title src='images/nodejs-terminal.png' style='top:-15px;height:80px' alt='Node.js Terminal'>
                   <time slot=date datetime=2026-04-19>
                         19 Apr 2026
                   </time>
             </misc-hdr>
             
+            <div id=hdr>
             
-            <div id=terminal></div>
+                  <file-mod component></file-mod>
+                  
+            </div>
             
+            <div id=hldr>
+                  <div id=terminal>
+                  </div>
+            </div>
+            
+            
+            <log-mod component></log-mod>
             
       </body>
       
@@ -157,13 +190,59 @@
       <script>
       
       
+        var cur         = {};
+        
+        
+        
+        var complete    = {};
+        
+        
+  //:
+  
         function initdom(){
         
+        
+              misc.initdom();
+              misc.set.version(version);
+              
+              filemod.initdom();
+              
+              
+              
+              $('#hldr').style.background   = theme.light.background;
+              
+              
+              
+              log.initdom();
+              
+              
         }//initdom
         
         
+  //:
+  
+  
+        function source(){
+        }//source
         
         
+        complete.load   = function(file,blob){
+        
+        
+              cur.file    = file;
+              cur.blob    = blob;
+              
+              
+        }//load
+        
+        
+        complete.save   = function(file,confirm){
+        }//save
+        
+        
+  //:
+  
+  
         var theme   = {};
         
         theme.light   = {
@@ -272,20 +351,22 @@
                     rendererType    : 'dom',
                     
               });
+              
               var fitAddon        = new FitAddon();
               term.loadAddon(fitAddon);
               term.open(terminal);
               fitAddon.fit();
                                                                                       term.write('booting container ...\r\n')
-              var webcontainer    = await WebContainer.boot();
+              webcontainer        = await WebContainer.boot();
                                                                                       term.write('spawn jsh ...\r\n')
-              var shell           = await webcontainer.spawn('jsh');
+              shell               = await webcontainer.spawn('jsh');
               var output          = new WritableStream({write(data){term.write(data)}});
               shell.output.pipeTo(output);
               
               var input           = shell.input.getWriter();
               term.onData(data=>input.write(data));
               
+              term.resize();
               term.focus();
               
       </script>
