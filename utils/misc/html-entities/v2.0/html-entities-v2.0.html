@@ -45,8 +45,9 @@
                                                                                 console.log('html-entities-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
-        ;
+        var version='v2.0';
+        var df=true;
+        
         
         
         var he;
@@ -221,9 +222,10 @@
       
             <div id=center>
             
-                  <misc-hdr component=grp>
-                        <img class=title src='images/html-entities.png' style='top:-20px;height:80px' alt=html-entities>
+                  <misc-hdr v2.0 component=grp>
+                        <img slot=title class=title src='images/html-entities.png' style='top:-20px;height:80px' alt=html-entities>
                         <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+                        
                   </misc-hdr>
                   
                   
@@ -266,12 +268,15 @@
         
               root                                  = rootnode;
               
-              var hdr                               = $(root,'#hdr');
+              hdr.initdom();
+              hdr.set.version(version);
               
-              filemod.initdom(hdr);
+              var r1                              = $(root,'#hdr');
               
-              $(hdr,'[value=encode]').onclick       = btn.encode;
-              $(hdr,'[value=decode]').onclick       = btn.decode;
+              filemod.initdom(r1);
+              
+              $(r1,'[value=encode]').onclick       = btn.encode;
+              $(r1,'[value=decode]').onclick       = btn.decode;
               
               
               
