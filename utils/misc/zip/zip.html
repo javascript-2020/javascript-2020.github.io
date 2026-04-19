@@ -367,6 +367,7 @@
         
               var list    = read();
               console.json(list);
+              log.green('output to console');
               
         }//test
         
@@ -687,11 +688,20 @@
   
         save.source   = async function(){
                                                                                 console.log('save.source');
+              if(!filenav.cur){
+                    log.red('no file selected');
+                    return;
+              }
                                                                                 console.log(filenav.cur,zip);
               var path    = filenav.cur.path+filenav.cur.name;
               path        = path.slice(1);
                                                                                 console.log(path);
-              var blob    = await zip.file(path).async('blob');
+              var zf      = zip.file(path);
+              if(!zf){
+                    log.red(path+' not found');
+                    return;
+              }
+              var blob    = await zf.async('blob');
                                                                                 console.log(blob);
               return blob;
               
@@ -710,8 +720,10 @@
         
         
         save.complete.save    = function(file,confirm=true){
-                                                                                console.log('save.complete.save');
-              console.log('save.complete',arguments);
+                                                                                console.log('save.complete.save',arguments);
+              if(confirm){
+                    log.green(file.name+' saved');
+              }
               
         }//save
         
