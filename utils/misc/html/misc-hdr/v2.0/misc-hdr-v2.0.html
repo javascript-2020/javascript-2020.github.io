@@ -125,8 +125,18 @@
         
   //:
   
+  
         var top;
         
+        var shadow;
+        
+        
+        var set   = {};
+        obj.set   = set;
+        
+        
+  //:
+  
         obj.init    = async function(){
         
               await mod.auto();
@@ -139,14 +149,38 @@
   
         obj.initdom   = function(){
         
-              var shadow          = host.shadowRoot;
+              shadow          = host.shadowRoot;
               
-              var str   = window.location.toString();
-              var i     = str.lastIndexOf('/');
-              var fn    = str.slice(i+1);
-              $(shadow,'[name=filename]').textContent    = fn;
+              set.filename();
               
         }//initdom
+        
+        
+  //:
+  
+  
+        obj.set.version   = function(v){
+        
+              $(shadow,'[name=version]').textContent    = v;
+              
+        }//version
+        
+        
+        obj.set.filename    = function(fn){
+        
+              if(!fn){
+                    var str       = window.location.toString();
+                    var i         = str.lastIndexOf('/');
+                    fn            = str.slice(i+1);
+              }
+              $(shadow,'[name=filename]').textContent   = fn;
+              
+        }//filename
+        
+        
+        
+        
+        
         
         
         
