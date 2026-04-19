@@ -44,10 +44,13 @@
                                                                                 console.log('zip-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
-        ;
+        var version='v2.0';
+        var df=true,did='zip.html';
+        
         
         var jszip;
+        
+        
         
         var ext;
         var $;
@@ -55,6 +58,7 @@
         var menumod;
         var keydown;
         var hs;
+        var debug;
         
         var menu;
         
@@ -120,7 +124,7 @@
               menu.on.close          = null;
               
               
-              zip   = new jszip();
+              archive.new();
               
               
               
@@ -144,9 +148,10 @@
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
-              'js/string/hs.js'
+              'js/string/hs.js',
+              'js/debug/debug.js',
         );
-        [$,datatype,menumod,keydown,hs]   = await promise;
+        [$,datatype,menumod,keydown,hs,debug]   = await promise;
         
         mod.stack.complete;
         
@@ -312,6 +317,17 @@
         var btn           = {};
         
         
+        
+        var archive           = {};
+        archive.file          = {};
+        archive.dir           = {};
+        archive.zip           = {};
+        archive.zip.file      = {};
+        archive.zip.dir       = {};
+        
+        
+        
+        
   //:
   
   
@@ -366,7 +382,7 @@
         btn['list-files']   = function(){
         
               var list    = read();
-              console.json(list);
+                                                                                console.json(list);
               log.green('output to console');
               
         }//test
@@ -386,14 +402,12 @@
               $(info,'#filename').textContent   = str;
               
               var str     = '--';
+              
               var blob    = await source();
+              
               if(blob){
                     var size    = blob.size;
-                    
-                    var str   = hs(size);
-                    if(size>1024){
-                          str  += ' , '+size+' B';
-                    }
+                    str         = hs(size);
               }
               $(info,'#size').textContent   = str;
               
@@ -419,7 +433,7 @@
   
         async function source(){
         
-              var blob      = await zip.generateAsync({type:'blob'});
+              var blob    = await archive.blob();
               return blob;
               
         }//source
@@ -447,7 +461,7 @@
               var err;
               try{
               
-                    zip   = await jszip.loadAsync(blob);
+                    await archive.load(blob);
                     
               }//try
               catch(err2){
@@ -481,12 +495,13 @@
     //:
     
     
-        function read(path){
+        async function read(path){
                                                                                 console.log('read',path);
               path        ||= '';
               
               var list      = [];
-              var entries   = Object.entries(zip.files);
+              var entries   = await archive.files();
+              
               var fn;
               var entry;
               
@@ -509,10 +524,10 @@
         }//read
         
         
-        function display(path){
+        async function display(path){
         
               path      ||= filenav.cur.path;
-              var list    = read(path);                                                                                //console.json(list);
+              var list    = await read(path);                                                                                //console.json(list);
               
               filenav.display.flat(path,list);
               
@@ -535,7 +550,7 @@
                     abs   = abs.slice(1);
               }
               
-              zip.file(abs,blob);
+              archive.file.add(abs,blob);
               
               ui.info();
               //debugger;
@@ -556,7 +571,9 @@
               if(abs.startsWith('/')){
                     abs   = abs.slice(1);
               }
-              zip.file(abs,'');
+              
+              archive.file.add(abs,'');
+              
               display(path);
               
               return false;
@@ -570,7 +587,9 @@
               if(abs.startsWith('/')){
                     abs   = abs.slice(1);
               }
-              zip.remove(abs);
+              
+              archive.file.rem(abs);
+              
               display(path);
               
               return false;
@@ -584,7 +603,9 @@
               if(abs.startsWith('/')){
                     abs   = abs.slice(1);
               }
-              zip.file(abs,blob);
+              
+              archive.file.add(abs,path);
+              
               display(path);
               
               return false;
@@ -597,10 +618,9 @@
               if(path.startsWith('/')){
                     path    = path.slice(1);
               }
-              var blob    = await zip.file(path).async('blob');
               
-              console.log(blob);
-              
+              var blob    = await archive.file.read(path);
+                                                                              console.log(blob);
               return {blob};
               
         }//download
@@ -628,7 +648,8 @@
               if(abs.startsWith('/')){
                     abs   = abs.slice(1);
               }
-              zip.folder(abs);
+              
+              archive.dir.add(path);
               
               display(path);
               
@@ -643,7 +664,9 @@
               if(abs.startsWith('/')){
                     abs   = abs.slice(1);
               }
-              zip.remove(abs);
+              
+              archive.dir.rem(abs);
+              
               display(path);
               
               return false;
@@ -656,9 +679,7 @@
               var list    = read(path);
               list        = list.filter(fn=>fn.startsWith(path));
               list        = list.filter(Boolean);
-              
-              console.json(list);
-              
+                                                                                console.json(list);
               /*
               list.forEach(fn=>{
               
@@ -696,13 +717,11 @@
               var path    = filenav.cur.path+filenav.cur.name;
               path        = path.slice(1);
                                                                                 console.log(path);
-              var zf      = zip.file(path);
-              if(!zf){
-                    log.red(path+' not found');
-                    return;
-              }
-              var blob    = await zf.async('blob');
+              var blob    = await archive.file.read(path);
                                                                                 console.log(blob);
+              if(!blob){
+                    log.red(path+' not found');
+              }
               return blob;
               
         }//source
@@ -731,39 +750,161 @@
   //:
   
   
-  
-        function debug(){
+        archive.cur     = null;
+        //archive.file    = null;
+        archive.type    = 'zip';
         
-              if(!df)return;
-              var str   = [...arguments].join(' ');
-              console.log('[ https-file ]',str);
+        
+        archive.new   = function(){
+        
+              archive[archive.type].new();
               
-        }//debug
+        }//new
         
         
-        debug.log   = function(){
+        archive.blob    = async function(){
         
-              if(!df)return;
+              var result    = archive[archive.type].blob();
+              return result;
               
-              console.log.apply(console,arguments);
+        }//blob
+        
+        
+        archive.files   = async function(){
+        
+              var result    = await archive[archive.type].files();
+              return result;
               
-              if(debug.trace){
-                    console.trace();
+        }//files
+        
+        
+        archive.load    = async function(blob){
+        
+              var result    = await archive[archive.type].load(blob);
+              return result;
+              
+        }//load
+        
+        
+        archive.file.add    = function(path,blob){
+        
+              if(typeof blob=='string'){
+                    blob    = new Blob([blob]);
               }
-              delete debug.trace;
               
-        }//log
-        
-        
-        debug.log.trace   = function(){
-        
-              debug.trace   = true;
-              debug.log.apply(null,arguments);
+              archive[archive.type].file.add(path,blob);
               
-        }//trace
+        }//file
+        
+        
+        archive.file.rem    = function(path){
+        
+              archive[archive.type].file.rem(path);
+              
+        }//rem
+        
+        
+        archive.file.read   = async function(path){
+        
+              var result    = await archive[archive.type].file.read(path);
+              return result;
+              
+        }//read
+        
+        
+        archive.dir.add   = function(path){
+        
+              archive[archive.type].dir.add(path);
+              
+        }//add
+        
+        
+        archive.dir.rem   = function(path){
+        
+              archive[archive.type].dir.rem(path);
+              
+        }//rem
         
         
         
+  //archive.zip:
+  
+  
+        archive.zip.new   = function(){
+        
+              archive.cur   = new jszip();
+              
+        }//new
+        
+        
+        archive.zip.blob    = async function(){
+        
+              var blob      = await archive.cur.generateAsync({type:'blob'});
+              return blob;
+              
+        }//blob
+        
+        
+        archive.zip.load    = async function(blob){
+        
+              archive.cur   = await jszip.loadAsync(blob);
+              
+        }//load
+        
+        
+        archive.zip.files   = async function(path){
+        
+              var entries   = Object.entries(archive.cur.files);
+              return entries;
+              
+        }//files
+        
+        
+        archive.zip.file.add    = function(path,blob){
+        
+              archive.cur.file(path,blob);
+              
+        }//file
+        
+        
+        archive.zip.file.rem    = function(path){
+        
+              archive.cur.remove(path);
+              
+        }//rem
+        
+        
+        archive.zip.file.read   = async function(path){
+        
+              var zf      = archive.cur.file(path);
+              if(!zf){
+                    return;
+              }
+              var blob    = await zf.async('blob');
+              return blob;
+              
+        }//read
+        
+        
+        archive.zip.dir.add   = function(path){
+        
+              archive.cur.folder(path);
+              
+        }//add
+        
+        
+        archive.zip.dir.rem   = function(path){
+        
+              archive.cur.remove(path);
+              
+        }//rem
+        
+        
+        
+  //:
+  
+  
+  
             </script>
             
       </body>
