@@ -140,7 +140,7 @@
     
     
   #hdr
-    {}
+    {display:flex;gap:20px;align-items:center}
     
   #hldr
     {padding:10px;border:2px solid lightgray;box-sizing:border-box;flex:1}
@@ -156,7 +156,9 @@
     
             </style>
             
+            
             <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css' anonymous>
+            
             
       </head>
       
@@ -174,6 +176,8 @@
             <div id=hdr>
             
                   <file-mod component></file-mod>
+                  <div id=filename></div>
+                  <div id=size></div>
                   
             </div>
             
@@ -196,7 +200,7 @@
         
         var webcontainer;
         
-        
+        var ui          = {};
         var complete    = {};
         
         
@@ -225,6 +229,26 @@
   //:
   
   
+        ui.info   = function(){
+        
+              var str   = '';
+              if(cur.file){
+                    str   = cur.file.name;
+              }
+              $('#hdr #filename').textContent   = str;
+              
+              var str   = '';
+              if(cur.blob){
+                    str   = cur.blob.size;
+              }
+              $('#hdr #size').textContent   = str;
+              
+        }//info
+        
+        
+  //:
+  
+  
         function source(){
         }//source
         
@@ -234,7 +258,7 @@
         
               cur.file    = file;
               cur.blob    = blob;
-              
+              ui.info();
               
         }//load
         
