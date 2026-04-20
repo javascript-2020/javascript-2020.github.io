@@ -273,14 +273,18 @@
         
         file.download   = async function(path,name){
                                                                                 debug('file.download',path,name);
-              var abs     = path+name;
+              var abs         = path+name;
               
-              var uint8   = await webcontainer.fs.readFile(abs);
-              console.log(uint8);
-              var blob    = new Blob([uint8]);
-              console.log(blob);
-              debugger;
-              return {blob};
+              var uint8       = await webcontainer.fs.readFile(abs);
+              var blob        = new Blob([uint8]);
+              
+              var url         = window.URL.createObjectURL(blob);
+              var a           = document.createElement('a');
+              a.href          = url;
+              a.download      = name;
+              a.click();
+              
+              return false;
               
         }//download
         
