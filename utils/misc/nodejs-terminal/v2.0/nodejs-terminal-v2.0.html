@@ -51,8 +51,8 @@
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
         var version='v2.0';
-        var df=true
-        ;
+        var df=true;
+        
         
         var ext;
         var $;
@@ -198,6 +198,9 @@
                   </div>
             </div>
             
+            <div>
+                  <input value=test type=button>
+            </div>
             
             <log-mod component></log-mod>
             
@@ -214,7 +217,7 @@
         var shell;
         
         
-        
+        var btn         = {};
         var ui          = {};
         var complete    = {};
         
@@ -234,11 +237,23 @@
               $('#hldr').style.background   = theme.light.background;
               
               
+              $('[value=test]').onlclick    = btn.test;
               
               log.initdom();
               
               
         }//initdom
+        
+        
+  //:
+  
+  
+        btn.test    = async function(){console.log('test');
+        
+              console.log(await webcontainer.fs.readdir('/'));
+              console.log(await webcontainer.fs.readdir('~'));
+              
+        }//test
         
         
   //:
@@ -386,18 +401,11 @@
                     import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm')
               ]);
               
-/*
-              var [{Terminal}        = await import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm');
-              var {FitAddon}        = await import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm');
-              var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
-*/
-
               var term            = new Terminal({
               
                     fontFamily      : 'monospace',
                     fontSize        : 16,
                     lineHeight      : 1.0,
-                    
                     
                     theme           : theme.light,
                     rendererType    : 'dom',
@@ -421,6 +429,7 @@
               //term.resize();
               term.focus();
               
+              console.log(await webcontainer.fs.readdir('/'));
               mod.stack.complete;
               
         })();
