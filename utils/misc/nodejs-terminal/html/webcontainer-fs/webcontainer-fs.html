@@ -94,7 +94,9 @@
         
         
         
-        var btn    = {};
+        var btn     = {};
+        var file    = {};
+        var dir     = {};
         
         
   //:
@@ -216,9 +218,201 @@
         }//read
         
         
+  //:
+  
+  
+        file.click    = function(path,filename){
+                                                                                debug('file.click',path,filename);
+        }//click
+        
+        
+        file.dblclick   = function(path,filename){
+                                                                                debug('file.dblclick',path,filename);
+              var url   = ui.url.value;
+              load.ui(url,path,filename);
+              
+        }//dblclick
         
         
         
+        file.add    = async function(path,name){
+                                                                                debug('file.add',path,name);
+              var abs     = path+name;
+                                                                                debug(abs);
+              await webcontainer.fs.writeFile(abs,'');
+              return false;
+              
+        }//add
+        
+        
+        file.rem    = async function(path,name){
+                                                                                debug('file.rem',path,name);
+              var abs       = path+name;
+                                                                                debug(abs);
+              await webcontainer.fs.rm(abs);
+              
+              return false;
+              
+        }//rem
+        
+        
+        file.upload   = async function(path,name,blob){
+                                                                                debug('file.upload',path,name,blob);
+              var abs     = path+name;
+              
+              var buf     = await blob.arrayBuffer();
+              var uint8   = new Uint8Array(buf);
+              await wc.fs.writeFile(path,uint8);
+              
+              return false;
+              
+        }//upload
+        
+        
+        file.download   = async function(path){
+        
+              var abs     = prefix+path;
+              
+              if(status){
+                    log.red(status);
+                    return;
+              }
+              
+              var file    = await db.open(abs);
+              var blob    = await file.read();
+              file.close();
+              return {result:false,blob};
+              
+        }//download
+        
+        
+        
+        
+        
+        
+        
+        
+  //:
+  
+  
+  
+  
+        dir.parent    = function(){
+        
+              if(status){
+                    log.red(status);
+                    return;
+              }
+              
+        }//parent
+        
+        
+        dir.add   = async function(path,name){
+                                                                                debug('dir.add',path,name);
+              var abs     = prefix+path+name+'/';
+                                                                                debug(abs);
+              if(status){
+                    log.red(status);
+                    return;
+              }
+              
+              var file    = await db.open(abs);
+              file.close();
+              return false;
+              
+        }//add
+        
+        
+        dir.rem   = async function(path,name){
+                                                                                debug('dir.rem',path,name);
+              var abs     = prefix+path+name;
+              
+              if(status){
+                    log.red(status);
+                    return;
+              }
+              
+              var {names:list}    = await db.list(abs);
+              
+              var n   = list.length;
+              for(var i=0;i<n;i++){
+              
+                    var fn        = list[i];
+                    var result    = await db.delete(fn);
+                    
+              }//for
+              
+              return false;
+              
+        }//rem
+        
+        
+        dir.clear   = async function(path){
+                                                                                debug('dir.clear',path);
+              var abs     = prefix+path;
+              
+              if(status){
+                    log.red(status);
+                    return;
+              }
+              
+              var {names:list}    = await db.list(abs);
+              
+              var n   = list.length;
+              for(var i=0;i<n;i++){
+              
+                    var fn    = list[i];
+                    if(fn.length>abs.length){
+                          var result    = await db.delete(fn);
+                    }
+                    
+              }//for
+              
+              return false;
+              
+        }//clear
+        
+        
+        dir.read    = read;
+        
+        
+        dir.dblclick    = function(path,name){
+                                                                                debug('dir.dblclick',path,name);
+              if(status){
+                    log.red(status);
+                    return;
+              }
+              
+              read(path+name);
+              return false;
+              
+        }//dblclick
+        
+        
+        
+  //:
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 /*
 
 // create folder
