@@ -452,6 +452,9 @@ const files = {
               fitAddon.fit();
                                                                                       term.write('booting container ...\r\n')
               webcontainer        = await WebContainer.boot();
+              
+              mod.stack.complete;
+              
               await webcontainer.mount(files);
                                                                                       term.write('spawn jsh ...\r\n')
               shell               = await webcontainer.spawn('jsh');
@@ -465,7 +468,6 @@ const files = {
               term.focus();
               
               console.log(await webcontainer.fs.readdir('/'));
-              mod.stack.complete;
               
         })();
         
