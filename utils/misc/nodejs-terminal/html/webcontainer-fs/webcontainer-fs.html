@@ -178,11 +178,15 @@
         btn.save    = async function(){
         
               var blob    = await source();
+              var buf     = await blob.arrayBuffer();
+              var uint8   = new Uint8Array(buf);
               
-              var abs    = filenav.cur.path+filenav.cur.name'
+              var name    = filenav.cur.name;
+              var abs     = filenav.cur.path+name;
+              await webcontainer.fs.writeFile(abs,uint8);
               
-              console.json(filenav.cur);
-              
+              var file    = newfile({name,abs});
+              complete.save(file);
               
         }//save
         
@@ -197,6 +201,21 @@
         btn.ok    = function(){
         }//ok
         
+        
+  //:
+  
+  
+        function newfile({name,abs}){
+        
+              var file        = {};
+              file.type       = filetype;
+              file.name       = name;
+              file.title      = abs;
+              file.icon       = icon.src;
+              file.abs        = abs;
+              return file;
+              
+        }//newfile
         
   //:
   
@@ -237,6 +256,7 @@
                                                                                 //console.log(dirs);
                                                                                 //console.log(files);
               filenav.display(path,dirs,files);
+              
               return false;
               
         }//read
