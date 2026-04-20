@@ -16,7 +16,7 @@
             <base href='https://ext-code.com/utils/misc/html-entities/'>
             <link rel=canonical href='https://ext-code.com/utils/misc/html-entities/html-entities.html'>
             
-            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAUVBMVEVHcEwBv/4Bv/0avvMCv/0TvvcCv/0Kv/oOvvgHv/sIvvsQvvcHv/sFv/xIvOEIv/sKvvoDv/wIvvoGv/sMv/kCv/0Dv/0Ev/wFv/wGv/sAv/7CmpJ5AAAAGnRSTlMA+fII1hDpQyJ7TxhylAFnN79dhC7hzLapoVwT8hEAAAE8SURBVCjPvVJZbsUgDCRhC2uA7Nz/oB3Da5uqeV+VihQpYhaPjRn7+5Gp+Nm6ZzDaPNZaB+H5E2wJbGeJD84ZwOEDSGr9DU+q1h11A/wt2M7Jm0kkOKPqAlgzZoTIEwG8k/hR62hZEt0ErDHBxB+XbnIN+XZtKA3vT9ggkGgubO7Rc2MjgppYPGuPwmI6B0KHi8gcfewSEtztuOBe0UgUmUG+4icQrYSF2iTaaFyz2HQrrW9dI3A1RDdIIAoSHrfZFhK1hNGTD4LdxL0B2QcQWkJzHymVVun7v54/ni1R5CNx7nRo7Ysi+TQxqa1N8eWochbtzenb82aYHYa6QO6O+nXEfL0enjK1oTFnmrCOu4Gn2cjAMwxVvLbL6eJ9ST3/hLXTUu4IGd8uJ812fr+7FsXW97AO4Xlv/+98ANkDGdLwxnVSAAAAAElFTkSuQmCC'>
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAUVBMVEVHcEwBv/4Bv/0avvMCv/0TvvcCv/0Kv/oOvvgHv/sIvvsQvvcHv/sFv/xIvOEIv/sKvvoDv/wIvvoGv/sMv/kCv/0Dv/0Ev/wFv/wGv/sAv/7CmpJ5AAAAGnRSTlMA+fII1hDpQyJ7TxhylAFnN79dhC7hzLapoVwT8hEAAAE8SURBVCjPvVJZbsUgDCRhC2uA7Nz/oB3Da5uqeV+VihQpYhaPjRn7+5Gp+Nm6ZzDaPNZaB+H5E2wJbGeJD84ZwOEDSGr9DU+q1h11A/wt2M7Jm0kkOKPqAlgzZoTIEwG8k/hR62hZEt0ErDHBxB+XbnIN+XZtKA3vT9ggkGgubO7Rc2MjgppYPGuPwmI6B0KHi8gcfewSEtztuOBe0UgUmUG+4icQrYSF2iTaaFyz2HQrrW9dI3A1RDdIIAoSHrfZFhK1hNGTD4LdxL0B2QcQWkJzHymVVun7v54/ni1R5CNx7nRo7Ysi+TQxqa1N8eWochbtzenb82aYHYa6QO6O+nXEfL0enjK1oTFnmrCOu4Gn2cjAMwxVvLbL6eJ9ST3/hLXTUu4IGd8uJ812fr+7FsXW97AO4Xlv/+98ANkDGdLwxnVSAAAAAElFTkSuQmCC'>
             <meta name=viewport content='width=device-width, initial-scale=1'>
             
             <script type='application/ld+json'>
@@ -45,8 +45,9 @@
                                                                                 console.log('html-entities-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
-        ;
+        var version='v2.0';
+        var df=true;
+        
         
         
         var he;
@@ -221,9 +222,11 @@
       
             <div id=center>
             
-                  <misc-hdr component=grp>
-                        <img class=title src='images/html-entities.png' style='top:-20px;height:80px' alt=html-entities>
-                        <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+                  <misc-hdr v2.0 component=grp>
+                        <img slot=title class=title src='images/html-entities.png' style='top:-20px;height:80px' alt=html-entities>
+                        <time slot=date datetime=2026-04-19>
+                              19 Apr 2026
+                        </time>
                   </misc-hdr>
                   
                   
@@ -266,12 +269,15 @@
         
               root                                  = rootnode;
               
-              var hdr                               = $(root,'#hdr');
+              hdr.initdom();
+              hdr.set.version(version);
               
-              filemod.initdom(hdr);
+              var r1                              = $(root,'#hdr');
               
-              $(hdr,'[value=encode]').onclick       = btn.encode;
-              $(hdr,'[value=decode]').onclick       = btn.decode;
+              filemod.initdom(r1);
+              
+              $(r1,'[value=encode]').onclick       = btn.encode;
+              $(r1,'[value=decode]').onclick       = btn.decode;
               
               
               
