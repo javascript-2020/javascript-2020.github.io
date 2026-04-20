@@ -87,7 +87,7 @@
               
               misc.initmod({ext,$});
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
-              wcfs.initmod({ext,$,menumod,menu,complete,source,log,debug});
+              wcfs.initmod({ext,$,menumod,menu,complete,source,log,debug,webcontainer});
               log.initmod({ext,$});
               
               
@@ -375,6 +375,8 @@
         
         (async()=>{
         
+              mod.stack.add;
+              
               var [{Terminal},{FitAddon},{WebContainer}]    = await Promise.all([
                     import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm'),
                     import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'),
@@ -415,6 +417,8 @@
               
               //term.resize();
               term.focus();
+              
+              mod.stack.complete;
               
         })();
         
