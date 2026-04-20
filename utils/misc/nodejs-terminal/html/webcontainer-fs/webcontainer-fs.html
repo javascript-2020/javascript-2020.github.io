@@ -67,7 +67,7 @@
         var df=true,did='webcontainer-fs'
         ;
         
-        var ext,$,menu,source,webcontainer,log,debug
+        var ext,$,menu,source,webcontainer,log,debug,complete
         ;
         
         
@@ -80,6 +80,7 @@
               webcontainer        = mod.rd(params,'webcontainer',webcontainer);
               log                 = mod.rd(params,'log',log);
               debug               = mod.rd(params,'debug',debug);
+              complete            = mod.rd(params,'complete',complete);
               
         }//initmod
         
@@ -231,8 +232,17 @@
         }//click
         
         
-        file.dblclick   = function(path,filename){
+        file.dblclick   = function(path,name){
                                                                                 debug('file.dblclick',path,filename);
+              var file        = {};
+              file.type       = filetype;
+              file.filename   = name;
+              file.title      = abs;
+              file.icon       = icon.src;
+              file.abs        = abs;
+              
+              complete.load(file,blob);
+              
         }//dblclick
         
         
