@@ -120,21 +120,92 @@
   //:
   
   
-        function menu_callback(){}
+        function menu_callback(type){
+        
+              switch(type){
+              
+                case 'show'   : read();       break;
+                
+              }//switch
+              
+        }//menu_callback
+        
+        
+        async function read(path){
+                                                                                debug('dir.read');
+              path        ||= filenav.path;
+              
+              var len       = prefix.length+path.length;
+              
+              var dirs      = [];
+              var files     = [];
+              
+              
+              console.log(await wc.fs.readdir('/',{withFileTypes:true}));
+              
+              
+              return;
+              
+              
+              var {names:list}      = await db.list(prefix+path,true);
+              list.forEach(abs=>{
+              
+                    var i   = abs.indexOf('/',len);
+                                                                                //console.log(abs,i);
+                    var fn;
+                    if(i==-1){
+                          fn    = abs.slice(len);
+                          if(fn){
+                                files.push(fn);
+                          }
+                    }else{
+                          fn    = abs.slice(len,i);
+                          if(dirs.indexOf(fn)==-1){
+                                dirs.push(fn);
+                          }
+                    }
+                    
+              });
+                                                                                //console.log(dirs);
+                                                                                //console.log(files);
+              filenav.display(path,dirs,files);
+              return false;
+              
+        }//read
         
         
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
+/*
+
+// create folder
+await wc.fs.mkdir('/demo');
+
+// write file
+await wc.fs.writeFile('/demo/test.txt', '123');
+
+// read file
+const txt = await wc.fs.readFile('/demo/test.txt', 'utf-8');
+console.log('read:', txt);
+
+// list folder
+console.log(await wc.fs.readdir('/demo'));
+
+// delete file
+await wc.fs.rm('/demo/test.txt');
+
+// delete folder
+await wc.fs.rmdir('/demo');
+
+*/
+
+
+
+
+
+
+
   //:
   
   return obj;
