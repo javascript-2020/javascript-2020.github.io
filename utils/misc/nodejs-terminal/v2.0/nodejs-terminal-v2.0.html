@@ -303,11 +303,17 @@
         }//source
         
         
-        complete.load   = function(file,blob){
-        
+        function complete(file){
         
               cur.file    = file;
+              
+        }//complete
+        
+        
+        complete.load   = function(file,blob){
+        
               cur.blob    = blob;
+              complete(file);
               ui.info();
               
         }//load
@@ -315,6 +321,8 @@
         
         complete.save   = function(file,confirm=true){
         
+              complete(file);
+              
               if(confirm){
                     log.green(file.name+' saved');
               }
