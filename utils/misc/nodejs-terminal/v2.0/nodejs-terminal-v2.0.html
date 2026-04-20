@@ -102,8 +102,6 @@
               initdom();
               
               
-              log.green('ready');
-              
               
         }//init
         
@@ -150,7 +148,7 @@
     {display:flex;align-items:center;margin:0 20px}
     
   #hldr
-    {padding:10px;border:2px solid lightgray;box-sizing:border-box;flex:1}
+    {padding:10px;border:2px solid lightgray;box-sizing:border-box;flex:1;background:hsl(45,86%,98%)}
     
   #terminal
     {height:100%}
@@ -213,6 +211,7 @@
         var cur         = {};
         
         
+        var term;
         var webcontainer;
         var shell;
         
@@ -237,7 +236,7 @@
               $('#hldr').style.background   = theme.light.background;
               
               
-              $('[value=test]').onlclick    = btn.test;
+              $('[value=test]').onclick    = btn.test;
               
               log.initdom();
               
@@ -250,8 +249,13 @@
   
         btn.test    = async function(){console.log('test');
         
-              console.log(await webcontainer.fs.readdir('/'));
-              console.log(await webcontainer.fs.readdir('~'));
+              var list    = await webcontainer.fs.readdir('/',{withFileTypes:true});
+              list.forEach(item=>{
+              
+                    console.log(item.name,item.isFile());
+                    
+              });
+              
               
         }//test
         
@@ -388,9 +392,39 @@
         };
         
         
-        
-        
-        
+const files = {
+  src: {
+    directory: {
+      'main.js': {
+        file: {
+          contents: `
+            console.log('Hello from WebContainers!')
+          `,
+        },
+      },
+      'main.css': {
+        file: {
+          contents: `
+            body {
+              margin: 0;
+            }
+          `,
+        },
+      },
+    },
+  },
+  'package.json': {
+    file:{contents:'xyz'}
+  },
+  'index.html': {
+    file:{contents:'123'}
+  },
+  
+};
+
+
+
+
         (async()=>{
         
               mod.stack.add;
@@ -401,7 +435,7 @@
                     import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm')
               ]);
               
-              var term            = new Terminal({
+              term            = new Terminal({
               
                     fontFamily      : 'monospace',
                     fontSize        : 16,
@@ -418,6 +452,7 @@
               fitAddon.fit();
                                                                                       term.write('booting container ...\r\n')
               webcontainer        = await WebContainer.boot();
+              await webcontainer.mount(files);
                                                                                       term.write('spawn jsh ...\r\n')
               shell               = await webcontainer.spawn('jsh');
               var output          = new WritableStream({write(data){term.write(data)}});
