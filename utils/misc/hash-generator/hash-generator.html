@@ -95,7 +95,7 @@
               log                       = mod['log-mod'];
               
               
-              //mod.hdr.base64.initmod({ext,$,menu,menumod:menu});
+              hdr.initmod({ext,$,menu,menumod:menu});
               
               filemod.initmod({ext,$,menumod,menu,complete,log});
               filename.initmod({ext,$});
@@ -356,9 +356,11 @@ xxhash128 : ƒ (A,I=0,B=0)
       
       <body>
       
-            <misc-hdr component=grp style='position:relative'>
-                  <img class=title src='images/hash-generator.png' style='top:-10px;height:50px' alt=hash-generator>
-                  <time slot=date datetime=2025-10-31>31 Oct 2025</time>
+            <misc-hdr v2.0 component=grp style='position:relative'>
+                  <img slot=title class=title src='images/hash-generator.png' style='top:-20px;height:80px' alt=hash-generator>
+                  <time slot=date datetime=2026-04-19>
+                        19 Apr 2026
+                  </time>
             </misc-hdr>
             
             
@@ -377,7 +379,7 @@ xxhash128 : ƒ (A,I=0,B=0)
             
                   <div id=text-hdr>
                         <span id=text-chk-root class=chk-root>
-                              <input id=text-chk type=checkbox checked>
+                              <input id=text-chk type=checkbox>
                               <label>
                                     text
                               </label>
@@ -393,7 +395,7 @@ xxhash128 : ƒ (A,I=0,B=0)
             
                   <div id=file-hdr>
                         <span id=file-chk-root class=chk-root>
-                              <input id=file-chk type=checkbox>
+                              <input id=file-chk type=checkbox checked>
                               <label>
                                     file
                               </label>
@@ -517,6 +519,10 @@ xxhash128 : ƒ (A,I=0,B=0)
                                                                                 debug('initdom');
                                                                                 
               root                                    = rootnode;
+              
+              hdr.initdom();
+              hdr.set.version(version);
+              
               
               chk                                     = $.chkbox.group(root,'#file-hdr .chk-root','#text-hdr .chk-root');
               filemod.initdom(root);
@@ -664,6 +670,7 @@ xxhash128 : ƒ (A,I=0,B=0)
                     buf   = editor.getvalue();
                                                                                 console.log(buf);
               }else{
+                                                                                console.log('file');
                     buf   = await cur.blob.arrayBuffer();
                     buf   = new Uint8Array(buf);
               }
