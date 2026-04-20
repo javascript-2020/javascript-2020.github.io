@@ -150,28 +150,15 @@
               var files     = [];
               
               
-              console.log(await webcontainer.fs.readdir('/'));
+              var list    = await webcontainer.fs.readdir(path,{withFileTypes:true})
               
+              list.forEach(item=>{
               
-              return;
-              
-              
-              var {names:list}      = await db.list(prefix+path,true);
-              list.forEach(abs=>{
-              
-                    var i   = abs.indexOf('/',len);
-                                                                                //console.log(abs,i);
-                    var fn;
-                    if(i==-1){
-                          fn    = abs.slice(len);
-                          if(fn){
-                                files.push(fn);
-                          }
-                    }else{
-                          fn    = abs.slice(len,i);
-                          if(dirs.indexOf(fn)==-1){
-                                dirs.push(fn);
-                          }
+                    if(item.isFile()){
+                          files.push(item.name);
+                    }
+                    if(item.isDirectory()){
+                          dirs.push(item.name);
                     }
                     
               });
