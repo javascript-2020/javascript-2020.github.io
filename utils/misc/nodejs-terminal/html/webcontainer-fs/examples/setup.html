@@ -10,6 +10,17 @@
             <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
             
+            <style>
+            
+  html
+    {font-family:arial;height:750px}
+    
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:32px;height:32px;cursor:pointer}
+    
+    
+            </style>
+            
             <script init>
                                                                                 console.log('webcontainer-fs test');
                                                                                 console.log();
@@ -35,6 +46,25 @@
         }//init
         
         
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+        
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js'
+        );
+        [$,datatype,menumod,keydown]   = await promise;
+        
+        mod.stack.complete;
+        
+})();
+
+
             </script>
             
             <style>
@@ -54,6 +84,9 @@
       <body>
       
             <webcontainer-fs component=page></webcontainer-fs>
+            
+            
+            <log-mod component></log-mod>
             
       </body>
       
