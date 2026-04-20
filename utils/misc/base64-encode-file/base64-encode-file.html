@@ -16,7 +16,7 @@
             <base href='https://ext-code.com/utils/misc/base64-encode-file/'>
             <link rel=canonical href='https://ext-code.com/utils/misc/base64-encode-file/base64-encode-file.html'>
             
-            <link rel=icon type='image/png' href='image/base64-30.png'>
+            <link rel=icon href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAARVBMVEVHcEwDcLgQa6sHbrQBcboCcboEcLcEcLcCcboSaaYIbbIDcLgDcbkPbKwFcLcJbbAJbbAHb7QXZ6MGb7UIb7QDcbkAcrtsIh5HAAAAFnRSTlMAyRhs+/HBqOwNTbbaI5M/NYYHeVroiA3VNQAAAPFJREFUKM+Fk9uShCAMREnCEJG7Cv//qQvDOrUyq/ST5anQhHSEqEJSS7loUYTiVyvI8iUJa6f0Kv/qRe/aG1p5rUcotwIUJO+xJKHKg5RYnvAiPgflfNrI5WN4YrM6R7Z/c4QBG1zZY+8R3Kau+BVCJd7Bu1vUAwbkBmyrTjGNmFH54+B2I+WYR+x1iEfQuyw5UvnCSQRbR1B/U8gVDzf3onmD9kYngLR5e/XeGraY9g0RtdCr/Ist7q15zdYYo/YtwQVLQs4QY+5njd4lEzo835LdiGu02JzD68/T8WSgkzhMwjSJ4iTIszWYLdHTCv4AtH48ymx1XJMAAAAASUVORK5CYII='>
             <meta name=viewport content='width=device-width, initial-scale=1'>
             
             <script type='application/ld+json'>
@@ -43,8 +43,9 @@
                                                                                 console.log('base64-encode-file-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,version='v2.0'
-        ;
+        var version='v2.0';
+        var df=true;
+        
         
         var ext;
         var $;
@@ -72,7 +73,7 @@
               mod.base.add({ext,$,datatype,keydown,menu,menumod});
               
               
-              hdr                       = mod['hdr-base64'];
+              hdr                       = mod['misc-hdr'];
               //mod.menu.main             = mod.menu.main();
               preview.filemod           = mod['file-preview'];
               preview.filename          = mod['fn-preview'];
@@ -145,7 +146,7 @@
       padding-bottom:200px;
     }
   body>*
-    {max-width:1400px;width:100%;padding:0 20px;}
+    {max-width:1600px;width:100%;padding:0 20px;}
     
     
   .icon
@@ -222,10 +223,12 @@
       <body>
       
       
-            <hdr-base64 component=grp>
-                  <img class=title src='image/base64-file-50.png' style='top:5px;height:40px'>
-                  <time slot=date datetime=2025-10-18>18 Oct 2025</time>
-            </hdr-base64>
+            <misc-hdr v2.0 component=grp>
+                  <img slot=title class=title src='images/base64-encode-file.png' style='top:-35px;height:100px'>
+                  <time slot=date datetime=2025-04-19>
+                        19 Apr 2026
+                  </time>
+            </misc-hdr>
             
             
             
@@ -362,6 +365,7 @@
               
               
               hdr.initdom(root);
+              hdr.set.version(version);
               
               
               preview.root                                    = $(root,'#preview');
@@ -483,11 +487,11 @@
         
         btn.output.paste    = async function(){
         
-              var b64                   = await navigator.clipboard.readText();
+              var txt                   = await navigator.clipboard.readText();
               
-              cur.b64                   = b64;
+              cur.b64                   = txt;
               
-              output.view.textContent   = b64;
+              b64.text.textContent      = txt;
               
         }//paste
         
@@ -505,6 +509,11 @@
         
         function decode(b64){
         
+              if(b64.startsWith('data:')){
+                    var i   = b64.indexOf(',');
+                    b64     = b64.slice(i+1);
+              }
+              
               var blob    = b64_blob(b64);
               cur.blob    = blob;
               return blob;
