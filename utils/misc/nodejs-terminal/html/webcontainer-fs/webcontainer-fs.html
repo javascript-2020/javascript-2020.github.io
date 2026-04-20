@@ -168,15 +168,28 @@
         
         btn.load    = function(){
         
-        
-              console.json(filenav.cur);
+              if(!filenav.cur.name){
+                    log.red('no file selected');
+                    return;
+              }
               
+              var abs     = filenav.cur.path+filenav.cur.name;
+              var uint8   = await webcontainer.fs.readFile(abs);
+              var blob    = new Blob([uint8]);
+              
+              var file    = newfile({abs,name});
+              complete.load(file,blob);
               
         }//load
         
         
         btn.save    = async function(){
         
+              if(!filenav.cur.name){
+                    log.red('no file selected');
+                    return;
+              }
+              
               var blob    = await source();
               var buf     = await blob.arrayBuffer();
               var uint8   = new Uint8Array(buf);
