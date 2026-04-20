@@ -8,7 +8,7 @@
     {display:flex;flex-direction:column;border:1px solid lightgray;box-sizing:border-box;border-radius:10px;background:whitesmoke}
     
   #hdr
-    {display:flex;align-items:center}
+    {display:flex;align-items:center;gap:10px}
     
   #url
     {flex:1}
@@ -78,7 +78,14 @@
   //:
   
   
-  
+        var ui    = {};
+        ui.url    = null;
+        
+        
+        
+        var ku    = {};
+        
+        
   //:
   
   
@@ -94,8 +101,29 @@
               var shadow    = host.shadowRoot;
               
               
+              ui.url    = $(shadow,'#url');
+              ui.url.onkeyup    = ku.url;
+              
+              ui.iframe   = $(shadow,'iframe');
+              
+              
+              
+              
         }//initdom
         
+        
+  //:
+  
+  
+        ku.url    = function(e){
+        
+              switch(e.key){
+              
+                case 'Enter'    : iframe.src    = ui.url.value;   break;
+                
+              }//switch
+              
+        }//url
         
         
   //:
