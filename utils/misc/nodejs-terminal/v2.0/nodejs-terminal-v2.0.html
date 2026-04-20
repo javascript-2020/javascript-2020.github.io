@@ -490,6 +490,8 @@ const files = {
               
               mod.stack.complete;
               
+              webcontainer.on('server-ready',(port,url)=>term.write('server-ready :'+url+'-'+port));
+              
               await webcontainer.mount(files);
                                                                                       term.write('spawn jsh ...\r\n')
               shell               = await webcontainer.spawn('jsh');
