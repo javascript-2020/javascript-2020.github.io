@@ -70,6 +70,7 @@
   
   
         var shadow;
+        var icon;
         
         
   //:
@@ -89,6 +90,15 @@
               
               menu.add.style(shadow);
               
+              var style                       = $(shadow,'style');
+              $.stylesheet.insert(style,'.icon');
+              
+              var mroot                       = $(shadow,'.menu');
+              menu.input.norm(mroot);
+              
+              icon                            = $(shadow,'.icon');
+              icon.onclick                    = menu.click(mroot,'both',false,menu_callback);
+              
               
         }//initdom
         
@@ -96,6 +106,10 @@
   //:
   
   
+        function menu_callback(){}
+        
+        
+  //:
   
   return obj;
   
