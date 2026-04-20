@@ -65,6 +65,7 @@
         
         var misc;
         var filemod;
+        var wcfs;
         var log;
         
         
@@ -81,16 +82,20 @@
               
               misc      = mod['misc-hdr'];
               filemod   = mod['file-mod'];
+              debugger;
+              wcfs      = mod['webcontainer-fs'];
               log       = mod['log-mod'];
               
               misc.initmod({ext,$});
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
+              wcfs.initmod({ext,$,menumod,menu,complete,source,log});
               log.initmod({ext,$});
               
               
               await Promise.all([
                     misc.init(),
                     filemod.init(),
+                    wcfs.init(),
                     log.init(),
               ]);
               
@@ -179,7 +184,7 @@
                   <div id=filename></div>
                   <div id=size></div>
                   
-                  <webcontainer-fs component=page></web-container-fs>
+                  <webcontainer-fs component=page></webcontainer-fs>
                   
             </div>
             
@@ -215,7 +220,7 @@
               misc.set.version(version);
               
               filemod.initdom();
-              
+              wcfs.initdom();
               
               
               $('#hldr').style.background   = theme.light.background;
