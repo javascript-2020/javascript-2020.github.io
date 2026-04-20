@@ -62,7 +62,7 @@
         var df=true,did='webcontainer-fs'
         ;
         
-        var ext,$,menu,source,webcontainer
+        var ext,$,menu,source,webcontainer,log,debug
         ;
         
         
@@ -73,6 +73,8 @@
               menu                = mod.rd(params,'menu',menu);
               source              = mod.rd(params,'source',source);
               webcontainer        = mod.rd(params,'webcontainer',webcontainer);
+              log                 = mod.rd(params,'log',log);
+              debug               = mod.rd(params,'debug',debug);
               
         }//initmod
         
@@ -88,7 +90,8 @@
   
   
         obj.init    = async function(){
-        
+                                                                                debug=eval(debug.mod);
+                                                                                debug('init');
               await mod.auto();
               
         }//init
