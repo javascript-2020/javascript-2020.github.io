@@ -172,6 +172,10 @@
                     log.red('no file selected');
                     return;
               }
+              if(filenav.cur.type!=='file'){
+                    log.red('selected item is not a file');
+                    return;
+              }
               
               var abs     = filenav.cur.path+filenav.cur.name;
               var uint8   = await webcontainer.fs.readFile(abs);
@@ -187,6 +191,10 @@
         
               if(!filenav.cur.name){
                     log.red('no file selected');
+                    return;
+              }
+              if(filenav.cur.type!=='file'){
+                    log.red('selected item is not a file');
                     return;
               }
               
@@ -207,6 +215,7 @@
         btn.cancel    = function(){
         
               menu.close();
+              //filenav.clear();
               
         }//cancel
         
