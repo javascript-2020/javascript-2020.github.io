@@ -1,0 +1,100 @@
+
+
+
+<html>
+
+      <head>
+      
+            <base href='https://ext-code.com/utils/misc/nodejs-terminal/nodejs-terminal.html'>
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
+            
+            
+            <script init>
+                                                                                console.log('webcontainer-fs test');
+                                                                                console.log();
+                                                                                
+        var wcfs;
+        
+        
+  //:
+  
+  
+        async function init(){
+                                                                                console.log('init');
+              debugger;
+              wcfs                  = mod['webcontainer-fs'];
+              //fileserver.load.complete    = complete.load;
+              //fileserver.save.complete    = complete.save;
+              wcfs.initmod({source});
+              
+              await mod.auto();
+              
+              initdom();
+              
+        }//init
+        
+        
+            </script>
+            
+            <style>
+            
+  html
+    {font-family:arial;height:650px}
+    
+  .icon
+    {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:32px;height:32px;cursor:pointer}
+    
+            </style>
+            
+            
+      </head>
+      
+      
+      <body>
+      
+            <webcontainer-fs component=page></webcontainer-fs>
+            
+      </body>
+      
+      
+      
+      <script>
+      
+      
+  //:
+  
+  
+        function initdom(){
+        }//initdom
+        
+        
+  //:
+  
+  
+        function source(){
+        
+              var txt     = 'helloworld';
+              var blob    = new Blob([txt]);
+              return blob;
+              
+        }//source
+        
+        
+        function complete(){
+        }//complete
+        
+        
+        complete.load   = function(file,blob){
+                                                                                console.log(file,blob);
+        }//load
+        
+        
+        complete.save   = function(file,confirm=true){
+                                                                                console.log(file);
+        }//save
+        
+        
+      </script>
+      
+</html>
