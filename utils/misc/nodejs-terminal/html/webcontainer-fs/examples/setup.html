@@ -25,7 +25,12 @@
                                                                                 console.log('webcontainer-fs test');
                                                                                 console.log();
                                                                                 
+        var menu;
+        
+        
         var wcfs;
+        
+        var log;
         
         
   //:
@@ -33,11 +38,15 @@
   
         async function init(){
                                                                                 console.log('init');
-                                                                                
+              menu                          = menumod();
+              
               wcfs                  = mod['webcontainer-fs'];
               //fileserver.load.complete    = complete.load;
               //fileserver.save.complete    = complete.save;
-              wcfs.initmod({source});
+              wcfs.initmod({ext,$,menu,source});
+              
+              log   = mod['log-mod'];
+              log.initmod({ext,$});
               
               
               await mod.auto();
