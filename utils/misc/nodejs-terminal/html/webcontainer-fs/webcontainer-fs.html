@@ -270,25 +270,12 @@
         
         
         file.download   = async function(path){
-        
-              var abs     = prefix+path;
-              
-              if(status){
-                    log.red(status);
-                    return;
-              }
-              
-              var file    = await db.open(abs);
-              var blob    = await file.read();
-              file.close();
+                                                                                debug('file.download',path);
+              var uint8 await webcontainer.fs.readfile(path,'uint8');
+              var blob    = new Blob([uint8]);
               return {result:false,blob};
               
         }//download
-        
-        
-        
-        
-        
         
         
         
@@ -298,26 +285,16 @@
   
   
         dir.parent    = function(){
-        
-              if(status){
-                    log.red(status);
-                    return;
-              }
-              
+                                                                                debug('dir.parent');
         }//parent
         
         
         dir.add   = async function(path,name){
                                                                                 debug('dir.add',path,name);
-              var abs     = prefix+path+name+'/';
+              var abs     = path+name+'/';
                                                                                 debug(abs);
-              if(status){
-                    log.red(status);
-                    return;
-              }
+              await webcontainer.fs.mkdir(abs);
               
-              var file    = await db.open(abs);
-              file.close();
               return false;
               
         }//add
@@ -325,22 +302,9 @@
         
         dir.rem   = async function(path,name){
                                                                                 debug('dir.rem',path,name);
-              var abs     = prefix+path+name;
+              var abs     = path+name;
               
-              if(status){
-                    log.red(status);
-                    return;
-              }
-              
-              var {names:list}    = await db.list(abs);
-              
-              var n   = list.length;
-              for(var i=0;i<n;i++){
-              
-                    var fn        = list[i];
-                    var result    = await db.delete(fn);
-                    
-              }//for
+              await webcontainer.fs.rm(abs);
               
               return false;
               
@@ -349,25 +313,6 @@
         
         dir.clear   = async function(path){
                                                                                 debug('dir.clear',path);
-              var abs     = prefix+path;
-              
-              if(status){
-                    log.red(status);
-                    return;
-              }
-              
-              var {names:list}    = await db.list(abs);
-              
-              var n   = list.length;
-              for(var i=0;i<n;i++){
-              
-                    var fn    = list[i];
-                    if(fn.length>abs.length){
-                          var result    = await db.delete(fn);
-                    }
-                    
-              }//for
-              
               return false;
               
         }//clear
@@ -378,12 +323,10 @@
         
         dir.dblclick    = function(path,name){
                                                                                 debug('dir.dblclick',path,name);
-              if(status){
-                    log.red(status);
-                    return;
-              }
+              var abs   = path+name;
               
               read(path+name);
+              
               return false;
               
         }//dblclick
