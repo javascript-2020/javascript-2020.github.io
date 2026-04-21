@@ -428,13 +428,27 @@
   //:
   
   
-  
-  
-  
-  
-  
-  
-  
+        obj.write   = async function(path,blob){
+        
+              var buf     = await blob.arrayBuffer();
+              var uint8   = new Uint8Array(buf);
+              await webcontainer.fs.writeFile(path,uint8);
+              
+        }//write
+        
+        
+        obj.read    = async function(path){
+        
+              var uint8       = await webcontainer.fs.readFile(path);
+              var blob        = new Blob([uint8]);
+              return blob;
+              
+        }//read
+        
+        
+        
+        
+  //:
   
   
   
