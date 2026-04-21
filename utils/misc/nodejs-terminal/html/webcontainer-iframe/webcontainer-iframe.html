@@ -46,7 +46,7 @@
             <div id=root style='left:0;top:0;width:500px;height:500px'>
             
                   <div id=title>
-                        <div id=icons>
+                        <div id=icons style='display:none'>
                               <img id=close>
                         </div>
                   </div>
@@ -131,8 +131,11 @@
               
               var root                  = $(shadow,'#root');
               $.drag(root,callback.drag);
+              root.onmouseenter   = e=>icons.style.display='';
+              root.onmouseleave   = e=>icons.style.display='none';
               
               icons                     = $(shadow,'#icons');
+              
               ui.url                    = $(shadow,'#url');
               ui.url.onkeyup            = ku.url;
               
