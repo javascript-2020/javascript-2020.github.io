@@ -38,7 +38,6 @@ This server can run locally and allow access to the local filesystem from the br
 
 - getmime.js
 - keys.js
-- 
 
 
 
@@ -82,5 +81,4 @@ the server can be interacted with via the client-side library
 </script>
 
 ```
-
 
