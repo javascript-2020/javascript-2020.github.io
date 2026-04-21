@@ -78,7 +78,9 @@
                   <input value=iframe type=button>
             </div>
             
+            <!--
             <webcontainer-iframe component=page></webcontainer-iframe>
+            -->
             
             
             <log-mod component></log-mod>
@@ -92,7 +94,15 @@
       
         function initdom(){
         
-              $('#hdr [value=iframe]').onclick    = e=>{};
+              $('#hdr [value=iframe]').onclick    = async e=>{
+              
+                    var node    = document.createElement('webcontainer-iframe');
+                    node.setAttribute('component','page');
+                    document.body.append(node);
+                    var result    = await mod.build({root:node,mod});
+                    console.log(result);
+                    
+              };
               
         }//initdom
         
