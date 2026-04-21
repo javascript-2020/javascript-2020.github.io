@@ -20,7 +20,7 @@ its use is fairly simple
 
 ```
 
-node fs-server
+node file-server
 
 ```
 
