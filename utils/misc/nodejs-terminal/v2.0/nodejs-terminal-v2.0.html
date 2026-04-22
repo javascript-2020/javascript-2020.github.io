@@ -297,15 +297,25 @@
               var result    = await mod.build({root:node,mod:mod2});
               var viewport    = mod2['view-port'];
               await mod2.auto();
+              viewport.css(`
+                    snippet-editor
+                      {display:block;height:100%}
+              `);
+              viewport.css(`
+                    snippet-editor::part(root)
+                      {height:100%}
+              `);
               
               var node    = document.createElement('snippet-editor');
               node.toggleAttribute('component',true);
+              node.toggleAttribute('v2.0',true);
+              node.setAttribute('web-editor','height=100%');
               viewport.body.append(node);
               var mod2    = mod.create({mod,name:'snippet-editor'});
               var result    = await mod.build({root:node,mod:mod2});
               var snippet   = mod2['snippet-editor'];
               await mod2.auto();
-              viewport.css('snippet-editor {height:100%}');
+              snippet.editor.df=true;
               
               
               var node    = document.createElement('webcontainer-fs');
