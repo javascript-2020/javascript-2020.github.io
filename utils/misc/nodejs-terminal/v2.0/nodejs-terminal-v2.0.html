@@ -94,6 +94,7 @@
               
               
               await Promise.all([
+                    vm.init(),
                     misc.init(),
                     filemod.init(),
                     wcfs.init(),
@@ -122,9 +123,11 @@
               'js/dom/keydown/keydown.js',
               'js/debug/debug.js',
               'js/string/hs.js',
-              'js/dom/viewport-manager/viewport-manager.js',
+              'js/dom/viewport-manager/viewport-manager.js.api',
         );
         [$,datatype,menumod,keydown,debug,hs,vm]   = await promise;
+        
+        vm    = vm();
         
         mod.stack.complete;
         
@@ -248,7 +251,8 @@
   
         function initdom(){
         
-        
+              vm.initdom();
+              
               misc.initdom();
               misc.set.version(version);
               
