@@ -283,19 +283,44 @@
               var result    = await mod.build({root:node,mod:mod2});
               await mod2.auto();
               var wciframe    = mod2['webcontainer-iframe'];
+              return wciframe;
               
         }//niframe
         
         
         btn['snippet-editor']   = async function(){
         
+              var wciframe    = await btn.niframe();
+              
               var node    = document.createElement('snippet-editor');
               node.toggleAttribute('component',true);
-              document.body.append(node);
+              //document.body.append(node);
+              wciframe.iframe.contentDocument.body.append(node);
               var mod2    = mod.create({mod,name:'snippet-editor'});
               var result    = await mod.build({root:node,mod:mod2});
-              await mod2.auto();
               var snippet   = mod2['snippet-editor'];
+              await mod2.auto();
+              
+              
+              var node    = document.createElement('webcontainer-fs');
+              node.setAttribute('component','page');
+              wciframe.iframe.contentDocument.body.append(node);
+              var mod2    = mod.create({mod,name:'webcontainer-fs'});
+              var result    = await mod.build({root:node,mod:mod2});
+              var wcfs    = mod2['webcontainer-fs'];
+              wcfs.initmod({filemod:snippet.filemod,ext,$,menu,source,webcontainer,log,debug,complete});
+              
+              await wcfs.init();
+              wcfs.initdom();
+              
+              
+              async function source(){
+              
+                    var txt   = snippet.editor.getValue();
+                    var blob    = new Blob([txt]);
+                    return blob;
+                    
+              }//source
               
         }//snippet-editor
         
