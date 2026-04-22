@@ -290,26 +290,31 @@
         
         btn['snippet-editor']   = async function(){
         
-              var wciframe    = await btn.niframe();
+              var node    = document.createElement('view-port');
+              node.toggleAttribute('component',true);
+              document.body.append(node);
+              var mod2    = mod.create({mod,name:'view-port'});
+              var result    = await mod.build({root:node,mod:mod2});
+              var viewport    = mod2['view-port'];
+              await mod2.auto();
               
               var node    = document.createElement('snippet-editor');
               node.toggleAttribute('component',true);
-              //document.body.append(node);
-              wciframe.iframe.contentDocument.body.append(node);
+              viewport.body.append(node);
               var mod2    = mod.create({mod,name:'snippet-editor'});
               var result    = await mod.build({root:node,mod:mod2});
               var snippet   = mod2['snippet-editor'];
               await mod2.auto();
+              viewport.css('snippet-editor {height:100%}');
               
               
               var node    = document.createElement('webcontainer-fs');
               node.setAttribute('component','page');
-              wciframe.iframe.contentDocument.body.append(node);
+              viewport.body.append(node);
               var mod2    = mod.create({mod,name:'webcontainer-fs'});
               var result    = await mod.build({root:node,mod:mod2});
               var wcfs    = mod2['webcontainer-fs'];
               wcfs.initmod({filemod:snippet.filemod,ext,$,menu,source,webcontainer,log,debug,complete});
-              
               await wcfs.init();
               wcfs.initdom();
               
