@@ -61,6 +61,7 @@
         var keydown;
         var debug;
         var hs;
+        var vm;
         
         var menu;
         
@@ -121,8 +122,9 @@
               'js/dom/keydown/keydown.js',
               'js/debug/debug.js',
               'js/string/hs.js',
+              'js/dom/viewport-manager/viewport-manager.js',
         );
-        [$,datatype,menumod,keydown,debug,hs]   = await promise;
+        [$,datatype,menumod,keydown,debug,hs,vm]   = await promise;
         
         mod.stack.complete;
         
@@ -290,6 +292,11 @@
         
         btn['snippet-editor']   = async function(){
         
+              var viewport    = await vm.new();
+              viewport.pos({x:200,y:200});
+              
+              
+              /*
               var node    = document.createElement('view-port');
               node.toggleAttribute('component',true);
               document.body.append(node);
@@ -297,7 +304,6 @@
               var result    = await mod.build({root:node,mod:mod2});
               var viewport    = mod2['view-port'];
               await mod2.auto();
-              viewport.pos({x:200,y:200});
               viewport.css(`
                     snippet-editor
                       {display:block;height:100%}
@@ -306,6 +312,7 @@
                     snippet-editor::part(root)
                       {height:100%}
               `);
+              */
               
               var node    = document.createElement('snippet-editor');
               node.toggleAttribute('component',true);
