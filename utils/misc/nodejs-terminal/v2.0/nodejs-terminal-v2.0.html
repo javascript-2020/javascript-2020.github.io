@@ -287,7 +287,6 @@
         
               var node    = document.createElement('webcontainer-iframe');
               node.setAttribute('component','page');
-              //document.body.append(node);
               var mod2      = mod.create({mod,name:'webcontainer-iframe'});
               var result    = await mod.build({root:node,mod:mod2});
               var wciframe    = mod2['webcontainer-iframe'];
@@ -304,28 +303,8 @@
               var viewport    = await vm.new();
               viewport.pos({x:200,y:200});
               
-              
-              /*
-              var node    = document.createElement('view-port');
-              node.toggleAttribute('component',true);
-              document.body.append(node);
-              var mod2    = mod.create({mod,name:'view-port'});
-              var result    = await mod.build({root:node,mod:mod2});
-              var viewport    = mod2['view-port'];
-              await mod2.auto();
-              viewport.css(`
-                    snippet-editor
-                      {display:block;height:100%}
-              `);
-              viewport.css(`
-                    snippet-editor::part(root)
-                      {height:100%}
-              `);
-              */
-              
               var node    = document.createElement('snippet-editor');
               node.toggleAttribute('component',true);
-              node.toggleAttribute('v2.0',true);
               node.setAttribute('web-editor','height=100%');
               viewport.body.append(node);
               var mod2    = mod.create({mod,name:'snippet-editor'});
@@ -333,7 +312,6 @@
               var snippet   = mod2['snippet-editor'];
               await mod2.auto();
               snippet.editor.df=true;
-              
               
               var node    = document.createElement('webcontainer-fs');
               node.setAttribute('component','page');
