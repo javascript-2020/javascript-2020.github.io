@@ -1,0 +1,610 @@
+
+
+
+<!-- headers
+      cross-origin-isolate
+-->
+
+
+<!DOCTYPE html>
+
+
+<html>
+
+      <head>
+            <meta charset=utf-8>
+            
+            <title>
+                  Node.js Terminal
+            </title>
+            
+            <meta name=description content=''>
+            
+            <base href='https://ext-code.com/utils/misc/nodejs-terminal/nodejs-terminal.html'>
+            <link rel=canonical href='https://ext-code.com/utils/misc/nodejs-terminal/nodejs-terminal.html'>
+            
+            <link rel='shortcut icon' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAcCAMAAABBJv+bAAAAQlBMVEVHcEwyODg0ODkzNzgxNzc0ODk0ODkzODgzODgzNzgyNzgzODg0ODkzODgyNzgzODgzODgzODk0ODk0ODkyNzg0ODmObyvDAAAAFXRSTlMABvaSDbPHe15GL5u9hRxvO6rn2VJXM6DpAAAAxElEQVQoz71TyRbDIAh0Ie6J2fz/Xy3Y2pDktZ5aTiODCAMK0QxAPoFsgNk0JrMEQmEwyU5ndt4K2khQEzLhdNeQTznCWREegNEOOe18fRO8i6ooz+gRw1k9gMkyo/E9zY5yKMX+ihbLq8mjFB5N4UepYLGRmdM7OnLlpYtJXWQQkFCIpHcpfBVpCxeRV/KuodHzmfaNxuTmlpxmoEzc5bs0rnGdQQZeybWxRX6Vxf5rJJ116CxTZxX5Isf7Ive+wadP9AAuFg97y3bd7gAAAABJRU5ErkJggg=='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            
+            <script type='application/ld+json'>
+                  {
+                        "@context"              : "https://schema.org",
+                        "@type"                 : "SoftwareApplication",
+                        "name"                  : "Node.js Terminal",
+                        "url"                   : "https://ext-code.com/utils/misc/terminal/terminal.html",
+                        "author"                : {"@type":"Person","name":"Matthew Richards"},
+                        "description"           : "Use this tool to quickly setup a terminal with a nodejs / npm environments and experiment without touching the local disk.",
+                        "applicationCategory"   : "DeveloperApplication",
+                        "operatingSystem"       : "All",
+                        "browserRequirements"   : "Requires JavaScript-enabled browser",
+                        "softwareVersion"       : "1.0.0",
+                        "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
+                  }
+            </script>
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
+            
+            <script init>
+                                                                                console.clear();
+                                                                                console.log('nodejs-terminal-v2.0.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var version='v2.0';
+        var df=true;
+        
+        
+        var ext;
+        var $;
+        var datatype;
+        var menumod;
+        var keydown;
+        var debug;
+        var hs;
+        var vm;
+        
+        var menu;
+        
+        var misc;
+        var filemod;
+        var wcfs;
+        var log;
+        
+        
+  //:
+  
+  
+        async function init(){
+        
+        
+              vm.initmod({mod});
+              
+              
+              menu    = menumod();
+              
+              mod.base.add({ext,$,datatype,keydown,menu,menumod,debug});
+              
+              
+              misc      = mod['misc-hdr'];
+              filemod   = mod['file-mod'];
+              wcfs      = mod['webcontainer-fs'];
+              log       = mod['log-mod'];
+              
+              misc.initmod({ext,$});
+              filemod.initmod({ext,$,menumod,menu,complete,source,log});
+              wcfs.initmod({ext,$,filemod,menumod,menu,complete,source,log,debug,webcontainer});
+              log.initmod({ext,$});
+              
+              
+              await Promise.all([
+                    vm.init(),
+                    misc.init(),
+                    filemod.init(),
+                    wcfs.init(),
+                    log.init(),
+              ]);
+              
+              
+              initdom();
+              
+              
+              
+        }//init
+        
+        
+        
+(async()=>{
+
+        mod.stack.add;
+        
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+        
+        var promise   = ext.load.libs(
+              'js/dom/$.js.api',
+              'js/core/datatype.js',
+              'js/dom/menumod/menumod.js',
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
+              'js/string/hs.js',
+              'js/dom/viewport-manager/viewport-manager.js.api',
+        );
+        [$,datatype,menumod,keydown,debug,hs,vm]   = await promise;
+        
+        vm    = vm();
+        
+        mod.stack.complete;
+        
+})();
+
+
+            </script>
+            
+            
+            
+            
+            
+            <style>
+            
+  html
+    {height:100%;font-family:arial}
+  body
+    {margin:20px;height:calc(100% - 40px);display:flex;flex-direction:column;gap:10px}
+    
+    
+  #hdr
+    {display:flex;align-items:center;position:relative}
+    
+  #file-info
+    {display:flex;align-items:center;margin:0 20px;gap:20px;padding:5px 10px;border:1px solid lightgray;border-radius:5px}
+  #file-info #icon
+    {width:20px;height:20px;box-sizing:border-box}
+    
+  #niframe
+    {cursor:pointer;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAw1BMVEUrecM8RlEsesU8RlAtesA9RlArecMvecAuer8/SVPKzc+GjJJXlM5DiMlLjcvQ4PDc6PQueb9YYWk8hMcyfsRDTFY9R1E8Rk+Mtdy81OuYveDF2u00fsWox+Qzeb0+R09HcEx5qtc4gcW30elKU11wd36fo6gtecI9RlA8RlA9Rk+tyuXv9Pl8q9hqoNK4u792fYQveb56gYg+R1G6vsFrc3rHyswwer+Bh42Ump8yer5IS0orecM8RlApeMM5Q00od8KQ9boaAAAAPHRSTlP7QZr3XXL+cp/88fXy9fPs7Z/09vr5/Zzq7e7s9+kkKgDx9On38+bLbtZr7e3q7urpaPAd6erkRObpPwF4XDSbAAABE0lEQVQoz5WR2W6DMBBFhyykSY0BswTSsDR70n3f7MH//1U1fiASBUs9sixZR3M11oWyOI17OFg/UBxFL0cLTkLEsYhFfRTVGfWaw1hUb1/DHWO7qXpHz5cNTOu4+nyN3rfbWaT05mHW8FjpabFhgkUR0+nTMzr8MDQwhxfLQAEfAwMjmHADFzCx/6XRrIPQpMP0XnZrVLmSeFRil8aA2FwuUqBO4/1GY5BmwEP3TiYuxfa0smmASDwHl1njGy2TWyrVvQaOK+8G2tPO1XqFS/da8nDhkfZ07TOos2XiEflnNeUJqL25TWjH5spLna3/36E5UtdBQyUhtY2NYatQ39y3D08GbQ8g30Mv+28o81EvefkLrY2Is/tHNSYAAAAASUVORK5CYII=);
+    }
+  #snippet-editor
+    {cursor:pointer;
+      content:url(data:image/png;base64,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);
+    }
+    
+  #hldr
+    {padding:10px;border:2px solid lightgray;box-sizing:border-box;flex:1;background:hsl(45,86%,98%)}
+    
+  #terminal
+    {height:100%}
+    
+    
+    
+  .icon
+    {width:32px;height:32px;border:1px solid gray;border-radius:3px;box-sizing:border-box;cursor:pointer}
+    
+    
+            </style>
+            
+            
+            <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css' anonymous>
+            
+            
+      </head>
+      
+      
+      <body>
+      
+      
+            <misc-hdr v2.0 component=grp>
+                  <img slot=title class=title src='images/nodejs-terminal.png' style='top:-15px;height:80px' alt='Node.js Terminal'>
+                  <time slot=date datetime=2026-04-22>
+                        22 Apr 2026
+                  </time>
+            </misc-hdr>
+            
+            <div id=hdr>
+            
+                  <file-mod component></file-mod>
+                  
+                  <webcontainer-fs component=page></webcontainer-fs>
+                  
+                  <div id=file-info>
+                        <div>
+                              file :
+                        </div>
+                        <img id=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='>
+                        <div id=filename></div>
+                        <div id=size></div>
+                  </div>
+                  
+                  <img id=niframe title=iframe>
+                  <img id=snippet-editor title=editor>
+            </div>
+            
+            <div id=hldr>
+                  <div id=terminal>
+                  </div>
+            </div>
+            
+            <div>
+                  <input value=test type=button>
+            </div>
+            
+            <log-mod component></log-mod>
+            
+      </body>
+      
+      
+      <script>
+      
+      
+        var cur         = {};
+        
+        
+        var term;
+        var webcontainer;
+        var shell;
+        
+        
+        var blank;
+        
+        
+        var btn         = {};
+        var ui          = {};
+        
+        
+  //:
+  
+        function initdom(){
+        
+              vm.initdom();
+              
+              misc.initdom();
+              misc.set.version(version);
+              
+              filemod.initdom();
+              wcfs.initdom();
+              
+              $('#niframe').onclick             = btn.niframe;
+              $('#snippet-editor').onclick      = btn['snippet-editor'];
+              
+              $('#hldr').style.background       = theme.light.background;
+              
+              
+              $('[value=test]').onclick         = btn.test;
+              
+              log.initdom();
+              
+              blank   = $('#file-info img').src;
+              
+              ui.info();
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        btn.niframe   = async function(){
+        
+              var node    = document.createElement('webcontainer-iframe');
+              node.setAttribute('component','page');
+              var mod2      = mod.create({mod,name:'webcontainer-iframe'});
+              var result    = await mod.build({root:node,mod:mod2});
+              var wciframe    = mod2['webcontainer-iframe'];
+              wciframe.initmod({vm});
+              await mod2.auto();
+              wciframe.viewport.pos({x:200,y:200});
+              return wciframe;
+              
+        }//niframe
+        
+        
+        btn['snippet-editor']   = async function(){
+        
+              var viewport    = await vm.new();
+              viewport.pos({x:200,y:200});
+              
+              var node    = document.createElement('snippet-editor');
+              node.toggleAttribute('component',true);
+              node.setAttribute('web-editor','height=100%');
+              viewport.body.append(node);
+              var mod2    = mod.create({mod,name:'snippet-editor'});
+              var result    = await mod.build({root:node,mod:mod2});
+              var snippet   = mod2['snippet-editor'];
+              await mod2.auto();
+              snippet.editor.df=true;
+              
+              var node    = document.createElement('webcontainer-fs');
+              node.setAttribute('component','page');
+              viewport.body.append(node);
+              var mod2    = mod.create({mod,name:'webcontainer-fs'});
+              var result    = await mod.build({root:node,mod:mod2});
+              var wcfs    = mod2['webcontainer-fs'];
+              wcfs.initmod({filemod:snippet.filemod,ext,$,menu,log,debug,
+                              webcontainer,
+                              source:snippet.source,complete:snippet.complete});
+              await wcfs.init();
+              wcfs.initdom();
+              
+              
+              
+              
+/*
+
+              async function source(){
+              
+                    var txt   = snippet.editor.getValue();
+                    var blob    = new Blob([txt]);
+                    return blob;
+                    
+              }//source
+              
+              function complete(file){
+              }//complete
+              
+              
+              complete.load   = async function(file,blob){
+              
+                    var txt   = await blob.text();
+                    snippet.editor.setValue(txt);
+                    
+              }//load
+              
+              
+              complete.save   = function(file,confirm=true){
+              }//save
+*/
+
+        }//snippet-editor
+        
+        
+        btn.test    = async function(){console.log('test');
+        
+              var list    = await webcontainer.fs.readdir('/',{withFileTypes:true});
+              list.forEach(item=>{
+              
+                    console.log(item.name,item.isFile());
+                    
+              });
+              
+              
+        }//test
+        
+        
+  //:
+  
+  
+        ui.info   = function(){
+        
+              var str   = 'none';
+              var src   = blank;
+              
+              if(cur.file){
+                    str   = cur.file.name;
+                    src   = cur.file.icon;
+              }
+              $('#hdr #filename').textContent   = str;
+              $('#file-info #icon').src         = src;
+              
+              var str   = '';
+              if(cur.blob){
+                    str   = hs(cur.blob.size);
+              }
+              $('#hdr #size').textContent   = str;
+              
+        }//info
+        
+        
+  //:
+  
+  
+        function source(){
+        
+              return cur.blob;
+              
+        }//source
+        
+        
+        function complete(file){
+        
+              cur.file    = file;
+              ui.info();
+              
+        }//complete
+        
+        
+        complete.load   = function(file,blob){
+        
+              cur.blob    = blob;
+              complete(file);
+              
+        }//load
+        
+        
+        complete.save   = function(file,confirm=true){
+        
+              complete(file);
+              
+              if(confirm){
+                    log.green(file.name+' saved');
+              }
+              
+        }//save
+        
+        
+  //:
+  
+  
+        var theme   = {};
+        
+        theme.light   = {
+              foreground            : 'black',//'#53676d',
+              background            : 'hsl(45,86%,98%)',//'#fbf3db',
+              cursor                : '#3a4d53',
+              selectionBackground   : '#cfcebe',
+              black                 : '#e9e4d0',
+              red                   : '#d2212d',
+              green                 : '#489100',
+              yellow                : '#ad8900',
+              blue                  : '#0072d4',
+              magenta               : '#8f0075',
+              cyan                  : '#00938d',
+              white                 : '#ffffff',
+              brightBlack           : '#7d7a68',
+              brightRed             : '#d2212d',
+              brightGreen           : '#489100',
+              brightYellow          : '#ad8900',
+              brightBlue            : '#0072d4',
+              brightMagenta         : '#8f0075',
+              brightCyan            : '#00938d',
+              brightWhite           : '#ffffff'
+        };
+        
+        
+        var x   = {
+        
+              reset                 : '\x1b[0m',
+              
+              black                 : '\x1b[30m',
+              red                   : '\x1b[31m',
+              green                 : '\x1b[32m',
+              yellow                : '\x1b[33m',
+              blue                  : '\x1b[34m',
+              magenta               : '\x1b[35m',
+              cyan                  : '\x1b[36m',
+              white                 : '\x1b[37m',
+              
+              brightBlack           : '\x1b[90m',
+              brightRed: '\x1b[91m',
+              brightGreen: '\x1b[92m',
+              brightYellow: '\x1b[93m',
+              brightBlue: '\x1b[94m',
+              brightMagenta: '\x1b[95m',
+              brightCyan: '\x1b[96m',
+              brightWhite: '\x1b[97m',
+              
+              bgRed: '\x1b[41m',
+              bgGreen: '\x1b[42m',
+              bgYellow: '\x1b[43m',
+              bgBlue: '\x1b[44m',
+              bgMagenta: '\x1b[45m',
+              bgCyan: '\x1b[46m',
+              bgWhite: '\x1b[47m',
+              
+              bgBrightRed       : '\x1b[101m',
+              bgBrightGreen     : '\x1b[102m',
+              bgBrightYellow    : '\x1b[103m',
+              bgBrightBlue      : '\x1b[104m',
+              bgBrightMagenta   : '\x1b[105m',
+              bgBrightCyan      : '\x1b[106m',
+              bgBrightWhite     : '\x1b[107m',
+              
+              bold              : '\x1b[1m',
+              dim               : '\x1b[2m',
+              italic            : '\x1b[3m',
+              underline         : '\x1b[4m',
+              inverse           : '\x1b[7m',
+              hidden            : '\x1b[8m',
+              strikethrough     : '\x1b[9m',
+              
+              gray              : '\x1b[38;5;245m',
+              
+        };
+        
+        var chr   = {
+              warn          : '\u26A0',
+              cross         : '\u274C',
+              stop          : '\u1F6D1',
+              prohibited    : '\u1F6AB',
+              check         : '\u2705',
+              go            : '\u1F7E2',
+              thumb         : '\u1F44D',
+              ok            : '\u1F197',
+        };
+        
+        
+const files = {
+  src: {
+    directory: {
+      'main.js': {
+        file: {
+          contents: `
+            console.log('Hello from WebContainers!')
+          `,
+        },
+      },
+      'main.css': {
+        file: {
+          contents: `
+            body {
+              margin: 0;
+            }
+          `,
+        },
+      },
+    },
+  },
+  'package.json': {
+    file:{contents:'xyz'}
+  },
+  'index.html': {
+    file:{contents:'123'}
+  },
+  
+};
+
+
+
+
+        (async()=>{
+        
+              mod.stack.add;
+              
+              var [{Terminal},{FitAddon},{WebContainer}]    = await Promise.all([
+                    import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm'),
+                    import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'),
+                    import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm')
+              ]);
+              
+              term            = new Terminal({
+              
+                    fontFamily      : 'monospace',
+                    fontSize        : 16,
+                    lineHeight      : 1.0,
+                    
+                    theme           : theme.light,
+                    rendererType    : 'dom',
+                    
+              });
+              
+              var fitAddon        = new FitAddon();
+              term.loadAddon(fitAddon);
+              term.open(terminal);
+              fitAddon.fit();
+                                                                                      term.write('booting container ...\r\n')
+              webcontainer        = await WebContainer.boot();
+              
+              mod.stack.complete;
+              
+              webcontainer.on('server-ready',(port,url)=>term.write('server-ready :'+url+'-'+port));
+              
+              await webcontainer.mount(files);
+                                                                                      term.write('spawn jsh ...\r\n')
+              shell               = await webcontainer.spawn('jsh');
+              var output          = new WritableStream({write(data){term.write(data)}});
+              shell.output.pipeTo(output);
+              
+              var input           = shell.input.getWriter();
+              term.onData(data=>input.write(data));
+              
+              //term.resize();
+              term.focus();
+              
+              console.log(await webcontainer.fs.readdir('/'));
+              
+        })();
+        
+        
+      </script>
+      
+</html>
+
