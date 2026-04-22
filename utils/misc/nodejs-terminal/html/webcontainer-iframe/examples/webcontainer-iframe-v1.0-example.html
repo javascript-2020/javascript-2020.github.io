@@ -27,7 +27,8 @@
   
         async function init(){
         
-        
+              vm.initmod({mod});
+              
               //menu                          = menumod();
               console.log(mod);
               
@@ -37,8 +38,10 @@
               log   = mod['log-mod'];
               log.initmod({ext,$});
               
-              
-              await mod.auto();
+              await Promise.all([
+                    vm.init(),
+                    mod.auto(),
+              ]);
               
               
               initdom();
@@ -57,9 +60,13 @@
               'js/dom/$.js.api',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js'
+              'js/dom/keydown/keydown.js',
+              'js/dom/viewport-manager/viewport-manager.js',
+              
         );
-        [$,datatype,menumod,keydown]   = await promise;
+        [$,datatype,menumod,keydown,vm]   = await promise;
+        
+        vm    = vm();
         
         mod.stack.complete;
         
@@ -95,6 +102,9 @@
       
         function initdom(){
         
+              vm.initdom();
+              
+              
               $('#hdr [value=iframe]').onclick    = async e=>{
               
                     var node    = document.createElement('webcontainer-iframe');
@@ -102,8 +112,10 @@
                     document.body.append(node);
                     var mod2      = mod.create({mod,name:'webcontainer-iframe'});
                     var result    = await mod.build({root:node,mod:mod2});
-                    await mod2.auto();
                     var wciframe    = mod2['webcontainer-iframe'];
+                    eciframe.initmod({vm});
+                    await mod2.auto();
+                    
                     
               };
               
