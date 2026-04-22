@@ -296,6 +296,7 @@
               var mod2    = mod.create({mod,name:'view-port'});
               var result    = await mod.build({root:node,mod:mod2});
               var viewport    = mod2['view-port'];
+              viewport.pos({x:200,y:200});
               await mod2.auto();
               viewport.css(`
                     snippet-editor
@@ -324,11 +325,17 @@
               var mod2    = mod.create({mod,name:'webcontainer-fs'});
               var result    = await mod.build({root:node,mod:mod2});
               var wcfs    = mod2['webcontainer-fs'];
-              wcfs.initmod({filemod:snippet.filemod,ext,$,menu,source,webcontainer,log,debug,complete});
+              wcfs.initmod({filemod:snippet.filemod,ext,$,menu,log,debug,
+                              webcontainer,
+                              source:snippet.source,complete:snippet.complete});
               await wcfs.init();
               wcfs.initdom();
               
               
+              
+              
+/*
+
               async function source(){
               
                     var txt   = snippet.editor.getValue();
@@ -337,18 +344,22 @@
                     
               }//source
               
-              
               function complete(file){
               }//complete
               
               
-              complete.load   = function(file,blob){
+              complete.load   = async function(file,blob){
+              
+                    var txt   = await blob.text();
+                    snippet.editor.setValue(txt);
+                    
               }//load
               
               
               complete.save   = function(file,confirm=true){
               }//save
-              
+*/
+
         }//snippet-editor
         
         
