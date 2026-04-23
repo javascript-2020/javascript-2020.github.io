@@ -159,7 +159,6 @@
                   <input id=url autocomplete=off spellcheck=false>
                   <img id=hdrs-icon class=icon title='request> headers'>
                   <input type=button value=go>
-                  
             </div>
             
             <iframe></iframe>
@@ -193,6 +192,7 @@
               $(root,'.copy').onclick             = btn.copy;
               $(root,'.paste').onclick            = btn.paste;
               
+              $(root,'#hdrs-icon').onclick        = btn['hdrs-icon'];
               $(root,'[value=go]').onclick        = btn.go;
               
               
@@ -269,6 +269,14 @@
               iframe.srcdoc    = html;
               
         }//go
+        
+        
+        btn['hdrs-icon']    = function(){
+        
+              var [viewport,srchdrs]    = await Promise.all([vm.new(),mod.component('srcdoc-headers',{component:'page'}));
+              viewport.body.append(srchdrs.__host);
+              
+        }//hdrs-icon
         
         
   //:
