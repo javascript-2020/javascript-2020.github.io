@@ -73,10 +73,15 @@
                   <slot name=title></slot>
                   
                   
-                  <div class=date>
-                        <slot name=date></slot>
-                  </div>
+                  <page-source v2.0 component></page-source>
                   
+                  
+                  <slot name=filename></slot>
+                  
+                  <slot name=version></slot>
+                  
+                  
+                  <slot name=date class=date></slot>
                   
             </section>
             
@@ -84,15 +89,28 @@
       
       <script>
       
-(function hdr_index({mod,dom,host}){
-
-  var obj   = {};
+(function({mod,host}){
+                                                                                //misc/hdr-index.html
+                                                                                
+  var obj   = {
+        version   : 'v2.0',
+  };
   
         var df=false
         ;
         
         obj.initmod=function(params){
         }//initmod
+        
+        
+  //:
+  
+  
+        var shadow;
+        
+        
+        var set   = {};
+        obj.set   = set;
         
         
   //:
@@ -107,15 +125,45 @@
   
         obj.initdom   = function(){
         
-              var shadow          = host.shadowRoot;
+              shadow          = host.shadowRoot;
+              
+              set.filename();
+              if(typeof version!=='undefined'){
+                    set.version(version);
+              }
               
         }//initdom
+        
+        
+  //:
+  
+  
+        obj.set.version   = function(v){
+        
+              $(shadow,'[name=version]').textContent    = v;
+              
+        }//version
+        
+        
+        obj.set.filename    = function(fn){
+        
+              if(!fn){
+                    var str       = window.location.toString();
+                    var i         = str.lastIndexOf('/');
+                    fn            = str.slice(i+1);
+              }
+              $(shadow,'[name=filename]').textContent   = fn;
+              
+        }//filename
+        
+        
         
         
         
   return obj;
   
-})//hdr_index
+//misc/hdr_index
+})
 
       </script>
       
