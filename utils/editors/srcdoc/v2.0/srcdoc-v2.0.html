@@ -168,7 +168,8 @@
       
       <script>
       
-      
+        var srchdrs;
+        
         var input;
         var iframe;
         
@@ -183,6 +184,12 @@
         async function initdom(){
                                                                                 debug('initdom');
               await vm.initdom();
+              
+              var [viewport,obj2]    = await Promise.all([vm.new(),mod.component('srcdoc-headers',{component:'page'})]);
+              viewport.hide();
+              viewport.pos({x:200,y:200,w:550,h:250});
+              viewport.body.append(obj2.__host);
+              srchdrs   = {viewport,srchdrs:obj2};
               
               
               root                                = document.body;
@@ -273,8 +280,11 @@
         
         btn['hdrs-icon']    = async function(){
         
-              var [viewport,srchdrs]    = await Promise.all([vm.new(),mod.component('srcdoc-headers',{component:'page'})]);
-              viewport.body.append(srchdrs.__host);
+              if(srchdrs.viewport.status=='hidden'){
+                    srchdrs.viewport.show();
+              }else{
+                    srchdrs.viewport.hide();
+              }
               
         }//hdrs-icon
         
