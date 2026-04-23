@@ -239,8 +239,8 @@
                   </div>
                   
                   <div class=input>
-                        <img class='copy icon'>
-                        <img class='paste icon'>
+                        <img class='copy icon' title=copy>
+                        <img class='paste icon' title=paste>
                         <input id=src value='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.min.js'>
                   </div>
                   
@@ -309,8 +309,8 @@
                   </div>
                   
                   <div class=input>
-                        <img class='copy icon'>
-                        <img class='paste icon'>
+                        <img class='copy icon' title=copy>
+                        <img class='paste icon' title=paste>
                         <input id=src2 value='https://cdn.jsdelivr.net/npm/codemirror/+esm'>
                   </div>
                   
@@ -348,7 +348,7 @@
               $('#script .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src.value=txt};
               
               src.onkeydown                 = e=>e.key=='Enter' && process.script(src.value);
-              //src.value                   = 'https://cdn.jsdelivr.net/npm/markdown-it-container@4.0.0/+esm';
+              src.onfocus                   = e=>src.select();
               src.focus();
               
               item    = $('#item');
@@ -369,7 +369,7 @@
               $('#import .copy').onclick    = e=>navigator.clipboard.writeText(src2.value);
               $('#import .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src2.value=txt};
               
-              //src2.value    = 'https://unpkg.com/es-module-lexer?module';
+              src2.onfocus                  = e=>src2.select();
               
               go2.onclick    = function(){
               
