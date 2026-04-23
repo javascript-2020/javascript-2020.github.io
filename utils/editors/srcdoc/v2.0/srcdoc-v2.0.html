@@ -63,6 +63,9 @@
         
         async function ready(){
                                                                                 debug('init',version);
+              vm.initmod({mod});
+              await vm.init();
+              
               await initdom();
               
         }//init
@@ -76,8 +79,11 @@
         
         var promise   = ext.load.libs(
               'js/io/github/github.js',
+              'js/dom/viewport-manager/v1.0.0/viewport-manager-v1.0.0.js',
         );
-        [github]   = await promise;
+        [github,vm]   = await promise;
+        
+        vm    = vm();
         
         mod.stack.complete;
         
@@ -119,6 +125,13 @@
   input[type=button]
     {cursor:pointer}
     
+    
+  #hdrs-icon
+    {
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAA7VBMVEVHcEwCAQQAAAAgIiMWIjFVW11VW14LDRMAAAAgIiMDAAEAAACvu78pQF0YJjZBRkgSGigKCwwGBwseICFdY2UzUXUyTG/m+Pzs/f/q/P8hM0uLlJjBz9Pj9fk6XYfn+f05W4Tc7fFkeaU7XolKUlx0fICcvf+YuPyHpOCEody+zM6OrOl2jr82V39CS2AwTXDm9/uVtPUtNEV+mNBSYocfKz5IVXVvhrc1VHkoQF0eJDJWZ45rgLBOXX05Q1jW5urE09Y7X4pze39gdKCBi40/S2dGU3JQV1t0fX/N3OC7ycwkOVS7yMyowOnh8/dPgjyxAAAAF3RSTlMABi2y7Oztsyi1Ei6xx+fo6nN0s+a1ukIGjSwAAAE0SURBVCjPpdNpU4JAGMBxQUnyPiqhbNcwFxJQbsW8z+z6/h+nBcEWxHrhn1l48Zud2ZnlSaUui2LzNE2zVI7OUSxNlGcpzLVKBle6K2aKt6UMWaWGN2f7LRU/OABaZKCfpTx23aGtfrhtEK0dsKqCIRiqi3a0xYHt+zPZPr89nKnjcXrO8Ylx87THTdhIDDZDhgn9svaUkBYyv989n7Tb8yF3p+ZLLHPa5Y7cEyVTVqRXK1iCLvYiPN4IG9kxTHlrmIJtK5h5kkfGFA22CA0cJIwcSZzMSR5YioOUCeYJGlsiEr++IcG6LMpIl5G3vA9SZofd15iNlRBrZQRHwzxbLzuxluvjbgiTbgTCkP+6kn+4/q49xtMa3uuzjv/kapk5qVC4uWKYctUfA/qknD8b/hhc0g/wRVKEMCnUEAAAAABJRU5ErkJggg==);
+      }
+      
+      
             </style>
             
       </head>
@@ -144,7 +157,7 @@
                   <img class='copy icon'>
                   <img class='paste icon'>
                   <input id=url autocomplete=off spellcheck=false>
-                  
+                  <img id=hdrs-icon class=icon title='request> headers'>
                   <input type=button value=go>
                   
             </div>
@@ -168,8 +181,11 @@
     //:
     
     
-        function initdom(){
+        async function initdom(){
                                                                                 debug('initdom');
+              await vm.initdom();
+              
+              
               root                                = document.body;
               
               input                               = $(root,'#url');
