@@ -70,6 +70,14 @@
   //:
   
   
+        var headers     = {};
+        obj.headers     = headers;
+        
+        var shadow;
+        var ui          = {};
+        var list;
+        var item;
+        
   //:
   
   
@@ -85,7 +93,20 @@
   
         obj.initdom   = async function(){
         
-              shadow              = host.shadowRoot;
+              shadow                              = host.shadowRoot;
+              
+              
+              var hdr                             = $(shadow,'#hdr');
+              
+              ui.name                             = $(hdr,'#name');
+              ui.value                            = $(hdr,'#value');
+              
+              $(hdr,'[value=add]').onclick        = btn.add;
+              
+              
+              list                                = $(shadow,'#list');
+              item                                = $(list,'.item');
+              item.remove();
               
               
         }//initdom
@@ -94,7 +115,32 @@
   //:
   
   
-  
+        btn.add   = function(){
+        
+              var name    = ui.name.value;
+              var value   = ui.value.value;
+              
+              headers[name]   = value;
+              
+              var nitem   = item.cloneNode(true);
+              $(nitem,'.name').textContent    = name;
+              $(nitem,'.value').textContent   = value;
+              $(nitem,'.remove').onclick      = remove;
+              list.append(nitem);
+              
+              
+              function remove(){
+              
+                    delete headers[name];
+                    nitem.remove();
+                    
+              }//remove
+              
+        }//add
+        
+        
+        
+        
   return obj;
   
 })
