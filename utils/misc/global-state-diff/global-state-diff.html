@@ -63,7 +63,7 @@
                                                                                 
               hdr   = mod['misc-hdr'];
               
-              initdom();
+              await initdom();
               
               
         }//ready
@@ -144,7 +144,7 @@
     
     
   #hdr
-    {display:flex}
+    {display:flex;align-items:center}
     
   #info
     {display:grid;grid-template-columns:max-content minmax(0, 1fr);gap:20px}
@@ -182,6 +182,8 @@
     {display:inline-block;text-decoration:none;color:black}
     
     
+  .ex
+    {font-weight:normal;font-size:16px;font-family:monospace;color:gray}
     
   .spc
     {flex:1}
@@ -194,19 +196,19 @@
   iframe
     {display:none}
     
+  .spinner
+    {width:15px;height:15px;margin-right:10px}
+    
             </style>
             
       </head>
       
       <body>
       
-            <misc-hdr v2.0 component=grp>
-                  <img slot=title src='images/global-state-diff.png' style='top:-5px;height:40px' alt=global-state-diff>
-                  <div slot=version>
-                        v2.0
-                  </div>
-                  <time slot=date datetime=2026-02-13>
-                        13 Feb 2026
+            <misc-hdr component=grp>
+                  <img slot=title src='images/global-state-diff.png' style='top:-25px;height:80px' alt=global-state-diff>
+                  <time slot=date datetime=2026-04-23>
+                        23 Apr 2026
                   </time>
             </misc-hdr>
             
@@ -215,8 +217,8 @@
             
                   <h3>
                         global state diff
-                        <div style='font-weight:normal;font-size:16px'>
-                              &lt;script src=''&gt;&lt;/script&gt;
+                        <div class=ex>
+                              &lt;script src='https://example.com/script.js'&gt;&lt;/script&gt;
                         </div>
                   </h3>
                   
@@ -242,8 +244,8 @@
                   </div>
                   
                   <div class=input>
-                        <img class='copy icon'>
-                        <img class='paste icon'>
+                        <img class='copy icon' title=copy>
+                        <img class='paste icon' title=paste>
                         <input id=src value='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.min.js'>
                   </div>
                   
@@ -288,6 +290,12 @@
             
                   <h3>
                         Import Inspector
+                        <div class=ex>
+                              import mod from 'https://example.com/module.js'
+                        </div>
+                        <div class=ex>
+                              var {mod}   = await import('https://example.com/module/js');
+                        </div>
                   </h3>
                   
                   <div class=links>
@@ -312,8 +320,8 @@
                   </div>
                   
                   <div class=input>
-                        <img class='copy icon'>
-                        <img class='paste icon'>
+                        <img class='copy icon' title=copy>
+                        <img class='paste icon' title=paste>
                         <input id=src2 value='https://cdn.jsdelivr.net/npm/codemirror/+esm'>
                   </div>
                   
@@ -334,6 +342,7 @@
       
         var item;
         var ui        = {};
+        var spinner;
         
         
         var process   = {};
@@ -341,6 +350,8 @@
         
         
   //:
+  
+  
   
   
         function initdom(){
@@ -351,7 +362,7 @@
               $('#script .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src.value=txt};
               
               src.onkeydown                 = e=>e.key=='Enter' && process.script(src.value);
-              //src.value                   = 'https://cdn.jsdelivr.net/npm/markdown-it-container@4.0.0/+esm';
+              src.onfocus                   = e=>src.select();
               src.focus();
               
               item    = $('#item');
@@ -372,13 +383,14 @@
               $('#import .copy').onclick    = e=>navigator.clipboard.writeText(src2.value);
               $('#import .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src2.value=txt};
               
-              //src2.value    = 'https://unpkg.com/es-module-lexer?module';
+              src2.onfocus                  = e=>src2.select();
               
               go2.onclick    = function(){
               
                     process.import(src2.value);
                     
               }//onclick
+              
               
               
               
@@ -407,6 +419,8 @@
                                                                           console.log('script.onerror');
                                                                           console.log(arguments);
                                                                           console.error(err);
+                    complete();
+                    
                     values.textContent    = err.toString();
                     values.classList.add('error');
                     
@@ -416,6 +430,8 @@
               script.onload   = function(){
                                                                           console.log('script.onload');
                                                                           console.log(arguments);
+                    complete();
+                    
                     var afterKeys   = new Set(Object.keys(win));
                     var added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
                                                                           //console.log('New globals :', added);
@@ -426,6 +442,13 @@
                     });
                     
               }//onload
+              
+              
+              function complete(){
+              
+                    display.spinner.remove(nitem);
+                    
+              }//complete
               
         }//script
         
@@ -448,6 +471,8 @@
               //win.eval(js);
               
               var {mod,err}               = await win.fn(src);
+              
+              display.spinner.remove(nitem);
               
               if(err){
                     display.error(values,err);
@@ -539,6 +564,8 @@
               
               $(nitem,'#url').textContent   = src;
               $(nitem,'.close').onclick     = e=>nitem.remove();
+              
+              display.spinner(nitem);
               root.append(nitem);
               
               display.info(nitem,src);
@@ -548,12 +575,33 @@
         }//display
         
         
+        display.spinner   = function(item){
+        
+              var spinner                                         = document.createElement('img');
+              spinner.className                                   = 'spinner';
+              spinner.src                                         = '/images/spinner.gif';
+              
+              var close   = $(item,'.close');
+              close.parentNode.insertBefore(spinner,close);
+              
+              return spinner;
+              
+        }//spinner
+        
+        
+        display.spinner.remove    = function(item){
+        
+              $(item,'.spinner').remove();
+              
+        }//remove
+        
+        
         display.info    = async function(nitem,src){
         
               var {txt,hdrs,error}   = await get(src);
               if(error)return;
               
-              var str                         = await detect(txt);
+              var str               = await detect(txt);
               $(nitem,'#info #detect').textContent    = str;
               $(nitem,'#info #hdrs').textContent      = hdrs;
                                                                                 console.log(str);
@@ -762,6 +810,9 @@
         
         
 !(async()=>{
+
+//https://www.npmjs.com/package/es-module-lexer
+
 
         var {init,parse}    = await import('https://unpkg.com/es-module-lexer?module');
         
