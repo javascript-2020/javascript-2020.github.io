@@ -40,7 +40,7 @@
             </script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
             <script init>
                                                                                 console.clear();
@@ -61,15 +61,9 @@
         var menu;
         
         
-        async function init(){
+        async function ready(){
                                                                                 debug('init',version);
-              menu    = menumod();
-              
-              mod.base.add({ext,$,datatype,keydown,menu,menumod});
-              
-              
-              await initdom(document.body);
-              
+              await initdom();
               
         }//init
         
@@ -81,14 +75,9 @@
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
         
         var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js',
               'js/io/github/github.js',
         );
-        [$,datatype,menumod,keydown,debug,github]   = await promise;
+        [github]   = await promise;
         
         mod.stack.complete;
         
@@ -137,10 +126,25 @@
       
       <body>
       
+      
+            <editors-hdr v2.0 component=grp>
+                  <img slot=title src='images/srcdoc.png' style='top:-5px;height:55px' alt='html editor'>
+                  <h1 slot=seo-hdr class=visually-hidden>
+                        html editor
+                  </h1>
+                  
+                  <time slot=date datetime=2026-04-23>
+                        23 Apr 2026
+                  </time>
+                  
+            </editors-hdr>
+            
+            
             <div id=url-root>
                   <img class='copy icon'>
                   <img class='paste icon'>
                   <input id=url autocomplete=off spellcheck=false>
+                  
                   <input type=button value=go>
                   
             </div>
