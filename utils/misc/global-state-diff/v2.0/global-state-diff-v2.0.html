@@ -182,6 +182,8 @@
     {display:inline-block;text-decoration:none;color:black}
     
     
+  .ex
+    {font-weight:normal;font-size:16px;font-family:monospace;color:gray}
     
   .spc
     {flex:1}
@@ -193,6 +195,9 @@
     
   iframe
     {display:none}
+    
+  .spinner
+    {width:15px;height:15px}
     
             </style>
             
@@ -212,8 +217,8 @@
             
                   <h3>
                         global state diff
-                        <div style='font-weight:normal;font-size:16px'>
-                              &lt;script src=''&gt;&lt;/script&gt;
+                        <div class=ex>
+                              &lt;script src='https://example.com/script.js'&gt;&lt;/script&gt;
                         </div>
                   </h3>
                   
@@ -285,6 +290,12 @@
             
                   <h3>
                         Import Inspector
+                        <div class=ex>
+                              import {mod} from 'https://example.com/module.js'
+                        </div>
+                        <div class=ex>
+                              var {mod}   = await import('https://example.com/module/js');
+                        </div>
                   </h3>
                   
                   <div class=links>
@@ -331,6 +342,7 @@
       
         var item;
         var ui        = {};
+        var spinner;
         
         
         var process   = {};
@@ -338,6 +350,8 @@
         
         
   //:
+  
+  
   
   
         function initdom(){
@@ -379,6 +393,7 @@
               
               
               
+              
         }//initdom
         
         
@@ -395,6 +410,8 @@
               
               var beforeKeys                = new Set(Object.keys(win));
               
+              display.spinner(nitem);
+              
               var script                    = doc.createElement('script');
               script.src                    = src;
               doc.head.appendChild(script);
@@ -404,6 +421,8 @@
                                                                           console.log('script.onerror');
                                                                           console.log(arguments);
                                                                           console.error(err);
+                    complete();
+                    
                     values.textContent    = err.toString();
                     values.classList.add('error');
                     
@@ -413,6 +432,8 @@
               script.onload   = function(){
                                                                           console.log('script.onload');
                                                                           console.log(arguments);
+                    complete();
+                    
                     var afterKeys   = new Set(Object.keys(win));
                     var added       = [...afterKeys].filter(k=>!beforeKeys.has(k));
                                                                           //console.log('New globals :', added);
@@ -423,6 +444,13 @@
                     });
                     
               }//onload
+              
+              
+              function complete(){
+              
+                    display.spinner.remove(nitem);
+                    
+              }//complete
               
         }//script
         
@@ -445,6 +473,8 @@
               //win.eval(js);
               
               var {mod,err}               = await win.fn(src);
+              
+              display.spinner.remove(nitem);
               
               if(err){
                     display.error(values,err);
@@ -536,6 +566,8 @@
               
               $(nitem,'#url').textContent   = src;
               $(nitem,'.close').onclick     = e=>nitem.remove();
+              
+              display.spinner(nitem);
               root.append(nitem);
               
               display.info(nitem,src);
@@ -545,12 +577,31 @@
         }//display
         
         
+        display.spinner   = function(item){
+        
+              var spinner                                         = document.createElement('img');
+              spinner.className                                   = 'spinner';
+              spinner.src                                         = '/images/spinner.gif';
+              
+              var close   = $(item,'.close');
+              close.parentNode.insertBefore(spinner,close);
+              
+        }//spinner
+        
+        
+        display.spinner.remove    = function(item){
+        
+              $(item,'.spinner').remove();
+              
+        }//remove
+        
+        
         display.info    = async function(nitem,src){
         
               var {txt,hdrs,error}   = await get(src);
               if(error)return;
               
-              var str                         = await detect(txt);
+              var str               = await detect(txt);
               $(nitem,'#info #detect').textContent    = str;
               $(nitem,'#info #hdrs').textContent      = hdrs;
                                                                                 console.log(str);
