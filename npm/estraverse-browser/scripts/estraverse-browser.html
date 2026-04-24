@@ -31,14 +31,14 @@
         
         
         var packages          = ['estraverse'];
-        var filename          = 'estraverse.m.js';
+        var filename          = 'estraverse.js';
         
         files['entry.js']   = `
         
               import * as estraverse from 'estraverse';
-              export {estraverse};
+              //export {estraverse};
               
-              //export default espree;  // iife / umd
+              export default espree;  // iife / umd
               
         `;
         
@@ -93,7 +93,7 @@
               
               await rollup();
               
-              var uint8   = await webcontainer.fs.readFile('estraverse.m.js');
+              var uint8   = await webcontainer.fs.readFile('estraverse.js');
               var blob    = new Blob([uint8],{type:'text/javascript'});
               var url     = window.URL.createObjectURL(blob);
               
@@ -243,11 +243,11 @@
                 input     : 'entry.js',
                 output    : {
                                   file      : '${filename}',
-                                  format    : 'es'
+                                  //format    : 'es'
                                   
-                                  //format    : 'iife',         // or 'umd'
-                                  //name      : 'espree',       // This becomes window.espree
-                                  //exports   : 'default',
+                                  format    : 'iife',         // or 'umd'
+                                  name      : 'espree',       // This becomes window.espree
+                                  exports   : 'default',
                                   
                 },
                 plugins   : [
