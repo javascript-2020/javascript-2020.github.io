@@ -45,7 +45,8 @@
         var term;
         var webcontainer;
         var files   = {};
-        
+        var rollup    = {};
+        var test      = {};
         
         var packages          = ['espree'];
         var filename          = 'espree.m.js';
@@ -94,7 +95,7 @@
               await webcontainer.mount(files);
               
               
-              await install();
+              await install_espree();
               
               var uint8   = await webcontainer.fs.readFile('node_modules/espree/package.json');
               var blob    = new Blob([uint8]);
@@ -106,7 +107,7 @@
               await install_rollup();
               
               
-              await rollup();
+              await rollup.esm();
               
               var uint8   = await webcontainer.fs.readFile(filename);
               var blob    = new Blob([uint8],{type:'text/javascript'});
@@ -125,7 +126,7 @@
                                                                                 console.log('done.');
                                                                                 
                                                                                 
-              async function install(){
+              async function install_espree(){
                                                                                 var str   = packages.join(' ');
                                                                                 console.log('npm install',str,'...');
                     packages.unshift('install');
@@ -179,8 +180,8 @@
               }//install_rollup
               
               
-              async function rollup(){
-                                                                                console.log('perform rollup ...');
+              rollup.esm    = async function(){
+                                                                                console.log('perform rollup esm ...');
                     var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.esm.js']);
                     
                     var stream    = new WritableStream({write(data){term.write(data)}});
@@ -192,12 +193,28 @@
                     }
                     return code;
                     
-              }//rollup
+              }//esm
+              
+              
+              rollup.cjs    = async function(){
+                                                                                console.log('perform rollup cjs ...');
+                    var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.cjs.js']);
+                    
+                    var stream    = new WritableStream({write(data){term.write(data)}});
+                    process.output.pipeTo(stream);
+                    
+                    var code      = await process.exit;
+                    if(code!=0){
+                                                                                console.log('an error occurred');
+                    }
+                    return code;
+                    
+              }//cjs
               
               
               
               
-              function test(){
+              test.esm    = function(){
               
                     var url     = window.URL.createObjectURL(blob);
                     var {espree}    = await import(url);
@@ -281,6 +298,7 @@
               
         `;
         
+        
         files['rollup.config.cjs.js']   = `
         
               import resolve from '@rollup/plugin-node-resolve';
@@ -289,7 +307,7 @@
               import nodePolyfills from 'rollup-plugin-polyfill-node';
               
               export default {
-                input     : 'entry.esm.js',
+                input     : 'entry.cjs.js',
                 output    : {
                                   file      : '${filename}',
                                   
