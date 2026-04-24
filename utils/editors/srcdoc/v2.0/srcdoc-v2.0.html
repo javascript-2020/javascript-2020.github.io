@@ -196,7 +196,7 @@
               var [viewport,headers]    = await Promise.all([vm.new({initdom:{icons:{remove:false}}}),mod.component('srcdoc-headers',{component:'page'})]);
               viewport.hide();
               viewport.pos({x:200,y:200,w:630,h:250});
-              viewport.body.append(obj2.__host);
+              viewport.body.append(headers.__host);
               hdrs    = {viewport,headers};
               
               
@@ -257,8 +257,9 @@
                     url   = github.build(result);
               }
               
-              var headers   = hdrs.headers;
-                                                                                debug.json(headers);
+              
+              var headers   = hdrs.headers.headers;
+                                                                                //debug.json(headers);
               var err;
               try{
               
@@ -292,10 +293,10 @@
         
         btn['hdrs-icon']    = async function(){
         
-              if(srchdrs.viewport.status=='hidden'){
-                    srchdrs.viewport.show();
+              if(hdrs.viewport.status=='hidden'){
+                    hdrs.viewport.show();
               }else{
-                    srchdrs.viewport.hide();
+                    hdrs.viewport.hide();
               }
               
         }//hdrs-icon
