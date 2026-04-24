@@ -181,7 +181,7 @@
               
               async function rollup(){
                                                                                 console.log('perform rollup ...');
-                    var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.js']);
+                    var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.esm.js']);
                     
                     var stream    = new WritableStream({write(data){term.write(data)}});
                     process.output.pipeTo(stream);
@@ -193,6 +193,8 @@
                     return code;
                     
               }//rollup
+              
+              
               
               
               function test(){
@@ -224,12 +226,18 @@
   
   
   
-        files['entry.js']   = `
+        files['entry.esm.js']   = `
         
               import * as espree from 'espree';
               export {espree};
               
-              //export default espree;  // iife / umd
+        `;
+        
+        
+        files['entry.cjs.js']   = `
+        
+              import * as espree from 'espree';
+              export default espree;
               
         `;
         
@@ -237,15 +245,15 @@
         files['package.json']   = `
         
               {
-                    "name": "espree-browser",
-                    "version": "1.0.0",
-                    "scripts": {}
+                    "name"      : "espree-browser",
+                    "version"   : "1.0.0",
+                    "scripts"   : {}
               }
               
         `;
         
         
-        files['rollup.config.js']   = `
+        files['rollup.config.esm.js']   = `
         
               import resolve from '@rollup/plugin-node-resolve';
               import commonjs from '@rollup/plugin-commonjs';
@@ -253,7 +261,7 @@
               import nodePolyfills from 'rollup-plugin-polyfill-node';
               
               export default {
-                input     : 'entry.js',
+                input     : 'entry.esm.js',
                 output    : {
                                   file      : '${filename}',
                                   format    : 'es'
@@ -261,6 +269,33 @@
                                   //format    : 'iife',         // or 'umd'
                                   //name      : 'espree',       // This becomes window.espree
                                   //exports   : 'default',
+                                  
+                },
+                plugins   : [
+                                  commonjs(),
+                                  json(),
+                                  nodePolyfills(),
+                                  resolve({preferBuiltins:false})
+                            ]
+              };
+              
+        `;
+        
+        files['rollup.config.cjs.js']   = `
+        
+              import resolve from '@rollup/plugin-node-resolve';
+              import commonjs from '@rollup/plugin-commonjs';
+              import json from '@rollup/plugin-json';
+              import nodePolyfills from 'rollup-plugin-polyfill-node';
+              
+              export default {
+                input     : 'entry.esm.js',
+                output    : {
+                                  file      : '${filename}',
+                                  
+                                  format    : 'iife',         // or 'umd'
+                                  name      : 'espree',       // This becomes window.espree
+                                  exports   : 'default',
                                   
                 },
                 plugins   : [
