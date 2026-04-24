@@ -102,6 +102,9 @@
   body
     {height:calc(100% - 16px);display:flex;flex-direction:column;font-family:arial}
     
+  #github-root
+    {border:1px solid lightgray;padding:5px 10px;border-radius:3px;cursor:pointer}
+    
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
     
@@ -154,6 +157,10 @@
             
             
             <div id=url-root>
+                  <div id=github-root>
+                        github
+                        <input type=checkbox>
+                  </div>
                   <img class='copy icon'>
                   <img class='paste icon'>
                   <input id=url autocomplete=off spellcheck=false>
@@ -170,6 +177,7 @@
       
         var srchdrs;
         
+        var chk           = {};
         var input;
         var iframe;
         
@@ -185,7 +193,7 @@
                                                                                 debug('initdom');
               await vm.initdom();
               
-              var [viewport,obj2]    = await Promise.all([vm.new(),mod.component('srcdoc-headers',{component:'page'})]);
+              var [viewport,obj2]    = await Promise.all([vm.new({initdom:{icons:{remove:false}}}),mod.component('srcdoc-headers',{component:'page'})]);
               viewport.hide();
               viewport.pos({x:200,y:200,w:630,h:250});
               viewport.body.append(obj2.__host);
@@ -194,6 +202,7 @@
               
               root                                = document.body;
               
+              chk.github                          = $.chkbox(root,'#github-root');
               input                               = $(root,'#url');
               
               $(root,'.copy').onclick             = btn.copy;
@@ -227,37 +236,39 @@
         
         
         btn.go    = async function(){
-        
+                                                                                debug('btn.go');
               var url       = input.value;
-              var result    = github.parse(url);
-              if(result.error){
-                    alert(result.error);
-                    return;
+              
+              if(chk.github.checked){
+                                                                                debug('github');
+                    var result    = github.parse(url);
+                    if(result.error){
+                          alert(result.error);
+                          return;
+                    }
+                    
+                    if(!result.token){
+                          result.token    = localStorage['github-token'];
+                    }
+                    
+                    if(result.token){
+                          result.api    = true;
+                    }
+                    url   = github.build(result);
               }
               
-              if(!result.token){
-                    result.token    = localStorage['github-token'];
-              }
-              
-              if(result.token){
-                    result.api    = true;
-              }
-              var url   = github.build(result);
               
               var err;
-              
               try{
               
                     var res   = await fetch(url);
                     
               }//try
-              
               catch(err2){
               
                     err   = err2;
                     
               }//catch
-              
               if(err){
                     alert(err.toString());
                     return;
