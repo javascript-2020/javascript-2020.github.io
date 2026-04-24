@@ -56,9 +56,9 @@
         
         
         
-        console.log(typeof ready);
         
-        async function ready(){
+        
+        async function ready2(){
                                                                                 console.log('ready');
                                                                                 
 /*
@@ -67,10 +67,11 @@
               var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
 */
 
-              var [{Terminal},{FitAddon},{WebContainer}]    = await Promise.all([
+              var [{Terminal},{FitAddon},{WebContainer},{'file-server':fs}]    = await Promise.all([
                                                                     import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm'),
                                                                     import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'),
                                                                     import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm'),
+                                                                    import('https://libs.ext-code.com/js/io/file-server/file-server.m.js'),
                                                               ]);
                                                               
               term                = new Terminal();
@@ -104,26 +105,60 @@
               var blob    = new Blob([uint8]);
               var txt     = await blob.text();
               var pkg     = JSON.parse(txt);
-              console.log(pkg.version);
+                                                                                console.log(pkg.version);
+                                                                                
+              await install_espree_browser();
+              var result    = await test_version(pkg.version);
+              if(result){
+                                                                                console.log('no version change');
+                    return;
+              }
+              
+              
               
               await package_json();
               await install_rollup();
               
+              await Promise.all(['esm','cjs'].map(async type=>{
               
-              var type    = 'cjs';
+                    await rollup[type]();
+                    
+                    //await rollup.esm();
+                    //await rollup.cjs();
+                    
+                    
+                    var uint8   = await webcontainer.fs.readFile(filename[type]);
+                    await webcontainer.fs.writeFile(`node_modules/espree-browser/${filename[type]}`);
+                    
+              }));
               
-              await rollup[type]();
               
-              //await rollup.esm();
-              //await rollup.cjs();
+              fs.url    = 'https://localhost:3002';
+              fs.auth   = auth.value;
+              
+              var sys   = '/npm/espree-browser/package/';
+              fs.mkdir(sys);
+              
+              var path    = 'node_modules/espree-browser/';
+              var list    = await webconstainer.fs.readdir(path);
+              await Promise.all(list.map(async fn=>{
+              
+                    var uint8   = await webcontainer.fs.readFile(path+fn);
+                    var blob    = new Blob([uint8]);
+                    await fs.writefile(sys+fn,blob);
+                    
+              }));
               
               
-              var uint8   = await webcontainer.fs.readFile(filename[type]);
+              
+              
+              console.log('done');
+              return;
+              
+              
               var blob    = new Blob([uint8],{type:'text/javascript'});
               var url     = window.URL.createObjectURL(blob);
               //var txt     = await blob.text();
-              
-              
               
               test[type](url);
               //test.esm(url);
@@ -131,12 +166,6 @@
               
               
               
-              await install_espree_browser();
-              var result    = await test_version(pkg.version);
-              if(result){
-                                                                                console.log('no version change');
-                    return;
-              }
               
               
               
@@ -241,7 +270,7 @@
         
         async function install_espree_browser(){
         
-              var process   = await webcontainer('npm',['install','espree-browser']);
+              var process   = await webcontainer.spawn('npm',['install','espree-browser']);
               var stream    = new WritableStream({write(data){term.write(data)}});
               process.output.pipeTo(stream);
               
@@ -441,6 +470,16 @@
       <body>
       
             <div id=terminal>
+            </div>
+            
+            <div id=hdr>
+                  <div>
+                        auth
+                  </div>
+                  <input id=auth>
+                  <div style='margin-right:50px'>
+                  </div>
+                  <input value=ready type=button onclick='ready2()'>
             </div>
             
             
