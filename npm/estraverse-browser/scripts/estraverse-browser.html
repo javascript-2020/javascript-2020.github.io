@@ -93,6 +93,55 @@
               
               await rollup();
               
+              var uint8   = await webcontainer.fs.readFile('estraverse.m.js');
+              var blob    = new Blob([uint8],{type:'text/javascript'});
+              var url     = window.URL.createObjectURL(blob);
+              
+              console.log('download...');
+              
+              var a   = document.createElement('a');
+              a.href    = url;
+              a.download    = 'estraverse.m.js';
+              document.body.append(a);
+              a.click();
+              
+              console.log('done');
+              return;
+              
+              var {espree}    = await import('https://libs.ext-code.com/external/js/espree/espree.m.js');
+              var {estraverse}    = await import(url);
+              
+              var code    = `
+              
+                    function fn(){
+                    
+                          console.log('123');
+                          
+                    }//fn
+                    
+              `;
+              
+              var ast   = espree.parse(code);
+              
+      estraverse.traverse(ast, {
+            enter(node) {
+                  if (node.type === 'FunctionDeclaration') {
+                        console.log('FunctionDeclaration:', node.id.name);
+                  }
+                  
+                  if (
+                        node.type === 'VariableDeclarator' &&
+                        node.init &&
+                        (node.init.type === 'ArrowFunctionExpression' ||
+                              node.init.type === 'FunctionExpression')
+                  ) {
+                        console.log('Function assigned to variable:', node.id.name);
+                  }
+            }
+      });
+      
+      
+      
                                                                                 console.log('done.');
                                                                                 
                                                                                 
