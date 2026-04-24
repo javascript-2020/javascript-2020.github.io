@@ -108,11 +108,16 @@
               
               
               await rollup.esm();
+              //await rollup.cjs();
+              
               
               var uint8   = await webcontainer.fs.readFile(filename);
               var blob    = new Blob([uint8],{type:'text/javascript'});
-              var txt     = await blob.text();
+              var url     = window.URL.createObjectURL(blob);
+              //var txt     = await blob.text();
               
+              
+              test.esm(url);
               
               
               
@@ -214,9 +219,8 @@
               
               
               
-              test.esm    = function(){
+              test.esm    = async function(url){
               
-                    var url     = window.URL.createObjectURL(blob);
                     var {espree}    = await import(url);
                     console.log(espree);
                     
@@ -235,6 +239,35 @@
                     console.log(result);
                     
               }//test
+              
+              
+              test.cjs    = async function(url){
+              
+                    var script      = document.createElement('script');
+                    script.src      = url;
+                    script.onload   = onload;
+                    document.head.append(script);
+                    
+                    
+                    function onload(){
+                    
+                          var code    = `
+                          
+                                function fn(){
+                                
+                                      console.log('helloworld');
+                                      
+                                }//fn
+                                
+                          `;
+                          
+                          var result    = espree.parse(code);
+                          console.log(result);
+                          
+                    }//onload
+                    
+              }//cjs
+              
               
         }//ready
         
