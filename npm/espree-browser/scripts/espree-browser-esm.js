@@ -53,9 +53,9 @@
         
         
         async function ready(){
-        
-        
-        
+                                                                                console.log('ready');
+                                                                                
+                                                                                
               var {Terminal}    = await import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm');
               var {FitAddon}    = await import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm');
               
@@ -319,7 +319,10 @@
       
       <body>
       
-      
+            <div id=terminal>
+            </div>
+            
+            
       </body>
       
       
