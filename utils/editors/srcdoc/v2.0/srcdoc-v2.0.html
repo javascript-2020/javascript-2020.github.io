@@ -175,7 +175,7 @@
       
       <script>
       
-        var srchdrs;
+        var hdrs;
         
         var chk           = {};
         var input;
@@ -193,11 +193,11 @@
                                                                                 debug('initdom');
               await vm.initdom();
               
-              var [viewport,obj2]    = await Promise.all([vm.new({initdom:{icons:{remove:false}}}),mod.component('srcdoc-headers',{component:'page'})]);
+              var [viewport,headers]    = await Promise.all([vm.new({initdom:{icons:{remove:false}}}),mod.component('srcdoc-headers',{component:'page'})]);
               viewport.hide();
               viewport.pos({x:200,y:200,w:630,h:250});
               viewport.body.append(obj2.__host);
-              srchdrs   = {viewport,srchdrs:obj2};
+              hdrs    = {viewport,headers};
               
               
               root                                = document.body;
@@ -257,7 +257,8 @@
                     url   = github.build(result);
               }
               
-              
+              var headers   = hdrs.headers;
+                                                                                debug.json(headers);
               var err;
               try{
               
