@@ -33,14 +33,6 @@
         var packages          = ['acorn'];
         var filename          = 'acorn.js';
         
-        files['entry.js']   = `
-        
-              import * as acorn from 'acorn';
-              export {acorn};
-              
-              //export default espree;  // iife / umd
-              
-        `;
         
         
         
@@ -93,23 +85,25 @@
               
               await rollup();
               
-              var uint8   = await webcontainer.fs.readFile('acorn.m.js');
+              var uint8   = await webcontainer.fs.readFile(filename);
               var blob    = new Blob([uint8],{type:'text/javascript'});
               var url     = window.URL.createObjectURL(blob);
               
-              console.log('download...');
               
-              var a   = document.createElement('a');
-              a.href    = url;
-              a.download    = 'acorn.m.js';
-              document.body.append(a);
-              a.click();
+              if(1){
+                    console.log('download...');
+                    
+                    var a   = document.createElement('a');
+                    a.href    = url;
+                    a.download    = 'acorn.m.js';
+                    document.body.append(a);
+                    a.click();
+                    
+                    console.log('done');
+                    return;
+              }
               
-              console.log('done');
-              return;
-              
-              var {espree}    = await import('https://libs.ext-code.com/external/js/espree/espree.m.js');
-              var {estraverse}    = await import(url);
+              var {acorn}    = await import(url);
               
               var code    = `
               
@@ -121,8 +115,12 @@
                     
               `;
               
-              var ast   = espree.parse(code);
+              var ast   = acorn.parse(code);
+              console.log(ast);
               
+              
+              
+/*
       estraverse.traverse(ast, {
             enter(node) {
                   if (node.type === 'FunctionDeclaration') {
@@ -139,9 +137,10 @@
                   }
             }
       });
-      
-      
-      
+*/
+
+
+
                                                                                 console.log('done.');
                                                                                 
                                                                                 
@@ -221,6 +220,16 @@
   //:
   
   
+        files['entry.js']   = `
+        
+              import * as acorn from 'acorn';
+              //export {acorn};
+              
+              export default espree;  // iife / umd
+              
+        `;
+        
+        
         files['package.json']   = `
         
               {
@@ -243,11 +252,11 @@
                 input     : 'entry.js',
                 output    : {
                                   file      : '${filename}',
-                                  format    : 'es'
+                                  //format    : 'es'
                                   
-                                  //format    : 'iife',         // or 'umd'
-                                  //name      : 'espree',       // This becomes window.espree
-                                  //exports   : 'default',
+                                  format    : 'iife',         // or 'umd'
+                                  name      : 'espree',       // This becomes window.espree
+                                  exports   : 'default',
                                   
                 },
                 plugins   : [
