@@ -1,0 +1,223 @@
+
+      <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css'>
+      
+      <style>
+      
+  body
+    {margin:20px;display:flex;flex-direction:column;gap:10px;font-family:arial}
+    
+  iframe
+    {width:100%;height:300px}
+    
+  #terminal
+    {height:500px}
+    
+      </style>
+      
+      <h3>rollup example</h3>
+      
+      <iframe id=iframe></iframe>
+      
+      <div id=terminal></div>
+      
+      
+      <script>
+      
+(()=>{
+
+        var term;
+        var webcontainer;
+        var files   = {};
+        
+        
+        var packages          = ['estraverse'];
+        var filename          = 'estraverse.m.js';
+        
+        files['entry.js']   = `
+        
+              import * as estraverse from 'estraverse';
+              export {estraverse};
+              
+              //export default espree;  // iife / umd
+              
+        `;
+        
+        
+        
+        
+        async function setup(){
+        
+              var {Terminal}    = await import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm');
+              var {FitAddon}    = await import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm');
+              
+              term                = new Terminal();
+              var fitAddon        = new FitAddon();
+              term.loadAddon(fitAddon);
+              term.open(terminal);
+              fitAddon.fit();
+                                                                                console.clear();
+                                                                                console.log('rollup example');
+                                                                                console.log();
+        }//setup
+        
+        
+        setTimeout(start,50);
+        
+        
+        async function start(){
+        
+              await setup();
+              
+              
+              for(var key in files){
+              
+                    files[key]   = {file:{contents:files[key]}};
+                    
+              }//for
+              
+              
+                                                                                console.log('download ...');
+              var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
+              
+                                                                                console.log('booting ...');
+              webcontainer          = await WebContainer.boot();
+              
+                                                                                console.log('mounting file system ...');
+              await webcontainer.mount(files);
+              
+              
+              await install();
+              await package_json();
+              await install_rollup();
+              
+              
+              await rollup();
+              
+                                                                                console.log('done.');
+                                                                                
+                                                                                
+              async function install(){
+                                                                                var str   = packages.join(' ');
+                                                                                console.log('npm install',str,'...');
+                    packages.unshift('install');
+                    var process   = await webcontainer.spawn('npm',packages);
+                    var stream    = new WritableStream({write(data){term.write(data)}});
+                    process.output.pipeTo(stream)
+                    var code      = await process.exit;
+                    if(code!=0){
+                                                                                console.log('an error occurred');
+                    }
+                    return code;
+                    
+              }//install
+              
+              
+              async function package_json(){
+                                                                                console.log('npm install ( package.json ) ...');
+                    var process   = await webcontainer.spawn('npm',['install']);
+                    var stream    = new WritableStream({write(data){term.write(data)}});
+                    process.output.pipeTo(stream)
+                    var code      = await process.exit;
+                    if(code!=0){
+                                                                                console.log('an error occurred');
+                    }
+                    return code;
+                    
+              }//package_json
+              
+              
+              async function install_rollup(){
+              
+                    var packages    = [
+                          'rollup',
+                          '@rollup/plugin-commonjs',
+                          '@rollup/plugin-node-resolve',
+                          '@rollup/plugin-json',
+                          'rollup-plugin-polyfill-node'
+                    ];
+                                                                                console.log('npm install',packages.join(' '),'...');
+                    packages.unshift('install');
+                    
+                    var process   = await webcontainer.spawn('npm',packages);
+                    var stream    = new WritableStream({write(data){term.write(data)}});
+                    process.output.pipeTo(stream)
+                    var code      = await process.exit;
+                    if(code!=0){
+                                                                                console.log('an error occurred');
+                    }
+                    return code;
+                    
+              }//install_rollup
+              
+              
+              async function rollup(){
+                                                                                console.log('perform rollup ...');
+                    var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.js']);
+                    
+                    var stream    = new WritableStream({write(data){term.write(data)}});
+                    process.output.pipeTo(stream);
+                    
+                    var code      = await process.exit;
+                    if(code!=0){
+                                                                                console.log('an error occurred');
+                    }
+                    return code;
+                    
+              }//rollup
+              
+              
+        }//start
+        
+        
+  //:
+  
+  
+        files['package.json']   = `
+        
+              {
+                    "name": "node-test",
+                    "version": "1.0.0",
+                    "scripts": {}
+              }
+              
+        `;
+        
+        
+        files['rollup.config.js']   = `
+        
+              import resolve from '@rollup/plugin-node-resolve';
+              import commonjs from '@rollup/plugin-commonjs';
+              import json from '@rollup/plugin-json';
+              import nodePolyfills from 'rollup-plugin-polyfill-node';
+              
+              export default {
+                input     : 'entry.js',
+                output    : {
+                                  file      : '${filename}',
+                                  format    : 'es'
+                                  
+                                  //format    : 'iife',         // or 'umd'
+                                  //name      : 'espree',       // This becomes window.espree
+                                  //exports   : 'default',
+                                  
+                },
+                plugins   : [
+                                  commonjs(),
+                                  json(),
+                                  nodePolyfills(),
+                                  resolve({preferBuiltins:false})
+                            ]
+              };
+              
+        `;
+        
+        
+        
+        
+})();
+
+
+</script>
+
+
+
