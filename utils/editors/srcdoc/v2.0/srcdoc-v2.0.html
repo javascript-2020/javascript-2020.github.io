@@ -193,7 +193,8 @@
                                                                                 debug('initdom');
               await vm.initdom();
               
-              var [viewport,headers]    = await Promise.all([vm.new({initdom:{icons:{remove:false}}}),mod.component('srcdoc-headers',{component:'page'})]);
+              var vparams               = {initmod:{icons:{remove:false}}};
+              var [viewport,headers]    = await Promise.all([vm.new(vparams),mod.component('srcdoc-headers',{component:'page'})]);
               viewport.hide();
               viewport.pos({x:200,y:200,w:630,h:250});
               viewport.body.append(headers.__host);
