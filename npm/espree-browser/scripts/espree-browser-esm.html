@@ -57,10 +57,18 @@
         async function ready(){
                                                                                 console.log('ready');
                                                                                 
-                                                                                
-              var {Terminal}    = await import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm');
-              var {FitAddon}    = await import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm');
-              
+/*
+              var {Terminal}      = await import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm');
+              var {FitAddon}      = await import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm');
+              var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
+*/
+
+              var [{Terminal},{FitAddon},{WebContainer}]    = await Promise.all([
+                                                                    import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm'),
+                                                                    import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'),
+                                                                    import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm'),
+                                                              ]);
+                                                              
               term                = new Terminal();
               var fitAddon        = new FitAddon();
               term.loadAddon(fitAddon);
@@ -78,8 +86,7 @@
               
               
                                                                                 console.log('download ...');
-              var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
-              
+                                                                                
                                                                                 console.log('booting ...');
               webcontainer          = await WebContainer.boot();
               
@@ -88,13 +95,33 @@
               
               
               await install();
+              
+              var uint8   = await webcontainer.fs.readFile('node_modules/espree/package.json');
+              var blob    = new Blob([uint8]);
+              var txt     = await blob.text();
+              var pkg     = JSON.parse(txt);
+              console.log(pkg.version);
+              
               await package_json();
               await install_rollup();
               
               
               await rollup();
               
-              await server();
+              var uint8   = await webcontainer.fs.readFile(filename);
+              var blob    = new Blob([uint8],{type:'text/javascript'});
+              var txt     = await blob.text();
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
                                                                                 console.log('done.');
                                                                                 
                                                                                 
@@ -168,28 +195,27 @@
               }//rollup
               
               
-              async function server(){
-                                                                                console.log('launching server ...');
-                    webcontainer.on('server-ready',(port,url)=>{
-                                                                                console.log('server : ',url,port);
-                          iframe.src    = url;
+              function test(){
+              
+                    var url     = window.URL.createObjectURL(blob);
+                    var {espree}    = await import(url);
+                    console.log(espree);
+                    
+                    
+                    var code    = `
+                    
+                          function fn(){
                           
-                    });
+                                console.log('helloworld');
+                                
+                          }//fn
+                          
+                    `;
                     
-                    var process   = await webcontainer.spawn('node',['server.js']);
+                    var result    = espree.parse(code);
+                    console.log(result);
                     
-                    var stream    = new WritableStream({write(data){term.write(data)}});
-                    process.output.pipeTo(stream);
-                    
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
-                    
-              }//server
-              
-              
+              }//test
               
         }//ready
         
@@ -211,10 +237,9 @@
         files['package.json']   = `
         
               {
-                    "name": "node-test",
+                    "name": "espree-browser",
                     "version": "1.0.0",
-                    "scripts": {
-                    }
+                    "scripts": {}
               }
               
         `;
@@ -249,70 +274,14 @@
         `;
         
         
-        files['server.js']    = `
-        
-              var port          = 3000;
-              
-              require('http').createServer(request).listen(port);
-              
-              var fs    = require('fs');
-                                                                                          console.log('listening',port);
-                                                                                          
-              function request(req,res){
-                                                                                          console.log(req.method,req.url);
-                    if(cors(req,res))return;
-                    
-                    if(req.url==='/${filename}'){
-                          var stream    = fs.createReadStream('${filename}');
-                          res.writeHead(200,{'content-type':'text/javascript'});
-                          stream.pipe(res);
-                          return;
-                    }
-                    
-                    if(req.url==='/test.html'){
-                          var stream    = fs.createReadStream('test.html');
-                          res.writeHead(200,{'content-type':'text/html'});
-                          stream.pipe(res);
-                          return;
-                    }
-                    if(req.url==='/test2.html'){
-                          var stream    = fs.createReadStream('test2.html');
-                          res.writeHead(200,{'content-type':'text/html'});
-                          stream.pipe(res);
-                          return;
-                    }
-                    
-                    var stream    = fs.createReadStream('index.html');
-                    res.writeHead(200,{'content-type':'text/html'});
-                    stream.pipe(res);
-                    
-              }//request
-              
-              
-              function cors(req,res){
-              
-                    res.setHeader('access-control-allow-origin','*');
-                    
-                    if(req.method!=='OPTIONS'){
-                          return;
-                    }
-                    
-                    res.writeHead(204);
-                    res.end();
-                    return true;
-                    
-              }//cors
-              
-              
-        `;
-        
-        
             </script>
             
             
             <style>
             
-            
+  #terminal
+    {height:500px}
+    
             </style>
             
             
