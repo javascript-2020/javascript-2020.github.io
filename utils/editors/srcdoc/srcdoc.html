@@ -40,7 +40,7 @@
             </script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
             <script init>
                                                                                 console.clear();
@@ -61,15 +61,12 @@
         var menu;
         
         
-        async function init(){
+        async function ready(){
                                                                                 debug('init',version);
-              menu    = menumod();
+              vm.initmod({mod});
+              await vm.init();
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod});
-              
-              
-              await initdom(document.body);
-              
+              await initdom();
               
         }//init
         
@@ -81,14 +78,12 @@
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
         
         var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/debug/debug.js',
               'js/io/github/github.js',
+              'js/dom/viewport-manager/v1.0.0/viewport-manager-v1.0.0.js',
         );
-        [$,datatype,menumod,keydown,debug,github]   = await promise;
+        [github,vm]   = await promise;
+        
+        vm    = vm();
         
         mod.stack.complete;
         
@@ -106,6 +101,9 @@
     {height:100%}
   body
     {height:calc(100% - 16px);display:flex;flex-direction:column;font-family:arial}
+    
+  #github-root
+    {border:1px solid lightgray;padding:5px 10px;border-radius:3px;cursor:pointer;display:flex;align-items:center;gap:5px}
     
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
@@ -129,7 +127,16 @@
     {font-size:16px;padding:5px 10px}
   input[type=button]
     {cursor:pointer}
+  input[type=checkbox]
+    {cursor:pointer;margin:0;width:16px;height:16px;box-sizing:border-box}
     
+    
+  #hdrs-icon
+    {
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAA7VBMVEVHcEwCAQQAAAAgIiMWIjFVW11VW14LDRMAAAAgIiMDAAEAAACvu78pQF0YJjZBRkgSGigKCwwGBwseICFdY2UzUXUyTG/m+Pzs/f/q/P8hM0uLlJjBz9Pj9fk6XYfn+f05W4Tc7fFkeaU7XolKUlx0fICcvf+YuPyHpOCEody+zM6OrOl2jr82V39CS2AwTXDm9/uVtPUtNEV+mNBSYocfKz5IVXVvhrc1VHkoQF0eJDJWZ45rgLBOXX05Q1jW5urE09Y7X4pze39gdKCBi40/S2dGU3JQV1t0fX/N3OC7ycwkOVS7yMyowOnh8/dPgjyxAAAAF3RSTlMABi2y7Oztsyi1Ei6xx+fo6nN0s+a1ukIGjSwAAAE0SURBVCjPpdNpU4JAGMBxQUnyPiqhbNcwFxJQbsW8z+z6/h+nBcEWxHrhn1l48Zud2ZnlSaUui2LzNE2zVI7OUSxNlGcpzLVKBle6K2aKt6UMWaWGN2f7LRU/OABaZKCfpTx23aGtfrhtEK0dsKqCIRiqi3a0xYHt+zPZPr89nKnjcXrO8Ylx87THTdhIDDZDhgn9svaUkBYyv989n7Tb8yF3p+ZLLHPa5Y7cEyVTVqRXK1iCLvYiPN4IG9kxTHlrmIJtK5h5kkfGFA22CA0cJIwcSZzMSR5YioOUCeYJGlsiEr++IcG6LMpIl5G3vA9SZofd15iNlRBrZQRHwzxbLzuxluvjbgiTbgTCkP+6kn+4/q49xtMa3uuzjv/kapk5qVC4uWKYctUfA/qknD8b/hhc0g/wRVKEMCnUEAAAAABJRU5ErkJggg==);
+      }
+      
+      
             </style>
             
       </head>
@@ -137,12 +144,30 @@
       
       <body>
       
+      
+            <editors-hdr v2.0 component=grp>
+                  <img slot=title src='images/srcdoc.png' style='top:-5px;height:70px' alt='html editor'>
+                  <h1 slot=seo-hdr class=visually-hidden>
+                        html editor
+                  </h1>
+                  
+                  <time slot=date datetime=2026-04-23>
+                        23 Apr 2026
+                  </time>
+                  
+            </editors-hdr>
+            
+            
             <div id=url-root>
+                  <div id=github-root>
+                        github
+                        <input type=checkbox>
+                  </div>
                   <img class='copy icon'>
                   <img class='paste icon'>
                   <input id=url autocomplete=off spellcheck=false>
+                  <img id=hdrs-icon class=icon title='request headers'>
                   <input type=button value=go>
-                  
             </div>
             
             <iframe></iframe>
@@ -152,7 +177,9 @@
       
       <script>
       
-      
+        var hdrs;
+        
+        var chk           = {};
         var input;
         var iframe;
         
@@ -164,15 +191,27 @@
     //:
     
     
-        function initdom(){
+        async function initdom(){
                                                                                 debug('initdom');
+              await vm.initdom();
+              
+              var vparams               = {initmod:{icons:{remove:false}}};
+              var [viewport,headers]    = await Promise.all([vm.new(vparams),mod.component('srcdoc-headers',{component:'page'})]);
+              viewport.hide();
+              viewport.pos({x:200,y:200,w:730,h:250});
+              viewport.body.append(headers.__host);
+              hdrs    = {viewport,headers};
+              
+              
               root                                = document.body;
               
+              chk.github                          = $.chkbox(root,'#github-root');
               input                               = $(root,'#url');
               
               $(root,'.copy').onclick             = btn.copy;
               $(root,'.paste').onclick            = btn.paste;
               
+              $(root,'#hdrs-icon').onclick        = btn['hdrs-icon'];
               $(root,'[value=go]').onclick        = btn.go;
               
               
@@ -200,37 +239,41 @@
         
         
         btn.go    = async function(){
-        
+                                                                                debug('btn.go');
               var url       = input.value;
-              var result    = github.parse(url);
-              if(result.error){
-                    alert(result.error);
-                    return;
+              
+              if(chk.github.checked){
+                                                                                debug('github');
+                    var result    = github.parse(url);
+                    if(result.error){
+                          alert(result.error);
+                          return;
+                    }
+                    
+                    if(!result.token){
+                          result.token    = localStorage['github-token'];
+                    }
+                    
+                    if(result.token){
+                          result.api    = true;
+                    }
+                    url   = github.build(result);
               }
               
-              if(!result.token){
-                    result.token    = localStorage['github-token'];
-              }
-              
-              if(result.token){
-                    result.api    = true;
-              }
-              var url   = github.build(result);
-              
+                                                                                debug(url);
+              var headers   = hdrs.headers.headers;
+                                                                                debug.json(headers);
               var err;
-              
               try{
               
-                    var res   = await fetch(url);
+                    var res   = await fetch(url,{headers});
                     
               }//try
-              
               catch(err2){
               
                     err   = err2;
                     
               }//catch
-              
               if(err){
                     alert(err.toString());
                     return;
@@ -249,6 +292,17 @@
               iframe.srcdoc    = html;
               
         }//go
+        
+        
+        btn['hdrs-icon']    = async function(){
+        
+              if(hdrs.viewport.status=='hidden'){
+                    hdrs.viewport.show();
+              }else{
+                    hdrs.viewport.hide();
+              }
+              
+        }//hdrs-icon
         
         
   //:
