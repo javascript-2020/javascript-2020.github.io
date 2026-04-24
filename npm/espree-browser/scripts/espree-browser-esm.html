@@ -49,7 +49,10 @@
         var test      = {};
         
         var packages          = ['espree'];
-        var filename          = 'espree.m.js';
+        var filename          = {
+              esm   : 'espree.m.js',
+              cjs   : 'espree.js'
+        };
         
         
         
@@ -107,7 +110,11 @@
               await install_rollup();
               
               
-              await rollup.esm();
+              var type    = 'cjs';
+              
+              await rollup[type]();
+              
+              //await rollup.esm();
               //await rollup.cjs();
               
               
@@ -117,7 +124,9 @@
               //var txt     = await blob.text();
               
               
-              test.esm(url);
+              
+              test[type](url);
+              //test.esm(url);
               
               
               
@@ -130,99 +139,131 @@
               
                                                                                 console.log('done.');
                                                                                 
-                                                                                
-              async function install_espree(){
-                                                                                var str   = packages.join(' ');
-                                                                                console.log('npm install',str,'...');
-                    packages.unshift('install');
-                    var process   = await webcontainer.spawn('npm',packages);
-                    var stream    = new WritableStream({write(data){term.write(data)}});
-                    process.output.pipeTo(stream)
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
+        }//ready
+        
+        
+        
+        
+        
+        
+        async function install_espree(){
+                                                                          var str   = packages.join(' ');
+                                                                          console.log('npm install',str,'...');
+              packages.unshift('install');
+              var process   = await webcontainer.spawn('npm',packages);
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream)
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//install
+        
+        
+        async function package_json(){
+                                                                          console.log('npm install ( package.json ) ...');
+              var process   = await webcontainer.spawn('npm',['install']);
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream)
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//package_json
+        
+        
+        async function install_rollup(){
+        
+              var packages    = [
+                    'rollup',
+                    '@rollup/plugin-commonjs',
+                    '@rollup/plugin-node-resolve',
+                    '@rollup/plugin-json',
+                    'rollup-plugin-polyfill-node'
+              ];
+                                                                          console.log('npm install',packages.join(' '),'...');
+              packages.unshift('install');
+              
+              var process   = await webcontainer.spawn('npm',packages);
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream)
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//install_rollup
+        
+        
+        rollup.esm    = async function(){
+                                                                          console.log('perform rollup esm ...');
+              var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.esm.js']);
+              
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream);
+              
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//esm
+        
+        
+        rollup.cjs    = async function(){
+                                                                          console.log('perform rollup cjs ...');
+              var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.cjs.js']);
+              
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream);
+              
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//cjs
+        
+        
+        
+        
+        test.esm    = async function(url){
+        
+              var {espree}    = await import(url);
+                                                                          console.log(espree);
+              var code    = `
+              
+                    function fn(){
                     
-              }//install
-              
-              
-              async function package_json(){
-                                                                                console.log('npm install ( package.json ) ...');
-                    var process   = await webcontainer.spawn('npm',['install']);
-                    var stream    = new WritableStream({write(data){term.write(data)}});
-                    process.output.pipeTo(stream)
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
+                          console.log('helloworld');
+                          
+                    }//fn
                     
-              }//package_json
+              `;
+              
+              var result    = espree.parse(code);
+              console.log(result);
+              
+        }//test
+        
+        
+        test.cjs    = async function(url){
+        
+              var script      = document.createElement('script');
+              script.src      = url;
+              script.onload   = onload;
+              document.head.append(script);
               
               
-              async function install_rollup(){
-              
-                    var packages    = [
-                          'rollup',
-                          '@rollup/plugin-commonjs',
-                          '@rollup/plugin-node-resolve',
-                          '@rollup/plugin-json',
-                          'rollup-plugin-polyfill-node'
-                    ];
-                                                                                console.log('npm install',packages.join(' '),'...');
-                    packages.unshift('install');
-                    
-                    var process   = await webcontainer.spawn('npm',packages);
-                    var stream    = new WritableStream({write(data){term.write(data)}});
-                    process.output.pipeTo(stream)
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
-                    
-              }//install_rollup
-              
-              
-              rollup.esm    = async function(){
-                                                                                console.log('perform rollup esm ...');
-                    var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.esm.js']);
-                    
-                    var stream    = new WritableStream({write(data){term.write(data)}});
-                    process.output.pipeTo(stream);
-                    
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
-                    
-              }//esm
-              
-              
-              rollup.cjs    = async function(){
-                                                                                console.log('perform rollup cjs ...');
-                    var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.cjs.js']);
-                    
-                    var stream    = new WritableStream({write(data){term.write(data)}});
-                    process.output.pipeTo(stream);
-                    
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
-                    
-              }//cjs
-              
-              
-              
-              
-              test.esm    = async function(url){
-              
-                    var {espree}    = await import(url);
-                                                                                console.log(espree);
+              function onload(){
+                                                                          console.log(espree);
                     var code    = `
                     
                           function fn(){
@@ -236,38 +277,9 @@
                     var result    = espree.parse(code);
                     console.log(result);
                     
-              }//test
+              }//onload
               
-              
-              test.cjs    = async function(url){
-              
-                    var script      = document.createElement('script');
-                    script.src      = url;
-                    script.onload   = onload;
-                    document.head.append(script);
-                    
-                    
-                    function onload(){
-                                                                                console.log(espree);
-                          var code    = `
-                          
-                                function fn(){
-                                
-                                      console.log('helloworld');
-                                      
-                                }//fn
-                                
-                          `;
-                          
-                          var result    = espree.parse(code);
-                          console.log(result);
-                          
-                    }//onload
-                    
-              }//cjs
-              
-              
-        }//ready
+        }//cjs
         
         
   //:
@@ -311,7 +323,7 @@
               export default {
                 input     : 'entry.esm.js',
                 output    : {
-                                  file      : '${filename}',
+                                  file      : '${filename.esm}',
                                   format    : 'es'
                                   
                                   //format    : 'iife',         // or 'umd'
@@ -340,7 +352,7 @@
               export default {
                 input     : 'entry.cjs.js',
                 output    : {
-                                  file      : '${filename}',
+                                  file      : '${filename.cjs}',
                                   
                                   format    : 'iife',         // or 'umd'
                                   name      : 'espree',       // This becomes window.espree
