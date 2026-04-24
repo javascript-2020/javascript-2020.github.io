@@ -131,6 +131,13 @@
               
               
               
+              await install_espree_browser();
+              var result    = await test_version(pkg.version);
+              if(result){
+                                                                                console.log('no version change');
+                    return;
+              }
+              
               
               
               
@@ -147,15 +154,15 @@
         
         
         async function install_espree(){
-                                                                          var str   = packages.join(' ');
-                                                                          console.log('npm install',str,'...');
+                                                                                var str   = packages.join(' ');
+                                                                                console.log('npm install',str,'...');
               packages.unshift('install');
               var process   = await webcontainer.spawn('npm',packages);
               var stream    = new WritableStream({write(data){term.write(data)}});
               process.output.pipeTo(stream)
               var code      = await process.exit;
               if(code!=0){
-                                                                          console.log('an error occurred');
+                                                                                console.log('an error occurred');
               }
               return code;
               
@@ -163,13 +170,13 @@
         
         
         async function package_json(){
-                                                                          console.log('npm install ( package.json ) ...');
+                                                                                console.log('npm install ( package.json ) ...');
               var process   = await webcontainer.spawn('npm',['install']);
               var stream    = new WritableStream({write(data){term.write(data)}});
               process.output.pipeTo(stream)
               var code      = await process.exit;
               if(code!=0){
-                                                                          console.log('an error occurred');
+                                                                                console.log('an error occurred');
               }
               return code;
               
@@ -185,7 +192,7 @@
                     '@rollup/plugin-json',
                     'rollup-plugin-polyfill-node'
               ];
-                                                                          console.log('npm install',packages.join(' '),'...');
+                                                                                console.log('npm install',packages.join(' '),'...');
               packages.unshift('install');
               
               var process   = await webcontainer.spawn('npm',packages);
@@ -193,7 +200,7 @@
               process.output.pipeTo(stream)
               var code      = await process.exit;
               if(code!=0){
-                                                                          console.log('an error occurred');
+                                                                                console.log('an error occurred');
               }
               return code;
               
@@ -201,7 +208,7 @@
         
         
         rollup.esm    = async function(){
-                                                                          console.log('perform rollup esm ...');
+                                                                                console.log('perform rollup esm ...');
               var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.esm.js']);
               
               var stream    = new WritableStream({write(data){term.write(data)}});
@@ -209,7 +216,7 @@
               
               var code      = await process.exit;
               if(code!=0){
-                                                                          console.log('an error occurred');
+                                                                                console.log('an error occurred');
               }
               return code;
               
@@ -217,7 +224,7 @@
         
         
         rollup.cjs    = async function(){
-                                                                          console.log('perform rollup cjs ...');
+                                                                                console.log('perform rollup cjs ...');
               var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.cjs.js']);
               
               var stream    = new WritableStream({write(data){term.write(data)}});
@@ -225,13 +232,60 @@
               
               var code      = await process.exit;
               if(code!=0){
-                                                                          console.log('an error occurred');
+                                                                                console.log('an error occurred');
               }
               return code;
               
         }//cjs
         
         
+        async function install_espree_browser(){
+        
+              var process   = await webcontainer('npm',['install','espree-browser']);
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream);
+              
+              var code      = await process.exit;
+              if(code!=0){
+                                                                                console.log('an error occurred');
+              }
+              return code;
+              
+        }//install_espree_browser
+        
+        
+        async function test_version(pkg){
+        
+              var [major,minor,patch]     = pkg.split('.');
+              var espree                  = {major,minor,patch};
+              
+              var fn                      = 'node_modules/espree-browser/notes.txt';
+              
+              var uint8                   = await webcontainer.fs.readFile(fn);
+              var blob                    = new Blob([uint8]);
+              var txt                     = await blob.text();
+              var lines                   = txt.split('\n');
+              var line                    = line[0];
+              var i                       = line.indexOf(':');
+              var version                 = line.slice(i+1).trim();
+              var [major,minor,patch]     = version.split('.');
+              
+              var result                  = (major==espree.major && minor==espree.minor && patch==espree.patch);
+              if(result){
+                    return true;
+              }
+              
+              line                        = line.slice(0,i+1)+'   '+pkg;
+              lines[0]                    = line;
+              var txt                     = lines.join('\n');
+              var blob                    = new Blob([txt]);
+              var buf                     = await blob.arrayBuffer();
+              var uint8                   = new Uint8Array(unit8);
+              await webcontainer.fs.writeFile(fn,uint8);
+              
+              return false;
+              
+        }//test_version
         
         
         test.esm    = async function(url){
