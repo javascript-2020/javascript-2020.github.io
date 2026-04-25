@@ -162,7 +162,7 @@
               
               
               await install();
-              await package_json();
+              //await package_json();
               await install_rollup();
               
               await Promise.all(['esm','cjs'].map(async type=>{
@@ -181,60 +181,7 @@
                     
               }));
               
-              
-              
-              
-              
-              
-              
-              
-              
-              var {espree}        = await import('https://libs.ext-code.com/external/js/espree/espree.m.js');
-              var {estraverse}    = await import('https://libs.ext-code.com/external/js/estraverse/estraverse.m.js');
-              var {scope}         = await import(url);
-              
-              var code    = `
-              
-                    function fn(){
-                    
-                          console.log('123');
-                          
-                    }//fn
-                    
-              `;
-              
-              
-              const options = {
-              	ecmaVersion: 2022,
-              	sourceType: "module",
-              };
-              
-              const ast             = espree.parse(code, { range: true, ...options });
-              const scopeManager    = scope.analyze(ast, options);
-              
-              var currentScope    = scopeManager.acquire(ast); // global scope
-              
-              estraverse.traverse(ast, {
-                  	enter(node, parent) {
-                  		// do stuff
-                    
-                  		if (/Function/.test(node.type)) {
-                  			currentScope = scopeManager.acquire(node); // get current function scope
-                  		}
-                  	},
-                  	leave(node, parent) {
-                  		if (/Function/.test(node.type)) {
-                  			currentScope = currentScope.upper; // set to parent scope
-                  		}
-                    
-                  		// do stuff
-                  	},
-              });
-              
-              
-              
                                                                                 console.log('done.');
-                                                                                
                                                                                 
         }//start
         
@@ -340,6 +287,67 @@
               return blob;
               
         }//readfile
+        
+        
+        
+  //:
+  
+  
+        async function test({espree,estraverse,scope}){
+        
+              var code    = `
+              
+                    function fn(){
+                    
+                          console.log('123');
+                          
+                    }//fn
+                    
+              `;
+              
+              const options = {
+              	ecmaVersion: 2022,
+              	sourceType: "module",
+              };
+              
+              const ast             = espree.parse(code, { range: true, ...options });
+              const scopeManager    = scope.analyze(ast, options);
+              
+              var currentScope    = scopeManager.acquire(ast); // global scope
+              
+              estraverse.traverse(ast, {
+                  	enter(node, parent) {
+                  		// do stuff
+                    
+                  		if (/Function/.test(node.type)) {
+                  			currentScope = scopeManager.acquire(node); // get current function scope
+                  		}
+                  	},
+                  	leave(node, parent) {
+                  		if (/Function/.test(node.type)) {
+                  			currentScope = currentScope.upper; // set to parent scope
+                  		}
+                    
+                  		// do stuff
+                  	},
+              });
+              
+        }//test
+        
+        
+        test.esm    = async function(url){
+        
+              var {espree}        = await import('https://libs.ext-code.com/external/js/espree/espree.m.js');
+              var {estraverse}    = await import('https://libs.ext-code.com/external/js/estraverse/estraverse.m.js');
+              var {scope}         = await import(url);
+              
+              test({espree,estraverse,scope});
+              
+        }//test
+        
+        
+        test.cjs    = async function(url){
+        }//cjs
         
         
   //:
