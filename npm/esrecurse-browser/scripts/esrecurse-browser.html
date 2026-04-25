@@ -161,6 +161,14 @@
               var url     = window.URL.createObjectURL(blob);
               
               
+              var {'file-server':fs}    = await import('https://libs.ext-code.com/js/io/file-server/file-serer.m.js');
+              fs.url    = 'https://localhost:3000';
+              fs.auth   = auth.value;
+              
+              fs.mkdir('/npm/esrecurse-browser');
+              
+              
+              
               if(1){
                                                                                 console.log('download...');
                     var a         = document.createElement('a');
@@ -225,93 +233,111 @@
                                                                                 console.log('done.');
                                                                                 
                                                                                 
-              async function install(){
-                                                                                var str   = packages.join(' ');
-                                                                                console.log('npm install',str,'...');
-                    packages.unshift('install');
-                    var process   = await webcontainer.spawn('npm',packages);
-                    var stream    = new WritableStream({write(data){term.write(data)}});
-                    process.output.pipeTo(stream)
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
-                    
-              }//install
-              
-              
-              async function package_json(){
-                                                                                console.log('npm install ( package.json ) ...');
-                    var process   = await webcontainer.spawn('npm',['install']);
-                    var stream    = new WritableStream({write(data){term.write(data)}});
-                    process.output.pipeTo(stream)
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
-                    
-              }//package_json
-              
-              
-              async function install_rollup(){
-              
-                    var packages    = [
-                          'rollup',
-                          '@rollup/plugin-commonjs',
-                          '@rollup/plugin-node-resolve',
-                          '@rollup/plugin-json',
-                          'rollup-plugin-polyfill-node'
-                    ];
-                                                                                console.log('npm install',packages.join(' '),'...');
-                    packages.unshift('install');
-                    
-                    var process   = await webcontainer.spawn('npm',packages);
-                    var stream    = new WritableStream({write(data){term.write(data)}});
-                    process.output.pipeTo(stream)
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
-                    
-              }//install_rollup
-              
-              var rollup    = {};
-              
-              rollup.esm    = async function(){
-                                                                                console.log('perform rollup ...');
-                    var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.esm.js']);
-                    
-                    var stream    = new WritableStream({write(data){term.write(data)}});
-                    process.output.pipeTo(stream);
-                    
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
-                    
-              }//rollup
-              
-              rollup.cjs    = async function(){
-                                                                                console.log('perform rollup ...');
-                    var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.cjs.js']);
-                    
-                    var stream    = new WritableStream({write(data){term.write(data)}});
-                    process.output.pipeTo(stream);
-                    
-                    var code      = await process.exit;
-                    if(code!=0){
-                                                                                console.log('an error occurred');
-                    }
-                    return code;
-                    
-              }//rollup
-              
-              
         }//start
+        
+        
+        
+        async function install(){
+                                                                          var str   = packages.join(' ');
+                                                                          console.log('npm install',str,'...');
+              packages.unshift('install');
+              var process   = await webcontainer.spawn('npm',packages);
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream)
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//install
+        
+        
+        async function package_json(){
+                                                                          console.log('npm install ( package.json ) ...');
+              var process   = await webcontainer.spawn('npm',['install']);
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream)
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//package_json
+        
+        
+        async function install_rollup(){
+        
+              var packages    = [
+                    'rollup',
+                    '@rollup/plugin-commonjs',
+                    '@rollup/plugin-node-resolve',
+                    '@rollup/plugin-json',
+                    'rollup-plugin-polyfill-node'
+              ];
+                                                                          console.log('npm install',packages.join(' '),'...');
+              packages.unshift('install');
+              
+              var process   = await webcontainer.spawn('npm',packages);
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream)
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//install_rollup
+        
+        var rollup    = {};
+        
+        rollup.esm    = async function(){
+                                                                          console.log('perform rollup ...');
+              var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.esm.js']);
+              
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream);
+              
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//rollup
+        
+        rollup.cjs    = async function(){
+                                                                          console.log('perform rollup ...');
+              var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.cjs.js']);
+              
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream);
+              
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//rollup
+        
+        
+        async function download(path1,path2){
+        
+              var blob    = await readfile(path);
+              await fs.writeFile(path2,blob);
+              
+        }//download
+        
+        
+        async function readfile(path){
+        
+              var uint8   = await webcontainer.fs.readFile(path);
+              var blob    = new Blob([uint8],{type:'text/javascript'});
+              return blob;
+              
+        }//readfile
         
         
   //:
