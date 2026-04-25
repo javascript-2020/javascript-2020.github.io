@@ -36,7 +36,7 @@
               import * as estraverse from 'estraverse';
               //export {estraverse};
               
-              export default espree;  // iife / umd
+              export default estraverse;  // iife / umd
               
         `;
         
@@ -95,16 +95,19 @@
               var blob    = new Blob([uint8],{type:'text/javascript'});
               var url     = window.URL.createObjectURL(blob);
               
-              console.log('download...');
-              
-              var a   = document.createElement('a');
-              a.href    = url;
-              a.download    = 'estraverse.m.js';
+                                                                                console.log('download...');
+                                                                                
+              var a         = document.createElement('a');
+              a.href        = url;
+              a.download    = filename;
               document.body.append(a);
               a.click();
               
-              console.log('done');
+                                                                                console.log('done');
               return;
+              
+              
+              
               
               var {espree}    = await import('https://libs.ext-code.com/external/js/espree/espree.m.js');
               var {estraverse}    = await import(url);
