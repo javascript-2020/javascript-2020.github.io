@@ -30,8 +30,8 @@
         var files   = {};
         
         
-        var packages          = ['acorn'];
-        var filename          = 'acorn.js';
+        var packages          = ['eslint-scope'];
+        var filename          = 'esline-scope.m.js';
         
         
         
@@ -90,7 +90,7 @@
               var url     = window.URL.createObjectURL(blob);
               
               
-              if(1){
+              if(0){
                                                                                 console.log('download...');
                     var a         = document.createElement('a');
                     a.href        = url;
@@ -101,7 +101,9 @@
                     return;
               }
               
-              var {acorn}    = await import(url);
+              var {espree}        = await import('https://libs.ext-code.com/external/js/espree-browser/espree.m.js');
+              var {estraverse}    = await import('https://libs.ext-code.com/external/js/extraverse-browser/estraverse.m.js');
+              var {scope}         = await import(url);
               
               var code    = `
               
@@ -113,32 +115,36 @@
                     
               `;
               
-              var ast   = acorn.parse(code);
-              console.log(ast);
+              
+              const options = {
+              	ecmaVersion: 2022,
+              	sourceType: "module",
+              };
+              
+              const ast             = espree.parse(code, { range: true, ...options });
+              const scopeManager    = scope.analyze(ast, options);
+              
+              const currentScope    = scopeManager.acquire(ast); // global scope
+              
+              estraverse.traverse(ast, {
+                  	enter(node, parent) {
+                  		// do stuff
+                    
+                  		if (/Function/.test(node.type)) {
+                  			currentScope = scopeManager.acquire(node); // get current function scope
+                  		}
+                  	},
+                  	leave(node, parent) {
+                  		if (/Function/.test(node.type)) {
+                  			currentScope = currentScope.upper; // set to parent scope
+                  		}
+                    
+                  		// do stuff
+                  	},
+              });
               
               
               
-/*
-      estraverse.traverse(ast, {
-            enter(node) {
-                  if (node.type === 'FunctionDeclaration') {
-                        console.log('FunctionDeclaration:', node.id.name);
-                  }
-                  
-                  if (
-                        node.type === 'VariableDeclarator' &&
-                        node.init &&
-                        (node.init.type === 'ArrowFunctionExpression' ||
-                              node.init.type === 'FunctionExpression')
-                  ) {
-                        console.log('Function assigned to variable:', node.id.name);
-                  }
-            }
-      });
-*/
-
-
-
                                                                                 console.log('done.');
                                                                                 
                                                                                 
@@ -220,10 +226,10 @@
   
         files['entry.js']   = `
         
-              import * as acorn from 'acorn';
-              //export {acorn};
+              import * as scope from 'eslint-scope';
+              export {scope};
               
-              export default espree;  // iife / umd
+              //export default espree;  // iife / umd
               
         `;
         
@@ -250,11 +256,11 @@
                 input     : 'entry.js',
                 output    : {
                                   file      : '${filename}',
-                                  //format    : 'es'
+                                  format    : 'es'
                                   
-                                  format    : 'iife',         // or 'umd'
-                                  name      : 'espree',       // This becomes window.espree
-                                  exports   : 'default',
+                                  //format    : 'iife',         // or 'umd'
+                                  //name      : 'espree',       // This becomes window.espree
+                                  //exports   : 'default',
                                   
                 },
                 plugins   : [
