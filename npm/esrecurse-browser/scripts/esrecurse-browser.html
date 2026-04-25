@@ -6,15 +6,30 @@
   body
     {margin:20px;display:flex;flex-direction:column;gap:10px;font-family:arial}
     
-  iframe
-    {width:100%;height:300px}
+    
+  #hdr
+    {display:flex;gap:10px}
     
   #terminal
     {height:500px}
     
+  input
+    {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  input[type=button}
+    {cursor:pointer}
+    
+    
       </style>
       
       <h3>esrecurse-browser</h3>
+      
+      <div id=hdr>
+            <div>
+                  auth
+            </div>
+            <input id=auth>
+            <input value=ready type=button onclick='start()'>
+      </div>
       
       <div id=terminal></div>
       
@@ -117,8 +132,6 @@
         
         
         
-        setTimeout(start,50);
-        
         
         async function start(){
         
@@ -131,6 +144,9 @@
               term.open(terminal);
               fitAddon.fit();
               
+              var {'file-server':fs}    = await import('https://libs.ext-code.com/js/io/file-server/file-serer.m.js');
+              fs.url    = 'https://localhost:3000';
+              fs.auth   = auth.value;
               
               for(var key in files){
               
@@ -153,32 +169,23 @@
               await package_json();
               await install_rollup();
               
+              await Promise.all(['esm','cjs'].map(async type=>{
               
-              await rollup();
+                    await rollup[type]();
+                    
+                    var uint8   = await webcontainer.fs.readFile(filename[type]);
+                    var blob    = new Blob([uint8],{type:'text/javascript'});
+                    var url     = window.URL.createObjectURL(blob);
+                    
+                    
+                    var path    = '/npm/esrecurse-browser/';
+                    fs.mkdir(path);
+                    
+                    await fs.writefile(path+filename[type],blob);
+                    
+              });
               
-              var uint8   = await webcontainer.fs.readFile(filename);
-              var blob    = new Blob([uint8],{type:'text/javascript'});
-              var url     = window.URL.createObjectURL(blob);
               
-              
-              var {'file-server':fs}    = await import('https://libs.ext-code.com/js/io/file-server/file-serer.m.js');
-              fs.url    = 'https://localhost:3000';
-              fs.auth   = auth.value;
-              
-              fs.mkdir('/npm/esrecurse-browser');
-              
-              
-              
-              if(1){
-                                                                                console.log('download...');
-                    var a         = document.createElement('a');
-                    a.href        = url;
-                    a.download    = filename;
-                    document.body.append(a);
-                    a.click();
-                                                                                console.log('done');
-                    return;
-              }
               
               
               
