@@ -347,6 +347,7 @@
         
         var process   = {};
         var setup     = {};
+        var kd        = {};
         
         
   //:
@@ -361,7 +362,7 @@
               $('#script .copy').onclick    = e=>navigator.clipboard.writeText(src.value);
               $('#script .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src.value=txt};
               
-              src.onkeydown                 = e=>e.key=='Enter' && process.script(src.value);
+              src.onkeydown                 = kd.src;
               src.onfocus                   = e=>src.select();
               src.focus();
               
@@ -383,6 +384,7 @@
               $('#import .copy').onclick    = e=>navigator.clipboard.writeText(src2.value);
               $('#import .paste').onclick   = async e=>{var txt=await navigator.clipboard.readText();src2.value=txt};
               
+              srcs.onkeydown                = kd.src2;
               src2.onfocus                  = e=>src2.select();
               
               go2.onclick    = function(){
@@ -395,6 +397,27 @@
               
               
         }//initdom
+        
+        
+  //:
+  
+  
+        kd.src    = function(e){
+        
+              if(e.key=='Enter'){
+                    process.script(src.value);
+              }
+              
+        }//src
+        
+        
+        kd.src2   = function(){
+        
+              if(e.key=='Enter'){
+                    process.import(src2.value);
+              }
+              
+        }//src2
         
         
   //:
