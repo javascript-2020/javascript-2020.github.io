@@ -46,10 +46,7 @@
         var packages          = ['esrecurse'];
         
         
-        var files   = {
-              esm   : {},
-              cjs   : {},
-        };
+        var files   = {};
         
         
         var filename          = {
@@ -58,7 +55,7 @@
         }
         
         
-        files.esm['entry.esm.js']   = `
+        files['entry.esm.js']   = `
         
               import * as esrecurse from 'esrecurse';
               export {esrecurse};
@@ -66,7 +63,7 @@
         `;
         
         
-        files.esm['rollup.config.esm.js']   = `
+        files['rollup.config.esm.js']   = `
         
               import resolve from '@rollup/plugin-node-resolve';
               import commonjs from '@rollup/plugin-commonjs';
@@ -90,7 +87,7 @@
         `;
         
         
-        files.cjs['entry.cjs.js']   = `
+        files['entry.cjs.js']   = `
         
               import * as esrecurse from 'esrecurse';
               
@@ -99,7 +96,7 @@
         `;
         
         
-        files.cjs['rollup.config.cjs.js']   = `
+        files['rollup.config.cjs.js']   = `
         
               import resolve from '@rollup/plugin-node-resolve';
               import commonjs from '@rollup/plugin-commonjs';
@@ -143,7 +140,7 @@
               term.open(terminal);
               fitAddon.fit();
               
-              var {'file-server':fs}    = await import('https://libs.ext-code.com/js/io/file-server/file-serer.m.js');
+              var {'file-server':fs}    = await import('https://libs.ext-code.com/js/io/file-server/file-server.m.js');
               fs.url    = 'https://localhost:3000';
               fs.auth   = auth.value;
               
@@ -154,7 +151,6 @@
               }//for
               
               
-                                                                                console.log('download ...');
               var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
               
                                                                                 console.log('booting ...');
