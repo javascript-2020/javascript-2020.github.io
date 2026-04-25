@@ -31,7 +31,7 @@
         
         
         var packages          = ['eslint-scope'];
-        var filename          = 'esline-scope.m.js';
+        var filename          = 'esline-scope.js';
         
         
         
@@ -90,7 +90,7 @@
               var url     = window.URL.createObjectURL(blob);
               
               
-              if(0){
+              if(1){
                                                                                 console.log('download...');
                     var a         = document.createElement('a');
                     a.href        = url;
@@ -101,8 +101,8 @@
                     return;
               }
               
-              var {espree}        = await import('https://libs.ext-code.com/external/js/espree-browser/espree.m.js');
-              var {estraverse}    = await import('https://libs.ext-code.com/external/js/extraverse-browser/estraverse.m.js');
+              var {espree}        = await import('https://libs.ext-code.com/external/js/espree/espree.m.js');
+              var {estraverse}    = await import('https://libs.ext-code.com/external/js/estraverse/estraverse.m.js');
               var {scope}         = await import(url);
               
               var code    = `
@@ -124,7 +124,7 @@
               const ast             = espree.parse(code, { range: true, ...options });
               const scopeManager    = scope.analyze(ast, options);
               
-              const currentScope    = scopeManager.acquire(ast); // global scope
+              var currentScope    = scopeManager.acquire(ast); // global scope
               
               estraverse.traverse(ast, {
                   	enter(node, parent) {
@@ -227,9 +227,9 @@
         files['entry.js']   = `
         
               import * as scope from 'eslint-scope';
-              export {scope};
+              //export {scope};
               
-              //export default espree;  // iife / umd
+              export default espree;  // iife / umd
               
         `;
         
@@ -256,11 +256,11 @@
                 input     : 'entry.js',
                 output    : {
                                   file      : '${filename}',
-                                  format    : 'es'
+                                  //format    : 'es'
                                   
-                                  //format    : 'iife',         // or 'umd'
-                                  //name      : 'espree',       // This becomes window.espree
-                                  //exports   : 'default',
+                                  format    : 'iife',         // or 'umd'
+                                  name      : 'espree',       // This becomes window.espree
+                                  exports   : 'default',
                                   
                 },
                 plugins   : [
