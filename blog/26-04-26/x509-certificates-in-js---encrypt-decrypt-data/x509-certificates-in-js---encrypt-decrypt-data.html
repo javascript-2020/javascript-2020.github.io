@@ -81,8 +81,36 @@
             
             <div class=description>
                   <p>
+                        This blog post describes using x509 certificates to encrypt and decrypt data in a javascript environment.  This
+                        can be useful since the public certificate can be made available publicly, even sent via an insecure communication
+                        channel, this public certificate can be used to encrypt data, the encrypted data can be sent to the holder
+                        of the private key, who can subsequently decode the encrypted data using the private key.
+                  </p>
+                  <p>
+                        Node.js supports both PKCS#1 and PKCS#8 private keys, while browsers only support PKCS#8.
+                        This difference comes from how each environment exposes cryptography: Node wraps OpenSSL
+                        (very flexible), while browsers expose WebCrypto (much stricter and standardized).
                   </p>
             </div>
+            
+            <div>
+            
+                  for use in the browser
+                  
+            </div>
+            
+            <snippet-console component id=x509-browser src='ex/x509-browser.js'></snippet-console>
+            
+            
+            <div>
+            
+                  for use in nodejs
+                  
+            </div>
+            
+            <snippet-editor component id=x509-nodejs src='ex/x509-nodejs.js'></snippet-editor>
+            
+            
             
             
             
