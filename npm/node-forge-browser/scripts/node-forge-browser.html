@@ -195,7 +195,7 @@
                                                                           console.log('npm install',package,'...');
               var packages    = [package];
               packages.unshift('install');
-              var process   = await webcontainer.spawn('npm',[package]);
+              var process   = await webcontainer.spawn('npm',packages);
               var stream    = new WritableStream({write(data){term.write(data)}});
               process.output.pipeTo(stream)
               var code      = await process.exit;
