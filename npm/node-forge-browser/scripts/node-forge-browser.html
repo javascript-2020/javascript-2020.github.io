@@ -21,7 +21,7 @@
     
       </style>
       
-      <h3>estree-walker-browser</h3>
+      <h3>node-forge-browser</h3>
       
       <div id=hdr>
             <div>
@@ -40,25 +40,23 @@
                                                                                 console.log('estree-walker');
                                                                                 console.log();
                                                                                 
-        var term;
-        var webcontainer;
-        
-        var packages          = ['estree-walker'];
-        
+                                                                                
+        var package           = 'node-forge';
+        var exp_name          = 'forge';
         
         var files   = {};
         
         
         var filename          = {
-              esm   : 'estree-walker.m.js',
-              cjs   : 'estree-walker.js',
+              esm   : `${package}.m.js`,
+              cjs   : `${package}.js`,
         }
         
         
         files['entry.esm.js']   = `
         
-              import * as walker from 'estree-walker';
-              export {walker};
+              import * as ${exp_name} from '${package}';
+              export {${exp_name}};
               
         `;
         
@@ -89,9 +87,9 @@
         
         files['entry.cjs.js']   = `
         
-              import * as walker from 'estree-walker';
+              import * as ${exp_name} from '${package}';
               
-              export default walker;  // iife / umd
+              export default ${exp_name};  // iife / umd
               
         `;
         
@@ -109,7 +107,7 @@
                                   file      : '${filename.cjs}',
                                   
                                   format    : 'iife',         // or 'umd'
-                                  name      : 'walker',       // This becomes window.espree
+                                  name      : '${exp_name}',       // This becomes window.espree
                                   exports   : 'default',
                                   
                 },
@@ -124,6 +122,12 @@
         `;
         
         
+        
+        
+        
+        
+        var term;
+        var webcontainer;
         var rollup    = {};
         
         
@@ -174,7 +178,7 @@
                     var url     = window.URL.createObjectURL(blob);
                     
                     
-                    var path    = '/npm/estree-walker-browser/';
+                    var path    = '/npm/${package}-browser/';
                     fs.dir.create(path);
                     
                     await fs.file.save(path+filename[type],blob);
@@ -191,7 +195,7 @@
                                                                           var str   = packages.join(' ');
                                                                           console.log('npm install',str,'...');
               packages.unshift('install');
-              var process   = await webcontainer.spawn('npm',packages);
+              var process   = await webcontainer.spawn('npm',[package]);
               var stream    = new WritableStream({write(data){term.write(data)}});
               process.output.pipeTo(stream)
               var code      = await process.exit;
@@ -202,7 +206,7 @@
               
         }//install
         
-        
+/*
         async function package_json(){
                                                                           console.log('npm install ( package.json ) ...');
               var process   = await webcontainer.spawn('npm',['install']);
@@ -215,8 +219,8 @@
               return code;
               
         }//package_json
-        
-        
+*/
+
         async function install_rollup(){
         
               var packages    = [
@@ -229,7 +233,7 @@
                                                                           console.log('npm install',packages.join(' '),'...');
               packages.unshift('install');
               
-              var process   = await webcontainer.spawn('npm',packages);
+              var process   = await webcontainer.spawn('npm',[package]);
               var stream    = new WritableStream({write(data){term.write(data)}});
               process.output.pipeTo(stream)
               var code      = await process.exit;
