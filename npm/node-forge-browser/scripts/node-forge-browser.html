@@ -178,7 +178,7 @@
                     var url     = window.URL.createObjectURL(blob);
                     
                     
-                    var path    = '/npm/${package}-browser/';
+                    var path    = `/npm/${package}-browser/`;
                     fs.dir.create(path);
                     
                     await fs.file.save(path+filename[type],blob);
@@ -233,7 +233,7 @@
                                                                           console.log('npm install',packages.join(' '),'...');
               packages.unshift('install');
               
-              var process   = await webcontainer.spawn('npm',[package]);
+              var process   = await webcontainer.spawn('npm',packages);
               var stream    = new WritableStream({write(data){term.write(data)}});
               process.output.pipeTo(stream)
               var code      = await process.exit;
