@@ -42,7 +42,7 @@
                                                                                 
                                                                                 
         var package           = 'node-forge';
-        var exp_name          = 'forge';
+        var export_name       = 'forge';
         
         var files   = {};
         
@@ -55,8 +55,8 @@
         
         files['entry.esm.js']   = `
         
-              import * as ${exp_name} from '${package}';
-              export {${exp_name}};
+              import * as ${export_name} from '${package}';
+              export {${export_name}};
               
         `;
         
@@ -87,9 +87,9 @@
         
         files['entry.cjs.js']   = `
         
-              import * as ${exp_name} from '${package}';
+              import * as ${export_name} from '${package}';
               
-              export default ${exp_name};  // iife / umd
+              export default ${export_name};  // iife / umd
               
         `;
         
@@ -107,7 +107,7 @@
                                   file      : '${filename.cjs}',
                                   
                                   format    : 'iife',         // or 'umd'
-                                  name      : '${exp_name}',       // This becomes window.espree
+                                  name      : '${export_name}',       // This becomes window.espree
                                   exports   : 'default',
                                   
                 },
