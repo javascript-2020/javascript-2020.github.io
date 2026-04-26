@@ -1,0 +1,375 @@
+
+      <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css'>
+      
+      <style>
+      
+  body
+    {margin:20px;display:flex;flex-direction:column;gap:10px;font-family:arial}
+    
+    
+  #hdr
+    {display:flex;gap:10px;align-items:center}
+    
+  #terminal
+    {height:500px}
+    
+  input
+    {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  input[type=button}
+    {cursor:pointer}
+    
+    
+      </style>
+      
+      <h3>estree-walker-browser</h3>
+      
+      <div id=hdr>
+            <div>
+                  auth
+            </div>
+            <input id=auth>
+            <input value=ready type=button onclick='start()'>
+      </div>
+      
+      <div id=terminal></div>
+      
+      
+      <script>
+      
+                                                                                console.clear();
+                                                                                console.log('estree-walker');
+                                                                                console.log();
+                                                                                
+        var term;
+        var webcontainer;
+        
+        var packages          = ['estree-walker'];
+        
+        
+        var files   = {};
+        
+        
+        var filename          = {
+              esm   : 'estree-walker.m.js',
+              cjs   : 'estree-walker.js',
+        }
+        
+        
+        files['entry.esm.js']   = `
+        
+              import * as walker from 'estree-walker';
+              export {walker};
+              
+        `;
+        
+        
+        files['rollup.config.esm.js']   = `
+        
+              import resolve from '@rollup/plugin-node-resolve';
+              import commonjs from '@rollup/plugin-commonjs';
+              import json from '@rollup/plugin-json';
+              import nodePolyfills from 'rollup-plugin-polyfill-node';
+              
+              export default {
+                    input     : 'entry.esm.js',
+                    output    : {
+                                      file      : '${filename.esm}',
+                                      format    : 'es'
+                                },
+                    plugins   : [
+                                      commonjs(),
+                                      json(),
+                                      nodePolyfills(),
+                                      resolve({preferBuiltins:false})
+                                ]
+              };
+              
+        `;
+        
+        
+        files['entry.cjs.js']   = `
+        
+              import * as walker from 'estree-walker';
+              
+              export default walker;  // iife / umd
+              
+        `;
+        
+        
+        files['rollup.config.cjs.js']   = `
+        
+              import resolve from '@rollup/plugin-node-resolve';
+              import commonjs from '@rollup/plugin-commonjs';
+              import json from '@rollup/plugin-json';
+              import nodePolyfills from 'rollup-plugin-polyfill-node';
+              
+              export default {
+                input     : 'entry.cjs.js',
+                output    : {
+                                  file      : '${filename.cjs}',
+                                  
+                                  format    : 'iife',         // or 'umd'
+                                  name      : 'walker',       // This becomes window.espree
+                                  exports   : 'default',
+                                  
+                },
+                plugins   : [
+                                  commonjs(),
+                                  json(),
+                                  nodePolyfills(),
+                                  resolve({preferBuiltins:false})
+                            ]
+              };
+              
+        `;
+        
+        
+        var rollup    = {};
+        
+        
+        
+        
+        
+        async function start(){
+        
+              var {Terminal}    = await import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm');
+              var {FitAddon}    = await import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm');
+              
+              term                = new Terminal();
+              var fitAddon        = new FitAddon();
+              term.loadAddon(fitAddon);
+              term.open(terminal);
+              fitAddon.fit();
+              
+              var {'file-server':fs}    = await import('https://libs.ext-code.com/js/io/file-server/file-server.m.js');
+              fs.url    = 'https://localhost:3000';
+              fs.auth   = auth.value;
+              
+              for(var key in files){
+              
+                    files[key]   = {file:{contents:files[key]}};
+                    
+              }//for
+              
+              
+              var {WebContainer}    = await import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm');
+              
+                                                                                console.log('booting ...');
+              webcontainer          = await WebContainer.boot();
+              
+                                                                                console.log('mounting file system ...');
+              await webcontainer.mount(files);
+              
+              
+              await install();
+              //await package_json();
+              await install_rollup();
+              
+              await Promise.all(['esm','cjs'].map(async type=>{
+              
+                    await rollup[type]();
+                    
+                    var uint8   = await webcontainer.fs.readFile(filename[type]);
+                    var blob    = new Blob([uint8],{type:'text/javascript'});
+                    var url     = window.URL.createObjectURL(blob);
+                    
+                    
+                    var path    = '/npm/estree-walker-browser/';
+                    fs.dir.create(path);
+                    
+                    await fs.file.save(path+filename[type],blob);
+                    
+              }));
+              
+                                                                                console.log('done.');
+                                                                                
+        }//start
+        
+        
+        
+        async function install(){
+                                                                          var str   = packages.join(' ');
+                                                                          console.log('npm install',str,'...');
+              packages.unshift('install');
+              var process   = await webcontainer.spawn('npm',packages);
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream)
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//install
+        
+        
+        async function package_json(){
+                                                                          console.log('npm install ( package.json ) ...');
+              var process   = await webcontainer.spawn('npm',['install']);
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream)
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//package_json
+        
+        
+        async function install_rollup(){
+        
+              var packages    = [
+                    'rollup',
+                    '@rollup/plugin-commonjs',
+                    '@rollup/plugin-node-resolve',
+                    '@rollup/plugin-json',
+                    'rollup-plugin-polyfill-node'
+              ];
+                                                                          console.log('npm install',packages.join(' '),'...');
+              packages.unshift('install');
+              
+              var process   = await webcontainer.spawn('npm',packages);
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream)
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//install_rollup
+        
+        
+        rollup.esm    = async function(){
+                                                                          console.log('perform rollup ...');
+              var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.esm.js']);
+              
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream);
+              
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//rollup
+        
+        rollup.cjs    = async function(){
+                                                                          console.log('perform rollup ...');
+              var process   = await webcontainer.spawn('npx',['-y','rollup','--config','rollup.config.cjs.js']);
+              
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream);
+              
+              var code      = await process.exit;
+              if(code!=0){
+                                                                          console.log('an error occurred');
+              }
+              return code;
+              
+        }//rollup
+        
+        
+        async function download(path1,path2){
+        
+              var blob    = await readfile(path);
+              await fs.writeFile(path2,blob);
+              
+        }//download
+        
+        
+        async function readfile(path){
+        
+              var uint8   = await webcontainer.fs.readFile(path);
+              var blob    = new Blob([uint8],{type:'text/javascript'});
+              return blob;
+              
+        }//readfile
+        
+        
+        
+  //:
+  
+  
+        async function test({espree,estraverse,scope}){
+        
+              var code    = `
+              
+                    function fn(){
+                    
+                          console.log('123');
+                          
+                    }//fn
+                    
+              `;
+              
+              const options = {
+              	ecmaVersion: 2022,
+              	sourceType: "module",
+              };
+              
+              const ast             = espree.parse(code, { range: true, ...options });
+              const scopeManager    = scope.analyze(ast, options);
+              
+              var currentScope    = scopeManager.acquire(ast); // global scope
+              
+              estraverse.traverse(ast, {
+                  	enter(node, parent) {
+                  		// do stuff
+                    
+                  		if (/Function/.test(node.type)) {
+                  			currentScope = scopeManager.acquire(node); // get current function scope
+                  		}
+                  	},
+                  	leave(node, parent) {
+                  		if (/Function/.test(node.type)) {
+                  			currentScope = currentScope.upper; // set to parent scope
+                  		}
+                    
+                  		// do stuff
+                  	},
+              });
+              
+        }//test
+        
+        
+        test.esm    = async function(url){
+        
+              var {espree}        = await import('https://libs.ext-code.com/external/js/espree/espree.m.js');
+              var {estraverse}    = await import('https://libs.ext-code.com/external/js/estraverse/estraverse.m.js');
+              var {scope}         = await import(url);
+              
+              test({espree,estraverse,scope});
+              
+        }//test
+        
+        
+        test.cjs    = async function(url){
+        }//cjs
+        
+        
+  //:
+  
+  
+        files['package.json']   = `
+        
+              {
+                    "name": "node-test",
+                    "version": "1.0.0",
+                    "scripts": {}
+              }
+              
+        `;
+        
+        
+        
+        
+        
+        
+        
+</script>
+
+
+
