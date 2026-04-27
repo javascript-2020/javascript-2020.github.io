@@ -1,59 +1,88 @@
 
-(async()=>{
 
-
-        var crypto              = require('node:crypto');
+!async function(){
+                                                                                console.clear();
+                                                                                
+        const crypto            = require('crypto');
         
         var {key,cert}          = setup();
         
         
-        var secret              = 'my-super-secret-token';
+        
+        
+        var secret              = 'hello world';
         var blob                = new Blob([secret]);
         
         
         var encrypted_blob      = await encrypt(blob,cert);
-        var b64                 = await blob_b64(blob);
-                                                                                console.log('Encrypted :',b64);
+        var b64                 = await blob_b64(encrypted_blob);
+                                                                                console.log('Encrypted:',b64);
                                                                                 
         var encrypted_blob      = b64_blob(b64);
-        var blob                = await decrypt(blob,key);
-        var txt                 = await blob.text();
-                                                                                console.log('Decrypted :',txt);
+        var blob                = await decrypt(encrypted_blob,key);
+        var decrypted           = await blob.text();
+                                                                                console.log('Decrypted:', decrypted);
                                                                                 
                                                                                 
   //:
   
   
+        function extract_spki(certPem){
+        
+              certPem             = normalisePem(certPem);
+              var publicKey       = crypto.createPublicKey(certPem);
+              var spkiDer         = publicKey.export({type:'spki',format:'der'});
+              var uint8           = new Uint8Array(spkiDer);
+              return uint8
+              
+        }//extract_spki
+        
+        
+        async function pub_key(cert){
+        
+              var spki      = extract_spki(cert);
+              var buf       = spki.buffer;
+              var pub_key   = await crypto.subtle.importKey('spki',buf,{name:'RSA-OAEP',hash:'SHA-256'},true,['encrypt']);
+              return pub_key;
+              
+        }//pub_key
+        
+        
         async function encrypt(blob,cert){
-                                                                                // Encrypt with public key from X.509 cert
-              var buffer        = await blob_buf(blob);
-              var publicKey     = crypto.createPublicKey(cert);
-              
-              var key           = publicKey;
-              var padding       = crypto.constants.RSA_PKCS1_OAEP_PADDING;
-              var oaepHash      = 'sha256';
-              
-              var params        = {key,padding,oaepHash};
-              const encrypted   = crypto.publicEncrypt(params,buffer);
-              
-              var blob          = new Blob([encrypted]);
+        
+              var publicKey     = await pub_key(cert);
+              var buf           = await blob.arrayBuffer();
+              var encrypted     = await crypto.subtle.encrypt({name:'RSA-OAEP'},publicKey,buf);
+              var uint8         = new Uint8Array(encrypted);
+              var blob          = new Blob([uint8]);
               return blob;
               
         }//encrypt
         
         
+  //:
+  
+  
+        async function priv_key(pem){
+        
+              var b64         = pem.replace(/-----BEGIN PRIVATE KEY-----/, '')
+                                  .replace(/-----END PRIVATE KEY-----/, '')
+                                  .replace(/\s+/g, '');
+              var bin         = atob(b64);
+              var der         = bin_uint8(bin);
+              var buf         = der.buffer;
+              var priv_key    = await crypto.subtle.importKey('pkcs8',buf,{name:'RSA-OAEP',hash:'SHA-256',},true,['decrypt']);
+              return priv_key;
+              
+        }//priv_key
+        
+        
         async function decrypt(blob,key){
-                                                                                // Decrypt with private key
-              var buffer        = await blob_buffer(blob);
-              
-              var key           = key
-              var padding       = crypto.constants.RSA_PKCS1_OAEP_PADDING;
-              var oaepHash      = 'sha256';
-              
-              var params        = {key,padding,oaepHash};
-              var decrypted     = crypto.privateDecrypt(params,buffer);
-              
-              var blob          = new Blob([decrypted]);
+        
+              var privateKey        = await priv_key(key);
+              var uint8             = await blob_uint8(blob);
+              var buffer            = await crypto.subtle.decrypt({name:'RSA-OAEP',},privateKey,uint8);
+              var blob              = new Blob([buffer]);
               return blob;
               
         }//decrypt
@@ -62,20 +91,30 @@
   //:
   
   
-        async function blob_buf(blob){
+        function b64_uint8(b64){
         
-              var arrayBuffer   = await blob.arrayBuffer();
-              var buffer        = Buffer.from(arrayBuffer);
-              return buffer;
+              var bin       = atob(b64);
+              var uint8     = bin_uint8(bin);
+              return uint8;
               
-        }//blob_buf
+        }//b64_uint8
+        
+        
+        async function blob_uint8(blob){
+        
+              var buf     = await blob.arrayBuffer();
+              var uint8   = new Uint8Array(buf);
+              return uint8;
+              
+        }//blob_uint8
         
         
         async function blob_b64(blob){
         
-              const arrayBuffer   = await blob.arrayBuffer();
-              var buffer          = Buffer.from(arrayBuffer);
-              var b64             = buffer.toString('base64');
+              var buf     = await blob.arrayBuffer();
+              var bytes   = new Uint8Array(buf);
+              var bin     = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64     = btoa(bin);
               return b64;
               
         }//blob_b64
@@ -83,11 +122,39 @@
         
         function b64_blob(b64){
         
-              var buf     = Buffer.from(b64,'base64');
+              var bin     = atob(b64);
+              var bytes   = [...bin].map(c=>c.charCodeAt(0));
+              var buf     = new Uint8Array(bytes);
               var blob    = new Blob([buf]);
               return blob;
               
         }//b64_blob
+        
+        
+        function bin_uint8(bin){
+        
+              var uint8   = Uint8Array.from(bin,c=>c.charCodeAt(0));
+              return uint8;
+              
+        }//bin_uint8
+        
+        
+        function normalisePem(pem){
+        
+              pem   = pem.replace(/\r/g,'');
+              var lines   = pem.split('\n');
+              var n       = lines.length;
+              for(var i=1;i<n-1;i++){
+              
+                    var line    = lines[i];
+                    line        = line.trimStart();
+                    lines[i]     = line;
+                    
+              }//for
+              pem   = lines.join('\n').trim();
+              return pem;
+              
+        }//normalisePem
         
         
   //:
@@ -152,11 +219,13 @@
               
               return {key,cert};
               
-        }//setu
+        }//setup
         
         
         
-})();
+        
+}();
+
 
 
 
