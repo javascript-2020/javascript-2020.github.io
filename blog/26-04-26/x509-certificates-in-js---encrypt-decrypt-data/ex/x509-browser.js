@@ -78,14 +78,9 @@
         
               var privateKey        = await priv_key(key);
               var uint8             = await blob_uint8(blob);
-              //var bin               = atob(b64)
-              //var uint8             = Uint8Array.from(bin,c=>c.charCodeAt(0));
               var buffer            = await crypto.subtle.decrypt({name:'RSA-OAEP',},privateKey,uint8);
               var blob              = new Blob([buffer]);
               return blob;
-              
-              var txt                 = new TextDecoder().decode(plaintextBuffer);
-              return txt;
               
         }//decrypt
         
@@ -95,15 +90,8 @@
   
         function b64_uint8(b64){
         
-              var str       = atob(b64);
-              var n         = str.length;
-              var uint8     = new Uint8Array(n);
-              for(var i=0;i<n;i++){
-              
-                    var c       = str[i];
-                    uint8[i]    = c.charCodeAt(0);
-                    
-              }//for
+              var bin       = atob(b64);
+              var uint8     = bin_uint8(bin);
               return uint8;
               
         }//b64_uint8
