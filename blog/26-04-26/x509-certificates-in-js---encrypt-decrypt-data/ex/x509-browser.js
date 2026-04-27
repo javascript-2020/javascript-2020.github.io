@@ -162,10 +162,22 @@
         }//b64_uint8
         
         
+        async function blob_uint8(blob){
+        
+              var buf     = await blob.arrayBuffer();
+              var uint8   = new Uint8Array(buf);
+              return uint8;
+              
+        }//blob_uint8
+        
+        
         async function blob_b64(blob){
         
-              var buf   = await blob.arrayBuffer();
-              return btoa(String.fromCharCode(...new Uint8Array(buf)));
+              var buf     = await blob.arrayBuffer();
+              var uint8   = new Uint8Array(buf);
+              var bin     = String.fromCharCode(...uint8)
+              var b64     = btoa(bin);
+              return b64;
               
         }//blob_b64
         
