@@ -26,9 +26,10 @@
   
         async function encrypt(blob,cert){
                                                                                 // Encrypt with public key from X.509 cert
-              var buffer        = await blob_buffer(blob);
+              var buffer        = await blob_buf(blob);
+              var publicKey     = crypto.createPublicKey(cert);
               
-              var key           = cert;
+              var key           = publicKey;
               var padding       = crypto.constants.RSA_PKCS1_OAEP_PADDING;
               var oaepHash      = 'sha256';
               
