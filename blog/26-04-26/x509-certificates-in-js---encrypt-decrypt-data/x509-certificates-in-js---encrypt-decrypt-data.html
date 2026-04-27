@@ -81,16 +81,42 @@
             
             <div class=description>
                   <p>
-                        This blog post describes using x509 certificates to encrypt and decrypt data in a javascript environment.  This
+                        This blog post describes using x509 certificates to encrypt and decrypt data in javascript environments.  This
                         can be useful since the public certificate can be made available publicly, even sent via an insecure communication
                         channel, this public certificate can be used to encrypt data, the encrypted data can be sent to the holder
                         of the private key, who can subsequently decode the encrypted data using the private key.
+                        <br>
+                        If two parties want to have a bi-directional encrypted communication, they can both send each other their
+                        public certificates.
                   </p>
+            </div>
+            
+            
+            <div class=blog-text>
+                  <h4>
+                        notes :
+                  </h4>
                   <p>
-                        Node.js supports both PKCS#1 and PKCS#8 private keys, while browsers only support PKCS#8.
-                        This difference comes from how each environment exposes cryptography: Node wraps OpenSSL
-                        (very flexible), while browsers expose WebCrypto (much stricter and standardized).
+                        private keys :
                   </p>
+                  <ul>
+                        <li>
+                              Browsers only support PKCS#8
+                        </li>
+                        <li>
+                              Node.js supports both PKCS#1 and PKCS#8 private keys
+                        </li>
+                  </ul>
+                  <p>
+                        certificates :
+                  </p>
+                  <ul>
+                        <li>
+                              Browsers require the spki component in der form
+                        </li>
+                        <li>
+                              node.js supports the entire certificate in pem format
+                        </li>
             </div>
             
             <div>
@@ -111,8 +137,104 @@
             <snippet-editor component id=x509-nodejs src='ex/x509-nodejs.js'></snippet-editor>
             
             
-            
-            
+            <divv class=blog-text>
+                  <h3 class=blog-hdr>
+                        SPKI
+                  </h3>
+                  <p>
+                        SPKI in X.509 stands for Subject Public Key Info.
+                        <br>
+                        It is the part of an X.509 certificate that contains the subject’s public key
+                        and information about the algorithm used with that key.
+                  </p>
+                  
+                  <h4>
+                        What SPKI actually contains
+                  </h4>
+                  
+                  <p>
+                        The Subject Public Key Info (SPKI) field is a structured ASN.1 block inside every X.509 certificate. It includes:
+                  </p>
+                  <ul>
+                        <li>
+                              The subject’s public key (e.g., RSA, ECDSA, Ed25519)
+                        </li>
+                        <li>
+                              The algorithm identifier for that key (e.g., rsaEncryption, id-ecPublicKey)
+                        </li>
+                        <li>
+                              Any algorithm parameters required by that key type
+                        </li>
+                  </ul>
+                  
+                  <p>
+                        This is the part of the certificate that clients use to verify signatures or establish encrypted sessions.
+                  </p>
+                  
+                  <h4>
+                        Why SPKI matters
+                  </h4>
+                  <p>
+                        SPKI is essential because:
+                  </p>
+                  <ul>
+                        <li>
+                              It is the actual public key that the certificate binds to an identity.
+                        </li>
+                        <li>
+                              It is used by TLS, code signing, S/MIME, and other PKI systems to verify authenticity.
+                        </li>
+                        <li>
+                              It is the part that gets hashed when generating a certificate pin (HPKP-style pins or modern SPKI pinning in some systems).
+                        </li>
+                  </ul>
+                  <p>
+                        In short, SPKI is the cryptographic heart of the certificate.
+                  </p>
+                  
+                  <h4>
+                        Where SPKI sits in the certificate structure
+                  </h4>
+                  <p>
+                        According to the X.509 standard, SPKI is one of the core Version 1 certificate fields,
+                        meaning it has existed since the earliest form of the standard.
+                        <a href='https://learn.microsoft.com/en-us/azure/iot-hub/reference-x509-certificates'>
+                        </a>
+                  </p>
+                  <p>
+                        Typical X.509 structure (simplified):
+                  </p>
+                  
+                  <ul>
+                        <li>
+                              Version
+                        </li>
+                        <li>
+                              Serial Number
+                        </li>
+                        <li>
+                              Signature Algorithm
+                        </li>
+                        <li>
+                              Issuer
+                        </li>
+                        <li>
+                              Validity
+                        </li>
+                        <li>
+                              Subject
+                        </li>
+                        <li>
+                              Subject Public Key Info (SPKI)
+                        </li>
+                        <li>
+                              Extensions (v3)
+                        </li>
+                        <li>
+                              Signature
+                        </li>
+                  </ul>
+            </div>
             
             
             <log-mod component></log-mod>
