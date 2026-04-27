@@ -66,8 +66,9 @@
                                   .replace(/-----END PRIVATE KEY-----/, '')
                                   .replace(/\s+/g, '');
               var bin         = atob(b64);
-              var der         = Uint8Array.from(bin,c=>c.charCodeAt(0));
-              var priv_key    = await crypto.subtle.importKey('pkcs8',der.buffer,{name: 'RSA-OAEP',hash: 'SHA-256',},true,['decrypt']);
+              var der         = bin_uint8(bin);
+              var buf         = der.buffer;
+              var priv_key    = await crypto.subtle.importKey('pkcs8',buf,{name:'RSA-OAEP',hash:'SHA-256',},true,['decrypt']);
               return priv_key;
               
         }//priv_key
