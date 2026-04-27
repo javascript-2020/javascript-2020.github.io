@@ -2,46 +2,36 @@
 (async()=>{
 
 
-        var crypto          = require('node:crypto');
+        var crypto              = require('node:crypto');
         
-        var {key,cert}      = setup();
+        var {key,cert}          = setup();
         
-        var secret          = 'my-super-secret-token';
-        var blob            = new Blob([secret]);
         
-        var blob            = await encrypt(blob,cert);
-        var b64             = await blob_b64(blob);
-                                                                                console.log('Encrypted (base64):',b64);
+        var secret              = 'my-super-secret-token';
+        var blob                = new Blob([secret]);
+        
+        
+        var encrypted_blob      = await encrypt(blob,cert);
+        var b64                 = await blob_b64(blob);
+                                                                                console.log('Encrypted :',b64);
                                                                                 
-        var recovered       = await decrypt(blob,key);
-        var txt             = await recovered.text();
-                                                                                console.log('Recovered:',txt);
+        var encrypted_blob      = b64_blob(b64);
+        var blob                = await decrypt(blob,key);
+        var txt                 = await blob.text();
+                                                                                console.log('Decrypted :',txt);
                                                                                 
                                                                                 
+  //:
+  
+  
+        async function encrypt(blob,cert){
                                                                                 // Encrypt with public key from X.509 cert
-        async function encrypt(source,cert){
-        
-              var buffer;
-              
-              var type    = datatype(source);
-              switch(type){
-              
-                case 'string'       : buffer    = Buffer.from(source,'utf8');
-                                      break;
-                                      
-                case 'blob'         : const arrayBuffer   = await source.arrayBuffer();
-                                      buffer              = Buffer.from(arrayBuffer);
-                                      break;
-                                      
-                case 'uint8array'   : buffer    = source;
-                                      break;
-                                      
-              }//switch
-              
+              var buffer        = await blob_buffer(blob);
               
               var key           = cert;
               var padding       = crypto.constants.RSA_PKCS1_OAEP_PADDING;
               var oaepHash      = 'sha256';
+              
               var params        = {key,padding,oaepHash};
               const encrypted   = crypto.publicEncrypt(params,buffer);
               
@@ -50,29 +40,15 @@
               
         }//encrypt
         
-                                                                                // Decrypt with private key
-        async function decrypt(source,key){
         
-              var buffer;
-              
-              var type    = datatype(source);
-              switch(type){
-              
-                case 'string'       : buffer    = Buffer.from(base64,'base64');
-                                      break;
-                                      
-                case 'blob'         : const arrayBuffer   = await source.arrayBuffer();
-                                      buffer              = Buffer.from(arrayBuffer);
-                                      break;
-                                      
-                case 'uint8array'   : buffer    = source;
-                                      break;
-                                      
-              }//switch
+        async function decrypt(blob,key){
+                                                                                // Decrypt with private key
+              var buffer        = await blob_buffer(blob);
               
               var key           = key
               var padding       = crypto.constants.RSA_PKCS1_OAEP_PADDING;
               var oaepHash      = 'sha256';
+              
               var params        = {key,padding,oaepHash};
               var decrypted     = crypto.privateDecrypt(params,buffer);
               
@@ -84,8 +60,18 @@
         
         
         
+  //:
+  
+  
+  
+        async function blob_buf(blob){
         
-        function datatype(v){return v.toString().slice(8,-1).toLowerCase()}
+              var arrayBuffer   = await blob.arrayBuffer();
+              var buffer        = Buffer.from(arrayBuffer);
+              return buffer;
+              
+        }//blob_buf
+        
         
         async function blob_b64(blob){
         
@@ -97,6 +83,35 @@
         }//blob_b64
         
         
+        
+        
+        
+        async function blob_b64(blob){
+        
+              var buf     = await blob.arrayBuffer();
+              var bytes   = new Uint8Array(buf);
+              var bin     = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64     = btoa(bin);
+              return b64;
+              
+        }//blob_b64
+        
+        
+        function b64_blob(b64){
+        
+              var bin     = atob(b64);
+              var bytes   = [...bin].map(c=>c.charCodeAt(0));
+              var buf     = new Uint8Array(bytes);
+              var blob    = new Blob([buf]);
+              return blob;
+              
+        }//b64_blob
+        
+        
+        
+  //:
+  
+  
         function setup(){
         
               var key   = `
