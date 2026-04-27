@@ -67,8 +67,8 @@
               var b64         = pem.replace(/-----BEGIN PRIVATE KEY-----/, '')
                                   .replace(/-----END PRIVATE KEY-----/, '')
                                   .replace(/\s+/g, '');
-              var der_uint8   = b64_uint8(b64);
-              var buf         = der_uint8.buffer;
+              var uint8       = b64_uint8(b64);
+              var buf         = uint8.buffer;
               var priv_key    = await crypto.subtle.importKey('pkcs8',buf,{name:'RSA-OAEP',hash:'SHA-256',},true,['decrypt']);
               return priv_key;
               
