@@ -13,9 +13,12 @@
         var secret              = 'hello world';
         var blob                = new Blob([secret]);
         
+        
         var encrypted_blob      = await encrypt(blob,cert);
         var b64                 = await blob_b64(encrypted_blob);
                                                                                 console.log('Encrypted:',b64);
+                                                                                
+        var encrypted_blob      = b64_blob(b64);
         var blob                = await decrypt(encrypted_blob,key);
         var decrypted           = await blob.text();
                                                                                 console.log('Decrypted:', decrypted);
