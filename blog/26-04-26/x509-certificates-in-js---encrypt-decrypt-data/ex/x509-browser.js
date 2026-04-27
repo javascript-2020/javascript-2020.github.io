@@ -51,7 +51,7 @@
               var buf           = await blob.arrayBuffer();
               var encrypted     = await crypto.subtle.encrypt({name:'RSA-OAEP'},publicKey,buf);
               var uint8         = new Uint8Array(encrypted);
-              var blob          = new Blob([unint8]);
+              var blob          = new Blob([uint8]);
               return blob;
               
         }//encrypt
