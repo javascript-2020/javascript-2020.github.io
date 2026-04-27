@@ -4,7 +4,6 @@
 !async function(){
                                                                                 console.clear();
                                                                                 
-                                                                                
         var {forge}             = await import('https://libs.ext-code.com/external/js/node-forge/node-forge.m.js');
         
         var {key,cert}          = setup();
