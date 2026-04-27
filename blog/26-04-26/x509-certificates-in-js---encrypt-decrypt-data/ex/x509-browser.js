@@ -10,15 +10,15 @@
         var {key,cert}          = setup();
         
         
-        var secret              = "hello world";
+        var secret              = 'hello world';
         var blob                = new Blob([secret]);
         
         var encrypted_blob      = await encrypt(blob,cert);
         var b64                 = await blob_b64(encrypted_blob);
-                                                                                console.log("Encrypted:",b64);
+                                                                                console.log('Encrypted:',b64);
         var blob                = await decrypt(encrypted_blob,key);
         var decrypted           = await blob.text();
-                                                                                console.log("Decrypted:", decrypted);
+                                                                                console.log('Decrypted:', decrypted);
                                                                                 
                                                                                 
   //:
@@ -62,12 +62,12 @@
   
         async function priv_key(pem){
         
-              var b64         = pem.replace(/-----BEGIN PRIVATE KEY-----/, "")
-                                  .replace(/-----END PRIVATE KEY-----/, "")
-                                  .replace(/\s+/g, "");
+              var b64         = pem.replace(/-----BEGIN PRIVATE KEY-----/, '')
+                                  .replace(/-----END PRIVATE KEY-----/, '')
+                                  .replace(/\s+/g, '');
               var bin         = atob(b64);
               var der         = Uint8Array.from(bin,c=>c.charCodeAt(0));
-              var priv_key    = await crypto.subtle.importKey("pkcs8",der.buffer,{name: "RSA-OAEP",hash: "SHA-256",},true,["decrypt"]);
+              var priv_key    = await crypto.subtle.importKey('pkcs8',der.buffer,{name: 'RSA-OAEP',hash: 'SHA-256',},true,['decrypt']);
               return priv_key;
               
         }//priv_key
@@ -79,7 +79,7 @@
               var uint8             = await blob_uint8(blob);
               //var bin               = atob(b64)
               //var uint8             = Uint8Array.from(bin,c=>c.charCodeAt(0));
-              var buffer            = await crypto.subtle.decrypt({name:"RSA-OAEP",},privateKey,uint8);
+              var buffer            = await crypto.subtle.decrypt({name:'RSA-OAEP',},privateKey,uint8);
               var blob              = new Blob([buffer]);
               return blob;
               
