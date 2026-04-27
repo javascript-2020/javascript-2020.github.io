@@ -25,11 +25,11 @@
   
   
         function extract_spki(cert){
-        
+                                                                                //  requires node-forge
               var cert          = forge.pki.certificateFromPem(cert);
               var spkiAsn1      = forge.pki.publicKeyToAsn1(cert.publicKey);
               var der           = forge.asn1.toDer(spkiAsn1).getBytes();
-              var uint8         = Uint8Array.from(der, c => c.charCodeAt(0));
+              var uint8         = bin_uint8(der);
               return uint8;
               
         }//extract_spki
@@ -126,6 +126,14 @@
               return b64;
               
         }//blob_b64
+        
+        
+        function bin_uint8(bin){
+        
+              var uint8   = Uint8Array.from(bin,c=>c.charCodeAt(0));
+              return uint8;
+              
+        }//bin_uint8
         
         
   //:
