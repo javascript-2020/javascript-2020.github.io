@@ -58,10 +58,7 @@
         }//decrypt
         
         
-        
-        
   //:
-  
   
   
         async function blob_buf(blob){
