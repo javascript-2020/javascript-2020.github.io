@@ -109,12 +109,23 @@
         async function blob_b64(blob){
         
               var buf     = await blob.arrayBuffer();
-              var uint8   = new Uint8Array(buf);
-              var bin     = String.fromCharCode(...uint8)
+              var bytes   = new Uint8Array(buf);
+              var bin     = bytes.reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
               var b64     = btoa(bin);
               return b64;
               
         }//blob_b64
+        
+        
+        function b64_blob(b64){
+        
+              var bin     = atob(b64);
+              var bytes   = [...bin].map(c=>c.charCodeAt(0));
+              var buf     = new Uint8Array(bytes);
+              var blob    = new Blob([buf]);
+              return blob;
+              
+        }//b64_blob
         
         
         function bin_uint8(bin){
