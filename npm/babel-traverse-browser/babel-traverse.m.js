@@ -17557,20 +17557,20 @@ function requireGetFunctionName () {
 	return getFunctionName;
 }
 
-var traverse = {};
+var traverse$1 = {};
 
 var hasRequiredTraverse;
 
 function requireTraverse () {
-	if (hasRequiredTraverse) return traverse;
+	if (hasRequiredTraverse) return traverse$1;
 	hasRequiredTraverse = 1;
 
-	Object.defineProperty(traverse, "__esModule", {
+	Object.defineProperty(traverse$1, "__esModule", {
 	  value: true
 	});
-	traverse.default = traverse$1;
+	traverse$1.default = traverse;
 	var _index = requireDefinitions();
-	function traverse$1(node, handlers, state) {
+	function traverse(node, handlers, state) {
 	  if (typeof handlers === "function") {
 	    handlers = {
 	      enter: handlers
@@ -17613,7 +17613,7 @@ function requireTraverse () {
 	}
 
 	
-	return traverse;
+	return traverse$1;
 }
 
 var isBinding = {};
@@ -47718,9 +47718,39 @@ function requireLib () {
 var libExports = requireLib();
 var index = /*@__PURE__*/getDefaultExportFromCjs(libExports);
 
-var index$1 = /*#__PURE__*/_mergeNamespaces({
+var ns = /*#__PURE__*/_mergeNamespaces({
 	__proto__: null,
 	default: index
 }, [libExports]);
 
-export { index$1 as traverse };
+// Build a mutable namespace object
+              var traverse    = {
+                    ...ns,
+                                                                                // add alias
+                    traverse    : index,  
+                                                                                // preserve default
+              };
+              var entry_esm = index;        
+        
+
+/*        
+  import * as _ns from '@babel/traverse';
+
+  // Build a mutable namespace object
+  const Traverse = {
+    ..._ns,
+    traverse: _ns.default,
+    default: _ns.default
+  };
+
+  // Named export (your preferred import style)
+  export const traverse = _ns.default;
+
+  // Namespace export under a DIFFERENT name
+  export { Traverse };
+
+  // Default export
+  export default _ns.default;
+*/
+
+export { entry_esm as default, traverse };

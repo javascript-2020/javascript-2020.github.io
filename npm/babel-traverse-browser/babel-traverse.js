@@ -47721,10 +47721,18 @@ Please specify the "importAttributesKeyword" generator option, whose value can b
 	var libExports = requireLib();
 	var index = /*@__PURE__*/getDefaultExportFromCjs(libExports);
 
-	var traverse = /*#__PURE__*/_mergeNamespaces({
+	var ns = /*#__PURE__*/_mergeNamespaces({
 		__proto__: null,
 		default: index
 	}, [libExports]);
+
+	// Build a mutable namespace object
+	              var traverse    = {
+	                    ...ns,
+	                                                                                // add alias
+	                    traverse    : index,  
+	                                                                                // preserve default
+	              };
 
 	return traverse;
 
