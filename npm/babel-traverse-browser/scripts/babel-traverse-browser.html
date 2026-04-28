@@ -69,20 +69,38 @@
         */
         
         
-              import * as _ns from '${npm_package}';
-              import _default from '${npm_package}';
+              import * as ns from '${npm_package}';
                                                                                 // Build a mutable namespace object
               var ${export_name}    = {
-                    ..._ns,
+                    ...ns,
                                                                                 // add alias
-                    ${export_name}    : _default,
+                    ${export_name}    : ns.default,
                                                                                 // preserve default
-                    default           : _default
               };
               
-              export {${export_name}};
+//              export {${export_name}};
               export default _default;
               
+              
+/*
+  import * as _ns from '${npm_package}';
+  
+  // Build a mutable namespace object
+  const Traverse = {
+    ..._ns,
+    ${export_name}: _ns.default,
+    default: _ns.default
+  };
+  
+  // Named export (your preferred import style)
+  export const ${export_name} = _ns.default;
+  
+  // Namespace export under a DIFFERENT name
+  export { Traverse };
+  
+  // Default export
+  export default _ns.default;
+*/
         `;
         
         
@@ -111,24 +129,12 @@
         
         
         files['entry.cjs.js']   = `
-        /*
+        
+        
+        
               import * as ${export_name} from '${npm_package}';
               
               export default ${export_name};  // iife / umd
-        */
-        
-        
-              var _ns         = require('${npm_package}');
-              var _default    = _ns.default || _ns;
-              
-                                                                                // Build a mutable namespace object
-              var ${export_name}    = {
-                    ..._ns,
-                    ${export_name}    : _default,
-                    default           : _default
-              };
-              
-              module.exports    = ${export_name};
               
               
         `;
