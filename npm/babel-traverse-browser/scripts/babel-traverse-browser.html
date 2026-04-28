@@ -62,12 +62,6 @@
         
         
         files['entry.esm.js']   = `
-        /*
-              import * as ${export_name} from '${npm_package}';
-              ${export_name}.traverse   = ${export_name}.default;
-              export {${export_name}};
-        */
-        
         
               import * as ns from '${npm_package}';
                                                                                 // Build a mutable namespace object
@@ -81,26 +75,6 @@
               export {${export_name}};
               export default ns.default;
               
-              
-/*
-  import * as _ns from '${npm_package}';
-  
-  // Build a mutable namespace object
-  const Traverse = {
-    ..._ns,
-    ${export_name}: _ns.default,
-    default: _ns.default
-  };
-  
-  // Named export (your preferred import style)
-  export const ${export_name} = _ns.default;
-  
-  // Namespace export under a DIFFERENT name
-  export { Traverse };
-  
-  // Default export
-  export default _ns.default;
-*/
         `;
         
         
@@ -130,12 +104,17 @@
         
         files['entry.cjs.js']   = `
         
-        
-        
-              import * as ${export_name} from '${npm_package}';
+              import * as ns from '${npm_package}';
+                                                                                // Build a mutable namespace object
+              var ${export_name}    = {
+                    ...ns,
+                                                                                // add alias
+                    ${export_name}    : ns.default,
+                                                                                // preserve default
+              };
               
+              //export {${export_name}};
               export default ${export_name};  // iife / umd
-              
               
         `;
         
