@@ -62,9 +62,26 @@
         
         
         files['entry.esm.js']   = `
-        
+        /*
               import * as ${export_name} from '${npm_package}';
+              ${export_name}.traverse   = ${export_name}.default;
               export {${export_name}};
+        */
+        
+        
+              import * as _ns from '${npm_package}';
+              import _default from '${npm_package}';
+                                                                                // Build a mutable namespace object
+              var ${export_name}    = {
+                    ..._ns,
+                                                                                // add alias
+                    ${export_name}    : _default,
+                                                                                // preserve default
+                    default           : _default
+              };
+              
+              export {${export_name}};
+              export default _default;
               
         `;
         
@@ -94,10 +111,25 @@
         
         
         files['entry.cjs.js']   = `
-        
+        /*
               import * as ${export_name} from '${npm_package}';
               
               export default ${export_name};  // iife / umd
+        */
+        
+        
+              var _ns         = require('${npm_package}');
+              var _default    = _ns.default || _ns;
+              
+                                                                                // Build a mutable namespace object
+              var ${export_name}    = {
+                    ..._ns,
+                    ${export_name}    : _default,
+                    default           : _default
+              };
+              
+              module.exports    = ${export_name};
+              
               
         `;
         
