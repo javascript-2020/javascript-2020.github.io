@@ -63,8 +63,17 @@
         
         files['entry.esm.js']   = `
         
-              import * as ${export_name} from '${npm_package}';
+              import * as ns from '${npm_package}';
+                                                                                // Build a mutable namespace object
+              var ${export_name}    = {
+                    ...ns,
+                                                                                // add alias
+                    ${export_name}    : ns.default,
+                                                                                // preserve default
+              };
+              
               export {${export_name}};
+              export default ns.default;
               
         `;
         
@@ -95,7 +104,14 @@
         
         files['entry.cjs.js']   = `
         
-              import * as ${export_name} from '${npm_package}';
+              import * as ns from '${npm_package}';
+                                                                                // Build a mutable namespace object
+              var ${export_name}    = {
+                    ...ns,
+                                                                                // add alias
+                    ${export_name}    : ns.default,
+                                                                                // preserve default
+              };
               
               export default ${export_name};  // iife / umd
               
