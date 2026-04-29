@@ -30461,10 +30461,18 @@ var template = (function () {
 	var libExports = requireLib();
 	var index = /*@__PURE__*/getDefaultExportFromCjs(libExports);
 
-	var template = /*#__PURE__*/_mergeNamespaces({
+	var ns = /*#__PURE__*/_mergeNamespaces({
 		__proto__: null,
 		default: index
 	}, [libExports]);
+
+	// Build a mutable namespace object
+	              var template    = {
+	                    ...ns,
+	                                                                                // add alias
+	                    template    : index,
+	                                                                                // preserve default
+	              };
 
 	return template;
 
