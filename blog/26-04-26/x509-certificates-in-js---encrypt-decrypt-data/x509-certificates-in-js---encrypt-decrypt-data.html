@@ -139,6 +139,19 @@
                         <li>
                               node.js supports the entire certificate in pem format
                         </li>
+                  </ul>
+                  
+                  <p>
+                        So the rule of thumb:
+                  </p>
+                  <ul>
+                        <li>
+                              If you want browser compatibility, always use PKCS#8.
+                        </li>
+                        <li>
+                              If you’re in Node, you can use either.
+                        </li>
+                  </ul>
             </div>
             
             <div>
@@ -182,10 +195,157 @@
             
             
             
+            <div class=blog-text>
+                  <h3 class=blog-hdr>
+                        PKCS#8
+                  </h3>
+                  
+                  <p>
+                        PKCS#8 is a standard format for storing private keys, regardless of the algorithm (RSA, EC, Ed25519, etc.).
+                        It’s defined in RFC 5208 and RFC 5958.
+                        <br>
+                        Think of it as:
+                        <br>
+                        A universal container format for private keys.
+                        <br>
+                        It wraps the private key with metadata describing:
+                  </p>
+                  <ul>
+                        <li>
+                              the algorithm (RSA, EC, etc.)
+                        </li>
+                        <li>
+                              parameters (curve, padding, etc.)
+                        </li>
+                        <li>
+                              the key material itself
+                        </li>
+                  </ul>
+                  <p>
+                        This makes PKCS#8 algorithm‑agnostic, unlike PKCS#1.
+                  </p>
+            </div>
             
             
+            <div class=blog-text>
+                  <h3 class=blog-hdr>
+                        PKCS#1 vs PKCS#8 (the important difference)
+                  </h3>
+                  
+                  <h4>
+                        PKCS#1
+                  </h4>
+                  <ul>
+                        <li>
+                              Only for RSA keys
+                        </li>
+                        <li>
+                              Contains just the RSA private key integers
+                        </li>
+                        <li>
+                              PEM header:
+                              <code>
+                                    -----BEGIN RSA PRIVATE KEY-----
+                              </code>
+                        </li>
+                  </ul>
+                  
+                  <h4>
+                        PKCS#8
+                  </h4>
+                  <ul>
+                        <li>
+                              Works for any key type (RSA, EC, Ed25519, etc.)
+                        </li>
+                        <li>
+                              Contains:
+                              <ul>
+                                    <li>
+                                          algorithm identifier
+                                    </li>
+                                    <li>
+                                          private key data
+                                    </li>
+                              </ul>
+                        </li>
+                        <li>
+                              PEM headers :
+                              <code>
+                                    -----BEGIN PRIVATE KEY-----
+                              </code>
+                              <code>
+                                    -----BEGIN ENCRYPTED PRIVATE KEY-----
+                              </code>
+                        </li>
+                  </ul>
+                  
+                  <h4>
+                        Why PKCS#8 is preferred today
+                  </h4>
+                  <ul>
+                        <li>
+                              It’s universal
+                        </li>
+                        <li>
+                              It’s compatible with modern crypto APIs
+                        </li>
+                        <li>
+                              It supports encryption natively
+                        </li>
+                        <li>
+                              It’s required by WebCrypto
+                        </li>
+                  </ul>
+                  
+                  <h4>
+                        Why Node.js supports both PKCS#1 and PKCS#8
+                  </h4>
+                  <p>
+                        Node’s crypto module uses OpenSSL, which understands both formats.  Node doesn’t care — OpenSSL parses it.
+                  </p>
+                  
+                  <h4>
+                        Why browsers only support PKCS#8
+                  </h4>
+                  <p>
+                        WebCrypto is intentionally strict and minimal.
+                        <br>
+                        It only accepts:
+                  </p>
+                  <ul>
+                        <li>
+                              PKCS#8 for private keys
+                        </li>
+                        <li>
+                              SPKI for public keys
+                        </li>
+                        <li>
+                              JWK for JSON keys
+                        </li>
+                  </ul>
+                  
+            </div>
             
-            <divv class=blog-text>
+            
+            <div class=blog-text>
+                  <h3 class=blog-hdr>
+                        Converting PKCS#1 → PKCS#8 (OpenSSL)
+                  </h3>
+                  <p>
+                        If you have ( pcks#1 ) :
+                        <code>
+                              -----BEGIN RSA PRIVATE KEY-----
+                        </code>
+                        
+                        Convert it for use in browsers :
+                  </p>
+                  
+                  <code>
+                        openssl pkcs8 -topk8 -nocrypt -in pkcs1.pem -out pkcs8.pem
+                  </code>
+                  
+                  
+            <div class=blog-text>
                   <h3 class=blog-hdr>
                         SPKI
                   </h3>
