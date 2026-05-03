@@ -15,9 +15,12 @@
                   throw toThrow;
             };
             var scriptDirectory = '';
+                                                                                // added for dynamic loading
             if(moduleArg.url){
                   _scriptName   = moduleArg.url;
             }
+            
+            
             function locateFile(path) {
                   if (Module['locateFile']) {
                         return Module['locateFile'](path, scriptDirectory);
