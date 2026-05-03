@@ -1,4 +1,4 @@
-/* eslint-disable */ var EmscrJSR_openssl = url => {
+/* eslint-disable */ var EmscrJSR_openssl = (url => {
       var _scriptName =
             typeof document != 'undefined'
                   ? document.currentScript?.src
