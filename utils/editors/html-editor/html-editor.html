@@ -206,7 +206,9 @@
                   <img slot=title src='images/html-editor.png' style='top:-5px;height:55px' alt='html editor'>
                   <h1 slot=seo-hdr class=visually-hidden>html editor</h1>
                   <h4 slot=version>v3.0</h4>
-                  <time slot=date datetime=2026-01-24>24 Jan 2026</time>
+                  <time slot=date datetime=2026-05-03>
+                        3 May 2026
+                  </time>
             </editors-hdr>
             
             
@@ -240,7 +242,7 @@
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
-                  <output-html component=page></output-html>
+                  <output-html v2.0 component=page></output-html>
                   
             </div>
             
@@ -293,6 +295,7 @@
               slider.node                           = $.slider.glass('web-editor','#page-slider','output-html',slider,ui,output);
               
               focus();
+              
               
         }//initdom
         
@@ -525,8 +528,10 @@
   //:
   
   
-        function run(){
-                                                                                debug('run');
+        var run   = {};
+        
+        run.srcdoc    = function(){
+                                                                                debug('run.srcdoc');
               if(autosave.checked){
                                                                                 debug('autosave');
                     filemod.save();
@@ -541,6 +546,11 @@
         
         run.sandbox   = function(){
                                                                                 debug('run.sandbox');
+              if(autosave.checked){
+                                                                                debug('autosave');
+                    filemod.save();
+              }
+              
               var html    = editor.getValue();
               output.sandbox(html);
               
