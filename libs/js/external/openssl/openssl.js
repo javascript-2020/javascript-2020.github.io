@@ -1,8 +1,8 @@
-/* eslint-disable */ var EmscrJSR_openssl = (url => {
+/* eslint-disable */ var EmscrJSR_openssl = (() => {
       var _scriptName =
             typeof document != 'undefined'
                   ? document.currentScript?.src
-                  : url;
+                  : undefined;
       return async function (moduleArg = {}) {
             var moduleRtn;
             var Module = moduleArg;
@@ -15,6 +15,9 @@
                   throw toThrow;
             };
             var scriptDirectory = '';
+            if(moduleArg.url){
+                  _scriptName   = moduleArg.url;
+            }
             function locateFile(path) {
                   if (Module['locateFile']) {
                         return Module['locateFile'](path, scriptDirectory);
