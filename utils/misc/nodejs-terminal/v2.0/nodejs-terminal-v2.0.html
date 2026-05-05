@@ -179,6 +179,8 @@
     {height:100%}
     
     
+  #icons
+    {display:flex;align-items:center;gap:5px}
     
   .icon
     {width:32px;height:32px;border:1px solid gray;border-radius:3px;box-sizing:border-box;cursor:pointer}
@@ -218,9 +220,12 @@
                         <div id=size></div>
                   </div>
                   
-                  <img id=niframe title=iframe class=icon>
-                  <img id=snippet-editor title=editor class=icon>
-                  <img id=snippet-console title=snippet-console class=icon>
+                  <div id=icons>
+                        <img id=niframe title=iframe class=icon>
+                        <img id=snippet-editor title=editor class=icon>
+                        <img id=snippet-console title=snippet-console class=icon>
+                  </div>
+                  
             </div>
             
             <div id=hldr>
@@ -595,7 +600,18 @@
               
               mod.stack.complete;
               
-              webcontainer.on('server-ready',(port,url)=>term.write('server-ready :'+url+'-'+port));
+              
+              webcontainer.on('server-ready',(port,url)=>{
+                                                                                console.log('server-ready',url,port);
+                    term.write('server-ready :'+url+' --- '+port);
+                    
+              });
+              webcontainer.on('port',(port,type,url)=>{
+                                                                                console.log(port,type,url)
+                    term.write('port :'type+' --- '+url+' --- '+port);
+                    
+              });
+              
               
               await webcontainer.mount(files);
                                                                                       term.write('spawn jsh ...\r\n')
