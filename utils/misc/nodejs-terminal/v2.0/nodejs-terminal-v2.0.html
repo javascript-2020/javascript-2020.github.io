@@ -197,7 +197,7 @@
       
       
             <misc-hdr component=grp>
-                  <img slot=title class=title src='images/nodejs-terminal.png' style='top:-15px;height:80px' alt='Node.js Terminal'>
+                  <img slot=title class=title src='images/nodejs-terminal.png' style='top:-25px;height:80px' alt='Node.js Terminal'>
                   <time slot=date datetime=2026-04-22>
                         22 Apr 2026
                   </time>
@@ -340,8 +340,14 @@
               var viewport    = await vm.new();
               viewport.pos({x:200,y:200});
               
-              var obj   = await mod.component('snippet-console',{component:true});
-              viewport.body.append(obj.__host);
+              var attrs             = {component:true,'v2.0':true,'web-editor':'fullsize=false',exportparts:"root: inner-label"};
+              var opts              = {par:viewport.body};
+              var snippet_console   = await mod.component('snippet-console',attrs,opts);
+              
+              snippet_console.__host.style.height   = '100%';
+              snippet.console.insert_rule('#root {height:100%}');
+              //viewport.body.append(obj.__host);
+              snippet_console.ctx     = {xyz:123};
               
         }//snippet-console
         
