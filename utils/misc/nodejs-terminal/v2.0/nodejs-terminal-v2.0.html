@@ -307,7 +307,7 @@
         btn['snippet-editor']   = async function(){
         
               var viewport    = await vm.new();
-              viewport.pos({x:200,y:200});
+              viewport.pos({x:250,y:200});
               
               var node    = document.createElement('snippet-editor');
               node.toggleAttribute('component',true);
@@ -344,13 +344,10 @@
               var opts              = {par:viewport.body};
               var snippet_console   = await mod.component('snippet-console',attrs,opts);
               
-              snippet_console.css.insert_rule([
-                                                    ':host {height:100%;}',
-                                                    '#root {height:100%}'
-                                            ]);
+              snippet_console.css.insert_rule([':host {height:100%;}','#root {height:100%}']);
               snippet_console.editor.css.insert_rule([':host {flex:1}','#root {height:100%}']);
               
-              snippet_console.ctx     = {xyz:123};
+              snippet_console.ctx     = {snippet_console,webcontainer,viewport};
               
         }//snippet-console
         
