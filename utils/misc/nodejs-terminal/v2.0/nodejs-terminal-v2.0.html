@@ -176,7 +176,7 @@
     {padding:10px;border:2px solid lightgray;box-sizing:border-box;flex:1;background:hsl(45,86%,98%)}
     
   #terminal
-    {height:100%}
+    {height:100%;position:relative;z-index:0}
     
     
   #icons
@@ -462,10 +462,35 @@
   
         install['https-server']   = async function(){
         
-              var {create_archive,jszip}    = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
-              debugger;
-              var blob    = await create_archive({download:false});
-              console.log(blob);
+              log.green('installing https-server');
+              
+              var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
+              
+              
+              var blob    = await mod.create_archive({download:false});
+                                                                                console.log(blob);
+              var zip     = await mod.jszip.loadAsync(blob);
+              var files   = Object.entries(zip.files);
+              var base    = 'https-server/';
+              
+              for(var [path,file] of files){
+              
+                    path    = path.slice(base.length);
+                                                                                console.log(path,file);
+                    if(path){
+                          if(file.dir){
+                                await webcontainer.fs.mkdir(path);
+                          }else{
+                                                                                //console.log("File:",path,file);
+                                                                                //console.log("Content:", content);
+                                var buf   = await file.async('uint8array');
+                                await webcontainer.fs.writeFile(path,buf);
+                          }
+                    }
+                    
+              }//for
+              
+              log.green('done.');
               
         }//https-server
         
@@ -668,12 +693,12 @@
               
               webcontainer.on('server-ready',(port,url)=>{
                                                                                 console.log('server-ready',url,port);
-                    term.write('server-ready :'+url+' --- '+port);
+                    term.writeln('server-ready :'+url+' --- '+port);
                     
               });
               webcontainer.on('port',(port,type,url)=>{
                                                                                 console.log(port,type,url)
-                    term.write('port :'+type+' --- '+url+' --- '+port);
+                    term.writeln('port :'+type+' --- '+url+' --- '+port);
                     
               });
               
