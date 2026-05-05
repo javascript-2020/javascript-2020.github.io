@@ -218,9 +218,9 @@
                         <div id=size></div>
                   </div>
                   
-                  <img id=niframe title=iframe>
-                  <img id=snippet-editor title=editor>
-                  <img id=snippet-console title=snippet-console>
+                  <img id=niframe title=iframe class=icon>
+                  <img id=snippet-editor title=editor class=icon>
+                  <img id=snippet-console title=snippet-console class=icon>
             </div>
             
             <div id=hldr>
@@ -338,16 +338,26 @@
         btn['snippet-console']    = async function(){
         
               var viewport    = await vm.new();
-              viewport.pos({x:250,y:200});
+              viewport.pos({x:250,y:200,w:850,h:1100});
               
-              var attrs             = {component:true,'v2.0':true,'web-editor':'fullsize=false',exportparts:"root: inner-label"};
-              var opts              = {par:viewport.body};
-              var snippet_console   = await mod.component('snippet-console',attrs,opts);
+              var attrs     = {component:true,'v2.0':true,'web-editor':'fullsize=false',exportparts:"root: inner-label"};
+              var opts      = {par:viewport.body};
+              var snippet   = await mod.component('snippet-console',attrs,opts);
               
-              snippet_console.css.insert_rule([':host {height:100%;}','#root {height:100%}']);
-              snippet_console.editor.css.insert_rule([':host {flex:1}','#root {height:100%}']);
+              snippet.css.insert_rule([':host {height:100%;}','#root {height:100%}']);
+              snippet.editor.css.insert_rule([':host {flex:1}','#root {height:100%}']);
               
-              snippet_console.ctx     = {snippet_console,webcontainer,viewport};
+              snippet.ctx     = {snippet,webcontainer,viewport,vm};
+              
+              
+              var attrs   = {component:'page'};
+              var opts    = {par:viewport.body,auto:false};
+              var wcfs    = await mod.component('webcontainer-fs',attrs,opts);
+              wcfs.initmod({filemod:snippet.filemod,ext,$,menu,log,debug,
+                              webcontainer,
+                              source:snippet.source,complete:snippet.complete});
+              await wcfs.init();
+              wcfs.initdom();
               
         }//snippet-console
         
