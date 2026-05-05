@@ -344,10 +344,11 @@
               var opts              = {par:viewport.body};
               var snippet_console   = await mod.component('snippet-console',attrs,opts);
               
-              snippet_console.__host.style.height   = '100%';
-              snippet_console.css.insert_rule('#root {height:100%}');
-              snippet_console.editor.css.insert_rule(':host {flex:1}');
-              snippet_console.editor.css.insert_rule('#root {height:100%}');
+              snippet_console.css.insert_rule([
+                                                    ':host {height:100%;}',
+                                                    '#root {height:100%}'
+                                            ]);
+              snippet_console.editor.css.insert_rule([':host {flex:1}','#root {height:100%}']);
               
               snippet_console.ctx     = {xyz:123};
               
