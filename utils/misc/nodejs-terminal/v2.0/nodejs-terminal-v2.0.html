@@ -433,43 +433,10 @@
         }//more
         
         
-  //:
-  
-  
-        ui.info   = function(){
-        
-              var str   = 'none';
-              var src   = blank;
-              
-              if(cur.file){
-                    str   = cur.file.name;
-                    src   = cur.file.icon;
-              }
-              $('#hdr #filename').textContent   = str;
-              $('#file-info #icon').src         = src;
-              
-              var str   = '';
-              if(cur.blob){
-                    str   = hs(cur.blob.size);
-              }
-              $('#hdr #size').textContent   = str;
-              
-        }//info
-        
-        
-  //:
-  
-  
         install['https-server']   = async function(){
         
               log.green('installing https-server');
               
-              debugger;
-              var process   = await shell._process.bind(shell._process);
-              
-              var cwd     = await process.cwd();
-                                                                                console.log(cwd);
-                                                                                
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
               
               
@@ -497,11 +464,35 @@
                     
               }//for
               
-              await webcontainer.spawn('npm',['i'],{cwd});
               
               log.green('done.');
               
         }//https-server
+        
+        
+  //:
+  
+  
+        ui.info   = function(){
+        
+              var str   = 'none';
+              var src   = blank;
+              
+              if(cur.file){
+                    str   = cur.file.name;
+                    src   = cur.file.icon;
+              }
+              $('#hdr #filename').textContent   = str;
+              $('#file-info #icon').src         = src;
+              
+              var str   = '';
+              if(cur.blob){
+                    str   = hs(cur.blob.size);
+              }
+              $('#hdr #size').textContent   = str;
+              
+        }//info
+        
         
   //:
   
@@ -715,8 +706,8 @@
               await webcontainer.mount(files);
                                                                                 term.write('spawn jsh ...\r\n')
               shell               = await webcontainer.spawn('jsh');
-                                                                                console.dir(shell._process, { depth: 10 });
-                                                                                
+              
+              
               var output          = new WritableStream({write(data){term.write(data)}});
               shell.output.pipeTo(output);
               
@@ -725,8 +716,6 @@
               
               //term.resize();
               term.focus();
-              
-              console.log(await webcontainer.fs.readdir('/'));
               
         })();
         
