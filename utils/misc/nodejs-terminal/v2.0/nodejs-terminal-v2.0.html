@@ -464,6 +464,9 @@
         
               log.green('installing https-server');
               
+              var cwd     = shell.cwd();
+                                                                                console.log(cwd);
+                                                                                
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
               
               
@@ -476,6 +479,7 @@
               for(var [path,file] of files){
               
                     path    = path.slice(base.length);
+                    path    = cwd+path;
                                                                                 console.log(path,file);
                     if(path){
                           if(file.dir){
@@ -490,7 +494,8 @@
                     
               }//for
               
-              web
+              await webcontainer.spawn('npm',['i'],{cwd});
+              
               log.green('done.');
               
         }//https-server
