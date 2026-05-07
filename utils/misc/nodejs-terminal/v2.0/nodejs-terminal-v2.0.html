@@ -388,7 +388,7 @@
               snippet.css.insert_rule([':host {height:100%;}','#root {height:100%}']);
               snippet.editor.css.insert_rule([':host {flex:1}','#root {height:100%}']);
               
-              snippet.ctx     = {snippet,webcontainer,viewport,vm};
+              snippet.ctx     = {snippet,webcontainer,viewport,vm,shell,term};
               
               
               var attrs   = {component:'page'};
@@ -464,7 +464,10 @@
         
               log.green('installing https-server');
               
-              var cwd     = await shell._process.cwd();
+              debugger;
+              var process   = await shell._process.bind(shell._process);
+              
+              var cwd     = await process.cwd();
                                                                                 console.log(cwd);
                                                                                 
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
@@ -712,6 +715,8 @@
               await webcontainer.mount(files);
                                                                                 term.write('spawn jsh ...\r\n')
               shell               = await webcontainer.spawn('jsh');
+                                                                                console.dir(shell._process, { depth: 10 });
+                                                                                
               var output          = new WritableStream({write(data){term.write(data)}});
               shell.output.pipeTo(output);
               
@@ -724,6 +729,31 @@
               console.log(await webcontainer.fs.readdir('/'));
               
         })();
+        
+        
+        async function getShellCwd(shell){
+        
+              return new Promise(resolve=>{
+              
+                    var decoder   = new TextDecoder();
+                    var onData    = data=>{
+                    
+                          var text    = decoder.decode(data);
+                          var line    = text.trim();
+                          if(line.startsWith('/')){
+                                shell.output.off('data',onData);
+                                resolve(line);
+                          }
+                          
+                    };
+                    
+                    shell.output.on('data',onData);
+                    shell.input.write('pwd\n');
+                    
+              });
+              
+        }//getShellCwd
+        
         
         
       </script>
