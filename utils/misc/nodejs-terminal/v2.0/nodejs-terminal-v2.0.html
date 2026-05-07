@@ -490,6 +490,7 @@
                     
               }//for
               
+              web
               log.green('done.');
               
         }//https-server
@@ -685,7 +686,7 @@
               term.loadAddon(fitAddon);
               term.open(terminal);
               fitAddon.fit();
-                                                                                      term.write('booting container ...\r\n')
+                                                                                term.write('booting container ...\r\n')
               webcontainer        = await WebContainer.boot();
               
               mod.stack.complete;
@@ -704,7 +705,7 @@
               
               
               await webcontainer.mount(files);
-                                                                                      term.write('spawn jsh ...\r\n')
+                                                                                term.write('spawn jsh ...\r\n')
               shell               = await webcontainer.spawn('jsh');
               var output          = new WritableStream({write(data){term.write(data)}});
               shell.output.pipeTo(output);
