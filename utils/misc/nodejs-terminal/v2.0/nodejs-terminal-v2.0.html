@@ -512,7 +512,22 @@
               term.writeln('');
               term.writeln.green('saving snapshot ...');
               
-              var data    = await webcontainer.export('dist',{format:'zip'});
+              var err;
+              try{
+              
+                    var data    = await webcontainer.export(cwd,{format:'zip'});
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    term.writeln.red(err.message);
+                    return;
+              }
+              
               var zip     = new Blob([data]);
               var file    = {name:'snapshot.zip'};
               
@@ -540,8 +555,22 @@
               var blob          = cur.blob;
               var mountPoint    = cwd;
               
-              var result        = await webcontainer.mount(blob,{mountPoint});
-              console.log(result);
+              var err;
+              try{
+              
+                    var result        = await webcontainer.mount(blob,{mountPoint});
+                                                                                console.log(result);
+                                                                                
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    term.writeln.red(err.message);
+                    return;
+              }
               
               term.writeln.green('snapshot loaded');
               
