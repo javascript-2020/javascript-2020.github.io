@@ -410,6 +410,11 @@
         
         btn.test    = async function(){console.log('test');
         
+        
+              term.write.brightGreen('hello');
+              term.write.red('world');
+              return;
+              
               var list    = await webcontainer.fs.readdir('/',{withFileTypes:true});
               list.forEach(item=>{
               
@@ -643,6 +648,33 @@
               ok            : '\u1F197',
         };
         
+        const colors = {
+          // Standard Colors
+          black:   '\x1b[30m',
+          red:     '\x1b[31m',
+          green:   '\x1b[32m',
+          yellow:  '\x1b[33m',
+          blue:    '\x1b[34m',
+          magenta: '\x1b[35m',
+          cyan:    '\x1b[36m',
+          white:   '\x1b[37m',
+          
+          // Bright/Bold Colors
+          brightBlack:   '\x1b[1;30m',
+          brightRed:     '\x1b[1;31m',
+          brightGreen:   '\x1b[1;32m',
+          brightYellow:  '\x1b[1;33m',
+          brightBlue:    '\x1b[1;34m',
+          brightMagenta: '\x1b[1;35m',
+          brightCyan:    '\x1b[1;36m',
+          brightWhite:   '\x1b[1;37m',
+          
+          // Custom Mahogany (RGB: 150, 40, 20)
+          mahogany: '\x1b[38;2;150;40;20m',
+          
+          // Utility
+          reset: '\x1b[0m'
+        };
         
         
         var files   = {};
@@ -703,6 +735,22 @@
                     
               });
               
+              
+              term.log = {};
+              
+              for(let key in colors){
+              
+                    if (key === 'reset') continue;
+                    
+                    term.write[key]     = (...args)=>term.write(colors[key]+args.join(' ')+colors.reset);
+                    term.writeln[key]   = (...args)=>term.writeln(colors[key]+args.join(' ')+colors.reset);
+                    
+              }//for
+              
+              term.writeln.green('Success!', 'The server is up.');
+              term.writeln.red('Error:', 'Timber delivery delayed.');
+              
+              //term.writeln('\x1b[1;31m THIS SHOULD BE BOLD RED \x1b[0m');
               
               
               term.parser.registerOscHandler(7, (data) => {
