@@ -281,6 +281,9 @@
         var term;
         var shell;
         var cwd;
+        var user_dir;
+        var cwd_initial;
+        var cwd_abs;
         
         
         var blank;
@@ -760,8 +763,22 @@
                                       if(i1!==undefined){
                                             var i2    = line.indexOf('\x1b[39m');
                                             if(i1<i2){
-                                                  cwd   = line.slice(i1,i2);
-                                                                                console.log('[ cwd ]',cwd);
+                                                  var dir   = line.slice(i1,i2)+'/';
+                                                  if(cwd_initial===undefined){
+                                                        cwd_initial   = dir.replace('~','/home');
+                                                                                console.log('[ cwd_initial ]',cwd_initial);
+                                                        user_dir      = dir.slice(2);
+                                                                                console.log('[ user_dir ]',user_dir);
+                                                  }
+                                                  if(cwd.startsWith('~')){
+                                                        cwd_abs   = dir.replace('~','/home');
+                                                  }else{
+                                                        cwd_abs   = dir;
+                                                  }
+                                                  
+                                                  cwd   = dir.slice(cwd_abs.length-1);
+                                                                                console.log('[     cwd ]',cwd);
+                                                                                console.log('[ cwd_abs ]',cwd_abs);
                                             }
                                     }
                                 }
