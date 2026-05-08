@@ -555,6 +555,7 @@
               term.writeln.green('loading snapshot ...');
               
               var blob          = cur.blob;
+              var buf           = await blob.arrayBuffer();
                                                                                 console.log(blob);
               var mountPoint    = cwd;
                                                                                 console.log('mountPoint',mountPoint);
@@ -562,7 +563,7 @@
               var err;
               try{
               
-                    var result        = await webcontainer.mount(blob,{mountPoint});
+                    var result        = await webcontainer.mount(buf,{mountPoint});
                                                                                 console.log(result);
                                                                                 
               }//try
