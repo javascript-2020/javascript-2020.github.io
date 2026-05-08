@@ -517,6 +517,7 @@
               try{
               
                     var data    = await webcontainer.export(cwd_abs,{format:'json'});
+                    var str     = JSON.stringify(data);
                     
               }//try
               catch(err2){
@@ -530,7 +531,7 @@
                     return;
               }
               
-              var blob    = new Blob([data]);
+              var blob    = new Blob([str]);
               var file    = {name:'snapshot.bin',icon:snap_icon};
               
               complete.load(file,blob);
@@ -556,7 +557,7 @@
               term.writeln.green('loading snapshot ...');
               
               var blob          = cur.blob;
-              var buf           = await blob.arrayBuffer();
+              var buf           = await blob.text();
                                                                                 console.log(blob);
               var mountPoint    = cwd;
                                                                                 console.log('mountPoint',mountPoint);
