@@ -434,8 +434,11 @@
               if(type=='opt'){
               
                   switch(opt.id){
-                    case 'https-server'   : install['https-server']();
-                                            break;
+                  
+                    case 'https-server'     : menu_callback['https-server']();        break;
+                    case 'save-snapshot'    : menu_callback['save-snapshot']();       break;
+                    case 'load-snapshot'    : menu_callback('load-snapshot']();       break;
+                    
                   }//switch
                   
               }
@@ -443,14 +446,15 @@
         }//more
         
         
-        install['https-server']   = async function(){
+        menu_callback['https-server']   = async function(){
         
               if(cwd===null){
-                    log.red('can only install https-server relative to workdir');
+                    term.writeln.red('can only install https-server relative to workdir');
                     return;
               }
               
-              log.green('installing https-server');
+              term.writeln('');
+              term.writeln.green('installing https-server');
               
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
               
@@ -485,16 +489,61 @@
               process.output.pipeTo(stream)
               var code      = await process.exit;
               if(code!=0){
-                    log.red('an error ocurred : '+code);
+                    term.writeln.red('an error ocurred exit code : '+code);
               }else{
-                    log.green('done.');
+                    term.writeln.green('done.');
               }
-              term.writeln('done.');
               
               //await input.write('\u0003'); // Sends Ctrl+C to clear any junk
               await input.write('\n');     // Sends Enter to get a clean prompt
               
         }//https-server
+        
+        
+        menu_callback['save-snapshot']    = async function(){
+        
+              if(cwd===null){
+                    term.writeln.red('can only save snapshot relative to workdir');
+                    return;
+              }
+              
+              term.writeln('');
+              term.writeln.green('saving snapshot ...');
+              
+              var data    = await webcontainerInstance.export('dist',{format:'zip'});
+              var zip     = new Blob([data]);
+              var file    = {name:'snapshot.zip'};
+              
+              complete.load(file,blob);
+              
+              term.writeln.green('snapshot saved');
+              
+        }//take-snapsht
+        
+        
+        menu_callback['load-snapshot']   = async function(){
+        
+              if(cwd===null){
+                    term.writeln.red('can only load snapshot relative to workdir');
+                    return;
+              }
+              if(!cur.blob){
+                    term.writeln.red('no blob available');
+                    return;
+              }
+              
+              term.writeln('');
+              term.writeln.green('loading snapshot ...');
+              
+              var blob          = cur.blob;
+              var mountPoint    = cwd;
+              
+              var result        = await webcontainer.mount(blob,{mountPoint});
+              console.log(result);
+              
+              term.writeln.green('snapshot loaded');
+              
+        }//restore-snapshot
         
         
   //:
@@ -747,8 +796,6 @@
                     
               }//for
               
-              term.writeln.green('Success!', 'The server is up.');
-              term.writeln.red('Error:', 'Timber delivery delayed.');
               
               //term.writeln('\x1b[1;31m THIS SHOULD BE BOLD RED \x1b[0m');
               
