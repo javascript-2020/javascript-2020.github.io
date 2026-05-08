@@ -280,6 +280,7 @@
         
         var term;
         var shell;
+        var input;
         var user_dir;
         var cwd_abs;
         var cwd;
@@ -439,6 +440,11 @@
         
         install['https-server']   = async function(){
         
+              if(cwd===null){
+                    log.red('can only install https-server relative to workdir');
+                    return;
+              }
+              
               log.green('installing https-server');
               
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
@@ -454,10 +460,10 @@
               
                     path    = path.slice(base.length);
                     path    = cwd+path;
-                                                                                console.log(path,file);
-                    if(path){
+                                                                                console.log(path);//,file);
+                    if(path.length>cwd.length){
                           if(file.dir){
-                                await webcontainer.fs.mkdir(path);
+                                await webcontainer.fs.mkdir(path,{recursive:true});
                           }else{
                                                                                 //console.log("File:",path,file);
                                                                                 //console.log("Content:", content);
@@ -469,9 +475,19 @@
               }//for
               
               
-              await webcontainer.spawn('npm',['i'],{cwd});
+              var process   = await webcontainer.spawn('npm',['i'],{cwd,output:true});
+              var stream    = new WritableStream({write(data){term.write(data)}});
+              process.output.pipeTo(stream)
+              var code      = await process.exit;
+              if(code!=0){
+                    log.red('an error ocurred : '+code);
+              }else{
+                    log.green('done.');
+              }
+              term.writeln('done.');
               
-              log.green('done.');
+              //await input.write('\u0003'); // Sends Ctrl+C to clear any junk
+              await input.write('\n');     // Sends Enter to get a clean prompt
               
         }//https-server
         
@@ -794,7 +810,7 @@
               });
               shell.output.pipeTo(output);
               
-              var input           = shell.input.getWriter();
+              input           = shell.input.getWriter();
               term.onData(data=>input.write(data));
               
               //term.resize();
@@ -803,28 +819,6 @@
         })();
         
         
-        async function getShellCwd(shell){
-        
-              return new Promise(resolve=>{
-              
-                    var decoder   = new TextDecoder();
-                    var onData    = data=>{
-                    
-                          var text    = decoder.decode(data);
-                          var line    = text.trim();
-                          if(line.startsWith('/')){
-                                shell.output.off('data',onData);
-                                resolve(line);
-                          }
-                          
-                    };
-                    
-                    shell.output.on('data',onData);
-                    shell.input.write('pwd\n');
-                    
-              });
-              
-        }//getShellCwd
         
         
         
