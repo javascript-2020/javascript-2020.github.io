@@ -498,8 +498,7 @@
                     term.writeln.green('done.');
               }
               
-              //await input.write('\u0003'); // Sends Ctrl+C to clear any junk
-              await input.write('\n');     // Sends Enter to get a clean prompt
+              await prompt();
               
         }//https-server
         
@@ -536,6 +535,7 @@
               complete.load(file,blob);
               
               term.writeln.green('snapshot saved');
+              await prompt();
               
         }//take-snapsht
         
@@ -575,6 +575,7 @@
               }
               
               term.writeln.green('snapshot loaded');
+              await prompt();
               
         }//restore-snapshot
         
@@ -948,6 +949,12 @@
         
         
         
+        async function prompt(){
+        
+              //await input.write('\u0003'); // Sends Ctrl+C to clear any junk
+              await input.write('\n');     // Sends Enter to get a clean prompt
+              
+        }//prompt
         
         
       </script>
