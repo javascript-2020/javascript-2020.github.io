@@ -914,8 +914,8 @@
                                   var str   = '??';
                                   if(result.code==0)str   = result.output;
                                   var x   = end_of_text(1);
-                                  x++;
-                                  term.write.xy(x,1,', node '+str)
+                                  x+=2;
+                                  term.write.xy(x,1,'node '+str)
                                   phase.ct    = 2
                                   phase.p2()
                                   
@@ -928,8 +928,8 @@
                                   var str   = '??';
                                   if(phase.p2.result.code==0)str   = phase.p2.result.output;
                                   var x   = end_of_text(1);
-                                  x++;
-                                  term.write.xy(x,1,',  npm '+str);
+                                  x+=2;
+                                  term.write.xy(x,1,'npm '+str);
                                   phase.ct    = 3;
                                   phase.p3();
                                   
@@ -1127,7 +1127,8 @@
               spinner.timer   = setInterval(() => {
                                                                                 // \r moves to start of line, colors.cyan makes it pop
                     term.write(`\r${colors.cyan}${frames[i]}${colors.reset} ${msg}...`);
-                    i = (i + 1) % frames.length;
+                    i   = (i+1)%frames.length;
+                    
               },80);
               
         }//spinner
