@@ -871,11 +871,13 @@
               
               mod.stack.complete;
               
-              term.write('node ');
-              await spawn('node -v');
-              term.write('npm ');
-              await spawn('npm -v');
-              
+              var [result1,result2]   = await Promise.all([spawn('node -v',{output:true}),spawn('npm -v',{output:true})]);
+              if(result1.code==0){
+                    term.write('node '+result1.output);
+              }
+              if(result2.code==0){
+                    term.write('npm '+result2.output);
+              }
               
               webcontainer.on('server-ready',(port,url)=>{
                                                                                 console.log('server-ready',url,port);
@@ -963,15 +965,24 @@
   //:
   
   
-        async function spawn(cmdline){
+        async function spawn(cmdline,{output}={}){
         
               var args      = cmdline.split(' ');
               var cmd       = args.shift();
               var process   = await webcontainer.spawn(cmd,args,{cwd,output:true});
-              var stream    = new WritableStream({write(data){term.write(data)}});
+              var str       = '';
+              var stream    = new WritableStream({write(data){
+              
+                    if(output){
+                          str  += data.toString();
+                    }else{
+                          term.write(data)
+                    }
+                    
+              }});
               process.output.pipeTo(stream)
               var code      = await process.exit;
-              return code;
+              return {code,output:str};
               
         }//spawn
         
