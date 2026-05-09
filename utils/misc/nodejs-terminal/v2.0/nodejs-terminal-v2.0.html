@@ -459,6 +459,7 @@
               
               term.writeln('');
               term.writeln.green('installing https-server');
+              spinner();
               
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
               
@@ -498,6 +499,7 @@
                     term.writeln.green('done.');
               }
               
+              spinner.stop();
               await prompt();
               
         }//https-server
@@ -505,6 +507,7 @@
         
         menu_callback['save-snapshot']    = async function(){
                                                                                 console.log('save-snapshot');
+                                                                                console.log(cwd_abs);
               if(cwd===null){
                     term.writeln.red('can only save snapshot relative to workdir');
                     return;
@@ -516,7 +519,7 @@
               var err;
               try{
               
-                    var data    = await webcontainer.export(cwd,{format:'json'});
+                    var data    = await webcontainer.export(cwd_abs.slice(0,-1),{format:'json'});
                     var str     = JSON.stringify(data);
                     
               }//try
@@ -557,11 +560,11 @@
               term.writeln.green('loading snapshot ...');
               
               var blob          = cur.blob;
+                                                                                console.log(blob);
               var txt           = await blob.text();
                                                                                 console.log(txt);
               var data          = JSON.parse(txt);
-                                                                                console.log(blob);
-              var mountPoint    = cwd;
+              var mountPoint    = cwd.slice(0,-1);
                                                                                 console.log('mountPoint',mountPoint);
                                                                                 
               var err;
@@ -963,6 +966,41 @@
               await input.write('\n');     // Sends Enter to get a clean prompt
               
         }//prompt
+        
+        
+        spinner.timer   = null;
+        
+        function spinner(msg="Processing"){
+        
+              const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+              let i = 0;
+              
+              // Hide the cursor so it doesn't flicker
+              term.write('\x1b[?25l');
+              
+              spinner.timer   = setInterval(() => {
+                                                                                // \r moves to start of line, colors.cyan makes it pop
+                    term.write(`\r${colors.cyan}${frames[i]}${colors.reset} ${msg}...`);
+                    i = (i + 1) % frames.length;
+              },80);
+              
+        }//spinner
+        
+        spinner.stop    = function(finalMsg="Done!"){
+        
+              if(spinner.timer){
+                    clearInterval(spinner.timer);
+                    spinnerInterval = null;
+              }
+                                                                                // Clear the line, show cursor, and print final message
+                                                                                // \x1b[K clears from cursor to end of line
+              term.write('\r\x1b[K');
+              term.write(`${colors.green}✔${colors.reset} ${finalMsg}\r\n`);
+                                                                                // Show cursor again
+              term.write('\x1b[?25h');
+              
+        }//stop
+        
         
         
         
