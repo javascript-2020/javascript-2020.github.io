@@ -850,20 +850,44 @@
                                     
                               }//resume
               term.write.xy   = (x,y,txt)=>{
-              
-                                      term.write('\x1b[s');     // Save current spot
-                                      term.write(`\x1b[${y};${x}H`);  // Jump to top left
+                                                                                // Save cursor
+                                      term.write('\x1b[s');
+                                                                                // Jump to x,y
+                                      term.write(`\x1b[${y};${x}H`);
                                       term.write(txt);
-                                      term.write('\x1b[u');     // Jump back to where we were
+                                                                                // restore cursor
+                                      term.write('\x1b[u');
                                       
                                 }//xy
                                 
-                                
-                                
-                                
+              term.end_of_text    = function(y){
+                                                                                // xterm.js uses 0-based indexing for the buffer,
+                                                                                //  but 1-based for ANSI
+                    var line    = term.buffer.active.getLine(y-1);
+                    if(!line){
+                          return 1;
+                    }
+                    
+                    var last    = 0;
+                    for(var i=term.cols-1;i>=0;i--){
+                    
+                          var cell    = line.getCell(i);
+                                                                                // Check if the cell is not empty/whitespace
+                          if(cell&&cell.getChars().trim()!==''){
+                                last    = i+1;
+                                break;
+                          }
+                          
+                    }//for
+                    return last+1;
+                    
+              }//end_of_text
+              
+              
+              
               for(let key in colors){
               
-                    if (key === 'reset') continue;
+                    if(key=='reset')continue;
                     
                     term.write[key]     = (...args)=>term.write(colors[key]+args.join(' ')+colors.reset);
                     term.writeln[key]   = (...args)=>term.writeln(colors[key]+args.join(' ')+colors.reset);
@@ -1149,28 +1173,6 @@
         }//stop
         
         
-        function end_of_text(y){
-                                                                                // xterm.js uses 0-based indexing for the buffer,
-                                                                                //  but 1-based for ANSI
-            var line    = term.buffer.active.getLine(y-1);
-            if(!line){
-                  return 1;
-            }
-            
-            var last    = 0;
-            for(var i=term.cols-1;i>=0;i--){
-            
-                  var cell    = line.getCell(i);
-                                                                                // Check if the cell is not empty/whitespace
-                  if(cell&&cell.getChars().trim()!==''){
-                        last    = i+1;
-                        break;
-                  }
-                  
-            }//for
-            return last+1;
-            
-        }//end_of_text
         
         
   //:
