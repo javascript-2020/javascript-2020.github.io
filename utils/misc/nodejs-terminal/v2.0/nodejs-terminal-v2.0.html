@@ -730,7 +730,7 @@
               
         };
         
-        var chr   = {
+        const chr   = {
         
               warn                  : '\u26A0',
               cross                 : '\u274C',
@@ -743,7 +743,7 @@
               
         };
         
-        var colors    = {
+        const colors    = {
         
               black                 : '\x1b[30m',
               red                   : '\x1b[31m',
@@ -771,14 +771,16 @@
         };
         
         
-        var cursor    = {
+        const cursor    = {
         
-              to        : (row,col)=>`\x1b[${row};${col}H`,
+              to        : (x,y)=>`\x1b[${y};${x}H`,
               up        : (n=1)=>`\x1b[${n}A`,
               down      : (n=1)=>`\x1b[${n}B`,
               home      : '\x1b[H',
               save      : '\x1b[s',
-              restore   : '\x1b[u'
+              restore   : '\x1b[u',
+              hide      : '\x1b[?25l',
+              show      : '\x1b[?25h',
               
         };
         
@@ -861,12 +863,12 @@
                               }//resume
               term.write.xy   = (x,y,txt)=>{
                                                                                 // Save cursor
-                                      term.write('\x1b[s');
+                                      term.write(cursor.save);
                                                                                 // Jump to x,y
-                                      term.write(`\x1b[${y};${x}H`);
+                                      term.write(cursor.to(x,y));
                                       term.write(txt);
                                                                                 // restore cursor
-                                      term.write('\x1b[u');
+                                      term.write(cursor.restore);
                                       
                                 }//xy
                                 
@@ -947,7 +949,7 @@
               
                                   var str   = '??';
                                   if(result.code==0)str   = result.output;
-                                  var x   = end_of_text(1);
+                                  var x   = term.end_of_text(1);
                                   x+=2;
                                   term.write.xy(x,1,'node '+str)
                                   phase.ct    = 2
@@ -961,7 +963,7 @@
                                   if(!phase.p2.result)return;
                                   var str   = '??';
                                   if(phase.p2.result.code==0)str   = phase.p2.result.output;
-                                  var x   = end_of_text(1);
+                                  var x   = term.end_of_text(1);
                                   x+=2;
                                   term.write.xy(x,1,'npm '+str);
                                   phase.ct    = 3;
@@ -1156,7 +1158,7 @@
               let i = 0;
               
               // Hide the cursor so it doesn't flicker
-              term.write('\x1b[?25l');
+              term.write(cursor.hide);
               
               spinner.timer   = setInterval(() => {
                                                                                 // \r moves to start of line, colors.cyan makes it pop
@@ -1178,7 +1180,7 @@
                                                                                 // \x1b[K clears from cursor to end of line
               term.write(`\r\x1b[K${colors.green}✔${colors.reset} ${finalMsg}\r`);
                                                                                 // Show cursor
-              term.write('\x1b[?25h');
+              term.write(cursor.show);
               
         }//stop
         
