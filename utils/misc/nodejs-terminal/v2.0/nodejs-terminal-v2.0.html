@@ -903,18 +903,20 @@
               
                                                                                 term.write('booting container ... ')
               webcontainer        = await WebContainer.boot();
-                                                                                term.writeln.green('ok');   //24
-                                                                                
               mod.stack.complete;
-              
-              
+                                                                                term.write.green('ok');   //24
+                                                                                term.writeln(', ');
+                                                                                
+                                                                                
               var phase   = {};
               phase.ct    = 1;
               phase.p1    = result=>{
               
                                   var str   = '??';
                                   if(result.code==0)str   = result.output;
-                                  term.write.xy(30,1,'node '+str)
+                                  var x   = end_of_text(1);
+                                  x++;
+                                  term.write.xy(x,1,'node '+str+' ,')
                                   phase.ct    = 2
                                   phase.p2()
                                   
@@ -926,7 +928,9 @@
                                   if(!phase.p2.result)return;
                                   var str   = '??';
                                   if(phase.p2.result.code==0)str   = phase.p2.result.output;
-                                  term.write.xy(50,1,'npm '+str);
+                                  var x   = end_of_text(1);
+                                  x++;
+                                  term.write.xy(x,1,'npm '+str);
                                   phase.ct    = 3;
                                   phase.p3();
                                   
@@ -1143,6 +1147,30 @@
               term.write('\x1b[?25h');
               
         }//stop
+        
+        
+        function end_of_text(y){
+                                                                                // xterm.js uses 0-based indexing for the buffer,
+                                                                                //  but 1-based for ANSI
+            var line    = term.buffer.active.getLine(y-1);
+            if(!line){
+                  return 1;
+            }
+            
+            var last    = 0;
+            for(var i=term.cols-1;i>=0;i--){
+            
+                  var cell    = line.getCell(i);
+                                                                                // Check if the cell is not empty/whitespace
+                  if(cell&&cell.getChars().trim()!==''){
+                        last    = i+1;
+                        break;
+                  }
+                  
+            }//for
+            return last+1;
+            
+        }//end_of_text
         
         
   //:
