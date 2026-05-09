@@ -495,8 +495,6 @@
               var code      = await process.exit;
               if(code!=0){
                     term.writeln.red('an error ocurred exit code : '+code);
-              }else{
-                    term.writeln.green('done.');
               }
               
               spinner.stop();
@@ -970,7 +968,7 @@
         
         spinner.timer   = null;
         
-        function spinner(msg="Processing"){
+        function spinner(msg='Processing'){
         
               const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
               let i = 0;
@@ -986,18 +984,23 @@
               
         }//spinner
         
-        spinner.stop    = function(finalMsg="Done!"){
+        
+        spinner.stop    = function(finalMsg='done!'){
         
               if(spinner.timer){
                     clearInterval(spinner.timer);
-                    spinnerInterval = null;
+                    spinner.timer   = null;
               }
                                                                                 // Clear the line, show cursor, and print final message
                                                                                 // \x1b[K clears from cursor to end of line
-              term.write('\r\x1b[K');
-              term.write(`${colors.green}✔${colors.reset} ${finalMsg}\r\n`);
+              //term.write('\r\x1b[K');
+              //term.write(`${colors.green}✔${colors.reset} ${finalMsg}\r\n`);
                                                                                 // Show cursor again
-              term.write('\x1b[?25h');
+              //term.write('\x1b[?25h');
+              term.write(`\r\x1b[K${colors.green}✔${colors.reset} ${finalMsg}\r\n`);
+              
+              term.write('\x1b[?25h'); // Show cursor
+              
               
         }//stop
         
