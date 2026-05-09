@@ -849,8 +849,18 @@
                                     term.pause            = false;
                                     
                               }//resume
-                              
-                              
+              term.write.xy   = (x,y,txt)=>{
+              
+                                      term.write('\x1b[s');     // Save current spot
+                                      term.write(`\x1b[${y};${x}H`);  // Jump to top left
+                                      term.write(txt);
+                                      term.write('\x1b[u');     // Jump back to where we were
+                                      
+                                }//xy
+                                
+                                
+                                
+                                
               for(let key in colors){
               
                     if (key === 'reset') continue;
@@ -890,32 +900,57 @@
               term.loadAddon(fitAddon);
               term.open(terminal);
               fitAddon.fit();
+              
                                                                                 term.write('booting container ... ')
               webcontainer        = await WebContainer.boot();
-                                                                                term.writeln.green('ok');
+                                                                                term.writeln.green('ok');   //24
                                                                                 
               mod.stack.complete;
               
               
+              var phase   = {};
+              phase.ct    = 1;
+              phase.p1    = result=>{
               
-              var [result1,result2]   = await Promise.all([spawn('node -v',{output:true}),spawn('npm -v',{output:true})]);
-              if(result1.code==0){
-                    term.write('node '+result1.output);
-              }
-              if(result2.code==0){
-                    term.write('npm '+result2.output);
-              }
+                                  var str   = '??';
+                                  if(result.code==0)str   = result.output;
+                                  term.write.xy(30,1,'node '+str)
+                                  phase.ct    = 2
+                                  phase.p2()
+                                  
+                            }//p1
+              phase.p2    = result=>{
               
-              webcontainer.on('server-ready',(port,url)=>{
-                                                                                console.log('server-ready',url,port);
-                    term.writeln('server-ready :'+url+' --- '+port);
-                    
-              });
-              webcontainer.on('port',(port,type,url)=>{
-                                                                                console.log(port,type,url)
-                    term.writeln('port :'+type+' --- '+url+' --- '+port);
-                    
-              });
+                                  if(result)phase.p2.result   = result;
+                                  if(phase.ct!=2)return;
+                                  if(!phase.p2.result)return;
+                                  var str   = '??';
+                                  if(phase.p2.result.code==0)str   = phase.p2.result.output;
+                                  term.write.xy(50,1,'npm '+str);
+                                  phase.ct    = 3;
+                                  phase.p3();
+                                  
+                            }//p2
+              phase.p3    = result=>{console.log('phase.p3',!!result);
+              
+                                  if(result)shell   = result;
+                                  if(phase.ct!=3)return;
+                                  if(!shell)return;
+                                  shell.output.pipeTo(output);
+                                  input   = shell.input.getWriter();
+                                  term.onData(data=>input.write(data));
+                                  //term.resize();
+                                  term.focus();
+                                  
+                            }//p3
+                            
+                            
+              spawn('node -v',true).then(phase.p1);
+              spawn('npm -v',true).then(phase.p2);
+              webcontainer.spawn('jsh').then(phase.p3);
+              
+              
+              
               
               
               if(0){
@@ -926,9 +961,9 @@
               
               
               
-                                                                                term.write('spawn jsh ... ')
-              shell     = await webcontainer.spawn('jsh');
-                                                                                term.writeln.green('ok');
+                                                                                //term.write('spawn jsh ... ')
+              //shell     = await webcontainer.spawn('jsh');
+                                                                                //term.writeln.green('ok');
               output    = new WritableStream({
                     write(data){
                                                                                 //console.log(data);
@@ -981,8 +1016,8 @@
                           });
                           
                           
-                          if(term.pause){
-                                term.buffer.push(data);
+                          if(output.pause){
+                                output.buffer.push(data);
                           }else{
                                 term.write(data);
                           }
@@ -1008,13 +1043,26 @@
                                     
                               }//resume
                               
-              shell.output.pipeTo(output);
-              
-              input           = shell.input.getWriter();
-              term.onData(data=>input.write(data));
-              
+                              
               //term.resize();
               term.focus();
+              
+              
+              
+              
+              
+              
+              webcontainer.on('server-ready',(port,url)=>{
+                                                                                console.log('server-ready',url,port);
+                    term.writeln('server-ready :'+url+' --- '+port);
+                    
+              });
+              webcontainer.on('port',(port,type,url)=>{
+                                                                                console.log(port,type,url)
+                    term.writeln('port :'+type+' --- '+url+' --- '+port);
+                    
+              });
+              
               
         })();
         
@@ -1022,8 +1070,19 @@
   //:
   
   
-        async function spawn(cmdline,{output}={}){
+        async function spawn(cmdline,opts){
         
+              if(opts===undefined){
+                    opts    = {};
+              }
+              var output;
+              if(typeof opts=='boolean'){
+                    output      = opts;
+              }else{
+                    ({output}   = opts);
+              }
+              
+              
               var args      = cmdline.split(' ');
               var cmd       = args.shift();
               var process   = await webcontainer.spawn(cmd,args,{cwd,output:true});
