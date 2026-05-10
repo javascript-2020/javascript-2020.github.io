@@ -50,6 +50,7 @@
                                                                                 console.log('nodejs-terminal-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+                                                                                console.hex=v=>console.log(v,'Hex:',[...v].map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(' '));
         var version='v2.0';
         var df=true;
         
@@ -778,14 +779,14 @@
         
         const cursor    = {
         
-              to        : (x,y)=>term.write(`\x1b[${y+1};${x+1}H`),
-              up        : (n=1)=>term.write(`\x1b[${n}A`),
-              down      : (n=1)=>term.write(`\x1b[${n}B`),
-              home      : ()=>term.write('\x1b[H'),
-              save      : ()=>term.write('\x1b[s'),
-              restore   : ()=>term.write('\x1b[u'),
-              hide      : ()=>term.write('\x1b[?25l'),
-              show      : ()=>term.write('\x1b[?25h'),
+              to        : (x,y)=>`\x1b[${y+1};${x+1}H`,
+              up        : (n=1)=>`\x1b[${n}A`,
+              down      : (n=1)=>`\x1b[${n}B`,
+              home      : '\x1b[H',
+              save      : '\x1b[s',
+              restore   : '\x1b[u',
+              hide      : '\x1b[?25l',
+              show      : '\x1b[?25h',
               xy        : ()=>{
                                                                                 //  Note: These are 0-indexed, so the top-left is 0,0.
                                                                                 //  ANSI sequences are usually 1-indexed (1,1).
@@ -799,8 +800,9 @@
                           },//xy
                           
         };
-        
-        
+                                                                                //  \x1b[K clears from cursor to end of line
+                                                                                //  \x1b[J: Clears the screen from the cursor down.
+                                                                                
         var files   = {};
         
 /*
@@ -879,10 +881,7 @@
                               }//resume
               term.write.xy   = (x,y,txt)=>{
               
-                                      cursor.save();
-                                      cursor.to(x,y);
-                                      term.write(txt);
-                                      cursor.restore();
+                                      term.write(`${cursor.save}${cursor.to(x,y)}${txt}${cursor.restore}`);
                                       
                                 }//xy
                                 
@@ -944,8 +943,12 @@
                     
               });
               
-              
-              
+/*
+[J~/rt4gcbtwdausp1nng6uyw4vpasf83c-wlvi
+[1G[0J❯ [3G
+[?2004h
+*/
+
               var fitAddon        = new FitAddon();
               term.loadAddon(fitAddon);
               term.open(terminal);
@@ -973,28 +976,21 @@
                                   var str   = '??';
                                   if(result.code==0)str   = result.output;
                                   term.write.xy(35,0,str)
-                                  phase.ct    = 2
-                                  phase.p2()
                                   
                             }//p1
               phase.p2    = result=>{
               
-                                  if(result)phase.p2.result   = result;
-                                  if(phase.ct!=2)return;
-                                  if(!phase.p2.result)return;
                                   s2.stop();
                                   var str   = '??';
-                                  if(phase.p2.result.code==0)str   = phase.p2.result.output;
+                                  if(result.code==0)str   = result.output;
+                                  str   = str.replace(/\x1b\[1G/g, '').replace(/\x1b\[0K/g, '');
+                                                                                //console.hex(str);
                                   term.write.xy(49,0,str);
-                                  phase.ct    = 3;
-                                  phase.p3();
                                   
                             }//p2
               phase.p3    = result=>{
-                                                                                //console.log('phase.p3',!!result);
-                                  if(result)shell   = result;
-                                  if(phase.ct!=3)return;
-                                  if(!shell)return;
+                                                                                console.log('phase.p3',!!result);
+                                  shell   = result;
                                   s3.stop();
                                   term.write.xy(14,1,`${colors.green}ok.${colors.reset}`);
                                   shell.output.pipeTo(output);
@@ -1008,7 +1004,7 @@
                             
               spawn('node -v',true).then(phase.p1);
               spawn('npm -v',true).then(phase.p2);
-              webcontainer.spawn('jsh').then(phase.p3);
+              setTimeout(()=>webcontainer.spawn('jsh').then(phase.p3),50);
               
               
               
@@ -1027,7 +1023,7 @@
                                                                                 //term.writeln.green('ok');
               output    = new WritableStream({
                     write(data){
-                                                                                //console.log(data);
+                                                                                console.log(data);
                           var str     = data;
                           str         = str.replaceAll('\r','');
                           var lines   = str.split('\n');
@@ -1177,14 +1173,15 @@
               var spinner     = {};
               spinner.timer   = null;
               spinner.stop    = null;
-              spinner.x       = null;
-              spinner.y       = null;
+              spinner.x       = x;
+              spinner.y       = y;
               
               var frames      = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
               var i           = 0;
                                                                                 // Hide the cursor so it doesn't flicker
               //term.write(cursor.hide);
               setTimeout(setup,50);
+              //setup();
               
               return spinner;
               
@@ -1200,13 +1197,11 @@
                     
                     spinner.timer   = setInterval(()=>{
                                                                                 // \r moves to start of line, colors.cyan makes it pop
-                          cursor.save();
-                          cursor.to(x,y);
-                          term.write(`${colors.cyan}${frames[i]}${colors.reset}`);
-                          cursor.restore();
+                          term.write(`${cursor.save}${cursor.to(x,y)}${colors.cyan}${frames[i]}${colors.reset}${cursor.restore}`);
                           i   = (i+1)%frames.length;
                           
                     },80);
+                    
                     
                     spinner.stop    = function(){
                     
@@ -1216,12 +1211,7 @@
                           
                           clearInterval(spinner.timer);
                           spinner.timer   = null;
-                                                                                      // Clear the line, show cursor, and print final message
-                                                                                      // \x1b[K clears from cursor to end of line
-                          cursor.save();
-                          cursor.to(x,y);
-                          term.write(' ');
-                          cursor.restore();
+                          term.write(`${cursor.save}${cursor.to(x,y)} ${cursor.restore}`);
                                                                                             // Show cursor
                           //term.write(cursor.show);
                           
