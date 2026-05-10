@@ -457,7 +457,7 @@
               
               term.writeln('');
               term.writeln.green('installing https-server ...');
-              spinner();
+              var s   = spinner();
               
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
               
@@ -495,7 +495,8 @@
                     term.writeln.red('an error ocurred exit code : '+code);
               }
               
-              spinner.stop();
+              s.stop();
+              term.write('ok.');
               await prompt();
               
         }//https-server
@@ -773,15 +774,24 @@
         
         const cursor    = {
         
-              to        : (x,y)=>`\x1b[${y};${x}H`,
-              up        : (n=1)=>`\x1b[${n}A`,
-              down      : (n=1)=>`\x1b[${n}B`,
-              home      : '\x1b[H',
-              save      : '\x1b[s',
-              restore   : '\x1b[u',
-              hide      : '\x1b[?25l',
-              show      : '\x1b[?25h',
-              
+              to        : (x,y)=>term.write(`\x1b[${y};${x}H`),
+              up        : (n=1)=>term.write(`\x1b[${n}A`),
+              down      : (n=1)=>term.write(`\x1b[${n}B`),
+              home      : ()=>term.write('\x1b[H'),
+              save      : ()=>term.write('\x1b[s'),
+              restore   : ()=>term.write('\x1b[u'),
+              hide      : ()=>term.write('\x1b[?25l'),
+              show      : ()=>term.write('\x1b[?25h'),
+              xy        : ()=>{
+                                                                                // Current Column
+                                var x   = term.buffer.active.cursorX;
+                                                                                // Current Row
+                                var y   = term.buffer.active.cursorY;
+                                                                                //  console.log(`Cursor is at: ${x}, ${y}`);
+                                return {x,y};
+                                
+                          },//xy
+                          
         };
         
         
@@ -863,12 +873,12 @@
                               }//resume
               term.write.xy   = (x,y,txt)=>{
                                                                                 // Save cursor
-                                      term.write(cursor.save);
+                                      cursor.save();
                                                                                 // Jump to x,y
-                                      term.write(cursor.to(x,y));
+                                      cursor.to(x,y);
                                       term.write(txt);
                                                                                 // restore cursor
-                                      term.write(cursor.restore);
+                                      cursor.restore();
                                       
                                 }//xy
                                 
@@ -938,9 +948,11 @@
               fitAddon.fit();
               
                                                                                 term.write('booting container ... ')
+                                                                                var s   = spinner();
               webcontainer        = await WebContainer.boot();
               mod.stack.complete;
-                                                                                term.writeln.green('ok');   //24
+                                                                                s.stop();
+                                                                                term.writeln.green('ok.');   //24
                                                                                 
                                                                                 
               var phase   = {};
@@ -1150,39 +1162,54 @@
         }//prompt
         
         
-        spinner.timer   = null;
+        function spinner({x,y}={}){
         
-        function spinner(msg='Processing'){
-        
-              const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
-              let i = 0;
+              var frames    = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+              var i         = 0;
               
-              // Hide the cursor so it doesn't flicker
-              term.write(cursor.hide);
+                                                                                // Hide the cursor so it doesn't flicker
+              //term.write(cursor.hide);
               
-              spinner.timer   = setInterval(() => {
+              if(x===undefined){
+                    ({x,y}    = cursor.xy());
+              }
+              
+              var spinner   = {};
+              
+              spinner.timer   = setInterval(()=>{
                                                                                 // \r moves to start of line, colors.cyan makes it pop
-                    term.write(`\r${colors.cyan}${frames[i]}${colors.reset} ${msg}...`);
+                    cursor.save();
+                    cursor.to(x,y);
+                    term.write(`\r${colors.cyan}${frames[i]}${colors.reset}`);
+                    cursor.restore();
                     i   = (i+1)%frames.length;
                     
               },80);
               
+              spinner.stop    = function(){
+              
+                    if(!spinner.timer){
+                          return;
+                    }
+                    
+                    clearInterval(spinner.timer);
+                    spinner.timer   = null;
+                                                                                      // Clear the line, show cursor, and print final message
+                                                                                      // \x1b[K clears from cursor to end of line
+                    cursor.save();
+                    cursor.to(x,y);
+                    term.write(' ');
+                    cursor.restore();
+                                                                                      // Show cursor
+                    //term.write(cursor.show);
+                    
+              }//stop
+              
+              return spinner;
+              
         }//spinner
         
         
-        spinner.stop    = function(finalMsg='done!'){
-        
-              if(spinner.timer){
-                    clearInterval(spinner.timer);
-                    spinner.timer   = null;
-              }
-                                                                                // Clear the line, show cursor, and print final message
-                                                                                // \x1b[K clears from cursor to end of line
-              term.write(`\r\x1b[K${colors.green}✔${colors.reset} ${finalMsg}\r`);
-                                                                                // Show cursor
-              term.write(cursor.show);
-              
-        }//stop
         
         
         
