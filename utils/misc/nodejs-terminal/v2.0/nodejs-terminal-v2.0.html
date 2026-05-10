@@ -787,11 +787,13 @@
               hide      : ()=>term.write('\x1b[?25l'),
               show      : ()=>term.write('\x1b[?25h'),
               xy        : ()=>{
-                                                                                // Current Column
+                                                                                //  Note: These are 0-indexed, so the top-left is 0,0.
+                                                                                //  ANSI sequences are usually 1-indexed (1,1).
+                                                                                //  Current Column
                                 var x   = term.buffer.active.cursorX;
-                                                                                // Current Row
+                                                                                //  Current Row
                                 var y   = term.buffer.active.cursorY;
-                                                                                console.log(`Cursor is at: ${x}, ${y}`);
+                                                                                console.log(`cursor is at: ${x}, ${y}`);
                                 return {x,y};
                                 
                           },//xy
@@ -1168,48 +1170,60 @@
         
         function spinner({x,y}={}){
         
-              var frames    = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
-              var i         = 0;
+              var spinner     = {};
+              spinner.timer   = null;
+              spinner.stop    = null;
+              spinner.x       = null;
+              spinner.y       = null;
               
+              var frames      = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+              var i           = 0;
                                                                                 // Hide the cursor so it doesn't flicker
               //term.write(cursor.hide);
-              
-              if(x===undefined){
-                    ({x,y}    = cursor.xy());
-              }
-              
-              var spinner   = {};
-              
-              spinner.timer   = setInterval(()=>{
-                                                                                // \r moves to start of line, colors.cyan makes it pop
-                    cursor.save();
-                    cursor.to(x,y);
-                    term.write(`\r${colors.cyan}${frames[i]}${colors.reset}`);
-                    cursor.restore();
-                    i   = (i+1)%frames.length;
-                    
-              },80);
-              
-              spinner.stop    = function(){
-              
-                    if(!spinner.timer){
-                          return;
-                    }
-                    
-                    clearInterval(spinner.timer);
-                    spinner.timer   = null;
-                                                                                      // Clear the line, show cursor, and print final message
-                                                                                      // \x1b[K clears from cursor to end of line
-                    cursor.save();
-                    cursor.to(x,y);
-                    term.write(' ');
-                    cursor.restore();
-                                                                                      // Show cursor
-                    //term.write(cursor.show);
-                    
-              }//stop
+              setTimeout(setup,50);
               
               return spinner;
+              
+              
+              function setup(){
+              
+                    if(x===undefined){
+                          ({x,y}      = cursor.xy());
+                          spinner.x   = x;
+                          spinner.y   = y;
+                    }
+                    
+                    
+                    spinner.timer   = setInterval(()=>{
+                                                                                // \r moves to start of line, colors.cyan makes it pop
+                          cursor.save();
+                          cursor.to(x+1,y);
+                          term.write(`${colors.cyan}${frames[i]}${colors.reset}`);
+                          cursor.restore();
+                          i   = (i+1)%frames.length;
+                          
+                    },80);
+                    
+                    spinner.stop    = function(){
+                    
+                          if(!spinner.timer){
+                                return;
+                          }
+                          
+                          clearInterval(spinner.timer);
+                          spinner.timer   = null;
+                                                                                      // Clear the line, show cursor, and print final message
+                                                                                      // \x1b[K clears from cursor to end of line
+                          cursor.save();
+                          cursor.to(x+1,y);
+                          term.write(' ');
+                          cursor.restore();
+                                                                                            // Show cursor
+                          //term.write(cursor.show);
+                          
+                    }//stop
+                    
+              }//setup
               
         }//spinner
         
