@@ -767,7 +767,7 @@
               brightMagenta         : '\x1b[1;35m',
               brightCyan            : '\x1b[1;36m',
               brightWhite           : '\x1b[1;37m',
-                                                                                // Custom Mahogany (RGB: 150, 40, 20)
+                                                                                // Custom Mahogany (RGB:150,40,20)
               mahogany              : '\x1b[38;2;150;40;20m',
               
                                                                                 // Utility
@@ -778,7 +778,7 @@
         
         const cursor    = {
         
-              to        : (x,y)=>term.write(`\x1b[${y};${x}H`),
+              to        : (x,y)=>term.write(`\x1b[${y+1};${x+1}H`),
               up        : (n=1)=>term.write(`\x1b[${n}A`),
               down      : (n=1)=>term.write(`\x1b[${n}B`),
               home      : ()=>term.write('\x1b[H'),
@@ -878,12 +878,10 @@
                                     
                               }//resume
               term.write.xy   = (x,y,txt)=>{
-                                                                                // Save cursor
+              
                                       cursor.save();
-                                                                                // Jump to x,y
                                       cursor.to(x,y);
                                       term.write(txt);
-                                                                                // restore cursor
                                       cursor.restore();
                                       
                                 }//xy
@@ -960,16 +958,21 @@
                                                                                 s.stop();
                                                                                 term.writeln.green('ok.');   //24
                                                                                 
-                                                                                
+              term.write.xy(30,0,'node');
+              var s1    = spinner({x:35,y:0});
+              term.write.xy(45,0,'npm');
+              var s2    = spinner({x:49,y:0});
+              term.writeln('spawn jsh ... ');
+              var s3    = spinner({x:14,y:1});
+              
               var phase   = {};
               phase.ct    = 1;
               phase.p1    = result=>{
               
+                                  s1.stop();
                                   var str   = '??';
                                   if(result.code==0)str   = result.output;
-                                  var x   = term.end_of_text(1);
-                                  x+=2;
-                                  term.write.xy(x,1,'node '+str)
+                                  term.write.xy(35,0,str)
                                   phase.ct    = 2
                                   phase.p2()
                                   
@@ -979,25 +982,26 @@
                                   if(result)phase.p2.result   = result;
                                   if(phase.ct!=2)return;
                                   if(!phase.p2.result)return;
+                                  s2.stop();
                                   var str   = '??';
                                   if(phase.p2.result.code==0)str   = phase.p2.result.output;
-                                  var x   = term.end_of_text(1);
-                                  x+=2;
-                                  term.write.xy(x,1,'npm '+str);
+                                  term.write.xy(49,0,str);
                                   phase.ct    = 3;
                                   phase.p3();
                                   
                             }//p2
-              phase.p3    = result=>{console.log('phase.p3',!!result);
-              
+              phase.p3    = result=>{
+                                                                                //console.log('phase.p3',!!result);
                                   if(result)shell   = result;
                                   if(phase.ct!=3)return;
                                   if(!shell)return;
+                                  s3.stop();
+                                  term.write.xy(14,1,`${colors.green}ok.${colors.reset}`);
                                   shell.output.pipeTo(output);
                                   input   = shell.input.getWriter();
                                   term.onData(data=>input.write(data));
                                   //term.resize();
-                                  term.focus();
+                                  setTimeout(()=>term.focus(),50);
                                   
                             }//p3
                             
@@ -1161,7 +1165,7 @@
         
         
         async function prompt(){
-        
+          console.log('prompt');
               //await input.write('\u0003'); // Sends Ctrl+C to clear any junk
               await input.write('\n');     // Sends Enter to get a clean prompt
               
@@ -1197,7 +1201,7 @@
                     spinner.timer   = setInterval(()=>{
                                                                                 // \r moves to start of line, colors.cyan makes it pop
                           cursor.save();
-                          cursor.to(x+1,y);
+                          cursor.to(x,y);
                           term.write(`${colors.cyan}${frames[i]}${colors.reset}`);
                           cursor.restore();
                           i   = (i+1)%frames.length;
@@ -1215,7 +1219,7 @@
                                                                                       // Clear the line, show cursor, and print final message
                                                                                       // \x1b[K clears from cursor to end of line
                           cursor.save();
-                          cursor.to(x+1,y);
+                          cursor.to(x,y);
                           term.write(' ');
                           cursor.restore();
                                                                                             // Show cursor
