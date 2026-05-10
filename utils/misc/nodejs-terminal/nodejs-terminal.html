@@ -50,6 +50,7 @@
                                                                                 console.log('nodejs-terminal-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
+                                                                                console.hex=v=>console.log(v,'Hex:',[...v].map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(' '));
         var version='v2.0';
         var df=true;
         
@@ -410,9 +411,13 @@
         }//snippet-console
         
         
-        btn.test    = async function(){console.log('test');
-        
-        
+        btn.test    = async function(){
+                                                                                console.log('test');
+                                                                                
+              cursor.to(5,1);
+              cursor.xy();
+              return;
+              
               term.write.brightGreen('hello');
               term.write.red('world');
               return;
@@ -457,7 +462,7 @@
               
               term.writeln('');
               term.writeln.green('installing https-server ...');
-              spinner();
+              var s   = spinner();
               
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
               
@@ -495,7 +500,8 @@
                     term.writeln.red('an error ocurred exit code : '+code);
               }
               
-              spinner.stop();
+              s.stop();
+              term.write('ok.');
               await prompt();
               
         }//https-server
@@ -730,7 +736,7 @@
               
         };
         
-        var chr   = {
+        const chr   = {
         
               warn                  : '\u26A0',
               cross                 : '\u274C',
@@ -743,7 +749,7 @@
               
         };
         
-        var colors    = {
+        const colors    = {
         
               black                 : '\x1b[30m',
               red                   : '\x1b[31m',
@@ -762,7 +768,7 @@
               brightMagenta         : '\x1b[1;35m',
               brightCyan            : '\x1b[1;36m',
               brightWhite           : '\x1b[1;37m',
-                                                                                // Custom Mahogany (RGB: 150, 40, 20)
+                                                                                // Custom Mahogany (RGB:150,40,20)
               mahogany              : '\x1b[38;2;150;40;20m',
               
                                                                                 // Utility
@@ -771,8 +777,32 @@
         };
         
         
+        const cursor    = {
         
-        
+              to        : (x,y)=>`\x1b[${y+1};${x+1}H`,
+              up        : (n=1)=>`\x1b[${n}A`,
+              down      : (n=1)=>`\x1b[${n}B`,
+              home      : '\x1b[H',
+              save      : '\x1b[s',
+              restore   : '\x1b[u',
+              hide      : '\x1b[?25l',
+              show      : '\x1b[?25h',
+              xy        : ()=>{
+                                                                                //  Note: These are 0-indexed, so the top-left is 0,0.
+                                                                                //  ANSI sequences are usually 1-indexed (1,1).
+                                                                                //  Current Column
+                                var x   = term.buffer.active.cursorX;
+                                                                                //  Current Row
+                                var y   = term.buffer.active.cursorY;
+                                                                                console.log(`cursor is at: ${x}, ${y}`);
+                                return {x,y};
+                                
+                          },//xy
+                          
+        };
+                                                                                //  \x1b[K clears from cursor to end of line
+                                                                                //  \x1b[J: Clears the screen from the cursor down.
+                                                                                
         var files   = {};
         
 /*
@@ -851,19 +881,38 @@
                               }//resume
               term.write.xy   = (x,y,txt)=>{
               
-                                      term.write('\x1b[s');     // Save current spot
-                                      term.write(`\x1b[${y};${x}H`);  // Jump to top left
-                                      term.write(txt);
-                                      term.write('\x1b[u');     // Jump back to where we were
+                                      term.write(`${cursor.save}${cursor.to(x,y)}${txt}${cursor.restore}`);
                                       
                                 }//xy
                                 
-                                
-                                
-                                
+              term.end_of_text    = function(y){
+                                                                                // xterm.js uses 0-based indexing for the buffer,
+                                                                                //  but 1-based for ANSI
+                    var line    = term.buffer.active.getLine(y-1);
+                    if(!line){
+                          return 1;
+                    }
+                    
+                    var last    = 0;
+                    for(var i=term.cols-1;i>=0;i--){
+                    
+                          var cell    = line.getCell(i);
+                                                                                // Check if the cell is not empty/whitespace
+                          if(cell&&cell.getChars().trim()!==''){
+                                last    = i+1;
+                                break;
+                          }
+                          
+                    }//for
+                    return last+1;
+                    
+              }//end_of_text
+              
+              
+              
               for(let key in colors){
               
-                    if (key === 'reset') continue;
+                    if(key=='reset')continue;
                     
                     term.write[key]     = (...args)=>term.write(colors[key]+args.join(' ')+colors.reset);
                     term.writeln[key]   = (...args)=>term.writeln(colors[key]+args.join(' ')+colors.reset);
@@ -894,63 +943,68 @@
                     
               });
               
-              
-              
+/*
+[J~/rt4gcbtwdausp1nng6uyw4vpasf83c-wlvi
+[1G[0J❯ [3G
+[?2004h
+*/
+
               var fitAddon        = new FitAddon();
               term.loadAddon(fitAddon);
               term.open(terminal);
               fitAddon.fit();
               
-                                                                                term.write('booting container ... ')
+                                                                                term.write('booting container ... ');
+                                                                                var s   = spinner();
               webcontainer        = await WebContainer.boot();
               mod.stack.complete;
-                                                                                term.writeln.green('ok');   //24
+                                                                                s.stop();
+                                                                                term.writeln.green('ok.');   //24
                                                                                 
-                                                                                
+              term.write.xy(30,0,'node');
+              var s1    = spinner({x:35,y:0});
+              term.write.xy(45,0,'npm');
+              var s2    = spinner({x:49,y:0});
+              term.writeln('spawn jsh ... ');
+              var s3    = spinner({x:14,y:1});
+              
               var phase   = {};
               phase.ct    = 1;
               phase.p1    = result=>{
               
+                                  s1.stop();
                                   var str   = '??';
                                   if(result.code==0)str   = result.output;
-                                  var x   = end_of_text(1);
-                                  x++;
-                                  term.write.xy(x,1,', node '+str)
-                                  phase.ct    = 2
-                                  phase.p2()
+                                  term.write.xy(35,0,str)
                                   
                             }//p1
               phase.p2    = result=>{
               
-                                  if(result)phase.p2.result   = result;
-                                  if(phase.ct!=2)return;
-                                  if(!phase.p2.result)return;
+                                  s2.stop();
                                   var str   = '??';
-                                  if(phase.p2.result.code==0)str   = phase.p2.result.output;
-                                  var x   = end_of_text(1);
-                                  x++;
-                                  term.write.xy(x,1,',  npm '+str);
-                                  phase.ct    = 3;
-                                  phase.p3();
+                                  if(result.code==0)str   = result.output;
+                                  str   = str.replace(/\x1b\[1G/g, '').replace(/\x1b\[0K/g, '');
+                                                                                //console.hex(str);
+                                  term.write.xy(49,0,str);
                                   
                             }//p2
-              phase.p3    = result=>{console.log('phase.p3',!!result);
-              
-                                  if(result)shell   = result;
-                                  if(phase.ct!=3)return;
-                                  if(!shell)return;
+              phase.p3    = result=>{
+                                                                                console.log('phase.p3',!!result);
+                                  shell   = result;
+                                  s3.stop();
+                                  term.write.xy(14,1,`${colors.green}ok.${colors.reset}`);
                                   shell.output.pipeTo(output);
                                   input   = shell.input.getWriter();
                                   term.onData(data=>input.write(data));
                                   //term.resize();
-                                  term.focus();
+                                  setTimeout(()=>term.focus(),50);
                                   
                             }//p3
                             
                             
               spawn('node -v',true).then(phase.p1);
               spawn('npm -v',true).then(phase.p2);
-              webcontainer.spawn('jsh').then(phase.p3);
+              setTimeout(()=>webcontainer.spawn('jsh').then(phase.p3),50);
               
               
               
@@ -964,12 +1018,9 @@
               
               
               
-                                                                                //term.write('spawn jsh ... ')
-              //shell     = await webcontainer.spawn('jsh');
-                                                                                //term.writeln.green('ok');
               output    = new WritableStream({
                     write(data){
-                                                                                //console.log(data);
+                                                                                console.log(data);
                           var str     = data;
                           str         = str.replaceAll('\r','');
                           var lines   = str.split('\n');
@@ -1107,69 +1158,69 @@
         
         
         async function prompt(){
-        
+          console.log('prompt');
               //await input.write('\u0003'); // Sends Ctrl+C to clear any junk
               await input.write('\n');     // Sends Enter to get a clean prompt
               
         }//prompt
         
         
-        spinner.timer   = null;
+        function spinner({x,y}={}){
         
-        function spinner(msg='Processing'){
-        
-              const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
-              let i = 0;
+              var spinner     = {};
+              spinner.timer   = null;
+              spinner.stop    = null;
+              spinner.x       = x;
+              spinner.y       = y;
               
-              // Hide the cursor so it doesn't flicker
-              term.write('\x1b[?25l');
+              var frames      = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+              var i           = 0;
+                                                                                // Hide the cursor so it doesn't flicker
+              //term.write(cursor.hide);
+              setTimeout(setup,50);
+              //setup();
               
-              spinner.timer   = setInterval(() => {
+              return spinner;
+              
+              
+              function setup(){
+              
+                    if(x===undefined){
+                          ({x,y}      = cursor.xy());
+                          spinner.x   = x;
+                          spinner.y   = y;
+                    }
+                    
+                    
+                    spinner.timer   = setInterval(()=>{
                                                                                 // \r moves to start of line, colors.cyan makes it pop
-                    term.write(`\r${colors.cyan}${frames[i]}${colors.reset} ${msg}...`);
-                    i = (i + 1) % frames.length;
-              },80);
+                          term.write(`${cursor.save}${cursor.to(x,y)}${colors.cyan}${frames[i]}${colors.reset}${cursor.restore}`);
+                          i   = (i+1)%frames.length;
+                          
+                    },80);
+                    
+                    
+                    spinner.stop    = function(){
+                    
+                          if(!spinner.timer){
+                                return;
+                          }
+                          
+                          clearInterval(spinner.timer);
+                          spinner.timer   = null;
+                          term.write(`${cursor.save}${cursor.to(x,y)} ${cursor.restore}`);
+                                                                                            // Show cursor
+                          //term.write(cursor.show);
+                          
+                    }//stop
+                    
+              }//setup
               
         }//spinner
         
         
-        spinner.stop    = function(finalMsg='done!'){
-        
-              if(spinner.timer){
-                    clearInterval(spinner.timer);
-                    spinner.timer   = null;
-              }
-                                                                                // Clear the line, show cursor, and print final message
-                                                                                // \x1b[K clears from cursor to end of line
-              term.write(`\r\x1b[K${colors.green}✔${colors.reset} ${finalMsg}\r`);
-                                                                                // Show cursor
-              term.write('\x1b[?25h');
-              
-        }//stop
         
         
-        function end_of_text(y){
-                                                                                // xterm.js uses 0-based indexing for the buffer,
-                                                                                //  but 1-based for ANSI
-            var line    = term.buffer.active.getLine(y-1);
-            if(!line){
-                  return 1;
-            }
-            
-            var last    = 0;
-            for(var i=term.cols-1;i>=0;i--){
-            
-                  var cell    = line.getCell(i);
-                                                                                // Check if the cell is not empty/whitespace
-                  if(cell&&cell.getChars().trim()!==''){
-                        last    = i+1;
-                        break;
-                  }
-                  
-            }//for
-            return last+1;
-            
-        }//end_of_text
         
         
   //:
