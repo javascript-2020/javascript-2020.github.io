@@ -1,0 +1,120 @@
+<terminal-tabs>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+            </style>
+            
+            <div id=tabs>
+                  <div id=tab-icons>
+                        <img id=tab-remove class=icon>
+                        <img id=tab-add class=icon>
+                  </div>
+                  <div class=tab>
+                  </div>
+            </div>
+            
+            <div id=hldr>
+                  <div id=terminal>
+                  </div>
+            </div>
+            
+      </template>
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {
+        version   : 'v1.0.0',
+  };
+  
+        var df=true,did='terminal-tabs';
+        
+        
+        obj.initmod   = function(params){
+        
+        }//initmod
+        
+        
+  //:
+  
+  
+        var mem       = [];
+        
+        
+        var shadow;
+        
+        var tabs;
+        var tab;
+        
+        
+        var btn       = {};
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = async function(){
+        
+              shadow                                  = host.shadowRoot;
+              
+              tabs                                    = $(shadow,'#tabs');
+              tab                                     = $(tabs,'#tab');
+              tab.remove();
+              tab.style.display                       = '';
+              
+              $(tabs,'#tab-remove').onclick           = btn['tab-remove'];
+              $(tabs,'#tab-add').onclick              = btn['tab-add'];
+              
+              
+              hldr                                    = $(shadow,'#hldr');
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        btn['tab-remove']   = function(){
+        }//tab-remove
+        
+        
+        btn['tab-add']    = async function(){
+        
+              var ntab        = tab.cloneNode(true);
+              var initmod     = {Terminal,webcontainer,FitAddon,spinner,theme,tab:ntab};
+              var terminal    = await mod.component('webcontainer-terminal',{component:'page'},{par:hldr,initmod});
+              mem.push({tab:ntab,terminal});
+              
+        }//tab-add
+        
+        
+        
+        
+        
+  //:
+  
+  return obj;
+  
+//terminal-tabs
+})
+
+      </script>
+      
+</terminal-tabs>
+
+
+
+
+
+
