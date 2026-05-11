@@ -69,6 +69,7 @@
         var misc;
         var filemod;
         var wcfs;
+        var ports;
         var log;
         
         
@@ -89,11 +90,13 @@
               misc      = mod['misc-hdr'];
               filemod   = mod['file-mod'];
               wcfs      = mod['webcontainer-fs'];
+              ports     = mod['webcontainer-ports'];
               log       = mod['log-mod'];
               
               misc.initmod({ext,$});
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
               wcfs.initmod({ext,$,filemod,menumod,menu,complete,source,log,debug,webcontainer});
+              ports.initmod({$,vm});
               log.initmod({ext,$});
               
               
@@ -102,6 +105,7 @@
                     misc.init(),
                     filemod.init(),
                     wcfs.init(),
+                    ports.init(),
                     log.init(),
               ]);
               
@@ -186,6 +190,9 @@
   .icon
     {width:32px;height:32px;border:1px solid gray;border-radius:3px;box-sizing:border-box;cursor:pointer}
     
+  #ports
+    {content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABDUlEQVR4AeyU6xEBQRCEtySCSBAJIkEkiASRkAn9FVdlbnf2UXXKn1Mz+5jpnt7XmYTy7ynIXt43YuT6cTOvETCE1skoUDwx74hmYnKBuIZhp4bxtxNTOBC7awBHnTVPAMJV0EOlP4S7yCPzBADe1PAUaxxs0w5UexjL7WAQhb8JcGnTxi3AiSjeDgAnLy2q8A4s1MFRZ80T4FUsBa0RAQMWjijWPAGeJivibVPAsuwMDFg4NqOZJ6BUONPIj/KUCKumOLmtMEnLCbAiiBTgy6YYMQS7ObmVKvPVq4stJwAaIgX4y2C+VrORE0d8/hmrS1tJAFZ3vggx7oqfSJa8RqBUI5sfBbLHQ/LnR/QCAAD//7FNDYAAAAAGSURBVAMASAU3rzhnxxoAAAAASUVORK5CYII=);
+    }
     
     
   #more-menu-click
@@ -236,6 +243,7 @@
                   </div>
                   
                   <div id=icons>
+                        <img id=ports title=ports class=icon>
                         <img id=niframe title=iframe class=icon>
                         <img id=snippet-editor title=editor class=icon>
                         <img id=snippet-console title=snippet-console class=icon>
@@ -264,6 +272,10 @@
             <div>
                   <input value=test type=button>
             </div>
+            
+            
+            
+            <webcontainer-ports component=page></webcontainer-ports>
             
             <log-mod component></log-mod>
             
@@ -300,21 +312,24 @@
         
   //:
   
-        function initdom(){
+        async function initdom(){
         
-              vm.initdom();
+              await vm.initdom();
               
-              misc.initdom();
+              await misc.initdom();
               misc.set.version(version);
               
-              filemod.initdom();
-              wcfs.initdom();
+              await filemod.initdom();
+              await wcfs.initdom();
+              await ports.initdom();
+              
               
               //menu.add.style();
               var card                                = $('#more-menu');
               $('#more-menu-click').onclick           = menu.click(card,'both',false,menu_callback.more);
               
               
+              $('#ports').onclick                     = btn.ports;
               $('#niframe').onclick                   = btn.niframe;
               $('#snippet-editor').onclick            = btn['snippet-editor'];
               $('#snippet-console').onclick           = btn['snippet-console'];
@@ -324,7 +339,7 @@
               
               $('[value=test]').onclick               = btn.test;
               
-              log.initdom();
+              await log.initdom();
               
               blank                                   = $('#file-info img').src;
               
@@ -338,6 +353,19 @@
   //:
   
   
+        btn.ports   = async function(){
+        
+              console.log(ports.viewport.status);
+              
+              if(ports.viewport.status==='hidden'){
+                    ports.show();
+              }else{
+                    ports.hide();
+              }
+              
+        }//ports
+        
+        
         btn.niframe   = async function(){
         
               var node    = document.createElement('webcontainer-iframe');
@@ -389,7 +417,7 @@
               var viewport    = await vm.new();
               viewport.pos({x:250,y:200,w:850,h:1100});
               
-              var attrs     = {component:true,'v2.0':true,'web-editor':'fullsize=false',exportparts:"root: inner-label"};
+              var attrs     = {component:true,'v2.0':true,'web-editor':'fullsize=false',exportparts:'root:inner-label'};
               var opts      = {par:viewport.body};
               var snippet   = await mod.component('snippet-console',attrs,opts);
               
@@ -943,12 +971,7 @@
                     
               });
               
-/*
-[J~/rt4gcbtwdausp1nng6uyw4vpasf83c-wlvi
-[1G[0J❯ [3G
-[?2004h
-*/
-
+              
               var fitAddon        = new FitAddon();
               term.loadAddon(fitAddon);
               term.open(terminal);
@@ -1108,13 +1131,19 @@
               
               webcontainer.on('server-ready',(port,url)=>{
                                                                                 console.log('server-ready',url,port);
-                    term.writeln('server-ready :'+url+' --- '+port);
+                    //term.writeln('server-ready :'+url+' --- '+port);
                     
               });
               webcontainer.on('port',(port,type,url)=>{
                                                                                 console.log(port,type,url)
-                    term.writeln('port :'+type+' --- '+url+' --- '+port);
+                    //term.writeln('port :'+type+' --- '+url+' --- '+port);
                     
+                    switch(type){
+                    
+                      case ''   : ports.add(port,url);        break;
+                      case ''   : port.remove(port);          break;
+                      
+                    }//switch
               });
               
               
