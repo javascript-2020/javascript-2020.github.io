@@ -1,0 +1,147 @@
+
+
+<webcontainer-ports>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  #root
+    {}
+    
+  #list
+    {display:flex;flex-direction:column;gap:5px}
+    
+  .item
+    {display:flex;align-items:center;gap:10px}
+    
+  .port
+    {}
+  .url
+    {}
+  .copy
+    {}
+    
+            </style>
+            
+            <div id=root style='display:none'>
+            
+                  <div id=list>
+                  
+                        <div class=item>
+                              <div class=port>
+                              </div>
+                              <div class=url>
+                              </div>
+                              <img class=copy>
+                        </div>
+                        
+                  </div>
+                  
+            </div>
+            
+      </template>
+      
+      
+      <script>
+      
+(function({mod,dom}){
+
+  var obj   = {
+        version   : 'v1.0.0',
+  };
+        var df=true,did='webcontainer-ports';
+        
+        
+        var vm
+        ;
+        
+        obj.initmod   = function(params){
+        
+              vm        = mod.rd(params,'vm',vm);
+              
+        }//intimod
+        
+        
+  //:
+  
+  
+        var shadow;
+        
+        var viewport;
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = async function(){
+        
+              shadow                    = host.shadowRoot;
+              
+              viewport                  = await vm.new();
+              viewport.pos({x:200,y:200,w:400,h:200});
+              
+              root                      = $(shadow,'#root');
+              viewport.body.append(root);
+              root.style.display        = '';
+              
+              list                      = $(root,'#list');
+              item                      = $(list,'.item');
+              item.remove();
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+  
+        obj.add   = function(port,url){
+        
+              var nitem   = item.cloneNode(true);
+              $(nitem,'.port').textContent    = port;
+              $(nitem,'.url').textContent     = url;
+              $(nitem,'.copy').onclick        = e=>{
+              
+                                                      await navigator.clipboard.writeText(url);
+                                                      
+                                                }//copy
+              list.append(nitem);
+              
+        }//add
+        
+        
+        obj.remove    = function(port){
+        
+              port       += '';
+              var item    = $.all(list,'.item').find(item=>$(item,'.port').textContent.trim()===port);
+              if(!item){
+                    return;
+              }
+              item.remove();
+              
+        }//remove
+        
+        
+        
+        
+  //:
+  
+  return obj;
+  
+  //webcontainer-ports
+})
+
+      </script>
+      
+</webcontainer-ports>
+
+
+
