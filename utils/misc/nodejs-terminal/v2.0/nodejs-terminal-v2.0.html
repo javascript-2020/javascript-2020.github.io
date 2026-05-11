@@ -988,15 +988,13 @@
                                                                                 s.stop();
                                                                                 term.writeln.green('ok.');   //24
                                                                                 
-              term.write.xy(30,0,'node');
-              var s1    = spinner({x:35,y:0});
-              term.write.xy(45,0,'npm');
-              var s2    = spinner({x:49,y:0});
+              var s1;
+              var s2;
+              
               term.writeln('spawn jsh ... ');
               var s3    = spinner({x:14,y:1});
               
               var phase   = {};
-              phase.ct    = 1;
               phase.p1    = result=>{
               
                                   s1.stop();
@@ -1033,8 +1031,16 @@
               
                     webcontainer.spawn('jsh').then(phase.p3)
                     
-                    spawn('node -v',true).then(phase.p1);
-                    spawn('npm -v',true).then(phase.p2);
+                    setTimeout(()=>{
+                    
+                          term.write.xy(30,0,'node');
+                          s1    = spinner({x:35,y:0});
+                          term.write.xy(45,0,'npm');
+                          s2    = spinner({x:49,y:0});
+                          spawn('node -v',true).then(phase.p1);
+                          spawn('npm -v',true).then(phase.p2);
+                          
+                    },100);
                     
               },50);
               
