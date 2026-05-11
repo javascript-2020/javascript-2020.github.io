@@ -114,6 +114,7 @@
         var icons;
         
         
+        var btn             = {};
         var ku              = {};
         var callback        = {};
         
@@ -140,8 +141,11 @@
               
               var root                        = $(shadow,'#root');
               
+              $(shadow,'#paste').onclick      = btn.paste;
               ui.url                          = $(shadow,'#url');
               ui.url.onkeyup                  = ku.url;
+              
+              $(shadow,'#go').onclick         = btn.go;
               
               ui.iframe                       = $(shadow,'iframe');
               obj.iframe                      = ui.iframe;
@@ -156,6 +160,21 @@
   //:
   
   
+        btn.paste    = async function(){
+        
+              var txt         = await navigator.clipboard.readText();
+              ui.url.value    = txt;
+              
+        }//paste
+        
+        
+        btn.go    = function(){
+        
+              ui.iframe.src   = ui.url.value;
+              
+        }//go
+        
+        
         ku.url    = function(e){
         
               switch(e.key){
