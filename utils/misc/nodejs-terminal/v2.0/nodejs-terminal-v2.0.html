@@ -489,8 +489,12 @@
               }
               
               term.writeln('');
-              term.write.green('installing https-server ...');
-              var s   = spinner();
+              term.write.green('installing https-server ... ');
+              setTimeout(()=>{
+                    var {x,y}   = cursor.xy();
+                    var s       = spinner({x,y});
+                    term.write('\r\n');
+              },50);
               
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
               
@@ -1024,10 +1028,15 @@
                                   
                             }//p3
                             
-                            
-              spawn('node -v',true).then(phase.p1);
-              spawn('npm -v',true).then(phase.p2);
-              setTimeout(()=>webcontainer.spawn('jsh').then(phase.p3),50);
+                                                                                //  setTimeout required for spinner
+              setTimeout(()=>{
+              
+                    webcontainer.spawn('jsh').then(phase.p3)
+                    
+                    spawn('node -v',true).then(phase.p1);
+                    spawn('npm -v',true).then(phase.p2);
+                    
+              },50);
               
               
               
@@ -1145,6 +1154,9 @@
                       
                     }//switch
               });
+              
+              
+              
               
               
         })();
