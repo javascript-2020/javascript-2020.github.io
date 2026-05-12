@@ -295,6 +295,8 @@
       
         var cur         = {};
         
+        var workdirName   = 'user';
+        
         var Terminal;
         var FitAddon;
         var webcontainer;
@@ -827,9 +829,7 @@
               xy        : ()=>{
                                                                                 //  Note: These are 0-indexed, so the top-left is 0,0.
                                                                                 //  ANSI sequences are usually 1-indexed (1,1).
-                                                                                //  Current Column
                                 var x   = term.buffer.active.cursorX;
-                                                                                //  Current Row
                                 var y   = term.buffer.active.cursorY;
                                                                                 //console.log(`cursor is at: ${x}, ${y}`);
                                 return {x,y};
@@ -889,121 +889,48 @@
               
               
               
-/*
-
-              term            = new Terminal({
-              
-                    fontFamily      : 'monospace',
-                    fontSize        : 16,
-                    lineHeight      : 1.0,
-                    
-                    theme           : theme.light,
-                    rendererType    : 'dom',
-                    
-              });
-              
-              
-              term.buffer   = [];
-              term.pause    = false;
-              term.flush    = ()=>{
-              
-                                    term.buffer.forEach(data=>term.write(data));
-                                    term.buffer.length    = 0;
-                                    
-                              }//flush
-              term.resume   = (flush=true)=>{
-              
-                                    if(flush){
-                                          term.flush();
-                                    }
-                                    term.buffer.length    = 0;
-                                    term.pause            = false;
-                                    
-                              }//resume
-              term.write.xy   = (x,y,txt)=>{
-              
-                                      term.write(`${cursor.save}${cursor.to(x,y)}${txt}${cursor.restore}`);
-                                      
-                                }//xy
-                                
-              term.end_of_text    = function(y){
-                                                                                // xterm.js uses 0-based indexing for the buffer,
-                                                                                //  but 1-based for ANSI
-                    var line    = term.buffer.active.getLine(y-1);
-                    if(!line){
-                          return 1;
-                    }
-                    
-                    var last    = 0;
-                    for(var i=term.cols-1;i>=0;i--){
-                    
-                          var cell    = line.getCell(i);
-                                                                                // Check if the cell is not empty/whitespace
-                          if(cell&&cell.getChars().trim()!==''){
-                                last    = i+1;
-                                break;
-                          }
-                          
-                    }//for
-                    return last+1;
-                    
-              }//end_of_text
-              
-              
-              
-              for(let key in colors){
-              
-                    if(key=='reset')continue;
-                    
-                    term.write[key]     = (...args)=>term.write(colors[key]+args.join(' ')+colors.reset);
-                    term.writeln[key]   = (...args)=>term.writeln(colors[key]+args.join(' ')+colors.reset);
-                    
-              }//for
-              
-              
-              //term.writeln('\x1b[1;31m THIS SHOULD BE BOLD RED \x1b[0m');
-              
-              
-              term.parser.registerOscHandler(7, (data) => {
-                                                                                console.log('osc-handler7 :',data);
-*//*
-                    // data will look like: "file://localhost/home/project/src"
-                    try {
-                      const url = new URL(data);
-                      const newCwd = url.pathname;
-                      
-                      console.log('CWD Changed to:', newCwd);
-                      
-                      // You can now update your UI state or breadcrumbs here
-                      updateMyBreadcrumbs(newCwd);
-                    } catch (e) {
-                      return false; // Let xterm handle it if it's malformed
-                    }
-                    return true; // We handled it
-*//*
-
-              });
-              
-              
-              var fitAddon        = new FitAddon();
-              term.loadAddon(fitAddon);
-              term.open(terminal);
-              fitAddon.fit();
-*/
                                                                                 //term.write('booting container ... ');
                                                                                 //var s   = spinner();
-              webcontainer        = await WebContainer.boot();
+              webcontainer        = await WebContainer.boot({workdirName});
               mod.stack.complete;
                                                                                 //s.stop();
                                                                                 //term.writeln.green('ok.');   //24
                                                                                 
                                                                                 
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+              if(0){
+                                                                                term.write('mount fs ... ');
+                    await webcontainer.mount(files);
+                                                                                term.writeln.green('ok');
+              }
+              
+              
+/*
+              webcontainer.on('server-ready',(port,url)=>{
+                                                                                console.log('server-ready',url,port);
+                    //term.writeln('server-ready :'+url+' --- '+port);
+                    
+              });
+*/
+
+
+              webcontainer.on('port',(port,type,url)=>{
+                                                                                console.log(port,type,url);
+                    switch(type){
+                    
+                      case 'open'     : ports.add(port,url);        break;
+                      case 'close'    : ports.remove(port);         break;
+                      
+                    }//switch
+              });
+              
+              
 /*
               var s1;
               var s2;
-              
-              term.writeln('spawn jsh ... ');
-              var s3    = spinner({x:14,y:1});
               
               var phase   = {};
               phase.p1    = result=>{
@@ -1024,159 +951,24 @@
                                   term.write.xy(49,0,str);
                                   
                             }//p2
-              phase.p3    = result=>{
-              
-                                  shell   = result;
-                                  s3.stop();
-                                  term.write.xy(14,1,`${colors.green}ok.${colors.reset}`);
-                                  shell.output.pipeTo(output);
-                                  input   = shell.input.getWriter();
-                                  term.onData(data=>input.write(data));
-                                  //term.resize();
-                                  setTimeout(()=>term.focus(),50);
-                                  
-                            }//p3
                             
                                                                                 //  setTimeout required for spinner
               setTimeout(()=>{
               
-                    webcontainer.spawn('jsh').then(phase.p3)
-                    
-                    setTimeout(()=>{
-                    
-                          term.write.xy(30,0,'node');
-                          s1    = spinner({x:35,y:0});
-                          term.write.xy(45,0,'npm');
-                          s2    = spinner({x:49,y:0});
-                          spawn('node -v',true).then(phase.p1);
-                          spawn('npm -v',true).then(phase.p2);
-                          
-                    },100);
+                    term.write.xy(30,0,'node');
+                    s1    = spinner({x:35,y:0});
+                    term.write.xy(45,0,'npm');
+                    s2    = spinner({x:49,y:0});
+                    spawn('node -v',true).then(phase.p1);
+                    spawn('npm -v',true).then(phase.p2);
                     
               },50);
-              
-              
-              
-              
-              
-              if(0){
-                                                                                term.write('mount fs ... ');
-                    await webcontainer.mount(files);
-                                                                                term.writeln.green('ok');
-              }
-              
-              
-              
-              output    = new WritableStream({
-                    write(data){
-                                                                                //console.log(data);
-                          var str     = data;
-                          str         = str.replaceAll('\r','');
-                          var lines   = str.split('\n');
-                          lines.forEach(line=>{
-                                                                                //console.log('Hex:',[...line].map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(' '));
-                                if(line.startsWith('\x1b[J') && line.indexOf('\x1b[39m')!=-1){
-                                      var i1;
-                                      var i;
-                                      i   = line.indexOf('/');
-                                      if(i!=-1){
-                                            i1    = i;
-                                      }
-                                      i   = line.indexOf('~');
-                                      if(i!=-1){
-                                            i1    = i;
-                                      }
-                                      if(i1!==undefined){
-                                            var i2    = line.indexOf('\x1b[39m');
-                                            if(i1<i2){
-                                                  var dir   = line.slice(i1,i2);
-                                                  if(dir!='/'){
-                                                        dir  += '/';
-                                                  }
-                                                  if(user_dir===undefined){
-                                                        user_dir          = dir.slice(2,-1);
-                                                        shell.user_dir    = user_dir;
-                                                                                console.log('[ user_dir ]',user_dir);
-                                                  }
-                                                  if(dir.indexOf('~')!=-1){
-                                                        dir   = dir.replace('~',`/home`);
-                                                  }
-                                                  
-                                                  if(dir.startsWith(`/home/${user_dir}`)){
-                                                        cwd_abs   = dir;
-                                                        cwd       = dir.slice(user_dir.length+6);
-                                                  }else{
-                                                        cwd_abs   = dir;
-                                                        cwd       = null;
-                                                  }
-                                                  shell.cwd_abs   = cwd_abs;
-                                                  shell.cwd       = cwd;
-                                                                                console.log('[ cwd_abs ]',cwd_abs);
-                                                                                console.log('[     cwd ]',cwd);
-                                            }
-                                    }
-                                }
-                          });
-                          
-                          
-                          if(output.pause){
-                                output.buffer.push(data);
-                          }else{
-                                term.write(data);
-                          }
-                          
-                    }
-              });
-              
-              output.buffer   = [];
-              output.pause    = false;
-              output.flush    = ()=>{
-              
-                                    output.buffer.forEach(data=>term.write(data));
-                                    output.buffer.length    = 0;
-                                    
-                                }//flush
-              output.resume   = (flush=true)=>{
-              
-                                    if(flush){
-                                          output.flush();
-                                    }
-                                    output.buffer.length    = 0;
-                                    output.pause            = false;
-                                    
-                              }//resume
-                              
-                              
-              //term.resize();
-              term.focus();
-              
-              
               
 */
 
 
 
-              webcontainer.on('server-ready',(port,url)=>{
-                                                                                console.log('server-ready',url,port);
-                    //term.writeln('server-ready :'+url+' --- '+port);
-                    
-              });
-              
-              
-              webcontainer.on('port',(port,type,url)=>{
-                                                                                console.log(port,type,url);
-                    switch(type){
-                    
-                      case 'open'     : ports.add(port,url);        break;
-                      case 'close'    : ports.remove(port);         break;
-                      
-                    }//switch
-              });
-              
-              
-              
-              
-              
+
         })();
         
         
