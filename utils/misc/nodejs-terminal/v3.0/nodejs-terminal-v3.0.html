@@ -612,6 +612,11 @@
         
         menu_callback['save-snapshot']    = async function(){
                                                                                 console.log('save-snapshot');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
               var cwd       = tabs.cur.view.terminal.shell.cwd;
               var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
                                                                                 console.log(cwd_abs);
@@ -619,6 +624,8 @@
                     term.writeln.red('can only save snapshot relative to workdir');
                     return;
               }
+              
+              var term    = tabs.cur.view.terminal.term;
               
               term.writeln('');
               term.writeln.green('saving snapshot ...');
@@ -654,6 +661,11 @@
         
         menu_callback['load-snapshot']   = async function(){
                                                                                 console.log('load-snapshot');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
               var cwd   = tabs.cur.view.terminal.shell.cwd;
               
               if(cwd===null){
@@ -664,6 +676,8 @@
                     term.writeln.red('no blob available');
                     return;
               }
+              
+              var term    = tabs.cur.view.terminal.term;
               
               term.writeln('');
               term.writeln.green('loading snapshot ...');
