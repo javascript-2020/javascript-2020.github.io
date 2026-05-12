@@ -484,7 +484,7 @@
               snippet.css.insert_rule([':host {height:100%;}','#root {height:100%}']);
               snippet.editor.css.insert_rule([':host {flex:1}','#root {height:100%}']);
               
-              snippet.ctx     = {snippet,webcontainer,viewport,vm,shell,term,input,output};
+              snippet.ctx     = {snippet,webcontainer,viewport,vm,tabs};
               
               
               var attrs   = {component:'page'};
@@ -545,7 +545,7 @@
         
         menu_callback['https-server']   = async function(){
         
-              var cwd   = tabs.cur.terminal.shell.cwd;
+              var cwd   = tabs.cur.view.terminal.shell.cwd;
               if(cwd===null){
                     term.writeln.red('can only install https-server relative to workdir');
                     return;
@@ -605,8 +605,8 @@
         
         menu_callback['save-snapshot']    = async function(){
                                                                                 console.log('save-snapshot');
-              var cwd       = tabs.cur.terminal.shell.cwd;
-              var cwd_abs   = tabs.cur.terminal.shell.cwd_abs;
+              var cwd       = tabs.cur.view.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
                                                                                 console.log(cwd_abs);
               if(cwd===null){
                     term.writeln.red('can only save snapshot relative to workdir');
@@ -647,7 +647,7 @@
         
         menu_callback['load-snapshot']   = async function(){
                                                                                 console.log('load-snapshot');
-              var cwd   = tabs.cur.terminal.shell.cwd;
+              var cwd   = tabs.cur.view.terminal.shell.cwd;
               
               if(cwd===null){
                     term.writeln.red('can only load snapshot relative to workdir');
