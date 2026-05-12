@@ -170,7 +170,7 @@
     
     
   #hdr
-    {display:flex;align-items:center;position:relative}
+    {display:flex;align-items:center;position:relative;gap:5px}
     
   #file-info
     {display:flex;align-items:center;margin:0 20px;gap:20px;padding:5px 10px;border:1px solid lightgray;border-radius:5px}
@@ -207,7 +207,7 @@
   .m-root
     {position:relative}
     
-  .m-hldr
+  .m-btn
     {display:flex;align-items:center;gap:10px;border:1px solid lightgray;border-radius:5px;padding:2px 10px;cursor:pointer}
     
   .m-icon
@@ -215,7 +215,7 @@
       content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAt1BMVEVHcEwbmPYcgfMchvQbsfkay/wbtvkbnfccefMayfwbmfYch/QchvQbtfkbmfYa1P0ddfIcivQcl/Ycj/Ubp/gcmfYdbPEbrvkazPwcmfYbqfgayfwayPwbv/sbvvobsvkazPwbqvga0fwbvPobtvocjvUbofcbpvccfPMcgPMcgvMdafAdbfEckfUbtvka0PwcfPIaxvsbwfsbvPodb/EcnPYclvYckfUbpvccjPQdd/IbofcbrPiPy8D0AAAAMHRSTlMAA/79/v7+5ycVZ3Y3h0xhu9jp8kFeF9OkVfQOrZi+Mh1z/iUJQ+/dx4fOYq7hybzs5xU1AAABIklEQVQ4y+2Ux3aDMBBFpTR6M92AwYB7S6EG/v+7MsJJnBBKVsnGdwHozT1HQgxC6MrfEkiSM+Y4khSgUxhazLDHWGF4QveAO2gyLnGQ9QS4wcDaXGJYiPGegVnU50UzUvdgTsd7AfrMaEaqXvO+sfAAHP0uzz+SmhCfR7FwB5gdpm+SyoeHEJ5P67o2tbanmRBP5/iSgFkUxaplaisIv3kAu6yqihK/RiIF0ZJtT6NTaZpS9iWwm0D/uXB7kmXZ5LOgN0O7ayvEQ57nKtssCbMqDA5i9+YulLIsVQ5MzKnwqCz6Phev3AIcxhy5K3x/A/DbG2CzIdctP9RS9PrxnTU92KOYll8bZHqs7Wk5AcY9hIx9kuyN3/xuxm5nXA+df+cNJSAgjMbiFSoAAAAASUVORK5CYII=)
     }
   .menu
-    {position:absolute}
+    {position:absolute;padding:10px}
     
     
     
@@ -264,6 +264,9 @@
                         <img id=snippet-console title=snippet-console class=icon>
                   </div>
                   
+                  <div class=spc>
+                  </div>
+                  
                   <div id=more-menu class=m-root>
                         <div class=m-btn>
                               <span>
@@ -271,10 +274,37 @@
                               </span>
                               <img class=m-icon>
                         </div>
-                        <div class=menu style='display:none;left:0px;top:35px;width:300px'>
+                        <div class=menu style='display:none;left:0px;top:35px'>
                               <div id=https-server class=menu-opt>install https-server</div>
                               <div id=save-snapshot class=menu-opt>save snapshot</div>
                               <div id=load-snapshot class=menu-opt>load snapshot</div>
+                        </div>
+                  </div>
+                  
+                  <div id=snapshot-menu class=m-root>
+                        <div class=m-btn>
+                              <span>
+                                    snapshots
+                              </span>
+                              <img class=m-icon>
+                        </div>
+                        <div class=menu style='display:none;left:0px;top:35px;width:300px'>
+                        </div>
+                  </div>
+                  
+                  <div id=links-menu class=m-root>
+                        <div class=m-btn>
+                              <span>
+                                    links
+                              </span>
+                              <img class=m-icon>
+                        </div>
+                        <div class=menu style='display:none;right:0px;top:35px;width:300px'>
+                              <div class=menu-opt>
+                                    <a href='https://webcontainers.io/api' target=_blank>
+                                          webcontainers api
+                                    </a>
+                              </div>
                         </div>
                   </div>
                   
@@ -339,9 +369,14 @@
               await log.initdom();
               
               
-              var hldr                                = $('#more-menu');
-              var card                                = $(hldr,'.menu');
-              hldr.onclick                            = menu.click(card,'both',false,menu_callback.more);
+              var more                                = $('#more-menu');
+              more.onclick                            = menu.click2(more,menu_callback.more);
+              
+              var snapshot                            = $('#snapshot-menu');
+              snapshot.onclick                        = menu.click2(snapshot,menu_callback.snapshot);
+              
+              var links                               = $('#links-menu');
+              links.onclick                           = menu.click2(links,menu_callback.links);
               
               
               $('#ports').onclick                     = btn.ports;
@@ -641,6 +676,14 @@
               await prompt();
               
         }//restore-snapshot
+        
+        
+        menu_callback.snapshot    = function(type,opt){
+        }//snapshot
+        
+        
+        menu_callback.links   = function(type,opt){
+        }//links
         
         
   //:
