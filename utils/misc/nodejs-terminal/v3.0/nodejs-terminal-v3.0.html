@@ -264,14 +264,14 @@
                         <img id=snippet-console title=snippet-console class=icon>
                   </div>
                   
-                  <div class=m-hldr>
+                  <div id=more-menu class=m-hldr>
                         <div class=m-root>
                               <span>
                                     more
                               </span>
                               <img class=m-icon>
                         </div>
-                        <div id=more-menu class='m menu' style='display:none;left:0px;top:35px;width:300px'>
+                        <div class='m menu' style='display:none;left:0px;top:35px;width:300px'>
                               <div id=https-server class=menu-opt>install https-server</div>
                               <div id=save-snapshot class=menu-opt>save snapshot</div>
                               <div id=load-snapshot class=menu-opt>load snapshot</div>
@@ -339,8 +339,9 @@
               await log.initdom();
               
               
-              var card                                = $('#more-menu');
-              $('.m-root').onclick                    = menu.click(card,'both',false,menu_callback.more);
+              var hldr                                = $('#more-menu');
+              var card                                = $(hldr,'.menu');
+              hldr.onclick                            = menu.click(card,'both',false,menu_callback.more);
               
               
               $('#ports').onclick                     = btn.ports;
@@ -492,7 +493,7 @@
                   
               }
               
-              tabs.focus();
+              //tabs.focus();
               
         }//more
         
