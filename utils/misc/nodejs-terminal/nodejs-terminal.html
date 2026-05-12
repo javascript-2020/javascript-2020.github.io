@@ -189,7 +189,7 @@
     
     
   #icons
-    {display:flex;align-items:center;gap:5px;margin-right:20px}
+    {display:flex;align-items:center;gap:5px;margin-right:10px}
     
   .icon
     {width:32px;height:32px;border:1px solid gray;border-radius:3px;box-sizing:border-box;cursor:pointer}
@@ -260,8 +260,10 @@
                         <img id=snippet-console title=snippet-console class=icon>
                   </div>
                   
-                  <div class=spc>
+                  
+                  <div style='width:15px'>
                   </div>
+                  
                   
                   <div id=more-menu class=m-root>
                         <div class=m-btn>
@@ -284,7 +286,8 @@
                               </span>
                               <img class=m-icon>
                         </div>
-                        <div class=menu style='display:none;left:0px;top:35px;width:300px'>
+                        <div class=menu style='display:none;left:0px;top:35px'>
+                              Empty
                         </div>
                   </div>
                   
@@ -295,10 +298,21 @@
                               </span>
                               <img class=m-icon>
                         </div>
-                        <div class=menu style='display:none;right:0px;top:35px;width:300px'>
+                        <div class=menu style='display:none;right:0px;top:35px'>
                               <div class=menu-opt>
                                     <a href='https://webcontainers.io/api' target=_blank>
                                           webcontainers api
+                                    </a>
+                              </div>
+                              <div class=menu-opt style='justify-content:flex-start'>
+                                    <img style='width:20px;height:20px;margin-right:10px' class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADkElEQVR4Ab3V1XLcSBQGYC3z3iwzM5NZ3S0mD4aZGV5gGYeZzRxm5jyCX8DXy8y7yZyoPSWXJ5FZyak69vD/6dcAM52Zs3POzd5OYfu8fvmiu5X/XclwC5lrNb4eYev8HdJfi3YrsGCHDPP6JdALPGg5bkgukFevWrC/U3hvwXZpaNkBFZbsVWAEMCCBt10Ew0Q0l4SynufOa2ntbseCXSVy77zt0tEVh7XyisMq2AHm9EoVQJEHd4tgLv+fluc+nXH43H7x85WHtf/XHNdg1VENxgT0SeBpF4YRrpIAnjYBvB0iuFqFH7Uidk09eEBasPyQ8su6UzqsPaHDZACzusWqFijI1ymC37zd3cYPejrkxyYM9nbxzyzZpwxuOGvA+tM6TBVAj9xqwd1aacHfJcKsHnN7xXJzK7+XfoJsw+fvlPPrTuvljecMmC6ABjaPbqGt0gK9b3avBHP7JZjdLfyhl7jaqnDyCbl1Tp94gYbPFOAq8WDk7VugjzNzQEpzO6sBUXIvF8Gw9qQ+YwA9cj1XacFl04JhAnGYPXAFAAcReDtFRwBGodJCs9VCuzDcgq9LABJjxwJgoEuDnADoWRNRGNWCeZ+aIzR8XICp5h0BaCbAOhW0BXo7DqNxAAEMdCli6X7VEYCa5kZakJKYAqy1B1irpnlHAHKSAy1XaYKEJgKEED36EcTCnbIjACnBAR/DQF/fWntAvAlwdPj8mBAEYpyjH8sZA4QYMUMtgLWXA0rv3IvSDYCSDYDjjYAjLG2BvrAjAG5SgHwtoGwdoEw9rWgYwIcJDXYGEJwI0PoeoFIN4HQDDbeWvqgzgEAFYa4NYMAEdL4DqP1ds35UBSBBAssPqs4CAjYAtvctQIXaqnBrXUXBIQAeB9D/pnXubXfxHmWGgKqtBmhHn70FFWr+twu2VslwjgG40GU/x3TYQk0chdnyOAgzTJ4xAAXQr2yYfZuxG9Ra8xTO1A3ioD1AjBNYtn96ABIgF3AIlxhgrmcmGtJWr6JE4/d2CPq7PhUA/RrmIniQTbAPMVMdVKz9HEfZ/0YD+DAxw+VJAcQU+YZLs5iZybySe+VOlKvbi0OobCHo7/t4AK3I/SsX0QeMk1Pf9u5bKNUwZH05zd8uXwHwdPBltb1pL+kktzJXa1CpZpn5g/WbnudHALP7RHD1oSHXAHmRuSbzCXMjztd2+3vEi95e7ldjV6OfmeZcAuAsEWG+c8BcAAAAAElFTkSuQmCC'>
+                                    <a href='https://nodejs.org/' target=_blank>
+                                          https://nodejs.org/
+                                    </a>
+                              </div>
+                              <div style='padding-left:30px' class=menu-opt>
+                                    <a href='https://nodejs.org/docs/latest/api/fs.html' target=_blank>
+                                          https://nodejs.org/docs/latest/api/fs.html
                                     </a>
                               </div>
                         </div>
@@ -470,7 +484,7 @@
               snippet.css.insert_rule([':host {height:100%;}','#root {height:100%}']);
               snippet.editor.css.insert_rule([':host {flex:1}','#root {height:100%}']);
               
-              snippet.ctx     = {snippet,webcontainer,viewport,vm,shell,term,input,output};
+              snippet.ctx     = {snippet,webcontainer,viewport,vm,tabs};
               
               
               var attrs   = {component:'page'};
@@ -531,17 +545,25 @@
         
         menu_callback['https-server']   = async function(){
         
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var cwd   = tabs.cur.view.terminal.shell.cwd;
               if(cwd===null){
                     term.writeln.red('can only install https-server relative to workdir');
                     return;
               }
               
+              var term    = tabs.cur.view.terminal.term;
+              
               var s;
               term.writeln('');
               term.write.green('installing https-server ... ');
               setTimeout(()=>{
-                    var {x,y}   = cursor.xy();
-                    s       = spinner({x,y});
+                    var {x,y}   = cursor.xy(term);
+                    s           = spinner({term,x,y});
                     term.write('\r\n');
               },50);
               
@@ -583,18 +605,27 @@
               
               s.stop();
               term.write.green('ok.');
-              await prompt();
+              await term.prompt();
               
         }//https-server
         
         
         menu_callback['save-snapshot']    = async function(){
                                                                                 console.log('save-snapshot');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var cwd       = tabs.cur.view.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
                                                                                 console.log(cwd_abs);
               if(cwd===null){
                     term.writeln.red('can only save snapshot relative to workdir');
                     return;
               }
+              
+              var term    = tabs.cur.view.terminal.term;
               
               term.writeln('');
               term.writeln.green('saving snapshot ...');
@@ -623,13 +654,20 @@
               complete.load(file,blob);
               
               term.writeln.green('ok.');
-              await prompt();
+              await term.prompt();
               
         }//take-snapsht
         
         
         menu_callback['load-snapshot']   = async function(){
                                                                                 console.log('load-snapshot');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var cwd   = tabs.cur.view.terminal.shell.cwd;
+              
               if(cwd===null){
                     term.writeln.red('can only load snapshot relative to workdir');
                     return;
@@ -638,6 +676,8 @@
                     term.writeln.red('no blob available');
                     return;
               }
+              
+              var term    = tabs.cur.view.terminal.term;
               
               term.writeln('');
               term.writeln.green('loading snapshot ...');
@@ -669,7 +709,7 @@
               }
               
               term.writeln.green('ok.');
-              await prompt();
+              await term.prompt();
               
         }//restore-snapshot
         
@@ -876,7 +916,7 @@
               restore   : '\x1b[u',
               hide      : '\x1b[?25l',
               show      : '\x1b[?25h',
-              xy        : ()=>{
+              xy        : term=>{
                                                                                 //  Note: These are 0-indexed, so the top-left is 0,0.
                                                                                 //  ANSI sequences are usually 1-indexed (1,1).
                                 var x   = term.buffer.active.cursorX;
@@ -1058,12 +1098,6 @@
         }//spawn
         
         
-        async function prompt(){
-                                                                                console.log('prompt');
-              //await input.write('\u0003'); // Sends Ctrl+C to clear any junk
-              await input.write('\n');     // Sends Enter to get a clean prompt
-              
-        }//prompt
         
         
         function spinner({term,x,y}){
