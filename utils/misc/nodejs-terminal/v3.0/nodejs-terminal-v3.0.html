@@ -545,11 +545,18 @@
         
         menu_callback['https-server']   = async function(){
         
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
               var cwd   = tabs.cur.view.terminal.shell.cwd;
               if(cwd===null){
                     term.writeln.red('can only install https-server relative to workdir');
                     return;
               }
+              
+              var term    = tabs.cur.view.terminal.term;
               
               var s;
               term.writeln('');
