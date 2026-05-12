@@ -68,6 +68,7 @@
         
         var misc;
         var filemod;
+        var tabs;
         var wcfs;
         var ports;
         var log;
@@ -82,19 +83,22 @@
               vm.initmod({mod});
               
               
-              menu    = menumod();
+              menu            = menumod();
               
               mod.base.add({ext,$,datatype,keydown,menu,menumod,debug});
               
               
-              misc      = mod['misc-hdr'];
-              filemod   = mod['file-mod'];
-              wcfs      = mod['webcontainer-fs'];
-              ports     = mod['webcontainer-ports'];
-              log       = mod['log-mod'];
+              misc            = mod['misc-hdr'];
+              filemod         = mod['file-mod'];
+              tabs            = mod['terminal-tabs'];
+              wcfs            = mod['webcontainer-fs'];
+              ports           = mod['webcontainer-ports'];
+              log             = mod['log-mod'];
               
               misc.initmod({ext,$});
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
+              tabs.initmod(mod.base);
+              tabs.initmod({Terminal,FitAddon,webcontainer,theme,spinner});
               wcfs.initmod({ext,$,filemod,menumod,menu,complete,source,log,debug,webcontainer});
               ports.initmod({$,vm});
               log.initmod({ext,$});
@@ -104,6 +108,7 @@
                     vm.init(),
                     misc.init(),
                     filemod.init(),
+                    tabs.init(),
                     wcfs.init(),
                     ports.init(),
                     log.init(),
@@ -177,11 +182,6 @@
       content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAA0lBMVEVHcEwaHzgSFSsKDSQXHDQWGzIXHDIKDyMaHzcBAhEXHDMTFy0WHDMeJj8RFSoQFCcPEyYTGC0RFSkTGC0aHzcmLkcaIDgWGjIWHDIUGC8LDiInMEcXHDQWGzEZHjYZIDYbITkUGzMlLkYrMkoaIjkRFSscITgmMEcbITkpMEgjLEMUGzIlLUUoL0gVGC0VGy4mL0YbITktNUwlLEMXHjYeJDtnanjj4+QhKD9MUGOLjZi7vMJfY3Lt7e04PVBITGDS09ZOU2Xr6+tzdoQ9QlVKTmGtyqSqAAAAMXRSTlMA/FIPzrNWCfcF0ZzLnSJ8cpKMqP3Z8KPEuoGO2L7lNuIWzusfQWSM+/JxLMS3ahq7XSnkAwAAAVBJREFUKM+t0tdywjAQBVBjW7gJ907vooUIFxxKSP3/Xwo2dmZYQvKS+6JyRiPNahnmP8Jd0i9H7loFReYxxrzMF5EV4YolRC/JojwJkq6PewXGdFMkU8DdRq6b9w+n2ZxOHzMTsJaffdqmjXwxT3TADxUL8+Z0mUwA1+2SucH5bsICHosVL4fOTBwD7rolSwt1tHQXgNVOxf01N+iogNetLIs/t6mzchprp9WHNcev+91um0bDVX3U80HNGSE4vbwdjyka5e+ANWUYK3k+7PYHrztpOJl386MGjWMaRbNhXnLjhrXiT5IzRhHVbljVUY/QJMpID+nqDw0jqayBfZNVpbs9JQhgg/01TK2MbVezGvme1Ziyx1wLiSIVbZEQ0u6QcpdW3LawZXimZVqKYiqaDNj3gtDQlTDUQlPTdQxYRG0e8S0c+H4gy8gFfCd/8BdhCEKPCPsRBQAAAABJRU5ErkJggg==);
     }
     
-  #hldr
-    {padding:10px;border:2px solid lightgray;box-sizing:border-box;flex:1;background:hsl(45,86%,98%)}
-    
-  #terminal
-    {height:100%;position:relative;z-index:0}
     
     
   #icons
@@ -264,19 +264,9 @@
                   
             </div>
             
-            <div id=tabs>
-                  <div id=tab-icons>
-                        <img id=tab-remove class=icon>
-                        <img id=tab-add class=icon>
-                  </div>
-                  <div class=tab>
-                  </div>
-            </div>
             
-            <div id=hldr>
-                  <div id=terminal>
-                  </div>
-            </div>
+            <terminal-tabs component=page></terminal-tabs>
+            
             
             <div>
                   <input value=test type=button>
@@ -296,16 +286,11 @@
       
         var cur         = {};
         
-        
+        var Terminal;
+        var FitAddon;
         var webcontainer;
         
-        var term;
-        var shell;
-        var input;
         var output;
-        var user_dir;
-        var cwd_abs;
-        var cwd;
         
         var snap_icon   = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAulBMVEVHcEwcHBwjISH6BwfsIiL7BQURLS39AQEiKSkeHh79DQ1lamr9AABtbW0kJCQeHx/8BASMYGH9AgIlHh7yGxzvIiNtbW1oaGhpaWn5Dw/2DA36Bgb8AwMmJiYeHh70FBRsbGweHh4fHx9rbGxra2v3EBD6CAhoaGj0EBAeHh5paWlub2/aBgbiBgahFBR2FRUcHBwkJCQeHh72DAz6BgZpaWlpaWkjIyPnNTjyFhcfHx8dHR0fHx/+AABW+gdcAAAAPXRSTlMA0miUCcET+xmOTQf+EDq23gL2lB8SMs+rPm+16iOhNky+rW1BX57EUdWJI+PbhsbfTciAyZHAVwYtgex+9GPg0AAAASdJREFUKM+V0wlvgjAYgOGuaIW1pVDuG0HB+9ad/v+/NSDRIStLfBMSmocvTUMKQJU6nr+02h0i0EpmUG6F9l+Z3OK3WG9/DVRmxOh3CRXwyBkyDPoPYxQruIf1aCwDlH3jnmldiVVZPey7jHWa02oIfTLGdrDDtmtPnNS1q1cURXGHJ84Z5y49O5NmqTwyLS8UuAtALyUVMEidxbJM8cJJRdP13rmztJu9RQzwMsf67bg31qExEGTA5k94wXo1FLRaB17F0rU36QnmwyAItaI4ESFrppUEifVx7ONEOlmmP7z2TU8133xPQjFbUx4efdMUczgtrtos8STx3mREqofzp87tc0JGggjhfsUDb7Odvf5ptt14g/slQp1kyO4XqXMF6+ZjtZYfdVZIYl3MQj8AAAAASUVORK5CYII=';
         
@@ -329,6 +314,7 @@
               misc.set.version(version);
               
               await filemod.initdom();
+              await tabs.initdom();
               await wcfs.initdom();
               await ports.initdom();
               await log.initdom();
@@ -343,8 +329,6 @@
               $('#snippet-editor').onclick            = btn['snippet-editor'];
               $('#snippet-console').onclick           = btn['snippet-console'];
               
-              
-              $('#hldr').style.background             = theme.light.background;
               
               
               $('[value=test]').onclick               = btn.test;
@@ -894,8 +878,8 @@
               
               
               
-              
-              
+/*
+
               term            = new Terminal({
               
                     fontFamily      : 'monospace',
@@ -971,7 +955,7 @@
               
               term.parser.registerOscHandler(7, (data) => {
                                                                                 console.log('osc-handler7 :',data);
-                    /*
+*//*
                     // data will look like: "file://localhost/home/project/src"
                     try {
                       const url = new URL(data);
@@ -985,8 +969,8 @@
                       return false; // Let xterm handle it if it's malformed
                     }
                     return true; // We handled it
-                    */
-                    
+*//*
+
               });
               
               
@@ -994,14 +978,16 @@
               term.loadAddon(fitAddon);
               term.open(terminal);
               fitAddon.fit();
-              
-                                                                                term.write('booting container ... ');
-                                                                                var s   = spinner();
+*/
+                                                                                //term.write('booting container ... ');
+                                                                                //var s   = spinner();
               webcontainer        = await WebContainer.boot();
               mod.stack.complete;
-                                                                                s.stop();
-                                                                                term.writeln.green('ok.');   //24
+                                                                                //s.stop();
+                                                                                //term.writeln.green('ok.');   //24
                                                                                 
+                                                                                
+/*
               var s1;
               var s2;
               
@@ -1155,9 +1141,10 @@
               
               
               
-              
-              
-              
+*/
+
+
+
               webcontainer.on('server-ready',(port,url)=>{
                                                                                 console.log('server-ready',url,port);
                     //term.writeln('server-ready :'+url+' --- '+port);
@@ -1219,7 +1206,7 @@
         
         
         async function prompt(){
-          console.log('prompt');
+                                                                                console.log('prompt');
               //await input.write('\u0003'); // Sends Ctrl+C to clear any junk
               await input.write('\n');     // Sends Enter to get a clean prompt
               
