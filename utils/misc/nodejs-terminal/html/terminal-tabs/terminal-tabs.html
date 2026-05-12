@@ -93,6 +93,10 @@
   //:
   
   
+        var cur       = {
+                              view    : null,
+                              index   : null,
+                        };
         var mem       = [];
         
         
@@ -141,6 +145,9 @@
   
   
         btn['tab-remove']   = function(){
+        
+              remove();
+              
         }//tab-remove
         
         
@@ -178,12 +185,35 @@
         obj.remove    = remove;
         
         function remove(){
+        
+              if(!cur.view){
+                    log.red('no current tab');
+                    return;
+              }
+              
+              cur.view.tab.remove();
+              cur.view.terminal.remove();
+              mem.splice(cur.index,1,0);
+              
+              if(mem.length==0){
+                    cur.view    = null;
+                    cur.index   = null;
+                    return;
+              }
+              
+              if(cur.index==mem.length){
+                    cur.index--;
+              }
+              
+              cur.view    = mem[cur.index];
+              show(cur.view);
+              
         }//remove
         
         
         function show(view){
         
-              mem.forEach(view2=>{
+              mem.forEach((view2,index)=>{
               
                     if(view2!==view){
                           view2.tab.classList.remove('active');
@@ -193,6 +223,8 @@
                           view2.tab.classList.remove('inactive');
                           view2.tab.classList.add('active');
                           view2.terminal.show();
+                          cur.view    = view;
+                          cur.index   = index;
                     }
                     
               });
