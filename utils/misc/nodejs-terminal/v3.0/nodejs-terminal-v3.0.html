@@ -79,7 +79,11 @@
   
         async function init(){
         
-        
+              //debugger;
+              //var res   = await fetch('https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css');
+              //var txt   = await res.text();
+              
+              
               vm.initmod({mod});
               
               
@@ -95,10 +99,15 @@
               ports           = mod['webcontainer-ports'];
               log             = mod['log-mod'];
               
+              var link        = $('#xterm-css');
+              var sheet   = link.sheet;
+              var cssText   = Array.from(sheet.cssRules).map(rule=>rule.cssText).join('\n');
+              link          = cssText;
+              
               misc.initmod({ext,$});
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
               tabs.initmod(mod.base);
-              tabs.initmod({Terminal,FitAddon,webcontainer,theme,spinner});
+              tabs.initmod({Terminal,FitAddon,webcontainer,theme,spinner,link});
               wcfs.initmod({ext,$,filemod,menumod,menu,complete,source,log,debug,webcontainer});
               ports.initmod({$,vm});
               log.initmod({ext,$});
@@ -211,7 +220,7 @@
             </style>
             
             
-            <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css' anonymous>
+            <link id=xterm-css rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css' crossorigin=anonymous>
             
             
       </head>
