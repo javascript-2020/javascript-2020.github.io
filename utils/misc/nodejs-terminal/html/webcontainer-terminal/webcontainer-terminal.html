@@ -107,6 +107,8 @@
                                       
                                 }//xy
                                 
+              term.prompt     = prompt;
+              
               term.end_of_text    = function(y){
                                                                                 // xterm.js uses 0-based indexing for the buffer,
                                                                                 //  but 1-based for ANSI
@@ -346,6 +348,16 @@
               term.focus();
               
         }//focus
+        
+        
+        obj.prompt    = promtpt;
+        
+        async function prompt(){
+                                                                                console.log('prompt');
+              //await input.write('\u0003'); // Sends Ctrl+C to clear any junk
+              await input.write('\n');     // Sends Enter to get a clean prompt
+              
+        }//prompt
         
         
   //:
