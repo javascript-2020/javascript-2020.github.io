@@ -47,11 +47,11 @@
             
             <script init>
                                                                                 console.clear();
-                                                                                console.log('nodejs-terminal-v2.0.html');
+                                                                                console.log('nodejs-terminal-v3.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
                                                                                 console.hex=v=>console.log(v,'Hex:',[...v].map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(' '));
-        var version='v2.0';
+        var version='v3.0';
         var df=true;
         
         
@@ -68,7 +68,9 @@
         
         var misc;
         var filemod;
+        var tabs;
         var wcfs;
+        var ports;
         var log;
         
         
@@ -76,24 +78,33 @@
   
   
         async function init(){
-        
-        
+                                                                                debug('init');
+                                                                                
               vm.initmod({mod});
               
               
-              menu    = menumod();
+              menu            = menumod();
               
               mod.base.add({ext,$,datatype,keydown,menu,menumod,debug});
               
               
-              misc      = mod['misc-hdr'];
-              filemod   = mod['file-mod'];
-              wcfs      = mod['webcontainer-fs'];
-              log       = mod['log-mod'];
+              misc            = mod['misc-hdr'];
+              filemod         = mod['file-mod'];
+              tabs            = mod['terminal-tabs'];
+              wcfs            = mod['webcontainer-fs'];
+              ports           = mod['webcontainer-ports'];
+              log             = mod['log-mod'];
+              
+              var link        = $('#xterm-css');
+              var sheet   = link.sheet;
+              var cssText   = Array.from(sheet.cssRules).map(rule=>rule.cssText).join('\n');
+              link          = cssText;
               
               misc.initmod({ext,$});
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
+              tabs.initmod(mod.base,{Terminal,FitAddon,webcontainer,theme,spinner,link,prompt});
               wcfs.initmod({ext,$,filemod,menumod,menu,complete,source,log,debug,webcontainer});
+              ports.initmod({$,vm});
               log.initmod({ext,$});
               
               
@@ -101,7 +112,9 @@
                     vm.init(),
                     misc.init(),
                     filemod.init(),
+                    tabs.init(),
                     wcfs.init(),
+                    ports.init(),
                     log.init(),
               ]);
               
@@ -127,7 +140,7 @@
               'js/dom/keydown/keydown.js',
               'js/debug/debug.js',
               'js/string/hs.js',
-              'js/dom/viewport-manager/viewport-manager.js.api',
+              'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
         );
         [$,datatype,menumod,keydown,debug,hs,vm]   = await promise;
         
@@ -153,7 +166,7 @@
     
     
   #hdr
-    {display:flex;align-items:center;position:relative}
+    {display:flex;align-items:center;position:relative;gap:5px}
     
   #file-info
     {display:flex;align-items:center;margin:0 20px;gap:20px;padding:5px 10px;border:1px solid lightgray;border-radius:5px}
@@ -173,11 +186,6 @@
       content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAA0lBMVEVHcEwaHzgSFSsKDSQXHDQWGzIXHDIKDyMaHzcBAhEXHDMTFy0WHDMeJj8RFSoQFCcPEyYTGC0RFSkTGC0aHzcmLkcaIDgWGjIWHDIUGC8LDiInMEcXHDQWGzEZHjYZIDYbITkUGzMlLkYrMkoaIjkRFSscITgmMEcbITkpMEgjLEMUGzIlLUUoL0gVGC0VGy4mL0YbITktNUwlLEMXHjYeJDtnanjj4+QhKD9MUGOLjZi7vMJfY3Lt7e04PVBITGDS09ZOU2Xr6+tzdoQ9QlVKTmGtyqSqAAAAMXRSTlMA/FIPzrNWCfcF0ZzLnSJ8cpKMqP3Z8KPEuoGO2L7lNuIWzusfQWSM+/JxLMS3ahq7XSnkAwAAAVBJREFUKM+t0tdywjAQBVBjW7gJ907vooUIFxxKSP3/Xwo2dmZYQvKS+6JyRiPNahnmP8Jd0i9H7loFReYxxrzMF5EV4YolRC/JojwJkq6PewXGdFMkU8DdRq6b9w+n2ZxOHzMTsJaffdqmjXwxT3TADxUL8+Z0mUwA1+2SucH5bsICHosVL4fOTBwD7rolSwt1tHQXgNVOxf01N+iogNetLIs/t6mzchprp9WHNcev+91um0bDVX3U80HNGSE4vbwdjyka5e+ANWUYK3k+7PYHrztpOJl386MGjWMaRbNhXnLjhrXiT5IzRhHVbljVUY/QJMpID+nqDw0jqayBfZNVpbs9JQhgg/01TK2MbVezGvme1Ziyx1wLiSIVbZEQ0u6QcpdW3LawZXimZVqKYiqaDNj3gtDQlTDUQlPTdQxYRG0e8S0c+H4gy8gFfCd/8BdhCEKPCPsRBQAAAABJRU5ErkJggg==);
     }
     
-  #hldr
-    {padding:10px;border:2px solid lightgray;box-sizing:border-box;flex:1;background:hsl(45,86%,98%)}
-    
-  #terminal
-    {height:100%;position:relative;z-index:0}
     
     
   #icons
@@ -186,16 +194,26 @@
   .icon
     {width:32px;height:32px;border:1px solid gray;border-radius:3px;box-sizing:border-box;cursor:pointer}
     
+  #ports
+    {content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAACN1BMVEVHcEwHI1xAXInc8vmcutHX6/PQ7PcMJ17R7PfZ8Pcba5kLKGAXLl0NHEXS7fbT7faVtM0iP3IvTHwHGVGGor8UMGcHGVkiN2AMJ19jgKTT7fbS7PYMJ1/S7fgfg6wOKWANLGOuy97O6PTC2ujS7ffU7/jR7PfQ7PcDH1l6l7YaPXIkPnEGH1oXL13b6+3S7PbR7PdQa5UbcZ6LqcUEDUbQ7PfV7/lki64nRHZ7nryDoL0MJ17Q7PcOKF5ykLHO6vXR7fiUscpnhKgGIlvT7vhhfqMgPXHS7fg5V4Y1UoFmfJ8TN20fPnEMKF45Un/M6PROa5QQKVzc7PQlNWVFYo6SQ0lEbZc8WocCFVZkfaE0UX9ZWVY0QVubgk/Q7PfR7PbR7PbR7PbS7vnS7PbS7PasyNvS7PazytwLJ17L5vLR7PbU7/kigKkYRnkgfKUdbJkca5c0a5cQPnONqcMRK2Ecbpp9mLYPLGSyzd/S7PbT7vhWc5pvjK7S7fgHJFwQLmYpRnhGYo3M6PQxTn+EepFifaFFUnv/4tiNmrWivtRuZlOZo7dnhKhPYopYTW5vhKU0QVt0aVKRobv/9e53iKj///////9DWYT////Q7PfT7/rS7vnR7fi82OjU8PrT7vmxzuC00OLQ6/bN6fUnm7/9wEPL6PO31OUsaJXF4u+AclIll7wbX5BznLwcdqJhhamPrshUgKa/2+q51eWoxNmSfU/zukTKoElNeKBZkbTK5/PB3ey+mUt75vObAAAAmXRSTlMArJgV/gXomtUJ/rxqAiAb/cbKEfi5H5TF0CkjNrX6cbL+TBCWaMT6rvPLVUSTAk+wGf37CuBV/cn+8YbJTvCS8/XqtJvp2/nxyze90j6V59h+Y4v3Nv3PGcaGxW7+61yNeftGMOA6U1/Yc37+0ejLyu+lxYrQwM2sO63f7OSp4tbU3+ud06ZKnPzEgfbIb7237/h9haiwXOQ3QIpQAAACOElEQVQoz63TVVcbURQF4Axxd4O4hwQvUIq7u1vd3T2l7u4nM0mTEIeiBdq0P66ZyIKUPrIf9zdr7px77xAIOxChQiFhEwhkepHC3i38V9nqyuPUjrL9haZL1GqqbRuz+lnSIwcBnPWX1ZVXT3EzeddFDfUMyQnwrSKX2lnuqzqUyefOnj/Nw/m76orq1yxQ9m3lYxdUfsZSghn+heVZgL0Fm5p94ufC3Dz+cmfJvJ9RjgEALSet+QZnRfFc2BVvUU/Yz8BXAajNT/FhCqoNFy/68DK2zBjBnwNwZKf4AICvpkuL4iX6I1fkRuPB4GRSycr4mnt2u+KtE4uzNeSNJxQsJCeYSEswqaTGSop4Xw2Ov3+TNTHxWEQjJjjHAeAWXeNrLBZx38vXH75+xvvhR72c5FgUgGBzIyLou9eJyD5+GvgiZUkIQnlvcjROKaA8saYhFIuQRmW2jv53f6bfdgvl95M7r6+C2C2kxeMGzP2sy86aXg8ENibH5CZ68tMN2Eo70uLFB4sN2ac2AoHA+nOJvDY1d0GrS4DwPTj7RmxTa9FodG1SMq5Lsd4UGb3DrHcDYL8fPH0hzcvLk7LGevTpTS8z30aYbSG3M2hlPnyS7IbV7DSTDR4BImsT8ZrFTFlPViKD1ZsnSrxJEiAWphhpnFlcdeG5XsTech+ITdqGdj7/7tBSEMUwrLWJmHnb6EbaisezGkscNW2Avu2qc41KR53ZXFeqNHL/+y/QOTd0uqMcMmGn8hdpQsEZmw2sUgAAAABJRU5ErkJggg==);
+    }
     
     
-  #more-menu-click
+    
+  .m-root
+    {position:relative}
+    
+  .m-btn
     {display:flex;align-items:center;gap:10px;border:1px solid lightgray;border-radius:5px;padding:2px 10px;cursor:pointer}
-  #more-menu-icon
+    
+  .m-icon
     {width:15px;height:24px;border:1px solid gray;padding:2px;background:buttonface;box-sizing:border-box;cursor:pointer;border-radius:3px;
       content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAt1BMVEVHcEwbmPYcgfMchvQbsfkay/wbtvkbnfccefMayfwbmfYch/QchvQbtfkbmfYa1P0ddfIcivQcl/Ycj/Ubp/gcmfYdbPEbrvkazPwcmfYbqfgayfwayPwbv/sbvvobsvkazPwbqvga0fwbvPobtvocjvUbofcbpvccfPMcgPMcgvMdafAdbfEckfUbtvka0PwcfPIaxvsbwfsbvPodb/EcnPYclvYckfUbpvccjPQdd/IbofcbrPiPy8D0AAAAMHRSTlMAA/79/v7+5ycVZ3Y3h0xhu9jp8kFeF9OkVfQOrZi+Mh1z/iUJQ+/dx4fOYq7hybzs5xU1AAABIklEQVQ4y+2Ux3aDMBBFpTR6M92AwYB7S6EG/v+7MsJJnBBKVsnGdwHozT1HQgxC6MrfEkiSM+Y4khSgUxhazLDHWGF4QveAO2gyLnGQ9QS4wcDaXGJYiPGegVnU50UzUvdgTsd7AfrMaEaqXvO+sfAAHP0uzz+SmhCfR7FwB5gdpm+SyoeHEJ5P67o2tbanmRBP5/iSgFkUxaplaisIv3kAu6yqihK/RiIF0ZJtT6NTaZpS9iWwm0D/uXB7kmXZ5LOgN0O7ayvEQ57nKtssCbMqDA5i9+YulLIsVQ5MzKnwqCz6Phev3AIcxhy5K3x/A/DbG2CzIdctP9RS9PrxnTU92KOYll8bZHqs7Wk5AcY9hIx9kuyN3/xuxm5nXA+df+cNJSAgjMbiFSoAAAAASUVORK5CYII=)
     }
   .menu
-    {position:absolute;left:600px;top:35px;width:300px;}
+    {position:absolute;padding:10px}
+    
+    
     
     
   .spc
@@ -204,7 +222,7 @@
             </style>
             
             
-            <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css' anonymous>
+            <link id=xterm-css rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css' crossorigin=anonymous>
             
             
       </head>
@@ -215,8 +233,8 @@
       
             <misc-hdr component=grp>
                   <img slot=title class=title src='images/nodejs-terminal.png' style='top:-25px;height:80px' alt='Node.js Terminal'>
-                  <time slot=date datetime=2026-05-09>
-                        09 May 2026
+                  <time slot=date datetime=2026-05-12>
+                        12 May 2026
                   </time>
             </misc-hdr>
             
@@ -236,34 +254,70 @@
                   </div>
                   
                   <div id=icons>
+                        <img id=ports title=ports class=icon>
                         <img id=niframe title=iframe class=icon>
                         <img id=snippet-editor title=editor class=icon>
                         <img id=snippet-console title=snippet-console class=icon>
                   </div>
                   
-                  <div id=more-menu-click>
-                        <span>
-                              more
-                        </span>
-                        <img id=more-menu-icon>
+                  <div class=spc>
                   </div>
-                  <div id=more-menu class=menu style='display:none'>
-                        <div id=https-server class=menu-opt>install https-server</div>
-                        <div id=save-snapshot class=menu-opt>save snapshot</div>
-                        <div id=load-snapshot class=menu-opt>load snapshot</div>
+                  
+                  <div id=more-menu class=m-root>
+                        <div class=m-btn>
+                              <span>
+                                    more
+                              </span>
+                              <img class=m-icon>
+                        </div>
+                        <div class=menu style='display:none;left:0px;top:35px'>
+                              <div id=https-server class=menu-opt>install https-server</div>
+                              <div id=save-snapshot class=menu-opt>save snapshot</div>
+                              <div id=load-snapshot class=menu-opt>load snapshot</div>
+                        </div>
+                  </div>
+                  
+                  <div id=snapshot-menu class=m-root>
+                        <div class=m-btn>
+                              <span>
+                                    snapshots
+                              </span>
+                              <img class=m-icon>
+                        </div>
+                        <div class=menu style='display:none;left:0px;top:35px;width:300px'>
+                        </div>
+                  </div>
+                  
+                  <div id=links-menu class=m-root>
+                        <div class=m-btn>
+                              <span>
+                                    links
+                              </span>
+                              <img class=m-icon>
+                        </div>
+                        <div class=menu style='display:none;right:0px;top:35px;width:300px'>
+                              <div class=menu-opt>
+                                    <a href='https://webcontainers.io/api' target=_blank>
+                                          webcontainers api
+                                    </a>
+                              </div>
+                        </div>
                   </div>
                   
                   
             </div>
             
-            <div id=hldr>
-                  <div id=terminal>
-                  </div>
-            </div>
+            
+            <terminal-tabs component=page></terminal-tabs>
+            
             
             <div>
                   <input value=test type=button>
             </div>
+            
+            
+            
+            <webcontainer-ports component=page></webcontainer-ports>
             
             <log-mod component></log-mod>
             
@@ -275,16 +329,13 @@
       
         var cur         = {};
         
+        var workdirName   = 'user';
         
+        var Terminal;
+        var FitAddon;
         var webcontainer;
         
-        var term;
-        var shell;
-        var input;
         var output;
-        var user_dir;
-        var cwd_abs;
-        var cwd;
         
         var snap_icon   = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAulBMVEVHcEwcHBwjISH6BwfsIiL7BQURLS39AQEiKSkeHh79DQ1lamr9AABtbW0kJCQeHx/8BASMYGH9AgIlHh7yGxzvIiNtbW1oaGhpaWn5Dw/2DA36Bgb8AwMmJiYeHh70FBRsbGweHh4fHx9rbGxra2v3EBD6CAhoaGj0EBAeHh5paWlub2/aBgbiBgahFBR2FRUcHBwkJCQeHh72DAz6BgZpaWlpaWkjIyPnNTjyFhcfHx8dHR0fHx/+AABW+gdcAAAAPXRSTlMA0miUCcET+xmOTQf+EDq23gL2lB8SMs+rPm+16iOhNky+rW1BX57EUdWJI+PbhsbfTciAyZHAVwYtgex+9GPg0AAAASdJREFUKM+V0wlvgjAYgOGuaIW1pVDuG0HB+9ad/v+/NSDRIStLfBMSmocvTUMKQJU6nr+02h0i0EpmUG6F9l+Z3OK3WG9/DVRmxOh3CRXwyBkyDPoPYxQruIf1aCwDlH3jnmldiVVZPey7jHWa02oIfTLGdrDDtmtPnNS1q1cURXGHJ84Z5y49O5NmqTwyLS8UuAtALyUVMEidxbJM8cJJRdP13rmztJu9RQzwMsf67bg31qExEGTA5k94wXo1FLRaB17F0rU36QnmwyAItaI4ESFrppUEifVx7ONEOlmmP7z2TU8133xPQjFbUx4efdMUczgtrtos8STx3mREqofzp87tc0JGggjhfsUDb7Odvf5ptt14g/slQp1kyO4XqXMF6+ZjtZYfdVZIYl3MQj8AAAAASUVORK5CYII=';
         
@@ -300,31 +351,41 @@
         
   //:
   
-        function initdom(){
-        
-              vm.initdom();
+        async function initdom(){
+                                                                                debug('initdom');
+              await vm.initdom();
               
-              misc.initdom();
+              await misc.initdom();
               misc.set.version(version);
               
-              filemod.initdom();
-              wcfs.initdom();
+              await filemod.initdom();
+              await tabs.initdom();
+              await wcfs.initdom();
+              await ports.initdom();
+              await log.initdom();
               
-              //menu.add.style();
-              var card                                = $('#more-menu');
-              $('#more-menu-click').onclick           = menu.click(card,'both',false,menu_callback.more);
+              
+              var more                                = $('#more-menu');
+              more.onclick                            = menu.click2(more,menu_callback.more);
+              
+              var snapshot                            = $('#snapshot-menu');
+              snapshot.onclick                        = menu.click2(snapshot,menu_callback.snapshot);
+              
+              var links                               = $('#links-menu');
+              links.onclick                           = menu.click2(links,menu_callback.links);
               
               
+              $('#ports').onclick                     = btn.ports;
               $('#niframe').onclick                   = btn.niframe;
               $('#snippet-editor').onclick            = btn['snippet-editor'];
               $('#snippet-console').onclick           = btn['snippet-console'];
               
-              $('#hldr').style.background             = theme.light.background;
+              
+              tabs.add();
               
               
               $('[value=test]').onclick               = btn.test;
               
-              log.initdom();
               
               blank                                   = $('#file-info img').src;
               
@@ -338,6 +399,19 @@
   //:
   
   
+  
+  
+        btn.ports   = async function(){
+                                                                                //console.log(ports.viewport.status);
+              if(ports.viewport.status==='hidden'){
+                    ports.show();
+              }else{
+                    ports.hide();
+              }
+              
+        }//ports
+        
+        
         btn.niframe   = async function(){
         
               var node    = document.createElement('webcontainer-iframe');
@@ -347,7 +421,7 @@
               var wciframe    = mod2['webcontainer-iframe'];
               wciframe.initmod({vm});
               await mod2.auto();
-              wciframe.viewport.pos({x:200,y:200});
+              wciframe.viewport.pos({x:200,y:200,w:1100,h:500});
               return wciframe;
               
         }//niframe
@@ -389,7 +463,7 @@
               var viewport    = await vm.new();
               viewport.pos({x:250,y:200,w:850,h:1100});
               
-              var attrs     = {component:true,'v2.0':true,'web-editor':'fullsize=false',exportparts:"root: inner-label"};
+              var attrs     = {component:true,'v2.0':true,'web-editor':'fullsize=false',exportparts:'root:inner-label'};
               var opts      = {par:viewport.body};
               var snippet   = await mod.component('snippet-console',attrs,opts);
               
@@ -450,6 +524,8 @@
                   
               }
               
+              //tabs.focus();
+              
         }//more
         
         
@@ -460,9 +536,14 @@
                     return;
               }
               
+              var s;
               term.writeln('');
-              term.write.green('installing https-server ...');
-              var s   = spinner();
+              term.write.green('installing https-server ... ');
+              setTimeout(()=>{
+                    var {x,y}   = cursor.xy();
+                    s       = spinner({x,y});
+                    term.write('\r\n');
+              },50);
               
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
               
@@ -591,6 +672,14 @@
               await prompt();
               
         }//restore-snapshot
+        
+        
+        menu_callback.snapshot    = function(type,opt){
+        }//snapshot
+        
+        
+        menu_callback.links   = function(type,opt){
+        }//links
         
         
   //:
@@ -790,11 +879,9 @@
               xy        : ()=>{
                                                                                 //  Note: These are 0-indexed, so the top-left is 0,0.
                                                                                 //  ANSI sequences are usually 1-indexed (1,1).
-                                                                                //  Current Column
                                 var x   = term.buffer.active.cursorX;
-                                                                                //  Current Row
                                 var y   = term.buffer.active.cursorY;
-                                                                                console.log(`cursor is at: ${x}, ${y}`);
+                                                                                //console.log(`cursor is at: ${x}, ${y}`);
                                 return {x,y};
                                 
                           },//xy
@@ -844,132 +931,58 @@
         
               mod.stack.add;
               
-              var [{Terminal},{FitAddon},{WebContainer}]    = await Promise.all([
+              [{Terminal},{FitAddon},{WebContainer}]    = await Promise.all([
                     import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm'),
                     import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'),
                     import('https://cdn.jsdelivr.net/npm/@webcontainer/api/+esm')
               ]);
               
-              term            = new Terminal({
-              
-                    fontFamily      : 'monospace',
-                    fontSize        : 16,
-                    lineHeight      : 1.0,
-                    
-                    theme           : theme.light,
-                    rendererType    : 'dom',
-                    
-              });
               
               
-              term.buffer   = [];
-              term.pause    = false;
-              term.flush    = ()=>{
+                                                                                //term.write('booting container ... ');
+                                                                                //var s   = spinner();
+              webcontainer        = await WebContainer.boot({workdirName});
+              mod.stack.complete;
+                                                                                //s.stop();
+                                                                                //term.writeln.green('ok.');   //24
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+              if(0){
+                                                                                term.write('mount fs ... ');
+                    await webcontainer.mount(files);
+                                                                                term.writeln.green('ok');
+              }
               
-                                    term.buffer.forEach(data=>term.write(data));
-                                    term.buffer.length    = 0;
-                                    
-                              }//flush
-              term.resume   = (flush=true)=>{
-              
-                                    if(flush){
-                                          term.flush();
-                                    }
-                                    term.buffer.length    = 0;
-                                    term.pause            = false;
-                                    
-                              }//resume
-              term.write.xy   = (x,y,txt)=>{
-              
-                                      term.write(`${cursor.save}${cursor.to(x,y)}${txt}${cursor.restore}`);
-                                      
-                                }//xy
-                                
-              term.end_of_text    = function(y){
-                                                                                // xterm.js uses 0-based indexing for the buffer,
-                                                                                //  but 1-based for ANSI
-                    var line    = term.buffer.active.getLine(y-1);
-                    if(!line){
-                          return 1;
-                    }
-                    
-                    var last    = 0;
-                    for(var i=term.cols-1;i>=0;i--){
-                    
-                          var cell    = line.getCell(i);
-                                                                                // Check if the cell is not empty/whitespace
-                          if(cell&&cell.getChars().trim()!==''){
-                                last    = i+1;
-                                break;
-                          }
-                          
-                    }//for
-                    return last+1;
-                    
-              }//end_of_text
-              
-              
-              
-              for(let key in colors){
-              
-                    if(key=='reset')continue;
-                    
-                    term.write[key]     = (...args)=>term.write(colors[key]+args.join(' ')+colors.reset);
-                    term.writeln[key]   = (...args)=>term.writeln(colors[key]+args.join(' ')+colors.reset);
-                    
-              }//for
-              
-              
-              //term.writeln('\x1b[1;31m THIS SHOULD BE BOLD RED \x1b[0m');
-              
-              
-              term.parser.registerOscHandler(7, (data) => {
-                                                                                console.log('osc-handler7 :',data);
-                    /*
-                    // data will look like: "file://localhost/home/project/src"
-                    try {
-                      const url = new URL(data);
-                      const newCwd = url.pathname;
-                      
-                      console.log('CWD Changed to:', newCwd);
-                      
-                      // You can now update your UI state or breadcrumbs here
-                      updateMyBreadcrumbs(newCwd);
-                    } catch (e) {
-                      return false; // Let xterm handle it if it's malformed
-                    }
-                    return true; // We handled it
-                    */
-                    
-              });
               
 /*
-[J~/rt4gcbtwdausp1nng6uyw4vpasf83c-wlvi
-[1G[0J❯ [3G
-[?2004h
+              webcontainer.on('server-ready',(port,url)=>{
+                                                                                console.log('server-ready',url,port);
+                    //term.writeln('server-ready :'+url+' --- '+port);
+                    
+              });
 */
 
-              var fitAddon        = new FitAddon();
-              term.loadAddon(fitAddon);
-              term.open(terminal);
-              fitAddon.fit();
+
+              webcontainer.on('port',(port,type,url)=>{
+                                                                                console.log(port,type,url);
+                    switch(type){
+                    
+                      case 'open'     : ports.add(port,url);        break;
+                      case 'close'    : ports.remove(port);         break;
+                      
+                    }//switch
+              });
               
-                                                                                term.write('booting container ... ');
-                                                                                var s   = spinner();
-              webcontainer        = await WebContainer.boot();
-              mod.stack.complete;
-                                                                                s.stop();
-                                                                                term.writeln.green('ok.');   //24
-                                                                                
-              term.write.xy(30,0,'node');
-              var s1    = spinner({x:35,y:0});
-              term.write.xy(45,0,'npm');
-              var s2    = spinner({x:49,y:0});
-              term.writeln('spawn jsh ... ');
-              var s3    = spinner({x:14,y:1});
+              
+/*
+              var s1;
+              var s2;
               
               var phase   = {};
-              phase.ct    = 1;
               phase.p1    = result=>{
               
                                   s1.stop();
@@ -988,136 +1001,24 @@
                                   term.write.xy(49,0,str);
                                   
                             }//p2
-              phase.p3    = result=>{
-              
-                                  shell   = result;
-                                  s3.stop();
-                                  term.write.xy(14,1,`${colors.green}ok.${colors.reset}`);
-                                  shell.output.pipeTo(output);
-                                  input   = shell.input.getWriter();
-                                  term.onData(data=>input.write(data));
-                                  //term.resize();
-                                  setTimeout(()=>term.focus(),50);
-                                  
-                            }//p3
                             
-                            
-              spawn('node -v',true).then(phase.p1);
-              spawn('npm -v',true).then(phase.p2);
-              setTimeout(()=>webcontainer.spawn('jsh').then(phase.p3),50);
+                                                                                //  setTimeout required for spinner
+              setTimeout(()=>{
               
-              
-              
-              
-              
-              if(0){
-                                                                                term.write('mount fs ... ');
-                    await webcontainer.mount(files);
-                                                                                term.writeln.green('ok');
-              }
-              
-              
-              
-              output    = new WritableStream({
-                    write(data){
-                                                                                //console.log(data);
-                          var str     = data;
-                          str         = str.replaceAll('\r','');
-                          var lines   = str.split('\n');
-                          lines.forEach(line=>{
-                                                                                //console.log('Hex:',[...line].map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(' '));
-                                if(line.startsWith('\x1b[J') && line.indexOf('\x1b[39m')!=-1){
-                                      var i1;
-                                      var i;
-                                      i   = line.indexOf('/');
-                                      if(i!=-1){
-                                            i1    = i;
-                                      }
-                                      i   = line.indexOf('~');
-                                      if(i!=-1){
-                                            i1    = i;
-                                      }
-                                      if(i1!==undefined){
-                                            var i2    = line.indexOf('\x1b[39m');
-                                            if(i1<i2){
-                                                  var dir   = line.slice(i1,i2);
-                                                  if(dir!='/'){
-                                                        dir  += '/';
-                                                  }
-                                                  if(user_dir===undefined){
-                                                        user_dir          = dir.slice(2,-1);
-                                                        shell.user_dir    = user_dir;
-                                                                                console.log('[ user_dir ]',user_dir);
-                                                  }
-                                                  if(dir.indexOf('~')!=-1){
-                                                        dir   = dir.replace('~',`/home`);
-                                                  }
-                                                  
-                                                  if(dir.startsWith(`/home/${user_dir}`)){
-                                                        cwd_abs   = dir;
-                                                        cwd       = dir.slice(user_dir.length+6);
-                                                  }else{
-                                                        cwd_abs   = dir;
-                                                        cwd       = null;
-                                                  }
-                                                  shell.cwd_abs   = cwd_abs;
-                                                  shell.cwd       = cwd;
-                                                                                console.log('[ cwd_abs ]',cwd_abs);
-                                                                                console.log('[     cwd ]',cwd);
-                                            }
-                                    }
-                                }
-                          });
-                          
-                          
-                          if(output.pause){
-                                output.buffer.push(data);
-                          }else{
-                                term.write(data);
-                          }
-                          
-                    }
-              });
-              
-              output.buffer   = [];
-              output.pause    = false;
-              output.flush    = ()=>{
-              
-                                    output.buffer.forEach(data=>term.write(data));
-                                    output.buffer.length    = 0;
-                                    
-                              }//flush
-              output.resume   = (flush=true)=>{
-              
-                                    if(flush){
-                                          output.flush();
-                                    }
-                                    output.buffer.length    = 0;
-                                    output.pause            = false;
-                                    
-                              }//resume
-                              
-                              
-              //term.resize();
-              term.focus();
-              
-              
-              
-              
-              
-              
-              webcontainer.on('server-ready',(port,url)=>{
-                                                                                console.log('server-ready',url,port);
-                    term.writeln('server-ready :'+url+' --- '+port);
+                    term.write.xy(30,0,'node');
+                    s1    = spinner({x:35,y:0});
+                    term.write.xy(45,0,'npm');
+                    s2    = spinner({x:49,y:0});
+                    spawn('node -v',true).then(phase.p1);
+                    spawn('npm -v',true).then(phase.p2);
                     
-              });
-              webcontainer.on('port',(port,type,url)=>{
-                                                                                console.log(port,type,url)
-                    term.writeln('port :'+type+' --- '+url+' --- '+port);
-                    
-              });
+              },50);
               
-              
+*/
+
+
+
+
         })();
         
         
@@ -1158,14 +1059,14 @@
         
         
         async function prompt(){
-          console.log('prompt');
+                                                                                console.log('prompt');
               //await input.write('\u0003'); // Sends Ctrl+C to clear any junk
               await input.write('\n');     // Sends Enter to get a clean prompt
               
         }//prompt
         
         
-        function spinner({x,y}={}){
+        function spinner({term,x,y}){
         
               var spinner     = {};
               spinner.timer   = null;
