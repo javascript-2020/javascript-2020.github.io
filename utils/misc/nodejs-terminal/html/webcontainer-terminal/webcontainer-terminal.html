@@ -52,7 +52,7 @@
         var fitaddon;
         
         var shell;
-        
+        obj.shell         = null;
         var input;
         var output;
         
@@ -213,7 +213,9 @@
               
               function complete(result){
               
-                    shell   = result;
+                    shell       = result;
+                    obj.shell   = shell;
+                    
                     s3.stop();
                     term.write.xy(14,0,`${colors.green}ok.${colors.reset}`);
                     shell.output.pipeTo(output);
