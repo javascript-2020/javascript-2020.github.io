@@ -545,6 +545,7 @@
         
         menu_callback['https-server']   = async function(){
         
+              var cwd   = tabs.cur.terminal.shell.cwd;
               if(cwd===null){
                     term.writeln.red('can only install https-server relative to workdir');
                     return;
@@ -555,7 +556,7 @@
               term.write.green('installing https-server ... ');
               setTimeout(()=>{
                     var {x,y}   = cursor.xy();
-                    s       = spinner({x,y});
+                    s           = spinner({x,y});
                     term.write('\r\n');
               },50);
               
@@ -604,6 +605,8 @@
         
         menu_callback['save-snapshot']    = async function(){
                                                                                 console.log('save-snapshot');
+              var cwd       = tabs.cur.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.terminal.shell.cwd_abs;
                                                                                 console.log(cwd_abs);
               if(cwd===null){
                     term.writeln.red('can only save snapshot relative to workdir');
@@ -644,6 +647,8 @@
         
         menu_callback['load-snapshot']   = async function(){
                                                                                 console.log('load-snapshot');
+              var cwd   = tabs.cur.terminal.shell.cwd;
+              
               if(cwd===null){
                     term.writeln.red('can only load snapshot relative to workdir');
                     return;
