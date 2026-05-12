@@ -147,8 +147,10 @@
               var ntab        = tab.cloneNode(true);
               tabs.append(ntab);
               
-              var initmod     = {Terminal,webcontainer,FitAddon,spinner,theme,tab:ntab};
-              var terminal    = await mod.component('webcontainer-terminal',{component:'page'},{par:hldr,initmod});
+              var terminal    = await mod.component('webcontainer-terminal',{component:'page'},{par:hldr,auto:false});
+              terminal.initmod({Terminal,webcontainer,FitAddon,spinner,theme,tab:ntab});
+              await terminal.init();
+              await terminal.initdom();
               
               var view        = {tab:ntab,terminal};
               mem.push(view);
