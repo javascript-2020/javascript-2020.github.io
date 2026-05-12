@@ -6,7 +6,6 @@
             
             </style>
             
-            <link rel=stylesheet href='https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css' anonymous>
             
             <div id=terminal>
             </div>
@@ -24,7 +23,7 @@
   
         var df=true,did='webcontainer-terminal';
         
-        var Terminal,webcontainer,FitAddon,spinner,theme,tab;
+        var Terminal,webcontainer,FitAddon,spinner,theme,tab,link;
         
         obj.initmod   = function(params){
         
@@ -35,6 +34,7 @@
               spinner         = mod.rd(params,'spinner',spinner);
               theme           = mod.rd(params,'theme',theme);
               tab             = mod.rd(params,'tab',tab);
+              link            = mod.rd(params,'link',link);
               
         }//initmod
         
@@ -168,6 +168,9 @@
         obj.initdom   = async function(){debugger;
         
               shadow                  = host.shadowRoot;
+              
+              var style               = document.createElement('style');
+              style.TextContent       = link;
               
               terminal                = $(shadow,'#terminal');
               
