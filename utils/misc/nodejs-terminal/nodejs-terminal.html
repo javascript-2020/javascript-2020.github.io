@@ -67,6 +67,7 @@
         var menu;
         
         var misc;
+        var help;
         var filemod;
         var tabs;
         var wcfs;
@@ -85,10 +86,11 @@
               
               menu            = menumod();
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,debug});
+              mod.base.add({ext,$,datatype,keydown,menu,menumod,debug,vm});
               
               
               misc            = mod['misc-hdr'];
+              help            = mod['help-file'];
               filemod         = mod['file-mod'];
               tabs            = mod['terminal-tabs'];
               wcfs            = mod['webcontainer-fs'];
@@ -101,6 +103,7 @@
               link          = cssText;
               
               misc.initmod({ext,$});
+              help.initmod(mod.base);
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
               tabs.initmod(mod.base,{Terminal,FitAddon,webcontainer,theme,spinner,link,prompt});
               wcfs.initmod({ext,$,filemod,menumod,menu,complete,source,log,debug,webcontainer});
@@ -111,6 +114,7 @@
               await Promise.all([
                     vm.init(),
                     misc.init(),
+                    help.init(),
                     filemod.init(),
                     tabs.init(),
                     wcfs.init(),
@@ -234,9 +238,10 @@
       
       
             <misc-hdr component=grp>
+                  <help-file component src='docs/nodejs-terminal-help.md'></help-file>
                   <img slot=title class=title src='images/nodejs-terminal.png' style='top:-25px;height:80px' alt='Node.js Terminal'>
-                  <time slot=date datetime=2026-05-12>
-                        12 May 2026
+                  <time slot=date datetime=2026-05-13>
+                        13 May 2026
                   </time>
             </misc-hdr>
             
@@ -300,7 +305,7 @@
                               </span>
                               <img class=m-icon>
                         </div>
-                        <div class=menu style='display:none;right:0px;top:35px'>
+                        <div class=menu style='display:none;right:0px;top:35px;min-width:250px'>
                               <div class='center-h menu-title-2'>
                                     <img style='width:20px;height:20px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACLUlEQVR4AeyWIXPCQBCFd2IrgcHhUKjiKPAbmDrwWGbA0N9QEDCDxYNq4TcARVahcKgyYGtp78t0byIuJdMmFFEmj3u32dx72btL4on5ZTKZfCqVejJ4M/hIGGg8oWmkxYOcTqdX07k3yBokfaBxjybaniGPRvHG4NLHDdpMwR3KhUJB1uu1DzgxAHfFOQcqlYpsNhs5Ho+RQG61WuVScIcBSiLj8Vjy+bwPOGcB3BXnHBgOh5LN+kPQPQtyB4OB5mUxoJ0/aa2BZrMp2+3WB1zdwF1xPd/pdGS/32v3bEtuu922edYAc1MqlQTANQNODMA1ru1isRDWSTqdliggd7lc6uViDdjIhcn1GMjlcjIajSJtpahbzpWHBlpaaFuBer0ujUZD44m1aKClAtZAt9vVWOJtUMsaSFw1RODfwHVWYLfbSbFYtE+2Xq8XMoO/DzsrwD6dzWZCiwQGJpMJNHY4DaCCOPuVln6r1RIqA48ToQYQYb9iAg6YlrhNfGsAUUyUy2WoDyrhk5j+zhpg7lerlZXDkO3EQL41gHDwjufzuQSrEYN++PcAc12r1ayGSzzKB4gdIIQ4K4A4C06v4RUa953r2E4DbL3gu5xXqF4QbIM5YTyY7+LWAHftSkg6hgH/k5YFl7SYjs+T9YvvMfBCp9/vC1su6UqgMZ1OkQQvnvk9GPaOMFuOxRdldf80Bw200ETbOxwOW0NuTeDZwJ8O08Z2OAZC4xlNtD8BAAD//+N+c5wAAAAGSURBVAMAPqxtaOXOvHgAAAAASUVORK5CYII='>
                                     ext-code.com
@@ -349,6 +354,15 @@
                               <div class=menu-opt style='padding-left:20px'>
                                     <a href='https://www.npmjs.com/' target=_blank>
                                           npmjs.com
+                                    </a>
+                              </div>
+                              <div class='center-h menu-title-2'>
+                                    <img style='width:20px;height:20px' class=icon src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAALVBMVEXLAADKAADMERHVSkrURkb////eeXnghITfgIDstrbFAADJAADhiorPJCTVSUliGH6+AAAAUklEQVR4AWMgETAKQoEAmKvsAgVGYEnTUCgIFmBgYmAQgOtiAHERACdXSNkBmevi/AGZyxrwAU3v4OJ+gLACGP7DA8dZgOGeixEi6ECUAIlhDgBoOA7wXH0RDQAAAABJRU5ErkJggg=='>
+                                    jsdelivr
+                              </div>
+                              <div class=menu-opt style='padding-left:20px'>
+                                    <a href='https://www.jsdelivr.com/' target=_blank>
+                                          jsdelivr.com
                                     </a>
                               </div>
                         </div>
@@ -407,7 +421,7 @@
               
               await misc.initdom();
               misc.set.version(version);
-              
+              await help.initdom();
               await filemod.initdom();
               await tabs.initdom();
               await wcfs.initdom();
@@ -485,6 +499,10 @@
               var node    = document.createElement('snippet-editor');
               node.toggleAttribute('component',true);
               node.setAttribute('web-editor','height=100%');
+              
+              viewport.css(`snippet-editor {display:block;height:100%}`);
+              viewport.css(`snippet-editor::part(root) {height:100%}`);
+              
               viewport.body.append(node);
               var mod2      = mod.create({mod,name:'snippet-editor'});
               var result    = await mod.build({root:node,mod:mod2});
