@@ -67,6 +67,7 @@
         var menu;
         
         var misc;
+        var help;
         var filemod;
         var tabs;
         var wcfs;
@@ -85,10 +86,11 @@
               
               menu            = menumod();
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod,debug});
+              mod.base.add({ext,$,datatype,keydown,menu,menumod,debug,vm});
               
               
               misc            = mod['misc-hdr'];
+              help            = mod['help-file'];
               filemod         = mod['file-mod'];
               tabs            = mod['terminal-tabs'];
               wcfs            = mod['webcontainer-fs'];
@@ -101,6 +103,7 @@
               link          = cssText;
               
               misc.initmod({ext,$});
+              help.initmod(mod.base);
               filemod.initmod({ext,$,menumod,menu,complete,source,log});
               tabs.initmod(mod.base,{Terminal,FitAddon,webcontainer,theme,spinner,link,prompt});
               wcfs.initmod({ext,$,filemod,menumod,menu,complete,source,log,debug,webcontainer});
@@ -111,6 +114,7 @@
               await Promise.all([
                     vm.init(),
                     misc.init(),
+                    help.init(),
                     filemod.init(),
                     tabs.init(),
                     wcfs.init(),
@@ -233,8 +237,8 @@
       <body>
       
       
-            <misc-hdr component=grp>
-                  <help-file component slot=help src='docs/nodejs-terminal-help.md'></help-file>
+            <misc-hdr v2.0 component=grp>
+                  <help-file v1.0 component slot=help src='docs/nodejs-terminal-help.md'></help-file>
                   <img slot=title class=title src='images/nodejs-terminal.png' style='top:-25px;height:80px' alt='Node.js Terminal'>
                   <time slot=date datetime=2026-05-12>
                         12 May 2026
@@ -417,7 +421,7 @@
               
               await misc.initdom();
               misc.set.version(version);
-              
+              await help.initdom();
               await filemod.initdom();
               await tabs.initdom();
               await wcfs.initdom();
