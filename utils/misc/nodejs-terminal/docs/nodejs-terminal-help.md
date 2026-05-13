@@ -3,6 +3,10 @@
 
 This environment provides a full Node.js runtime and NPM interface directly in your browser.
 
+It supports a **multi-instance terminal**, allowing you to open multiple tabs to run a dev server in
+one and execute shell commands in another simultaneously.
+
+Secure, sandboxed execution of JavaScript and TypeScript.
 
 - menus and viewports can be mvoed, left click and drag ( components that capture cursor use ctrl )
 - menus and viewports can be resized, right click and drag ( components that capture cursor use ctrl )
@@ -61,6 +65,26 @@ In the ports sub-menu
 
 ---
 
+
+## Core Features
+* **Native Performance**: Powered by WebAssembly and SharedArrayBuffer.
+* **Full NPM Support**: Install and manage over 2 million packages.
+* **Isolated Environment**: Secure, sandboxed execution of JavaScript and TypeScript.
+* **Multi-Tab Interface**: Parallel processing for dev servers and CLI tools.
+* 
+
       
       
-      
+---
+
+## Frequently Asked Questions
+
+### Can I run a database?
+You can run in-memory databases like SQLite. For persistent databases, connect via API to external providers.
+
+### Is this a real Linux terminal?
+It is a WASM-based Node.js environment that mimics a Linux shell. While it supports most `POSIX` commands, it is specifically optimized for Node.js workflows.
+
+### Can I use Git?
+Git is supported through JavaScript-based implementations (like isomorphic-git), allowing for full version control within the browser sandbox.
+
