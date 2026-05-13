@@ -6,10 +6,15 @@ This environment provides a full Node.js runtime and NPM interface directly in y
 It supports a **multi-instance terminal**, allowing you to open multiple tabs to run a dev server in
 one and execute shell commands in another simultaneously.
 
-Secure, sandboxed execution of JavaScript and TypeScript.
+Secure, sandboxed execution of Node.js, JavaScript and TypeScript.
+
+### note :
 
 - menus and viewports can be mvoed, left click and drag ( components that capture cursor use ctrl )
 - menus and viewports can be resized, right click and drag ( components that capture cursor use ctrl )
+
+
+---
 
 
 ## Quick Start
@@ -88,3 +93,19 @@ It is a WASM-based Node.js environment that mimics a Linux shell. While it suppo
 ### Can I use Git?
 Git is supported through JavaScript-based implementations (like isomorphic-git), allowing for full version control within the browser sandbox.
 
+
+
+## Technical Specifications
+* **Runtime:** Node.js (WebContainer API)
+* **Architecture:** WebAssembly (WASM) 
+* **Security:** Isolated Browser Sandbox
+* **Protocol:** Cross-Origin Isolated (COOP/COEP)
+
+
+
+## SEO Summary
+This browser-based shell provides a high-concurrency Node.js environment.
+Developers can utilize a multi-tab terminal for full-stack JavaScript development,
+NPM package management, and real-time script execution without local installation.
+It is an ideal tool for sandboxed testing, educational coding environments,
+and rapid prototyping of Node.js applications.
