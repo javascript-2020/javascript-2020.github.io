@@ -53,6 +53,8 @@
         var menumod;
         var keydown;
         var getmime;
+        var debug;
+        var vm;
         
         var preview       = {};
         var output        = {};
@@ -63,14 +65,13 @@
   //:
   
   
-        mod.stack.add   = init;
-        
         async function init(){
         
+              vm                        = vm();
               //keydown                   = keydown();
               menu                      = menumod();
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod});
+              mod.base.add({ext,$,datatype,keydown,menu,menumod,debug,vm});
               
               
               hdr                       = mod['misc-hdr'];
@@ -81,6 +82,8 @@
               output.filename           = mod['fn-output'];
               log                       = mod['log-mod'];
               
+              
+              vm.initmod({mod});
               hdr.initmod({ext,$,menu,menumod});
               //mod.menu.main.initmod({ext,$,menumod,editor,filemod});
               preview.filemod.initmod({ext,$,menumod,menu,complete:preview.complete,source:preview.source,log});
@@ -90,6 +93,7 @@
               log.initmod({ext,$});
               
               await Promise.all([
+                    vm.init(),
                     hdr.init(),
                     //await mod.menu.main.init(),
                     preview.filemod.init(),
@@ -126,9 +130,10 @@
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
               'js/debug/debug.js.api',
-              'js/string/getmime/getmime.js.api'
+              'js/string/getmime/getmime.js.api',
+              'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
         );
-        [$,datatype,menumod,keydown,debug,getmime]   = await promise;
+        [$,datatype,menumod,keydown,debug,getmime,vm]   = await promise;
         
         mod.stack.complete;
         
@@ -361,19 +366,23 @@
   //:
   
   
-        function initdom(rootnode){
+        async function initdom(rootnode){
         
         
               root                                            = rootnode;
               
-              
-              hdr.initdom(root);
-              hdr.set.version(version);
+              await Promise.all([
+                    vm.initdom(),
+                    hdr.initdom(root),
+                    preview.filemod.initdom(),
+                    preview.filename.initdom(),//preview.root
+                    output.filemod.initdom(),
+                    output.filename.initdom(),//output.root
+                    log.initdom(),
+              ]);
               
               
               preview.root                                    = $(root,'#preview');
-              preview.filemod.initdom(preview.root);
-              preview.filename.initdom(preview.root);
               
               $(preview.root,'[value=save]').onclick          = btn.preview.save;
               
@@ -391,8 +400,6 @@
               
               output.root                                     = $(root,'#output');
               
-              output.filemod.initdom(output.root);
-              output.filename.initdom(output.root);
               
               $(output.root,'[value=save]').onclick           = btn.output.save;
               $(output.root,'[value=copy]').onclick           = btn.output.copy;
@@ -403,7 +410,6 @@
               
               
               
-              log.initdom(root);
               
               
               
@@ -482,6 +488,9 @@
               }
               
               var txt   = cur.b64;
+              if(preview.dataurl.checked){
+                    txt   = cur.dataurl;
+              }
                                                                                 console.log(txt);
               await navigator.clipboard.writeText(txt);
               
@@ -560,7 +569,8 @@
                                       }
                                 }
                           }
-                          str         = `data:${mime};base64,${str}`;
+                          str           = `data:${mime};base64,${str}`;
+                          cur.dataurl   = str;
                     }
                     
                     var pretty    = $('#pretty').checked;
