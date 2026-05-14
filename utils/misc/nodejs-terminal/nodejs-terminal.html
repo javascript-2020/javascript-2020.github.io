@@ -123,7 +123,10 @@
               ]);
               
               
-              initdom();
+              await initdom();
+              
+              
+              misc.complete();
               
               
               
@@ -240,7 +243,7 @@
       <body>
       
       
-            <misc-hdr component=grp>
+            <misc-hdr v2.0 component=grp>
                   <help-file component=grp_root src='docs/nodejs-terminal-help.md'></help-file>
                   <img slot=title class=title src='images/nodejs-terminal.png' style='top:-25px;height:80px' alt='Node.js Terminal'>
                   <time slot=date datetime=2026-05-13>
@@ -421,14 +424,16 @@
                                                                                 debug('initdom');
               await vm.initdom();
               
-              await misc.initdom();
+              await Promise.all([
+                    misc.initdom(),
+                    help.initdom(),
+                    filemod.initdom(),
+                    tabs.initdom(),
+                    wcfs.initdom(),
+                    ports.initdom(),
+                    log.initdom(),
+              ]);
               misc.set.version(version);
-              await help.initdom();
-              await filemod.initdom();
-              await tabs.initdom();
-              await wcfs.initdom();
-              await ports.initdom();
-              await log.initdom();
               
               
               var more                                = $('#more-menu');
