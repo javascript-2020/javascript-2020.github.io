@@ -59,6 +59,7 @@
         var keydown;
         var hs;
         var debug;
+        var vm;
         
         var menu;
         
@@ -83,7 +84,7 @@
               //keydown                   = keydown();
               menu                      = menumod();
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod});
+              mod.base.add({ext,$,datatype,keydown,menu,menumod,debug,vm});
               
               
               hdr                       = mod['misc-hdr'];
@@ -108,6 +109,7 @@
               log.initmod({ext,$});
               
               await Promise.all([
+                    vm.init(),
                     hdr.init(),
                     //mod.menu.main.init(),
                     filemod.init(),
@@ -151,8 +153,12 @@
               'js/dom/keydown/keydown.js',
               'js/string/hs.js',
               'js/debug/debug.js',
+              'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
         );
-        [$,datatype,menumod,keydown,hs,debug]   = await promise;
+        [$,datatype,menumod,keydown,hs,debug,vm]   = await promise;
+        
+        vm    = vm();
+        vm.initmod({mod});
         
         mod.stack.complete;
         
@@ -337,6 +343,7 @@
               root                                          = rootnode;
               
               await Promise.all([
+                    vm.initdom(),
                     hdr.initdom(),
                     filemod.initdom(),
                     add.file.initdom(),
