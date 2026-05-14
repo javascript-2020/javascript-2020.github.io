@@ -173,7 +173,8 @@
         
               help    = mod['help-file'];
               
-              await mod.auto();
+              help.initmod(mod.base);
+              await help.init();
               
               console.log($(host.shadowRoot,'[slot=help]'));
               
@@ -186,6 +187,8 @@
         obj.initdom   = function(){
         
               shadow          = host.shadowRoot;
+              
+              await help.initdom();
               
               set.filename();
               
