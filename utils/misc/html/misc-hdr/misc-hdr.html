@@ -14,16 +14,8 @@
       padding-bottom:20px;border-bottom:1px solid lightgray;
     }
     
-  .icon
-    {cursor:pointer;border-radius:3px;border:1px solid gray;box-sizing:border-box;
-      width:38px;height:38px}
-      
-  .item
-    {display:inline-flex;align-items:center;text-align:center;background:buttonface;
-      border-radius:3px;border:1px solid lightgray;padding:5px 7px}
-      
-  .item-label
-    {}
+    
+    
     
   ::slotted([slot=title])
     {text-align:center;position:absolute;left:0;right:0;top:0px;z-index:-1;margin:0 auto}
@@ -48,6 +40,21 @@
   a:visited
     {color:blue}
     
+  .item
+    {display:inline-flex;align-items:center;text-align:center;background:buttonface;
+      border-radius:3px;border:1px solid lightgray;padding:5px 7px;cursor:pointer}
+  .item:hover
+    {background:lightyellow}
+    
+    
+  .item-icon
+    {display:flex;flex-direction:column;align-items:center}
+    
+  .icon
+    {cursor:pointer;width:20px;height:20px;border:none}
+    
+  .item-label
+    {color:blue}
     
             </style>
             
@@ -65,6 +72,7 @@
                   </div>
                   
                   <slot name=help></slot>
+                  <help-file component=grp_root></help-file>
                   
                   
                   
@@ -73,25 +81,28 @@
                   -->
                   
                   
-                  <div class=item>
-                  
+                  <a class=item href='/'>
+                        <div class=item-icon>
+                              <img class=icon style='width:20px;height:20px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAcCAMAAABBJv+bAAAAQlBMVEVHcEwyODg0ODkzNzgxNzc0ODk0ODkzODgzODgzNzgyNzgzODg0ODkzODgyNzgzODgzODgzODk0ODk0ODkyNzg0ODmObyvDAAAAFXRSTlMABvaSDbPHe15GL5u9hRxvO6rn2VJXM6DpAAAAxElEQVQoz71TyRbDIAh0Ie6J2fz/Xy3Y2pDktZ5aTiODCAMK0QxAPoFsgNk0JrMEQmEwyU5ndt4K2khQEzLhdNeQTznCWREegNEOOe18fRO8i6ooz+gRw1k9gMkyo/E9zY5yKMX+ihbLq8mjFB5N4UepYLGRmdM7OnLlpYtJXWQQkFCIpHcpfBVpCxeRV/KuodHzmfaNxuTmlpxmoEzc5bs0rnGdQQZeybWxRX6Vxf5rJJ116CxTZxX5Isf7Ive+wadP9AAuFg97y3bd7gAAAABJRU5ErkJggg=='>
+                              <div class=icon-label>
+                                    home
+                              </div>
+                        </div>
                         <!--
                         <top-menu component=grp v2.0></top-menu>
                         -->
-                        
-                        <a id=home class=item-label href='/'>
-                              home
-                        </a>
-                        
-                  </div>
+                  </a>
                   
-                  <div class=item>
                   
-                        <a id=home class=item-label href='/utils/misc/index.html' target=_blank>
-                              misc
-                        </a>
-                        
-                  </div>
+                  <a class=item href='/utils/misc/index.html' target=_blank>
+                        <div class=item-icon>
+                              <img class=icon style='width:20px;height:20px' src='data:image/png;base64,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'>
+                              <div class=icon-label>
+                                    misc
+                              </div>
+                        </div>
+                  </a>
+                  
                   
                   
                   <div class=spc></div>
@@ -141,9 +152,10 @@
   //:
   
   
+        var help;
         var top;
         
-        var shadow;
+        var shadow    = host.shadowRoot;
         
         
         var set   = {};
@@ -154,7 +166,16 @@
   
         obj.init    = async function(){
         
-              await mod.auto();
+              help            = mod['help-file'];
+              
+              var slot        = $(shadow,'[name=help]');
+              var assigned    = slot.assignedNodes()[0];
+              var src         = assigned.getAttribute('src');
+              
+              help.initmod(mod.root.base,{src});
+              
+              await help.init();
+              
               
         }//init
         
@@ -162,16 +183,19 @@
   //:
   
   
-        obj.initdom   = function(){
+        obj.initdom   = async function(){
         
               shadow          = host.shadowRoot;
               
+              await help.initdom();
+              
               set.filename();
-              if(typeof version==='undefined'){
-                    set.version('v1.0');
-              }else{
-                    set.version(version);
+              
+              var v   = 'v1.0';
+              if(typeof version!='undefined'){
+                    v   = version;
               }
+              set.version(v);
               
         }//initdom
         
@@ -198,6 +222,16 @@
         }//filename
         
         
+        obj.add   = function(slot,node){debugger;
+        
+              slot    = $(shadow,`slot[name=${slot}]`);
+              if(!slot){
+                    return null;
+              }
+              slot.parentNode.replaceChild(node,slot);
+              return slot;
+              
+        }//add
         
         
         obj.complete    = function(){
