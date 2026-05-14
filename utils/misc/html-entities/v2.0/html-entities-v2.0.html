@@ -58,6 +58,8 @@
         var datatype;
         var menumod;
         var keydown;
+        var debug;
+        var vm;
         
         var hdr;
         var filemod;
@@ -77,10 +79,12 @@
   
         async function init(){
         
+              vm                        = vm();
+              
               //keydown                   = keydown();
               menu                      = menumod();
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod});
+              mod.base.add({ext,$,datatype,keydown,menu,menumod,debug,vm});
               
               
               hdr                       = mod['misc-hdr'];
@@ -89,6 +93,7 @@
               editor.output             = mod.output;
               log                       = mod['log-mod'];
               
+              vm.initmod({mod});
               hdr.initmod({ext,$});
               filemod.initmod({ext,$,menumod,menu,complete,source,focus,log});
               editor.source.initmod({ext,$,menumod,menu});
@@ -96,6 +101,7 @@
               log.initmod({ext,$});
               
               await Promise.all([
+                    vm.init(),
                     hdr.init(),
                     filemod.init(),
                     editor.source.init(),
@@ -128,9 +134,12 @@
               'js/dom/$.js',
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js'
+              'js/dom/keydown/keydown.js',
+              'js/debug/debug.js',
+              'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
         );
-        [$,datatype,menumod,keydown]   = await promise;
+        [$,datatype,menumod,keydown,debug,vm]   = await promise;
+        
         
         mod.stack.complete;
         
@@ -272,6 +281,7 @@
               root                                  = rootnode;
               
               await Promise.all([
+                    vm.initdom(),
                     hdr.initdom(),
                     filemod.initdom(r1),
                     editor.source.initdom({mode:'text'}),
