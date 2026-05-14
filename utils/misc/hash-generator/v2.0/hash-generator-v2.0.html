@@ -117,8 +117,10 @@
               menu.on.close          = null;
               
               
-              initdom(document.body);
+              await initdom(document.body);
               
+              
+              hdr.complete();
               
               
         }//init
@@ -520,16 +522,19 @@ xxhash128 : ƒ (A,I=0,B=0)
                                                                                 
               root                                    = rootnode;
               
-              hdr.initdom();
+              await Promise.all([
+                    hdr.initdom(),
+                    filemod.initdom(),
+                    filename.initdom(),
+                    editor.initdom(root),
+                    log.initdom(root),
+              ]);
+              
+              
               hdr.set.version(version);
               
               
               chk                                     = $.chkbox.group(root,'#file-hdr .chk-root','#text-hdr .chk-root');
-              filemod.initdom(root);
-              filename.initdom(root);
-              
-              
-              editor.initdom(root);
               
               
               
@@ -582,7 +587,6 @@ xxhash128 : ƒ (A,I=0,B=0)
               
               
               
-              log.initdom(root);
               
               
               blob.display();
