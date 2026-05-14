@@ -1,0 +1,50 @@
+
+
+      <base href='https://libs.ext-code.com/html/help-file/examples/help-file-ex-1.html'>
+      
+      <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
+      
+      
+      <h3>
+            help-file test
+      </h3>
+      
+      <div>
+            <help-file v1.0 component src='../docs/readme.md'>
+            </help-file>
+      </div>
+      
+      
+      <script>
+      
+        var vm;
+        
+        async function init(){
+        
+              await libs();
+              
+              var help    = mod['help-file'];
+              help.initmod({vm},mod.base);
+              
+              await help.init();
+              await help.initdom();
+              
+              
+        }//init
+        
+        async function libs(){
+        
+              var promise   = ext.load.libs(
+                    'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
+              );
+              [vm]   = await promise;
+              
+              vm    = vm();
+              await vm.init();
+              await vm.initdom();
+              
+        }//libs
+        
+      </script>
+      
+      
