@@ -67,6 +67,7 @@
         var base          = document.baseURI;
         var target        = host;
         
+        var src;
         var md;
         
         var view;
@@ -93,15 +94,9 @@
         rd.attr.src   = async function(){
         
               if(!target.hasAttribute('src'))return;
-              var src   = target.getAttribute('src');
-              var url   = resolve(src);
+              var attr    = target.getAttribute('src');
+              src         = resolve(attr);
                                                                                 debug('src',url);
-              var {txt,error}   = await get(url);
-              if(error){
-                    txt   = error;
-              }
-              md    = txt;
-              
         }//src
         
         
@@ -169,7 +164,7 @@
               
               view                    = $(shadow,'#view');
               
-              display(md);
+              await load();
               
         }//initdom
         
@@ -186,6 +181,22 @@
               }
               
         }//icon
+        
+        
+  //:
+  
+  
+        async function load(){
+        
+              var {txt,error}   = await get(src);
+              if(error){
+                    txt   = error;
+              }
+              md    = txt;
+              display(md);
+              
+        }//load
+        
         
   //:
   
