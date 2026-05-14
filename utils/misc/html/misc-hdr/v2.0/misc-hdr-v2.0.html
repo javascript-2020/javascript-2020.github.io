@@ -160,7 +160,7 @@
         var help;
         var top;
         
-        var shadow;
+        var shadow    = host.shadowRoot;
         
         
         var set   = {};
@@ -173,10 +173,12 @@
         
               help    = mod['help-file'];
               
+              var slot    = $(shadow,'[name=help]')
+              console.log('file :',slot.getAttribute('src'));
+              
               help.initmod(mod.root.base);
               await help.init();
               
-              console.log('file :',$(host.shadowRoot,'[name=help]'));
               
         }//init
         
