@@ -129,8 +129,9 @@
               
               
               
-              initdom(document.body);
+              await initdom(document.body);
               
+              hdr.complete();
               
               
         }//init
@@ -227,7 +228,7 @@
             
             
             <misc-hdr component=grp>
-                  <img slot=title class=title src='images/zip.png' style='top:-15px;height:80px'>
+                  <img slot=title class=title src='images/zip.png' style='top:-15px;height:60px'>
                   <time slot=date datetime=2026-04-18>
                         18 Apr 2026
                   </time>
@@ -335,13 +336,20 @@
         
               root                                          = rootnode;
               
+              await Promise.all([
+                    hdr.initdom(),
+                    filemod.initdom(),
+                    add.file.initdom(),
+                    save.file.initdom(),
+                    filenav.initdom(),
+                    log.initdom(),
+              ]);
               
-              hdr.initdom();
-              hdr.set.version(version);
+              
+              //hdr.set.version(version);
               
               
               
-              filemod.initdom();
               
               
               info                                          = $(root,'#info');
@@ -349,8 +357,6 @@
               
               
               add.root                                      = $(root,'#add');
-              add.file.initdom();
-              save.file.initdom();
               
               $(root,'[value=save]').onclick                = btn.save;
               $(root,'[value="list files"]').onclick        = btn['list-files'];
@@ -360,10 +366,6 @@
               
               
               
-              filenav.initdom();
-              
-              
-              log.initdom();
               
               
               
