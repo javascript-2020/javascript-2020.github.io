@@ -64,6 +64,7 @@
         var menumod;
         var keydown;
         var debug;
+        var vm;
         
         var hdr;
         var filemod;
@@ -80,10 +81,10 @@
   
         async function init(){
                                                                                 debug('init',version);
-                                                                                
+              vm                        = vm();
               menu                      = menumod();
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod});
+              mod.base.add({ext,$,datatype,keydown,menu,menumod,debug,vm});
               
               
               hdr                       = mod['misc-hdr'];
@@ -95,6 +96,7 @@
               log                       = mod['log-mod'];
               
               
+              vm.initmod({mod});
               hdr.initmod({ext,$,menu,menumod:menu});
               
               filemod.initmod({ext,$,menumod,menu,complete,log});
@@ -104,8 +106,10 @@
               
               log.initmod({ext,$});
               
+              
               await Promise.all([
-                    //mod.hdr.base64.init(),
+                    vm.init(),
+                    hdr.init(),
                     filemod.init(),
                     filename.init(),
                     editor.init(),
@@ -137,9 +141,11 @@
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
-              'js/debug/debug.js'
+              'js/debug/debug.js',
+              'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
+              
         );
-        [$,datatype,menumod,keydown,debug]   = await promise;
+        [$,datatype,menumod,keydown,debug,vm]   = await promise;
         
         var hash    = await import('https://cdn.jsdelivr.net/npm/hash-wasm/+esm');
                                                                                 //console.log(hash);
@@ -521,6 +527,8 @@ xxhash128 : ƒ (A,I=0,B=0)
                                                                                 debug('initdom');
                                                                                 
               root                                    = rootnode;
+              
+              await vm.initdom();
               
               await Promise.all([
                     hdr.initdom(),
