@@ -171,13 +171,14 @@
   
         obj.init    = async function(){
         
-              help    = mod['help-file'];
+              help            = mod['help-file'];
               
               var slot        = $(shadow,'[name=help]');
               var assigned    = slot.assignedNodes()[0];
-              console.log('file :',assigned.getAttribute('src'));
+              var src         = assigned.getAttribute('src');
               
-              help.initmod(mod.root.base);
+              help.initmod(mod.root.base,{src});
+              
               await help.init();
               
               
