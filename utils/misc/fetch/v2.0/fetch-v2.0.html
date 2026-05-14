@@ -344,7 +344,7 @@
   //:
   
   
-        function initdom(rootnode){
+        async function initdom(rootnode){
         
               root                                  = rootnode;
               
@@ -366,10 +366,10 @@
               hdrs.item.remove();
               
               
-              filemod.initdom(root);
-              
-              
-              log.initdom(root);
+              await Promise.all([
+                    filemod.initdom(),
+                    log.initdom(),
+              ]);
               
               
         }//initdom
