@@ -110,7 +110,9 @@
               menu.on.close             = focus;
               
               
-              initdom(document.body);
+              await initdom(document.body);
+              
+              hdr.complete();
               
               
         }//init
@@ -265,16 +267,22 @@
   //:
   
   
-        function initdom(rootnode){
+        async function initdom(rootnode){
         
               root                                  = rootnode;
               
-              hdr.initdom();
+              await Promise.all([
+                    hdr.initdom(),
+                    filemod.initdom(r1),
+                    editor.source.initdom({mode:'text'}),
+                    editor.output.initdom({mode:'text'}),
+                    log.initdom(),
+              ]);
+              
               hdr.set.version(version);
               
               var r1                              = $(root,'#hdr');
               
-              filemod.initdom(r1);
               
               $(r1,'[value=encode]').onclick       = btn.encode;
               $(r1,'[value=decode]').onclick       = btn.decode;
@@ -283,11 +291,6 @@
               
               var view                              = $(root,'#view');
               
-              editor.source.initdom({mode:'text'});
-              editor.output.initdom({mode:'text'});
-              
-              
-              log.initdom();
               
               
               focus();
