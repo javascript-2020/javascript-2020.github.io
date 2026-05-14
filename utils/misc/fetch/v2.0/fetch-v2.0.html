@@ -54,6 +54,7 @@
         var menumod;
         var keydown;
         var debug;
+        var vm;
         
         var menu;
         
@@ -68,10 +69,11 @@
         
         async function init(){
         
+              vm                          = vm();
               //keydown                   = keydown();
               menu                        = menumod();
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod});
+              mod.base.add({ext,$,datatype,keydown,menu,menumod,debug,vm});
               
               
               hdr                         = mod['misc-hdr'];
@@ -82,11 +84,13 @@
               //output                    = output();
               log                         = mod['log-mod'];
               
+              vm.initmod({mod});
               hdr.initmod({ext,$,menu});
               filemod.initmod({ext,$,menumod,menu,source,complete,log});
               log.initmod({ext,$});
               
               await Promise.all([
+                    vm.init(),
                     hdr.init(),
                     filemod.init(),
                     log.init(),
@@ -119,9 +123,10 @@
               'js/core/datatype.js',
               'js/dom/menumod/menumod.js',
               'js/dom/keydown/keydown.js',
-              'js/debug/debug.js'
+              'js/debug/debug.js',
+              'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
         );
-        [$,datatype,menumod,keydown,debug]   = await promise;
+        [$,datatype,menumod,keydown,debug,vm]   = await promise;
         
         mod.stack.complete;
         
@@ -348,9 +353,12 @@
         
               root                                  = rootnode;
               
-              
-              hdr.initdom();
-              hdr.set.version(version);
+              await Promise.all([
+                    vm.initdom(),
+                    hdr.initdom(),
+                    filemod.initdom(),
+                    log.initdom(),
+              ]);
               
               $(root,'.copy').onclick               = btn.copy;
               $(root,'.paste').onclick              = btn.paste;
@@ -365,11 +373,6 @@
               hdrs.item                             = $(hdrs.root,'.hdr');
               hdrs.item.remove();
               
-              
-              await Promise.all([
-                    filemod.initdom(),
-                    log.initdom(),
-              ]);
               
               
         }//initdom
