@@ -4,7 +4,7 @@
 /*
 
 
-aes encrypt / decrypt
+aes encrypt / decrypt browser
 
 
 30-04-26
@@ -20,14 +20,18 @@ aes encrypt / decrypt
         var key         = await generateAesKey();
         var encrypted   = await aesEncrypt(key,'hello world');
         var txt         = await aesDecrypt(key,encrypted);
-        
-        console.log(txt);
-        
-        
-        
+                                                                                console.log(txt);
+                                                                                
+                                                                                
+                                                                                
         async function generateAesKey() {
         
-              var key   = await crypto.subtle.generateKey({name:"AES-GCM",length: 256},true,["encrypt", "decrypt"]);
+              var algorithm     = {name:'AES-GCM',length:256};
+              var extractable   = true;
+              var keyusages     = ['encrypt','decrypt'];
+              
+              var key           = await crypto.subtle.generateKey(algorithm,extractable,keyusages);
+              
               return key;
               
         }//generateAesKey
@@ -35,55 +39,106 @@ aes encrypt / decrypt
         
         async function exportAesKey(key) {
         
-              const raw = await crypto.subtle.exportKey("raw", key);
-              var b64   = btoa(String.fromCharCode(...new Uint8Array(raw)));
+              var buf     = await crypto.subtle.exportKey('raw',key);
+              
+              var b64     = buf_b64(buf);
               return b64;
               
         }//exportAesKey
         
         
-        async function importAesKey(base64) {
+        async function importAesKey(b64){
         
-              const raw = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-              var key   = await  crypto.subtle.importKey("raw",raw,"AES-GCM",true,["encrypt", "decrypt"]);
+              var format        = 'raw';
+              var keydata       = b64_uint8(b64);
+              var algorithm     = 'AES-GCM';
+              var extractable   = true;
+              var keyusage      = ['encrypt','decrypt'];
+              
+              var key           = await  crypto.subtle.importKey(format,keydata,algorithm,extractable,keyusage);
+              
               return key;
               
         }//importAesKey
         
         
-        async function aesEncrypt(key, plaintext) {
+        async function aesEncrypt(key,txt){
         
-              const iv = crypto.getRandomValues(new Uint8Array(12)); // 96-bit IV recommended
+              var buf         = txt_buf(txt);
+                                                                                //  96-bit IV recommended
+              var iv          = crypto.getRandomValues(new Uint8Array(12));
               
-              const encoded = new TextEncoder().encode(plaintext);
+              var algorithm   = {name:'AES-GCM',iv}
+              var key         = key;
+              var data        = encoded;
               
-              const ciphertext = await crypto.subtle.encrypt({name: "AES-GCM",iv},key,encoded);
+              var buf         = await crypto.subtle.encrypt(algorithm,key,data);
               
-              return {
-                iv: btoa(String.fromCharCode(...iv)),
-                data: btoa(String.fromCharCode(...new Uint8Array(ciphertext))),
-              };
+              iv              = buf_b64(iv);
+              var data        = buf_b64(buf);
+              
+              var encrypted   = {iv,data};
+              return encrypted;
               
         }//aesEncrypt
         
         
-        async function aesDecrypt(key, encrypted) {
+        async function aesDecrypt(key,encrypted){
         
-              const iv = Uint8Array.from(atob(encrypted.iv), c => c.charCodeAt(0));
-              const data = Uint8Array.from(atob(encrypted.data), c => c.charCodeAt(0));
+              var {iv,data}   = encrypted;
               
-              const plaintext = await crypto.subtle.decrypt(
-                {
-                  name: "AES-GCM",
-                  iv,
-                },
-                key,
-                data
-              );
+              iv              = b64_uint8(iv);
               
-              return new TextDecoder().decode(plaintext);
+              var algorithm   = {name:'AES-GCM',iv};
+              key             = key;
+              data            = b64_uint8(data);
+              
+              var buf         = await crypto.subtle.decrypt(algorithm,key,data);
+              var txt         = buf_txt(buf);
+              
+              return txt;
               
         }//aesDecrypt
+        
+        
+  //:
+  
+  
+        function buf_b64(buf){
+        
+              var uint8   = new Uint8Array(buf);
+              var bin     = String.fromCharCode(...uint8);
+              var b64     = btoa(bin);
+              return b64;
+              
+        }//buf_b64
+        
+        
+        function b64_uint8(b64){
+        
+              var bin     = atob(b64);
+              var uint8   = Uint8Array.from(bin,c=>c.charCodeAt(0));
+              return uint8;
+              
+        }//b64_buf
+        
+        
+        function txt_buf(txt){
+        
+              var buf   = new TextEncoder().encode(plaintext);
+              return buf;
+              
+        }//txt_buf
+        
+        
+        function buf_txt(buf){
+        
+              var txt   = new TextDecoder().decode(buf);
+              return txt;
+              
+        }//buf_txt
+        
+        
         
         
         
