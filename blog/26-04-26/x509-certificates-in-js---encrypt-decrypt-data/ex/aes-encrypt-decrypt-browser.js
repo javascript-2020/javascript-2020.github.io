@@ -130,7 +130,7 @@ aes encrypt / decrypt browser
         
         function txt_buf(txt){
         
-              var buf   = new TextEncoder().encode(plaintext);
+              var buf   = new TextEncoder().encode(txt);
               return buf;
               
         }//txt_buf
