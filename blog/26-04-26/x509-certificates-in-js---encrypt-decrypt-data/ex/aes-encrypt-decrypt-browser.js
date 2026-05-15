@@ -16,20 +16,23 @@ aes encrypt / decrypt browser
 (async()=>{
                                                                                 console.clear();
                                                                                 
-                                                                                
+        var blob        = new Blob(['hello world']);
+        
         var key         = await generateAesKey();
         var encrypted   = await aesEncrypt(key,'hello world');
                                                                                 console.log('encrypted :');
                                                                                 console.log('       iv :',enrypted.iv);
                                                                                 console.log('     data :',encrypted.data);
                                                                                 console.log();
-        var txt         = await aesDecrypt(key,encrypted);
+        var blob        = await aesDecrypt(key,encrypted);
+        
+        var txt         = await blob.text();
                                                                                 console.log('decrypted :');
                                                                                 console.log(txt);
                                                                                 
                                                                                 
                                                                                 
-        async function generateAesKey() {
+        async function generateAesKey(){
         
               var algorithm     = {name:'AES-GCM',length:256};
               var extractable   = true;
@@ -42,7 +45,7 @@ aes encrypt / decrypt browser
         }//generateAesKey
         
         
-        async function exportAesKey(key) {
+        async function exportAesKey(key){
         
               var buf     = await crypto.subtle.exportKey('raw',key);
               
@@ -67,9 +70,9 @@ aes encrypt / decrypt browser
         }//importAesKey
         
         
-        async function aesEncrypt(key,txt){
+        async function aesEncrypt(key,blob){
         
-              var buf         = txt_buf(txt);
+              var buf         = await blob.arrayBuffer();
                                                                                 //  96-bit IV recommended
               var iv          = crypto.getRandomValues(new Uint8Array(12));
               
@@ -99,9 +102,9 @@ aes encrypt / decrypt browser
               data            = b64_uint8(data);
               
               var buf         = await crypto.subtle.decrypt(algorithm,key,data);
-              var txt         = buf_txt(buf);
               
-              return txt;
+              var blob        = new Blob([buf]);
+              return blob;
               
         }//aesDecrypt
         
@@ -109,6 +112,32 @@ aes encrypt / decrypt browser
   //:
   
   
+        function iv_buf_blob(iv,buf){
+        }//iv_buf
+        
+        
+        async function blob_b64(blob){
+        
+              var buf     = await blob.arrayBuffer();
+              var bytes   = new Uint8Array(buf);
+              var bin     = [...bytes].reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64     = btoa(bin);
+              return b64;
+              
+        }//blob_b64
+        
+        
+        function b64_blob(b64,type='text/plain'){
+        
+              var bin     = atob(b64);
+              var bytes   = [...bin].map(c=>c.charCodeAt(0));
+              var buf     = new Uint8Array(bytes);
+              var blob    = new Blob([buf],{type});
+              return blob;
+              
+        }//b64_blob
+        
+        
         function buf_b64(buf){
         
               var uint8   = new Uint8Array(buf);
@@ -128,10 +157,10 @@ aes encrypt / decrypt browser
         }//b64_buf
         
         
-        function txt_buf(txt){
+        function txt_uint8(txt){
         
-              var buf   = new TextEncoder().encode(txt);
-              return buf;
+              var uint8   = new TextEncoder().encode(txt);
+              return uint8;
               
         }//txt_buf
         
