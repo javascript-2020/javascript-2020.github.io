@@ -19,7 +19,12 @@ aes encrypt / decrypt browser
                                                                                 
         var key         = await generateAesKey();
         var encrypted   = await aesEncrypt(key,'hello world');
+                                                                                console.log('encrypted :');
+                                                                                console.log('       iv :',enrypted.iv);
+                                                                                console.log('     data :',encrypted.data);
+                                                                                console.log();
         var txt         = await aesDecrypt(key,encrypted);
+                                                                                console.log('decrypted :');
                                                                                 console.log(txt);
                                                                                 
                                                                                 
