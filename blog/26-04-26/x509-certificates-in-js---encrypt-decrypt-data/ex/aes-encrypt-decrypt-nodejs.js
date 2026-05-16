@@ -58,7 +58,7 @@ rsa keys should be 4096
         }//generateAesKey
         
         
-        function importAesKey(blob){
+        async function importAesKey(blob){
         
               var key   = await blob_buffer(blob);
               return key;
