@@ -19,10 +19,10 @@ aes encrypt / decrypt browser
         var blob        = new Blob(['hello world']);
         
         var key         = await generateAesKey();
-        var encrypted   = await aesEncrypt(key,'hello world');
+        var encrypted   = await aesEncrypt(key,blob);
+        var b64         = blob_b64(encrypted);
                                                                                 console.log('encrypted :');
-                                                                                console.log('       iv :',enrypted.iv);
-                                                                                console.log('     data :',encrypted.data);
+                                                                                console.log(b64);
                                                                                 console.log();
         var blob        = await aesDecrypt(key,encrypted);
         
@@ -84,7 +84,7 @@ aes encrypt / decrypt browser
               
               buf             = new Uint8Array(buf);
               
-              var blob        = iv_buf_blob(iv,blob);
+              var blob        = iv_buf_blob(iv,buf);
               return blob;
               
         }//aesEncrypt
@@ -116,12 +116,13 @@ aes encrypt / decrypt browser
               var uint8   = new Uint8Array(n);
               uint8.set(iv,0);
               uint8.set(buf,n1);
-              return uint8;
+              var blob    = new Blob([uint8]);
+              return blob;
               
         }//iv_buf
         
         
-        function blob_iv_buf(blob,iv_bits=96){
+        async function blob_iv_buf(blob,iv_bits=96){
         
               var n       = blob.size;
               var buf     = await blob.arrayBuffer();
