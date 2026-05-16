@@ -57,7 +57,7 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
                                                                                 
                                                                                 
       if(enabled=1){
-                                                                                console.log('---  decrypt test  ---');
+                                                                                console.log('---  decrypt test  ( from nodejs )  ---');
                                                                                 console.log();
             var key_b64             = 'QWC78FsU8wpP9KtQotZn1zLfm1qXKG6S/0rJDF5KVbk=';
             var key_blob            = b64_blob(key_b64);
