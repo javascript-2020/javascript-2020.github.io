@@ -119,7 +119,7 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
         
         async function aesEncrypt(key_blob,blob,iv_bits=96){
         
-              var key         = await blob_buf(key_blob);
+              var key         = await importAesKey(key_blob);
               var buf         = await blob.arrayBuffer();
                                                                                 //  96-bit IV recommended ( 12 bytes )
               var bytes       = iv_bits/8;
