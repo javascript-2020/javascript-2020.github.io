@@ -30,6 +30,7 @@ rsa keys should be 4096
                                                                                 console.log('key :',key_blob.size,'B');
                                                                                 var b64=await blob_b64(key_blob);
                                                                                 console.log(b64);
+                                                                                console.log();
         var encrypted   = await aesEncryptNode(key_blob,blob);
         var b64         = await blob_b64(encrypted);
                                                                                 console.log('encrypted :');
@@ -49,7 +50,7 @@ rsa keys should be 4096
                                                                                 
                                                                                 
       if(enabled=1){
-                                                                                console.log('decrypt test');
+                                                                                console.log('---  decrypt test  ---');
                                                                                 console.log();
             var encrypted_b64   = 'dqeBcMIqEJy2E2z1ixpE98Dcnrp8r275UptzFMoeg7ZTYaZqSv4b';
             var encrypted       = b64_blob(encrypted_b64);
