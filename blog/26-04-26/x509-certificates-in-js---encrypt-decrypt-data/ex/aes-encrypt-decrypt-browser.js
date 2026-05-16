@@ -36,14 +36,13 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
         var key         = await generateAesKey();
         var key_blob    = await exportAesKey(key);
                                                                                 console.log('key :',key_blob.size);
-        var encrypted   = await aesEncrypt(key,blob);
+        var encrypted   = await aesEncrypt(key_blob,blob);
         var b64         = await blob_b64(encrypted);
                                                                                 console.log('encrypted :');
                                                                                 console.log(b64);
                                                                                 console.log();
-        var key         = await importAesKey(key_blob);
-        
-        var blob        = await aesDecrypt(key,encrypted);
+                                                                                
+        var blob        = await aesDecrypt(key_blob,encrypted);
         
         var txt         = await blob.text();
                                                                                 console.log('decrypted :');
@@ -65,7 +64,7 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
             var key_b64         = 'QWC78FsU8wpP9KtQotZn1zLfm1qXKG6S/0rJDF5KVbk=';
             var key_blob        = b64_blob(key_b64);
             
-            var blob            = await aesDecryptNode(key_blob,encrypted);
+            var blob            = await aesDecrypt(key_blob,encrypted);
             
             var txt             = await blob.text();
                                                                                 console.log('decrypted :');
@@ -102,11 +101,11 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
         
         async function importAesKey(blob){
         
-              var buf           = await blob.arrayBuffer();
-              var uint8         = new Uint8Array(buf);
+              var buf           = await blob_buf(blob);
+              //var uint8         = new Uint8Array(buf);
               
               var format        = 'raw';
-              var keydata       = uint8;
+              var keydata       = buf;//uint8;
               var algorithm     = 'AES-GCM';
               var extractable   = true;
               var keyusage      = ['encrypt','decrypt'];
@@ -118,8 +117,9 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
         }//importAesKey
         
         
-        async function aesEncrypt(key,blob,iv_bits=96){
+        async function aesEncrypt(key_blob,blob,iv_bits=96){
         
+              var key         = await blob_buf(key_blob);
               var buf         = await blob.arrayBuffer();
                                                                                 //  96-bit IV recommended ( 12 bytes )
               var bytes       = iv_bits/8;
@@ -139,8 +139,9 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
         }//aesEncrypt
         
         
-        async function aesDecrypt(key,blob){
+        async function aesDecrypt(key_blob,blob){
         
+              var key         = await importAesKey(key_blob);
               var {iv,buf}    = await blob_iv_buf(blob);
               
               var algorithm   = {name:'AES-GCM',iv};
@@ -182,6 +183,14 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
               return {iv,buf};
               
         }//blob_iv_buf
+        
+        
+        async function blob_buf(blob){
+        
+              var buf     = await blob.arrayBuffer();
+              return buf;
+              
+        }//blob_buf
         
         
         async function blob_uint8(blob){
