@@ -49,9 +49,9 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
                                                                                 
                                                                                 
                                                                                 
-        async function generateAesKey(){
+        async function generateAesKey(length=256){
         
-              var algorithm     = {name:'AES-GCM',length:256};
+              var algorithm     = {name:'AES-GCM',length};
               var extractable   = true;
               var keyusages     = ['encrypt','decrypt'];
               
