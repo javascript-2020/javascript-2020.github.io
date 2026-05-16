@@ -70,11 +70,12 @@ aes encrypt / decrypt browser
         }//importAesKey
         
         
-        async function aesEncrypt(key,blob){
+        async function aesEncrypt(key,blob,iv_bits=96){
         
               var buf         = await blob.arrayBuffer();
-                                                                                //  96-bit IV recommended
-              var iv          = crypto.getRandomValues(new Uint8Array(12));
+                                                                                //  96-bit IV recommended ( 12 bytes )
+              var bytes       = iv_bits/8;
+              var iv          = crypto.getRandomValues(new Uint8Array(bytes));
               
               var algorithm   = {name:'AES-GCM',iv}
               key             = key;
@@ -109,7 +110,7 @@ aes encrypt / decrypt browser
   //:
   
   
-        function iv_buf_blob(iv,buf){debugger;
+        function iv_buf_blob(iv,buf){
         
               var n1      = iv.length;
               var n       = n1+buf.length;
@@ -122,13 +123,14 @@ aes encrypt / decrypt browser
         }//iv_buf
         
         
-        async function blob_iv_buf(blob,iv_bits=96){debugger;
+        async function blob_iv_buf(blob,iv_bits=96){
         
+              var bytes   = iv_bits/8;
               var n       = blob.size;
               var buf     = await blob.arrayBuffer();
               var uint8   = new Uint8Array(buf);
-              var iv      = uint8.slice(0,iv_bits);
-              var buf     = uint8.slice(iv_bits);
+              var iv      = uint8.slice(0,bytes);
+              var buf     = uint8.slice(bytes);
               return {iv,buf};
               
         }//blob_iv_buf
