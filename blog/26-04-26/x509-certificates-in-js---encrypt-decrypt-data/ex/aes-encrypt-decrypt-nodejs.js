@@ -17,28 +17,52 @@ aes-encrypt-decrypt-nodejs.js
         
         
         
-        function importAesKey(base64){
+  //:
+  
+  
+        function generateAesKey(length=256){
         
-              return Buffer.from(base64,'base64'); // raw 32‑byte key
+              var bytes   = length/8;
+              var key     = crypto.randomBytes(32);
+                                                                                //  console.log("Hex Key:", key.toString('hex'));
+                                                                                //  console.log("Base64 Key:", key.toString('base64'));
+              return key;
+              
+        }//generateAesKey
+        
+        
+        function importAesKey(blob){
+        
+              var key   = await blob_buffer(blob);
+              return key;
               
         }//importAesKey
         
         
-        function aesEncryptNode(keyBuf,plaintext,iv_bits=96){
+        function exportAesKey(key){
+        
+              var key2    = buffer_blob(key);
+              return key2;
+              
+        }//exportAesKey
+        
+        
+        async function aesEncryptNode(key,blob,iv_bits=96){
         
               var bytes       = iv_bits/8;
               var iv          = crypto.randomBytes(bytes);
+              key             = await blob_buffer(key);
+              var buf         = await blob_buffer(blob);
               
-              var cipher      = crypto.createCipheriv('aes-256-gcm',keyBuf,iv);
+              var cipher      = crypto.createCipheriv('aes-256-gcm',key,iv);
               
-              var buf1        = cipher.update(plaintext,'utf8');
+              var buf1        = cipher.update(buf);
               var buf2        = cipher.final();
               
               var encrypted   = Buffer.concat([buf1,buf2]);
-              
               var tag         = cipher.getAuthTag();
               
-              var buf         = Buffer.concat([ciphertext,authTag]);
+              var buf         = Buffer.concat([encrypted,authTag]);
               
               var blob        = iv_buf_blob(iv,buf);
               return blob;
@@ -47,21 +71,29 @@ aes-encrypt-decrypt-nodejs.js
         
         
         
-        function aesDecryptNode(keyBuf,encrypted){
+        async function aesDecryptNode(key,blob,iv_bits=96){
         
-              var iv = Buffer.from(encrypted.iv, 'base64');
-              var data = Buffer.from(encrypted.data, 'base64');
-              var tag = Buffer.from(encrypted.tag, 'base64');
+              var bytes         = iv_bits/8;
+              var taglength     = 16;
               
-              var decipher = crypto.createDecipheriv('aes-256-gcm', keyBuf, iv);
-              decipher.setAuthTag(tag);
+              var buf           = await blob_buffer(blob);
+              var iv            = buf.subarray(0,bytes);
+              buf               = buf.subarray(bytes);
+              var n             = buf.length-taglength;
+              var authTag       = buf.subarray(n);
+              buf               = buf.subarray(0,n);
               
-              var decrypted = Buffer.concat([
-                decipher.update(data),
-                decipher.final()
-              ]);
               
-              return decrypted.toString('utf8');
+              var decipher      = crypto.createDecipheriv('aes-256-gcm',key,iv);
+              decipher.setAuthTag(authTag);
+              
+              var buf1          = decipher.update(buf);
+              var buf2          = decipher.final();
+              
+              var decrypted     = Buffer.concat([buf1,buf2]);
+              var blob          = new Blob([decrypted]);
+              
+              return blob;
               
         }//aesDecryptNode
         
@@ -83,6 +115,13 @@ aes-encrypt-decrypt-nodejs.js
         
         
         
+        function buffer_blob(buf){
+        
+              var blob    = new Blob([buf]);
+              return blob;
+              
+        }//buffer_blob
+        
         
         async function blob_buffer(){
         
@@ -91,3 +130,13 @@ aes-encrypt-decrypt-nodejs.js
               return buffer;
               
         }//blob_buffer
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
