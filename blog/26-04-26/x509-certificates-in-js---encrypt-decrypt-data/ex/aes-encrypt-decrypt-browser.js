@@ -20,7 +20,7 @@ aes encrypt / decrypt browser
         
         var key         = await generateAesKey();
         var encrypted   = await aesEncrypt(key,blob);
-        var b64         = blob_b64(encrypted);
+        var b64         = await blob_b64(encrypted);
                                                                                 console.log('encrypted :');
                                                                                 console.log(b64);
                                                                                 console.log();
@@ -109,7 +109,7 @@ aes encrypt / decrypt browser
   //:
   
   
-        function iv_buf_blob(iv,buf){
+        function iv_buf_blob(iv,buf){debugger;
         
               var n1      = iv.length;
               var n       = n1+buf.length;
@@ -122,7 +122,7 @@ aes encrypt / decrypt browser
         }//iv_buf
         
         
-        async function blob_iv_buf(blob,iv_bits=96){
+        async function blob_iv_buf(blob,iv_bits=96){debugger;
         
               var n       = blob.size;
               var buf     = await blob.arrayBuffer();
