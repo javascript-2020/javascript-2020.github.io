@@ -27,20 +27,48 @@ rsa keys should be 4096
         
         var key         = await generateAesKey();
         var key_blob    = await exportAesKey(key);
-                                                                                console.log('key :',key_blob.size);
-        var encrypted   = await aesEncrypt(key,blob);
+                                                                                console.log('key :',key_blob.size,'B');
+                                                                                var b64=await blob_b64(key_blob);
+                                                                                console.log(b64);
+        var encrypted   = await aesEncryptNode(key_blob,blob);
         var b64         = await blob_b64(encrypted);
                                                                                 console.log('encrypted :');
                                                                                 console.log(b64);
                                                                                 console.log();
         var key         = await importAesKey(key_blob);
         
-        var blob        = await aesDecrypt(key,encrypted);
+        var blob        = await aesDecryptNode(key_blob,encrypted);
         
         var txt         = await blob.text();
                                                                                 console.log('decrypted :');
                                                                                 console.log(txt);
                                                                                 
+                                                                                
+                                                                                console.log();
+                                                                                console.log();
+                                                                                
+                                                                                
+      if(enabled=1){
+                                                                                console.log('decrypt test');
+                                                                                console.log();
+            var encrypted_b64   = 'dqeBcMIqEJy2E2z1ixpE98Dcnrp8r275UptzFMoeg7ZTYaZqSv4b';
+            var encrypted       = b64_blob(encrypted_b64);
+            
+            var key_b64         = 'QWC78FsU8wpP9KtQotZn1zLfm1qXKG6S/0rJDF5KVbk=';
+            var key_blob        = b64_blob(key_b64);
+            
+            var blob            = await aesDecryptNode(key_blob,encrypted);
+            
+            var txt             = await blob.text();
+                                                                                console.log('decrypted :');
+                                                                                console.log(txt);
+                                                                                
+                                                                                
+                                                                                console.log();
+                                                                                console.log();
+      }//enabled
+      
+      
 })();
 
 
@@ -89,7 +117,7 @@ rsa keys should be 4096
               var encrypted   = Buffer.concat([buf1,buf2]);
               var tag         = cipher.getAuthTag();
               
-              var buf         = Buffer.concat([encrypted,authTag]);
+              var buf         = Buffer.concat([encrypted,tag]);
               
               var blob        = iv_buf_blob(iv,buf);
               return blob;
@@ -103,16 +131,17 @@ rsa keys should be 4096
               var bytes         = iv_bits/8;
               var taglength     = 16;
               
+              key               = await blob_buffer(key);
               var buf           = await blob_buffer(blob);
               var iv            = buf.subarray(0,bytes);
               buf               = buf.subarray(bytes);
               var n             = buf.length-taglength;
-              var authTag       = buf.subarray(n);
+              var tag           = buf.subarray(n);
               buf               = buf.subarray(0,n);
               
               
               var decipher      = crypto.createDecipheriv('aes-256-gcm',key,iv);
-              decipher.setAuthTag(authTag);
+              decipher.setAuthTag(tag);
               
               var buf1          = decipher.update(buf);
               var buf2          = decipher.final();
@@ -150,7 +179,7 @@ rsa keys should be 4096
         }//buffer_blob
         
         
-        async function blob_buffer(){
+        async function blob_buffer(blob){
         
               var buf       = await blob.arrayBuffer();
               var buffer    = Buffer.from(buf);
@@ -159,6 +188,42 @@ rsa keys should be 4096
         }//blob_buffer
         
         
+        async function blob_b64(blob){
+        
+              var uint8   = await blob_uint8(blob);
+              var bin     = [...uint8].reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64     = btoa(bin);
+              return b64;
+              
+        }//blob_b64
+        
+        
+        function b64_blob(b64,type='text/plain'){
+        
+              var bin     = atob(b64);
+              var bytes   = [...bin].map(c=>c.charCodeAt(0));
+              var buf     = new Uint8Array(bytes);
+              var blob    = new Blob([buf],{type});
+              return blob;
+              
+        }//b64_blob
+        
+        
+        async function blob_uint8(blob){
+        
+              var buf     = await blob.arrayBuffer();
+              var uint8   = new Uint8Array(buf);
+              return uint8;
+              
+        }//blob_uint8
+        
+        
+        function uint8_blob(uint8){
+        
+              var blob    = new Blob([uint8]);
+              return blob;
+              
+        }//uint8_blob
         
         
         
