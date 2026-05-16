@@ -77,29 +77,26 @@ aes encrypt / decrypt browser
               var iv          = crypto.getRandomValues(new Uint8Array(12));
               
               var algorithm   = {name:'AES-GCM',iv}
-              var key         = key;
+              key             = key;
               var data        = buf;
               
               var buf         = await crypto.subtle.encrypt(algorithm,key,data);
               
-              iv              = buf_b64(iv);
-              var data        = buf_b64(buf);
+              buf             = new Uint8Array(buf);
               
-              var encrypted   = {iv,data};
-              return encrypted;
+              var blob        = iv_buf_blob(iv,blob);
+              return blob;
               
         }//aesEncrypt
         
         
-        async function aesDecrypt(key,encrypted){
+        async function aesDecrypt(key,blob){
         
-              var {iv,data}   = encrypted;
-              
-              iv              = b64_uint8(iv);
+              var {iv,data}   = await blob_iv_buf(blob);
               
               var algorithm   = {name:'AES-GCM',iv};
               key             = key;
-              data            = b64_uint8(data);
+              data            = data;
               
               var buf         = await crypto.subtle.decrypt(algorithm,key,data);
               
@@ -113,7 +110,27 @@ aes encrypt / decrypt browser
   
   
         function iv_buf_blob(iv,buf){
+        
+              var n1      = iv.length;
+              var n       = n1+buf.length;
+              var uint8   = new Uint8Array(n);
+              uint8.set(iv,0);
+              uint8.set(buf,n1);
+              return uint8;
+              
         }//iv_buf
+        
+        
+        function blob_iv_buf(blob,iv_bits=96){
+        
+              var n       = blob.size;
+              var buf     = await blob.arrayBuffer();
+              var uint8   = new Uint8Array(buf);
+              var iv      = uint8.slice(0,iv_bits);
+              var buf     = uint8.slice(iv_bits);
+              return {iv,buf};
+              
+        }//blob_iv_buf
         
         
         async function blob_b64(blob){
