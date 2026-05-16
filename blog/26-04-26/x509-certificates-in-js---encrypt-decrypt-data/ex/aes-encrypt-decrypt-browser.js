@@ -35,7 +35,7 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
         
         var key                     = await generateAesKey();
         var key_blob                = await exportAesKey(key);
-                                                                                console.log('key :',key_blob.size,'B');
+                                                                                console.log('key :',key_blob.size,'bytes');
                                                                                 var b64   = await blob_b64(key_blob);
                                                                                 console.log(b64);
                                                                                 console.log();
