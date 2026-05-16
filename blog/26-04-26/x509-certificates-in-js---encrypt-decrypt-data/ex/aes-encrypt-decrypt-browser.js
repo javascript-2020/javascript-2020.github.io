@@ -97,7 +97,7 @@ aes encrypt / decrypt browser
               
               var algorithm   = {name:'AES-GCM',iv};
               key             = key;
-              data            = data;
+              data            = data.buffer;
               
               var buf         = await crypto.subtle.decrypt(algorithm,key,data);
               
