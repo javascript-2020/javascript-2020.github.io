@@ -10,6 +10,19 @@ aes encrypt / decrypt browser
 30-04-26
 
 
+SubtleCrypto: generateKey()       : https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/generateKey
+SubtleCrypto: exportKey()         : https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/exportKey
+SubtleCrypto: importKey()         : https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey
+SubtleCrypto: encrypt()           : https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt
+SubtleCrypto: decrypt()           : https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt
+Crypto: getRandomValues()         : https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues
+TextEncoder: encode()             : https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode
+TextDecoder: decode()             : https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/decode
+Blob: Blob()                      : https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob
+TypedArray.prototype.set()        : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set
+TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/slice
+
+
 */
 
 
