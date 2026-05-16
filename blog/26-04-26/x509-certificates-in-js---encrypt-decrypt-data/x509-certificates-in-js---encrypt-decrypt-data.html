@@ -115,9 +115,9 @@
             
             
             <div class=blog-text>
-                  <h4>
+                  <h3>
                         notes :
-                  </h4>
+                  </h3>
                   <p>
                         private keys :
                   </p>
@@ -498,7 +498,9 @@
             
             
             <div class=blog-text>
-                  <h3>what size rsa keys do i need to encrypt an aes key of 256 bits</h3>
+                  <h3 class=blog-hdr>
+                        what size rsa keys do i need to encrypt an aes key of 256 bits
+                  </h3>
                   <p>To safely encrypt a 256-bit AES key using RSA, you should use an RSA key size of at least 2048 bits,
                   though 3072 bits or 4096 bits is highly recommended for modern applications requiring long-term security.</p>
                   <p>The reason for this requires looking at how RSA and AES work together, as well as the strict physical limits of RSA encryption.</p>
@@ -508,7 +510,9 @@
                   <p><strong>4096-bit RSA</strong> provides roughly <strong>140+ bits</strong> of effective security strength.</p>
                   <p>While mathematically a 3072-bit or 4096-bit RSA key is technically required to get closer to the massive security margin of a 256-bit AES key,
                   <strong>2048-bit is the absolute bare minimum</strong> allowed by modern cryptographic standards.</p>
-                  <h2>Padding Overhead</h2>
+                  <h4>
+                        Padding Overhead
+                  </h4>
                   <p>You can easily fit a 256-bit (32-byte) AES key into even the smallest standard RSA key size because of how RSA handles data.</p>
                   <p>An RSA key can only encrypt data that is smaller than its own modulus size, minus the required bytes for secure padding (like OAEP).</p>
                   <table>
@@ -553,7 +557,9 @@
                   </tbody>
                   </table>
                   <p>Even a 2048-bit RSA key gives you 190 bytes of payload space, which is more than enough room to slot your 32-byte AES key into.</p>
-                  <h2>Recommendation</h2>
+                  <h4>
+                        Recommendation
+                  </h4>
                   <p>Go with 3072-bit if you want the optimal balance between tight security and fast performance,
                   or 4096-bit if execution time isn't a bottleneck in your application and you want maximum security.
                   Avoid 2048-bit if you are designing a brand-new system from scratch.</p>
@@ -562,7 +568,11 @@
             
             
             <div class=blog-text>
-                  <h3>how does iv length affect things? whats the deal with 96 bits</h3>
+            
+                  <h3 class=blog-hdr>
+                        how does iv length affect things? whats the deal with 96 bits
+                  </h3>
+                  
                   <p>When dealing with encryption (specifically symmetric encryption like <strong>AES</strong>), the <strong>Initialization Vector (IV)</strong>
                   ensures that encrypting the exact same data twice results in two completely different ciphertexts.
                   This prevents attackers from spotting patterns in your data.</p>
@@ -586,17 +596,29 @@
                   |            (96 bits)               |    (32 bits)     |
                   +------------------------------------+------------------+
                   </code></pre>
-                  <h4>What happens if you use a 96-bit IV?</h4>
+                  
+                  
+                  <h4>
+                        What happens if you use a 96-bit IV?
+                  </h4>
+                  
                   <p>If you supply exactly 96 bits, the cryptographic engine simply pads it with a 32-bit counter starting at 1.
                   <strong>This is direct, incredibly fast, and requires zero extra computational overhead.</strong></p>
-                  <h4>What happens if you use any other size (e.g., 128 bits)?</h4>
+                  
+                  <h4>
+                        What happens if you use any other size (e.g., 128 bits)?
+                  </h4>
+                  
                   <p>If you pass an IV that is not 96 bits, the algorithm cannot use it directly. Instead, it has to run your IV through
                   a hashing function called GHASH to mathematically compress or stretch it into a 96-bit value first.</p>
                   <p>The Downside: This adds extra computation (hurting performance), can subtly introduce a higher risk of IV collisions,
                   and can lead to implementation bugs across different programming languages.</p>
                   <p>Rule of Thumb for GCM: Always use a 96-bit (12-byte) IV for AES-GCM. Using anything else is less efficient
                   and prone to compatibility headaches.</p>
-                  <h4>What About Other Modes (Like AES-CBC)?</h4>
+                  
+                  <h4>
+                        What About Other Modes (Like AES-CBC)?
+                  </h4>
                   <p>If you are using an older mode like AES-CBC (Cipher Block Chaining), the rule is different.</p>
                   <p>CBC mode requires the IV to be exactly the same size as the cipher's block size.
                   Since AES always has a block size of 128 bits, AES-CBC requires a 128-bit (16-byte) IV.</p>
