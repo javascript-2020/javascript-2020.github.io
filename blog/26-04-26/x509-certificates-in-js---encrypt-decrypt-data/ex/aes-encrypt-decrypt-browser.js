@@ -49,9 +49,32 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
                                                                                 console.log('decrypted :');
                                                                                 console.log(txt);
                                                                                 
+                                                                                console.log();
+                                                                                console.log();
                                                                                 
+})();
+
+
+(async()=>{
+
+      if(enabled=1){
+                                                                                console.log('decrypt test');
+                                                                                console.log();
+            var encrypted_b64   = 'dqeBcMIqEJy2E2z1ixpE98Dcnrp8r275UptzFMoeg7ZTYaZqSv4b';
+            var encrypted       = b64_blob(encrypted_b64);
+            
+            var key_b64         = 'QWC78FsU8wpP9KtQotZn1zLfm1qXKG6S/0rJDF5KVbk=';
+            var key_blob        = b64_blob(key_b64);
+            
+            var blob            = await aesDecryptNode(key_blob,encrypted);
+            
+            var txt             = await blob.text();
+                                                                                console.log('decrypted :');
+                                                                                console.log(txt);
                                                                                 
-                                                                                
+      }//enabled
+      
+      
 })();
 
 
