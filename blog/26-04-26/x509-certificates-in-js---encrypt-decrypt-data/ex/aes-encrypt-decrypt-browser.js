@@ -51,13 +51,11 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
                                                                                 console.log('decrypted :');
                                                                                 console.log(txt);
                                                                                 
-})();
-
+                                                                                
                                                                                 console.log();
                                                                                 console.log();
                                                                                 
-(async()=>{
-
+                                                                                
       if(enabled=1){
                                                                                 console.log('decrypt test');
                                                                                 console.log();
