@@ -19,14 +19,15 @@ aes encrypt / decrypt browser
         var blob        = new Blob(['hello world']);
         
         var key         = await generateAesKey();
-        var blob        = await exportAesKey(key);
-                                                                                console.log('key :',blob.size);
+        var key_blob    = await exportAesKey(key);
+                                                                                console.log('key :',key_blob.size);
         var encrypted   = await aesEncrypt(key,blob);
         var b64         = await blob_b64(encrypted);
                                                                                 console.log('encrypted :');
                                                                                 console.log(b64);
                                                                                 console.log();
-        var key         = await importAesKey(blob);
+        var key         = await importAesKey(key_blob);
+        
         var blob        = await aesDecrypt(key,encrypted);
         
         var txt         = await blob.text();
