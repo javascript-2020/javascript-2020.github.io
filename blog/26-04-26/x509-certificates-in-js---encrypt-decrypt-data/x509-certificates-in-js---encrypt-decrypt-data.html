@@ -154,38 +154,84 @@
                   </ul>
             </div>
             
-            <div>
+            
+            <div class=blog-text>
+            
+                  <h3>The Secure Workflow</h3>
+                  <p>The correct steps for sending a secure payload using x509 private key and certificate:</p>
+                  <ol>
+                  <li>
+                  <p>Receiver generates RSA Private Key &amp; X.509 Certificate (with Key Encipherment allowed).</p>
+                  </li>
+                  <li>
+                  <p>Receiver sends the X.509 Certificate to the Sender.</p>
+                  </li>
+                  <li>
+                  <p>Sender generates a random AES-GCM key and a 96-bit IV.</p>
+                  </li>
+                  <li>
+                  <p>Sender encrypts the payload with the AES key and IV.</p>
+                  </li>
+                  <li>
+                  <p>Sender encrypts the AES key using the Receiver's RSA Public Key (from the cert).</p>
+                  </li>
+                  <li>
+                  <p>Sender sends three things to the Receiver:</p>
+                  <ul>
+                  <li>
+                  <p>The encrypted payload.</p>
+                  </li>
+                  <li>
+                  <p>The 96-bit IV (unencrypted, this is safe to expose).</p>
+                  </li>
+                  <li>
+                  <p>The RSA-encrypted AES key.</p>
+                  </li>
+                  </ul>
+                  </li>
+                  <li>
+                  <p>Receiver uses their RSA Private Key to decrypt the AES key.</p>
+                  </li>
+                  <li>
+                  <p>Receiver uses the decrypted AES key + the IV to decrypt the payload.</p>
+                  </li>
+                  </ol>
+                  
+            </div>
+            
+            
+            <h2>
             
                   RSA encrypt / decrypt in the browser
                   
-            </div>
+            </h2>
             
             <snippet-console component id=x509-browser src='ex/rsa-encrypt-decrypt-browser.js'></snippet-console>
             
             
-            <div>
+            <h2>
             
                   RSA encrypt / decrypt in nodejs
                   
-            </div>
+            </h2>
             
             <snippet-editor component id=x509-nodejs src='ex/rsa-encrypt-decrypt-nodejs.js'></snippet-editor>
             
             
-            <div>
+            <h2>
             
                   AES encrypt / decrypt in the browser
                   
-            </div>
+            </h2>
             
             <snippet-console component id=aes-browser src='ex/aes-encrypt-decrypt-browser.js'></snippet-console>
             
             
-            <div>
+            <h2>
             
                   AES encrypt / decrypt in nodejs
                   
-            </div>
+            </h2>
             
             <snippet-editor component id=aes-nodejs src='ex/aes-encrypt-decrypt-nodejs.js'></snippet-editor>
             
