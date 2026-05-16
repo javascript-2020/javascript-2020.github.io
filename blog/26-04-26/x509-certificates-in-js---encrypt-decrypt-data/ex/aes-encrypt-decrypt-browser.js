@@ -51,6 +51,11 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
                                                                                 
                                                                                 
                                                                                 
+                                                                                
+})();
+
+
+
         async function generateAesKey(length=256){
         
               var algorithm     = {name:'AES-GCM',length};
@@ -234,7 +239,3 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
         
         
         
-})();
-
-
-
