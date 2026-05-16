@@ -93,11 +93,11 @@ aes encrypt / decrypt browser
         
         async function aesDecrypt(key,blob){
         
-              var {iv,data}   = await blob_iv_buf(blob);
+              var {iv,buf}    = await blob_iv_buf(blob);
               
               var algorithm   = {name:'AES-GCM',iv};
               key             = key;
-              data            = data.buffer;
+              data            = buf.buffer;
               
               var buf         = await crypto.subtle.decrypt(algorithm,key,data);
               
@@ -123,7 +123,7 @@ aes encrypt / decrypt browser
         }//iv_buf
         
         
-        async function blob_iv_buf(blob,iv_bits=96){
+        async function blob_iv_buf(blob,iv_bits=96){debugger;
         
               var bytes   = iv_bits/8;
               var n       = blob.size;
