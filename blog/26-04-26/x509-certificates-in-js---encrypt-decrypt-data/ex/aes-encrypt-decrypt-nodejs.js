@@ -50,7 +50,7 @@ rsa keys should be 4096
                                                                                 
                                                                                 
       if(enabled=1){
-                                                                                console.log('---  decrypt test  ---');
+                                                                                console.log('---  decrypt test  ( from browser )  ---');
                                                                                 console.log();
             var key_b64             = 'KdaWP1dLZoOCxJSu/q5yRFtwbHEFKTmo8YcikfGFNcQ=';
             var key_blob            = b64_blob(key_b64);
