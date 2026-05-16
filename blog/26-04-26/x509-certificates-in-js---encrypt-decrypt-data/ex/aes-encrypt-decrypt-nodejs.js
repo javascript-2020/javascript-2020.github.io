@@ -7,6 +7,11 @@
 aes-encrypt-decrypt-nodejs.js
 
 30-04-26
+16-05-26
+
+rsa keys should be 4096
+
+
 
 
 */
@@ -15,8 +20,30 @@ aes-encrypt-decrypt-nodejs.js
 
         var crypto    = require('crypto');
         
+(async()=>{
+                                                                                console.clear();
+                                                                                
+        var blob        = new Blob(['hello world']);
         
+        var key         = await generateAesKey();
+        var key_blob    = await exportAesKey(key);
+                                                                                console.log('key :',key_blob.size);
+        var encrypted   = await aesEncrypt(key,blob);
+        var b64         = await blob_b64(encrypted);
+                                                                                console.log('encrypted :');
+                                                                                console.log(b64);
+                                                                                console.log();
+        var key         = await importAesKey(key_blob);
         
+        var blob        = await aesDecrypt(key,encrypted);
+        
+        var txt         = await blob.text();
+                                                                                console.log('decrypted :');
+                                                                                console.log(txt);
+                                                                                
+})();
+
+
   //:
   
   
