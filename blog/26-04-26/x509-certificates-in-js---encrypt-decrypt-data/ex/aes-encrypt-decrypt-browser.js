@@ -31,23 +31,23 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
 (async()=>{
                                                                                 console.clear();
                                                                                 
-        var blob        = new Blob(['hello world']);
+        var blob                    = new Blob(['hello world']);
         
-        var key         = await generateAesKey();
-        var key_blob    = await exportAesKey(key);
+        var key                     = await generateAesKey();
+        var key_blob                = await exportAesKey(key);
                                                                                 console.log('key :',key_blob.size,'B');
                                                                                 var b64   = await blob_b64(key_blob);
                                                                                 console.log(b64);
                                                                                 console.log();
-        var encrypted   = await aesEncrypt(key_blob,blob);
-        var b64         = await blob_b64(encrypted);
+        var encrypted               = await aesEncrypt(key_blob,blob);
+        var b64                     = await blob_b64(encrypted);
                                                                                 console.log('encrypted :');
                                                                                 console.log(b64);
                                                                                 console.log();
                                                                                 
-        var blob        = await aesDecrypt(key_blob,encrypted);
+        var blob                    = await aesDecrypt(key_blob,encrypted);
         
-        var txt         = await blob.text();
+        var txt                     = await blob.text();
                                                                                 console.log('decrypted :');
                                                                                 console.log(txt);
                                                                                 
@@ -59,15 +59,15 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
       if(enabled=1){
                                                                                 console.log('---  decrypt test  ---');
                                                                                 console.log();
-            var encrypted_b64   = 'dqeBcMIqEJy2E2z1ixpE98Dcnrp8r275UptzFMoeg7ZTYaZqSv4b';
-            var encrypted       = b64_blob(encrypted_b64);
+            var encrypted_b64       = 'dqeBcMIqEJy2E2z1ixpE98Dcnrp8r275UptzFMoeg7ZTYaZqSv4b';
+            var encrypted           = b64_blob(encrypted_b64);
             
-            var key_b64         = 'QWC78FsU8wpP9KtQotZn1zLfm1qXKG6S/0rJDF5KVbk=';
-            var key_blob        = b64_blob(key_b64);
+            var key_b64             = 'QWC78FsU8wpP9KtQotZn1zLfm1qXKG6S/0rJDF5KVbk=';
+            var key_blob            = b64_blob(key_b64);
             
-            var blob            = await aesDecrypt(key_blob,encrypted);
+            var blob                = await aesDecrypt(key_blob,encrypted);
             
-            var txt             = await blob.text();
+            var txt                 = await blob.text();
                                                                                 console.log('decrypted :');
                                                                                 console.log(txt);
                                                                                 
