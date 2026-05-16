@@ -123,7 +123,7 @@ aes encrypt / decrypt browser
         }//iv_buf
         
         
-        async function blob_iv_buf(blob,iv_bits=96){debugger;
+        async function blob_iv_buf(blob,iv_bits=96){
         
               var bytes   = iv_bits/8;
               var n       = blob.size;
