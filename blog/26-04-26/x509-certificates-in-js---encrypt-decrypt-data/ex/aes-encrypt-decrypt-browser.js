@@ -71,6 +71,8 @@ TypedArray.prototype.slice()      : https://developer.mozilla.org/en-US/docs/Web
                                                                                 console.log('decrypted :');
                                                                                 console.log(txt);
                                                                                 
+                                                                                console.log();
+                                                                                console.log();
       }//enabled
       
       
