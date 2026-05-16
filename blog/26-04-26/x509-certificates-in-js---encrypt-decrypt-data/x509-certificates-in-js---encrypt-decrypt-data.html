@@ -227,6 +227,8 @@
             </div>
             
             
+            
+            
             <div class=blog-text>
                   <h3 class=blog-hdr>
                         PKCS#1 vs PKCS#8 (the important difference)
@@ -343,8 +345,9 @@
                   <code>
                         openssl pkcs8 -topk8 -nocrypt -in pkcs1.pem -out pkcs8.pem
                   </code>
-                  
-                  
+            </div>
+            
+            
             <div class=blog-text>
                   <h3 class=blog-hdr>
                         SPKI
@@ -444,6 +447,136 @@
                   </ul>
             </div>
             
+            
+            
+            
+            
+            <div class=blog-text>
+                  <h3>what size rsa keys do i need to encrypt an aes key of 256 bits</h3>
+                  <p>To safely encrypt a 256-bit AES key using RSA, you should use an RSA key size of at least 2048 bits,
+                  though 3072 bits or 4096 bits is highly recommended for modern applications requiring long-term security.</p>
+                  <p>The reason for this requires looking at how RSA and AES work together, as well as the strict physical limits of RSA encryption.</p>
+                  <p>In cryptography, you want the security strength of your asymmetric key (RSA) to match or exceed the security strength of your symmetric key (AES).</p>
+                  <p><strong>2048-bit RSA</strong> provides roughly <strong>112 bits</strong> of effective security strength (vulnerable to well-funded adversaries or long-term storage cracking over the next decade).</p>
+                  <p><strong>3072-bit RSA</strong> provides roughly <strong>128 bits</strong> of effective security strength (the current NIST recommended minimum for modern systems).</p>
+                  <p><strong>4096-bit RSA</strong> provides roughly <strong>140+ bits</strong> of effective security strength.</p>
+                  <p>While mathematically a 3072-bit or 4096-bit RSA key is technically required to get closer to the massive security margin of a 256-bit AES key,
+                  <strong>2048-bit is the absolute bare minimum</strong> allowed by modern cryptographic standards.</p>
+                  <h2>Padding Overhead</h2>
+                  <p>You can easily fit a 256-bit (32-byte) AES key into even the smallest standard RSA key size because of how RSA handles data.</p>
+                  <p>An RSA key can only encrypt data that is smaller than its own modulus size, minus the required bytes for secure padding (like OAEP).</p>
+                  <table>
+                  <thead>
+                  <tr>
+                  <th>RSA Key Size</th>
+                  <th>Max Total Capacity</th>
+                  <th>Padding Overhead (OAEP SHA-256)</th>
+                  <th>Max Allowed Payload Space</th>
+                  <th>Can it fit a 32-byte AES key?</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                  <td>1024-bit (Obsolete)</td>
+                  <td>128 bytes</td>
+                  <td>66 bytes</td>
+                  <td>62 bytes</td>
+                  <td>Yes (But insecure)</td>
+                  </tr>
+                  <tr>
+                  <td>2048-bit</td>
+                  <td>256 bytes</td>
+                  <td>66 bytes</td>
+                  <td>190 bytes</td>
+                  <td>Yes</td>
+                  </tr>
+                  <tr>
+                  <td>3072-bit</td>
+                  <td>384 bytes</td>
+                  <td>66 bytes</td>
+                  <td>318 bytes</td>
+                  <td>Yes</td>
+                  </tr>
+                  <tr>
+                  <td>4096-bit</td>
+                  <td>512 bytes</td>
+                  <td>66 bytes</td>
+                  <td>446 bytes</td>
+                  <td>Yes</td>
+                  </tr>
+                  </tbody>
+                  </table>
+                  <p>Even a 2048-bit RSA key gives you 190 bytes of payload space, which is more than enough room to slot your 32-byte AES key into.</p>
+                  <h2>Recommendation</h2>
+                  <p>Go with 3072-bit if you want the optimal balance between tight security and fast performance,
+                  or 4096-bit if execution time isn't a bottleneck in your application and you want maximum security.
+                  Avoid 2048-bit if you are designing a brand-new system from scratch.</p>
+                  
+            </div>
+            
+            
+            <div class=blog-text>
+                  <h3>how does iv length affect things? whats the deal with 96 bits</h3>
+                  <p>When dealing with encryption (specifically symmetric encryption like <strong>AES</strong>), the <strong>Initialization Vector (IV)</strong>
+                  ensures that encrypting the exact same data twice results in two completely different ciphertexts.
+                  This prevents attackers from spotting patterns in your data.</p>
+                  <p>How the IV length affects things depends heavily on the <strong>encryption mode</strong> you are using.
+                  The &quot;96 bits&quot; sweet spot is tied directly to the most popular modern encryption mode: <strong>AES-GCM</strong>.</p>
+                  <p>Here is the breakdown of why IV length matters and what makes 96 bits special.</p>
+                  <h4>Why 96 Bits (12 Bytes) is the Golden Number</h4>
+                  <p>The 96-bit rule is specific to <strong>AES-GCM (Galois/Counter Mode)</strong>, which is the industry standard for authenticated encryption.</p>
+                  <p>When you use AES-GCM, the internal mechanism requires a <strong>128-bit block</strong> to work with. It splits that 128-bit block into two parts:</p>
+                  <ul>
+                  <li>
+                  <p>The IV : 96 bits.</p>
+                  </li>
+                  <li>
+                  <p>A Counter: 32 bits (which starts at 0000...0001 and increments for every block of data encrypted).</p>
+                  </li>
+                  </ul>
+                  <pre><code>AES-GCM Internal Block (128 bits total)
+                  +------------------------------------+------------------+
+                  |           IV / Nonce               |     Counter      |
+                  |            (96 bits)               |    (32 bits)     |
+                  +------------------------------------+------------------+
+                  </code></pre>
+                  <h4>What happens if you use a 96-bit IV?</h4>
+                  <p>If you supply exactly 96 bits, the cryptographic engine simply pads it with a 32-bit counter starting at 1.
+                  <strong>This is direct, incredibly fast, and requires zero extra computational overhead.</strong></p>
+                  <h4>What happens if you use any other size (e.g., 128 bits)?</h4>
+                  <p>If you pass an IV that is not 96 bits, the algorithm cannot use it directly. Instead, it has to run your IV through
+                  a hashing function called GHASH to mathematically compress or stretch it into a 96-bit value first.</p>
+                  <p>The Downside: This adds extra computation (hurting performance), can subtly introduce a higher risk of IV collisions,
+                  and can lead to implementation bugs across different programming languages.</p>
+                  <p>Rule of Thumb for GCM: Always use a 96-bit (12-byte) IV for AES-GCM. Using anything else is less efficient
+                  and prone to compatibility headaches.</p>
+                  <h4>What About Other Modes (Like AES-CBC)?</h4>
+                  <p>If you are using an older mode like AES-CBC (Cipher Block Chaining), the rule is different.</p>
+                  <p>CBC mode requires the IV to be exactly the same size as the cipher's block size.
+                  Since AES always has a block size of 128 bits, AES-CBC requires a 128-bit (16-byte) IV.</p>
+                  <p>If you give it a 96-bit IV, the code will throw an error or crash because it lacks the bytes
+                  needed to scramble the first block of data.</p>
+                  <h4>How IV Length Affects Security (The &quot;Birthday Paradox&quot;)</h4>
+                  <p>The length of your IV dictates how many unique messages you can safely encrypt using the same secret
+                  key before you risk repeating an IV. Repeating an IV with the same key is a catastrophic cryptographic failure.</p>
+                  <p>128-bit IV (CBC Mode): Extremely large space (2^128). You can safely generate random IVs for trillions of
+                  messages without ever worrying about a duplicate.</p>
+                  <p>96-bit IV (GCM Mode): While $2^{96}$ is still a massive number, the math behind random collisions
+                  (the Birthday Paradox) dictates that if you generate purely random 96-bit IVs, you shouldn't encrypt
+                  more than roughly (2^32) (about 4.2 billion) messages under a single key.</p>
+                  <h5>How to handle the 96-bit limit in GCM:</h5>
+                  <p>Because 96 bits is a bit tighter for random generation, cryptographic standards suggest two ways to stay safe:</p>
+                  <ul>
+                  <li>
+                  <p>The Counter Approach (Deterministic): Use a fixed 64-bit device ID combined with a 32-bit
+                  incrementing counter as your IV. Because it counts up, it will never repeat until the counter rolls over.</p>
+                  </li>
+                  <li>
+                  <p>Key Rotation: If you must use purely random 96-bit IVs, generate a fresh encryption key well before you hit a billion messages.</p>
+                  </li>
+                  </ul>
+                  
+            </div>
             
             <log-mod component></log-mod>
             
