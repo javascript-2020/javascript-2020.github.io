@@ -8,7 +8,9 @@ aes encrypt / decrypt browser
 
 
 30-04-26
+16-05-26
 
+rsa keys should be 4096
 
 SubtleCrypto: generateKey()       : https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/generateKey
 SubtleCrypto: exportKey()         : https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/exportKey
