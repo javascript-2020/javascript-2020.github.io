@@ -19,11 +19,14 @@ aes encrypt / decrypt browser
         var blob        = new Blob(['hello world']);
         
         var key         = await generateAesKey();
+        var blob        = await exportAesKey(key);
+                                                                                console.log('key :',blob.size);
         var encrypted   = await aesEncrypt(key,blob);
         var b64         = await blob_b64(encrypted);
                                                                                 console.log('encrypted :');
                                                                                 console.log(b64);
                                                                                 console.log();
+        var key         = await importAesKey(blob);
         var blob        = await aesDecrypt(key,encrypted);
         
         var txt         = await blob.text();
@@ -48,17 +51,19 @@ aes encrypt / decrypt browser
         async function exportAesKey(key){
         
               var buf     = await crypto.subtle.exportKey('raw',key);
-              
-              var b64     = buf_b64(buf);
-              return b64;
+              var blob    = new Blob([buf]);
+              return blob;
               
         }//exportAesKey
         
         
-        async function importAesKey(b64){
+        async function importAesKey(blob){
         
+              var buf           = await blob.arrayBuffer();
+              var uint8         = new Uint8Array(buf);
+              
               var format        = 'raw';
-              var keydata       = b64_uint8(b64);
+              var keydata       = uint8;
               var algorithm     = 'AES-GCM';
               var extractable   = true;
               var keyusage      = ['encrypt','decrypt'];
@@ -136,11 +141,27 @@ aes encrypt / decrypt browser
         }//blob_iv_buf
         
         
-        async function blob_b64(blob){
+        async function blob_uint8(blob){
         
               var buf     = await blob.arrayBuffer();
-              var bytes   = new Uint8Array(buf);
-              var bin     = [...bytes].reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var uint8   = new Uint8Array(buf);
+              return uint8;
+              
+        }//blob_uint8
+        
+        
+        function uint8_blob(uint8){
+        
+              var blob    = new Blob([uint8]);
+              return blob;
+              
+        }//uint8_blob
+        
+        
+        async function blob_b64(blob){
+        
+              var uint8   = await blob_uint8(blob);
+              var bin     = [...uint8].reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
               var b64     = btoa(bin);
               return b64;
               
