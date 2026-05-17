@@ -23,9 +23,10 @@
                                                                                 console.log('Decrypted:', decrypted);
                                                                                 
                                                                                 
-  //:
-  
-  
+}();
+
+
+
         function extract_spki(cert){
                                                                                 //  requires node-forge
               var cert          = forge.pki.certificateFromPem(cert);
@@ -204,10 +205,8 @@
         
         
         
-}();
-
-
-
-
-
-
+        
+        
+        
+        
+        
