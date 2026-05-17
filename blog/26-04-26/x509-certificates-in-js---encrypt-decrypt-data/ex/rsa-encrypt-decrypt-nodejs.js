@@ -1,5 +1,7 @@
 
 
+
+
 !async function(){
                                                                                 console.clear();
                                                                                 
@@ -24,9 +26,11 @@
                                                                                 console.log('Decrypted:', decrypted);
                                                                                 
                                                                                 
-  //:
-  
-  
+}();
+
+
+
+
         function extract_spki(certPem){
         
               certPem             = normalisePem(certPem);
@@ -223,8 +227,7 @@
         
         
         
-}();
-
-
-
-
+        
+        
+        
+        
