@@ -10,8 +10,6 @@
         var {key,cert}          = setup();
         
         
-        
-        
         var secret              = 'hello world';
         var blob                = new Blob([secret]);
         
