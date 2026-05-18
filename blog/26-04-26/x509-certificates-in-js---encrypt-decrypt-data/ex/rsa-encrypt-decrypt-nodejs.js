@@ -1,5 +1,19 @@
 
 
+
+/*
+
+rsa-encrypt-decrypt-nodejs.js
+
+18-05-26
+
+https://nodejs.org/api/crypto.html#cryptocreatepublickeykey
+https://nodejs.org/api/crypto.html#class-keyobject
+
+
+*/
+
+
         var crypto            = require('crypto');
         
         
