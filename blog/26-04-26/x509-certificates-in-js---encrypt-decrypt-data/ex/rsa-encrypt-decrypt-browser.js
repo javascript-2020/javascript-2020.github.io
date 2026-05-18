@@ -1,6 +1,16 @@
 
 
 
+/*
+
+rsa-encrypt-decrypt-browser.js
+
+18-06-26
+
+
+*/
+
+
         var forge;
         
 !async function(){
