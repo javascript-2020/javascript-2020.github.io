@@ -9,6 +9,10 @@ rsa-encrypt-decrypt-nodejs.js
 
 https://nodejs.org/api/crypto.html#cryptocreatepublickeykey
 https://nodejs.org/api/crypto.html#class-keyobject
+https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey
+https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt
+https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt
+
 
 
 */
