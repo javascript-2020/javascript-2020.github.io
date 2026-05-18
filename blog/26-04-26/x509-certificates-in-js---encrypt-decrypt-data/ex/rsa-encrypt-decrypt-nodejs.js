@@ -1,12 +1,12 @@
 
 
-
-
+        var crypto            = require('crypto');
+        
+        
 !async function(){
                                                                                 console.clear();
                                                                                 
-        const crypto            = require('crypto');
-        
+                                                                                
         var {key,cert}          = setup();
         
         
