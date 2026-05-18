@@ -39,27 +39,7 @@
               
         }//extract_spki
         
-async function pub_key(cert) {
-  // Extract raw SPKI bytes without Node-specific modules
-  const spki = extract_spki_der(cert);
-  const buf = spki.buffer;
-  
-  // Use the environment's global Web Crypto interface.
-  // Note: We use globalThis.crypto to ensure we aren't accidentally
-  // accessing a variable bound by a 'require' statement.
-  const webCrypto = globalThis.crypto?.subtle || globalThis.crypto;
-  
-  const importedKey = await webCrypto.importKey(
-    'spki',
-    buf,
-    { name: 'RSA-OAEP', hash: 'SHA-256' },
-    true,
-    ['encrypt']
-  );
-  
-  return importedKey;
-}
-/*
+        
         async function pub_key(cert){
         
               var spki      = extract_spki(cert);
@@ -68,8 +48,8 @@ async function pub_key(cert) {
               return pub_key;
               
         }//pub_key
-*/
-
+        
+        
         async function encrypt(blob,cert){
         
               var publicKey     = await pub_key(cert);
