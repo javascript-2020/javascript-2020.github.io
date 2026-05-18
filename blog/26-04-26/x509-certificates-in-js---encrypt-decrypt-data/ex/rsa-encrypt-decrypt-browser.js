@@ -8,6 +8,11 @@ rsa-encrypt-decrypt-browser.js
 18-06-26
 
 
+https://www.npmjs.com/package/node-forge#user-content-pki-1
+https://www.npmjs.com/package/node-forge#user-content-asn1
+https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey
+https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt
+https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt
 */
 
 
