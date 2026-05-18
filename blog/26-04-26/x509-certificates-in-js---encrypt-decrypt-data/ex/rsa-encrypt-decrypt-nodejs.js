@@ -6,7 +6,6 @@
 !async function(){
                                                                                 console.clear();
                                                                                 
-                                                                                
         var {key,cert}          = setup();
         
         
