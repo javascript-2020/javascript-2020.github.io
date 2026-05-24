@@ -84,6 +84,11 @@
                   <div id=output class=markdown-body>
                   </div>
                   
+                  <div id=npm-output class='_6d9832ac _704c034e'>
+                        <div id=readme>
+                        </div>
+                  </div>
+                  
                   <web-editor component mode=html style='display:none'></web-editor>
                   
             </div>
@@ -127,6 +132,7 @@
       var output;
       var chk         = {};
       
+      var npm_output;
       var editor;
       
       
@@ -251,6 +257,7 @@
             
             
             output              = $(shadow,'#output');
+            npm_output          = $(shadow,'#npm-output');
             
             
       }//initdom
@@ -322,6 +329,11 @@
             }
             cur.txt   = txt;
             
+            if(chk.npm.checked){
+                  display.npm(html);
+                  return;
+            }
+            
             var opts            = {
                   linkTarget    : '_blank',
             };
@@ -334,49 +346,80 @@
             
             var html            = md.render(txt);
             
-            if(chk.npm.checked){
-                  display.npm(html);
-            }else{
-                  display[cur.mode](html);
-            }
+            display[cur.mode](html);
             
       }//show
       
       
       display.md    = function(html){
                                                                                 debug('display.md');
-            output.classList.remove('_6d9832ac','_704c034e');
+            show('output');
+            
             output.innerHTML              = html;
             
             $(shadow,'#stylesheet').textContent   = css.github;
             
-            output.style.display          = '';
-            editor.__host.style.display   = 'none';
             
       }//md
       
       
-      display.npm   = function(html){
+      display.npm   = async function(txt){
                                                                                 debug('display.npm');
-            output.classList.add('_6d9832ac','_704c034e');
-            output.innerHTML              = html;
+            var html    = await github_markdown(txt);
+            
+            npm_output.innerHTML              = html;
             
             $(shadow,'#stylesheet').textContent   = css.npm;
             
-            output.style.display          = '';
-            editor.__host.style.display   = 'none';
+            show('npm');
             
       }//npm
+      
+      
+      async function github_markdown(txt){
+      
+            var body      = txt;
+            var res       = await fetch('https://api.github.com/markdown/raw',{method:'post',body});
+            var txt       = await res.text();
+            return txt;
+            
+      }//get
       
       
       display.html    = function(html){
                                                                                 debug('display.html');
             editor.set(html);
             
-            output.style.display          = 'none';
-            editor.__host.style.display   = '';
+            show('editor');
             
       }//html
+      
+      
+      function show(id){
+      
+            switch(id){
+            
+              case 'output'   :
+                                output.style.display          = '';
+                                npm_output.style.display      = 'none';
+                                editor.__host.style.display   = 'none';
+                                break;
+                                
+              case 'npm'   :
+                                output.style.display          = 'none';
+                                npm_output.style.display      = '';
+                                editor.__host.style.display   = 'none';
+                                break;
+                                
+              case 'editor'   :
+                                output.style.display          = 'none';
+                                npm_output.style.display      = 'none';
+                                editor.__host.style.display   = '';
+                                break;
+                                
+            }//switch
+            
+      }//show
       
       
   //:
