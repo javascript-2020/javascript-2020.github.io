@@ -181,8 +181,8 @@
             script.onload   = onload;
             document.head.append(script);
             
-            get('/css/npm.css').then({txt='',error}=>(css.npm=txt,onload()));
-            get('/css/github-markdown-light.css').then({txt='',error}=>(css.github=txt,onload()));
+            get('/css/npm.css').then(({txt='',error})=>(css.npm=txt,onload()));
+            get('/css/github-markdown-light.css').then(({txt='',error})=>(css.github=txt,onload()));
             
             return promise;
             
@@ -219,6 +219,7 @@
                   var error   = await res.text();
                   return {error};
             }
+            
             var txt   = await res.text();
             return {txt};
             
