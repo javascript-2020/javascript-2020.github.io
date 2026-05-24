@@ -5,61 +5,159 @@
       <template shadowrootmode=open>
       
             <link rel=stylesheet href='css/github-markdown-light.css'>
+            <!--
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.css">
+            -->
+            
             <style>
             
-                  #output {height:100%;border:2px solid lightgray;box-sizing:border-box;padding:10px}
-                  
+  #root
+    {height:100%;display:flex;flex-direction:column;gap:5px}
+    
+  #hdr
+    {display:flex}
+  .radio
+    {border:1px solid lightgray;padding:2px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center}
+  .radio [type]
+    {margin-right:5px;cursor:pointer}
+    
+    
+  #output, web-editor
+    {height:100%;border:2px solid lightgray;box-sizing:border-box}
+  #output
+    {overflow:auto;padding:10px}
+    
+  .spc
+    {flex:1}
+    
             </style>
             
-            <div id=output class=markdown-body>
+            <div id=root>
+            
+                  <div id=hdr>
+                  
+                        <span id=html class=radio>
+                              <input type=checkbox checked>
+                              allow-html
+                        </span>
+                        <span id=breaks class=radio>
+                              <input type=checkbox>
+                              breaks
+                        </span>
+                        <span id=linkify class=radio>
+                              <input type=checkbox checked>
+                              linkify
+                        </span>
+                        
+                        <span class=spc></span>
+                        
+                        <span id=mode-md class=radio>
+                              <input type=checkbox checked>
+                              markdown
+                        </span>
+                        <span id=mode-html class=radio>
+                              <input type=checkbox>
+                              html
+                        </span>
+                        
+                  </div>
+                  
+                  <div id=output class=markdown-body>
+                  </div>
+                  
+                  <web-editor component mode=html style='display:none'></web-editor>
+                  
             </div>
             
       </template>
       
       <script>
       
-(function output_md({mod,dom,host}){
-                                                                    console.log('output');
+(function output_md({mod,host}){
+
   var obj   = {
         version   : 'v2.0',
   };
-
-      var $
+  
+      var df=true,did='output_mod'
+      ;
+      
+      
+      var $,debug
       ;
       
       obj.initmod   = function(params){
-        
-            $       = params.$;
+      
+            $           = mod.rd(params,'$',$);
+            debug       = mod.rd(params,'debug',debug);
             
       }//initmod
-
+      
       
   //vars:-
-                
+  
       var md;
       
-      var shadow;
+      var cur         = {};
+      cur.mode        = 'md';
+      cur.txt         = null;
       
+      var shadow;
       var output;
-
+      var chk         = {};
+      
+      var editor;
+      
+      
+      var themes    = {
+            'github'    : {
+                  base    : '',
+                  list    : [
+                                  'github-markdown.css','github-markdown-light.css','github-markdown-dark.css','github-markdown-dark-dimmed.css',
+                                  'github-markdown-dark-high-contrast.css','github-markdown-light-colorblind.css','github-markdown-dark-colorblind.css'
+                            ]
+            },
+            'water.css'   : {
+            },
+      };
+      
+      
+      
+      var btn         = {};
+      var show        = {};
+      
       
   //:
-
+  
   
       obj.init    = async function(){
-        
-            await libs();
+                                                                                debug=eval(debug);
+                                                                                debug('init',obj.version);
+            editor    = mod['web-editor'];
+            
+            
+            await Promise.all([
+                  libs(),
+                  mod.auto(),
+            ]);
+            
             
       }//init
-
-
-
+      
+      
+      
       function libs(){
-        
+      
             var resolve,promise=new Promise(res=>resolve=res);
+            var ct          = 0;
             
             var script      = document.createElement('script');
             script.src      = 'https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js';
+            script.onload   = onload;
+            document.head.append(script);
+            
+            var script      = document.createElement('script');
+            script.src      = 'https://cdn.jsdelivr.net/npm/markdown-it-attrs@4.3.1/markdown-it-attrs.browser.min.js';
             script.onload   = onload;
             document.head.append(script);
             
@@ -67,62 +165,161 @@
             
             
             function onload(){
-              
-                  md    = markdownit();
+            
+                  ct++;
+                  if(ct!=2)return;
                   resolve();
                   
             }//onload
             
       }//libs
-
+      
       
   //:
-
+  
   
       obj.initdom   = function(rootnode){
       
             shadow              = host.shadowRoot;
             
+            var hdr             = $(shadow,'#hdr');
+            chk.html            = $.chkbox(shadow,'#html');
+            chk.breaks          = $.chkbox(shadow,'#breaks');
+            chk.linkify         = $.chkbox(shadow,'#linkify');
+            var group           = $.chkbox.group(shadow,'#mode-md','#mode-html');
+            group.callback      = btn.mode;
+            
+            
             output              = $(shadow,'#output');
-
+            
             
       }//initdom
-
-
+      
+      
   //:
   
+  
+      btn.mode    = function(chk,id){
+                                                                                debug('btn.mode',id);
+            switch(id){
+            
+              case 'mode-md'      : cur.mode='md';          break;
+              case 'mode-html'    : cur.mode='html';        break;
+              
+            }//switch
+            
+            display();
+            
+      }//mode
       
       
-      obj.display   = async function(txt){
+  //:
+  
+  
+/*
 
+      html            : true, // allow raw HTML
+      xhtmlOut        : false, // use <br> instead of <br />
+      breaks          : false, // convert \n to <br>
+      langPrefix      : 'language-', // CSS class prefix for fenced code blocks
+      linkify         : false, // autolink plain URLs
+      typographer     : false, // smart quotes, dashes, ellipses
+      quotes          : '“”‘’', // quote characters when typographer is on
+      highlight       : (str, lang) => { // custom code highlighting
+                              return ''; // return HTML or empty string to skip
+                        },
+      maxNesting      : 100, // block nesting limit
+      validateLink    : (url) => true,// custom link validation
+      linkTarget      : '', // e.g. '_blank' to force new tab
+      renderer        : null, // custom renderer instance
+      inline          : null // custom inline parser instance
+      
+*/
+
+
+      obj.display   = function(txt){return display(txt)}
+      
+      async function display(txt){
+                                                                                debug('display');
             await libs;
             
+            output.replaceChildren();
+            
+            txt   = txt||cur.txt;
+            if(!txt){
+                  return;
+            }
+            cur.txt   = txt;
+            
+            var opts            = {
+                  linkTarget    : '_blank',
+            };
+            opts.html           = chk.html.checked;
+            opts.breaks         = chk.breaks.checked;
+            opts.linkify        = chk.linkify.checked;
+                                                                                debug.json(opts);
+            var md              = markdownit(opts);
+            md.use(markdownItAttrs,{leftDelimiter:'{',rightDelimiter:'}',allowedAttributes:['id','class',/^data-.*$/]});
+            
             var html            = md.render(txt);
-            output.innerHTML    = html;
+            
+            display[cur.mode](html);
             
       }//show
-
-
+      
+      
+      display.md    = function(html){
+                                                                                debug('display.md');
+            output.innerHTML              = html;
+            
+            output.style.display          = '';
+            editor.__host.style.display   = 'none';
+            
+      }//md
+      
+      
+      display.html    = function(html){
+                                                                                debug('display.html');
+            editor.set(html);
+            
+            output.style.display          = 'none';
+            editor.__host.style.display   = '';
+            
+      }//html
+      
+      
+  //:
+  
+  
       obj.horiz   = function(){
-        
+                                                                                debug('horiz');
             host.style.width    = '100%';
             host.style.height   = '50%';
-      
+            
       }//horiz
       
       
       obj.vert    = function(){
-        
+                                                                                debug('vert');
             host.style.width    = '50%';
             host.style.height   = '100%';
             
       }//vert
-
       
+      
+      
+      
+  //:
+  
+  
+  
+  
   return obj;
   
-})//output_md
-            
+//output_md
+})
+
+
       </script>
       
 </output-md>
