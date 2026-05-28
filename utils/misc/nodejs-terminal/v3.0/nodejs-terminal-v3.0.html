@@ -674,6 +674,58 @@
               term.writeln('');
               term.writeln.green('saving snapshot ...');
               
+              var snap    = snapshot(cwd);
+              var blob    = to_blob(snap);
+              
+              
+              async function snapshot(path){
+              
+                    var snap      = {};
+                    var entries   = await webcontainer.fs.readdir(path,{withFileTypes:true});
+                    
+                    for(var item of entries){
+                    
+                          var abs   = path+item.name;
+                          
+                          if(item.isFile()){
+                                snap[abs]   = await wc.fs.readFile(abs);
+                          }
+                          
+                          if(item.isDirectory()){
+                                var snap2   = await snapshot(abs+'/')
+                                Object.assign(snap,snap2);
+                          }
+                          
+                    }//for
+                    
+                    return snap;
+                    
+              }//snapshot
+              
+              
+              function to_blob(snap){
+              
+                    var obj   = {};
+                    
+                    for(var [file,data] of Object.entries(snap)){
+                    
+                          obj[file]   = Array.from(data);
+                          
+                    }//for
+                    
+                    var json    = JSON.stringify(obj);
+                    var blob    = new Blob([json],{type:'application/json'});
+                    return blob;
+                    
+              }//to_blob
+              
+              
+              
+              
+              
+/*
+
+
               var err;
               try{
               
@@ -693,6 +745,12 @@
               }
                                                                                 console.log(str);
               var blob    = new Blob([str]);
+              
+              
+              
+*/
+
+
               var file    = {name:'snapshot.json',icon:snap_icon};
               
               complete.load(file,blob);
@@ -728,6 +786,42 @@
               
               var blob          = cur.blob;
                                                                                 console.log(blob);
+                                                                                
+              var snap    = to_snapshot(blob);
+              
+              
+              for(var [file,data] of Object.entries(snap)){
+              
+                    var dir   = file.split('/').slice(0,-1).join('/') || '/';
+                    
+                    await wc.fs.mkdir(dir,{recursive:true});
+                    await wc.fs.writeFile(file,data);
+                    
+              }//for
+              
+              
+              async function to_snapshot(blob) {
+              
+                    var text    = await blob.text();
+                    var obj     = JSON.parse(text);
+                    var snap    = {};
+                    
+                    for(var [file,arr] of Object.entries(obj)){
+                    
+                          snap[file]    = new Uint8Array(arr);
+                          
+                    }//for
+                    
+                    return snap;
+                    
+              }//to_snapshot
+              
+              
+              
+              
+              
+/*
+
               var txt           = await blob.text();
                                                                                 console.log(txt);
               var data          = JSON.parse(txt);
@@ -752,6 +846,13 @@
                     return;
               }
               
+*/
+
+
+
+
+
+
               term.writeln.green('ok.');
               await term.prompt();
               
