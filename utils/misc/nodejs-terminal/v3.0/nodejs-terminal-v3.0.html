@@ -300,8 +300,6 @@
                         </div>
                         <div class=menu style='display:none;left:0px;top:35px'>
                               <div id=https-server class=menu-opt>install https-server</div>
-                              <div id=save-snapshot class=menu-opt>save snapshot</div>
-                              <div id=load-snapshot class=menu-opt>load snapshot</div>
                               <div id=save-zip class=menu-opt>save zip</div>
                               <div id=load-zip class=menu-opt>load zip</div>
                               <div id=save-tar class=menu-opt>save tar</div>
@@ -673,187 +671,6 @@
         }//https-server
         
         
-        menu_callback.more['save-snapshot']    = async function(){
-                                                                                console.log('save-snapshot');
-              if(!tabs.cur.view){
-                    log.red('no active terminal');
-                    return;
-              }
-              
-              var cwd       = tabs.cur.view.terminal.shell.cwd;
-              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
-                                                                                console.log(cwd_abs);
-              if(cwd===null){
-                    term.writeln.red('can only save snapshot relative to workdir');
-                    return;
-              }
-              
-              var term    = tabs.cur.view.terminal.term;
-              
-              term.writeln('');
-              term.writeln.green('saving snapshot ...');
-              
-              var snap    = snapshot(cwd);
-              var blob    = to_blob(snap);
-              
-              
-              function to_blob(snap){
-              
-                    var obj   = {};
-                    
-                    for(var [file,data] of Object.entries(snap)){
-                    
-                          obj[file]   = Array.from(data);
-                          
-                    }//for
-                    
-                    var json    = JSON.stringify(obj);
-                    var blob    = new Blob([json],{type:'application/json'});
-                    return blob;
-                    
-              }//to_blob
-              
-              
-              
-              
-              
-/*
-
-
-              var err;
-              try{
-              
-                    var data    = await webcontainer.export(cwd_abs.slice(0,-1),{format:'json'});
-                    var str     = JSON.stringify(data);
-                    
-              }//try
-              catch(err2){
-              
-                    err   = err2;
-                    
-              }//catch
-              if(err){
-                    term.writeln.red(err.message);
-                    await prompt();
-                    return;
-              }
-                                                                                console.log(str);
-              var blob    = new Blob([str]);
-              
-              
-              
-*/
-
-
-              var file    = {name:'snapshot.json',icon:snap_icon};
-              
-              complete.load(file,blob);
-              
-              term.writeln.green('ok.');
-              await term.prompt();
-              
-        }//take-snapsht
-        
-        
-        menu_callback.more['load-snapshot']   = async function(){
-                                                                                console.log('load-snapshot');
-              if(!tabs.cur.view){
-                    log.red('no active terminal');
-                    return;
-              }
-              
-              var cwd   = tabs.cur.view.terminal.shell.cwd;
-              
-              if(cwd===null){
-                    term.writeln.red('can only load snapshot relative to workdir');
-                    return;
-              }
-              
-              if(!cur.blob){
-                    term.writeln.red('no blob available');
-                    return;
-              }
-              
-              var term    = tabs.cur.view.terminal.term;
-              
-              term.writeln('');
-              term.writeln.green('loading snapshot ...');
-              
-              var blob          = cur.blob;
-                                                                                console.log(blob);
-                                                                                
-              var snap    = to_snapshot(blob);
-              
-              for(var [file,data] of Object.entries(snap)){
-              
-                    var dir   = file.split('/').slice(0,-1).join('/') || '/';
-                    
-                    await webcontainer.fs.mkdir(dir,{recursive:true});
-                    await webcontainer.fs.writeFile(file,data);
-                    
-              }//for
-              
-              
-              async function to_snapshot(blob) {
-              
-                    var text    = await blob.text();
-                    var obj     = JSON.parse(text);
-                    var snap    = {};
-                    
-                    for(var [file,arr] of Object.entries(obj)){
-                    
-                          snap[file]    = new Uint8Array(arr);
-                          
-                    }//for
-                    
-                    return snap;
-                    
-              }//to_snapshot
-              
-              
-              
-              
-              
-/*
-
-              var txt           = await blob.text();
-                                                                                console.log(txt);
-              var data          = JSON.parse(txt);
-              var mountPoint    = cwd.slice(0,-1);
-                                                                                console.log('mountPoint',mountPoint);
-                                                                                
-              var err;
-              try{
-              
-                    var result        = await webcontainer.mount(data,{mountPoint});
-                                                                                console.log(result);
-                                                                                
-              }//try
-              catch(err2){
-              
-                    err   = err2;
-                    
-              }//catch
-              if(err){
-                    term.writeln.red(err.message);
-                    await prompt();
-                    return;
-              }
-              
-*/
-
-
-
-
-
-
-              term.writeln.green('ok.');
-              await term.prompt();
-              
-        }//restore-snapshot
-        
-        
-        
                                                                                 //  Compress-Archive -Path .\* -DestinationPath ".\$(Split-Path -Leaf $PWD).zip"
                                                                                 //  Expand-Archive -Path .\archive.zip -DestinationPath . -Force
                                                                                 
@@ -862,7 +679,6 @@
                                                                                 
                                                                                 //  7z a -tzip "$(Split-Path -Leaf $PWD).zip" .\*
                                                                                 //  7z x archive.zip -y
-                                                                                
         menu_callback.more['save-zip']   = async function(){
         
                                                                                 console.log('save-zip');
