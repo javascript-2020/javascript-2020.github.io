@@ -1136,6 +1136,9 @@
               for(var [file,data] of Object.entries(snap)){
                                                                                 console.log(file);
                     var dir   = file.split('/').slice(0,-1).join('/') || '/';
+                    if(dir.startsWith('/')){
+                          dir   = dir.slice(1);
+                    }
                     
                     await webcontainer.fs.mkdir(dir,{recursive:true});
                     await webcontainer.fs.writeFile(file,data);
