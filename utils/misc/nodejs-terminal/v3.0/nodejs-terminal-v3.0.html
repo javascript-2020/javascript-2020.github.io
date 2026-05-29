@@ -159,6 +159,14 @@
 
 
         libs.jszip    = async function(){
+        
+              if(jszip){
+                    return;
+              }
+              
+              jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
+              jszip   = jszip.default;
+              
         }//jszip
         
         
@@ -868,6 +876,8 @@
               term.writeln('');
               term.writeln.green('saving zip ...');
               
+              await libs.jszip();
+              
               var snap    = await snapshot(cwd);
               var blob    = await to_zip(snap);
               
@@ -881,7 +891,7 @@
               
               async function to_zip(snap){
               
-                    var zip   = new JSZip();
+                    var zip   = new jszip();
                     
                     for(const [file,data] of Object.entries(snap)){
                     
@@ -918,6 +928,8 @@
               term.writeln('');
               term.writeln.green('loading zip ...');
               
+              await libs.jszip();
+              
               var blob          = cur.blob;
                                                                                 console.log(blob);
               var snap          = to_snap(blob);
@@ -929,7 +941,7 @@
               
               async function to_snap(blob){
               
-                    var zip       = await JSZip.loadAsync(blob);
+                    var zip       = await jszip.loadAsync(blob);
                     var snap      = {};
                     var entries   = Object.values(zip.files);
                     
