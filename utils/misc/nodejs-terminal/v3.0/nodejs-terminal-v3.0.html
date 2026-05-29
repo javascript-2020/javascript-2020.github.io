@@ -947,7 +947,7 @@
               var blob          = cur.blob;
                                                                                 console.log(blob);
               var snap          = await to_snap(blob);
-              await snapshot.restore(snap);
+              await snapshot.restore(cwd,snap);
               
               s.stop();
               term.writeln.green('ok.');
@@ -1131,13 +1131,14 @@
         }//snapshot
         
         
-        snapshot.restore    = async function(snap){
+        snapshot.restore    = async function(cwd,snap){
                                                                                 console.log('snapshot.restore');
               for(var [file,data] of Object.entries(snap)){
               
                     if(file.startsWith('/')){
                           file    = file.slice(1);
                     }
+                    file      = cwd+file;
                                                                                 console.log(file);
                     var dir   = file.split('/').slice(0,-1).join('/');
                     
