@@ -686,31 +686,6 @@
               var blob    = to_blob(snap);
               
               
-              async function snapshot(path){
-              
-                    var snap      = {};
-                    var entries   = await webcontainer.fs.readdir(path,{withFileTypes:true});
-                    
-                    for(var item of entries){
-                    
-                          var abs   = path+item.name;
-                          
-                          if(item.isFile()){
-                                snap[abs]   = await wc.fs.readFile(abs);
-                          }
-                          
-                          if(item.isDirectory()){
-                                var snap2   = await snapshot(abs+'/')
-                                Object.assign(snap,snap2);
-                          }
-                          
-                    }//for
-                    
-                    return snap;
-                    
-              }//snapshot
-              
-              
               function to_blob(snap){
               
                     var obj   = {};
@@ -782,6 +757,7 @@
                     term.writeln.red('can only load snapshot relative to workdir');
                     return;
               }
+              
               if(!cur.blob){
                     term.writeln.red('no blob available');
                     return;
@@ -797,13 +773,12 @@
                                                                                 
               var snap    = to_snapshot(blob);
               
-              
               for(var [file,data] of Object.entries(snap)){
               
                     var dir   = file.split('/').slice(0,-1).join('/') || '/';
                     
-                    await wc.fs.mkdir(dir,{recursive:true});
-                    await wc.fs.writeFile(file,data);
+                    await webcontainer.fs.mkdir(dir,{recursive:true});
+                    await webcontainer.fs.writeFile(file,data);
                     
               }//for
               
@@ -883,11 +858,41 @@
                     return;
               }
               
+              if(!cur.blob){
+                    term.writeln.red('no blob available');
+                    return;
+              }
+              
               var term    = tabs.cur.view.terminal.term;
               
               term.writeln('');
               term.writeln.green('saving zip ...');
               
+              var snap    = await snapshot(cwd);
+              var blob    = await to_zip(snap);
+              
+              var file    = {name:'snapshot.zip',icon:snap_icon};
+              
+              complete.load(file,blob);
+              
+              term.writeln.green('ok.');
+              await term.prompt();
+              
+              
+              async function to_zip(snap){
+              
+                    var zip   = new JSZip();
+                    
+                    for(const [file,data] of Object.entries(snap)){
+                    
+                          zip.file(file,data);
+                          
+                    }//for
+                    
+                    var blob    = await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionLevel:6});
+                    return blob;
+                    
+              }//to_zip
               
         }//save-zip
         
@@ -913,6 +918,34 @@
               term.writeln('');
               term.writeln.green('loading zip ...');
               
+              var blob          = cur.blob;
+                                                                                console.log(blob);
+              var snap          = to_snap(blob);
+              snapshot.restore(snap);
+              
+              term.writeln.green('ok.');
+              await term.prompt();
+              
+              
+              async function to_snap(blob){
+              
+                    var zip       = await JSZip.loadAsync(blob);
+                    var snap      = {};
+                    var entries   = Object.values(zip.files);
+                    
+                    for(var entry of entries){
+                    
+                          if(entry.dir)continue;
+                          
+                          var data      = await entry.async('uint8array');
+                          var path      = entry.name.startsWith('/') ? entry.name : '/'+entry.name;
+                          snap[path]    = data;
+                          
+                    }//for
+                    
+                    return snap;
+                    
+              }//to_snap
               
         }//load-zip
         
@@ -1040,6 +1073,49 @@
               }
               
         }//save
+        
+        
+  //:
+  
+  
+        async function snapshot(path){
+                                                                                console.log('snapshot',path);
+              var snap      = {};
+              var entries   = await webcontainer.fs.readdir(path,{withFileTypes:true});
+              
+              for(var item of entries){
+              
+                    var abs   = path+item.name;
+                    
+                    if(item.isFile()){
+                                                                                console.log(abs);
+                          snap[abs]   = await wc.fs.readFile(abs);
+                    }
+                    
+                    if(item.isDirectory()){
+                          var snap2   = await snapshot(abs+'/')
+                          Object.assign(snap,snap2);
+                    }
+                    
+              }//for
+              
+              return snap;
+              
+        }//snapshot
+        
+        
+        snapshot.restore    = async function(snap){
+        
+              for(var [file,data] of Object.entries(snap)){
+              
+                    var dir   = file.split('/').slice(0,-1).join('/') || '/';
+                    
+                    await webcontainer.fs.mkdir(dir,{recursive:true});
+                    await webcontainer.fs.writeFile(file,data);
+                    
+              }//for
+              
+        }//restore
         
         
   //:
