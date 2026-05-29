@@ -621,10 +621,13 @@
               var s;
               term.writeln('');
               term.write.green('installing https-server ... ');
+              
               setTimeout(()=>{
+              
                     var {x,y}   = cursor.xy(term);
                     s           = spinner({term,x,y});
                     term.write('\r\n');
+                    
               },50);
               
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
@@ -936,7 +939,9 @@
               var term    = tabs.cur.view.terminal.term;
               
               term.writeln('');
-              term.writeln.green('loading zip ...');
+              term.write.green('loading zip ... ');
+              var s;
+              spinnner.start().then(t=>s=t);
               
               await libs.jszip();
               
@@ -945,6 +950,7 @@
               var snap          = await to_snap(blob);
               await snapshot.restore(snap);
               
+              s.stop();
               term.writeln.green('ok.');
               await term.prompt();
               
@@ -1509,6 +1515,22 @@
               }//setup
               
         }//spinner
+        
+        
+        spinner.start   = function(){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              setTimeout(()=>{
+              
+                    var {x,y}   = cursor.xy(term);
+                    var s       = spinner({term,x,y});
+                    term.write('\r\n');
+                    reolve(s);
+                    
+              },50);
+              
+        }//start
         
         
         
