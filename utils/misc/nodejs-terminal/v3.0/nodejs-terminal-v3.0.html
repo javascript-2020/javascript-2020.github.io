@@ -74,6 +74,11 @@
         var log;
         
         
+        var jszip;
+        
+        var libs    = {};
+        
+        
   //:
   
   
@@ -152,6 +157,11 @@
 })();
 
 
+
+        libs.jszip    = async function(){
+        }//jszip
+        
+        
             </script>
             
             
@@ -284,6 +294,10 @@
                               <div id=https-server class=menu-opt>install https-server</div>
                               <div id=save-snapshot class=menu-opt>save snapshot</div>
                               <div id=load-snapshot class=menu-opt>load snapshot</div>
+                              <div id=save-zip class=menu-opt>save zip</div>
+                              <div id=load-zip class=menu-opt>load zip</div>
+                              <div id=save-tar class=menu-opt>save tar</div>
+                              <div id=load-tar class=menu-opt>load tar</div>
                         </div>
                   </div>
                   
@@ -572,13 +586,7 @@
                                                                                 //console.log('more',type,opt);
               if(type=='opt'){
               
-                  switch(opt.id){
-                  
-                    case 'https-server'     : menu_callback['https-server']();        break;
-                    case 'save-snapshot'    : menu_callback['save-snapshot']();       break;
-                    case 'load-snapshot'    : menu_callback['load-snapshot']();       break;
-                    
-                  }//switch
+                  menu_callback.more[opt.id]();
                   
               }
               
@@ -587,7 +595,7 @@
         }//more
         
         
-        menu_callback['https-server']   = async function(){
+        menu_callback.more['https-server']   = async function(){
         
               if(!tabs.cur.view){
                     log.red('no active terminal');
@@ -654,7 +662,7 @@
         }//https-server
         
         
-        menu_callback['save-snapshot']    = async function(){
+        menu_callback.more['save-snapshot']    = async function(){
                                                                                 console.log('save-snapshot');
               if(!tabs.cur.view){
                     log.red('no active terminal');
@@ -761,7 +769,7 @@
         }//take-snapsht
         
         
-        menu_callback['load-snapshot']   = async function(){
+        menu_callback.more['load-snapshot']   = async function(){
                                                                                 console.log('load-snapshot');
               if(!tabs.cur.view){
                     log.red('no active terminal');
@@ -859,10 +867,116 @@
         }//restore-snapshot
         
         
+        menu_callback.more['save-zip']   = async function(){
+        
+                                                                                console.log('save-zip');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var cwd       = tabs.cur.view.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
+                                                                                console.log(cwd_abs);
+              if(cwd===null){
+                    term.writeln.red('can only save zip relative to workdir');
+                    return;
+              }
+              
+              var term    = tabs.cur.view.terminal.term;
+              
+              term.writeln('');
+              term.writeln.green('saving zip ...');
+              
+              
+        }//save-zip
+        
+        
+        menu_callback.more['load-zip']    = async function(){
+        
+                                                                                console.log('load-zip');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var cwd       = tabs.cur.view.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
+                                                                                console.log(cwd_abs);
+              if(cwd===null){
+                    term.writeln.red('can only load zip relative to workdir');
+                    return;
+              }
+              
+              var term    = tabs.cur.view.terminal.term;
+              
+              term.writeln('');
+              term.writeln.green('loading zip ...');
+              
+              
+        }//load-zip
+        
+        
+        menu_callback.more['save-tar']    = async function(){
+        
+                                                                                console.log('save-tar');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var cwd       = tabs.cur.view.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
+                                                                                console.log(cwd_abs);
+              if(cwd===null){
+                    term.writeln.red('can only save tar relative to workdir');
+                    return;
+              }
+              
+              var term    = tabs.cur.view.terminal.term;
+              
+              term.writeln('');
+              term.writeln.green('saving tar ...');
+              
+              
+        }//save-tar
+        
+        
+        menu_callback.more['load-tar']    = async function(){
+        
+                                                                                console.log('load-tar');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var cwd       = tabs.cur.view.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
+                                                                                console.log(cwd_abs);
+              if(cwd===null){
+                    term.writeln.red('can only load tar relative to workdir');
+                    return;
+              }
+              
+              var term    = tabs.cur.view.terminal.term;
+              
+              term.writeln('');
+              term.writeln.green('loading tar ...');
+              
+              
+        }//load-tar
+        
+        
+  //:
+  
+  
         menu_callback.snapshot    = function(type,opt){
         }//snapshot
         
         
+  //:
+  
+  
         menu_callback.links   = function(type,opt){
         }//links
         
