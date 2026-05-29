@@ -703,7 +703,9 @@
               var term    = tabs.cur.view.terminal.term;
               
               term.writeln('');
-              term.writeln.green('saving zip ...');
+              term.write.green('saving zip ... ');
+              
+              var s   = await spinner.start(term);
               
               await libs.jszip();
               
@@ -714,6 +716,7 @@
               
               complete.load(file,blob);
               
+              s.stop();
               term.writeln.green('ok.');
               await term.prompt();
               
@@ -765,7 +768,6 @@
               var snap          = await to_snap(blob);
               await snapshot.restore(cwd,snap);
               
-              s.stop();
               term.writeln.green('ok.');
               await term.prompt();
               
