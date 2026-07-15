@@ -1,0 +1,28 @@
+<h3>test</h3>
+
+<script type=module>
+
+
+
+import { createContainer } from 'https://cdn.jsdelivr.net/npm/almostnode/+esm';
+
+const { vfs, runtime, npm } = createContainer();
+
+// Write a file to the virtual filesystem
+vfs.writeFileSync('/hello.js', `
+  console.log('Hello from almostnode!');
+`);
+
+// Execute it
+var result    = runtime.runFile('/hello.js');
+
+console.log(result);
+
+console.log('done');
+
+</script>
+
+
+      
+      
+      
