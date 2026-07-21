@@ -165,7 +165,7 @@
               
               view                    = $(shadow,'#view');
               
-              await load();
+              await load(src);
               
         }//initdom
         
@@ -187,9 +187,9 @@
   //:
   
   
-        async function load(){
+        async function load(url){
         
-              var {txt,error}   = await get(src);
+              var {txt,error}   = await get(url);
               if(error){
                     txt   = error;
               }
@@ -232,6 +232,19 @@
             
             var html            = md.render(txt);
             view.innerHTML      = html;
+            
+            
+            
+            $.all(view,'a').forEach(a=>a.onclick=click);
+            
+            
+            function click(e){
+            
+                  e.preventDefault();
+                  var url   = e.target.href;
+                  load(url);
+                  
+            }//click
             
         }//display
         
