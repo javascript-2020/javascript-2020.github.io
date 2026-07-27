@@ -74,6 +74,11 @@
         var log;
         
         
+        var jszip;
+        
+        var libs    = {};
+        
+        
   //:
   
   
@@ -152,6 +157,19 @@
 })();
 
 
+
+        libs.jszip    = async function(){
+        
+              if(jszip){
+                    return;
+              }
+              
+              jszip   = await import('https://cdn.jsdelivr.net/npm/jszip/+esm');
+              jszip   = jszip.default;
+              
+        }//jszip
+        
+        
             </script>
             
             
@@ -167,7 +185,7 @@
     
     
   #hdr
-    {display:flex;align-items:center;position:relative;gap:5px}
+    {display:flex;align-items:flex-start;position:relative;gap:5px}
     
   #file-info
     {display:flex;align-items:center;margin:0 20px;gap:20px;padding:5px 10px;border:1px solid lightgray;border-radius:5px}
@@ -192,8 +210,12 @@
   #icons
     {display:flex;align-items:center;gap:5px;margin-right:10px}
     
+  .icon-hldr
+    {cursor:pointer;text-align:center;border:1px solid gray;border-radius:3px;padding:1px}
   .icon
-    {width:32px;height:32px;border:1px solid gray;border-radius:3px;box-sizing:border-box;cursor:pointer}
+    {width:32px;height:32px;box-sizing:border-box;cursor:pointer}
+  .icon-txt
+    {font-size:10px;text-align:center;white-space:nowrap}
     
   #ports
     {content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAACN1BMVEVHcEwHI1xAXInc8vmcutHX6/PQ7PcMJ17R7PfZ8Pcba5kLKGAXLl0NHEXS7fbT7faVtM0iP3IvTHwHGVGGor8UMGcHGVkiN2AMJ19jgKTT7fbS7PYMJ1/S7fgfg6wOKWANLGOuy97O6PTC2ujS7ffU7/jR7PfQ7PcDH1l6l7YaPXIkPnEGH1oXL13b6+3S7PbR7PdQa5UbcZ6LqcUEDUbQ7PfV7/lki64nRHZ7nryDoL0MJ17Q7PcOKF5ykLHO6vXR7fiUscpnhKgGIlvT7vhhfqMgPXHS7fg5V4Y1UoFmfJ8TN20fPnEMKF45Un/M6PROa5QQKVzc7PQlNWVFYo6SQ0lEbZc8WocCFVZkfaE0UX9ZWVY0QVubgk/Q7PfR7PbR7PbR7PbS7vnS7PbS7PasyNvS7PazytwLJ17L5vLR7PbU7/kigKkYRnkgfKUdbJkca5c0a5cQPnONqcMRK2Ecbpp9mLYPLGSyzd/S7PbT7vhWc5pvjK7S7fgHJFwQLmYpRnhGYo3M6PQxTn+EepFifaFFUnv/4tiNmrWivtRuZlOZo7dnhKhPYopYTW5vhKU0QVt0aVKRobv/9e53iKj///////9DWYT////Q7PfT7/rS7vnR7fi82OjU8PrT7vmxzuC00OLQ6/bN6fUnm7/9wEPL6PO31OUsaJXF4u+AclIll7wbX5BznLwcdqJhhamPrshUgKa/2+q51eWoxNmSfU/zukTKoElNeKBZkbTK5/PB3ey+mUt75vObAAAAmXRSTlMArJgV/gXomtUJ/rxqAiAb/cbKEfi5H5TF0CkjNrX6cbL+TBCWaMT6rvPLVUSTAk+wGf37CuBV/cn+8YbJTvCS8/XqtJvp2/nxyze90j6V59h+Y4v3Nv3PGcaGxW7+61yNeftGMOA6U1/Yc37+0ejLyu+lxYrQwM2sO63f7OSp4tbU3+ud06ZKnPzEgfbIb7237/h9haiwXOQ3QIpQAAACOElEQVQoz63TVVcbURQF4Axxd4O4hwQvUIq7u1vd3T2l7u4nM0mTEIeiBdq0P66ZyIKUPrIf9zdr7px77xAIOxChQiFhEwhkepHC3i38V9nqyuPUjrL9haZL1GqqbRuz+lnSIwcBnPWX1ZVXT3EzeddFDfUMyQnwrSKX2lnuqzqUyefOnj/Nw/m76orq1yxQ9m3lYxdUfsZSghn+heVZgL0Fm5p94ufC3Dz+cmfJvJ9RjgEALSet+QZnRfFc2BVvUU/Yz8BXAajNT/FhCqoNFy/68DK2zBjBnwNwZKf4AICvpkuL4iX6I1fkRuPB4GRSycr4mnt2u+KtE4uzNeSNJxQsJCeYSEswqaTGSop4Xw2Ov3+TNTHxWEQjJjjHAeAWXeNrLBZx38vXH75+xvvhR72c5FgUgGBzIyLou9eJyD5+GvgiZUkIQnlvcjROKaA8saYhFIuQRmW2jv53f6bfdgvl95M7r6+C2C2kxeMGzP2sy86aXg8ENibH5CZ68tMN2Eo70uLFB4sN2ac2AoHA+nOJvDY1d0GrS4DwPTj7RmxTa9FodG1SMq5Lsd4UGb3DrHcDYL8fPH0hzcvLk7LGevTpTS8z30aYbSG3M2hlPnyS7IbV7DSTDR4BImsT8ZrFTFlPViKD1ZsnSrxJEiAWphhpnFlcdeG5XsTech+ITdqGdj7/7tBSEMUwrLWJmHnb6EbaisezGkscNW2Avu2qc41KR53ZXFeqNHL/+y/QOTd0uqMcMmGn8hdpQsEZmw2sUgAAAABJRU5ErkJggg==);
@@ -241,8 +263,8 @@
                   <help-file slot=help src='docs/nodejs-terminal-help.md'>
                   </help-file>
                   <img slot=title class=title src='images/nodejs-terminal.png' style='top:-25px;height:80px' alt='Node.js Terminal'>
-                  <time slot=date datetime=2026-05-13>
-                        13 May 2026
+                  <time slot=date datetime=2026-07-20>
+                        20 Jul 2026
                   </time>
             </misc-hdr>
             
@@ -262,10 +284,30 @@
                   </div>
                   
                   <div id=icons>
-                        <img id=ports title=ports class=icon>
-                        <img id=niframe title=iframe class=icon>
-                        <img id=snippet-editor title=editor class=icon>
-                        <img id=snippet-console title=snippet-console class=icon>
+                        <div class=icon-hldr>
+                              <img id=ports title=ports class=icon>
+                              <div class=icon-txt>
+                                    ports
+                              </div>
+                        </div>
+                        <div class=icon-hldr>
+                              <img id=niframe title=iframe class=icon>
+                              <div class=icon-txt>
+                                    iframe
+                              </div>
+                        </div>
+                        <div class=icon-hldr>
+                              <img id=snippet-editor title=editor class=icon>
+                              <div class=icon-txt>
+                                    snippet-editor
+                              </div>
+                        </div>
+                        <div class=icon-hldr>
+                              <img id=snippet-console title=snippet-console class=icon>
+                              <div class=icon-txt>
+                                    snippet-console
+                              </div>
+                        </div>
                   </div>
                   
                   
@@ -282,8 +324,10 @@
                         </div>
                         <div class=menu style='display:none;left:0px;top:35px'>
                               <div id=https-server class=menu-opt>install https-server</div>
-                              <div id=save-snapshot class=menu-opt>save snapshot</div>
-                              <div id=load-snapshot class=menu-opt>load snapshot</div>
+                              <div id=save-zip class=menu-opt>save zip</div>
+                              <div id=load-zip class=menu-opt>load zip</div>
+                              <div id=save-tar class=menu-opt>save tar</div>
+                              <div id=load-tar class=menu-opt>load tar</div>
                         </div>
                   </div>
                   
@@ -572,13 +616,7 @@
                                                                                 //console.log('more',type,opt);
               if(type=='opt'){
               
-                  switch(opt.id){
-                  
-                    case 'https-server'     : menu_callback['https-server']();        break;
-                    case 'save-snapshot'    : menu_callback['save-snapshot']();       break;
-                    case 'load-snapshot'    : menu_callback['load-snapshot']();       break;
-                    
-                  }//switch
+                  menu_callback.more[opt.id]();
                   
               }
               
@@ -587,7 +625,7 @@
         }//more
         
         
-        menu_callback['https-server']   = async function(){
+        menu_callback.more['https-server']   = async function(){
         
               if(!tabs.cur.view){
                     log.red('no active terminal');
@@ -605,10 +643,13 @@
               var s;
               term.writeln('');
               term.write.green('installing https-server ... ');
+              
               setTimeout(()=>{
+              
                     var {x,y}   = cursor.xy(term);
                     s           = spinner({term,x,y});
                     term.write('\r\n');
+                    
               },50);
               
               var mod     = await import('https://code.ext-code.com/nodejs/servers/https-server/create-archive.m.js');
@@ -654,8 +695,17 @@
         }//https-server
         
         
-        menu_callback['save-snapshot']    = async function(){
-                                                                                console.log('save-snapshot');
+                                                                                //  Compress-Archive -Path .\* -DestinationPath ".\$(Split-Path -Leaf $PWD).zip"
+                                                                                //  Expand-Archive -Path .\archive.zip -DestinationPath . -Force
+                                                                                
+                                                                                //  zip -r "$(basename "$PWD").zip" ./*
+                                                                                //  unzip archive.zip -o
+                                                                                
+                                                                                //  7z a -tzip "$(Split-Path -Leaf $PWD).zip" .\*
+                                                                                //  7z x archive.zip -y
+        menu_callback.more['save-zip']   = async function(){
+        
+                                                                                console.log('save-zip');
               if(!tabs.cur.view){
                     log.red('no active terminal');
                     return;
@@ -665,57 +715,10 @@
               var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
                                                                                 console.log(cwd_abs);
               if(cwd===null){
-                    term.writeln.red('can only save snapshot relative to workdir');
+                    term.writeln.red('can only save zip relative to workdir');
                     return;
               }
               
-              var term    = tabs.cur.view.terminal.term;
-              
-              term.writeln('');
-              term.writeln.green('saving snapshot ...');
-              
-              var err;
-              try{
-              
-                    var data    = await webcontainer.export(cwd_abs.slice(0,-1),{format:'json'});
-                    var str     = JSON.stringify(data);
-                    
-              }//try
-              catch(err2){
-              
-                    err   = err2;
-                    
-              }//catch
-              if(err){
-                    term.writeln.red(err.message);
-                    await prompt();
-                    return;
-              }
-                                                                                console.log(str);
-              var blob    = new Blob([str]);
-              var file    = {name:'snapshot.json',icon:snap_icon};
-              
-              complete.load(file,blob);
-              
-              term.writeln.green('ok.');
-              await term.prompt();
-              
-        }//take-snapsht
-        
-        
-        menu_callback['load-snapshot']   = async function(){
-                                                                                console.log('load-snapshot');
-              if(!tabs.cur.view){
-                    log.red('no active terminal');
-                    return;
-              }
-              
-              var cwd   = tabs.cur.view.terminal.shell.cwd;
-              
-              if(cwd===null){
-                    term.writeln.red('can only load snapshot relative to workdir');
-                    return;
-              }
               if(!cur.blob){
                     term.writeln.red('no blob available');
                     return;
@@ -724,44 +727,158 @@
               var term    = tabs.cur.view.terminal.term;
               
               term.writeln('');
-              term.writeln.green('loading snapshot ...');
+              term.write.green('saving zip ... ');
+              
+              var s   = await spinner.start(term);
+              
+              await libs.jszip();
+              
+              var snap    = await snapshot(cwd);
+              var blob    = await to_zip(snap);
+              
+              var file    = {name:'snapshot.zip',icon:snap_icon};
+              
+              complete.load(file,blob);
+              
+              s.stop();
+              term.writeln.green('ok.');
+              await term.prompt();
+              
+              
+              async function to_zip(snap){
+              
+                    var zip   = new jszip();
+                    
+                    for(var [file,data] of Object.entries(snap)){
+                    
+                          zip.file(file,data);
+                          
+                    }//for
+                    
+                    var blob    = await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionLevel:6});
+                    return blob;
+                    
+              }//to_zip
+              
+        }//save-zip
+        
+        
+        menu_callback.more['load-zip']    = async function(){
+        
+                                                                                console.log('load-zip');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var cwd       = tabs.cur.view.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
+                                                                                console.log(cwd_abs);
+              if(cwd===null){
+                    term.writeln.red('can only load zip relative to workdir');
+                    return;
+              }
+              
+              var term    = tabs.cur.view.terminal.term;
+              
+              term.writeln('');
+              term.write.green('loading zip ... ');
+              var s   = await spinner.start(term);
+              
+              await libs.jszip();
               
               var blob          = cur.blob;
                                                                                 console.log(blob);
-              var txt           = await blob.text();
-                                                                                console.log(txt);
-              var data          = JSON.parse(txt);
-              var mountPoint    = cwd.slice(0,-1);
-                                                                                console.log('mountPoint',mountPoint);
-                                                                                
-              var err;
-              try{
-              
-                    var result        = await webcontainer.mount(data,{mountPoint});
-                                                                                console.log(result);
-                                                                                
-              }//try
-              catch(err2){
-              
-                    err   = err2;
-                    
-              }//catch
-              if(err){
-                    term.writeln.red(err.message);
-                    await prompt();
-                    return;
-              }
+              var snap          = await to_snap(blob);
+              await snapshot.restore(cwd,snap);
               
               term.writeln.green('ok.');
               await term.prompt();
               
-        }//restore-snapshot
+              
+              async function to_snap(blob){
+              
+                    var zip       = await jszip.loadAsync(blob);
+                    var snap      = {};
+                    var entries   = Object.values(zip.files);
+                    
+                    for(var entry of entries){
+                    
+                          if(entry.dir)continue;
+                          
+                          var data      = await entry.async('uint8array');
+                          var path      = entry.name.startsWith('/') ? entry.name : '/'+entry.name;
+                          snap[path]    = data;
+                          
+                    }//for
+                    
+                    return snap;
+                    
+              }//to_snap
+              
+        }//load-zip
         
         
+        menu_callback.more['save-tar']    = async function(){
+        
+                                                                                console.log('save-tar');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var cwd       = tabs.cur.view.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
+                                                                                console.log(cwd_abs);
+              if(cwd===null){
+                    term.writeln.red('can only save tar relative to workdir');
+                    return;
+              }
+              
+              var term    = tabs.cur.view.terminal.term;
+              
+              term.writeln('');
+              term.writeln.green('saving tar ...');
+              
+              
+        }//save-tar
+        
+        
+        menu_callback.more['load-tar']    = async function(){
+        
+                                                                                console.log('load-tar');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var cwd       = tabs.cur.view.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
+                                                                                console.log(cwd_abs);
+              if(cwd===null){
+                    term.writeln.red('can only load tar relative to workdir');
+                    return;
+              }
+              
+              var term    = tabs.cur.view.terminal.term;
+              
+              term.writeln('');
+              term.writeln.green('loading tar ...');
+              
+              
+        }//load-tar
+        
+        
+  //:
+  
+  
         menu_callback.snapshot    = function(type,opt){
         }//snapshot
         
         
+  //:
+  
+  
         menu_callback.links   = function(type,opt){
         }//links
         
@@ -825,6 +942,54 @@
               }
               
         }//save
+        
+        
+  //:
+  
+  
+        async function snapshot(path){
+                                                                                console.log('snapshot',path);
+              var snap      = {};
+              var entries   = await webcontainer.fs.readdir(path,{withFileTypes:true});
+              
+              for(var item of entries){
+              
+                    var abs   = path+item.name;
+                    
+                    if(item.isFile()){
+                                                                                console.log(abs);
+                          snap[abs]   = await webcontainer.fs.readFile(abs);
+                    }
+                    
+                    if(item.isDirectory()){
+                          var snap2   = await snapshot(abs+'/')
+                          Object.assign(snap,snap2);
+                    }
+                    
+              }//for
+              
+              return snap;
+              
+        }//snapshot
+        
+        
+        snapshot.restore    = async function(cwd,snap){
+                                                                                console.log('snapshot.restore');
+              for(var [file,data] of Object.entries(snap)){
+              
+                    if(file.startsWith('/')){
+                          file    = file.slice(1);
+                    }
+                    file      = cwd+file;
+                                                                                console.log(file);
+                    var dir   = file.split('/').slice(0,-1).join('/');
+                    
+                    await webcontainer.fs.mkdir(dir,{recursive:true});
+                    await webcontainer.fs.writeFile(file,data);
+                    
+              }//for
+              
+        }//restore
         
         
   //:
@@ -1196,6 +1361,24 @@
               }//setup
               
         }//spinner
+        
+        
+        spinner.start   = function(term){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              setTimeout(()=>{
+              
+                    var {x,y}   = cursor.xy(term);
+                    var s       = spinner({term,x,y});
+                    term.write('\r\n');
+                    resolve(s);
+                    
+              },50);
+              
+              return promise;
+              
+        }//start
         
         
         
