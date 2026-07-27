@@ -1,0 +1,83 @@
+<webcontainer-nodejs>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            </style>
+            
+            <div id=root>
+            
+                  <input value=test type=button>
+                  
+            </div>
+            
+      </template>
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {
+        version   : 'v1.0.0',
+  };
+  
+        var df=true,did='webcontainer-terminal';
+        
+        var vm
+        ;
+        
+        obj.initmod   = function(params){
+        
+              vm          = mod.rd(params,'vm',vm);
+              debug       = mod.rd(params,'debug',debug);
+              
+        }//initmod
+        
+        
+  //vars:-
+  
+  
+        var viewport;
+        
+        
+  //:
+  
+  
+        obj.init    = function(){
+                                                                                debug('init');
+              initdom();
+              
+              
+        }//init
+        
+        
+  //:
+  
+  
+        function initdom(){
+        
+              viewport    = await vm.new();
+              viewport.pos({x:250,y:200,w:850,h:1100});
+              viewport.body.append(host);
+              
+              shadow    = host.shadowRoot;
+              
+              $(shadow,'[value=test]').onclick    = e=>alert('test');
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+  return obj;
+  
+})
+
+      </script>
+      
+</webcontaner-nodejs>
+
+
+
