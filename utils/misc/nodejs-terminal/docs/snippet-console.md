@@ -10,7 +10,7 @@ the snippet-console allows running code in a sandboxed environment see snippet-c
 
 with the following globals exposed
 
-- **webcontainer** the web container instance
+- **webcontainer** the web container instance [webcontainer](https://webcontainers.io/api)
 
 - **snippet** the snippet-console instance
 
