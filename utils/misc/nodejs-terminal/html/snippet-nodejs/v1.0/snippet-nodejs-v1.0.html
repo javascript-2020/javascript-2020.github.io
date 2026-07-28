@@ -13,8 +13,16 @@
     {flex:1}
     
     
+  .con-btn
+    {display:flex;align-items:center;gap:10px;border:1px solid lightgray;padding:0 10px;cursor:pointer}
+    
+    
   input
     {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  input[type=button]
+    {cursor:pointer}
+  input[type=checkbox]
+    {width:20px;height:20px;margin:0}
     
             </style>
             
@@ -27,7 +35,18 @@
                   </web-editor>
                   
                   <div id=btns>
-                        <input value=test type=button>
+                        <input value=run type=button>
+                        <input value=kill type=button>
+                        <div id=persist class=con-btn>
+                              persist
+                              <input type=checkbox>
+                        </div>
+                        <div id=echo class=con-btn>
+                              echo
+                              <input type=checkbox checked>
+                        </div>
+                        <input value=clear type=button>
+                        
                   </div>
                   
                   <web-console component>
@@ -47,13 +66,15 @@
   
         var df=true,did='webcontainer-terminal';
         
-        var $,vm
+        var $,vm,ace,wc
         ;
         
         obj.initmod   = function(params){
         
               $           = mod.rd(params,'$',$);
               vm          = mod.rd(params,'vm',vm);
+              ace         = mod.rd(params,'ace',ace);
+              wc          = mod.rd(params,'webcontainer',wc);
               debug       = mod.rd(params,'debug',debug);
               
         }//initmod
@@ -63,6 +84,12 @@
   
   
         var viewport;
+        var editor;
+        var cons;
+        
+        var tmpfile   = '~/tmp.js';
+        
+        var btn   = {};
         
         
   //:
@@ -72,6 +99,10 @@
                                                                                 debug('init');
                                                                                 
               await mod.auto();
+              
+              editor    = mod['web-editor'];
+              cons   = mod['web-console'];
+              cons.log('ready');
               
               await initdom();
               
@@ -91,13 +122,56 @@
               
               shadow    = host.shadowRoot;
               
-              $(shadow,'[value=test]').onclick    = e=>alert('test');
+              $(shadow,'[value=run]').onclick    = btn.run;
               
               
         }//initdom
         
         
   //:
+  
+  
+        btn.run   = async function(){
+        
+              var js    = editor.get();
+              await wc.fs.writeFile(tmpfile,js);
+              
+              var cmdline   = `node ${tmpfile}`;
+              var args      = cmdline.split(' ');
+              var cmd       = args.shift();
+              process       = await webcontainer.spawn(cmd,args);//,{cwd,output:true});
+              
+              var stream    = new WritableStream({write(data){
+              
+                    console.log(data);
+                    cons.log(data);
+                    
+              }});
+              process.output.pipeTo(stream)
+              
+              var code      = await process.exit;
+              
+              console.log('process exited :',code);
+              cons.log('process exited :',code);
+              
+        }//run
+        
+        
+        btn.kill    = function(){
+        
+              if(!process){
+                    cons.log('no process');
+                    return;
+              }
+              
+              await process.kill();
+              
+        }//kill
+        
+        
+  //:
+  
+  
   
   
   return obj;
