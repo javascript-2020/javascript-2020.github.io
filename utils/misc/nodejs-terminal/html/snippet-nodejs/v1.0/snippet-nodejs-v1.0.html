@@ -96,7 +96,9 @@
   
         var viewport;
         var editor;
+        obj.editor    = null;
         var term;
+        obj.term      = null;
         
         var process;
         
@@ -115,13 +117,15 @@
   
         obj.init    = async function(){
                                                                                 debug('init');
-              editor    = mod['web-editor'];
+              editor        = mod['web-editor'];
+              obj.editor    = editor;
               editor.initmod({kd});
               
               mod.base.add({ace});
               await mod.auto();
               
-              term      = mod['web-terminal'];
+              term          = mod['web-terminal'];
+              obj.term      = term;
               
               
               await initdom();
