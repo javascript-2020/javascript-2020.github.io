@@ -52,8 +52,8 @@
                         
                   </div>
                   
-                  <web-console component>
-                  </web-console>
+                  <web-terminal component>
+                  </web-terminal>
                   
             </div>
             
@@ -88,7 +88,7 @@
   
         var viewport;
         var editor;
-        var cons;
+        var term;
         
         var tmpfile   = '/tmp.js';
         var tmpfile2    = '~/user/tmp.js';
@@ -105,8 +105,8 @@
               await mod.auto();
               
               editor    = mod['web-editor'];
-              cons   = mod['web-console'];
-              cons.log('ready');
+              term   = mod['web-terminal'];
+              term.log('ready');
               
               await initdom();
               
@@ -148,7 +148,7 @@
               var stream    = new WritableStream({write(data){
               
                     console.log(data);
-                    cons.log(data);
+                    term.log(data);
                     
               }});
               process.output.pipeTo(stream)
@@ -156,7 +156,7 @@
               var code      = await process.exit;
               
               console.log('process exited :',code);
-              cons.log('process exited :',code);
+              term.log('process exited :',code);
               
         }//run
         
@@ -164,7 +164,7 @@
         btn.kill    = async function(){
         
               if(!process){
-                    cons.log('no process');
+                    term.log('no process');
                     return;
               }
               
