@@ -69,16 +69,16 @@
   
         var df=true,did='webcontainer-terminal';
         
-        var $,vm,ace,wc
+        var $,vm,ace,webcontainer
         ;
         
         obj.initmod   = function(params){
         
-              $           = mod.rd(params,'$',$);
-              vm          = mod.rd(params,'vm',vm);
-              ace         = mod.rd(params,'ace',ace);
-              wc          = mod.rd(params,'webcontainer',wc);
-              debug       = mod.rd(params,'debug',debug);
+              $                 = mod.rd(params,'$',$);
+              vm                = mod.rd(params,'vm',vm);
+              ace               = mod.rd(params,'ace',ace);
+              webcontainer      = mod.rd(params,'webcontainer',webcontainer);
+              debug             = mod.rd(params,'debug',debug);
               
         }//initmod
         
@@ -137,7 +137,7 @@
         btn.run   = async function(){
         
               var js    = editor.get();
-              await wc.fs.writeFile(tmpfile,js);
+              await webcontainer.fs.writeFile(tmpfile,js);
               
               var cmdline   = `node ${tmpfile}`;
               var args      = cmdline.split(' ');
