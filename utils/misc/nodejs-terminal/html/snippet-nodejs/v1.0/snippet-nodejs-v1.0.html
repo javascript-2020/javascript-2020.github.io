@@ -100,8 +100,7 @@
         
         var process;
         
-        var tmpfile   = '/tmp.js';
-        var tmpfile2    = '~/user/tmp.js';
+        var tmpfile   = 'tmp';
         
         
         var chk   = {};
@@ -217,13 +216,21 @@
                     return false;
               }
               
-              await webcontainer.fs.writeFile(tmpfile,js);
+              var fn    = '/tmp';
+              if(chk.module.checked){
+                    fn   += '.mjs';
+              }else{
+                    fn   += '.js';
+              }
+              
+              await webcontainer.fs.writeFile(fn,js);
               
               if(!chk.persist.checked){
                     term.clear();
               }
               
-              var cmdline   = `node ${tmpfile2}`;
+              fn            = '~/user'+fn;
+              var cmdline   = `node ${fn}`;
               var args      = cmdline.split(' ');
               var cmd       = args.shift();
               process       = await webcontainer.spawn(cmd,args);//,{cwd,output:true});
