@@ -170,6 +170,36 @@
         btn.run   = async function(){
         
               var js        = editor.get();
+              run(js);
+              
+        }//run
+        
+        
+        btn.kill    = async function(){
+        
+              if(!process){
+                    term.log('no process');
+                    return;
+              }
+              
+              await process.kill();
+              
+        }//kill
+        
+        
+        btn.clear   = function(){
+        
+              term.clear();
+              
+        }//clear
+        
+        
+  //:
+  
+  
+  
+        function run(js){
+        
               await webcontainer.fs.writeFile(tmpfile,js);
               
               if(!chk.persist.checked){
@@ -201,27 +231,10 @@
         }//run
         
         
-        btn.kill    = async function(){
         
-              if(!process){
-                    term.log('no process');
-                    return;
-              }
-              
-              await process.kill();
-              
-        }//kill
-        
-        
-        btn.clear   = function(){
-        
-              term.clear();
-              
-        }//clear
         
         
   //:
-  
   
   
   
