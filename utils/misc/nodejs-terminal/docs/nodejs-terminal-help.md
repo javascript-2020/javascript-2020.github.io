@@ -83,7 +83,12 @@ In the ports sub-menu
 
 
 
+## Importing Files
 
+Currently to import files :
+
+- **load local file** 
+- **save in webcontainer fs**
       
       
 ---
