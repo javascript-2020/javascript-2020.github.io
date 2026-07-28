@@ -169,6 +169,11 @@
         
         btn.run   = async function(){
         
+              if(process){
+                    term.log('process running');
+                    return;
+              }
+              
               var js        = editor.get();
               run(js);
               
@@ -198,8 +203,12 @@
   
   
   
-        function run(js){
+        async function run(js){
         
+              if(process){
+                    return false;
+              }
+              
               await webcontainer.fs.writeFile(tmpfile,js);
               
               if(!chk.persist.checked){
@@ -222,6 +231,7 @@
               process.output.pipeTo(stream)
               
               var code      = await process.exit;
+              process       = null;
               
               term.log('process exited :',code);
               if(chk.echo.checked){
