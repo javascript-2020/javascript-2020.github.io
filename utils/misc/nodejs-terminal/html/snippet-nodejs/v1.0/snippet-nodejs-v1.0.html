@@ -147,8 +147,12 @@
   
         btn.run   = async function(){
         
-              var js    = editor.get();
+              var js        = editor.get();
               await webcontainer.fs.writeFile(tmpfile,js);
+              
+              if(!chk.persist.checked){
+                    term.clear();
+              }
               
               var cmdline   = `node ${tmpfile2}`;
               var args      = cmdline.split(' ');
@@ -157,16 +161,20 @@
               
               var stream    = new WritableStream({write(data){
               
-                    console.log(data);
                     term.log(data);
+                    if(chk.echo.checked){
+                          console.log(data);
+                    }
                     
               }});
               process.output.pipeTo(stream)
               
               var code      = await process.exit;
               
-              console.log('process exited :',code);
               term.log('process exited :',code);
+              if(chk.echo.checked){
+                    console.log('process exited :',code);
+              }
               
         }//run
         
