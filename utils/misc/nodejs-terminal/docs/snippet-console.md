@@ -6,7 +6,7 @@
 ## snippet-console
 
 
-the snippet-console allows running code in a sandboxed environment see snippet-console
+the snippet-console allows running code in a sandboxed environment see html component [snippet-console](https://ext-code.com/html-components/list/snippet-console/snippet-console.html)
 
 with the following globals exposed
 
