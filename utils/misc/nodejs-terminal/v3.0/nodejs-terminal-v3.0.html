@@ -65,6 +65,7 @@
         var hs;
         var vm;
         
+        
         var menu;
         
         var misc;
@@ -99,6 +100,7 @@
               wcfs            = mod['webcontainer-fs'];
               ports           = mod['webcontainer-ports'];
               log             = mod['log-mod'];
+              vm.ui           = mod['viewport-manager-ui'];
               
               var link        = $('#xterm-css');
               var sheet   = link.sheet;
@@ -111,6 +113,7 @@
               wcfs.initmod({ext,$,filemod,menumod,menu,complete,source,log,debug,webcontainer});
               ports.initmod({$,vm});
               log.initmod({ext,$});
+              vm.ui.initmod(mod.base);
               
               
               await Promise.all([
@@ -121,6 +124,7 @@
                     wcfs.init(),
                     ports.init(),
                     log.init(),
+                    vm.ui.init(),
               ]);
               
               
@@ -472,6 +476,7 @@
                     wcfs.initdom(),
                     ports.initdom(),
                     log.initdom(),
+                    vm.ui.initdom(),
               ]);
               misc.set.version(version);
               
