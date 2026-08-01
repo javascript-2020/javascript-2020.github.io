@@ -130,11 +130,13 @@
   
         obj.init    = async function(){
                                                                                 debug('init');
+              await createviewport();
+              
               editor        = mod['web-editor'];
               obj.editor    = editor;
               editor.initmod({kd});
               
-              debugger;
+              //debugger;
               
               await mod.auto();
               
@@ -157,8 +159,7 @@
   
         async function initdom(){
         
-              await createviewport();
-              
+        
               shadow                                  = host.shadowRoot;
               
               chk.module                              = $.chkbox(shadow,'#module');
