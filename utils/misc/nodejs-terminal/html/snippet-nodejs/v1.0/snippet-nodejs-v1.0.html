@@ -38,6 +38,11 @@
             
             <div id=root>
             
+                  <div id=file>
+                        <file-mod component>
+                        </file-mod>
+                  </div>
+                  
                   <div id=hdr>
                         <div id=module class=con-btn>
                               module
@@ -100,22 +105,24 @@
   //vars:-
   
   
+        var filemod;
+        obj.filemod         = null;
         var viewport;
         var editor;
-        obj.editor    = null;
+        obj.editor          = null;
         var term;
-        obj.term      = null;
+        obj.term            = null;
         
         var process;
         
-        var tmpfile   = 'tmp';
+        var tmpfile         = 'tmp';
         
         
-        var chk   = {};
+        var chk             = {};
         
         
         
-        var btn   = {};
+        var btn             = {};
         
         
   //:
@@ -127,8 +134,11 @@
               obj.editor    = editor;
               editor.initmod({kd});
               
-              mod.base.add({ace});
               await mod.auto();
+              
+              filemod       = mod['file-mod'];
+              obj.filemod   = filemod;
+              filemod.initmod({complete});
               
               term          = mod['web-terminal'];
               obj.term      = term;
@@ -199,6 +209,9 @@
         
               if(e.ctrlKey && e.key=='Enter'){
                     btn.run();
+              }
+              if(e.ctrlKey && e.key=='s'){
+                    filemod.save();
               }
               
         }//kd
@@ -287,6 +300,19 @@
         
         
         
+  //:
+  
+  
+        function complete(){
+        }//complete
+        
+        
+        complete.load   = function(){
+        }//load
+        
+        
+        complete.save   = function(){
+        }//save
         
         
   //:
