@@ -303,19 +303,55 @@
   //:
   
   
+        obj.source    = source;
+        
         function source(){
+        
+              var txt     = editor.getvalue();
+              var blob    = new Blob([txt]);
+              return blob;
+              
         }//source
         
         
-        function complete(){
+        obj.complete    = complete;
+        
+        function complete(file){
+        
+              if(file){
+                    editor.filename(file);
+                    editor.filename.save.hide();
+                    filemod.cur   = file;
+                    //var title     = file.name||file.filename;
+                    //set.title(title);
+                    //set.favicon(icon.def);
+              }
+              
+              //menu.close();
+              editor.focus();
+              
         }//complete
         
         
-        complete.load   = function(){
-        }//load
+        complete.load   = async function(file,blob){
+        
+              var txt   = await blob.text();
+              editor.clear();
+              //output.kill();
+              editor.setValue(txt,-1);
+              complete(file);
+              
+        }//complete.load
         
         
-        complete.save   = function(){
+        complete.save   = function(file,confirm=true){
+        
+              complete(file);
+              
+              if(confirm){
+                    log.green(file.filename,'saved');
+              }
+              
         }//save
         
         
