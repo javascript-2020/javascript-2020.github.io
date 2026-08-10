@@ -64,6 +64,7 @@
         var debug;
         var hs;
         var vm;
+        var ls;
         
         
         var menu;
@@ -88,7 +89,11 @@
   
         async function init(){
                                                                                 debug('init');
-                                                                                
+              vm    = vm();
+              vm.initmod({mod});
+              
+              ls              = ls();
+              
               menu            = menumod();
               
               misc            = mod['misc-hdr'];
@@ -127,6 +132,9 @@
               ]);
               
               
+              setup();
+              
+              
               await initdom();
               
               
@@ -136,6 +144,14 @@
               
         }//init
         
+        
+        function setup(){
+        
+              if(ls.read.snapshot_list.error){
+                    ls.write.snapshot_list    = [];
+              }
+              
+        }//setup
         
         
 (async()=>{
@@ -152,11 +168,9 @@
               'js/debug/debug.js',
               'js/string/hs.js',
               'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
+              'js/core/lsmod/lsmod.js',
         );
-        [$,datatype,menumod,keydown,debug,hs,vm]   = await promise;
-        
-        vm    = vm();
-        vm.initmod({mod});
+        [$,datatype,menumod,keydown,debug,hs,vm,ls]   = await promise;
         
         mod.stack.complete;
         
@@ -362,8 +376,14 @@
                               <div id=save-tar class=menu-opt>save snapshot tar</div>
                               <div id=load-tar class=menu-opt>load snapshot tar</div>
                               -->
-                              <div>
-                                    Empty
+                              <div class=menu-sep>
+                              </div>
+                              <div id=list>
+                                    <div id=empty>
+                                          Empty
+                                    </div>
+                                    <div id=item class=menu-opt>
+                                    </div>
                               </div>
                         </div>
                   </div>
@@ -459,9 +479,10 @@
         var webcontainer;
         var ace;
         
+        var snapshot      = {};
+        snapshot.icon     = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAulBMVEVHcEwcHBwjISH6BwfsIiL7BQURLS39AQEiKSkeHh79DQ1lamr9AABtbW0kJCQeHx/8BASMYGH9AgIlHh7yGxzvIiNtbW1oaGhpaWn5Dw/2DA36Bgb8AwMmJiYeHh70FBRsbGweHh4fHx9rbGxra2v3EBD6CAhoaGj0EBAeHh5paWlub2/aBgbiBgahFBR2FRUcHBwkJCQeHh72DAz6BgZpaWlpaWkjIyPnNTjyFhcfHx8dHR0fHx/+AABW+gdcAAAAPXRSTlMA0miUCcET+xmOTQf+EDq23gL2lB8SMs+rPm+16iOhNky+rW1BX57EUdWJI+PbhsbfTciAyZHAVwYtgex+9GPg0AAAASdJREFUKM+V0wlvgjAYgOGuaIW1pVDuG0HB+9ad/v+/NSDRIStLfBMSmocvTUMKQJU6nr+02h0i0EpmUG6F9l+Z3OK3WG9/DVRmxOh3CRXwyBkyDPoPYxQruIf1aCwDlH3jnmldiVVZPey7jHWa02oIfTLGdrDDtmtPnNS1q1cURXGHJ84Z5y49O5NmqTwyLS8UuAtALyUVMEidxbJM8cJJRdP13rmztJu9RQzwMsf67bg31qExEGTA5k94wXo1FLRaB17F0rU36QnmwyAItaI4ESFrppUEifVx7ONEOlmmP7z2TU8133xPQjFbUx4efdMUczgtrtos8STx3mREqofzp87tc0JGggjhfsUDb7Odvf5ptt14g/slQp1kyO4XqXMF6+ZjtZYfdVZIYl3MQj8AAAAASUVORK5CYII=';
         var output;
         
-        var snap_icon   = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAulBMVEVHcEwcHBwjISH6BwfsIiL7BQURLS39AQEiKSkeHh79DQ1lamr9AABtbW0kJCQeHx/8BASMYGH9AgIlHh7yGxzvIiNtbW1oaGhpaWn5Dw/2DA36Bgb8AwMmJiYeHh70FBRsbGweHh4fHx9rbGxra2v3EBD6CAhoaGj0EBAeHh5paWlub2/aBgbiBgahFBR2FRUcHBwkJCQeHh72DAz6BgZpaWlpaWkjIyPnNTjyFhcfHx8dHR0fHx/+AABW+gdcAAAAPXRSTlMA0miUCcET+xmOTQf+EDq23gL2lB8SMs+rPm+16iOhNky+rW1BX57EUdWJI+PbhsbfTciAyZHAVwYtgex+9GPg0AAAASdJREFUKM+V0wlvgjAYgOGuaIW1pVDuG0HB+9ad/v+/NSDRIStLfBMSmocvTUMKQJU6nr+02h0i0EpmUG6F9l+Z3OK3WG9/DVRmxOh3CRXwyBkyDPoPYxQruIf1aCwDlH3jnmldiVVZPey7jHWa02oIfTLGdrDDtmtPnNS1q1cURXGHJ84Z5y49O5NmqTwyLS8UuAtALyUVMEidxbJM8cJJRdP13rmztJu9RQzwMsf67bg31qExEGTA5k94wXo1FLRaB17F0rU36QnmwyAItaI4ESFrppUEifVx7ONEOlmmP7z2TU8133xPQjFbUx4efdMUczgtrtos8STx3mREqofzp87tc0JGggjhfsUDb7Odvf5ptt14g/slQp1kyO4XqXMF6+ZjtZYfdVZIYl3MQj8AAAAASUVORK5CYII=';
         
         
         var blank;
@@ -495,8 +516,11 @@
               var more                                        = $('#more-menu');
               more.onclick                                    = menu.click2(more,menu_callback.more);
               
-              var snapshot                                    = $('#snapshot-menu');
-              snapshot.onclick                                = menu.click2(snapshot,menu_callback.snapshot);
+              snapshot.menu                                   = $('#snapshot-menu');
+              snapshot.menu.onclick                           = menu.click2(snapshot,menu_callback.snapshot);
+              snapshot.list                                   = $(snapshot.menu,'#list');
+              snapshot.item                                   = $(snapshot.list,'#item');
+              snapshot.item.remove();
               
               var links                                       = $('#links-menu');
               links.onclick                                   = menu.click2(links,menu_callback.links);
@@ -878,7 +902,7 @@
               
               var file    = {
                     name    : 'snapshot.zip',
-                    icon    : snap_icon
+                    icon    : snaphot.icon
               };
               
               complete.load(file,blob);
@@ -933,6 +957,8 @@
               
               term.writeln.green('ok.');
               await term.prompt();
+              
+              
               
               
               async function to_snap(blob){
