@@ -102,7 +102,7 @@ You can run in-memory databases like SQLite. For persistent databases, connect v
 It is a WASM-based Node.js environment that mimics a Linux shell. While it supports most `POSIX` commands, it is specifically optimized for Node.js workflows.
 
 ### Can I use Git?
-Git is supported through JavaScript-based implementations (like isomorphic-git), allowing for full version control within the browser sandbox.
+Git is supported through JavaScript-based implementations ( like [isomorphic-git](https://www.npmjs.com/package/isomorphic-git) ), allowing for full version control within the browser sandbox.
 
 
 
