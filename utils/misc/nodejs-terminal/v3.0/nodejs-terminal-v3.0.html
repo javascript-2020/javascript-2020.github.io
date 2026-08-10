@@ -871,16 +871,17 @@
               var snap    = await snapshot(cwd);
               var blob    = await to_zip(snap);
               
+              s.stop();
+              term.writeln.green('ok.');
+              await term.prompt();
+              
+              
               var file    = {
                     name    : 'snapshot.zip',
                     icon    : snap_icon
               };
               
               complete.load(file,blob);
-              
-              s.stop();
-              term.writeln.green('ok.');
-              await term.prompt();
               
               
               async function to_zip(snap){
