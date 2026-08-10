@@ -89,14 +89,10 @@
   
         async function init(){
                                                                                 debug('init');
+              await libs.ext();
+              
               vm    = vm();
               vm.initmod({mod});
-              
-              console.log('ls',ls);
-              if(typeof ls!='function')debugger;
-              
-              ls              = ls();
-              
               
               menu            = menumod();
               
@@ -149,6 +145,7 @@
         }//init
         
         
+        
         function setup(){
         
               if(ls.read.snapshot_list.error){
@@ -158,6 +155,8 @@
         }//setup
         
         
+        
+/*
 (async()=>{
 
         mod.stack.add;
@@ -179,9 +178,20 @@
         mod.stack.complete;
         
 })();
+*/
 
 
-
+        libs.ext    = async function(){
+        
+              var promise   = ext.load.libs(
+                    'js/string/hs.js',
+                    'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
+              );
+              [hs,vm]   = await promise;
+              
+        }//ext
+        
+        
         libs.jszip    = async function(){
         
               if(jszip){
