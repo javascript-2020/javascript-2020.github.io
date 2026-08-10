@@ -534,12 +534,7 @@
               console.log(ls.read.snapshot_list.value);
               if(ls.read.snapshot_list.value.length){
                     snapshot.list.replaceChildren();
-                    ls.read.snapshot_list.value.forEach(file=>{
-                    
-                          var nitem   = snapshot.item.cloneNode(true);
-                          $(nitem,'#name').textContent    = file.name;
-                          
-                    });
+                    ls.read.snapshot_list.value.forEach(snapshot.additem);
               }
               
               
@@ -861,6 +856,23 @@
   //:
   
   
+        snapshot.additem    = function(file){
+        
+              var empty   = $(snapshot.list,'#empty');
+              if(empty){
+                    empty.remove();
+              }
+              
+              var nitem   = snapshot.item.cloneNode(true);
+              
+              $(nitem,'#name').textContent    = file.name;
+              
+              snapshot.list.append(nitem);
+              
+              
+        }//additem
+        
+        
         menu_callback.snapshot    = function(type,opt){
                                                                                 //console.log('more',type,opt);
               if(type=='opt'){
