@@ -11,6 +11,9 @@ just create the text and press ` ctrl-enter ` to automatically run the code.
 
 it creates the default file : ` ~/user/tmp.js ` to run the code
 
-      
+
+ctrl+enter to run code
+
+
       
       
