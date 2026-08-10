@@ -260,6 +260,12 @@
     {position:absolute;padding:10px}
     
     
+  #snapshot-menu #list
+    {display:flex;flex-direction:column;gap:5px}
+  #snapshot-menu #list #item
+    {display:flex;align-items:center;gap:5px}
+    
+    
   .center-h
     {display:flex;align-items:center;gap:10px}
     
@@ -383,6 +389,8 @@
                                           Empty
                                     </div>
                                     <div id=item class=menu-opt>
+                                          <div id=name>
+                                          </div>
                                     </div>
                               </div>
                         </div>
@@ -521,6 +529,12 @@
               snapshot.list                                   = $(snapshot.menu,'#list');
               snapshot.item                                   = $(snapshot.list,'#item');
               snapshot.item.remove();
+              ls.read.snapshot_list.value.forEach(file=>{
+              
+                    var nitem   = snapshot.item.cloneNode(true);
+                    $(nitem,'#name').textContent    = file.name;
+                    
+              });
               
               var links                                       = $('#links-menu');
               links.onclick                                   = menu.click2(links,menu_callback.links);
