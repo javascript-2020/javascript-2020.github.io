@@ -396,6 +396,7 @@
                         <div class=menu style='display:none;left:0px;top:35px'>
                               <div id=save-zip class=menu-opt>save snapshot zip</div>
                               <div id=load-zip class=menu-opt>load snapshot zip</div>
+                              <div id=add class=menu-opt>add snapshot</div>
                               <!--
                               <div id=save-tar class=menu-opt>save snapshot tar</div>
                               <div id=load-tar class=menu-opt>load snapshot tar</div>
@@ -547,13 +548,7 @@
               snapshot.list                                   = $(snapshot.menu,'#list');
               snapshot.item                                   = $(snapshot.list,'.item');
               snapshot.item.remove();
-              
-              
-              console.log(ls.read.snapshot_list.value);
-              if(ls.read.snapshot_list.value.length){
-                    snapshot.list.replaceChildren();
-                    ls.read.snapshot_list.value.forEach(snapshot.additem);
-              }
+              ls.read.snapshot_list.value.forEach(snapshot.additem);
               
               
               var links                                       = $('#links-menu');
@@ -895,7 +890,7 @@
                                                                                 //console.log('more',type,opt);
               if(type=='opt'){
               
-                  menu_callback.more[opt.id]();
+                  menu_callback.snapshot[opt.id]();
                   
               }
               
@@ -903,6 +898,14 @@
               
               
         }//snapshot
+        
+        
+        menu_callback.snapshot.add    = function(){
+        
+              console.log(filemod.cur);
+              
+        }//add
+        
         
         
                                                                                 //  Compress-Archive -Path .\* -DestinationPath ".\$(Split-Path -Leaf $PWD).zip"
