@@ -12,7 +12,7 @@
             </title>
             
             <meta name=description content='Download any directory from a GitHub repository and create a ZIP file. Fast, lightweight tool for developers who want a copy of a specific folders without cloning the entire repo'>
-
+            
             <base href='https://ext-code.com/utils/github/download-a-directory-from-a-github-repository/'>
             <base href='https://javascript-2020.github.io/utils/github/download-a-directory-from-a-github-repository/'>
             
@@ -20,7 +20,7 @@
             
             <meta name=viewport content='width=device-width, initial-scale=1'>
             <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico'>
-
+            
             <script type='application/ld+json'>
                   {
                         "@context"              : "https://schema.org",
@@ -36,10 +36,21 @@
                         "offers"                : {"@type":"Offer","price":"0","priceCurrency":"GBP"}
                   }
             </script>
-
-        
+            
+            <meta property='og:title' content='Download Github Directory'>
+            <meta property='og:description' content='Download any directory from a GitHub repository and create a ZIP file. Fast, lightweight tool for developers who want a copy of a specific folders without cloning the entire repo'>
+            <meta property='og:image' content='https://ext-code.com/utils/github/download-a-directory-from-a-github-repository/images/og.png'>
+            <meta property='og:url' content='https://ext-code.com/utils/github/download-a-directory-from-a-github-repository/download-a-directory-from-a-github-repository.html'>
+            <meta property='og:site_name' content='ext-code.com'>
+            
+            <meta name='twitter:title' content='Download Github Directory'>
+            <meta name='twitter:description' content='Download any directory from a GitHub repository and create a ZIP file. Fast, lightweight tool for developers who want a copy of a specific folders without cloning the entire repo'>
+            <meta name='twitter:image' content='https://ext-code.com/utils/github/download-a-directory-from-a-github-repository/images/og.png'>
+            <meta name='twitter:card' content='https://ext-code.com/utils/github/download-a-directory-from-a-github-repository/images/og.png'>
+            
+            
             <script src='https://libs.ext-code.com/js/dom/component/component.js'></script>
-
+            
             <script init>
                                                                                 console.clear();
                                                                                 console.log('download-github-directory-v2.0.html');
@@ -55,45 +66,45 @@
         
         var hdr;
         var log;
-
-
-                              
+        
+        
+        
         
         
   //:
-
-        
+  
+  
         async function init(){
-
+        
         
               menu                      = menumod();
               
               mod.base.add({ext,$,datatype,keydown,menu,menumod});
               
-
+              
               hdr                       = mod['github-hdr'];
               log                       = mod['log-mod'];
-
+              
               
               hdr.initmod({ext,$,menu});
               log.initmod({ext,$});
-
+              
               
               await Promise.all([
                     hdr.init(),
                     log.init(),
               ]);
               
-        
+              
   //:
-          
+  
               //keydown.add(kd);
               menu.on.close          = ()=>{};
-        
+              
               
               await initdom(document.body);
-        
-        
+              
+              
               urlparams();
               
         }//init
@@ -104,7 +115,7 @@
         mod.stack.add;
         
         ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
-          
+        
         var promise   = ext.load.libs(
               'js/dom/$.js',
               'js/core/datatype.js',
@@ -114,62 +125,62 @@
               'js/string/hs.js',
         );
         [$,datatype,menumod,keydown,github,hs]   = await promise;
-
-  
+        
+        
         JSZip   = (await import('https://cdn.jsdelivr.net/npm/jszip/+esm')).default;
-
+        
         mod.stack.complete;
-              
+        
 })();
 
-                  
+
             </script>
-
-
+            
+            
             <style>
-        
+            
   html
     {font-family:arial}
   body
     {height:calc(100% - 16px)}
-
+    
   #scroll
     {}
   #center
     {width:100%;max-width:1200px;position:absolute;margin:auto;left:0;right:0}
-        
+    
   #url-examples
     {font-size:12px;font-family:monospace;text-align:center;margin-top:30px}
   #url-examples a
     {margin-top:5px;display:block;white-space:nowrap}
-        
+    
   #parse-root
     {padding-bottom:20px;margin:20px 0;display:flex;align-items:center;gap:10px;border-bottom:1px solid lightgray}
   #url
     {flex:1}
-
+    
   #token-root
     {padding-bottom:20px;border-bottom:1px solid lightgray}
-        
-  #values 
+    
+  #values
     {padding-bottom:20px;margin:bottom:20px;border-bottom:1px solid lightgray}
   .value
     {display:flex;align-items:center;gap:10px;margin-bottom:10px}
   .value input
     {flex:1}
-        
-        
-
+    
+    
+    
   #download-root
-    {margin:20px 0;display:flex;gap:10px;align-items:center}              
+    {margin:20px 0;display:flex;gap:10px;align-items:center}
   [value=download]
-    {width:150px}              
+    {width:150px}
   #progress
-    {flex:1;padding:3px;border:1px solid gray;height:24px;border-radius:3px}              
+    {flex:1;padding:3px;border:1px solid gray;height:24px;border-radius:3px}
   #track
     {background:lightblue;width:0;height:100%}
-        
-  
+    
+    
   #results-root
     {}
   #results-clear
@@ -186,7 +197,7 @@
     {display:flex;align-items:center;margin-bottom:10px}
   .error .tag
     {margin-right:20px}
-        
+    
   .icon-root
     {display:flex;align-items:center;gap:5px}
   .icon
@@ -197,20 +208,20 @@
   .paste
     {content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAYxJREFUOE/NlLFKw1AUhs9thDSSNhYEC1LIdWj2bl07OPcJxMUXMFsHjUsXrdBdB3HwARxLwIIQXJxcUooHbCOEutRKh9AYucXGtknTGhw8Y3Lud89//stP4I+LRPEopdb3/31EbKxydyhQluVjQoiaTCZTPM9Dv98Hz/M0nufPTdMcRIF9oKIoKcdx3ifNHMeBJEkgiiJYlgWu605zsohoh4F9IJsqs+5pp+UeHNxsgSAIQMiPgOFwCGflHjTbAtw+ia+IuL0UmE1/asbhyxgYVuyyq4c01JuZ3wGjdlS/2/hnQNcDePvg/KEvDQkuDMkejUYF9rHT6TBzfMdmTJnscFry3nUW7p+FqC00EHF30rAUuHNCoVqtQrFYDEANw4BKpQKI6HNWBtZqtQBQVdX4QNM0A0BFUeIDmbT5YquILXmRK7GBsSZcSxBtU5wJAbAH3NjlfD4fGLLVai2WzLpZQMyfIoQclUqlRC6XCwC73S7ouh7+bBbtiFLKkuIx4mUXpqMsMrFXSej5ni+XXuAVg6oGswAAAABJRU5ErkJggg==');
     }
-        
+    
   #api-root, #api-root *
     {cursor:pointer}
     
-  input 
+  input
     {font-size:16px;padding:5px 10px;box-sizing:border-box}
   input[type=button]
     {cursor:pointer}
   label
     {width:80px;text-align:right;margin-right:20px}
-  
+    
   a,a:visited
     {color:dimgray;cursor:pointer}
-              
+    
   #help
     {line-height:32px;border-top:1px solid lightgray;margin-top:20px;padding-top:20px}
     
@@ -218,12 +229,12 @@
   .visually-hidden {position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0 0 0 0) !important;white-space:nowrap !important;border:0 !important}
   
             </style>
-
-
+            
+            
       </head>
-    
+      
       <body>
-    
+      
             <github-hdr component=grp>
                   <img style='top:0px;height:50px' class=title src='images/download-a-directory-from-a-github-repository.png' alt='Download Github Directory'>
                   <h1 class=visually-hidden>
@@ -233,8 +244,8 @@
                         27 Aug 2025
                   </time>
             </github-hdr>
-
-        
+            
+            
             <div id=scroll>
             
                   <div id=center>
@@ -244,7 +255,7 @@
                                     <div style='display:inline-block;text-align:left'>
                                     </div>
                               </div>
-                        
+                              
                               <div id=parse-root>
                               
                                   <label>
@@ -259,7 +270,7 @@
                                   
                               </div>
                               
-                            
+                              
                               <div id=token-root class=value>
                                     <label>
                                           token
@@ -267,10 +278,10 @@
                                     <img id=token-paste class='paste icon'>
                                     <input class=token>
                               </div>
-
+                              
                               
                               <div id=values>
-                            
+                              
                                     <div id=owner-root class=value>
                                           <label>
                                                 owner
@@ -278,7 +289,7 @@
                                           <img id=owner-paste class='paste icon' title=paste>
                                           <input class=owner>
                                     </div>
-                                
+                                    
                                     <div id=repo-root class=value>
                                           <label>
                                                 repo
@@ -286,7 +297,7 @@
                                           <img id=repo-paste class='paste icon' title=paste>
                                           <input class=repo>
                                     </div>
-                                
+                                    
                                 <div id=branch-root class=value>
                                       <label>
                                             branch
@@ -313,7 +324,7 @@
                                         <div id=track>
                                         </div>
                                   </div>
-                            
+                                  
                                   <span id=api-root>
                                         <label for=api>
                                               api
@@ -341,15 +352,15 @@
                             </div>
                             
                         </section>
-      
-                      
+                        
+                        
                         <section id=help>
-
+                        
 this page will download a directory from a github repository
 <br>
 paste in a url and it will automatically parse it into the relevant parts
 <br>
-if you have a github token you can enter it and it will use the github api to download the files, these will be as they are within the repository.  
+if you have a github token you can enter it and it will use the github api to download the files, these will be as they are within the repository.
 <br>
 if you do not have a token, it will download the files from raw.githubusercontent.com, these urls
 typically take upto 10 mins to reflect changes within the repository.
@@ -359,7 +370,7 @@ are rate limited to 60 per hour.
 <br>
 The path can be empty ( therefore it will download all files in the repo )
 <br>
-also check out the blog post on 
+also check out the blog post on
 <a style='color:blue;font-weight:bold' href='/blog/25-08-27/how-to-download-a-github-directory/how-to-download-a-github-directory.html'>
       how to download a github directory
 </a>
@@ -367,19 +378,19 @@ also check out the blog post on
                         </section>
                         
                   </div center>
-                
-                
-                
+                  
+                  
+                  
             </div scroll>
-
+            
             <log-mod component></log-mod>
-
+            
       </body>
-
-
+      
+      
       <script>
-
-
+      
+      
         var results;
         var result;
         
@@ -400,13 +411,13 @@ also check out the blog post on
   
   
         function initdom(rootnode){
-          
+        
               var root                          = rootnode;
               
-
+              
               hdr.initdom(root);
-
-
+              
+              
               $('#url-paste').onclick           = btn.url.paste;
               $('#url-copy').onclick            = btn.url.copy;
               
@@ -422,9 +433,9 @@ also check out the blog post on
               
               
               $('[value=download]').onclick     = btn.download;
-
-
-              $('#results-clear').onclick       = btn.clear;              
+              
+              
+              $('#results-clear').onclick       = btn.clear;
               results                           = $('#results');
               result                            = $('.result');
               result.style.display              = '';
@@ -434,30 +445,30 @@ also check out the blog post on
               error.remove();
               
         }//initdom
-                
-                
+        
+        
   //:
   
   
         btn.url.paste   = async function(){
-              
+        
               var url           = await navigator.clipboard.readText();
               $('#url').value   = url;
               
-        }//paste          
+        }//paste
         
         
         btn.url.copy    = async function(e){
-          
+        
               $.mousetext(e,'copied');
               var url   = $('#url').value;
               await navigator.clipboard.writeText(url);
               
         }//copy
-
-
+        
+        
         btn.parse   = function(e){
-              
+        
               var url               = $('#url').value;
               var result            = github.parse(url);
                                                                                 //console.json(result);
@@ -465,17 +476,17 @@ also check out the blog post on
                     alert(result.error);
                     return;
               }
-                
+              
               $('.owner').value     = result.owner;
               $('.repo').value      = result.repo;
               $('.branch').value    = result.branch;
               $('.path').value      = result.path;
-                    
+              
         }//parse
-
-
+        
+        
         btn.token.paste   = async function(e){
-          
+        
               var txt               = await navigator.clipboard.readText();
               $('.token').value     = txt;
               
@@ -483,7 +494,7 @@ also check out the blog post on
         
         
         btn.owner.paste   = async function(e){
-          
+        
               var txt               = await navigator.clipboard.readText();
               $('.owner').value     = txt;
               
@@ -491,7 +502,7 @@ also check out the blog post on
         
         
         btn.repo.paste   = async function(e){
-          
+        
               var txt               = await navigator.clipboard.readText();
               $('.repo').value      = txt;
               
@@ -499,7 +510,7 @@ also check out the blog post on
         
         
         btn.branch.paste   = async function(e){
-          
+        
               var txt               = await navigator.clipboard.readText();
               $('.branch').value    = txt;
               
@@ -507,15 +518,15 @@ also check out the blog post on
         
         
         btn.path.paste   = async function(e){
-          
+        
               var txt               = await navigator.clipboard.readText();
               $('.path').value      = txt;
               
         }//paste
         
-                
+        
         btn.download    = function(e){
-          
+        
               var owner     = $('.owner').value;
               var repo      = $('.repo').value;
               var branch    = $('.branch').value;
@@ -531,37 +542,37 @@ also check out the blog post on
         
         
         btn.clear   = function(){
-          
+        
               results.replaceChildren();
               
         }//clear
-
+        
         
   //:
   
   
         async function download(owner,repo,branch,path,auto,token,api){
-
+        
               var {error,file,blob}   = await github.dir.download(owner,repo,branch,path,update,null,token,api);
               
               if(error){
                     display.error(error);
                     return;
               }
-
+              
               
               var size                              = hs(blob.size);
               var str                               = file+' '+size;
               
               display.result(str,click);
-
+              
               if(auto){
                     download();
               }
-
+              
               
               function click(e){
-                
+              
                     if(e.button!=0){
                           return;
                     }
@@ -574,7 +585,7 @@ also check out the blog post on
               
               
               function download(){
-                
+              
                     var url       = window.URL.createObjectURL(blob);
                     
                     var a         = document.createElement('a');
@@ -597,29 +608,29 @@ also check out the blog post on
         
         
         display.result    = function(str,download){
-          
+        
               var nresult                           = result.cloneNode(true);
               $(nresult,'.filename').textContent    = str;
               nresult.onclick                       = download;
               results.append(nresult);
-          
+              
         }//result
         
         
         display.error   = function(err){
-          
+        
               var nerror                          = error.cloneNode(true);
               $(nerror,'.message').textContent    = err;
               results.append(nerror);
               
         }//error
-
-
+        
+        
   //:
   
-        
+  
         function urlparams(){
-          
+        
                                                                                 console.log('urlparams');
               var query             = window.location.search;
                                                                                 console.log(query);
@@ -645,12 +656,12 @@ also check out the blog post on
               
         }//urlparams
         
-
-
+        
+        
         
       </script>
-        
-
+      
+      
 </html>
 
 
