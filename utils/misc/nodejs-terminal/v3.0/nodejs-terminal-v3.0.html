@@ -879,12 +879,20 @@
                     empty.remove();
               }
               
-              var nitem   = snapshot.item.cloneNode(true);
+              var nitem                       = snapshot.item.cloneNode(true);
+              nitem.onclick                   = click;
               
               $(nitem,'#name').textContent    = file.name;
               
               snapshot.list.append(nitem);
               
+              
+              function click(e){
+              
+                    e.stopPropagation();
+                    console.log('click',file);
+                    
+              }//click
               
         }//additem
         
@@ -893,8 +901,10 @@
                                                                                 //console.log('more',type,opt);
               if(type=='opt'){
               
-                  menu_callback.snapshot[opt.id]();
-                  
+                    if(opt.id=='add'){
+                          menu_callback.snapshot.add();
+                    }
+                    
               }
               
               //tabs.focus();
@@ -905,7 +915,7 @@
         
         menu_callback.snapshot.add    = function(){
         
-              console.log(cur.file);
+              snapshot.additem(cur.file);
               
         }//add
         
