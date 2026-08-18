@@ -1491,7 +1491,7 @@
         
         
         
-        function spinner({term,x,y}){
+        function spinner({term,x,y},resolve){
         
               var spinner     = {};
               spinner.timer   = null;
@@ -1540,6 +1540,8 @@
                           
                     }//stop
                     
+                    resolve(spinner);
+                    
               }//setup
               
         }//spinner
@@ -1552,9 +1554,9 @@
               setTimeout(()=>{
               
                     var {x,y}   = cursor.xy(term);
-                    var s       = spinner({term,x,y});
+                    var s       = spinner({term,x,y},resolve);
                     term.write('\r\n');
-                    resolve(s);
+                    //resolve(s);
                     
               },50);
               
