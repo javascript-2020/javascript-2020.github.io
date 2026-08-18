@@ -1033,7 +1033,7 @@
         }//save-zip
         
         
-        menu_callback.snapshot['load-zip']    = async function(){
+        menu_callback.snapshot['load-zip']    = async function(blob){
         
                                                                                 console.log('load-zip');
               if(!tabs.cur.view){
@@ -1057,7 +1057,7 @@
               
               await libs.jszip();
               
-              var blob          = cur.blob;
+              blob            ||= cur.blob;
                                                                                 console.log(blob);
               var snap          = await to_snap(blob);
               await snapshot.restore(cwd,snap);
