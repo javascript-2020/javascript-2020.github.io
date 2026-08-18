@@ -558,7 +558,7 @@
               snapshot.list                                   = $(snapshot.menu,'#list');
               snapshot.item                                   = $(snapshot.list,'.item');
               snapshot.item.remove();
-              ls.read.snapshot_list.value.forEach(snapshot.additem);
+              ls.read.snapshot_list.value.forEach(snapshot.add);
               
               
               var links                                       = $('#links-menu');
@@ -879,8 +879,13 @@
   //:
   
   
-        snapshot.additem    = function(file){
+        snapshot.add    = function(file){
         
+              var list    = ls.read.snapshot_list;
+              list.push(file);
+              ls.write.snapshot_list    = list;
+              
+              
               var empty   = $(snapshot.list,'#empty');
               if(empty){
                     empty.remove();
@@ -909,6 +914,22 @@
                     e.stopPropagation();
                     nitem.remove();
                     
+                    var list    = ls.read.snapshot_list;
+                    var f1      = JSON.stringify(file);
+                    var n       = list.length;
+                    for(var i=0;i<n;i++){
+                    
+                          var file2   = list[i];
+                          var f2      = JSON.stringify(file2);
+                          if(f1==f2){
+                                                                                console.log('remove : found',i);
+                                list.splice(i,1);
+                                ls.write.snapshot_list    = list;
+                                return;
+                          }
+                          
+                    }//for
+                    
               }//remove
               
         }//additem
@@ -932,7 +953,7 @@
         
         menu_callback.snapshot.add    = function(){
         
-              snapshot.additem(cur.file);
+              snapshot.add(cur.file);
               
         }//add
         
