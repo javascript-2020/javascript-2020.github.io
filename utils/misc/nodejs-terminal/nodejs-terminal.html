@@ -53,15 +53,16 @@
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
                                                                                 console.hex=v=>console.log(v,'Hex:',[...v].map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(' '));
         var version='v3.0';
-        var df=true;
+        var df=true,did='html';
         
-        
+/*
         var ext;
         var $;
         var datatype;
         var menumod;
         var keydown;
         var debug;
+*/
         var hs;
         var vm;
         
@@ -88,7 +89,11 @@
   
         async function init(){
                                                                                 debug('init');
-                                                                                
+              await libs.ext();
+              
+              vm    = vm();
+              vm.initmod({mod});
+              
               menu            = menumod();
               
               misc            = mod['misc-hdr'];
@@ -127,6 +132,9 @@
               ]);
               
               
+              setup();
+              
+              
               await initdom();
               
               
@@ -138,6 +146,17 @@
         
         
         
+        function setup(){
+        
+              if(ls.read.snapshot_list.error){
+                    ls.write.snapshot_list    = [];
+              }
+              
+        }//setup
+        
+        
+        
+/*
 (async()=>{
 
         mod.stack.add;
@@ -152,18 +171,27 @@
               'js/debug/debug.js',
               'js/string/hs.js',
               'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
+              'js/core/ls-mod/ls-mod.js',
         );
-        [$,datatype,menumod,keydown,debug,hs,vm]   = await promise;
-        
-        vm    = vm();
-        vm.initmod({mod});
+        [$,datatype,menumod,keydown,debug,hs,vm,ls]   = await promise;
         
         mod.stack.complete;
         
 })();
+*/
 
 
-
+        libs.ext    = async function(){
+        
+              var promise   = ext.load.libs(
+                    'js/string/hs.js',
+                    'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
+              );
+              [hs,vm]   = await promise;
+              
+        }//ext
+        
+        
         libs.jszip    = async function(){
         
               if(jszip){
@@ -174,6 +202,8 @@
               jszip   = jszip.default;
               
         }//jszip
+        
+        
         
         
             </script>
@@ -246,6 +276,20 @@
     {position:absolute;padding:10px}
     
     
+  #snapshot-menu #list
+    {display:flex;flex-direction:column;gap:5px}
+  #snapshot-menu #list #empty
+    {text-align:center;color:gray;font-weight:bold}
+  #snapshot-menu #list .item
+    {display:flex;align-items:center;gap:5px;padding:5px 10px}
+  #snapshot-menu #list .item .name
+    {flex:1}
+  #snapshot-menu #list .item .remove
+    {width:20px;height:20px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAj1QTFRFAAAA4Cco6hkY7xQU8RgZ8RgY8BgZ8hgY7xIU6BcW3Sgt2To67RMV9AkJ+QQE/AIC/AIC+AQF9AkK7RET4DMy2Tg38RAP+QQE/AEB/QAB/gAA/QEA+wEB+QQE8Q8P3TQz7BIT+QQE/QEB/QAA+QQD6xMT4CUl9QkJ/AEC9AgI5CMj7BcW+QQE+AUE9wcH+QQE+QQE9wcH+AQF+gME7BYW6REQ+wIB+QUE6RYW0To+6hUV9gcG9gUF6hUR1js66RQX+QQE8g0O5QsL9wgI3kA+////6BYU9gYG9wUF6RMUylBT9QkK/QEC8g0N5QwK+gQE6RER6BIR9gYG9gYG6BQT6RUV+AQF8g0N9QUF6BAO5RQW5RUX5xYY9QcH8w0N5QsK9gYF6hAP5xUX9AcI+wIC/gAB9gYF5RMU5hgb9gcH9gYF5BUV5hYX9wQF6BIT6BMT9QYG9gUE6BER4RQV5BQT6BMS+QQE6RMR5REU9AYH9QYF6RIQ6RQV+gQE5QsL9wcH2zo74xIT8wYG/AIB9wYF6hMR0jg59QcH8Q4O6hAR/AIC+QQF7BUXyzc35xMS9AYF9gYG6RUU3Dk36RUW+QQE8Q8O7BgX+QQD9AcH+QQE+gMD6xYT3Sgm8wkI9QgI4yQk7BIT+AQE+gME7BIV3TQz+AQE+wEC/AEA8A8Q3DQz1zw56xMU8goJ+QQE+wIC+wMC+wMC8wkI6hMU2Ds43Sst6RcX6xMU7xcW7xcV8BcV8BcW7xcY6hUV6BkX3ignt1x/WQAAAL90Uk5TABE5UlhYWFhSORIIYsjy/P3yymQJCYr5///////6jwpo+////GwX0P/UGkb36cTr7sXq+Utk/+1NCErf5FEJSuhpassN/0Xh5EwIwf9uae5PSOLlTE3sbeJKQ0ZI4W1p40tI4f//5EVD4+VGQuNLSOHjS0VFSPBRSuTkS0zsacsMSuP/40wLyG5k/+xPCk/j41EMT+xqRvfH7flLF9DUGmf6/G0J+f//jwoHYMbx/P38yWQJEThSV1dXV1dTOhK+MhyLAAABr0lEQVR4nK3SQUgUURgH8P9/l+jNusIiLB5EEEXFJFmM1csiuHST3IMHQSox2IMEYYIkBXlZFjwpBJ3UwgSriwf1qOvBLhFrGiS4GBQRFHmIZZ1FYsf35o3L7Ahe9Du9md983/vem4+4MHglTBUW4IMFn1weu7nK1nKOpT74W+ZwpTq1vp9xg7Sie0sDhSBzDreQecvbE6v5VXM7jwKmkPvnVQmrlvxtWYEQP2mO8idQr7Y7DBTRqBYHQKktozl+UALa5P5kjs38j2vcATq5qrk/W1IlCkBQJv4DQtwGRPSdi0WXOmmYf4BabspORWxR8/CGZIge1QLsLjKml/vWxW1+k09NXIH/fDaYUA2j9ddn+468PMB9u/gNvvW5WbeW4Begg7tAZC9X9GbfZRa4JQ/2EejmvOtgzxckJ/kBMfLVA26hly/krY1Nap7mLPBY3eXyD594pBZpYLTmoeaXTAnTGKrjNGFC3IyEZ0wYT5jUPMdnfu8PNQppjjjj8JpPUeFGUUzx3tm0LI3PcMLtRurkOgfLo/i+cth4/w15pzyKMtZsp/1GLePOh7gwLsenPLh5H68t6T4AAAAASUVORK5CYII=);
+    }
+    
+    
   .center-h
     {display:flex;align-items:center;gap:10px}
     
@@ -256,6 +300,9 @@
     
   .seo-only
     {position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    
+    
+    
             </style>
             
             
@@ -345,10 +392,6 @@
                         </div>
                         <div class=menu style='display:none;left:0px;top:35px'>
                               <div id=https-server class=menu-opt>install https-server</div>
-                              <div id=save-zip class=menu-opt>save snapshot zip</div>
-                              <div id=load-zip class=menu-opt>load snapshot zip</div>
-                              <div id=save-tar class=menu-opt>save snapshot tar</div>
-                              <div id=load-tar class=menu-opt>load snapshot tar</div>
                         </div>
                   </div>
                   
@@ -360,7 +403,25 @@
                               <img class=m-icon>
                         </div>
                         <div class=menu style='display:none;left:0px;top:35px'>
-                              Empty
+                              <div id=save-zip class=menu-opt>save snapshot zip</div>
+                              <div id=load-zip class=menu-opt>load snapshot zip</div>
+                              <div id=add class=menu-opt>add snapshot</div>
+                              <!--
+                              <div id=save-tar class=menu-opt>save snapshot tar</div>
+                              <div id=load-tar class=menu-opt>load snapshot tar</div>
+                              -->
+                              <div class=menu-sep>
+                              </div>
+                              <div id=list>
+                                    <div id=empty>
+                                          Empty
+                                    </div>
+                                    <div class='item menu-opt'>
+                                          <div class=name>
+                                          </div>
+                                          <img class=remove>
+                                    </div>
+                              </div>
                         </div>
                   </div>
                   
@@ -455,9 +516,10 @@
         var webcontainer;
         var ace;
         
+        
+        snapshot.icon     = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAulBMVEVHcEwcHBwjISH6BwfsIiL7BQURLS39AQEiKSkeHh79DQ1lamr9AABtbW0kJCQeHx/8BASMYGH9AgIlHh7yGxzvIiNtbW1oaGhpaWn5Dw/2DA36Bgb8AwMmJiYeHh70FBRsbGweHh4fHx9rbGxra2v3EBD6CAhoaGj0EBAeHh5paWlub2/aBgbiBgahFBR2FRUcHBwkJCQeHh72DAz6BgZpaWlpaWkjIyPnNTjyFhcfHx8dHR0fHx/+AABW+gdcAAAAPXRSTlMA0miUCcET+xmOTQf+EDq23gL2lB8SMs+rPm+16iOhNky+rW1BX57EUdWJI+PbhsbfTciAyZHAVwYtgex+9GPg0AAAASdJREFUKM+V0wlvgjAYgOGuaIW1pVDuG0HB+9ad/v+/NSDRIStLfBMSmocvTUMKQJU6nr+02h0i0EpmUG6F9l+Z3OK3WG9/DVRmxOh3CRXwyBkyDPoPYxQruIf1aCwDlH3jnmldiVVZPey7jHWa02oIfTLGdrDDtmtPnNS1q1cURXGHJ84Z5y49O5NmqTwyLS8UuAtALyUVMEidxbJM8cJJRdP13rmztJu9RQzwMsf67bg31qExEGTA5k94wXo1FLRaB17F0rU36QnmwyAItaI4ESFrppUEifVx7ONEOlmmP7z2TU8133xPQjFbUx4efdMUczgtrtos8STx3mREqofzp87tc0JGggjhfsUDb7Odvf5ptt14g/slQp1kyO4XqXMF6+ZjtZYfdVZIYl3MQj8AAAAASUVORK5CYII=';
         var output;
         
-        var snap_icon   = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAulBMVEVHcEwcHBwjISH6BwfsIiL7BQURLS39AQEiKSkeHh79DQ1lamr9AABtbW0kJCQeHx/8BASMYGH9AgIlHh7yGxzvIiNtbW1oaGhpaWn5Dw/2DA36Bgb8AwMmJiYeHh70FBRsbGweHh4fHx9rbGxra2v3EBD6CAhoaGj0EBAeHh5paWlub2/aBgbiBgahFBR2FRUcHBwkJCQeHh72DAz6BgZpaWlpaWkjIyPnNTjyFhcfHx8dHR0fHx/+AABW+gdcAAAAPXRSTlMA0miUCcET+xmOTQf+EDq23gL2lB8SMs+rPm+16iOhNky+rW1BX57EUdWJI+PbhsbfTciAyZHAVwYtgex+9GPg0AAAASdJREFUKM+V0wlvgjAYgOGuaIW1pVDuG0HB+9ad/v+/NSDRIStLfBMSmocvTUMKQJU6nr+02h0i0EpmUG6F9l+Z3OK3WG9/DVRmxOh3CRXwyBkyDPoPYxQruIf1aCwDlH3jnmldiVVZPey7jHWa02oIfTLGdrDDtmtPnNS1q1cURXGHJ84Z5y49O5NmqTwyLS8UuAtALyUVMEidxbJM8cJJRdP13rmztJu9RQzwMsf67bg31qExEGTA5k94wXo1FLRaB17F0rU36QnmwyAItaI4ESFrppUEifVx7ONEOlmmP7z2TU8133xPQjFbUx4efdMUczgtrtos8STx3mREqofzp87tc0JGggjhfsUDb7Odvf5ptt14g/slQp1kyO4XqXMF6+ZjtZYfdVZIYl3MQj8AAAAASUVORK5CYII=';
         
         
         var blank;
@@ -491,8 +553,13 @@
               var more                                        = $('#more-menu');
               more.onclick                                    = menu.click2(more,menu_callback.more);
               
-              var snapshot                                    = $('#snapshot-menu');
-              snapshot.onclick                                = menu.click2(snapshot,menu_callback.snapshot);
+              snapshot.menu                                   = $('#snapshot-menu');
+              snapshot.menu.onclick                           = menu.click2(snapshot.menu,menu_callback.snapshot);
+              snapshot.list                                   = $(snapshot.menu,'#list');
+              snapshot.item                                   = $(snapshot.list,'.item');
+              snapshot.item.remove();
+              ls.read.snapshot_list.value.forEach(snapshot.add);
+              
               
               var links                                       = $('#links-menu');
               links.onclick                                   = menu.click2(links,menu_callback.links);
@@ -750,130 +817,13 @@
         }//https-server
         
         
-                                                                                //  Compress-Archive -Path .\* -DestinationPath ".\$(Split-Path -Leaf $PWD).zip"
-                                                                                //  Expand-Archive -Path .\archive.zip -DestinationPath . -Force
-                                                                                
-                                                                                //  zip -r "$(basename "$PWD").zip" ./*
-                                                                                //  unzip archive.zip -o
-                                                                                
-                                                                                //  7z a -tzip "$(Split-Path -Leaf $PWD).zip" .\*
-                                                                                //  7z x archive.zip -y
-        menu_callback.more['save-zip']   = async function(){
-        
-                                                                                console.log('save-zip');
-              if(!tabs.cur.view){
-                    log.red('no active terminal');
-                    return;
-              }
-              
-              var cwd       = tabs.cur.view.terminal.shell.cwd;
-              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
-                                                                                console.log(cwd_abs);
-              if(cwd===null){
-                    term.writeln.red('can only save zip relative to workdir');
-                    return;
-              }
-              
-              if(!cur.blob){
-                    term.writeln.red('no blob available');
-                    return;
-              }
-              
-              var term    = tabs.cur.view.terminal.term;
-              
-              term.writeln('');
-              term.write.green('saving zip ... ');
-              
-              var s   = await spinner.start(term);
-              
-              await libs.jszip();
-              
-              var snap    = await snapshot(cwd);
-              var blob    = await to_zip(snap);
-              
-              var file    = {name:'snapshot.zip',icon:snap_icon};
-              
-              complete.load(file,blob);
-              
-              s.stop();
-              term.writeln.green('ok.');
-              await term.prompt();
-              
-              
-              async function to_zip(snap){
-              
-                    var zip   = new jszip();
-                    
-                    for(var [file,data] of Object.entries(snap)){
-                    
-                          zip.file(file,data);
-                          
-                    }//for
-                    
-                    var blob    = await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionLevel:6});
-                    return blob;
-                    
-              }//to_zip
-              
-        }//save-zip
         
         
-        menu_callback.more['load-zip']    = async function(){
-        
-                                                                                console.log('load-zip');
-              if(!tabs.cur.view){
-                    log.red('no active terminal');
-                    return;
-              }
-              
-              var cwd       = tabs.cur.view.terminal.shell.cwd;
-              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
-                                                                                console.log(cwd_abs);
-              if(cwd===null){
-                    term.writeln.red('can only load zip relative to workdir');
-                    return;
-              }
-              
-              var term    = tabs.cur.view.terminal.term;
-              
-              term.writeln('');
-              term.write.green('loading zip ... ');
-              var s   = await spinner.start(term);
-              
-              await libs.jszip();
-              
-              var blob          = cur.blob;
-                                                                                console.log(blob);
-              var snap          = await to_snap(blob);
-              await snapshot.restore(cwd,snap);
-              
-              term.writeln.green('ok.');
-              await term.prompt();
-              
-              
-              async function to_snap(blob){
-              
-                    var zip       = await jszip.loadAsync(blob);
-                    var snap      = {};
-                    var entries   = Object.values(zip.files);
-                    
-                    for(var entry of entries){
-                    
-                          if(entry.dir)continue;
-                          
-                          var data      = await entry.async('uint8array');
-                          var path      = entry.name.startsWith('/') ? entry.name : '/'+entry.name;
-                          snap[path]    = data;
-                          
-                    }//for
-                    
-                    return snap;
-                    
-              }//to_snap
-              
-        }//load-zip
         
         
+        
+        
+/*
         menu_callback.more['save-tar']    = async function(){
         
                                                                                 console.log('save-tar');
@@ -923,12 +873,222 @@
               
         }//load-tar
         
-        
+*/
+
+
   //:
   
   
+        snapshot.add    = function(file){
+        
+              var list    = ls.read.snapshot_list.value;
+              list.push(file);
+              ls.write.snapshot_list    = list;
+              
+              
+              var empty   = $(snapshot.list,'#empty');
+              if(empty){
+                    empty.remove();
+              }
+              
+              var nitem                       = snapshot.item.cloneNode(true);
+              nitem.onclick                   = click;
+              
+              $(nitem,'.name').textContent    = file.name;
+              $(nitem,'.remove').onclick      = remove;
+              snapshot.list.append(nitem);
+              
+              
+              async function click(e){
+              
+                    e.stopPropagation();
+                    var blob    = await filemod.load(file);
+                    menu_callback.snapshot['load-zip'](blob);
+                    
+              }//click
+              
+              
+              function remove(e){
+              
+                    e.stopPropagation();
+                    nitem.remove();
+                    
+                    var list    = ls.read.snapshot_list.value;
+                    var f1      = JSON.stringify(file);
+                    var n       = list.length;
+                    for(var i=0;i<n;i++){
+                    
+                          var file2   = list[i];
+                          var f2      = JSON.stringify(file2);
+                          if(f1==f2){
+                                                                                console.log('remove : found',i);
+                                list.splice(i,1);
+                                ls.write.snapshot_list    = list;
+                                return;
+                          }
+                          
+                    }//for
+                    
+              }//remove
+              
+        }//additem
+        
+        
         menu_callback.snapshot    = function(type,opt){
+                                                                                console.log('snapshot',type,opt);
+              if(type=='opt'){
+              
+                    if(menu_callback.snapshot[opt.id]){
+                          menu_callback.snapshot[opt.id]();
+                    }
+                    
+              }
+              
+              //tabs.focus();
+              
+              
         }//snapshot
+        
+        
+        menu_callback.snapshot.add    = function(){
+        
+              snapshot.add(cur.file);
+              
+        }//add
+        
+        
+        
+                                                                                //  Compress-Archive -Path .\* -DestinationPath ".\$(Split-Path -Leaf $PWD).zip"
+                                                                                //  Expand-Archive -Path .\archive.zip -DestinationPath . -Force
+                                                                                
+                                                                                //  zip -r "$(basename "$PWD").zip" ./*
+                                                                                //  unzip archive.zip -o
+                                                                                
+                                                                                //  7z a -tzip "$(Split-Path -Leaf $PWD).zip" .\*
+                                                                                //  7z x archive.zip -y
+        menu_callback.snapshot['save-zip']   = async function(){
+        
+                                                                                console.log('save-zip');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var term      = tabs.cur.view.terminal.term;
+              var cwd       = tabs.cur.view.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
+                                                                                console.log(cwd_abs);
+              if(cwd===null){
+                    term.writeln.red('can only save zip relative to workdir');
+                    return;
+              }
+              
+/*
+              if(!cur.blob){
+                    term.writeln.red('no blob available');
+                    return;
+              }
+*/
+
+
+              term.writeln('');
+              term.write.green('saving snapshot zip ... ');
+              
+              var s   = await spinner.start(term);
+              
+              await libs.jszip();
+              
+              var snap    = await snapshot(cwd);
+              var blob    = await to_zip(snap);
+              
+              s.stop();
+              term.writeln.green('ok.');
+              await term.prompt();
+              
+              
+              var file    = {
+                    name    : 'snapshot.zip',
+                    icon    : snapshot.icon
+              };
+              
+              complete.load(file,blob);
+              
+              
+              async function to_zip(snap){
+              
+                    var zip   = new jszip();
+                    
+                    for(var [file,data] of Object.entries(snap)){
+                    
+                          zip.file(file,data);
+                          
+                    }//for
+                    
+                    var blob    = await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionLevel:6});
+                    return blob;
+                    
+              }//to_zip
+              
+        }//save-zip
+        
+        
+        menu_callback.snapshot['load-zip']    = async function(blob){
+        
+                                                                                console.log('load-zip');
+              if(!tabs.cur.view){
+                    log.red('no active terminal');
+                    return;
+              }
+              
+              var term      = tabs.cur.view.terminal.term;
+              var cwd       = tabs.cur.view.terminal.shell.cwd;
+              var cwd_abs   = tabs.cur.view.terminal.shell.cwd_abs;
+                                                                                console.log(cwd_abs);
+              if(cwd===null){
+                    term.writeln.red('can only load zip relative to workdir');
+                    return;
+              }
+              
+              
+              term.writeln('');
+              term.write.green('loading snapshot zip ... ');
+              var s   = await spinner.start(term);
+              
+              await libs.jszip();
+              
+              blob            ||= cur.blob;
+                                                                                console.log(blob);
+              var snap          = await to_snap(blob);
+              await snapshot.restore(cwd,snap);
+              
+              s.stop();
+              term.writeln.green('ok.');
+              await term.prompt();
+              
+              
+              
+              
+              async function to_snap(blob){
+              
+                    var zip       = await jszip.loadAsync(blob);
+                    var snap      = {};
+                    var entries   = Object.values(zip.files);
+                    
+                    for(var entry of entries){
+                    
+                          if(entry.dir)continue;
+                          
+                          var data      = await entry.async('uint8array');
+                          var path      = entry.name.startsWith('/') ? entry.name : '/'+entry.name;
+                          snap[path]    = data;
+                          
+                    }//for
+                    
+                    return snap;
+                    
+              }//to_snap
+              
+        }//load-zip
         
         
   //:
@@ -1231,10 +1391,11 @@
 
 
 
+        mod.stack.add;
+        
         (async()=>{
         
-              mod.stack.add;
-              
+        
               [{Terminal},{FitAddon},{WebContainer}]    = await Promise.all([
                     import('https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm'),
                     import('https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm'),
@@ -1246,6 +1407,7 @@
                                                                                 //term.write('booting container ... ');
                                                                                 //var s   = spinner();
               webcontainer        = await WebContainer.boot({workdirName});
+              
               mod.stack.complete;
                                                                                 //s.stop();
                                                                                 //term.writeln.green('ok.');   //24
@@ -1364,7 +1526,7 @@
         
         
         
-        function spinner({term,x,y}){
+        function spinner({term,x,y},resolve){
         
               var spinner     = {};
               spinner.timer   = null;
@@ -1413,6 +1575,10 @@
                           
                     }//stop
                     
+                    if(resolve){
+                          resolve(spinner);
+                    }
+                    
               }//setup
               
         }//spinner
@@ -1425,9 +1591,9 @@
               setTimeout(()=>{
               
                     var {x,y}   = cursor.xy(term);
-                    var s       = spinner({term,x,y});
+                    var s       = spinner({term,x,y},resolve);
                     term.write('\r\n');
-                    resolve(s);
+                    //resolve(s);
                     
               },50);
               
