@@ -78,8 +78,8 @@ In the ports sub-menu
 * **Full NPM Support**: Install and manage over 2 million packages.
 * **Isolated Environment**: Secure, sandboxed execution of JavaScript and TypeScript.
 * **Multi-Tab Interface**: Parallel processing for dev servers and CLI tools.
-* **snippet-console** : ease of use editor to run javascript snippets within the nodejs-terminal environment see [snippet-console](docs/snippet-console.md)
-* **snippet-nodejs** : ease of use editor to run ndoejs snippets within the nodejs-terminal environment see [snippet-nodejs](docs/snippet-nodejs.md)
+* **[snippet-console](docs/snippet-console.md)** : ease of use editor to run javascript snippets within the nodejs-terminal environment
+* **[snippet-nodejs](docs/snippet-nodejs.md)** : ease of use editor to run ndoejs snippets within the nodejs-terminal environment
 
 
 
