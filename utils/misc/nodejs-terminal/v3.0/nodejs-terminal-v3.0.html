@@ -766,6 +766,35 @@
               term.writeln('');
               term.write.green('installing https-server ... ');
               
+              
+              var s   = await spinner.start();
+              
+              var err;
+              try{
+              
+                    var res   = await fetch('https://code.ext-code.com/nodejs/servers/https-server/https-server-full.js');
+                    var txt   = await res.text();
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    s.stop();
+                    term.write.red('error');
+                    term.write(err.message);
+                    await term.prompt();
+                    return;
+              }
+              
+              await webcontainer.fs.writefile('https-server-full.js',txt);
+              
+              
+              
+              
+/*
               setTimeout(()=>{
               
                     var {x,y}   = cursor.xy(term);
@@ -809,7 +838,11 @@
               if(code!=0){
                     term.writeln.red('an error ocurred exit code : '+code);
               }
-              
+*/
+
+
+
+
               s.stop();
               term.write.green('ok.');
               await term.prompt();
