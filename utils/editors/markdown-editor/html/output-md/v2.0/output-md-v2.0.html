@@ -283,6 +283,25 @@
             npm_readme          = $(shadow,'#readme');
             
             
+            
+            
+            shadow.addEventListener('click',e=>{
+            
+                  var link    = e.target.closest('a[href^="#"]');
+                  if(!link)return;
+                                                                                console.log('link',link);
+                  var id        = link.getAttribute('href');
+                  id            = id.slice(1);
+                  var target    = shadow.getElementById(id);
+                  if(!target)return;
+                                                                                console.log('target',target);
+                  e.preventDefault();
+                  target.scrollIntoView({behavior:'smooth'});
+                  
+            });
+            
+            
+            
       }//initdom
       
       
@@ -411,7 +430,11 @@
             
             show('npm');
             
+            
+            
       }//npm
+      
+      
       
       
       async function github_markdown(txt){
