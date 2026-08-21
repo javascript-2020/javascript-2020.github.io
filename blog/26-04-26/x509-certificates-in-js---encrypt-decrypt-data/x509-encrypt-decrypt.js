@@ -22,6 +22,9 @@ function x509(){
         obj.initmod   = function(...params){
         
               params.forEach(params=>{
+              
+                    'forge' in params && (forge=params.forge);
+                    
               });
               
               //function rd(params,name,value){return ((name in params) && params[name]!==undefined) ? params[name] : value}
@@ -35,6 +38,9 @@ function x509(){
         var platform              = typeof document=='undefined' ? 'node' : 'browser';
                                                                                 console.log('platform',platform);
         var crypto;
+        var forge;
+        
+        
         
         
         var libs                  = {};
@@ -74,6 +80,7 @@ function x509(){
         
         libs.browser    = async function(){
         
+              if(forge)return;
               ({forge}    = await import('https://libs.ext-code.com/external/js/node-forge/node-forge.m.js'));
               
         }//libs
@@ -718,6 +725,15 @@ browser
         }//key_cert
         
         
+        
+        
+        
+        
+        
+        
+  //:
+  
+  
         function datatype(v){
         
               var str                     = Object.prototype.toString.call(v);
@@ -728,7 +744,73 @@ browser
         
         
         
+        
+        
+        
+        
+        
   //:
+  
+  
+        function debug(...args){
+        
+              if(!df && !obj.df)return;
+              args.unshift(`[ ${did} ]`);
+              var fmt     = Array.from({length:args.length}).fill('%O').join(' ');
+              var args2   = [fmt].concat(args);
+              console.groupCollapsed.apply(console,args2);
+              console.trace();
+              console.groupEnd();
+              
+        }//debug
+        
+        
+        debug.log   = function(){debug.apply(null,arguments)}
+        
+        
+        debug.json    = function(v){
+        
+              var err;
+              try{
+              
+                    var str   = JSON.stringify(v,null,4);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    debug(error);
+              }else{
+                    debug(str);
+              }
+              
+        }//json
+        
+        
+        debug.hex   = function(...args){
+        
+              args.forEach(v=>{
+              
+                    var args    = [v];
+                    v           = v.toString();
+                    var hex     = [...v].map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(' ');
+                    args.push('hex:',hex);
+                    debug.apply(null,args);
+                    
+              });
+              
+        }//hex
+        
+        
+        
+        
+        
+  //:
+  
   
   return obj;
   
