@@ -10,44 +10,8 @@ x509-encrypt-decrypt.js
 */
 
 
-(async()=>{
-                                                                                console.clear();
-      x509              = x509();
-      await x509.init();
-      
-      var {key,cert}    = x509.key_cert();
-      
-      
-      var b64         = {};
-      b64.node        = 'AKFyuv7A6qkzZzUwKIA6HkQwWhbU5MWaK4Hw7lUzAUBdroxLrawmKYISDzywNpRjbRe8woCR2pYD3QrWg2qlZRNgTNwETC31p7pI9Fo2Q3zHqSLmwqqbZuCChsbZsopYPLuQzW/E1E7sbd7fxwh2E3TE6D+x3z81AKe35bHm3Iv4+k0K/tZm6G+b0Kz35oPM9RJg0sjNuRzCwh2rd2dde/8s4qQuYcTexK2Z5+SH2hpy5nUkD1cSiadnp1qHJcjQAK3zI+C+0+yDWt3gGIn++oOQE+ZnwZBpRB63Pn1KTN1cM15DEb3lA99WUfAwUHqlgo9hO6UxOOR16484OFQLfTyWbKHX4PE6QHUZpdAdeIA2cgOrNEYytoDj/Krqaygqy2t06MkY0Q==';
-      b64.browser     = 'AG8FEu53u1m4uSBa5z688Htz5zo8Y2siL2bkLPLw6SJOaeU37mbaHy660nim76+S2F55u1G5D+Lg4uDtUZA/2eGHZpVk+JY3sURaTBOkufY9yus5H6dUswLxUtTJciU5cpfBgryXSLT9Mj4muq4ghYL3tdEEKAQspAXf8cEQ2ZNiurQAyZ7eFpp++O3kqOHwCgVkjqMrhlk3aSKNnV2FreVETFGHPx75pnAQfA+4AaB53I1R2Lvy4gI3g3YSYh4JToZs07tuyKsof70gsH0x9Cjrh+dkahnGzMJpLLSTq7oGmCAsT/IDYqAnngGmh0hldidCA3Iq0neyPpxkA2ilopkz4icpqB1MD8Fo7XQZ9LJndhdG1M0awCUWqjNzx0T0eY4GaCf8sg==';
-      
-      var encrypted   = x509.b64.blob(b64.browser);
-      
-      var decrypted   = await x509.decrypt(key,encrypted);
-      var txt         = await decrypted.text();
-      console.log(txt);
-      
-/*      
-                                                                                console.log('key');
-                                                                                console.log(key);
-                                                                                console.log('cert');
-                                                                                console.log(cert);
-      var payload       = new Blob(['helloworld']);
-      var encrypted     = await x509.encrypt(cert,payload);
-                                                                                var b64           = await x509.blob.b64(encrypted);
-                                                                                console.log(b64);      
-      var decrypted     = await x509.decrypt(key,encrypted);
-                                                                                var txt           = await decrypted.text();
-                                                                                console.log(txt);
-*/                                                                                
-      
-})();
-      
-
-      
 function x509(){
-  
+
   var obj   = {
         version   : 'v1.0.0',
   };
@@ -56,7 +20,7 @@ function x509(){
         
         
         obj.initmod   = function(...params){
-          
+        
               params.forEach(params=>{
               });
               
@@ -64,15 +28,15 @@ function x509(){
               
         }//initmod
         
-
+        
   //:
-
   
-        var platform              = typeof document=='undefined' ? 'node' : 'browser'; 
+  
+        var platform              = typeof document=='undefined' ? 'node' : 'browser';
                                                                                 console.log('platform',platform);
         var crypto;
-
-
+        
+        
         var libs                  = {};
         var rsa                   = {};
         rsa.encrypt               = {};
@@ -94,7 +58,7 @@ function x509(){
   
   
         obj.init    = async function(){
-          
+        
               if(platform=='node'){
                     crypto    = require('node:crypto');
               }
@@ -102,14 +66,14 @@ function x509(){
                     crypto    = globalThis.crypto;
                     
               }
-          
+              
               await libs[platform]();
               
         }//init
         
         
         libs.browser    = async function(){
-          
+        
               ({forge}    = await import('https://libs.ext-code.com/external/js/node-forge/node-forge.m.js'));
               
         }//libs
@@ -120,9 +84,9 @@ function x509(){
         
   //:
   
-
+  
         obj.encrypt   = async function(cert,payload_blob){
-          
+        
               var cert_blob               = await normalise.cert(cert);
               
               var aes_key_blob            = await aes.key.generate[platform]();
@@ -149,7 +113,7 @@ function x509(){
         
         
         obj.decrypt   = async function(key,encrypted_blob){
-          
+        
               var key_blob                = await normalise.key(key);
               
               var enc_buf                 = await encrypted_blob.arrayBuffer();
@@ -174,17 +138,17 @@ function x509(){
         
         
   //:
-
-
+  
+  
         aes.key.generate.node   = function(length=256){
-          
+        
               var bytes                   = length/8;
               var aes_key_buffer          = crypto.randomBytes(32);
               var aes_key_blob            = buffer_blob(aes_key_buffer);
               return aes_key_blob;
               
         }//generateAesKey
-
+        
         
         aes.key.generate.browser    = async function(length=256){
         
@@ -199,9 +163,9 @@ function x509(){
               
         }//generateAesKey
         
-
+        
         aes.encrypt.node    = async function(aes_key_blob,payload_blob,iv_bits=96){
-          
+        
               var bytes                   = iv_bits/8;
               var iv_buffer               = crypto.randomBytes(bytes);
               var aes_key_buffer          = await blob_buffer(aes_key_blob);
@@ -221,8 +185,8 @@ function x509(){
               return blob;
               
         }//aesEncryptNode
-
-
+        
+        
         aes.key.import.browser    = async function(blob){
         
               var buf           = await blob_buf(blob);
@@ -238,16 +202,16 @@ function x509(){
               return key;
               
         }//importAesKey
-
-
+        
+        
         aes.encrypt.browser   = async function(key_blob,payload_blob,iv_bits=96){
-          
+        
               var bytes                   = iv_bits/8;
               var key                     = await aes.key.import.browser(key_blob);
               var payload_buf             = await payload_blob.arrayBuffer();
                                                                                 //  96-bit IV recommended ( 12 bytes )
               var uint8                   = new Uint8Array(bytes);
-              var iv_uint8                = crypto.getRandomValues(uint8); 
+              var iv_uint8                = crypto.getRandomValues(uint8);
               
               var algorithm               = {name:'AES-GCM',iv:iv_uint8}
               key                         = key;
@@ -259,10 +223,10 @@ function x509(){
               return blob;
               
         }//aesEncrypt
-
-
+        
+        
         aes.decrypt.node    = async function(key_blob,payload_blob,iv_bits=96){
-          
+        
               var bytes                   = iv_bits/8;
               var taglength               = 16;
               
@@ -281,21 +245,21 @@ function x509(){
               
               var decipher                = crypto.createDecipheriv('aes-256-gcm',key_buffer,iv_buffer);
               decipher.setAuthTag(tag);
-
+              
               var buf1                    = decipher.update(payload_buffer);
               var buf2                    = decipher.final();
-
+              
               var dec_buffer              = Buffer.concat([buf1,buf2]);
               var dec_blob                = new Blob([dec_buffer]);
               
               return dec_blob;
               
         }//aes.decrypt.node
-
-
-
+        
+        
+        
         aes.decrypt.browser   = async function(key_blob,payload_blob){
-
+        
               var key                     = await aes.key.import.browser(key_blob);
               var {iv,buf}                = await blob_iv_buf(payload_blob);
               var iv_uint8                = iv;
@@ -312,11 +276,11 @@ function x509(){
               return blob;
               
         }//aesDecrypt
-
-
+        
+        
   //:
-
-
+  
+  
         extract_spki.node   = async function(cert_blob){
         
               var cert_pem                = await cert_blob.text();
@@ -359,7 +323,7 @@ function x509(){
         
         extract_spki.browser    = async function(cert_blob){
                                                                                 //  requires node-forge
-              var pem                     = await cert_blob.text();                                                                                
+              var pem                     = await cert_blob.text();
               var cert                    = forge.pki.certificateFromPem(pem);
               var spkiAsn1                = forge.pki.publicKeyToAsn1(cert.publicKey);
               debugger;
@@ -370,7 +334,7 @@ function x509(){
               
         }//extract_spki
         
-
+        
         pub_key.browser   = async function(cert_blob){
         
               var spki_buf                = await extract_spki.browser(cert_blob);
@@ -384,7 +348,7 @@ function x509(){
               return pub_key;
               
         }//pub_key
-
+        
         
         rsa.encrypt.browser   = async function(cert_blob,payload_blob){
         
@@ -421,10 +385,10 @@ function x509(){
               return blob;
               
         }//decrypt
-
-
-
-
+        
+        
+        
+        
 /*
 browser
 
@@ -450,16 +414,16 @@ browser
               return blob;
               
         }//decrypt
-
+        
 */
 
-        
+
   //:
   
   
   
         function iv_buf_blob(iv,buf){
-
+        
               var buf_uint8               = new Uint8Array(buf);
               var n1                      = iv.length;
               var n                       = n1+buf_uint8.length;
@@ -471,9 +435,9 @@ browser
               
         }//iv_buf_blob
         
-
+        
         async function blob_iv_buf(blob,iv_bits=96){
-          
+        
               var bytes   = iv_bits/8;
               var n       = blob.size;
               var buf     = await blob.arrayBuffer();
@@ -484,9 +448,9 @@ browser
               
         }//blob_iv_buf
         
-                
+        
         function buffer_blob(buf){
-          
+        
               var blob                    = new Blob([buf]);
               return blob;
               
@@ -494,14 +458,14 @@ browser
         
         
         async function blob_buffer(blob){
-          
+        
               var buf                     = await blob.arrayBuffer();
               var buffer                  = Buffer.from(buf);
               return buffer;
-
+              
         }//blob_buffer
-
-
+        
+        
         obj.blob.b64    = blob_b64;
         
         async function blob_b64(blob){
@@ -510,10 +474,10 @@ browser
               var bin                     = [...uint8].reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
               var b64                     = btoa(bin);
               return b64;
-        
+              
         }//blob_b64
-
-  
+        
+        
         obj.b64.blob    = b64_blob;
         
         function b64_blob(b64,type='text/plain'){
@@ -528,7 +492,7 @@ browser
         
         
         async function blob_uint8(blob){
-          
+        
               var buf                     = await blob.arrayBuffer();
               var uint8                   = new Uint8Array(buf);
               return uint8;
@@ -537,33 +501,33 @@ browser
         
         
         function uint8_blob(uint8){
-          
+        
               var blob                    = new Blob([uint8]);
               return blob;
               
         }//uint8_blob
-
-
+        
+        
         async function blob_buf(blob){
-          
+        
               var buf                     = await blob.arrayBuffer();
               return buf;
-          
+              
         }//blob_buf
-
-
+        
+        
         function buf_b64(buf){
-          
+        
               var uint8                   = new Uint8Array(buf);
               var bin                     = String.fromCharCode(...uint8);
               var b64                     = btoa(bin);
               return b64;
-          
+              
         }//buf_b64
         
         
         function b64_uint8(b64){
-          
+        
               var bin                     = atob(b64);
               var uint8                   = Uint8Array.from(bin,c=>c.charCodeAt(0));
               return uint8;
@@ -572,7 +536,7 @@ browser
         
         
         function txt_uint8(txt){
-          
+        
               var uint8                   = new TextEncoder().encode(txt);
               return uint8;
               
@@ -580,13 +544,13 @@ browser
         
         
         function buf_txt(buf){
-          
+        
               var txt                     = new TextDecoder().decode(buf);
               return txt;
               
         }//buf_txt
-
-
+        
+        
         function bin_uint8(bin){
         
               var uint8                   = Uint8Array.from(bin,c=>c.charCodeAt(0));
@@ -596,12 +560,12 @@ browser
         
         
         normalise.key   = function(key){
-          
+        
               var key_blob;
               var type    = datatype(key);
               switch(type){
-                
-                case 'string'   : 
+              
+                case 'string'   :
                                   key               = normalise.pem(key);
                                   var pkcs8;
                                   if(is.pkcs1(key)){
@@ -611,33 +575,33 @@ browser
                                   }
                                   key_blob          = new Blob([pkcs8]);
                                   break;
-                                        
-                case 'blob'     : 
+                                  
+                case 'blob'     :
                                   key_blob          = key;
                                   break;
                                   
-                case 'buffer'   : 
+                case 'buffer'   :
                                   key_blob          = buffer_blob(key);
                                   break;
-                
+                                  
               }//switch
               
               return key_blob;
-          
+              
         }//normalise.key
         
         
         normalise.cert    = function(cert){
-          
+        
               var cert_blob;
               var type    = datatype(cert);
               switch(type){
-                
+              
                 case 'string'   :
                                   cert        = normalise.pem(cert);
                                   cert_blob   = new Blob([cert]);
                                   break;
-                case 'blob'     : 
+                case 'blob'     :
                                   cert_blob   = cert;
                                   break;
                 case 'buffer'   :
@@ -671,17 +635,17 @@ browser
         
         
         is.pkcs1    = function(v){
-          
+        
               if(v.indexOf('BEGIN RSA PRIVATE KEY')!=-1){
                     return true;
               }
               return false;
               
         }//pkcs1
-
+        
         
         is.pkcs8    = function(v){
-          
+        
               if(v.indexOf('BEGIN PRIVATE KEY')!=-1){
                     return true;
               }
@@ -689,7 +653,7 @@ browser
               
         }//pkcs8
         
-
+        
         obj.key_cert    = key_cert;
         
         function key_cert(){
@@ -752,16 +716,16 @@ browser
               return {key,cert};
               
         }//key_cert
-  
-  
+        
+        
         function datatype(v){
-          
+        
               var str                     = Object.prototype.toString.call(v);
               str                         = str.slice(8,-1).toLowerCase();
               return str;
               
         }//datatype
-
+        
         
         
   //:
@@ -770,8 +734,8 @@ browser
   
 //x509-encrypt-decrypt
 }
-        
-        
-      
-      
-      
+
+
+
+
+
