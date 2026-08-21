@@ -386,9 +386,23 @@
       }//md
       
       
+      display.html    = function(html){
+                                                                                debug('display.html');
+            editor.set(html);
+            
+            show('editor');
+            
+      }//html
+      
+      
       display.npm   = async function(txt){
                                                                                 debug('display.npm');
             var html    = await github_markdown(txt);
+            
+            if(cur.mode=='html'){
+                  display.html(html);
+                  return;
+            }
             
             npm_readme.innerHTML              = html;
             
@@ -407,15 +421,6 @@
             return txt;
             
       }//get
-      
-      
-      display.html    = function(html){
-                                                                                debug('display.html');
-            editor.set(html);
-            
-            show('editor');
-            
-      }//html
       
       
       function show(id){
