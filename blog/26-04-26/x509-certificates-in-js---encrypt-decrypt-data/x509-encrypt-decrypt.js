@@ -36,7 +36,7 @@ function x509(){
   
   
         var platform              = typeof document=='undefined' ? 'node' : 'browser';
-                                                                                console.log('platform',platform);
+        
         var crypto;
         var forge;
         
@@ -64,7 +64,8 @@ function x509(){
   
   
         obj.init    = async function(){
-        
+                                                                                debug('init');
+                                                                                debug('platform',platform);
               if(platform=='node'){
                     crypto    = require('node:crypto');
               }
