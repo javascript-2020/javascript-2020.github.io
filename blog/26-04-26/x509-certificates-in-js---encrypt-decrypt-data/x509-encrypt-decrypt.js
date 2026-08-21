@@ -24,7 +24,7 @@ function x509(){
               params.forEach(params=>{
               });
               
-              function rd(params,name,value){return ((name in params) && params[name]!==undefined) ? params[name] : value}
+              //function rd(params,name,value){return ((name in params) && params[name]!==undefined) ? params[name] : value}
               
         }//initmod
         
