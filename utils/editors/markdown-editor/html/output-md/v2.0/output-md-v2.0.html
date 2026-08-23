@@ -357,63 +357,101 @@
 */
 
 
-      obj.display   = function(txt){return display(txt)}
-      
-      async function display(txt){
+        obj.display   = function(txt){return display(txt)}
+        
+        async function display(txt){
                                                                                 debug('display');
-            await libs;
-            
-            output.replaceChildren();
-            
-            txt   = txt||cur.txt;
-            if(!txt){
-                  return;
-            }
-            cur.txt   = txt;
-            
-            if(chk.npm.checked){
-                  display.npm(txt);
-                  return;
-            }
-            
-            var opts            = {
-                  linkTarget    : '_blank',
-            };
-            opts.html           = chk.html.checked;
-            opts.breaks         = chk.breaks.checked;
-            opts.linkify        = chk.linkify.checked;
+              await libs;
+              
+              output.replaceChildren();
+              
+              txt   = txt||cur.txt;
+              if(!txt){
+                    return;
+              }
+              cur.txt   = txt;
+              
+              if(chk.npm.checked){
+                    display.npm(txt);
+                    return;
+              }
+              
+              var opts            = {
+                    linkTarget    : '_blank',
+              };
+              opts.html           = chk.html.checked;
+              opts.breaks         = chk.breaks.checked;
+              opts.linkify        = chk.linkify.checked;
                                                                                 debug.json(opts);
-            var md              = markdownit(opts);
-            md.use(markdownItAttrs,{leftDelimiter:'{',rightDelimiter:'}',allowedAttributes:['id','class',/^data-.*$/]});
-            
-            var html            = md.render(txt);
-            
-            display[cur.mode](html);
-            
-      }//display
-      
-      
-      display.md    = function(html){
+              var md              = markdownit(opts);
+              md.use(markdownItAttrs,{leftDelimiter:'{',rightDelimiter:'}',allowedAttributes:['id','class',/^data-.*$/]});
+              
+              var html            = md.render(txt);
+              
+              display[cur.mode](html);
+              
+        }//display
+        
+        
+        display.md    = function(html){
                                                                                 debug('display.md');
-            show('output');
-            
-            output.innerHTML              = html;
-            
-            $(shadow,'#stylesheet').textContent   = css.github;
-            
-            
-      }//md
-      
-      
-      display.html    = function(html){
+              show('output');
+              
+              output.innerHTML              = html;
+              
+              $(shadow,'#stylesheet').textContent   = css.github;
+              
+              
+        }//md
+        
+        
+        display.html    = function(html){
                                                                                 debug('display.html');
-            editor.set(html);
-            
-            show('editor');
-            
-      }//html
-      
-      
+              html    = pretty(html);
+              
+              editor.set(html);
+              
+              show('editor');
+              
+        }//html
+        
+        
+        function pretty(html){
+        
+              var html    = editor.getvalue();
+              
+              var options   = {
+                    parser            : 'html',
+                    plugins           : prettierPlugins,
+                    
+                    tabWidth                      : 6,
+                    htmlWhitespaceSensitivity     : 'css'
+                    
+              };
+              
+              var err;
+              try{
+              
+                    html   = prettier.format(html,options);
+                    
+              }//catch
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.toString();
+                    log.red(error);
+                    return;
+              }//err
+              
+              return html;
+              
+        }//prettier
+        
+        
+        
       display.npm   = async function(txt){
                                                                                 debug('display.npm');
             var html    = await github_markdown(txt);
