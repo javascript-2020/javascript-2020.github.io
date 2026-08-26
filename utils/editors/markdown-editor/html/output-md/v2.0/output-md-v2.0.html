@@ -477,8 +477,13 @@
       
       async function github_markdown(txt){
       
+            var headers   = {};
             var body      = txt;
-            var res       = await fetch('https://api.github.com/markdown/raw',{method:'post',body});
+            var token     = localStorage['github-token'];
+            if(token){
+                  headers.authorization:`Bearer ${token}`
+            }
+            var res       = await fetch('https://api.github.com/markdown/raw',{headers,method:'post',body});
             var txt       = await res.text();
             return txt;
             
