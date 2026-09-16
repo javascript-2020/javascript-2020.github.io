@@ -37,24 +37,17 @@
             </script>
             
             
-            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
             <script init>
                                                                                 console.clear();
                                                                                 console.log('encrypt-v2.0.html');
                                                                                 console.log();
                                                                                 console.json=v=>console.log(JSON.stringify(v,null,4));
-        var df=true,did='encrypt'
-        ;
+        var df=true,did='encrypt';
         
-        var ext;
-        var $;
-        var datatype;
-        var menumod;
-        var keydown;
         var encrypt;
         
-        var hdr;
         var filemod;
         var editor;
         var log;
@@ -67,31 +60,22 @@
   
         async function init(){
         
-              menu                      = menumod();
+              await libs();
+              
               encrypt                   = encrypt();
               
-              mod.base.add({ext,$,datatype,keydown,menu,menumod});
-              
-              
-              hdr                       = mod['x509-hdr'];
               filemod                   = mod['file-mod'];
               editor                    = mod['web-editor'];
               log                       = mod['log-mod'];
               
+              mod.base.add({filemod,complete,focus,source});
               
               encrypt.initmod({ext});
               
-              hdr.initmod({ext,$,menu});
-              filemod.initmod({ext,$,menu,menumod,complete,focus,source,editor,log});
-              editor.initmod({ext,$,menu,menumod});
-              log.initmod({ext,$});
+              await mod.auto();
               
               await Promise.all([
                     encrypt.init(),
-                    hdr.init(),
-                    filemod.init(),
-                    editor.init(),
-                    log.init(),
               ]);
               
               
@@ -101,29 +85,19 @@
               initdom(document.body);
               
               
-        }//init
+        }//ready
         
         
-(async()=>{
-
-        mod.stack.add;
+        async function libs(){
         
-        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
+              var promise   = ext.load.libs(
+                    'js/crypto/encrypt/encrypt.js',
+              );
+              [encrypt]   = await promise;
+              
+        }//libs
         
-        var promise   = ext.load.libs(
-              'js/dom/$.js',
-              'js/core/datatype.js',
-              'js/dom/menumod/menumod.js',
-              'js/dom/keydown/keydown.js',
-              'js/crypto/encrypt/encrypt.js',
-        );
-        [$,datatype,menumod,keydown,encrypt]   = await promise;
         
-        mod.stack.complete;
-        
-})();
-
-
             </script init>
             
             
@@ -286,7 +260,7 @@
                         
                   </div>
                   
-                  <file-mod component></file-mod>
+                  <file-mod component v2.0></file-mod>
                   
                   
             </div hdr>
@@ -329,7 +303,7 @@
         
               var root                                  = rootnode;
               
-              hdr.initdom();
+              //hdr.initdom();
               
               
               ui.password.root                          = $(root,'#password-root');
@@ -361,17 +335,17 @@
               $('#decrypt').onclick                     = btn.decrypt;
               
               
-              filemod.initdom(root);
+              //filemod.initdom(root);
               
               
               view                      = $('#view');
               
               
-              editor.initdom(view,'text');
+              //editor.initdom(view,'text');
               
               
               
-              log.initdom();
+              //log.initdom();
               
               
               editor.setValue('helloworld');
