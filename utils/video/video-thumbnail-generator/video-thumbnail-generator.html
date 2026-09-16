@@ -344,7 +344,7 @@
   
         function onloadedmetadata(){
         
-              console.log(video.videoWith,video.videoHeight);
+                                                                                console.log(video.videoWith,video.videoHeight);
               $('#video-width').textContent   = video.videoWidth;
               $('#video-height').textContent    = video.videoHeight;
               
@@ -592,13 +592,27 @@
         _uint8        = async v=>(dtype(v)=='blob'||dtype(v)=='file') ? new Uint8Array(await v.arrayBuffer()) : new Uint8Array(v);
         
         var blob;
-        console.log(window.parent['ffmpeg-wasm']);
+                                                                                console.log(window.parent['ffmpeg-wasm']);
         //delete window.parent['ffmpeg-wasm'];
         if(window.parent['ffmpeg-wasm']){
                                                                                 disp('** ffmpeg-wasm **');
               blob    = structuredClone(window.parent['ffmpeg-wasm']);
         }else{
-              blob      = await get('https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip');
+              var err;
+              try{
+              
+                    blob      = await get('https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip');
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    disp(err.message);
+                    return;
+              }
               window.parent['ffmpeg-wasm']   = structuredClone(blob);
         }
         
