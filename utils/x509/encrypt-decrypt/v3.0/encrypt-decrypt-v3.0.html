@@ -48,7 +48,6 @@
         
         var encrypt;
         
-        var hdr;
         var filemod;
         var editor;
         var log;
@@ -59,7 +58,7 @@
   //:
   
   
-        async function ready(){
+        async function init(){
         
               await libs();
               
@@ -69,9 +68,12 @@
               editor                    = mod['web-editor'];
               log                       = mod['log-mod'];
               
+              mod.base.add({filemod,complete,focus,source});
               
               encrypt.initmod({ext});
-              filemod.initmod({complete,focus,source});
+              //filemod.initmod({complete,focus,source});
+              
+              await mod.auto();
               
               await Promise.all([
                     encrypt.init(),
@@ -259,7 +261,7 @@
                         
                   </div>
                   
-                  <file-mod component></file-mod>
+                  <file-mod component v2.0></file-mod>
                   
                   
             </div hdr>
