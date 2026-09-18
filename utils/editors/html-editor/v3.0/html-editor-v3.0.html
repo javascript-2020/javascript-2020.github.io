@@ -51,6 +51,7 @@
             <script src='https://cdn.jsdelivr.net/npm/ace-builds@1.37.0/src-min-noconflict/ace.js'></script>
             <script src='https://cdn.jsdelivr.net/npm/prettier@2.8.8/standalone.js'></script>
             <script src='https://cdn.jsdelivr.net/npm/prettier@2.8.8/parser-html.js'></script>
+            <script src='https://ext-code.com/libs/js/external/espree/espree.js'></script>
             
             
             <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
@@ -167,6 +168,10 @@
     {padding:2px;
       content:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAfCAMAAADHso01AAABO1BMVEVHcExctLXl5+nk5unk6Orm5+nm5+nm5+nl5una29T5u0Tg5efk6Om/kptusbXm5+jk5ehatLXvvF1jsbPhbmn3wFD2u0X6vEq9h75bs7W8h77l6Onk5uriZGHl5+lxra/0tVTbbW7l5ujpY2Hm5+nl5+jo387n6uv2vUtctbbm6Ork5ujl6Ozk5edZtLeqiKvpY2C+hoDyvFrtvFr3vEvsYmNdtbX6vEb3u0Tn6uq/ib/m5+lbtLT4vk5sqsO/ib7j5efm5+n5yjhWs7TmXV3lZWPnY2H5vUitkrK+h77aama6h7rAicBas7S5jLq8g733vEj3vEZasbO6i7voYmJbtrfkZWa7i7ztul/mY2K1ir5cs7TAhrxhsbPCir3zvVToZWL4vUfyvVXgamy8hr9itLO8irr2vE3jY2ERfpgJAAAAaXRSTlMAnTsSF2NfbCsC3gUPDiZQFNohFi1L2TWGQ6caCz1KIB0hW8IhQggNMZVwNx0+pAe0AxIlPnKLi60lvFK4QwmVVmgGgoE33TAbeBFjtTYhcsDScTXfUmI9LNgoxdBpRnRVcW9UnWttnJ1jjy+pAAACDUlEQVQoz6XQaW+iUBSAYQVaQbyWou2ooCxlsYqDoGNrKbi01H2p2n32/f//grn3qp1OMt/6xJzc5IT45kQir5NqRP/RSGl7mFdI/HdtFQp4j9dOOgxDJcK/eaHGJARBoFi4Vo5WV6vf4Ff8hVO3UCqVOhT+GlIcvljs9XpFpNfjGZOCXzP4v99uLIKfOej7Mhk9ljTPK5BofXG88cMetaDMo9TAfTpK6xbrddmZTAArWJZlOuk8Eg5ZQUBp/Dwe/yo97WetGMwhhtXVFfTwjeqs0/j7e9dOJgOWoyhKdJQ0BhiOQ2n9Vg5bUl673abdk1OsTnoeSgODDPZI6nqlYhlfTrCiqOsmXNthfujWfd/nnUl2axKImmatr/aQr18fHsY/pc73t56SdGxzNUUBoAa5tpTckliD40h8teg5FE19riK3oDUejzMBoapqG19tcQEtgvASydsjmDmyaV3XCRGl3X0Ern/wzO+azabG4gHX07P3dyhta16jY7EdDg2c1p8CwNd4WeZ5NGTDIEmShSOBr5Y7Q8ZLSt1VLTieqfhqo9lsMBjMpmaZKJNiuVIh4A8po7Qge3Mjdf0D12jSkBURaI7R0LNpwLUEb/VBnl/7VicG7RmFUkVU0ROnMX1JAkCWu0wCJpEmK5osi584TakeYXlhdwfb1aj1S+Xgenj7DlMSZWJdBPv+pr3GH71mYxE304wpAAAAAElFTkSuQmCC');
     }
+  #syntax-chk
+    {padding:2px;
+      content:url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAFVBMVEUAAAD7+/v///////8AAADo6OgRERE8gmv3AAAAA3RSTlMA9T5S3MyNAAAAdElEQVQY07WQwQ2AQAgESa4FC7AEDFgBW4r916BgEHLRp/ObYzdcICnIUSTG5cHtlvEvz/o8/6EvXPnL5eDeFwX3vMC62wLJff64+7i5+rj3wd0VtrpH3NdHnCRcn3uNLMOoGIh4oREv4q+9kPVEJ5eN3jgB8k5GOJR+D40AAAAASUVORK5CYII=');
+    }
     
   #horiz
     {margin-left:50px;border:none}
@@ -228,6 +233,7 @@
                   <button id=run title='ctrl+enter'>run</button>
                   
                   <img id=prettier class=icon title=prettier>
+                  <img id=syntax-chk class=icon title=syntax>
                   
                   <span class=spc></span>
                   
@@ -285,6 +291,7 @@
               $(root,'#save').onclick               = btn.save;
               $('#run').onclick                     = btn.run;
               $(root,'#prettier').onclick           = btn.prettier;
+              $(root,'#syntax-chk').onclick         = btn.syntax;
               
               $('#horiz').onclick                   = horiz;
               $('#vert').onclick                    = vert;
@@ -393,6 +400,46 @@
               editor.setvalue(js);
               
         }//prettier
+        
+        
+        btn.syntax    = function(){
+                                                                                debug('btn.syntax');
+                                                                                console.clear();
+                                                                                console.log('syntax');
+              var html      = editor.getValue();
+              var index     = 0;
+              var ec        = true;
+              while(ec){
+              
+                    var i1   = html.indexOf('<scr'+'ipt>',index);
+                    if(i1==-1){
+                          return;
+                    }
+                    
+                    var str     = html.slice(0,i1);
+                    var lines   = str.split('\n').length;
+                    
+                    var i2    = html.indexOf('</scr'+'ipt>',i1);
+                    index     = i2+7;
+                    
+                    var js    = html.slice(i1+8,i2);
+                                                                                //console.log(js);
+                    var result    = syntax(js);
+                                                                                //console.log(i1,i2,lines,result);
+                    if(result.error){
+                          result.line  += lines;
+                          var str       = JSON.stringify(result,null,4);
+                                                                                console.log(str);
+                          log.red(str);
+                    }else{
+                          var str       = JSON.stringify(result,null,4);
+                          log.green(str);
+                    }
+                    
+              }//while
+              
+              
+        }//syntax
         
         
   //:
@@ -580,6 +627,60 @@
               document.title    = title;
               
         }//title
+        
+        
+  //:
+  
+  
+        function syntax(js){
+                                                                              console.log('validate');
+              var err;
+              try{
+              
+                    var params    = {
+                          tolerant      : true,
+                          loc           : true,
+                          range         : true,
+                          
+                          ecmaVersion   : 'latest',
+                    };
+                    
+                    var syntax    = espree.parse(js,params);
+                                                                              console.log(syntax);
+                                                                              
+              }//try
+              catch(err2){
+                                                                              console.log('catch');
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var index   = err.index-16;
+                    var line    = err.lineNumber-1;
+                    var col     = err.column;
+                    var msg     = err.message;
+                    var i       = msg.indexOf(':');
+                    msg         = msg.slice(i+1);
+                    msg         = [msg];
+                    
+                    var json    = {
+                          error   : true,
+                          index   : index,
+                          line    : line,
+                          col     : col,
+                          msg     : msg
+                    };
+                    return json;
+              }//err
+              
+              var msg     = ['syntax ok'];
+              var json    = {
+                    error   : false,
+                    msg     : msg
+              };
+              return json;
+              
+        }//syntax
         
         
         
