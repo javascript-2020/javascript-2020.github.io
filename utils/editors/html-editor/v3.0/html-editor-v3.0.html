@@ -406,23 +406,24 @@
                                                                                 debug('btn.syntax');
                                                                                 console.clear();
                                                                                 console.log('syntax');
-              var html      = editor.getValue();
-              var index     = 0;
-              var ec        = true;
+              var html            = editor.getValue();
+              var index           = 0;
+              var ec              = true;
               while(ec){
               
-                    var i1   = html.indexOf('<scr'+'ipt>',index);
-                    if(i1==-1){
+                    var i1a       = html.indexOf('<scr'+'ipt',index);
+                    if(i1a==-1){
                           return;
                     }
+                    var i1        = html.indexOf('>',i1a);
                     
-                    var str     = html.slice(0,i1);
-                    var lines   = str.split('\n').length;
+                    var str       = html.slice(0,i1a);
+                    var lines     = str.split('\n').length;
                     
-                    var i2    = html.indexOf('</scr'+'ipt>',i1);
-                    index     = i2+7;
+                    var i2        = html.indexOf('</scr'+'ipt',i1);
+                    index         = i2+7;
                     
-                    var js    = html.slice(i1+8,i2);
+                    var js        = html.slice(i1+8,i2);
                                                                                 //console.log(js);
                     var result    = syntax(js);
                                                                                 //console.log(i1,i2,lines,result);
