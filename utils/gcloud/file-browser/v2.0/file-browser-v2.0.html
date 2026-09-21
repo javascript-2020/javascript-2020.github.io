@@ -38,7 +38,7 @@
             
             <script src='https://ajaxorg.github.io/ace-builds/src-noconflict/ace.js'></script>
             
-            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js'></script>
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
             <script init>
                                                                                 console.clear();
@@ -81,6 +81,7 @@
               //keydown                   = keydown();
               menu                      = menumod();
               
+              
               hdr                       = mod['gcloud-hdr'];
               filenav                   = mod['file-nav'];
               //filemod                   = mod.filemod();
@@ -107,7 +108,17 @@
         }//init
         
         
+        async function libs(){
         
+              var promise   = ext.load.libs(
+                    'google/google-storage/google-storage.js.api',
+                    '/js/string/getmime.js',
+              );
+              [gs,getmime]   = await promise;
+              
+        }//libs
+        
+/*
 (async()=>{
 
         mod.stack.add;
@@ -128,6 +139,7 @@
         mod.stack.complete;
         
 })();
+*/
 
 
             </script init>
