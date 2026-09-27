@@ -593,8 +593,9 @@
   //:
   
   
-        window.addEventListener('message',e=>{console.log(e);
-        
+        window.addEventListener('message',e=>{
+                                                                                console.log(e);
+                                                                                
               var json    = e.data;
               
               if(json.sandbox){
@@ -772,15 +773,16 @@
               }
               
               
-              var js    = editor.getValue();
+              var js      = editor.getValue();
+              var otps    = {async:mode.async.checked};
               
               if(ui.host.checked){
                                                                                 debug('host');
-                    output.run.host(js,{async:mode.async.checked});
+                    output.run.host(js,opts);
                     return;
               }
               
-              output.run.iframe(js,{async:mode.async.checked});
+              output.run.iframe(js,opts);
               
         }//run
         
