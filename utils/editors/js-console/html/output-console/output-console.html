@@ -13,887 +13,975 @@
     {height:100%;display:flex;flex-direction:column}
   #hdr
     {display:flex;align-items:center;margin:0;margin-bottom:5px}
-    
   #spc
     {flex:1}
+  .radio
+    {border:1px solid lightgray;padding:2px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center}
     
-  .ext-button
-    {border:1px solid lightgray;padding:2px 5px;cursor:pointer;display:flex;align-items:center;margin-right:10px}
-  .ext-button [type=checkbox]
-    {margin:0;margin-left:5px;cursor:pointer}
+  #isolate
+    {margin-right:10px}
+  #console-clear
+    {margin-right:10px}
+  #word-wrap
+    {margin-right:20px;/*color:gray*/}
     
-  button
-    {font-size:16px;margin-right:10px}
+  #output-type
+    {display:flex;margin-right:20px}
     
+  #iframe-show
+    {margin-right:20px}
+    
+  #kill
+    {font-size:16px;padding:5px 10px;min-width:60px}
+    
+  #output-hldr
+    {flex:1;position:relative}
   #output
-    {flex:1;
+    {width:100%;height:100%;position:absolute;left:0;top:0;
       overflow:auto;border:2px solid lightgray;box-sizing:border-box;
       padding:10px;margin:0;
       word-break:break-all;
       font-size:16px;line-height:1.5;
     }
+  #output-console
+    {width:100%;height:100%;position:absolute;left:0;top:0}
     
             </style>
             
             <div id=root>
                   <div id=hdr>
-                        <span id=spc></span>
-                        <div id=console-persist class=ext-button>console.persist<input type=checkbox></div>
-                        <div id=console-log class=ext-button>console.log<input type=checkbox checked></div>
-                        <div id=word-wrap class=ext-button>wrap<input type=checkbox checked></div>
-                        <button id=clear>clear</button>
+                  
+                        <span id=isolate class=radio>
+                              <input type=checkbox>
+                              isolate
+                        </span>
+                        
+                        <span id=allow-modals class=radio>
+                              <input type=checkbox checked>
+                              allow-modals
+                        </span>
+                        <span id=allow-popups class=radio style='margin-right:30px'>
+                              <input type=checkbox checked>
+                              allow-popups
+                        </span>
+                        
+                        <div style='flex:1'></div>
+                        
+                        <span id=output-type>
+                              <span id=pretty-print class=radio>
+                                    <input type=checkbox checked>
+                                    prettyPrint
+                              </span>
+                              <span id=console class=radio>
+                                    <input type=checkbox>
+                                    console
+                              </span>
+                        </span>
+                        
+                        <span id=console-echo class=radio>
+                              <input type=checkbox checked>
+                              echo
+                        </span>
+                        <span id=console-persist class=radio>
+                              <input type=checkbox>
+                              persist
+                        </span>
+                        <span id=console-clear class=radio>
+                              clear
+                        </span>
+                        
+                        <span id=word-wrap class=radio>
+                              <input type=checkbox checked>
+                              wrap
+                        </span>
+                        
+                        <span id=iframe-show class=radio>
+                              <input type=checkbox checked>
+                              iframe
+                        </span>
+                        
                         <button id=kill>kill</button>
+                        
                   </div>
                   
-                  <pre id=output>
-                  </pre>
+                  <div id=output-hldr>
+                        <pre id=output>
+                        </pre>
+                        <div id=output-console style='display:none'>
+                        </div>
+                  </div>
+                  
             </div>
             
       </template>
       
       <script>
       
-(function output_console({mod,dom,host}){
+(function output_console({mod,host}){
 
   var obj   = {
         version   : 'v2.0',
   };
   
-      var df=false,did='output-console'
-      ;
-      
-      
-      
-      var ext,$
-      ;
-      
-      obj.initmod   = function(params){
-      
-            ext   = params.ext;
-            $     = params.$;
-            
-      }//initmod
-      
-      
+        var df=true,did='output-console'
+        ;
+        
+        
+        
+        var ext,$
+        ;
+        
+        obj.initmod   = function(params){
+        
+              ext   = params.ext;
+              $     = params.$;
+              
+        }//initmod
+        
+        
   //vars:-
   
-      var inspect;
-      
-      var con             = {};
-      con.log             = console.log;
-      con.clear           = console.clear;
-      con.error           = console.error;
-      
-      
-      var root;
-      var shadow;
-      
-      var output;
-      var cur             = {};
-      
-      var iframe;
-      obj.iframe;
-      
-      
-      
-      var chk             = {};
-      var btn             = {};
-      
-      
+        var inspect;
+        var jsconsolemod;
+        var jsconsole;
+        var style;
+        
+        var con             = {};
+        con.log             = console.log;
+        con.clear           = console.clear;
+        con.error           = console.error;
+        
+        
+        var root;
+        var shadow;
+        
+        var output;
+        var output_console;
+        var cur             = {};
+        var mode            = 'pretty';
+        
+        var iframe;
+        obj.iframe;
+        var sandbox_url     = 'https://sandbox.ext-code.com/js-sandbox/js-sandbox.html';
+        var sandbox_def     = 'allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock';
+        var sandbox_allow   = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
+                                  xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
+                                  
+        var fn              = {};
+        var chk             = {};
+        var btn             = {};
+        btn.console         = {};
+        btn.iframe          = {};
+        obj.on              = {};
+        
+        
   //:
   
   
-      obj.init    = async function(){
+        obj.init    = async function(){
                                                                                 debug('init',obj.version);
-            await libs();
-            
-      }//init
-      
-      
-      async function libs(){
-      
-            [inspect]   = await ext.load.libs('js/string/inspect.js');
-            console.log(inspect);
-            
-      }//libs
-      
-      
+              await libs();
+              
+        }//init
+        
+        
+        async function libs(){
+        
+              var list      = [];
+              
+              var promise   = ext.load.libs('js/string/inspect.js').then(result=>{
+              
+                   [inspect]    = result;
+                   
+              });
+              list.push(promise);
+              
+              var promise   = ext.load.libs('js/dom/web-console/web-console.js').then(result=>{
+              
+                    [jsconsolemod]   = result;
+                    jsconsolemod.initmod({ace});
+                    jsconsolemod.init();
+                    
+              });
+              list.push(promise);
+              
+              var promise   = ext.text.libs('js/dom/web-console/web-console.css').then(result=>{
+              
+                    var [css]           = result;
+                    style               = document.createElement('style');
+                    style.textContent   = css;
+                    
+                    
+              });
+              list.push(promise);
+              
+              
+              await Promise.all(list);
+                                                                                //console.log(inspect);
+                                                                                
+        }//libs
+        
+        
   //:
   
   
-      obj.initdom   = function(rootnode){
+        obj.initdom   = function(rootnode){
                                                                                 debug('initdom');
-            shadow                          = host.shadowRoot;
-            
-            chk.persist                     = $.chkbox(shadow,'#console-persist',false);
-            chk.log                         = $.chkbox(shadow,'#console-log',false);
-            chk.wrap                        = $.chkbox(shadow,'#word-wrap',wrap);
-            
-            $(shadow,'#clear').onclick      = btn.clear;
-            $(shadow,'#kill').onclick       = btn.kill;
-            
-            
-            output                          = $(shadow,'#output');
-            cur.root                        = output;
-            
-            
-            wrap(chk.wrap.checked);
-            
-            
-      }//initdom
-      
-      
-      btn.kill    = function(){
-                                                                              debug('btn.kill');
-            kill();
-            
-      }//kill
-      
-      
-      btn.clear   = function(){
-                                                                              debug('btn.clear');
-            clear();
-            
-      }//clear
-      
-      
-      function wrap(chk){
-                                                                    //console.log('wrap',v);
-            if(chk.checked){
-                  output.style.whiteSpace   = 'pre-wrap';
-            }else{
-                  output.style.whiteSpace   = '';
-            }
-            
-      }//wrap
-      
-      
-      obj.run   = async function(js,params={}){
+              shadow                                    = host.shadowRoot;
+              
+              root                                      = $(shadow,'#root');
+              
+              chk.isolate                               = $.chkbox(shadow,'#isolate');
+              chk.isolate.checked                       = window.crossOriginIsolated;
+              
+              chk['allow-modals']                       = $.chkbox(shadow,'#allow-modals');
+              chk['allow-popups']                       = $.chkbox(shadow,'#allow-popups');
+              
+              var r                                     = $(shadow,'#output-type');
+              chk.type                                  = $.chkbox.group(r,'#pretty-print','#console');
+              chk.type.callback                         = btn.type;
+              /*
+              chk.pretty                                = $.chkbox(shadow,'#pretty-print');
+              chk.console                               = $.chkbox(shadow,'#console');
+              */
+              
+              chk['console-echo']                       = $.chkbox(shadow,'#console-echo');
+              chk['console-persist']                    = $.chkbox(shadow,'#console-persist',false);
+              $(shadow,'#console-clear').onclick        = btn.console.clear;
+              
+              chk.wrap                                  = $.chkbox(shadow,'#word-wrap',btn.wrap);
+              
+              chk.iframe                                = $.chkbox(shadow,'#iframe-show',btn.iframe.show);
+              
+              $(shadow,'#kill').onclick                 = btn.kill;
+              
+              
+              output                                    = $(shadow,'#output');
+              cur.root                                  = output;
+              
+              output_console                            = $(shadow,'#output-console');
+              jsconsole                                 = jsconsolemod.create(output_console);
+              
+              shadow.append(style);
+              
+              create.iframe();
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+/*
+        btn.isolate   = function(chk){
+        
+              if(chk.checked){
+                    sandbox_url  += '?isolate';
+              }else{
+                    var i         = ssandbox_url.indexOf('?');
+                    sandbox_url   = sandbox_url.slice(0,i);
+              }
+              
+        }//isolate
+*/
+
+
+        btn.type    = function(chk,id){
+        
+              console.log(arguments);
+              console.log(id);
+              
+              switch(id){
+              
+                case 'console'        :
+                                        output.style.display            = 'none';
+                                        output_console.style.display    = '';
+                                        mode                            = 'console';
+                                                                                        break;
+                case 'pretty-print'   :
+                                        output.style.display            = '';
+                                        output_console.style.display    = 'none';
+                                        mode                            = 'pretty';
+                                                                                        break;
+                                                                                        
+              }//switch
+              
+        }//type
+        
+        
+        btn.console.clear   = function(){
+                                                                                debug('btn.clear');
+              clear();
+              
+        }//clear
+        
+        
+        btn.wrap    = function(chk){
+                                                                      //console.log('wrap',v);
+              if(chk.checked){
+                    output.style.whiteSpace   = 'pre-wrap';
+              }else{
+                    output.style.whiteSpace   = '';
+              }
+              
+        }//wrap
+        
+        
+        btn.kill    = function(){
+                                                                                debug('btn.kill');
+              kill();
+              
+        }//kill
+        
+        
+        btn.iframe.show   = function(chk){
+                                                                                debug('btn.iframe.show');
+              if(!iframe)return;
+              
+              if(chk.checked){
+                    iframe.style.display    = '';
+              }else{
+                    iframe.style.display    = 'none';
+              }
+              
+        }//show
+        
+        
+  //:
+  
+  
+        obj.on.message    = function(json){
+                                                                                //console.log('output.message',json);
+              var {name,args}   = json;
+              //webconsole[name].apply(null,args);
+              fn[name].apply(null,args);
+              
+        }//message
+        
+        
+  //:
+  
+  
+        obj.run   = async function(js,params={}){
                                                                                 debug('run');
-            var sandbox   = (()=>{
-            
-                  var console                 = {};
-                  console.log                 = log;
-                  console.clear               = clear;
-                  console.error               = error;
-                  console.write               = write;
-                  
-                  console.group               = window.console.group.bind(window.console);
-                  console.groupCollapsed      = window.console.groupCollapsed.bind(window.console);
-                  console.groupEnd            = window.console.groupEnd.bind(window.console);
-                  console.trace               = window.console.trace.bind(window.console);
-                  console.info                = window.console.info.bind(window.console);
-                  
-                  
-                  async function run(js){
-                  
-                        if(!chk.persist){
-                              clear();
-                        }
-                        
-                        if(params.async){
-                              js      = '(async()=>{\n'+js+'\n})()';
-                        }
-                        
-                        var result    = await eval(js);
-                        return result;
-                        
-                  }//run
-                  
-                  
-                  run.kill    = function(){
-                  }//kill
-                  
-                  
-                  return run;
-                  
-            })();
-            
-            var result    = await sandbox(js);
-            
-            if(result){
-                  console.log(result);
-            }
-            
-            //console.log     = con.log;
-            //console.clear   = con.clear;
-            //console.error   = con.error;
-            
-            
-            
-      }//run
-      
-      
-      obj.run.iframe    = async function(js,params={}){
-                                                                                debug('run.iframe');
-            var resolve,promise=new Promise(res=>resolve=res);
-            
-            if(iframe){
-                  iframe.remove();
-            }
-            
-            iframe          = document.createElement('iframe');
-            obj.iframe      = iframe;
-            iframe.srcdoc   = '';
-            iframe.onload   = onload;
-            cur.root.append(iframe);
-            
-            return promise;
-            
-            
-            async function onload(){
-            
-                  setTimeout(complete,100);
-                  
-            }//onload
-            
-            async function complete(){
-            
-                  var win             = iframe.contentWindow;
-                  win.focus();
-                  win.console.log     = log;
-                  win.console.clear   = clear;
-                  win.console.error   = error;
-                  win.console.write   = write;
-                  
-                  if(!chk.persist){
-                        clear();
-                  }
-                  
-                  if(params.async){
-                        js      = '(async()=>{\n'+js+'\n})()';
-                  }
-                  
-                  var result    = await win.eval(js);
-                  resolve(result);
-                  
-                  //iframe.remove();
-                  
-            }//onload
-            
-      }//iframe
-      
-      
-      obj.run.iframe2    = async function(js,params={}){
+              var sandbox   = (()=>{
+              
+                    var console                 = {};
+                    console.log                 = log;
+                    console.clear               = clear;
+                    console.error               = error;
+                    console.write               = write;
+                    
+                    console.group               = window.console.group.bind(window.console);
+                    console.groupCollapsed      = window.console.groupCollapsed.bind(window.console);
+                    console.groupEnd            = window.console.groupEnd.bind(window.console);
+                    console.trace               = window.console.trace.bind(window.console);
+                    console.info                = window.console.info.bind(window.console);
+                    
+                    
+                    async function run(js){
+                    
+                          if(!chk.persist){
+                                clear();
+                          }
+                          
+                          if(params.async){
+                                js      = '(async()=>{\n'+js+'\n})()';
+                          }
+                          
+                          var result    = await eval(js);
+                          return result;
+                          
+                    }//run
+                    
+                    
+                    run.kill    = function(){
+                    }//kill
+                    
+                    
+                    return run;
+                    
+              })();
+              
+              var result    = await sandbox(js);
+              
+              if(result){
+                    console.log(result);
+              }
+              
+              //console.log     = con.log;
+              //console.clear   = con.clear;
+              //console.error   = con.error;
+              
+              
+              
+        }//run
+        
+        
+        
+        
+  //:
+  
+  
+        build.sandbox   = function(){
+        
+              var attr      = sandbox_def;
+                                                                                //console.log(attr);
+              var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
+              /*
+              if(!chk['allow-scripts'].checked){
+                    tokens.delete('allow-scripts');
+              }
+              */
+              if(chk['allow-modals'].checked){
+                    tokens.add('allow-modals');
+              }
+              if(chk['allow-popups'].checked){
+                    tokens.add('allow-popups');
+              }
+              
+              var attr      = [...tokens].join(' ');
+                                                                                debug(attr);
+              iframe.setAttribute('sandbox',attr);
+              
+        }//sandbox
+        
+        
+        create.iframe   = function({onload}={}){
+        
+              iframe            = document.createElement('iframe');
+              obj.iframe        = iframe;
+              
+              iframe.onload           = onload;
+              
+              build.sandbox();
+              
+              iframe.setAttribute('allow',sandbox_allow);
+                                                                                debug(sandbox_allow);
+              var src              = sandbox_url;
+              if(chk.isolate.checked){
+                    src  += '?isolate';
+              }
+              iframe.src    = src;
+                                                                                debug(src);
+              iframe.style.cssText    = 'box-sizing:border-box';
+              if(!chk.iframe.checked){
+                    iframe.style.display    = 'none';
+              }
+              
+              root.append(iframe);
+              //document.body.append(iframe)
+              //cur.root.append(iframe);
+              
+        }//iframe
+        
+        
+        obj.run.iframe    = async function(js,params={}){
                                                                                 debug('run.iframe2');
-            var resolve,promise=new Promise(res=>resolve=res);
-            
-            if(iframe){
-                  iframe.remove();
-            }
-            
-            if(params.async){
-                  js      = '(async()=>{\n'+js+'\n})()';
-            }
-            
-            
-            
-/*
-            var html        = `
-                  <script>
-                  
-                        window.addEventListener('message',({data})=>{
-                        console.log('message',data);
-                              var {js}    = data;
-                        console.log(js);
-                              window.eval(js);
-                              
-                        });
-                        
-                  </scr`+`ipt>
-            `;
-            
-            
-var html    = `
-
-<script type="module">
-  window.addEventListener("message", async (event) => {
-      try {
-        // Wrap the code in a module so dynamic import works
-        const blob = new Blob([event.data.js], { type: "text/javascript" });
-        const url = URL.createObjectURL(blob);
-        await import(url);
-        URL.revokeObjectURL(url);
-      } catch (e) {
-        console.error("Module error:", e);
-      }
-  });
-</scr`+`ipt>
-
-
-`;
-
-
-
-
-              var html    = `
+              var resolve,promise=new Promise(res=>resolve=res);
               
-                    <script>
+              if(iframe){
+                    iframe.remove();
+              }
+              
+              create.iframe({onload});
+              
+              return promise;
+              
+              
+              async function onload(){
+              
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
                     
-                          ${js}
-                          
-                    </scr`+`ipt>
-              `;
-              
-              
-              var html    = `
-              
-              <!DOCTYPE html>
-              
-              <html>
-                    <head>
+                    if(!chk['console-persist'].checked){
+                          clear();
+                    }
                     
-                    <script type=module>
+                    var echo    = chk['console-echo'].checked;
                     
-      // Catch *everything* the iframe might throw
-      window.addEventListener("error", (e) => {
-        console.log("iframe error:", e.message);
-      });
-      
-      window.addEventListener("unhandledrejection", (e) => {
-        console.log("iframe unhandledrejection:", e.reason);
-      });
-      
-      
-                          window.addEventListener('message',async({data})=>{
-                          
-                                var {js}    = data;
-                                try{
-                                      var blob    = new Blob([js],{type:'text/javascript'});
-                                      var url     = window.URL.createObjectURL(blob);
-                                      await import(url);
-                                }
-                                catch(err){
-                                      console.error('import failed',err);
-                                }
-                                
-                          });
-                          
-                    </scr`+`ipt>
+                    if(params.async){
+                          js      = '(async()=>{\n'+js+'\n})()';
+                    }
                     
-                    </head>
+                    iframe.contentWindow.postMessage({type:'run',js,echo},'*');
+                    //var result    = await win.eval(js);
                     
-                    <body>
-                    </body>
-              </html>
-              
-              `;
-              
-              
-              var html    = `
-              
-                    <script>
                     
-                          window.addEventListener('message',async({data})=>{
-                          
-                                var {js}    = data;
-                                window.eval(js);
-                                
-                          });
-                          
-                    </scr`+`ipt>
+                    resolve();
                     
-              `;
+                    
+              }//onload
               
-              
-              
-              
-*/
-
-
-
-            iframe            = document.createElement('iframe');
-            obj.iframe        = iframe;
-            document.body.append(iframe)
-            //cur.root.append(iframe);
-            
-            iframe.style.display    = 'none';
-            iframe.sandbox          = 'allow-scripts allow-same-origin';
-            iframe.onload           = onload;
-            
-            //var blob          = new Blob([html],{type:'text/html'});
-            //var url           = window.URL.createObjectURL(blob);
-            //iframe.src        = url;
-            
-            iframe.srcdoc     = '';
-            
-            return promise;
-            
-            
-            async function onload(){
-            
-                  var win             = iframe.contentWindow;
-                  
-                  win.focus();
-                  win.console.log                 = log;
-                  win.console.clear               = clear;
-                  win.console.error               = error;
-                  win.console.write               = write;
-                  win.console.groupCollapsed      = groupCollapsed;
-                  
-                  if(!chk.persist){
-                        clear();
-                  }
-                  
-                  var result    = await win.eval(js);
-                  resolve(result);
-                  
-                  //iframe.remove();
-                  
-            }//onload
-            
-      }//iframe
-      
-      
-      
-      
-      obj.run.iframe3   = function(js){
-      
-      
-// Create the iframe
-const iframe = document.createElement("iframe");
-document.body.appendChild(iframe);
-
-// HTML that will run inside the iframe
-const html = `
-<!doctype html>
-<html>
-  <body>
-    <script type="module">
-      console.log("iframe module script loaded");
-      
-      // Catch *everything* the iframe might throw
-      window.addEventListener("error", (e) => {
-        console.log("iframe error:", e.message);
-      });
-      
-      window.addEventListener("unhandledrejection", (e) => {
-        console.log("iframe unhandledrejection:", e.reason);
-      });
-      
-      window.addEventListener("message", async (event) => {
-        if (event.data?.type !== "run") return;
+        }//iframe
         
-        console.log("iframe got message, code:", event.data.code);
         
-        try {
-          // Turn the incoming code into a module
-          const blob = new Blob(
-            [event.data.code],
-            { type: "text/javascript" }
-          );
-          const url = URL.createObjectURL(blob);
-          
-          console.log("importing user module:", url);
-          
-          await import(url);
-          
-          console.log("user module finished");
-          URL.revokeObjectURL(url);
-        } catch (err) {
-          console.log("import failed:", err);
-        }
-      });
-    </scr`+`ipt>
-  </body>
-</html>
-`;
-
-// Load the iframe from a Blob URL
-const blob = new Blob([html], { type: "text/html" });
-iframe.src = URL.createObjectURL(blob);
-
-// When iframe is ready, send some code
-iframe.addEventListener("load", () => {
-  console.log("iframe loaded, posting message");
-  
-  iframe.contentWindow.postMessage({
-    type: "run",
-    code: js
-  }, "*");
-});
-
-
-      }//iframe3
-      
-      
-      
-      obj.kill    = function(){return kill()}
-      
-      function kill(){
-      
-            if(!iframe)return;
-            iframe.remove();
-            
-      }//kill
-      
-      
-      
-      obj.set   = function(root){
-      
-            if(root){
-                  cur.root    = root;
-            }else{
-                  cur.root    = output;
-            }
-            
-      }//set
-      
-      
   //:
   
   
-      function disp(){
-      
-            var txt           = build(arguments);
-            var div           = document.createElement('div');
-            div.textContent   = txt;
-            cur.root.append(div);
-            
-            cur.node    = div;
-            
-            if(txt==''){
-                  div.style.height    = '16px';
-            }
-            
-            cur.root.scrollTop    = 999999999;
-            
-            return div;
-            
-      }//disp
-      
-      
-      obj.clear   = function(){return clear()}
-      
-      function clear(){
-      
-            if(chk.log.checked){
-                  con.clear.call(window.console);
-            }
-            
-            cur.root.replaceChildren();
-            
-      }//clear
-      
-      
-      obj.log   = function(){return log.apply(log,arguments)};
-      
-      function log(){
-      
-            if(chk.log.checked){
-                  //con.log.apply(window.console,arguments);
-                  window.console.groupCollapsed.apply(window.console,arguments);
-                  window.console.trace();
-                  window.console.groupEnd();
-            }
-            
-            var div   = disp.apply(null,arguments);
-            return div;
-            
-/*
-            var txt           = build(arguments);
-            var div           = document.createElement('div');
-            div.textContent   = txt;
-            cur.root.append(div);
-            
-            cur.node    = div;
-            
-            if(txt==''){
-                  div.style.height    = '16px';
-            }
-            
-            cur.root.scrollTop    = 999999999;
-*/
-
-            return div;
-            
-      }//log
-      
-      
-      obj.groupCollapsed    = function(){return groupCollapsed.apply(null,arguments)}
-      
-      function groupCollapsed(...args){
-      
-            if(chk.log.checked){
-                  window.console.groupCollapsed.apply(window.console,args);
-            }
-            
-            var out   = format(arguments);
-            var div   = disp.apply(null,out);
-            return div;
-            
-      }//groupCollapsed
-      
-      
-      obj.error   = function(){return error.apply(null,arguments)}
-      
-      function error(){
-      
-            if(chk.log.checked){
-                  con.error.apply(window.console,arguments);
-            }
-            var node            = log.apply(null,arguments);
-            node.style.color    = 'red';
-            return node;
-            
-      }//error
-      
-      
-      
-      
-      obj.node    = function(){return node.apply(null,arguments)}
-      
-      function node(node){
-      
-            node    = create(node);
-            
-            cur.root.append(node);
-            
-            return node;
-            
-      }//node
-      
-      
-      
-      obj.write    = function(){return write.apply(null,arguments)}
-      
-      function write(){
-      
-            var txt   = build(arguments);
-            
-            var span            = document.createElement('span');
-            span.textContent    = txt;
-            
-            if(cur.node){
-                  cur.node.append(span);
-            }else{
-                  cur.root.append(span);
-            }
-            return span;
-            
-      }//write
-      
-      
-      
-      
+        obj.run.host   = async function(js,params={}){
+                                                                                debug('run.iframe.host');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              if(iframe){
+                    iframe.remove();
+              }
+              
+              iframe          = document.createElement('iframe');
+              //iframe.srcdoc   = '';
+              iframe.onload   = onload;
+              root.append(iframe);
+              
+              return promise;
+              
+              
+              async function onload(){
+              
+                    var win             = iframe.contentWindow;
+                    win.focus();
+                    win.console.log     = log;
+                    win.console.clear   = clear;
+                    win.console.error   = error;
+                    win.console.write   = write;
+                    
+                    if(!chk.persist){
+                          clear();
+                    }
+                    
+                    if(params.async){
+                          js      = '(async()=>{\n'+js+'\n})()';
+                    }
+                    
+                    var result    = await win.eval(js);
+                    resolve(result);
+                    
+                    //iframe.remove();
+                    
+              }//onload
+              
+        }//host
+        
+        
   //:
   
   
-      function datatype(v){return Object.prototype.toString.call(v).slice(8,-1).toLowerCase()}
-      
-      
-      function format(args){
-      
-            if(typeof args[0]!=='string')return args;
-            
-            let fmt         = args[0];
-            let out         = [];
-            let argIndex    = 1;
-            
-            out.push(fmt.replace(/%[sdifoO]/g,match=>{
-            
-                  var val   = args[argIndex++];
-                  
-                  switch (match) {
-                  
-                    case '%s'   : return ''+val;
-                    case '%d'   :
-                    case '%i'   : return parseInt(val, 10);
-                    case '%f'   : return parseFloat(val);
-                    case '%o'   :
-                    case '%O'   : return format.fn(val);
-                    default     : return match;
-                    
-                  }//switch
-                  
-            }));
-            
-            
-            while(argIndex<args.length){
-            
-                  var v   = args[argIndex++];
-                  out.push(v);
-                  
-            }//while
-            
-            return out;
-            
-            
-            function fn(val){
-            
-                  if(val===null)return 'null';
-                  if(val===undefined)return 'undefined';
-                  
-                  switch(typeof val){
-                  
-                    case 'number'   : return val;
-                    case 'string'   : return val;
-                    
-                  }//switch
-                  
-                  return JSON.stringify(val,null,4);
-            }//fn
-            
-      }//format
-      
-      
-      format.fn   = function(val,seen=new WeakSet()){
-      
-            if(val === null)return 'null';
-            if(val === undefined)return 'undefined';
-            
-                                                                                // Prevent circular references
-            if(typeof val==='object' || typeof val==='function'){
-                  if(seen.has(val))return '[ Circular ]';
-                  seen.add(val);
-            }
-            
-                                                                                // Primitive types
-            switch(typeof val){
-            
-              case 'number'     : return String(val);
-              case 'string'     : return val;
-              case 'boolean'    : return String(val);
-              case 'bigint'     : return val.toString() + 'n';
-              case 'symbol'     : return val.toString();
-              case 'function'   : return `[Function${val.name ? ': '+val.name : ''}]`;
+        obj.kill    = function(){return kill()}
+        
+        function kill(){
+        
+              if(!iframe)return;
+              iframe.remove();
               
-            }//switch
-            
-            
-            var type    = datatype(val);
+        }//kill
+        
+        
+        
+        obj.set   = function(root){
+        
+              if(root){
+                    cur.root    = root;
+              }else{
+                    cur.root    = output;
+              }
+              
+        }//set
+        
+        
+  //:
+  
+  
+        function disp(){
+        
+              var txt           = build(arguments);
+              var div           = document.createElement('div');
+              div.textContent   = txt;
+              cur.root.append(div);
+              
+              cur.node    = div;
+              
+              if(txt==''){
+                    div.style.height    = '16px';
+              }
+              
+              cur.root.scrollTop    = 999999999;
+              
+              return div;
+              
+        }//disp
+        
+        
+  //:
+  
+  
+        obj.clear   = function(){return clear()}
+        fn.clear    = function(){return clear.apply(null,arguments)}
+        
+        function clear(){
+        
+              /*
+              if(chk['console-echo'].checked){
+                    con.clear.call(window.console);
+              }
+              */
+              
+              
+              switch(mode){
+              
+                case 'pretty'     : cur.root.replaceChildren();       break;
+                case 'console'    : jsconsole.clear();                break;
+                
+              }//switch
+              
+        }//clear
+        
+        
+        obj.log   = function(){return log.apply(null,arguments)}
+        fn.log    = function(){return log.apply(null,arguments)}
+        
+        function log(){
+        
+              /*
+              if(chk['console-echo'].checked){
+                    //con.log.apply(window.console,arguments);
+                    window.console.groupCollapsed.apply(window.console,arguments);
+                    window.console.trace();
+                    window.console.groupEnd();
+              }
+              */
+              
+              
+              var div;
+              
+              switch(mode){
+              
+                case 'pretty'     : div   = disp.apply(null,arguments);       break;
+                case 'console'    : jsconsole.log.apply(jsconsole,arguments);       break;
+                
+              }//switch
+              
+              return div;
+              
+        }//log
+        
+        
+        obj.groupCollapsed    = function(){return groupCollapsed.apply(null,arguments)}
+        fn.groupCollapsed     = function(){return groupCollapsed.apply(null,arguments)}
+        
+        function groupCollapsed(...args){
+        
+              /*
+              if(chk['console-echo'].checked){
+                    window.console.groupCollapsed.apply(window.console,args);
+              }
+              */
+              
+              switch(mode){
+              
+                case 'pretty'   :
+                                  var out   = format(arguments);
+                                  var div   = disp.apply(null,out);
+                                  return div;
+                                  
+                case 'console'    : jsconsole.groupCollapsed.apply(jsconsole,arguments);
+                                    break;
+                                    
+              }//switch
+              
+              
+        }//groupCollapsed
+        
+        
+        obj.error   = function(){return error.apply(null,arguments)}
+        fn.error    = function(){return error.apply(null,arguments)}
+        
+        function error(){
+        
+              /*
+              if(chk['console-echo'].checked){
+                    con.error.apply(window.console,arguments);
+              }
+              */
+              
+              var node;
+              
+              switch(mode){
+              
+                case 'pretty'     :
+                                    node                = log.apply(null,arguments);
+                                    node.style.color    = 'red';
+                                                                                          break;
+                case 'console'    :
+                                    jsconsole.error.apply(jsconsole,arguments);
+                                                                                          break;
+                                                                                          
+              }//switch
+              
+              return node;
+              
+        }//error
+        
+        
+        
+        
+        obj.node    = function(){return node.apply(null,arguments)}
+        fn.node     = function(){return node.apply(null,arguments)}
+        
+        function node(node){
+        
+              node    = create(node);
+              
+              cur.root.append(node);
+              
+              return node;
+              
+        }//node
+        
+        
+        
+        obj.write    = function(){return write.apply(null,arguments)}
+        fn.write    = function(){return write.apply(null,arguments)}
+        
+        function write(){
+        
+        
+              var txt             = build(arguments);
+              
+              var span            = document.createElement('span');
+              span.textContent    = txt;
+              
+              if(cur.node){
+                    cur.node.append(span);
+              }else{
+                    cur.root.append(span);
+              }
+              
+              
+              return span;
+              
+        }//write
+        
+        
+        
+        
+  //:
+  
+  
+        function datatype(v){return Object.prototype.toString.call(v).slice(8,-1).toLowerCase()}
+        
+        
+        function format(args){
+        
+              if(typeof args[0]!=='string')return args;
+              
+              let fmt         = args[0];
+              let out         = [];
+              let argIndex    = 1;
+              
+              out.push(fmt.replace(/%[sdifoO]/g,match=>{
+              
+                    var val   = args[argIndex++];
+                    
+                    switch (match) {
+                    
+                      case '%s'   : return ''+val;
+                      case '%d'   :
+                      case '%i'   : return parseInt(val, 10);
+                      case '%f'   : return parseFloat(val);
+                      case '%o'   :
+                      case '%O'   : return format.fn(val);
+                      default     : return match;
+                      
+                    }//switch
+                    
+              }));
+              
+              
+              while(argIndex<args.length){
+              
+                    var v   = args[argIndex++];
+                    out.push(v);
+                    
+              }//while
+              
+              return out;
+              
+              
+              function fn(val){
+              
+                    if(val===null)return 'null';
+                    if(val===undefined)return 'undefined';
+                    
+                    switch(typeof val){
+                    
+                      case 'number'   : return val;
+                      case 'string'   : return val;
+                      
+                    }//switch
+                    
+                    return JSON.stringify(val,null,4);
+              }//fn
+              
+        }//format
+        
+        
+        format.fn   = function(val,seen=new WeakSet()){
+        
+              if(val === null)return 'null';
+              if(val === undefined)return 'undefined';
+              
+                                                                                  // Prevent circular references
+              if(typeof val==='object' || typeof val==='function'){
+                    if(seen.has(val))return '[ Circular ]';
+                    seen.add(val);
+              }
+              
+                                                                                  // Primitive types
+              switch(typeof val){
+              
+                case 'number'     : return String(val);
+                case 'string'     : return val;
+                case 'boolean'    : return String(val);
+                case 'bigint'     : return val.toString() + 'n';
+                case 'symbol'     : return val.toString();
+                case 'function'   : return `[Function${val.name ? ': '+val.name : ''}]`;
+                
+              }//switch
+              
+              
+              var type    = datatype(val);
                                                                                 console.log('format.fn',type);
-            if(type=='array'){
-                  val       = val.map(v=>format.fn(v,seen));
-                  var str   = val.join(', ')
-                  return '['+str+']';
-            }
-            
-            if(type=='date'){//val instanceof Date){
-                  return `Date("${val.toISOString()}")`;
-            }
-            
-            if(val instanceof RegExp){
-                  return val.toString();
-            }
-            
-            if(val instanceof Error){
-                  return `${val.name}: ${val.message}`;
-            }
-            
-            if(val instanceof Map){
-                  const entries = [];
-                  for (const [k, v] of val.entries()) {
-                    entries.push(`${fn(k, seen)} => ${format.fn(v, seen)}`);
-                  }
-                  return `Map { ${entries.join(', ')} }`;
-            }
-            
-            if(val instanceof Set){
-                  const entries   = [...val].map(v=>format.fn(v,seen));
-                  return `Set { ${entries.join(', ')} }`;
-            }
-            
-            if(ArrayBuffer.isView(val) && !(val instanceof DataView)){
-                  return `${val.constructor.name} [ ${Array.from(val).join(', ')} ]`;
-            }
-            
-            if(val instanceof Node){
-                  if(val.nodeType===1){
-                        return `<${val.tagName.toLowerCase()}>`;
-                  }
-                  return val.toString();
-            }
-            
-            if(typeof val==='object'){
-                  const entries   = Object.entries(val).map(([k,v])=>{
-                  
-                        return `${k}: ${format.fn(v,seen)}`;
-                        
-                  });
-                  return `{ ${entries.join(', ')} }`;
-            }
-            
-            try{
-            
-                  return JSON.stringify(val);
-                  
-            }//try
-            catch{
-            
-                  return String(val);
-                  
-            }//catch
-            
-      }//fn
-      
-      
-      
-      function build(args){
-      
-            var str     = '';
-            var args    = [...args];
-            args        = args.map(v=>{
-            
-                  var type    = datatype(v);
-                  switch(type){
-                  
-                    case 'function'         :
-                    case 'asyncfunction'    : str   = v.toString();       break;
-                    case 'string'           : str   = v;                  break;
-                    default                 : str   = inspect(v);         break;
-                    
-                  }//switch
-                  return str;
-                  
-            });
-            
-            var txt   = args.join(' ');
-            return txt;
-            
-      }//build
-      
-      
-      function create(node){
-      
-            var type    = datatype(node);
-            switch(type){
-            
-              case 'string'   : node    = create.string(node);        break;
+              if(type=='array'){
+                    val       = val.map(v=>format.fn(v,seen));
+                    var str   = val.join(', ')
+                    return '['+str+']';
+              }
               
-            }//switch
-            return node;
-            
-      }//create
-      
-      
-      create.string   = function(str){
-      
-            var node    = document.createElement(str);
-            return node;
-            
-      }//string
-      
-      
+              if(type=='date'){//val instanceof Date){
+                    return `Date("${val.toISOString()}")`;
+              }
+              
+              if(val instanceof RegExp){
+                    return val.toString();
+              }
+              
+              if(val instanceof Error){
+                    return `${val.name}: ${val.message}`;
+              }
+              
+              if(val instanceof Map){
+                    const entries = [];
+                    for (const [k, v] of val.entries()) {
+                      entries.push(`${fn(k, seen)} => ${format.fn(v, seen)}`);
+                    }
+                    return `Map { ${entries.join(', ')} }`;
+              }
+              
+              if(val instanceof Set){
+                    const entries   = [...val].map(v=>format.fn(v,seen));
+                    return `Set { ${entries.join(', ')} }`;
+              }
+              
+              if(ArrayBuffer.isView(val) && !(val instanceof DataView)){
+                    return `${val.constructor.name} [ ${Array.from(val).join(', ')} ]`;
+              }
+              
+              if(val instanceof Node){
+                    if(val.nodeType===1){
+                          return `<${val.tagName.toLowerCase()}>`;
+                    }
+                    return val.toString();
+              }
+              
+              if(typeof val==='object'){
+                    const entries   = Object.entries(val).map(([k,v])=>{
+                    
+                          return `${k}: ${format.fn(v,seen)}`;
+                          
+                    });
+                    return `{ ${entries.join(', ')} }`;
+              }
+              
+              try{
+              
+                    return JSON.stringify(val);
+                    
+              }//try
+              catch{
+              
+                    return String(val);
+                    
+              }//catch
+              
+        }//fn
+        
+        
+        
+        function build(args){
+        
+              var str     = '';
+              var args    = [...args];
+              args        = args.map(v=>{
+              
+                    var type    = datatype(v);
+                    switch(type){
+                    
+                      case 'function'         :
+                      case 'asyncfunction'    : str   = v.toString();       break;
+                      case 'string'           : str   = v;                  break;
+                      default                 : str   = inspect(v);         break;
+                      
+                    }//switch
+                    return str;
+                    
+              });
+              
+              var txt   = args.join(' ');
+              return txt;
+              
+        }//build
+        
+        
+        function create(node){
+        
+              var type    = datatype(node);
+              switch(type){
+              
+                case 'string'   : node    = create.string(node);        break;
+                
+              }//switch
+              return node;
+              
+        }//create
+        
+        
+        create.string   = function(str){
+        
+              var node    = document.createElement(str);
+              return node;
+              
+        }//string
+        
+        
   //:
   
   
-      obj.horiz   = function(){
-      
-            host.style.width    = '100%';
-            host.style.height   = '50%';
-            
-      }//horiz
-      
-      
-      obj.vert    = function(){
-      
-            host.style.width    = '50%';
-            host.style.height   = '100%';
-            
-      }//vert
-      
-      
+        obj.horiz   = function(){
+        
+              host.style.width    = '100%';
+              host.style.height   = '50%';
+              
+        }//horiz
+        
+        
+        obj.vert    = function(){
+        
+              host.style.width    = '50%';
+              host.style.height   = '100%';
+              
+        }//vert
+        
+        
   //:
   
   
