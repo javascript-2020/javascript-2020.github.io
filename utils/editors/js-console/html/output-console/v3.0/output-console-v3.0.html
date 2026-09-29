@@ -501,6 +501,36 @@
               async function upload(){
               
                     var echo      = chk['console-echo'].checked;
+                    
+                    var resolve,promise=new Promise(res=>resolve=res);
+                    
+                    var id    = crypto.randomUUID();
+                    window.addEventListener('message',handle);
+                    iframe.contentWindow.postMessage({js,echo},'*');
+                    
+                    return promise;
+                    
+                    
+                    function handle(event){
+                    
+                          if(event.data?.id!==id)return;
+                          window.removeEventListener('message',handle);
+                          resolve(event.data.result);
+                          
+                    }//handle
+                    
+                    
+                    
+/*
+
+
+                    var id        = await post({js,echo});
+                    return id;
+                    iframe.contentWindow.postMessage({js,echo},'*');
+                    
+*/
+
+                    /*
                     var body      = JSON.stringify({js,echo});
                     var headers   = {};
                     
@@ -529,6 +559,7 @@
                     var id    = await res.text();
                                                                                 debug('id',id);
                     return id;
+                    */
                     
               }//upload
               
