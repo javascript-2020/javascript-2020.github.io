@@ -454,7 +454,7 @@
         }//sandbox
         
         
-        create.iframe   = function({onload}={}){
+        create.iframe   = function({fn,onload}={}){
         
               iframe                        = document.createElement('iframe');
               obj.iframe                    = iframe;
@@ -469,6 +469,8 @@
               if(chk.isolate.checked){
                     src                    += '?isolate';
               }
+              src  += `?fn=${fn}`;
+              
               iframe.src                    = src;
                                                                                 debug(src);
               iframe.style.cssText          = 'box-sizing:border-box';
@@ -491,9 +493,9 @@
                     iframe.remove();
               }
               
-              var id    = await upload(js);
-              
-              create.iframe({onload});
+              var fn    = await upload(js);
+                                                                                debug('run.iframe2',fn);
+              create.iframe({fn,onload});
               
               return promise;
               
@@ -506,7 +508,7 @@
                     
                     var id    = crypto.randomUUID();
                     window.addEventListener('message',handle);
-                    iframe.contentWindow.postMessage({js,echo},'*');
+                    iframe.contentWindow.postMessage({id,js,echo},'*');
                     
                     return promise;
                     
@@ -515,7 +517,7 @@
                     
                           if(event.data?.id!==id)return;
                           window.removeEventListener('message',handle);
-                          resolve(event.data.result);
+                          resolve(event.data.fn);
                           
                     }//handle
                     
