@@ -456,6 +456,10 @@
         
         create.iframe   = function({fn,onload}={}){
         
+              if(iframe){
+                    iframe.remove();
+              }
+              
               iframe                        = document.createElement('iframe');
               obj.iframe                    = iframe;
               
@@ -490,10 +494,6 @@
         obj.run.iframe    = async function(js,params={}){
                                                                                 debug('run.iframe2');
               var resolve,promise=new Promise(res=>resolve=res);
-              
-              if(iframe){
-                    iframe.remove();
-              }
               
               var fn    = await upload(js);
                                                                                 debug('run.iframe2',fn);
