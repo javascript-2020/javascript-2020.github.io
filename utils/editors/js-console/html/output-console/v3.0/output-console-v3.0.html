@@ -270,7 +270,9 @@
               
               shadow.append(style);
               
-              create.iframe();
+              
+              var src       = `https://sandbox.ext-code.com/js-sandbox-1/js-sandbox-1.html`;
+              create.iframe({src});
               
               
         }//initdom
@@ -454,7 +456,7 @@
         }//sandbox
         
         
-        create.iframe   = function({fn,onload}={}){
+        create.iframe   = function({onload,src}={}){
         
               if(iframe){
                     iframe.remove();
@@ -469,14 +471,13 @@
               
               iframe.setAttribute('allow',sandbox_allow);
                                                                                 debug(sandbox_allow);
+/*
               var src                       = sandbox_url;
               if(chk.isolate.checked){
                     src                    += '?isolate';
               }
-              if(fn){
-                    src  += `?fn=${fn}`;
-              }
-              
+*/
+
               iframe.src                    = src;
                                                                                 debug(src);
               iframe.style.cssText          = 'box-sizing:border-box';
@@ -492,20 +493,75 @@
         
         
         obj.run.iframe    = async function(js,params={}){
-                                                                                debug('run.iframe2');
+                                                                                debug('run.iframe');
+              var promise;
+              
+              switch(1){
+              
+                case 0    : promise   = sandbox(js);        break;
+                case 1    : promise   = sandbox1(js);       break;
+                
+              }//switch
+              
+              return promise;
+              
+        }//iframe
+        
+        
+        async function sandbox(){
+                                                                                debug('sandbox');
               var resolve,promise=new Promise(res=>resolve=res);
               
-              var fn    = await upload(js);
-                                                                                debug('run.iframe2',fn);
-              create.iframe({fn,onload});
+              var src   = sandbox_url;
+              
+              create.iframe({src,onload});
+              
+              return promise;
+              
+              
+              async function onload(){
+              
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
+                    
+                    if(!chk['console-persist'].checked){
+                          clear();
+                    }
+                    
+                    var echo    = chk['console-echo'].checked;
+                    
+                    if(params.async){
+                          js      = '(async()=>{\n'+js+'\n})()';
+                    }
+                    
+                    iframe.contentWindow.postMessage({type:'run',js,echo},'*');
+                    
+                    resolve();
+                    
+                    
+              }//onload
+              
+              
+        }//sandbox
+        
+        
+        async function sandbox1(){
+                                                                                debug('sandbox1');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var echo      = chk['console-echo'].checked;
+              var fn        = await upload({js,echo});
+                                                                                debug(fn);
+                                                                                
+              var src       = `https://sandbox.ext-code.com/js-sandbox-1/js-sandbox-1.html?fn=${fn}`;
+              
+              create.iframe({src,onload});
               
               return promise;
               
               
               async function upload(){
               
-                    var echo      = chk['console-echo'].checked;
-                    
                     var resolve,promise=new Promise(res=>resolve=res);
                     
                     var id    = crypto.randomUUID();
@@ -523,47 +579,6 @@
                           
                     }//handle
                     
-                    
-                    
-/*
-
-
-                    var id        = await post({js,echo});
-                    return id;
-                    iframe.contentWindow.postMessage({js,echo},'*');
-                    
-*/
-
-                    /*
-                    var body      = JSON.stringify({js,echo});
-                    var headers   = {};
-                    
-                    var err;
-                    try{
-                    
-                          var res   = await fetch('https://sandbox.ext-code.com/js-sandbox/js-sandbox-1-upload',{method:'post',headers,body});
-                          
-                    }//try
-                    catch(err2){
-                    
-                          err   = err2;
-                          
-                    }//catch
-                    if(err){
-                                                                                debug(err);
-                          log.red(err.message);
-                          return;
-                    }
-                    if(!res.ok){
-                          var txt   = await res.text();
-                                                                                debug(txt);
-                          log.red(txt);
-                          return;
-                    }
-                    var id    = await res.text();
-                                                                                debug('id',id);
-                    return id;
-                    */
                     
               }//upload
               
@@ -592,7 +607,7 @@
                     
               }//onload
               
-        }//iframe
+        }//sandbox1
         
         
   //:
