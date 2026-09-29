@@ -123,18 +123,21 @@
         version   : 'v2.0',
   };
   
-        var df=true,did='output-console'
+        var df=true,did='output-console';
+        
+        var ext,$,debug
         ;
         
+        obj.initmod   = function(...list){
         
-        
-        var ext,$
-        ;
-        
-        obj.initmod   = function(params){
-        
-              ext   = params.ext;
-              $     = params.$;
+              list.forEach(params=>{
+              
+                    ext         = mod.rd(params,'ext',ext);
+                    $           = mod.rd(params,'$',$);
+                    log         = mod.rd(params,'log',log);
+                    debug       = mod.rd(params,'debug',debug);
+                    
+              });
               
         }//initmod
         
@@ -179,8 +182,12 @@
   
   
         obj.init    = async function(){
+        
+              mod.initmod(obj);
+                                                                                debug=eval(debug.mod);
                                                                                 debug('init',obj.version);
               await libs();
+              
               
         }//init
         
@@ -211,7 +218,6 @@
                     style               = document.createElement('style');
                     style.textContent   = css;
                     
-                    
               });
               list.push(promise);
               
@@ -225,7 +231,7 @@
   //:
   
   
-        obj.initdom   = function(rootnode){
+        obj.initdom   = async function(rootnode){
                                                                                 debug('initdom');
               shadow                                    = host.shadowRoot;
               
@@ -450,22 +456,22 @@
         
         create.iframe   = function({onload}={}){
         
-              iframe            = document.createElement('iframe');
-              obj.iframe        = iframe;
+              iframe                        = document.createElement('iframe');
+              obj.iframe                    = iframe;
               
-              iframe.onload           = onload;
+              iframe.onload                 = onload;
               
               build.sandbox();
               
               iframe.setAttribute('allow',sandbox_allow);
                                                                                 debug(sandbox_allow);
-              var src              = sandbox_url;
+              var src                       = sandbox_url;
               if(chk.isolate.checked){
-                    src  += '?isolate';
+                    src                    += '?isolate';
               }
-              iframe.src    = src;
+              iframe.src                    = src;
                                                                                 debug(src);
-              iframe.style.cssText    = 'box-sizing:border-box';
+              iframe.style.cssText          = 'box-sizing:border-box';
               if(!chk.iframe.checked){
                     iframe.style.display    = 'none';
               }
@@ -485,9 +491,46 @@
                     iframe.remove();
               }
               
+              var id    = await upload(js);
+              
               create.iframe({onload});
               
               return promise;
+              
+              
+              async function upload(){
+              
+                    var echo      = chk['console-echo'].checked;
+                    var body      = JSON.stringify({js,echo});
+                    var headers   = {};
+                    
+                    var err;
+                    try{
+                    
+                          var res   = fetch('/js-sandbox/js-sandbox-1-upload',{method:'post',headers,body});
+                          
+                    }//try
+                    catch(err2){
+                    
+                          err   = err2;
+                          
+                    }//catch
+                    if(err){
+                                                                                debug(err);
+                          log.red(err.message);
+                          return;
+                    }
+                    if(!res.ok){
+                          var txt   = await res.text();
+                                                                                debug(txt);
+                          log.red(txt);
+                          return;
+                    }
+                    var id    = await res.text();
+                                                                                debug('id',id);
+                    return id;
+                    
+              }//upload
               
               
               async function onload(){
@@ -505,7 +548,7 @@
                           js      = '(async()=>{\n'+js+'\n})()';
                     }
                     
-                    iframe.contentWindow.postMessage({type:'run',js,echo},'*');
+                    //iframe.contentWindow.postMessage({type:'run',js,echo},'*');
                     //var result    = await win.eval(js);
                     
                     
@@ -985,7 +1028,7 @@
   //:
   
   
-  
+/*
         function debug(...args){
         
               if(!df && !obj.df)return;
@@ -997,11 +1040,12 @@
               console.groupEnd();
               
         }//debug
-        
-        
-        
-        
-        
+        debug.mod   = debug.toString();
+*/
+
+
+
+
   return obj;
   
 //output_console
