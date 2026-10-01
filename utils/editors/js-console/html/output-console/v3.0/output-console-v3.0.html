@@ -165,11 +165,20 @@
         
         var iframe;
         obj.iframe;
-        var sandbox_url     = 'https://sandbox.ext-code.com/js-sandbox/js-sandbox-1.html';
+        
+        
+        
         var sandbox_def     = 'allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock';
         var sandbox_allow   = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
                                   xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
                                   
+        var sandbox_url     = {};
+        sandbox_url.type1   = 'https://sandbox.ext-code.com/js-sandbox-1/js-sandbox-1.html';
+        sandbox_url.type2   = 'https://sandbox.ext-code.com/js-sandbox-2/js-sandbox-2.html';
+        sandbox_url.type3   = 'https://sandbox.ext-code.com/js-sandbox-3/js-sandbox-3.html';
+        
+        var sandbox_type    = 'type2';
+        
         var fn              = {};
         var chk             = {};
         var btn             = {};
@@ -280,7 +289,7 @@
               shadow.append(style);
               
               
-              var src       = `https://sandbox.ext-code.com/js-sandbox-1/js-sandbox-1.html`;
+              var src       = sandbox_url[sandbox_type];
               create.iframe({src});
               
               
@@ -495,8 +504,6 @@
               }
               
               root.append(iframe);
-              //document.body.append(iframe)
-              //cur.root.append(iframe);
               
         }//iframe
         
@@ -505,10 +512,11 @@
                                                                                 debug('run.iframe');
               var promise;
               
-              switch(1){
+              switch(sandbox_type){
               
-                case 0    : promise   = sandbox(js,params);        break;
-                case 1    : promise   = sandbox1(js,params);       break;
+                case 'type1'    : promise   = sandbox1(js,params);        break;
+                case 'type2'    : promise   = sandbox2(js,params);        break;
+                case 'type3'    : promise   = sandbox3(js,params);        break;
                 
               }//switch
               
@@ -517,11 +525,11 @@
         }//iframe
         
         
-        async function sandbox(js,params){
-                                                                                debug('sandbox');
+        async function sandbox1(js,params){
+                                                                                debug('sandbox1');
               var resolve,promise=new Promise(res=>resolve=res);
               
-              var src   = sandbox_url;
+              var src   = sandbox_url.type1;
               
               create.iframe({src,onload});
               
@@ -550,19 +558,23 @@
                     
               }//onload
               
-              
-        }//sandbox
+        }//sandbox1
         
         
-        async function sandbox1(js,params){
-                                                                                debug('sandbox1');
+        async function sandbox2(js,params){
+                                                                                debug('sandbox2');
               var resolve,promise=new Promise(res=>resolve=res);
+              
+              
+              if(!chk['console-persist'].checked){
+                    clear();
+              }
               
               var echo      = chk['console-echo'].checked;
               
               var fn        = await upload({js,echo});
                                                                                 debug(fn);
-              var src       = `https://sandbox.ext-code.com/js-sandbox-1/js-sandbox-1.html?fn=${fn}`;
+              var src       = sandbox_url.type2+`?fn=${fn}`;
               
               create.iframe({src,onload});
               
@@ -587,6 +599,29 @@
                     iframe.onload   = null;
                     iframe.contentWindow.focus();
                     
+                    resolve();
+                    
+              }//onload
+              
+        }//sandbox2
+        
+        
+        function sandbox3(js,params){
+                                                                                debug('sandbox3');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var src   = sandbox_url.type3;
+              
+              create.iframe({src,onload});
+              
+              return promise;
+              
+              
+              async function onload(){
+              
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
+                    
                     if(!chk['console-persist'].checked){
                           clear();
                     }
@@ -597,13 +632,19 @@
                           js      = '(async()=>{\n'+js+'\n})()';
                     }
                     
+                    iframe.contentWindow.postMessage({type:'run',js,echo},'*');
+                    
                     resolve();
+                    
                     
               }//onload
               
-        }//sandbox1
+        }//sandbox3
         
         
+  //:
+  
+  
         function send(payload){
         
               var resolve,promise=new Promise(res=>resolve=res);
