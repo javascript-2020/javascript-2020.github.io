@@ -251,6 +251,13 @@
                         <input id=async type=checkbox checked>
                   </div>
                   
+                  <div id=module-root class='item flex'>
+                        <span>
+                              module
+                        </span>
+                        <input id=module type=checkbox checked>
+                  </div>
+                  
                   <img id=syntax-chk class=icon title=syntax>
                   <img id=prettier class=icon title=prettier>
                   <img id=terser class=icon title=minify>
@@ -296,6 +303,7 @@
         
         var ui          = {};
         ui.mode         = 'vert';
+        var module;
         
         var icon        = {};
         
@@ -340,6 +348,7 @@
               ui.host                               = $.chkbox(r,'#host');
               
               mode.async                            = $.chkbox(root,'#async-root');
+              module                                = $.chkbox(root,'#module-root');
               
               
               $(root,'#syntax-chk').onclick         = btn.syntax;
@@ -761,8 +770,8 @@
               
               
               var js      = editor.getValue();
-              var opts    = {async:mode.async.checked};
-              
+              var opts    = {async:mode.async.checked,module:module.checked};
+                                                                                console.json(opts);
               if(ui.host.checked){
                                                                                 debug('host');
                     output.run.host(js,opts);
