@@ -570,11 +570,13 @@
                     clear();
               }
               
-              var echo      = chk['console-echo'].checked;
+              var {module}    = params;
               
-              var fn        = await upload({js,echo});
+              var echo        = chk['console-echo'].checked;
+              
+              var fn          = await upload();
                                                                                 debug(fn);
-              var src       = sandbox_url.type2+`?fn=${fn}`;
+              var src         = sandbox_url.type2+`?fn=${fn}`;
               
               create.iframe({src,onload});
               
@@ -583,7 +585,7 @@
               
               async function upload(){
               
-                    var {result,error}    = await send({type:'upload',js,echo});
+                    var {result,error}    = await send({type:'upload',js,echo,module});
                     if(error){
                           log.red(error);
                           return;
@@ -626,13 +628,14 @@
                           clear();
                     }
                     
-                    var echo    = chk['console-echo'].checked;
+                    var module    = params.module;
+                    var echo      = chk['console-echo'].checked;
                     
                     if(params.async){
                           js      = '(async()=>{\n'+js+'\n})()';
                     }
                     
-                    iframe.contentWindow.postMessage({type:'run',js,echo},'*');
+                    iframe.contentWindow.postMessage({type:'run',js,echo,module},'*');
                     
                     resolve();
                     
