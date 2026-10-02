@@ -1,5 +1,4 @@
 
-
 <main-menu v2.0 style='position:relative'>
 
       <template shadowrootmode=open>
@@ -14,14 +13,6 @@
   .menu
     {position:absolute;left:0;top:35px;}
     
-/*
-  .divider
-    {display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:15px;color:#ccc;font-weight:bold}
-    
-  .divider::before, .divider::after
-    {content:'';border-top: 1px solid #ccc}
-*/
-
             </style>
             
             <img id=icon class=icon>
@@ -44,19 +35,16 @@
 
   var obj   = {};
   
-      //var df=true,did='main-menu';
-      
-      var $,menu,editor,filemod,par
+      var $,menu,editor,filemod
       ;
       
       obj.initmod   = function(params){
       
-                  $             = mod.rd(params,'$',$);
-                  menu          = mod.rd(params,'menu',menu);
-                  editor        = mod.rd(params,'editor',editor);
-                  filemod       = mod.rd(params,'filemod',filemod);
-                  par           = mod.rd(params,'par',par);
-                  
+            $         = params.$;
+            menu      = params.menu;
+            editor    = params.editor;
+            filemod   = params.filemod;
+            
       }//initmod
       
       
@@ -67,21 +55,17 @@
   
   
       obj.init    = function(){
-      
-            mod.initmod(obj);
-            
       }//init
       
       
   //:
   
   
-      obj.initdom   = function(){
+      obj.initdom   = function(rootnode){
       
             var shadow                    = host.shadowRoot;
             
             var style                     = $(shadow,'style');
-            debugger;
             $.stylesheet.copyrule('#page-inline','.icon',style);
             
             menu.add.style(shadow);
@@ -108,12 +92,9 @@
       
       click.clear    = function(){
       
-            par.clear();
-            /*
             filemod.clear();
             editor.clear();
             editor.filename.clear();
-            */
             
       }//clear
       
@@ -145,10 +126,10 @@
       
   return obj;
   
-//main_menu
-})
+})//main_menu
 
       </script>
       
 </main-menu>
+
 
