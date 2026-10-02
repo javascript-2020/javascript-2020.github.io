@@ -596,18 +596,26 @@
               
         }//obfuscator
         
+        {
         
-        btn['show-output']    = function(chk){console.log(chk);
-        
-              if(output.__host.style.display=='none'){
-                    output.__host.style.display   = '';
-                    slider.node.style.display     = '';
-              }else{
-                    output.__host.style.display   = 'none';
-                    slider.node.style.display     = 'none';
-              }
+              let w;
               
-        }//show-output
+              btn['show-output']    = function(chk){console.log(chk);
+              
+                    if(output.__host.style.display=='none'){
+                          editor.__host.style.width     = w;
+                          output.__host.style.display   = '';
+                          slider.node.style.display     = '';
+                    }else{
+                          output.__host.style.display   = 'none';
+                          slider.node.style.display     = 'none';
+                          w                             = editor.__host.style.width;
+                          editor.__host.style.width     = '100%';
+                    }
+                    
+              }//show-output
+              
+        }
         
         
   //:
