@@ -70,6 +70,7 @@
         //var menu;
         
         var hdr;
+        var mainmenu;
         var filemod;
         var autosave;
         var publish;
@@ -85,6 +86,7 @@
                                                                                 debug('init',version);
                                                                                 debug('crossOriginIsolated',window.crossOriginIsolated);
               hdr                       = mod['editors-hdr'];
+              mainmenu                  = mod['main-menu'];
               filemod                   = mod['file-mod'];
               autosave                  = mod['auto-save'];
               publish                   = mod['publish-ui'];
@@ -96,6 +98,7 @@
               //mod.base.add({log,complete,source,focus,editor,filemod});
               mod.base.add({complete,source,focus,editor});
               
+              mainmenu.initmod({par:obj});
               autosave.initmod({save:btn.save});
               editor.initmod({on,mode:'javascript'});
               
@@ -232,7 +235,7 @@
             
             <div id=hdr>
             
-                  <main-menu component=page></main-menu>
+                  <main-menu v2.0 component=page></main-menu>
                   
                   <file-mod component></file-mod>
                   
@@ -694,7 +697,7 @@
               
               editor.clear();
               output.kill();
-              editor.setValue(txt,-1);
+              editor.setValue(txt,{initial:true});
               complete(file);
               
         }//complete.load
@@ -881,6 +884,18 @@
               return json;
               
         }//syntax
+        
+        
+        obj.clear   = clear;
+        
+        function clear(){
+        
+            filemod.clear();
+            editor.clear();
+            editor.filename.clear();
+            output.kill();
+            
+        }//clear
         
         
   //:
