@@ -489,6 +489,7 @@
               src   ||= cur.src;
               
               if(iframe){
+                    var h   = iframe.style.height;
                     iframe.remove();
               }
               
@@ -511,7 +512,11 @@
               iframe.src                    = src;
               cur.src                       = src;
                                                                                 debug(src);
-              iframe.style.cssText          = 'box-sizing:border-box';
+              iframe.style.boxSizing        = 'border-box';
+              if(h){
+                    iframe.style.height     = h;
+              }
+              
               if(!chk.iframe.checked){
                     iframe.style.display    = 'none';
               }
