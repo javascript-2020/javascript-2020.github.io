@@ -476,6 +476,8 @@
         
         create.iframe   = function({onload,src}={}){
         
+              src   ||= cur.src;
+              
               if(iframe){
                     iframe.remove();
               }
@@ -497,6 +499,7 @@
 */
 
               iframe.src                    = src;
+              cur.src                       = src;
                                                                                 debug(src);
               iframe.style.cssText          = 'box-sizing:border-box';
               if(!chk.iframe.checked){
@@ -725,8 +728,9 @@
         
         function kill(){
         
-              if(!iframe)return;
-              iframe.remove();
+              create.iframe();
+              //if(!iframe)return;
+              //iframe.remove();
               
         }//kill
         
