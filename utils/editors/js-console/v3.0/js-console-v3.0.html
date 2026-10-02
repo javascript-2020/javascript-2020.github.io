@@ -197,6 +197,9 @@
   .visually-hidden
     {position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0}
     
+  .gap
+    {display:inline-block;width:20px}
+    
             </style>
             
       </head>
@@ -262,6 +265,15 @@
                   <img id=prettier class=icon title=prettier>
                   <img id=terser class=icon title=minify>
                   <img id=obfuscator class=icon title=obfuscator>
+                  
+                  <div class=gap></div>
+                  
+                  <div id=show-output-root class='item flex'>
+                        <span>
+                              output
+                        </span>
+                        <input id=show-output type=checkbox checked>
+                  </div>
                   
                   <span class=spc></span>
                   
@@ -356,6 +368,7 @@
               $(root,'#terser').onclick             = btn.terser;
               $(root,'#obfuscator').onclick         = btn.obfuscator;
               
+              $.chkbox(root,'#show-output-root',btn['shhow-output']);
               
               $(root,'#horiz').onclick              = horiz;
               $(root,'#vert').onclick               = vert;
@@ -582,6 +595,19 @@
               editor.setvalue(js);
               
         }//obfuscator
+        
+        
+        btn['show-output']    = function(){
+        
+              if(output.__host.style.display=='none'){
+                    output.__host.style.display   = '';
+                    slider.node.style.display     = '';
+              }else{
+                    output.__host.style.display   = 'none';
+                    slider.node.style.display     = 'none';
+              }
+              
+        }//show-output
         
         
   //:
