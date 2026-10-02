@@ -118,7 +118,9 @@
               
               window.addEventListener('beforeunload',event=>{
               
-                    event.preventDefault();
+                    if(!status){
+                          event.preventDefault();
+                    }
                     
               });
               
@@ -314,8 +316,11 @@
         
         //var autosave;
         
-        var iframe;
         
+        var status      = false;
+        
+        
+        var iframe;
         
         
         var slider      = {};
@@ -323,6 +328,7 @@
         var ui          = {};
         ui.mode         = 'vert';
         var module;
+        
         
         var icon        = {};
         
@@ -631,6 +637,7 @@
         on.change   = function(){
         
               set.favicon(icon.save);
+              status    = true;
               
         }//change
         
@@ -668,6 +675,7 @@
                     var title     = file.name||file.filename;
                     set.title(title);
                     set.favicon(icon.def);
+                    status        = false;
               }
               menu.close();
               editor.focus();
