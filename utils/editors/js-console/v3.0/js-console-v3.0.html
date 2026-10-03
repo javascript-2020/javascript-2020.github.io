@@ -695,6 +695,19 @@
                     txt   = await blob.text();
               }
               
+              
+              //var hasNonAscii   = /[^\x00-\x7F]/.test(txt);
+              var count       = 0;
+              var list        = txt.match(/[^\x00-\x7F]/gu);
+              if(list){
+                    count     = list.length;
+              }
+              if(count){
+                    log.warning('non ascii characters');
+                    return;
+              }
+              
+              
               editor.clear();
               output.kill();
               editor.setValue(txt,{initial:true});
