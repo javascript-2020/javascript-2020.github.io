@@ -7,6 +7,27 @@
       
             <style>
             
+  :host
+    {}
+    
+  .menu
+    {position:absolute;left:30px;top:35px;
+      display:flex;flex-direction:column;gap:10px
+    }
+    
+  #list
+    {flex:1;display:grid;grid-template-columns:1fr;gap:10px;overflow:auto}
+    
+  .radio
+    {border:1px solid lightgray;padding:5px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:10px;
+      white-space:nowrap;
+    }
+  .radio *
+    {cursor:pointer}
+    
+  label
+    {white-space:nowrap}
+    
             </style>
             
             <input value=permissions type=button>
@@ -60,6 +81,42 @@
         var shadow;
         
         
+        var values    = [
+              'accelerometer',
+              'ambient-light-sensor',
+              'autoplay',
+              'battery',
+              'bluetooth',
+              'camera',
+              'display-capture',
+              'encrypted-media',
+              'fullscreen',
+              'gamepad',
+              'geolocation',
+              'gyroscope',
+              'hid',
+              'idle-detection',
+              'magnetometer',
+              'microphone',
+              'midi',
+              'payment',
+              'picture-in-picture',
+              'publickey-credentials-get',
+              'screen-wake-lock',
+              'serial',
+              'speaker-selection',
+              'storage-access',
+              'usb',
+              'web-share',
+              'xr-spatial-tracking'
+        ];
+        
+        
+        
+        var chk   = {};
+        
+        
+        
   //:
   
   
@@ -78,16 +135,57 @@
                                                                                 debug('initdom');
               shadow    = host.shadowRoot;
               
+              menu.add.style(shadow);
+              
+              var node                                        = $(shadow,'.menu');
+              $(shadow,'[value=permissions]').onclick         = e=>menu.add.stack(node,'both',false);
+              
+              var list        = $(shadow,'#list');
+              
+              var item        = $(list,'.radio');
+              item.remove();
+              
+              values.forEach(value=>{
+                                                                                //console.log(value);
+                    var nitem                                 = item.cloneNode(true);
+                    nitem.id                                  = value;
+                    $(nitem,'label').textContent              = value;
+                    $(nitem,'[type=checkbox]').checked        = (def.indexOf(value)!=-1)
+                    list.append(nitem);
+                    chk[value]                                = $.chkbox(shadow,`#${value}`,chk.click);
+                    
+              });
               
         }//initdom
         
         
   //:
   
-  
-  
+        chk.click   = function(chk){
+        }//click
+        
   //:
   
+  
+        obj.build   = function(){
+        
+              var attr    = '';
+              values.forEach(value=>{
+              
+                    if(chk[value].checked){
+                          attr   += value+' ';
+                    }
+                    
+              });
+                                                                                console.log(attr);
+              return attr;
+              
+        }//build
+        
+        
+        
+        
+        
   return obj;
   
 //iframe-permissions
