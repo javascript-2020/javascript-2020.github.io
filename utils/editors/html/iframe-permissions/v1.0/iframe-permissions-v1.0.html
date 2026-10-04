@@ -15,6 +15,8 @@
     
   #preset
     {display:flex;gap:10px}
+  #preset input
+    {flex:1}
     
   .menu
     {position:absolute;left:130px;top:-50px;
@@ -52,6 +54,7 @@
                   </div>
                   
                   <div id=preset>
+                        <input type=button>
                   </div>
                   
                   <div id=list>
@@ -176,11 +179,13 @@
               var node                                        = $(shadow,'.menu');
               $(shadow,'[value=permissions]').onclick         = e=>menu.add.stack(node,'both',false);
               
+              var input                                       = $(shadow,'#preset input');
+              input.remove();
+              
               for(let key in preset){
               
-                    var input                                 = document.createElement('input');
+                    var ninput                                = input.cloneNode(true);
                     input.value                               = key;
-                    input.type                                = 'button';
                     input.onclick                             = e=>btn.preset(key);
                     $(shadow,'#preset').append(input);
                     
