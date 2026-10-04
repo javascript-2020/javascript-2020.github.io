@@ -7,8 +7,16 @@
       
             <style>
             
-            
+  :host
+    {display:grid;grid-template-columns:1fr 1fr}
+    
             </style>
+            
+            <span class=radio>
+                  <input type=checkbox checked>
+                  <label>
+                  </label>
+            </span>
             
       </template>
       
@@ -22,11 +30,15 @@
   
         var df=true,did='iframe-sandbox';
         
+        var $
+        ;
         
         obj.initmod   = function(...list){
         
               list.forEach(params=>{
               
+                    $       = mod.rd(params,'$',$);
+                    
               });
               
         }//initmod
@@ -35,6 +47,31 @@
   //:
   
   
+  
+        var values    = [
+              'allow-downloads',
+              'allow-forms',
+              'allow-modals',
+              'allow-orientation-lock',
+              'allow-pointer-lock',
+              'allow-popups',
+              'allow-popups-to-escape-sandbox',
+              'allow-presentation',
+              'allow-same-origin',
+              'allow-scripts',
+              'allow-storage-access-by-user-activation',
+              'allow-top-navigation',
+              'allow-top-navigation-by-user-activation',
+              'allow-top-navigation-to-custom-protocols'
+        ];
+        
+        
+        
+        
+        var chk   = {};
+        
+        
+        
   //:
   
   
@@ -46,12 +83,32 @@
   
   
         obj.initdom   = async function(){
+        
+              shadow    = host.shadowRoot;
+              
+              var item    = $(shadow,'.radio');
+              item.remove();
+              
+              values.forEach(value=>{
+              
+                    var nitem                       = item.cloneNode(true);
+                    nitem.id                        = value;
+                    $(nitem,'label').textContent    = value;
+                    shadow.append(nitem);
+                    chk[value]                      = $.chkbox(shadow,value,chk.click);
+                    
+              });
+              
         }//initdom
         
         
   //:
   
   
+        chk.click   = function(chk){
+        }//click
+        
+        
   //:
   
   
