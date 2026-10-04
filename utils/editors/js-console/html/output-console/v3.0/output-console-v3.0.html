@@ -59,10 +59,7 @@
             <div id=root>
                   <div id=hdr>
                   
-                        <span id=isolate class=radio>
-                              <input type=checkbox>
-                              isolate
-                        </span>
+                        <output-settings v1.0 component=page></output-settings>
                         
                         <span id=allow-modals class=radio>
                               <input type=checkbox checked>
@@ -74,17 +71,6 @@
                         </span>
                         
                         <div style='flex:1'></div>
-                        
-                        <span id=output-type>
-                              <span id=pretty-print class=radio>
-                                    <input type=checkbox checked>
-                                    prettyPrint
-                              </span>
-                              <span id=console class=radio>
-                                    <input type=checkbox>
-                                    console
-                              </span>
-                        </span>
                         
                         <span id=console-echo class=radio>
                               <input type=checkbox checked>
@@ -102,13 +88,6 @@
                               <input type=checkbox>
                               wrap
                         </span>
-                        
-                        <span id=iframe-show class=radio>
-                              <input type=checkbox checked>
-                              iframe
-                        </span>
-                        
-                        <img id=settings class=icon>
                         
                         <button id=kill>kill</button>
                         
@@ -156,6 +135,8 @@
         
   //vars:-
   
+        var settings;
+        
         var inspect;
         var jsconsolemod;
         var jsconsole;
@@ -196,6 +177,7 @@
         
         var fn              = {};
         var chk             = {};
+        obj.chk             = chk;
         var btn             = {};
         btn.console         = {};
         btn.iframe          = {};
@@ -210,7 +192,12 @@
               mod.initmod(obj);
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init',obj.version);
-              await libs();
+              settings    = mod['output-settings'];
+              
+              await Promise.all([
+                    mod.auto(),
+                    libs(),
+              ]);
               
               
               window.addEventListener('message',e=>{
@@ -273,19 +260,8 @@
               
               root                                      = $(shadow,'#root');
               
-              chk.isolate                               = $.chkbox(shadow,'#isolate');
-              chk.isolate.checked                       = window.crossOriginIsolated;
-              
               chk['allow-modals']                       = $.chkbox(shadow,'#allow-modals');
               chk['allow-popups']                       = $.chkbox(shadow,'#allow-popups');
-              
-              var r                                     = $(shadow,'#output-type');
-              chk.type                                  = $.chkbox.group(r,'#pretty-print','#console');
-              chk.type.callback                         = btn.type;
-              /*
-              chk.pretty                                = $.chkbox(shadow,'#pretty-print');
-              chk.console                               = $.chkbox(shadow,'#console');
-              */
               
               chk['console-echo']                       = $.chkbox(shadow,'#console-echo');
               chk['console-persist']                    = $.chkbox(shadow,'#console-persist',false);
@@ -293,7 +269,6 @@
               
               chk.wrap                                  = $.chkbox(shadow,'#word-wrap',btn.wrap);
               
-              chk.iframe                                = $.chkbox(shadow,'#iframe-show',btn.iframe.show);
               
               $(shadow,'#kill').onclick                 = btn.kill;
               
@@ -319,43 +294,8 @@
   //:
   
   
-/*
-        btn.isolate   = function(chk){
-        
-              if(chk.checked){
-                    sandbox_url  += '?isolate';
-              }else{
-                    var i         = ssandbox_url.indexOf('?');
-                    sandbox_url   = sandbox_url.slice(0,i);
-              }
-              
-        }//isolate
-*/
-
-
-        btn.type    = function(chk,id){
-        
-              console.log(arguments);
-              console.log(id);
-              
-              switch(id){
-              
-                case 'console'        :
-                                        output.style.display            = 'none';
-                                        output_console.style.display    = '';
-                                        mode                            = 'console';
-                                                                                        break;
-                case 'pretty-print'   :
-                                        output.style.display            = '';
-                                        output_console.style.display    = 'none';
-                                        mode                            = 'pretty';
-                                                                                        break;
-                                                                                        
-              }//switch
-              
-        }//type
-        
-        
+  
+  
         btn.console.clear   = function(){
                                                                                 debug('btn.clear');
               clear();
@@ -381,19 +321,6 @@
         }//kill
         
         
-        btn.iframe.show   = function(chk){
-                                                                                debug('btn.iframe.show');
-              if(!iframe)return;
-              
-              if(chk.checked){
-                    iframe.style.display        = '';
-                    slider.node.style.display   = '';
-              }else{
-                    iframe.style.display        = 'none';
-                    slider.node.style.display   = 'none';
-              }
-              
-        }//show
         
         
   //:
@@ -472,30 +399,6 @@
   //:
   
   
-        build.sandbox   = function(){
-        
-              var attr      = sandbox_def;
-                                                                                //console.log(attr);
-              var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
-              /*
-              if(!chk['allow-scripts'].checked){
-                    tokens.delete('allow-scripts');
-              }
-              */
-              if(chk['allow-modals'].checked){
-                    tokens.add('allow-modals');
-              }
-              if(chk['allow-popups'].checked){
-                    tokens.add('allow-popups');
-              }
-              
-              var attr      = [...tokens].join(' ');
-                                                                                debug(attr);
-              iframe.setAttribute('sandbox',attr);
-              
-        }//sandbox
-        
-        
         create.iframe   = function({onload,src}={}){
         
               src   ||= cur.src;
@@ -510,9 +413,8 @@
               
               iframe.onload                 = onload;
               
-              build.sandbox();
-              
-              iframe.setAttribute('allow',sandbox_allow);
+              settings.sandbox(iframe);
+              settings.allow(iframe);
                                                                                 debug(sandbox_allow);
 /*
               var src                       = sandbox_url;
