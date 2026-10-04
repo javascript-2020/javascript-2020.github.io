@@ -50,6 +50,9 @@
                               iframe sandbox
                         </div>
                         
+                        <div id=preset>
+                        </div>
+                        
                         <div id=list>
                               <span class=radio>
                                     <input type=checkbox>
@@ -113,16 +116,16 @@
         
         
         var preset        = {};
-        preset.min        = '';
-        preset.standard   = '';
-        preset.full       = '';
+        preset.min        = 'allow-scripts';
+        preset.standard   = 'allow-downloads allow-forms allow-same-origin allow-scripts';
+        preset.full       = 'allow-downloads allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-storage-access-by-user-activation';
         preset.all        = values.join(' ');
         
         
         
         
         var chk   = {};
-        
+        var btn   = {};
         
         
   //:
@@ -144,6 +147,17 @@
               
               var node                                        = $(shadow,'.menu');
               $(shadow,'[value=sandbox]').onclick             = e=>menu.add.stack(node,'both',false);
+              
+              
+              var input   = $(shadow,'#preset input');
+              for(let key in preset){
+              
+                    var ninput        = input.cloneNode(true);
+                    ninput.value      = key;
+                    ninput.onclick    = e=>btn.preset(key);
+                    $(shadow,'#preset').append(ninput);
+                    
+              }//for
               
               
               var list        = $(shadow,'#list');
@@ -169,6 +183,17 @@
   //:
   
   
+        btn.preset    = function(key){
+        
+              values.forEach(value=>{
+              
+                    chk[value].checked    = (preset[key].indexOf(value)!=-1);
+                    
+              });
+              
+        }//preset
+        
+        
         chk.click   = function(chk){
                                                                                 //console.log(chk);
               if(chk.id=='allow-modals'){
