@@ -68,10 +68,6 @@
                         
                         <div style='flex:1'></div>
                         
-                        <span id=console-echo class=radio>
-                              <input type=checkbox checked>
-                              echo
-                        </span>
                         <span id=console-persist class=radio>
                               <input type=checkbox>
                               persist
@@ -260,7 +256,6 @@
               chk['allow-modals']                       = $.chkbox(shadow,'#allow-modals');
               chk['allow-popups']                       = $.chkbox(shadow,'#allow-popups');
               
-              chk['console-echo']                       = $.chkbox(shadow,'#console-echo');
               chk['console-persist']                    = $.chkbox(shadow,'#console-persist',false);
               $(shadow,'#console-clear').onclick        = btn.console.clear;
               
@@ -474,7 +469,7 @@
                           clear();
                     }
                     
-                    var echo    = chk['console-echo'].checked;
+                    var echo    = settings.chk['console-echo'].checked;
                     
                     if(params.async){
                           js      = '(async()=>{\n'+js+'\n})()';
@@ -501,7 +496,7 @@
               
               var {module}    = params;
               
-              var echo        = chk['console-echo'].checked;
+              var echo        = settings.chk['console-echo'].checked;
               
               var fn          = await upload();
                                                                                 debug(fn);
@@ -558,7 +553,7 @@
                     }
                     
                     var module    = params.module;
-                    var echo      = chk['console-echo'].checked;
+                    var echo      = settings.chk['console-echo'].checked;
                     
                     if(params.async){
                           js      = '(async()=>{\n'+js+'\n})()';
@@ -749,7 +744,7 @@
                 
               }//switch
               
-              if(chk['console-echo'].checked){
+              if(settings.chk['console-echo'].checked){
                     console.clear();
               }
               
