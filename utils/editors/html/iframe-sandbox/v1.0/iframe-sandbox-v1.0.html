@@ -23,17 +23,25 @@
     
             </style>
             
-            <div>
-                  iframe sandbox
-            </div>
-            
-            <div id=list>
-                  <span class=radio>
-                        <input type=checkbox>
-                        <label>
-                        </label>
-                  </span>
-            </div>
+            <div class=menu-root>
+                  <input value=sandbox type=button>
+                  <div class=menu style='display:none'>
+                  
+                        <div>
+                              iframe sandbox
+                        </div>
+                        
+                        <div id=list>
+                              <span class=radio>
+                                    <input type=checkbox>
+                                    <label>
+                                    </label>
+                              </span>
+                        </div>
+                        
+                  </div menu>
+                  
+            </div menu-root>
             
       </template>
       
@@ -47,15 +55,16 @@
   
         var df=true,did='iframe-sandbox';
         
-        var $,def
+        var $,def,menu
         ;
         
         obj.initmod   = function(...list){
         
               list.forEach(params=>{
               
-                    $       = mod.rd(params,'$',$);
-                    def     = mod.rd(params,'def',def);
+                    $           = mod.rd(params,'$',$);
+                    def         = mod.rd(params,'def',def);
+                    menu        = mod.rd(params,'menu',menu);
                     
               });
               
@@ -104,11 +113,17 @@
         
               shadow          = host.shadowRoot;
               
+              menu.add.style(shadow);
+              
+              
+              var node                                        = $(shadow,'.menu');
+              $(shadow,'[value=sandbox]').onclick             = menu.click(node,'both',false);
+              
+              
               var list        = $(shadow,'#list');
               
               var item        = $(list,'.radio');
               item.remove();
-              
               
               values.forEach(value=>{
                                                                                 //console.log(value);
@@ -120,6 +135,7 @@
                     chk[value]                                = $.chkbox(shadow,`#${value}`,chk.click);
                     
               });
+              
               
         }//initdom
         
