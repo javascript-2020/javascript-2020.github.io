@@ -193,6 +193,7 @@
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init',obj.version);
               settings    = mod['output-settings'];
+              settings.initmod({output:obj});
               
               await Promise.all([
                     mod.auto(),
@@ -658,8 +659,6 @@
         function kill(){
         
               create.iframe();
-              //if(!iframe)return;
-              //iframe.remove();
               
         }//kill
         
@@ -674,6 +673,40 @@
               }
               
         }//set
+        
+        
+        obj.set.type    = function(type){
+        
+              switch(id){
+              
+                case 'console'        :
+                                        output.style.display            = 'none';
+                                        output_console.style.display    = '';
+                                        mode                            = 'console';
+                                                                                        break;
+                case 'pretty-print'   :
+                                        output.style.display            = '';
+                                        output_console.style.display    = 'none';
+                                        mode                            = 'pretty';
+                                                                                        break;
+                                                                                        
+              }//switch
+              
+        }//type
+        
+        
+        obj.set.iframe    = function(status){
+        
+              if(!iframe)return;
+              if(chk.checked){
+                    iframe.style.display        = '';
+                    slider.node.style.display   = '';
+              }else{
+                    iframe.style.display        = 'none';
+                    slider.node.style.display   = 'none';
+              }
+              
+        }//iframe
         
         
   //:
