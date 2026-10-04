@@ -10,10 +10,13 @@
   :host
     {display:grid;grid-template-columns:1fr 1fr}
     
+  label
+    {white-space:nowrap}
+    
             </style>
             
             <span class=radio>
-                  <input type=checkbox checked>
+                  <input type=checkbox>
                   <label>
                   </label>
             </span>
@@ -91,11 +94,12 @@
               //debugger;
               values.forEach(value=>{
                                                                                 //console.log(value);
-                    var nitem                       = item.cloneNode(true);
-                    nitem.id                        = value;
-                    $(nitem,'label').textContent    = value;
+                    var nitem                                 = item.cloneNode(true);
+                    nitem.id                                  = value;
+                    $(nitem,'label').textContent              = value;
+                    $(nitem,'[type=checkbox]').checked        = (def.indexOf(value)!=-1)
                     shadow.append(nitem);
-                    chk[value]                      = $.chkbox(shadow,`#${value}`,chk.click);
+                    chk[value]                                = $.chkbox(shadow,`#${value}`,chk.click);
                     
               });
               
