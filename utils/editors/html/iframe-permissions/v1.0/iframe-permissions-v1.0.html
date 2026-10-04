@@ -96,20 +96,6 @@
   //:
   
   
-        var shadow;
-        
-        
-        var preset          = {};
-        preset.min          = 'autoplay; encrypted-media; picture-in-picture;'
-        preset.standard     = 'clipboard-write; clipboard-read; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share;';
-        preset.app          = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial;
-                                bluetooth; xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
-        preset.all          = `accelerometer; ambient-light-sensor; autoplay; battery; bluetooth; browsing-topics; camera; captured-surface-control;
-                                clipboard-read; clipboard-write; compute-pressure; display-capture; encrypted-media; fullscreen; gamepad; geolocation;
-                                gyroscope; hid; idle-detection; local-fonts; magnetometer; microphone; midi; payment; picture-in-picture; publickey-credentials-get;
-                                screen-wake-lock; serial; speaker-selection; storage-access; usb; web-share; window-management; xr-spatial-tracking;`;
-                                
-                                
         var values    = [
               'accelerometer',
               'ambient-light-sensor',
@@ -148,6 +134,20 @@
         ];
         
         
+        var preset          = {};
+        preset.min          = 'autoplay; encrypted-media; picture-in-picture;'
+        preset.standard     = 'clipboard-write; clipboard-read; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share;';
+        preset.app          = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial;
+                                bluetooth; xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
+        preset.all          = values.join('; ');
+        
+        
+        
+        
+        var shadow;
+        
+        
+        
         
         var chk   = {};
         var btn   = {};
@@ -169,7 +169,7 @@
   
         obj.initdom   = async function(){
                                                                                 debug('initdom');
-              shadow    = host.shadowRoot;
+              shadow                                          = host.shadowRoot;
               
               menu.add.style(shadow);
               
@@ -187,9 +187,9 @@
               }//for
               
               
-              var list        = $(shadow,'#list');
+              var list                                        = $(shadow,'#list');
               
-              var item        = $(list,'.radio');
+              var item                                        = $(list,'.radio');
               item.remove();
               
               values.forEach(value=>{
