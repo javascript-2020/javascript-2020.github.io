@@ -91,6 +91,7 @@
   
   
         var sandbox;
+        var ppermissions;
         
         
         var sandbox_def     = 'allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock allow-modals allow-popups';
@@ -119,6 +120,8 @@
               sandbox   = mod['iframe-sandbox'];
               sandbox.initmod({def:sandbox_def,output});
               
+              permissions   = mod['iframe-permissions'];
+              permissions.initmod({def:sandbox_allow,output});
               
               await mod.auto();
               
@@ -193,21 +196,6 @@
         obj.sandbox   = function(iframe){
         
               var attr      = sandbox.build();
-              
-              /*
-              _def;
-                                                                                //console.log(attr);
-              var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
-              
-              //if(chk['allow-modals'].checked){
-                    tokens.add('allow-modals');
-              //}
-              //if(chk['allow-popups'].checked){
-                    tokens.add('allow-popups');
-              //}
-              
-              var attr      = [...tokens].join(' ');
-              */
                                                                                 debug(attr);
               iframe.setAttribute('sandbox',attr);
               
@@ -216,7 +204,7 @@
         
         obj.allow   = function(iframe){
         
-              var attr    = sandbox_allow;
+              var attr    = permissions.build();
                                                                                 debug(attr);
               iframe.setAttribute('allow',attr);
               
