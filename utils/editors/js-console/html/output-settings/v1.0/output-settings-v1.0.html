@@ -124,8 +124,8 @@
               $.stylesheet.copyrule('#page-inline','.icon',style);
               menu.add.style(shadow);
               
-              var node                                    = $(shadow,'.menu');
-              $(shadow,'#settings').onclick               = menu.click(node,'both',false);
+              var node                                  = $(shadow,'.menu');
+              $(shadow,'#settings').onclick             = menu.click(node,'both',false);
               
               chk.isolate                               = $.chkbox(shadow,'#isolate');
               chk.isolate.checked                       = window.crossOriginIsolated;
@@ -160,38 +160,14 @@
 
         btn.type    = function(chk,id){
         
-              console.log(arguments);
-              console.log(id);
-              
-              switch(id){
-              
-                case 'console'        :
-                                        output.style.display            = 'none';
-                                        output_console.style.display    = '';
-                                        mode                            = 'console';
-                                                                                        break;
-                case 'pretty-print'   :
-                                        output.style.display            = '';
-                                        output_console.style.display    = 'none';
-                                        mode                            = 'pretty';
-                                                                                        break;
-                                                                                        
-              }//switch
+              output.set.type(id);
               
         }//type
         
         
         btn.iframe   = function(chk){
-                                                                                debug('btn.iframe.show');
-              if(!iframe)return;
-              
-              if(chk.checked){
-                    iframe.style.display        = '';
-                    slider.node.style.display   = '';
-              }else{
-                    iframe.style.display        = 'none';
-                    slider.node.style.display   = 'none';
-              }
+                                                                                //debug('btn.iframe');
+              output.set.iframe(chk.checked);
               
         }//show
         
@@ -226,6 +202,8 @@
               iframe.setAttribute('allow',attr);
               
         }//allow
+        
+        
         
         
         
