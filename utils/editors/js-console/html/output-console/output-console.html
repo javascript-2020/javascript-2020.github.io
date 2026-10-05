@@ -11,31 +11,24 @@
     
   #root
     {height:100%;display:flex;flex-direction:column}
+    
+    
   #hdr
-    {display:flex;align-items:center;margin:0;margin-bottom:5px}
-  #spc
-    {flex:1}
+    {display:flex;/*align-items:center;*/margin:0;margin-bottom:5px;flex-wrap:wrap}
+    
   .radio
     {border:1px solid lightgray;padding:2px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center}
     
-  #isolate
-    {margin-right:10px}
-  #console-clear
-    {margin-right:10px}
-  #word-wrap
-    {margin-right:20px;/*color:gray*/}
-    
-  #output-type
-    {display:flex;margin-right:20px}
-    
-  #iframe-show
-    {margin-right:20px}
+  output-settings
+    {}
     
   #kill
     {font-size:16px;padding:5px 10px;min-width:60px}
     
+    
   #output-hldr
     {flex:1;position:relative}
+    
   #output
     {width:100%;height:100%;position:absolute;left:0;top:0;
       overflow:auto;border:2px solid lightgray;box-sizing:border-box;
@@ -43,66 +36,65 @@
       word-break:break-all;
       font-size:16px;line-height:1.5;
     }
+    
   #output-console
     {width:100%;height:100%;position:absolute;left:0;top:0}
+    
+  #slider
+    {height:10px;cursor:ns-resize}
+    
+  #spc
+    {flex:1}
+    
+  button
+    {cursor:pointer}
     
             </style>
             
             <div id=root>
+            
                   <div id=hdr>
                   
-                        <span id=isolate class=radio>
+                        <div id=host class=radio style='display:none'>
                               <input type=checkbox>
-                              isolate
-                        </span>
+                              <span>
+                                    host
+                              </span>
+                        </div>
                         
+                        <!--
                         <span id=allow-modals class=radio>
                               <input type=checkbox checked>
                               allow-modals
                         </span>
-                        <span id=allow-popups class=radio style='margin-right:30px'>
+                        <span id=allow-popups class=radio>
                               <input type=checkbox checked>
                               allow-popups
                         </span>
+                        -->
                         
                         <div style='flex:1'></div>
                         
-                        <span id=output-type>
-                              <span id=pretty-print class=radio>
-                                    <input type=checkbox checked>
-                                    prettyPrint
-                              </span>
-                              <span id=console class=radio>
-                                    <input type=checkbox>
-                                    console
-                              </span>
-                        </span>
-                        
-                        <span id=console-echo class=radio>
-                              <input type=checkbox checked>
-                              echo
-                        </span>
-                        <span id=console-persist class=radio>
+                        <span id=word-wrap class=radio style='margin-right:2px'>
                               <input type=checkbox>
-                              persist
-                        </span>
-                        <span id=console-clear class=radio>
-                              clear
-                        </span>
-                        
-                        <span id=word-wrap class=radio>
-                              <input type=checkbox checked>
                               wrap
                         </span>
                         
-                        <span id=iframe-show class=radio>
-                              <input type=checkbox checked>
-                              iframe
+                        <span id=console-persist class=radio  style='margin-right:2px'>
+                              <input type=checkbox>
+                              persist
                         </span>
+                        
+                        <span id=console-clear class=radio  style='margin-right:10px'>
+                              clear
+                        </span>
+                        
+                        <output-settings component=page style='margin-right:10px'>
+                        </output-settings>
                         
                         <button id=kill>kill</button>
                         
-                  </div>
+                  </div hdr>
                   
                   <div id=output-hldr>
                         <pre id=output>
@@ -111,7 +103,9 @@
                         </div>
                   </div>
                   
-            </div>
+                  <div id=slider></div>
+                  
+            </div root>
             
       </template>
       
@@ -120,31 +114,39 @@
 (function output_console({mod,host}){
 
   var obj   = {
-        version   : 'v2.0',
+        version   : 'v3.0',
   };
   
-        var df=true,did='output-console'
+        var df=true,did='output-console';
+        
+        var ext,$,debug,log2
         ;
         
+        obj.initmod   = function(...list){
         
-        
-        var ext,$
-        ;
-        
-        obj.initmod   = function(params){
-        
-              ext   = params.ext;
-              $     = params.$;
+              list.forEach(params=>{
+              
+                    ext         = mod.rd(params,'ext',ext);
+                    $           = mod.rd(params,'$',$);
+                    log2        = mod.rd(params,'log',log2);
+                    debug       = mod.rd(params,'debug',debug);
+                    
+              });
               
         }//initmod
         
         
   //vars:-
   
+  
+        var settings;
+        
+        
         var inspect;
         var jsconsolemod;
         var jsconsole;
         var style;
+        
         
         var con             = {};
         con.log             = console.log;
@@ -159,28 +161,63 @@
         var output_console;
         var cur             = {};
         var mode            = 'pretty';
+        var layout          = 'vert';
         
         var iframe;
         obj.iframe;
-        var sandbox_url     = 'https://sandbox.ext-code.com/js-sandbox-1/js-sandbox-1.html';
+        var def_h           = '250px';
+        
+        var slider          = {};
+        
+        
         var sandbox_def     = 'allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock';
         var sandbox_allow   = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
                                   xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
                                   
+        var sandbox_url     = {};
+        sandbox_url.type1   = 'https://sandbox.ext-code.com/js-sandbox-1/js-sandbox-1.html';
+        sandbox_url.type2   = 'https://sandbox.ext-code.com/js-sandbox-2/js-sandbox-2.html';
+        sandbox_url.type3   = 'https://sandbox.ext-code.com/js-sandbox-3/js-sandbox-3.html';
+        
+        var sandbox_type    = 'type3';
+        
+        
+        
         var fn              = {};
         var chk             = {};
+        obj.chk             = chk;
         var btn             = {};
         btn.console         = {};
         btn.iframe          = {};
-        obj.on              = {};
+        var on              = {};
+        var run             = {};
         
         
   //:
   
   
         obj.init    = async function(){
+        
+              mod.initmod(obj);
+                                                                                debug=eval(debug.mod);
                                                                                 debug('init',obj.version);
-              await libs();
+              settings    = mod['output-settings'];
+              settings.initmod({output:obj});
+              
+              await Promise.all([
+                    mod.auto(),
+                    libs(),
+              ]);
+              
+              
+              window.addEventListener('message',e=>{
+                                                                                      //console.log(e);
+                    var json    = e.data;
+                    if(!json.sandbox)return;
+                    on.message(json);
+                    
+              });
+              
               
         }//init
         
@@ -211,7 +248,6 @@
                     style               = document.createElement('style');
                     style.textContent   = css;
                     
-                    
               });
               list.push(promise);
               
@@ -225,33 +261,31 @@
   //:
   
   
-        obj.initdom   = function(rootnode){
+        obj.initdom   = async function(){
                                                                                 debug('initdom');
               shadow                                    = host.shadowRoot;
               
+              var style                     = $(shadow,'style');
+              $.stylesheet.copyrule('#page-inline','.icon',style);
+              
+              
               root                                      = $(shadow,'#root');
               
-              chk.isolate                               = $.chkbox(shadow,'#isolate');
-              chk.isolate.checked                       = window.crossOriginIsolated;
               
-              chk['allow-modals']                       = $.chkbox(shadow,'#allow-modals');
-              chk['allow-popups']                       = $.chkbox(shadow,'#allow-popups');
+              if(window.electronAPI||localStorage['allow-host']){
+                    $(shadow,'#host').style.display     = '';
+              }
+              chk.host                                  = $.chkbox(shadow,'#host');
               
-              var r                                     = $(shadow,'#output-type');
-              chk.type                                  = $.chkbox.group(r,'#pretty-print','#console');
-              chk.type.callback                         = btn.type;
-              /*
-              chk.pretty                                = $.chkbox(shadow,'#pretty-print');
-              chk.console                               = $.chkbox(shadow,'#console');
-              */
               
-              chk['console-echo']                       = $.chkbox(shadow,'#console-echo');
-              chk['console-persist']                    = $.chkbox(shadow,'#console-persist',false);
+              //chk['allow-modals']                       = $.chkbox(shadow,'#allow-modals');
+              //chk['allow-popups']                       = $.chkbox(shadow,'#allow-popups');
+              
+              
               $(shadow,'#console-clear').onclick        = btn.console.clear;
-              
+              chk['console-persist']                    = $.chkbox(shadow,'#console-persist',false);
               chk.wrap                                  = $.chkbox(shadow,'#word-wrap',btn.wrap);
               
-              chk.iframe                                = $.chkbox(shadow,'#iframe-show',btn.iframe.show);
               
               $(shadow,'#kill').onclick                 = btn.kill;
               
@@ -264,7 +298,11 @@
               
               shadow.append(style);
               
-              create.iframe();
+              
+              var src       = sandbox_url[sandbox_type];
+              create.iframe({src});
+              
+              
               
               
         }//initdom
@@ -273,43 +311,8 @@
   //:
   
   
-/*
-        btn.isolate   = function(chk){
-        
-              if(chk.checked){
-                    sandbox_url  += '?isolate';
-              }else{
-                    var i         = ssandbox_url.indexOf('?');
-                    sandbox_url   = sandbox_url.slice(0,i);
-              }
-              
-        }//isolate
-*/
-
-
-        btn.type    = function(chk,id){
-        
-              console.log(arguments);
-              console.log(id);
-              
-              switch(id){
-              
-                case 'console'        :
-                                        output.style.display            = 'none';
-                                        output_console.style.display    = '';
-                                        mode                            = 'console';
-                                                                                        break;
-                case 'pretty-print'   :
-                                        output.style.display            = '';
-                                        output_console.style.display    = 'none';
-                                        mode                            = 'pretty';
-                                                                                        break;
-                                                                                        
-              }//switch
-              
-        }//type
-        
-        
+  
+  
         btn.console.clear   = function(){
                                                                                 debug('btn.clear');
               clear();
@@ -335,23 +338,12 @@
         }//kill
         
         
-        btn.iframe.show   = function(chk){
-                                                                                debug('btn.iframe.show');
-              if(!iframe)return;
-              
-              if(chk.checked){
-                    iframe.style.display    = '';
-              }else{
-                    iframe.style.display    = 'none';
-              }
-              
-        }//show
         
         
   //:
   
   
-        obj.on.message    = function(json){
+        on.message    = function(json){
                                                                                 //console.log('output.message',json);
               var {name,args}   = json;
               //webconsole[name].apply(null,args);
@@ -364,57 +356,13 @@
   
   
         obj.run   = async function(js,params={}){
-                                                                                debug('run');
-              var sandbox   = (()=>{
-              
-                    var console                 = {};
-                    console.log                 = log;
-                    console.clear               = clear;
-                    console.error               = error;
-                    console.write               = write;
-                    
-                    console.group               = window.console.group.bind(window.console);
-                    console.groupCollapsed      = window.console.groupCollapsed.bind(window.console);
-                    console.groupEnd            = window.console.groupEnd.bind(window.console);
-                    console.trace               = window.console.trace.bind(window.console);
-                    console.info                = window.console.info.bind(window.console);
-                    
-                    
-                    async function run(js){
-                    
-                          if(!chk.persist){
-                                clear();
-                          }
-                          
-                          if(params.async){
-                                js      = '(async()=>{\n'+js+'\n})()';
-                          }
-                          
-                          var result    = await eval(js);
-                          return result;
-                          
-                    }//run
-                    
-                    
-                    run.kill    = function(){
-                    }//kill
-                    
-                    
-                    return run;
-                    
-              })();
-              
-              var result    = await sandbox(js);
-              
-              if(result){
-                    console.log(result);
+        
+              if(chk.host.checked){
+                    run.host(js,params);
+                    return;
               }
               
-              //console.log     = con.log;
-              //console.clear   = con.clear;
-              //console.error   = con.error;
-              
-              
+              run.iframe(js,params);
               
         }//run
         
@@ -424,68 +372,71 @@
   //:
   
   
-        build.sandbox   = function(){
+        create.iframe   = function({onload,src}={}){
         
-              var attr      = sandbox_def;
-                                                                                //console.log(attr);
-              var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
-              /*
-              if(!chk['allow-scripts'].checked){
-                    tokens.delete('allow-scripts');
-              }
-              */
-              if(chk['allow-modals'].checked){
-                    tokens.add('allow-modals');
-              }
-              if(chk['allow-popups'].checked){
-                    tokens.add('allow-popups');
+              src   ||= cur.src;
+              
+              if(iframe){
+                    var h   = iframe.style.height;
+                    iframe.remove();
               }
               
-              var attr      = [...tokens].join(' ');
-                                                                                debug(attr);
-              iframe.setAttribute('sandbox',attr);
+              iframe                        = document.createElement('iframe');
+              obj.iframe                    = iframe;
               
-        }//sandbox
-        
-        
-        create.iframe   = function({onload}={}){
-        
-              iframe            = document.createElement('iframe');
-              obj.iframe        = iframe;
+              iframe.onload                 = onload;
               
-              iframe.onload           = onload;
-              
-              build.sandbox();
-              
-              iframe.setAttribute('allow',sandbox_allow);
+              settings.sandbox(iframe);
+              settings.allow(iframe);
                                                                                 debug(sandbox_allow);
-              var src              = sandbox_url;
+/*
+              var src                       = sandbox_url;
               if(chk.isolate.checked){
-                    src  += '?isolate';
+                    src                    += '?isolate';
               }
-              iframe.src    = src;
+*/
+
+              iframe.src                    = src;
+              cur.src                       = src;
                                                                                 debug(src);
-              iframe.style.cssText    = 'box-sizing:border-box';
-              if(!chk.iframe.checked){
+              iframe.style.boxSizing        = 'border-box';
+              iframe.style.height           = h||def_h;
+              
+              if(!settings.chk.iframe.checked){
                     iframe.style.display    = 'none';
               }
               
               root.append(iframe);
-              //document.body.append(iframe)
-              //cur.root.append(iframe);
+              
+              slider.node                   = $.slider('#output-hldr','#slider','iframe',null,{root,mode:'horiz'});
               
         }//iframe
         
         
-        obj.run.iframe    = async function(js,params={}){
-                                                                                debug('run.iframe2');
+        run.iframe    = async function(js,params={}){
+                                                                                debug('run.iframe');
+              var promise;
+              
+              switch(sandbox_type){
+              
+                case 'type1'    : promise   = sandbox1(js,params);        break;
+                case 'type2'    : promise   = sandbox2(js,params);        break;
+                case 'type3'    : promise   = sandbox3(js,params);        break;
+                
+              }//switch
+              
+              return promise;
+              
+        }//iframe
+        
+        
+        async function sandbox1(js,params){
+                                                                                debug('sandbox1');
               var resolve,promise=new Promise(res=>resolve=res);
               
-              if(iframe){
-                    iframe.remove();
-              }
+              var src   = sandbox_url.type1;
               
-              create.iframe({onload});
+              create.iframe({src,onload});
               
               return promise;
               
@@ -499,28 +450,137 @@
                           clear();
                     }
                     
-                    var echo    = chk['console-echo'].checked;
+                    var echo    = settings.chk['console-echo'].checked;
                     
                     if(params.async){
                           js      = '(async()=>{\n'+js+'\n})()';
                     }
                     
                     iframe.contentWindow.postMessage({type:'run',js,echo},'*');
-                    //var result    = await win.eval(js);
-                    
                     
                     resolve();
                     
                     
               }//onload
               
-        }//iframe
+        }//sandbox1
+        
+        
+        async function sandbox2(js,params){
+                                                                                debug('sandbox2');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              
+              if(!chk['console-persist'].checked){
+                    clear();
+              }
+              
+              var {module}    = params;
+              
+              var echo        = settings.chk['console-echo'].checked;
+              
+              var fn          = await upload();
+                                                                                debug(fn);
+              var src         = sandbox_url.type2+`?fn=${fn}`;
+              
+              create.iframe({src,onload});
+              
+              return promise;
+              
+              
+              async function upload(){
+              
+                    var {result,error}    = await send({type:'upload',js,echo,module});
+                    if(error){
+                          log.red(error);
+                          return;
+                    }
+                    var fn    = result;
+                    return fn;
+                    
+              }//upload
+              
+              
+              async function onload(){
+              
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
+                    
+                    resolve();
+                    
+              }//onload
+              
+        }//sandbox2
+        
+        
+        function sandbox3(js,params){
+                                                                                debug('sandbox3');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var src   = sandbox_url.type3;
+              
+              create.iframe({src,onload});
+              
+              return promise;
+              
+              
+              async function onload(){
+              
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
+                    
+                    if(!chk['console-persist'].checked){
+                          clear();
+                    }
+                    
+                    var module    = params.module;
+                    var echo      = settings.chk['console-echo'].checked;
+                    
+                    if(params.async){
+                          js      = '(async()=>{\n'+js+'\n})()';
+                    }
+                    
+                    iframe.contentWindow.postMessage({type:'run',js,echo,module},'*');
+                    
+                    resolve();
+                    
+                    
+              }//onload
+              
+        }//sandbox3
         
         
   //:
   
   
-        obj.run.host   = async function(js,params={}){
+        function send(payload){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var msgid   = crypto.randomUUID();
+              
+              window.addEventListener('message',onmessage);
+              iframe.contentWindow.postMessage({msgid,payload},'*');
+              
+              return promise;
+              
+              
+              function onmessage(e){
+              
+                    if(e.data?.msgid!==msgid)return;
+                    window.removeEventListener('message',onmessage);
+                    var {result,error}    = e.data;
+                    resolve({result,error});
+                    
+              }//onmessage
+              
+        }//send
+        
+        
+  //:
+  
+  
+        run.host   = async function(js,params={}){
                                                                                 debug('run.iframe.host');
               var resolve,promise=new Promise(res=>resolve=res);
               
@@ -556,8 +616,6 @@
                     var result    = await win.eval(js);
                     resolve(result);
                     
-                    //iframe.remove();
-                    
               }//onload
               
         }//host
@@ -570,8 +628,7 @@
         
         function kill(){
         
-              if(!iframe)return;
-              iframe.remove();
+              create.iframe();
               
         }//kill
         
@@ -586,6 +643,40 @@
               }
               
         }//set
+        
+        
+        obj.set.type    = function(type){
+        
+              switch(id){
+              
+                case 'console'        :
+                                        output.style.display            = 'none';
+                                        output_console.style.display    = '';
+                                        mode                            = 'console';
+                                                                                        break;
+                case 'pretty-print'   :
+                                        output.style.display            = '';
+                                        output_console.style.display    = 'none';
+                                        mode                            = 'pretty';
+                                                                                        break;
+                                                                                        
+              }//switch
+              
+        }//type
+        
+        
+        obj.set.iframe    = function(status){
+        
+              if(!iframe)return;
+              if(chk.checked){
+                    iframe.style.display        = '';
+                    slider.node.style.display   = '';
+              }else{
+                    iframe.style.display        = 'none';
+                    slider.node.style.display   = 'none';
+              }
+              
+        }//iframe
         
         
   //:
@@ -619,12 +710,11 @@
         
         function clear(){
         
-              /*
-              if(chk['console-echo'].checked){
-                    con.clear.call(window.console);
+              if(chk['console-persist'].checked){
+                    var node            = fn.log('console.clear override');
+                    node.style.color    = 'lightgray';
+                    return;
               }
-              */
-              
               
               switch(mode){
               
@@ -632,6 +722,10 @@
                 case 'console'    : jsconsole.clear();                break;
                 
               }//switch
+              
+              if(settings.chk['console-echo'].checked){
+                    console.clear();
+              }
               
         }//clear
         
@@ -641,16 +735,6 @@
         
         function log(){
         
-              /*
-              if(chk['console-echo'].checked){
-                    //con.log.apply(window.console,arguments);
-                    window.console.groupCollapsed.apply(window.console,arguments);
-                    window.console.trace();
-                    window.console.groupEnd();
-              }
-              */
-              
-              
               var div;
               
               switch(mode){
@@ -670,12 +754,6 @@
         
         function groupCollapsed(...args){
         
-              /*
-              if(chk['console-echo'].checked){
-                    window.console.groupCollapsed.apply(window.console,args);
-              }
-              */
-              
               switch(mode){
               
                 case 'pretty'   :
@@ -688,7 +766,6 @@
                                     
               }//switch
               
-              
         }//groupCollapsed
         
         
@@ -697,19 +774,13 @@
         
         function error(){
         
-              /*
-              if(chk['console-echo'].checked){
-                    con.error.apply(window.console,arguments);
-              }
-              */
-              
               var node;
               
               switch(mode){
               
                 case 'pretty'     :
                                     node                = log.apply(null,arguments);
-                                    node.style.color    = 'red';
+                                    node.style.color    = 'darkred';
                                                                                           break;
                 case 'console'    :
                                     jsconsole.error.apply(jsconsole,arguments);
@@ -967,17 +1038,19 @@
   
   
         obj.horiz   = function(){
-        
+                                                                                debug('horiz');
               host.style.width    = '100%';
               host.style.height   = '50%';
+              layout              = 'horiz';
               
         }//horiz
         
         
         obj.vert    = function(){
-        
+                                                                                debug('vert');
               host.style.width    = '50%';
               host.style.height   = '100%';
+              layout              = 'vert';
               
         }//vert
         
@@ -985,7 +1058,7 @@
   //:
   
   
-  
+/*
         function debug(...args){
         
               if(!df && !obj.df)return;
@@ -997,11 +1070,12 @@
               console.groupEnd();
               
         }//debug
-        
-        
-        
-        
-        
+        debug.mod   = debug.toString();
+*/
+
+
+
+
   return obj;
   
 //output_console
