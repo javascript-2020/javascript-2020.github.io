@@ -195,6 +195,11 @@
   .visually-hidden
     {position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0}
     
+  .radio
+    {border:1px solid lightgray;padding:2px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center}
+  .radio *
+    {cursor:pointer}
+    
   .menu-item
     {gap:20px}
   .menu-item .menu-label
@@ -234,6 +239,13 @@
                   
                   <img id=prettier class=icon title=prettier>
                   <img id=syntax-chk class=icon title=syntax>
+                  
+                  <div id=output-root class=radio>
+                        <input type=checkbox checked>
+                        <label>
+                              output
+                        </label>
+                  </div>
                   
                   <span class=spc></span>
                   
@@ -293,6 +305,7 @@
               $('#run').onclick                     = btn.run;
               $(root,'#prettier').onclick           = btn.prettier;
               $(root,'#syntax-chk').onclick         = btn.syntax;
+              $,chkbox(root,'#output-root',btn.output);
               
               $('#horiz').onclick                   = horiz;
               $('#vert').onclick                    = vert;
@@ -444,6 +457,38 @@
         }//syntax
         
         
+        {
+        
+              let w;
+              let h;
+              
+              btn['show-output']    = function(chk){console.log(chk);
+              
+                    if(output.__host.style.display=='none'){
+                          if(ui.mode=='vert'){
+                                editor.__host.style.width     = w;
+                          }else{
+                                editor.__host.style.height    = h;
+                          }
+                          output.__host.style.display         = '';
+                          slider.node.style.display           = '';
+                    }else{
+                          output.__host.style.display         = 'none';
+                          slider.node.style.display           = 'none';
+                          if(ui.mode=='vert'){
+                                w                             = editor.__host.style.width;
+                                editor.__host.style.width     = '100%';
+                          }else{
+                                h                             = editor.__host.style.height;
+                                editor.__host.style.height    = '100%';
+                          }
+                    }
+                    
+              }//show-output
+              
+        }
+        
+        
   //:
   
   
@@ -540,6 +585,8 @@
         
         function horiz(){
         
+              if(output.__host.style.display=='none')return;
+              
               //localStorage.setItem('orientation','horiz');
               
               ui.mode                     = 'horiz';
@@ -558,6 +605,8 @@
         
         function vert(){
         
+              if(output.__host.style.display=='none')return;
+              
               //localStorage.setItem('orientation','vert');
               
               ui.mode                     = 'vert';
