@@ -58,8 +58,9 @@
             <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
             <script>
-                                                                                console.log('js-console-v3.0.html');
+            
         var version='v3.0';
+                                                                                console.log(`js-console-${version}.html`);
         var df=true,did='js-console';
         
         var ace;
@@ -69,6 +70,7 @@
         //var menu;
         
         var hdr;
+        var mainmenu;
         var filemod;
         var autosave;
         var publish;
@@ -84,6 +86,7 @@
                                                                                 debug('init',version);
                                                                                 debug('crossOriginIsolated',window.crossOriginIsolated);
               hdr                       = mod['editors-hdr'];
+              mainmenu                  = mod['main-menu'];
               filemod                   = mod['file-mod'];
               autosave                  = mod['auto-save'];
               publish                   = mod['publish-ui'];
@@ -92,9 +95,10 @@
               log                       = mod['log-mod'];
               
               
-              mod.base.add({log,complete,source,focus,editor,filemod});
-              //mod.base.add({filemod,complete,source,focus});
+              //mod.base.add({log,complete,source,focus,editor,filemod});
+              mod.base.add({complete,source,focus,editor});
               
+              mainmenu.initmod({par:{clear}});
               autosave.initmod({save:btn.save});
               editor.initmod({on,mode:'javascript'});
               
@@ -115,6 +119,15 @@
               publish.query();
               
               
+              window.addEventListener('beforeunload',event=>{
+              
+                    if(!status){
+                          event.preventDefault();
+                    }
+                    
+              });
+              
+              
         }//init
         
         
@@ -129,7 +142,8 @@
     {padding:2px}
     
   #hdr
-    {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
+    {padding:5px 5px;/*height:30px;*/display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
   .spc
@@ -182,10 +196,10 @@
     {display:flex;flex:1;overflow:hidden}
     
   web-editor
-    {width:75%}
+    {/*width:75%*/flex:1}
     
   output-console
-    {flex:1;overflow:auto}
+    {/*flex:1;*/width:600px;overflow:auto;z-index:1}
     
   button
     {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
@@ -195,6 +209,9 @@
     
   .visually-hidden
     {position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0}
+    
+  .gap
+    {display:inline-block;width:20px}
     
             </style>
             
@@ -211,8 +228,8 @@
                   <h4 slot=version>
                         v3.0
                   </h4>
-                  <time slot=date datetime=2026-02-22>
-                        22 Feb 2026
+                  <time slot=date datetime=2026-10-04>
+                        04 Oct 2026
                   </time>
             </editors-hdr>
             
@@ -234,26 +251,33 @@
                         run
                   </button>
                   
-                  <div id=run-opts class=flex style='display:none'>
-                        <div id=host class='item flex'>
-                              <span>
-                                    host
-                              </span>
-                              <input type=checkbox>
-                        </div>
+                  <div id=module-root class='item flex'>
+                        <span>
+                              module
+                        </span>
+                        <input id=module type=checkbox>
                   </div>
                   
                   <div id=async-root class='item flex'>
                         <span>
                               async
                         </span>
-                        <input id=async type=checkbox checked>
+                        <input id=async type=checkbox>
                   </div>
                   
                   <img id=syntax-chk class=icon title=syntax>
                   <img id=prettier class=icon title=prettier>
                   <img id=terser class=icon title=minify>
                   <img id=obfuscator class=icon title=obfuscator>
+                  
+                  <div class=gap></div>
+                  
+                  <div id=show-output-root class='item flex'>
+                        <span>
+                              output
+                        </span>
+                        <input id=show-output type=checkbox checked>
+                  </div>
                   
                   <span class=spc></span>
                   
@@ -287,18 +311,24 @@
         
         //var autosave;
         
-        var iframe;
         
+        var status      = false;
+        
+        
+        var iframe;
         
         
         var slider      = {};
         
         var ui          = {};
         ui.mode         = 'vert';
+        var module;
+        
         
         var icon        = {};
         
         var btn         = {};
+        var chk         = {};
         var mode        = {};
         var on          = {};
         var set         = {};
@@ -332,13 +362,9 @@
               
               $(root,'#run').onclick                = run;
               
-              var r                                 = $('#run-opts');
-              if(window.electronAPI||localStorage['allow-host']){
-                    $('#run-opts').style.display    = '';
-              }
-              ui.host                               = $.chkbox(r,'#host');
               
-              mode.async                            = $.chkbox(root,'#async-root');
+              chk.async                             = $.chkbox(root,'#async-root');
+              chk.module                            = $.chkbox(root,'#module-root');
               
               
               $(root,'#syntax-chk').onclick         = btn.syntax;
@@ -346,6 +372,7 @@
               $(root,'#terser').onclick             = btn.terser;
               $(root,'#obfuscator').onclick         = btn.obfuscator;
               
+              $.chkbox(root,'#show-output-root',btn['show-output']);
               
               $(root,'#horiz').onclick              = horiz;
               $(root,'#vert').onclick               = vert;
@@ -381,7 +408,7 @@
               var url       = new URL(window.location);
               var params    = url.searchParams;
               
-              mode.async.checked    = params.has('async');
+              chk.async.checked    = params.has('async');
               
         }//query
         
@@ -573,6 +600,27 @@
               
         }//obfuscator
         
+        {
+        
+              let w;
+              
+              btn['show-output']    = function(chk){console.log(chk);
+              
+                    if(output.__host.style.display=='none'){
+                          editor.__host.style.width     = w;
+                          output.__host.style.display   = '';
+                          slider.node.style.display     = '';
+                    }else{
+                          output.__host.style.display   = 'none';
+                          slider.node.style.display     = 'none';
+                          w                             = editor.__host.style.width;
+                          editor.__host.style.width     = '100%';
+                    }
+                    
+              }//show-output
+              
+        }
+        
         
   //:
   
@@ -580,6 +628,7 @@
         on.change   = function(){
         
               set.favicon(icon.save);
+              status    = true;
               
         }//change
         
@@ -589,20 +638,6 @@
               document.title    = title;
               
         }//title
-        
-  //:
-  
-  
-        window.addEventListener('message',e=>{
-                                                                                console.log(e);
-                                                                                
-              var json    = e.data;
-              
-              if(json.sandbox){
-                    output.on.message(json);
-              }
-              
-        });
         
         
   //:
@@ -631,6 +666,7 @@
                     var title     = file.name||file.filename;
                     set.title(title);
                     set.favicon(icon.def);
+                    status        = false;
               }
               menu.close();
               editor.focus();
@@ -647,9 +683,22 @@
                     txt   = await blob.text();
               }
               
+              
+              //var hasNonAscii   = /[^\x00-\x7F]/.test(txt);
+              var count       = 0;
+              var list        = txt.match(/[^\x00-\x7F]/gu);
+              if(list){
+                    count     = list.length;
+              }
+              if(count){
+                    log.warning('non ascii characters');
+                    return;
+              }
+              
+              
               editor.clear();
               output.kill();
-              editor.setValue(txt,-1);
+              editor.setValue(txt,{initial:true});
               complete(file);
               
         }//complete.load
@@ -700,6 +749,47 @@
 */
 
 
+        window.addEventListener('message',event=>{
+                                                                                //console.log(event);
+                                                                                
+              if(event.source!==output.iframe.contentWindow)return;
+              
+              var data    = event.data;
+              if(data && data.source==='IFRAME_MOUSE_BRIDGE'){
+              
+                    var rect    = output.iframe.getBoundingClientRect();
+                    
+                    var parentClientX   = rect.left+data.clientX;
+                    var parentClientY   = rect.top+data.clientY;
+                    var screenX         = window.screenX+parentClientX;
+                    var screenY         = window.screenY+parentClientY;
+                                                                                //console.log(`Event: ${data.eventType}`,{x:parentClientX,y:parentClientY,nativeEventData:data});
+                    var event2          = new MouseEvent(data.eventType,{
+                          bubbles       : true,
+                          cancelable    : true,
+                          composed      : true,
+                          view          : window,
+                          detail        : data.eventType === 'click' || data.eventType === 'dblclick' ? 1 : 0,
+                          screenX       : screenX,
+                          screenY       : screenY,
+                          clientX       : parentClientX,
+                          clientY       : parentClientY,
+                          ctrlKey       : data.ctrlKey,
+                          altKey        : data.altKey,
+                          shiftKey      : data.shiftKey,
+                          metaKey       : data.metaKey,
+                          button        : data.button,
+                          buttons       : data.buttons
+                    });
+                    
+                    output.iframe.dispatchEvent(event2);
+                    
+              }
+              
+        });
+        
+        
+        
   //:
   
   
@@ -772,17 +862,13 @@
                     filemod.save();
               }
               
+              var async     = chk.async.checked;
+              var module    = chk.module.checked
               
-              var js      = editor.getValue();
-              var opts    = {async:mode.async.checked};
-              
-              if(ui.host.checked){
-                                                                                debug('host');
-                    output.run.host(js,opts);
-                    return;
-              }
-              
-              output.run.iframe(js,opts);
+              var js        = editor.getValue();
+              var opts      = {async,module};
+                                                                                console.json(opts);
+              output.run(js,opts);
               
         }//run
         
@@ -838,6 +924,16 @@
         }//syntax
         
         
+        function clear(){
+        
+            filemod.clear();
+            editor.clear();
+            editor.filename.clear();
+            output.kill();
+            
+        }//clear
+        
+        
   //:
   
   
@@ -858,6 +954,8 @@
   //:
   
   
+  
+/*
         function debug(...args){
         
               if(!df && !obj.df)return;
@@ -869,9 +967,10 @@
               console.groupEnd();
               
         }//debug
-        
-        
-        
+*/
+
+
+
       </script>
       
 </html>
