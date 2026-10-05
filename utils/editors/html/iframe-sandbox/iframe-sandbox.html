@@ -1,0 +1,256 @@
+
+
+
+<iframe-sandbox class=menu-root>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  :host
+    {}
+    
+  .menu
+    {position:absolute;right:-20px;top:-50px;width:380px;
+      display:flex;flex-direction:column;gap:10px
+    }
+    
+  [value=sandbox]
+    {flex:1}
+    
+  #preset
+    {display:flex;gap:10px}
+  #preset>input
+    {flex:1}
+    
+    
+  #list
+    {flex:1;display:grid;grid-template-columns:1fr;gap:10px;overflow:auto}
+    
+  .radio
+    {border:1px solid lightgray;padding:5px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:10px;
+      white-space:nowrap;
+    }
+  .radio:disabled
+    {color:gray}
+    
+  .radio *
+    {cursor:pointer}
+    
+  label
+    {white-space:nowrap}
+    
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type]
+    {cursor:pointer}
+    
+    
+            </style>
+            
+            
+            <!-- <div class=menu-root> -->
+            
+                  <input value=sandbox type=button>
+                  
+                  <div class=menu style='display:none;height:350px'>
+                  
+                        <div class=menu-title>
+                              iframe sandbox
+                        </div>
+                        
+                        <div id=preset>
+                              <input type=button>
+                        </div>
+                        
+                        <div id=list>
+                              <span class=radio>
+                                    <input type=checkbox>
+                                    <label>
+                                    </label>
+                              </span>
+                        </div>
+                        
+                  </div menu>
+                  
+            <!-- </div menu-root> -->
+            
+      </template>
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {
+        version   : 'v1.0',
+  };
+  
+        var df=true,did='iframe-sandbox';
+        
+        var $,def,menu,output
+        ;
+        
+        obj.initmod   = function(...list){
+        
+              list.forEach(params=>{
+              
+                    $           = mod.rd(params,'$',$);
+                    def         = mod.rd(params,'def',def);
+                    menu        = mod.rd(params,'menu',menu);
+                    output      = mod.rd(params,'output',output);
+                    
+              });
+              
+        }//initmod
+        
+        
+  //:
+  
+  
+  
+  
+        var values    = [
+              'allow-downloads',
+              'allow-forms',
+              'allow-modals',
+              'allow-orientation-lock',
+              'allow-pointer-lock',
+              'allow-popups',
+              'allow-popups-to-escape-sandbox',
+              'allow-presentation',
+              'allow-same-origin',
+              'allow-scripts',
+              'allow-storage-access-by-user-activation',
+              'allow-top-navigation',
+              'allow-top-navigation-by-user-activation',
+              'allow-top-navigation-to-custom-protocols'
+        ];
+        
+        
+        var preset        = {};
+        preset.min        = 'allow-scripts';
+        preset.standard   = 'allow-downloads allow-forms allow-same-origin allow-scripts';
+        preset.full       = 'allow-downloads allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-storage-access-by-user-activation';
+        preset.all        = values.join(' ');
+        
+        
+        
+        var shadow;
+        
+        
+        
+        var chk   = {};
+        var btn   = {};
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = async function(){
+        
+              shadow                                          = host.shadowRoot;
+              
+              menu.add.style(shadow);
+              
+              
+              var node                                        = $(shadow,'.menu');
+              $(shadow,'[value=sandbox]').onclick             = e=>menu.add.stack(node,'both',false);
+              
+              
+              var input                                       = $(shadow,'#preset input');
+              input.remove();
+              
+              for(let key in preset){
+              
+                    var ninput                                = input.cloneNode(true);
+                    ninput.value                              = key;
+                    ninput.onclick                            = e=>btn.preset(key);
+                    $(shadow,'#preset').append(ninput);
+                    
+              }//for
+              
+              
+              var list                                        = $(shadow,'#list');
+              
+              var item                                        = $(list,'.radio');
+              item.remove();
+              
+              values.forEach(value=>{
+                                                                                //console.log(value);
+                    var nitem                                 = item.cloneNode(true);
+                    nitem.id                                  = value;
+                    $(nitem,'label').textContent              = value;
+                    $(nitem,'[type=checkbox]').checked        = (def.indexOf(value)!=-1)
+                    list.append(nitem);
+                    chk[value]                                = $.chkbox(shadow,`#${value}`,chk.click);
+                    
+              });
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        btn.preset    = function(key){
+        
+              values.forEach(value=>{
+              
+                    chk[value].checked    = (preset[key].indexOf(value)!=-1);
+                    
+              });
+              
+        }//preset
+        
+        
+        chk.click   = function(chk){
+                                                                                //console.log(chk);
+              /*
+              if(chk.id=='allow-modals'){
+                    output.chk['allow-modals'].checked    = chk.checked;
+              }
+              if(chk.id=='allow-popups'){
+                    output.chk['allow-popups'].checked    = chk.checked;
+              }
+              */
+              
+        }//click
+        
+        
+  //:
+  
+  
+        obj.build   = function(){
+        
+              var attr    = '';
+              values.forEach(value=>{
+              
+                    if(chk[value].checked){
+                          attr   += value+' ';
+                    }
+                    
+              });
+              return attr;
+              
+        }//build
+        
+        
+  return obj;
+  
+//iframe-sandbox
+})
+
+      </script>
+      
+</template>
+
+
