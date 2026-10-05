@@ -251,15 +251,6 @@
                         run
                   </button>
                   
-                  <div id=run-opts class=flex style='display:none'>
-                        <div id=host class='item flex'>
-                              <span>
-                                    host
-                              </span>
-                              <input type=checkbox>
-                        </div>
-                  </div>
-                  
                   <div id=module-root class='item flex'>
                         <span>
                               module
@@ -337,6 +328,7 @@
         var icon        = {};
         
         var btn         = {};
+        var chk         = {};
         var mode        = {};
         var on          = {};
         var set         = {};
@@ -370,14 +362,9 @@
               
               $(root,'#run').onclick                = run;
               
-              var r                                 = $('#run-opts');
-              if(window.electronAPI||localStorage['allow-host']){
-                    $('#run-opts').style.display    = '';
-              }
-              ui.host                               = $.chkbox(r,'#host');
               
-              mode.async                            = $.chkbox(root,'#async-root');
-              module                                = $.chkbox(root,'#module-root');
+              chk.async                             = $.chkbox(root,'#async-root');
+              chk.module                            = $.chkbox(root,'#module-root');
               
               
               $(root,'#syntax-chk').onclick         = btn.syntax;
@@ -421,7 +408,7 @@
               var url       = new URL(window.location);
               var params    = url.searchParams;
               
-              mode.async.checked    = params.has('async');
+              chk.async.checked    = params.has('async');
               
         }//query
         
@@ -875,17 +862,13 @@
                     filemod.save();
               }
               
+              var async     = chk.async.checked;
+              var module    = chk.module.checked
               
-              var js      = editor.getValue();
-              var opts    = {async:mode.async.checked,module:module.checked};
+              var js        = editor.getValue();
+              var opts      = {async,module};
                                                                                 console.json(opts);
-              if(ui.host.checked){
-                                                                                debug('host');
-                    output.run.host(js,opts);
-                    return;
-              }
-              
-              output.run.iframe(js,opts);
+              output.run(js,opts);
               
         }//run
         
