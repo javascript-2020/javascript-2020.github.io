@@ -49,9 +49,16 @@
             </style>
             
             <div id=root>
+            
                   <div id=hdr>
                   
-                  
+                        <div id=host class=radio style='display:none'>
+                              <input type=checkbox>
+                              <span>
+                                    host
+                              </span>
+                        </div>
+                        
                         <!--
                         <span id=allow-modals class=radio>
                               <input type=checkbox checked>
@@ -128,12 +135,15 @@
         
   //vars:-
   
+  
         var settings;
+        
         
         var inspect;
         var jsconsolemod;
         var jsconsole;
         var style;
+        
         
         var con             = {};
         con.log             = console.log;
@@ -168,6 +178,8 @@
         
         var sandbox_type    = 'type3';
         
+        
+        
         var fn              = {};
         var chk             = {};
         obj.chk             = chk;
@@ -175,6 +187,7 @@
         btn.console         = {};
         btn.iframe          = {};
         var on              = {};
+        var run             = {};
         
         
   //:
@@ -252,14 +265,22 @@
               var style                     = $(shadow,'style');
               $.stylesheet.copyrule('#page-inline','.icon',style);
               
+              
               root                                      = $(shadow,'#root');
+              
+              
+              if(window.electronAPI||localStorage['allow-host']){
+                    $(shadow,'#host').style.display     = '';
+              }
+              chk.host                                  = $.chkbox(r,'#host');
+              
               
               //chk['allow-modals']                       = $.chkbox(shadow,'#allow-modals');
               //chk['allow-popups']                       = $.chkbox(shadow,'#allow-popups');
               
-              chk['console-persist']                    = $.chkbox(shadow,'#console-persist',false);
-              $(shadow,'#console-clear').onclick        = btn.console.clear;
               
+              $(shadow,'#console-clear').onclick        = btn.console.clear;
+              chk['console-persist']                    = $.chkbox(shadow,'#console-persist',false);
               chk.wrap                                  = $.chkbox(shadow,'#word-wrap',btn.wrap);
               
               
@@ -332,57 +353,13 @@
   
   
         obj.run   = async function(js,params={}){
-                                                                                debug('run');
-              var sandbox   = (()=>{
-              
-                    var console                 = {};
-                    console.log                 = log;
-                    console.clear               = clear;
-                    console.error               = error;
-                    console.write               = write;
-                    
-                    console.group               = window.console.group.bind(window.console);
-                    console.groupCollapsed      = window.console.groupCollapsed.bind(window.console);
-                    console.groupEnd            = window.console.groupEnd.bind(window.console);
-                    console.trace               = window.console.trace.bind(window.console);
-                    console.info                = window.console.info.bind(window.console);
-                    
-                    
-                    async function run(js){
-                    
-                          if(!chk.persist){
-                                clear();
-                          }
-                          
-                          if(params.async){
-                                js      = '(async()=>{\n'+js+'\n})()';
-                          }
-                          
-                          var result    = await eval(js);
-                          return result;
-                          
-                    }//run
-                    
-                    
-                    run.kill    = function(){
-                    }//kill
-                    
-                    
-                    return run;
-                    
-              })();
-              
-              var result    = await sandbox(js);
-              
-              if(result){
-                    console.log(result);
+        
+              if(chk.host.checked){
+                    run.host(js,params);
+                    return;
               }
               
-              //console.log     = con.log;
-              //console.clear   = con.clear;
-              //console.error   = con.error;
-              
-              
+              run.iframe(js,params);
               
         }//run
         
@@ -433,7 +410,7 @@
         }//iframe
         
         
-        obj.run.iframe    = async function(js,params={}){
+        run.iframe    = async function(js,params={}){
                                                                                 debug('run.iframe');
               var promise;
               
@@ -600,7 +577,7 @@
   //:
   
   
-        obj.run.host   = async function(js,params={}){
+        run.host   = async function(js,params={}){
                                                                                 debug('run.iframe.host');
               var resolve,promise=new Promise(res=>resolve=res);
               
@@ -635,8 +612,6 @@
                     
                     var result    = await win.eval(js);
                     resolve(result);
-                    
-                    //iframe.remove();
                     
               }//onload
               
