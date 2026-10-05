@@ -130,7 +130,7 @@
         
         
         var sandbox_url;
-        var iframe_src        = 'https://sandbox.ext-code.com/html-sandbox/html-sandbox.html';
+        var iframe_src        = 'https://sandbox.ext-code.com/html-sandbox-2/html-sandbox-2.html';
         var iframe_sandbox    = 'allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock';//allow-popups-to-escape-sandbox
         var iframe_allow      = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
                                   xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
@@ -140,7 +140,9 @@
         var btn         = {};
         btn.console     = {};
         obj.on          = {};
+        var create      = {};
         var build       = {};
+        var run         = {};
         
         
   //:
@@ -272,7 +274,30 @@
   
   
         obj.run   = function(html){
+        
+              sandbox2(html);
+              
         }//run
+        
+        
+        create.iframe   = function({src,onload}){
+        
+              iframe.remove();
+              iframe    = iframe.cloneNode();
+                                                                                debug(sandbox_url);
+              build.sandbox();
+              
+              iframe.setAttribute('allow',iframe_allow);
+                                                                                debug(iframe_allow);
+              if(chk.isolate.checked){
+                    src  += '?isolate';
+              }
+              iframe.src      = src;
+                                                                                debug(src);
+              iframe.onload   = onload;
+              hldr.append(iframe);
+              
+        }//iframe
         
         
         build.sandbox   = function(){
@@ -298,23 +323,10 @@
         }//sandbox
         
         
-        obj.sandbox   = function(html){
-                                                                                debug('sandbox');
-              iframe.remove();
-              iframe    = iframe.cloneNode();
-                                                                                debug(sandbox_url);
-              build.sandbox();
-              
-              iframe.setAttribute('allow',iframe_allow);
-                                                                                debug(iframe_allow);
-              var src         = iframe_src;
-              if(chk.isolate.checked){
-                    src  += '?isolate';
-              }
-              iframe.src      = src;
-                                                                                debug(src);
-              iframe.onload   = onload;
-              hldr.append(iframe);
+        function sandbox1(html){
+                                                                                debug('sandbox1');
+              var src   = iframe_src;
+              create.iframe({src,onload});
               
               
               function onload(){
@@ -333,11 +345,58 @@
                     
               }//onload
               
-        }//sandbox
+        }//sandbox1
+        
+        
+        function sandbox2(html){
+                                                                                debug('sandbox2');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              
+              if(!chk['console-persist'].checked){
+                    clear();
+              }
+              
+              var {module}    = params;
+              
+              var echo        = settings.chk['console-echo'].checked;
+              
+              var fn          = await upload();
+                                                                                debug(fn);
+              var src         = sandbox_url.type2+`?fn=${fn}`;
+              
+              create.iframe({src,onload});
+              
+              return promise;
+              
+              
+              async function upload(){
+              
+                    var {result,error}    = await send({type:'upload',js,echo,module});
+                    if(error){
+                          log.red(error);
+                          return;
+                    }
+                    var fn    = result;
+                    return fn;
+                    
+              }//upload
+              
+              
+              async function onload(){
+              
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
+                    
+                    resolve();
+                    
+              }//onload
+              
+        }//sandbox2
         
         
         
-        obj.srcdoc    = function(html){
+        function srcdoc(html){
         
               iframe.remove();
               iframe    = iframe.cloneNode();
@@ -360,6 +419,37 @@
         
         
         
+  //:
+  
+  
+        function send(payload){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var msgid   = crypto.randomUUID();
+              
+              window.addEventListener('message',onmessage);
+              iframe.contentWindow.postMessage({msgid,payload},'*');
+              
+              return promise;
+              
+              
+              function onmessage(e){
+              
+                    if(e.data?.msgid!==msgid)return;
+                    window.removeEventListener('message',onmessage);
+                    var {result,error}    = e.data;
+                    resolve({result,error});
+                    
+              }//onmessage
+              
+        }//send
+        
+        
+  //:
+  
+  
+  
 /*
         obj.blob    = function(html){
         
