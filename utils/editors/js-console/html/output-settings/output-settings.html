@@ -1,0 +1,262 @@
+
+
+<output-settings>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  #settings
+    {width:34px;height:34px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAA81BMVEVHcExohJFjfYpohJFohJFlgI1ohJFohJFohJFzkqFohJFkf4tohJFohJFUanRUanRUanRohJFohJFohJFUanRohJFohJFUanRUanRUanRohJFmgY5ohJFddoJohJFohJFUanRohJFUanRUanRUanRZcHtohJFUanSs/+9ng5BSaHJ5j5rU3OCr/+1YbnhjfIddc32Tp7GInaem9+aWqLGQoqtsj5ai8uJ8r6x/tbFyi5Zqh5J6qaiRz8iKx8CjsbjP2NzAy9Bni46su8LH0tZwlJye6dxxhpC5xsuerLKrusKl5NqX3dJ7pquuvcS47OOFv7mM72j6AAAAJnRSTlMA4ghV/BqfIusBSQSCdPqz5ZSoXkjbAiRUeStq9xQ1xGa12y/YotDZwCsAAAHBSURBVCjPjZNrd5pAEIZBFBRjtFoviTRN0mbX3YVdQEBRwUuiaW5N/v+v6QBGSVPO6ftxnjMzu+/MSNJ/q9T4AhqWCvB5FYFkrQAr5QQbegE+Qakaf8crlRp0VrqIgFBXr0tST6sc6Peuquhtg6Bgu50hYqi6ospX33JFywaZv0S7yWQXvcyJUT42uZCTjoTdvo5SjaOAJJHuefrbdkZ/meZTHIbxzrKeM67CGyQtTZ4/mqsHQSnFIrasOEtPXlcfghvEXZkPHG+miw3msTXeCoSqnV5mB+Q/mmuBp2PLmiwomYzeuJAP9jTQbG0u6QYo8DmORs82Hx7dJOzO9OnUSrWgi6fIPv1aiGeey3N4XzzIim8wA4wv36kOT7s11zYOgY+n2HYdhvF1lt7r7D/mYRyEYYAxc3xBMW4NakdbfpsrzwZbqM2cJBn0s/LR1OXs/p65juPaKb5J1qp3Ud2P5G7pOI7n+cymCW39yG1JmSDGXN93mcD0NMFnh3WQ2x3lyhCc2zYH2BxcNlvN93WQNA1GV+rIgsPE8PUAetb7/c+rKHiu6D8WGXjOzc9nIHirX3REJ6qq3pyVCq+sBvoQ+APGmFIg7dMmwwAAAABJRU5ErkJggg==);
+    }
+    
+  .menu
+    {position:absolute;right:30px;top:35px;
+      display:flex;flex-direction:column;gap:10px;
+    }
+    
+  #output-type
+    {display:flex;gap:10px;flex-wrap:nowrap}
+    
+  .radio
+    {border:1px solid lightgray;padding:5px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:10px}
+  .radio:has([type=checkbox]:disabled)
+    {color:gray}
+    
+  #attr-btns
+    {display:flex;gap:10px}
+  #attr-btns>*
+    {flex:1;display:flex}
+    
+            </style>
+            
+            <div class=menu-root style='display:block;height:34px'>
+            
+                  <img id=settings class=icon>
+                  
+                  <div class=menu style='display:none;/*width:300px;height:200px;*/'>
+                  
+                        <div class=menu-title>
+                              output menu
+                        </div>
+                        
+                        <div class=menu-div>
+                              console
+                        </div>
+                        
+                        <span id=console-echo class=radio>
+                              <input type=checkbox checked>
+                              echo
+                        </span>
+                        
+                        <div class=menu-div>
+                              output
+                        </div>
+                        
+                        <span id=output-type>
+                              <span id=pretty-print class=radio>
+                                    <input type=checkbox checked>
+                                    prettyPrint
+                              </span>
+                              <span id=console class=radio>
+                                    <input type=checkbox>
+                                    console
+                              </span>
+                        </span>
+                        
+                        
+                        <div class=menu-div>
+                              iframe
+                        </div>
+                        
+                        <span id=iframe-show class=radio>
+                              <input type=checkbox checked>
+                              iframe
+                        </span>
+                        
+                        <span id=isolate class=radio>
+                              <input type=checkbox disabled>
+                              isolate
+                        </span>
+                        
+                        <div id=attr-btns>
+                              <iframe-sandbox component=grp></iframe-sandbox>
+                              <iframe-permissions component=grp></iframe-permissions>
+                        </div>
+                        
+                        
+                  </div menu>
+                  
+            </div menu-root>
+            
+      </template>
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {
+        version   : 'v1.0',
+  };
+  
+        var df=true,did='output-settings';
+        
+        var $,debug,menu,output
+        ;
+        
+        obj.initmod   = function(...list){
+        
+              list.forEach(params=>{
+              
+                    $             = mod.rd(params,'$',$);
+                    debug         = mod.rd(params,'debug',debug);
+                    menu          = mod.rd(params,'menu',menu);
+                    output        = mod.rd(params,'output',output);
+                    
+              });
+              
+        }//initmod
+        
+        
+  //:
+  
+  
+        var sandbox;
+        var permissions;
+        
+        
+        var sandbox_def     = 'allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock allow-modals allow-popups';
+        var sandbox_allow   = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
+                                  xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
+                                  
+                                  
+        var shadow;
+        
+        var chk             = {};
+        obj.chk             = chk;
+        chk.console         = {};
+        
+        
+        var btn             = {};
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+        
+              mod.initmod(obj);
+                                                                                debug=eval(debug.mod);
+                                                                                debug('init');
+                                                                                
+              sandbox   = mod['iframe-sandbox'];
+              sandbox.initmod({def:sandbox_def,output});
+              
+              permissions   = mod['iframe-permissions'];
+              permissions.initmod({def:sandbox_allow,output});
+              
+              await mod.auto();
+              
+              
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = async function(){
+                                                                                debug('initdom');
+                                                                                
+                                                                                
+              shadow                                    = host.shadowRoot;
+              
+              var style                                 = $(shadow,'style');
+              $.stylesheet.copyrule('#page-inline','.icon',style);
+              menu.add.style(shadow);
+              
+              var node                                  = $(shadow,'.menu');
+              $(shadow,'#settings').onclick             = menu.click(node,'both',false);
+              
+              chk['console-echo']                       = $.chkbox(shadow,'#console-echo');
+              
+              chk.isolate                               = $.chkbox(shadow,'#isolate');
+              //chk.isolate.checked                       = window.crossOriginIsolated;
+              
+              var r                                     = $(shadow,'#output-type');
+              chk.type                                  = $.chkbox.group(r,'#pretty-print','#console');
+              chk.type.callback                         = btn.type;
+              
+              chk.iframe                                = $.chkbox(shadow,'#iframe-show',btn.iframe);
+              
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+/*
+        btn.isolate   = function(chk){
+        
+              if(chk.checked){
+                    sandbox_url  += '?isolate';
+              }else{
+                    var i         = ssandbox_url.indexOf('?');
+                    sandbox_url   = sandbox_url.slice(0,i);
+              }
+              
+        }//isolate
+*/
+
+
+        btn.type    = function(chk,id){
+        
+              output.set.type(id);
+              
+        }//type
+        
+        
+        btn.iframe   = function(chk){
+                                                                                //debug('btn.iframe');
+              output.set.iframe(chk.checked);
+              
+        }//show
+        
+        
+  //:
+  
+  
+        obj.sandbox   = function(iframe){
+        
+              var attr      = sandbox.build();
+                                                                                debug(attr);
+              iframe.setAttribute('sandbox',attr);
+              
+        }//allow
+        
+        
+        obj.allow   = function(iframe){
+        
+              var attr    = permissions.build();
+                                                                                debug(attr);
+              iframe.setAttribute('allow',attr);
+              
+        }//allow
+        
+        
+        
+        
+        
+        
+  return obj;
+  
+//output-settings
+})
+
+      </script>
+      
+</output-settings>
+
+
