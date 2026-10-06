@@ -30,7 +30,7 @@
     {padding:5px 10px;min-width:60px}
     
   .radio
-    {border:1px solid lightgray;padding:5px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:10px}
+    {border:1px solid lightgray;padding:2px 5px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:10px}
   .radio>*
     {cursor:pointer}
   .radio:has([type=checkbox]:disabled)
@@ -175,7 +175,7 @@
                           var parentClientY   = rect.top+data.clientY;
                           var screenX         = window.screenX+parentClientX;
                           var screenY         = window.screenY+parentClientY;
-                                                                                      //console.log(`Event: ${data.eventType}`,{x:parentClientX,y:parentClientY,nativeEventData:data});
+                                                                                //console.log(`Event: ${data.eventType}`,{x:parentClientX,y:parentClientY,nativeEventData:data});
                           var event2          = new MouseEvent(data.eventType,{
                                 bubbles       : true,
                                 cancelable    : true,
@@ -221,7 +221,7 @@
               
               $(shadow,'#console-clear').onclick        = btn.console.clear;
               chk['console-persist']                    = $.chkbox(hdr,'#console-persist');
-              $.chkbox(shadow,'#console-wrap',btn.console.wrap)
+              //$.chkbox(shadow,'#console-wrap',btn.console.wrap)
               
               $(hdr,'#kill').onclick                    = btn.kill;
               
@@ -277,7 +277,14 @@
         }//clear
         
         
-        btn.console.wrap    = function(){
+        btn.console.wrap    = function(chk){
+        
+              if(chk.checked){
+                    webconsole.style.whiteSpace   = 'pre-wrap';
+              }else{
+                    webconsole.style.whiteSpace   = 'no-wrap';
+              }
+              
         }//wrap
         
         
