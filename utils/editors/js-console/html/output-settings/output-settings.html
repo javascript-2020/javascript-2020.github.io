@@ -21,8 +21,12 @@
     
   .radio
     {border:1px solid lightgray;padding:5px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:10px}
+  .radio>*
+    {cursor:pointer}
   .radio:has([type=checkbox]:disabled)
-    {color:gray}
+    {color:gray;cursor:default}
+  .radio:has([type=checkbox]:disabled)>*
+    {cursor:default}
     
   #attr-btns
     {display:flex;gap:10px}
@@ -151,10 +155,10 @@
                                                                                 debug('init');
                                                                                 
               sandbox   = mod['iframe-sandbox'];
-              sandbox.initmod({def:sandbox_def,output});
+              sandbox.initmod({output});
               
               permissions   = mod['iframe-permissions'];
-              permissions.initmod({def:sandbox_allow,output});
+              permissions.initmod({output});
               
               await mod.auto();
               
