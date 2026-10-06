@@ -96,7 +96,7 @@
               
               
               //mod.base.add({log,complete,source,focus,editor,filemod});
-              mod.base.add({complete,source,focus,editor});
+              mod.base.add({complete,source,focus,editor,ace});
               
               mainmenu.initmod({par:{clear}});
               autosave.initmod({save:btn.save});
@@ -603,18 +603,28 @@
         {
         
               let w;
+              let h;
               
-              btn['show-output']    = function(chk){console.log(chk);
+              btn['show-output']    = function(chk){
               
                     if(output.__host.style.display=='none'){
-                          editor.__host.style.width     = w;
-                          output.__host.style.display   = '';
-                          slider.node.style.display     = '';
+                          if(ui.mode=='vert'){
+                                editor.__host.style.width     = w;
+                          }else{
+                                editor.__host.style.height    = h;
+                          }
+                          output.__host.style.display         = '';
+                          slider.node.style.display           = '';
                     }else{
-                          output.__host.style.display   = 'none';
-                          slider.node.style.display     = 'none';
-                          w                             = editor.__host.style.width;
-                          editor.__host.style.width     = '100%';
+                          output.__host.style.display         = 'none';
+                          slider.node.style.display           = 'none';
+                          if(ui.mode=='vert'){
+                                w                             = editor.__host.style.width;
+                                editor.__host.style.width     = '100%';
+                          }else{
+                                h                             = editor.__host.style.height;
+                                editor.__host.style.height    = '100%';
+                          }
                     }
                     
               }//show-output
@@ -818,6 +828,8 @@
   
         function horiz(){
         
+              if(output.__host.style.display=='none')return;
+              
               //localStorage.setItem('orientation','horiz');
               
               ui.mode                     = 'horiz';
@@ -836,6 +848,8 @@
         
         function vert(){
         
+              if(output.__host.style.display=='none')return;
+              
               //localStorage.setItem('orientation','vert');
               
               ui.mode                     = 'vert';
