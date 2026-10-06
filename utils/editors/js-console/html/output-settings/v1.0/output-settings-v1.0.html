@@ -143,6 +143,7 @@
         
         
         var btn             = {};
+        obj.build           = {};
         
         
   //:
@@ -154,11 +155,14 @@
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init');
                                                                                 
-              sandbox   = mod['iframe-sandbox'];
+              sandbox           = mod['iframe-sandbox'];
+              obj.sandbox       = sandbox;
               sandbox.initmod({output});
               
-              permissions   = mod['iframe-permissions'];
+              permissions       = mod['iframe-permissions'];
+              obj.permissions   = permissions;
               permissions.initmod({output});
+              
               
               await mod.auto();
               
@@ -232,7 +236,7 @@
   //:
   
   
-        obj.sandbox   = function(iframe){
+        obj.build.sandbox   = function(iframe){
         
               var attr      = sandbox.build();
                                                                                 debug(attr);
@@ -241,7 +245,7 @@
         }//allow
         
         
-        obj.allow   = function(iframe){
+        obj.build.allow   = function(iframe){
         
               var attr    = permissions.build();
                                                                                 debug(attr);
