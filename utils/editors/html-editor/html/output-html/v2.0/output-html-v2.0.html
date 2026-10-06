@@ -129,6 +129,7 @@
         var create      = {};
         var build       = {};
         var run         = {};
+        obj.console     = {};
         
         
   //:
@@ -157,15 +158,8 @@
               
               var hdr                                   = $(shadow,'#hdr');
               
-              chk.isolate                               = $.chkbox(hdr,'#isolate');
-              chk.isolate.checked                       = window.crossOriginIsolated;
-              
               chk['allow-scripts']                      = $.chkbox(hdr,'#allow-scripts');
-              chk['allow-modals']                       = $.chkbox(hdr,'#allow-modals');
-              chk['allow-popups']                       = $.chkbox(hdr,'#allow-popups');
               
-              chk['console-show']                       = $.chkbox(hdr,'#console-show',btn.console.show);
-              chk['console-echo']                       = $.chkbox(hdr,'#console-echo');
               chk['console-persist']                    = $.chkbox(hdr,'#console-persist');
               $(shadow,'#console-clear').onclick        = btn.console.clear;
               
@@ -210,17 +204,7 @@
 */
 
 
-        btn.console.show    = function(chk){
-        
-              if(chk.checked){
-                    webconsole.host.style.display   = '';
-              }else{
-                    webconsole.host.style.display   = 'none';
-              }
-              
-        }//show
-        
-        
+
         btn.console.clear   = function(){
         
               webconsole.clear();
@@ -230,6 +214,19 @@
               
         }//clear
         
+        
+  //:
+  
+  
+        obj.console.show    = function(chk){
+        
+              if(chk.checked){
+                    webconsole.host.style.display   = '';
+              }else{
+                    webconsole.host.style.display   = 'none';
+              }
+              
+        }//show
         
         
         obj.horiz   = function(){
