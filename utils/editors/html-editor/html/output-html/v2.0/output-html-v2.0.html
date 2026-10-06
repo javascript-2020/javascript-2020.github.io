@@ -163,6 +163,46 @@
               
               
               
+              window.addEventListener('message',event=>{
+                                                                                      //console.log(event);
+                                                                                      
+                    if(event.source!==iframe.contentWindow)return;
+                    
+                    var data    = event.data;
+                    if(data && data.source==='IFRAME_MOUSE_BRIDGE'){
+                    
+                          var rect    = iframe.getBoundingClientRect();
+                          
+                          var parentClientX   = rect.left+data.clientX;
+                          var parentClientY   = rect.top+data.clientY;
+                          var screenX         = window.screenX+parentClientX;
+                          var screenY         = window.screenY+parentClientY;
+                                                                                      //console.log(`Event: ${data.eventType}`,{x:parentClientX,y:parentClientY,nativeEventData:data});
+                          var event2          = new MouseEvent(data.eventType,{
+                                bubbles       : true,
+                                cancelable    : true,
+                                composed      : true,
+                                view          : window,
+                                detail        : data.eventType === 'click' || data.eventType === 'dblclick' ? 1 : 0,
+                                screenX       : screenX,
+                                screenY       : screenY,
+                                clientX       : parentClientX,
+                                clientY       : parentClientY,
+                                ctrlKey       : data.ctrlKey,
+                                altKey        : data.altKey,
+                                shiftKey      : data.shiftKey,
+                                metaKey       : data.metaKey,
+                                button        : data.button,
+                                buttons       : data.buttons
+                          });
+                          
+                          iframe.dispatchEvent(event2);
+                          
+                    }
+                    
+              });
+              
+              
         }//init
         
         
@@ -230,7 +270,8 @@
         btn.console.clear   = function(){
         
               webconsole.clear();
-              if(chk['console-echo'].checked){
+              
+              if(settings.chk['console-echo'].checked){
                     console.clear();
               }
               
