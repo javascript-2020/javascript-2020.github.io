@@ -14,6 +14,7 @@
     
   .radio
     {border:1px solid lightgray;padding:2px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center}
+    
   #isolate
     {margin-right:10px}
   #allow-scripts
@@ -37,34 +38,17 @@
             </style>
             
             <div id=hdr>
-                  <span id=isolate class=radio>
-                        <input type=checkbox>
-                        isolate
-                  </span>
+            
+                  <output-settings v1.0 component=page>
+                  </output-settings>
                   
                   <span id=allow-scripts class=radio>
                         <input type=checkbox checked disabled>
                         allow-scripts
                   </span>
-                  <span id=allow-modals class=radio>
-                        <input type=checkbox checked>
-                        allow-modals
-                  </span>
-                  <span id=allow-popups class=radio style='margin-right:30px'>
-                        <input type=checkbox checked>
-                        allow-popups
-                  </span>
                   
                   <div style='flex:1'></div>
                   
-                  <span id=console-show class=radio>
-                        <input type=checkbox checked>
-                        console
-                  </span>
-                  <span id=console-echo class=radio>
-                        <input type=checkbox checked>
-                        echo
-                  </span>
                   <span id=console-persist class=radio>
                         <input type=checkbox>
                         persist
@@ -74,6 +58,7 @@
                   </span>
                   
                   <button id=kill>kill</button>
+                  
             </div>
             
             
@@ -83,7 +68,6 @@
             -->
             <div id=hldr>
                   <iframe></iframe>
-                  <div id=glass></div>
             </div>
             
             <div id=slider></div>
@@ -126,7 +110,6 @@
         var hldr;
         var iframe;
         var def_sandbox;
-        var glass;
         
         
         var sandbox_url       = {};
@@ -191,7 +174,6 @@
               
               hldr                                      = $(shadow,'#hldr');
               iframe                                    = $(shadow,'iframe');
-              glass                                     = $(shadow,'#glass');
               
               
               $.slider(hldr,'#slider',webconsole.host,null,{root:shadow,mode:'horiz'});
@@ -250,17 +232,6 @@
         
         
         
-        obj.glass   = function(show=true){
-        
-              var display     = 'none';
-              if(show){
-                    display   = 'block';
-              }
-              glass.style.display    = display;
-              
-        }//glass
-        
-        
         obj.horiz   = function(){
         
               host.style.width     = '100%';
@@ -297,22 +268,27 @@
         
               iframe.remove();
               iframe    = iframe.cloneNode();
-                                                                                debug(sandbox_url);
-              build.sandbox();
               
-              iframe.setAttribute('allow',iframe_allow);
-                                                                                debug(iframe_allow);
+              //build.sandbox();
+              var attr    = settings.sandbox();
+              iframe.setAttribute('sandbox',attr);
+              
+              var attr    = settings.permissions();
+              iframe.setAttribute('allow',attr);
+              
+              /*
               if(chk.isolate.checked){
                     src  += '?isolate';
               }
               iframe.src      = src;
+              */
                                                                                 debug(src);
               iframe.onload   = onload;
               hldr.append(iframe);
               
         }//iframe
         
-        
+/*
         build.sandbox   = function(){
         
               var attr      = iframe_sandbox;
@@ -334,8 +310,9 @@
               iframe.setAttribute('sandbox',attr);
               
         }//sandbox
-        
-        
+*/
+
+
         function sandbox1(html){
                                                                                 debug('sandbox1');
               var src   = iframe_src;
