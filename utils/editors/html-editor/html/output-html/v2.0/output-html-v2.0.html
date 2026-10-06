@@ -366,10 +366,10 @@
               
               
               if(!chk['console-persist'].checked){
-                    //clear();
+                    btn.console.clear();
               }
               
-              var echo        = true;//settings.chk['console-echo'].checked;
+              var echo        = settings.chk['console-echo'].checked;
               
               var fn          = await upload();
                                                                                 debug(fn);
@@ -475,9 +475,10 @@
         
         function kill(){
         
+              iframe.remove();
               var niframe       = iframe.cloneNode(true);
               //niframe.srcdoc    = null;
-              hldr.replaceChild(niframe,iframe);
+              hldr.append(niframe);
               iframe            = niframe;
               
         }//kill
