@@ -59,12 +59,16 @@
                   
                   <div style='flex:1'></div>
                   
+                  <span id=console-clear class=radio>
+                        clear
+                  </span>
                   <span id=console-persist class=radio>
                         <input type=checkbox>
                         persist
                   </span>
-                  <span id=console-clear class=radio>
-                        clear
+                  <span id=console-wrap class=radio>
+                        <input type=checkbox>
+                        wrap
                   </span>
                   
                   <button id=kill>kill</button>
@@ -215,8 +219,9 @@
               
               chk['allow-scripts']                      = $.chkbox(hdr,'#allow-scripts');
               
-              chk['console-persist']                    = $.chkbox(hdr,'#console-persist');
               $(shadow,'#console-clear').onclick        = btn.console.clear;
+              chk['console-persist']                    = $.chkbox(hdr,'#console-persist');
+              $.chkbox(shadow,,'#console-wrap',btn.console.wrap)
               
               $(hdr,'#kill').onclick                    = btn.kill;
               
@@ -270,6 +275,10 @@
               }
               
         }//clear
+        
+        
+        btn.console.wrap    = function(){
+        }//wrap
         
         
   //:
