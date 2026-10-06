@@ -83,18 +83,20 @@
   var obj   = {
         version   : 'v2.0',
   };
-        var df=false,did='output-html'
+        var df=true,did='output-html';
+        
+        var ext,$,debug
         ;
         
+        obj.initmod=function(...list){
         
-        
-        var ext,$
-        ;
-        
-        obj.initmod=function(params){
-        
-              ext   = mod.rd(params,'ext',ext);
-              $     = mod.rd(params,'$',$);
+              list.forEach(params=>{
+              
+                    ext         = mod.rd(params,'ext',ext);
+                    $           = mod.rd(params,'$',$);
+                    debug       = mod.rd(params,'debug',debug);
+                    
+              });
               
         }//initmod
         
@@ -109,7 +111,6 @@
         
         var hldr;
         var iframe;
-        var def_sandbox;
         
         
         var sandbox_url       = {};
@@ -136,8 +137,9 @@
   
   
         obj.init    = async function(){
-        
-        
+                                                                                debug=eval(debug.mod);
+                                                                                debug('init');
+                                                                                
               webconsole    = mod['web-console'];
               
               settings      = mod['output-settings'];
@@ -155,7 +157,7 @@
   
   
         obj.initdom   = function(){
-        
+                                                                                debug('initdom');
               shadow                                    = host.shadowRoot;
               
               var style                                 = $(shadow,'style');
@@ -477,7 +479,7 @@
         
   //:
   
-  
+/*
         function debug(...args){
         
               if(!df && !obj.df)return;
@@ -489,10 +491,11 @@
               console.groupEnd();
               
         }//debug
-        
-        
-        
-        
+*/
+
+
+
+
   return obj;
   
 })//output_html
