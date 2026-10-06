@@ -267,8 +267,9 @@
                                                                                 debug('initdom');
               shadow                                    = host.shadowRoot;
               
-              var style                     = $(shadow,'style');
-              $.stylesheet.copyrule('#page-inline','.icon',style);
+              var style2                     = $(shadow,'style');
+              $.stylesheet.copyrule('#page-inline','.icon',style2);
+              $.editor.ace.import_style(shadow,()=>shadow.append(style));
               
               
               root                                      = $(shadow,'#root');
@@ -295,7 +296,9 @@
               output                                    = $(shadow,'#output');
               cur.root                                  = output;
               
+              
               output_console                            = $(shadow,'#output-console');
+              obj.set.type('console');
               jsconsole                                 = jsconsolemod.create(output_console);
               
               shadow.append(style);
@@ -648,7 +651,7 @@
         
         
         obj.set.type    = function(type){
-        
+                                                                                debug('set.type',type);
               switch(type){
               
                 case 'console'        :
