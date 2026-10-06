@@ -135,6 +135,7 @@
         
         var hldr;
         var iframe;
+        var last_src;
         
         var chk         = {};
         obj.chk         = chk;
@@ -286,12 +287,11 @@
         }//run
         
         
-        create.iframe   = function({src,onload}){
+        create.iframe   = function({src,onload}={}){
                                                                                 debug('create.iframe',src);
               iframe.remove();
               iframe    = iframe.cloneNode();
               
-              //build.sandbox();
               var attr    = settings.sandbox();
               iframe.setAttribute('sandbox',attr);
               
@@ -303,38 +303,16 @@
                     src  += '?isolate';
               }
               */
-              iframe.src      = src;
+              
+              iframe.src      = src||last_src;
+              laast_src       = src;
               
               iframe.onload   = onload;
               hldr.append(iframe);
               
         }//iframe
         
-/*
-        build.sandbox   = function(){
         
-              var attr      = iframe_sandbox;
-                                                                                //console.log(attr);
-              var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
-              
-              if(!chk['allow-scripts'].checked){
-                    tokens.delete('allow-scripts');
-              }
-              if(chk['allow-modals'].checked){
-                    tokens.add('allow-modals');
-              }
-              if(chk['allow-popups'].checked){
-                    tokens.add('allow-popups');
-              }
-              
-              var attr      = [...tokens].join(' ');
-                                                                                debug(attr);
-              iframe.setAttribute('sandbox',attr);
-              
-        }//sandbox
-*/
-
-
         function sandbox1(html){
                                                                                 debug('sandbox1');
               var src   = iframe_src;
@@ -471,15 +449,13 @@
         }//blob
 */
 
+
+
         obj.kill    = function(){return kill()}    //d
         
         function kill(){
         
-              iframe.remove();
-              var niframe       = iframe.cloneNode(true);
-              //niframe.srcdoc    = null;
-              hldr.append(niframe);
-              iframe            = niframe;
+              create.iframe();
               
         }//kill
         
@@ -497,26 +473,12 @@
         
   //:
   
-/*
-        function debug(...args){
-        
-              if(!df && !obj.df)return;
-              args.unshift(`[ ${did} ]`);
-              var fmt     = Array.from({length:args.length}).fill('%O').join(' ');
-              var args2   = [fmt].concat(args);
-              console.groupCollapsed.apply(console,args2);
-              console.trace();
-              console.groupEnd();
-              
-        }//debug
-*/
-
-
-
-
+  
+  
   return obj;
   
-})//output_html
+//output_html
+})
 
       </script>
       
