@@ -54,7 +54,7 @@
             
                   <input value=sandbox type=button>
                   
-                  <div class=menu style='display:none;height:350px'>
+                  <div part=menu class=menu style='display:none;height:350px'>
                   
                         <div class=menu-title>
                               iframe sandbox
@@ -188,12 +188,13 @@
                     var nitem                                 = item.cloneNode(true);
                     nitem.id                                  = value;
                     $(nitem,'label').textContent              = value;
-                    $(nitem,'[type=checkbox]').checked        = (def.indexOf(value)!=-1)
+                    $(nitem,'[type=checkbox]').checked        = (preset.standard.indexOf(value)!=-1)
                     list.append(nitem);
                     chk[value]                                = $.chkbox(shadow,`#${value}`,chk.click);
                     
               });
               
+              btn.preset('standard');
               
         }//initdom
         
@@ -214,14 +215,9 @@
         
         chk.click   = function(chk){
                                                                                 //console.log(chk);
-              /*
-              if(chk.id=='allow-modals'){
-                    output.chk['allow-modals'].checked    = chk.checked;
+              if(output.chk[chk.id]){
+                    output.chk[chk.id].checked    = chk.checked;
               }
-              if(chk.id=='allow-popups'){
-                    output.chk['allow-popups'].checked    = chk.checked;
-              }
-              */
               
         }//click
         
