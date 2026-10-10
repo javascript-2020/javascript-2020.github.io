@@ -60,6 +60,7 @@
             </div>
             
             <div id=view>
+            
                   <div class='fn item'>
                         <div class=line>
                         </div>
@@ -70,9 +71,22 @@
                         <div class=args>
                         </div>
                   </div>
+                  
                   <div class='label item'>
                   </div>
-            </div>
+                  
+                  <div class='html item'>
+                        <div class=line>
+                        </div>
+                        <div class=name>
+                        </div>
+                        <div class=id>
+                        </div>
+                        <div class=class>
+                        </div>
+                  </div>
+                  
+            </div view>
             
       </template>
       
@@ -224,7 +238,23 @@
                                                                 console.log(list);
               view.replaceChildren();
               
+              list.forEach(o=>{
               
+                    var node    = ui.html.cloneNode(true);
+                    $(node,'.line').textContent   = o.line;
+                    $(node,'.name').textContent   = o.name;
+                    if(o.attrs.id){
+                          $(node,'.id').textContent   = o.attrs.id;
+                    }else{
+                          $(node,'.id').remove();
+                    }
+                    if(o.attrs.class){
+                          $(node,'.class').textContent    = o.attrs.class;
+                    }else{
+                          $(node,'.class').remove();
+                    }
+                    
+              });
               
         }//html
         
@@ -338,7 +368,7 @@
               if(!valid(name))return;
               
               var args      = parse.fn.args(txt,i1);
-              var indent    = parse.fn.indent(txt,i1);
+              var indent    = parse.indent(txt,i1);
               
               return {index:i1,name,args,indent};
               
@@ -371,7 +401,7 @@
               if(!valid(name))return;
               
               var args      = parse.fn.args(txt,i1);
-              var indent    = parse.fn.indent(txt,i1);
+              var indent    = parse.indent(txt,i1);
               
               return {index:i1,name,args,indent};
               
@@ -389,7 +419,7 @@
         }//args
         
         
-        parse.fn.indent   = function(txt,i1){
+        parse.indent   = function(txt,i1){
         
               var i2        = txt.lastIndexOf('\n',i1);
               var i3        = txt.indexOf('\n',i1);
@@ -474,6 +504,7 @@
   
         parse.html    = function(txt){
         
+              var list    = [];
               var regex   = /<\/?[a-z][a-z0-9]*\b[^>]*>/gi;
               
               while(true){
@@ -485,13 +516,7 @@
                     var tag       = match[0];
                     
                     if(!tag.startsWith('</')){
-                                                                                console.log(tag);
-/*
-                          var i1        = tagname.indexOf(' ');
-                          var name      = tagname.slice(2,i1);
-                          var i2        = tagname.indexOf('>');
-                          var attrs     = tagname.slice(i1+1,i2);
-*/
+                                                                                //console.log(tag);
                           var match         = tag.match(/^<\s*([a-z0-9\-]+)/i);
                           var name          = match ? match[1].toLowerCase() : '';
                           if(!name)debugger;
@@ -499,16 +524,27 @@
                                 var parser        = new DOMParser();
                                 var doc           = parser.parseFromString(tag,'text/html');
                                 var element       = doc.querySelector(name);
-                                var attributes    = {};
+                                var attrs         = {};
                                 
                                 for(var i=0;i<element.attributes.length;i++){
                                 
-                                      var attr                = element.attributes[i];
-                                      attributes[attr.name]   = (attr.value==='' ? true : attr.value);
+                                      var attr            = element.attributes[i];
+                                      attrs[attr.name]    = (attr.value==='' ? true : attr.value);
                                       
                                 }//for
                                 
-                                console.log(name,attributes);
+                                                                                //console.log(name,attributes);
+                                var line      = lineno(txt,index);
+                                var indent    = parse.indent(txt,index);
+                                
+                                var o   = {
+                                      index,
+                                      line,
+                                      indent,
+                                      name,
+                                      attrs
+                                };
+                                list.push(o);
                           }
                           
                           
@@ -517,6 +553,8 @@
                     }
                     
               }//while
+              
+              return list;
               
               
         }//html
