@@ -7,26 +7,21 @@
             <style>
             
   :host
-    {display:flex;flex-direction:column;height:100%}
+    {display:flex;flex-direction:column;height:100%;overflow:auto}
     
   #hdr
-    {display:flex}
+    {display:flex;flex-wrap:wrap}
     
   .radio
     {border:1px solid lightgray;padding:2px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center}
-  #isolate
-    {margin-right:10px}
-  #allow-scripts
-    {color:gray}
+    
   #console-clear
     {margin-right:20px}
     
   #hldr
     {flex:1;box-sizing:border-box;position:relative}
   iframe
-    {width:100%;height:100%}
-  #glass
-    {position:absolute;left:0;top:0;width:100%;height:100%;display:none}
+    {width:100%;height:100%;box-sizing:border-box;border:1px solid lightgray}
     
   #slider
     {height:10px;cursor:ns-resize}
@@ -34,56 +29,55 @@
   #kill
     {padding:5px 10px;min-width:60px}
     
+  .radio
+    {border:1px solid lightgray;padding:2px 5px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:10px}
+  .radio>*
+    {cursor:pointer}
+  .radio:has([type=checkbox]:disabled)
+    {color:gray;cursor:default}
+  .radio:has([type=checkbox]:disabled)>*
+    {cursor:default}
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type]
+    {cursor:pointer}
+  input[type=checkbox]
+    {width:20px;height:20px}
+    
             </style>
             
             <div id=hdr>
-                  <span id=isolate class=radio>
-                        <input type=checkbox>
-                        isolate
-                  </span>
+            
+                  <output-settings component=page>
+                  </output-settings>
                   
                   <span id=allow-scripts class=radio>
-                        <input type=checkbox checked disabled>
+                        <input type=checkbox checked>
                         allow-scripts
-                  </span>
-                  <span id=allow-modals class=radio>
-                        <input type=checkbox checked>
-                        allow-modals
-                  </span>
-                  <span id=allow-popups class=radio style='margin-right:30px'>
-                        <input type=checkbox checked>
-                        allow-popups
                   </span>
                   
                   <div style='flex:1'></div>
                   
-                  <span id=console-show class=radio>
-                        <input type=checkbox checked>
-                        console
-                  </span>
-                  <span id=console-echo class=radio>
-                        <input type=checkbox checked>
-                        echo
+                  <span id=console-clear class=radio>
+                        clear
                   </span>
                   <span id=console-persist class=radio>
                         <input type=checkbox>
                         persist
                   </span>
-                  <span id=console-clear class=radio>
-                        clear
+                  <span id=console-wrap class=radio>
+                        <input type=checkbox>
+                        wrap
                   </span>
                   
                   <button id=kill>kill</button>
+                  
             </div>
             
             
-            <!--
-            https://sandbox-ext-code-com-1024713184986.us-central1.run.app/html-sandbox/html-sandbox.html
-            https://ext-code-test.com/html-sandbox/html-sandbox.html
-            -->
             <div id=hldr>
                   <iframe></iframe>
-                  <div id=glass></div>
             </div>
             
             <div id=slider></div>
@@ -99,18 +93,20 @@
   var obj   = {
         version   : 'v2.0',
   };
-        var df=false,did='output-html'
+        var df=true,did='output-html';
+        
+        var ext,$,debug
         ;
         
+        obj.initmod=function(...list){
         
-        
-        var ext,$
-        ;
-        
-        obj.initmod=function(params){
-        
-              ext   = mod.rd(params,'ext',ext);
-              $     = mod.rd(params,'$',$);
+              list.forEach(params=>{
+              
+                    ext         = mod.rd(params,'ext',ext);
+                    $           = mod.rd(params,'$',$);
+                    debug       = mod.rd(params,'debug',debug);
+                    
+              });
               
         }//initmod
         
@@ -119,38 +115,90 @@
   
   
         var webconsole;
+        var settings;
         
         
-        var chk   = {};
+        
+        var sandbox_type      = 'type2';
+        var sandbox_url       = {};
+        sandbox_url.type1     = 'https://sandbox.ext-code.com/html-sandbox-1/html-sandbox-1.html';
+        sandbox_url.type2     = 'https://sandbox.ext-code.com/html-sandbox-2/html-sandbox-2.html';
+        
+        
+        
+        var shadow;
         
         var hldr;
         var iframe;
-        var def_sandbox;
-        var glass;
+        var last_src;
+        
+        var chk         = {};
+        obj.chk         = chk;
         
         
-        var sandbox_url;
-        var iframe_src        = 'https://sandbox.ext-code.com/html-sandbox-1/html-sandbox-1.html';
-        var iframe_sandbox    = 'allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock';//allow-popups-to-escape-sandbox
-        var iframe_allow      = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial; bluetooth;
-                                  xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
-                                  
-                                  
-                                  
+        
         var btn         = {};
         btn.console     = {};
         obj.on          = {};
-        var build       = {};
+        var create      = {};
+        obj.console     = {};
         
         
   //:
   
   
         obj.init    = async function(){
-        
+                                                                                debug=eval(debug.mod);
+                                                                                debug('init');
+                                                                                
+              webconsole    = mod['web-console'];
+              
+              settings      = mod['output-settings'];
+              settings.initmod({output:obj});
+              
+              
               await mod.auto();
               
-              webconsole    = mod['web-console'];
+              
+              
+              window.addEventListener('message',event=>{
+                                                                                //console.log(event);
+                                                                                
+                    if(event.source!==iframe.contentWindow)return;
+                    
+                    var data    = event.data;
+                    if(data && data.source==='IFRAME_MOUSE_BRIDGE'){
+                    
+                          var rect    = iframe.getBoundingClientRect();
+                          
+                          var parentClientX   = rect.left+data.clientX;
+                          var parentClientY   = rect.top+data.clientY;
+                          var screenX         = window.screenX+parentClientX;
+                          var screenY         = window.screenY+parentClientY;
+                                                                                //console.log(`Event: ${data.eventType}`,{x:parentClientX,y:parentClientY,nativeEventData:data});
+                          var event2          = new MouseEvent(data.eventType,{
+                                bubbles       : true,
+                                cancelable    : true,
+                                composed      : true,
+                                view          : window,
+                                detail        : data.eventType === 'click' || data.eventType === 'dblclick' ? 1 : 0,
+                                screenX       : screenX,
+                                screenY       : screenY,
+                                clientX       : parentClientX,
+                                clientY       : parentClientY,
+                                ctrlKey       : data.ctrlKey,
+                                altKey        : data.altKey,
+                                shiftKey      : data.shiftKey,
+                                metaKey       : data.metaKey,
+                                button        : data.button,
+                                buttons       : data.buttons
+                          });
+                          
+                          iframe.dispatchEvent(event2);
+                          
+                    }
+                    
+              });
               
               
         }//init
@@ -160,7 +208,7 @@
   
   
         obj.initdom   = function(){
-        
+                                                                                debug('initdom');
               shadow                                    = host.shadowRoot;
               
               var style                                 = $(shadow,'style');
@@ -169,27 +217,25 @@
               
               var hdr                                   = $(shadow,'#hdr');
               
-              chk.isolate                               = $.chkbox(hdr,'#isolate');
-              chk.isolate.checked                       = window.crossOriginIsolated;
+              chk['allow-scripts']                      = $.chkbox(hdr,'#allow-scripts',btn['allow-scripts']);
               
-              chk['allow-scripts']                      = $.chkbox(hdr,'#allow-scripts');
-              chk['allow-modals']                       = $.chkbox(hdr,'#allow-modals');
-              chk['allow-popups']                       = $.chkbox(hdr,'#allow-popups');
-              
-              chk['console-show']                       = $.chkbox(hdr,'#console-show',btn.console.show);
-              chk['console-echo']                       = $.chkbox(hdr,'#console-echo');
-              chk['console-persist']                    = $.chkbox(hdr,'#console-persist');
               $(shadow,'#console-clear').onclick        = btn.console.clear;
+              chk['console-persist']                    = $.chkbox(hdr,'#console-persist');
+              //$.chkbox(shadow,'#console-wrap',btn.console.wrap)
               
               $(hdr,'#kill').onclick                    = btn.kill;
               
               
               hldr                                      = $(shadow,'#hldr');
               iframe                                    = $(shadow,'iframe');
-              glass                                     = $(shadow,'#glass');
               
               
               $.slider(hldr,'#slider',webconsole.host,null,{root:shadow,mode:'horiz'});
+              
+              
+              var src   = sandbox_url[sandbox_type];
+              create.iframe({src});
+              
               
         }//initdom
         
@@ -197,11 +243,19 @@
   //:
   
   
+        btn['allow-scripts']    = function(chk){
+        
+              settings.sandbox.chk['allow-scripts'].checked   = chk.checked;
+              
+        }//allow-scripts
+        
+        
         btn.kill    = function(){
         
               kill();
               
         }//kill
+        
         
 /*
         btn.isolate   = function(chk){
@@ -218,7 +272,33 @@
 */
 
 
-        btn.console.show    = function(chk){
+
+        btn.console.clear   = function(){
+        
+              webconsole.clear();
+              
+              if(settings.chk['console-echo'].checked){
+                    console.clear();
+              }
+              
+        }//clear
+        
+        
+        btn.console.wrap    = function(chk){
+        
+              if(chk.checked){
+                    webconsole.style.whiteSpace   = 'pre-wrap';
+              }else{
+                    webconsole.style.whiteSpace   = 'no-wrap';
+              }
+              
+        }//wrap
+        
+        
+  //:
+  
+  
+        obj.console.show    = function(chk){
         
               if(chk.checked){
                     webconsole.host.style.display   = '';
@@ -227,28 +307,6 @@
               }
               
         }//show
-        
-        
-        btn.console.clear   = function(){
-        
-              webconsole.clear();
-              if(chk['console-echo'].checked){
-                    console.clear();
-              }
-              
-        }//clear
-        
-        
-        
-        obj.glass   = function(show=true){
-        
-              var display     = 'none';
-              if(show){
-                    display   = 'block';
-              }
-              glass.style.display    = display;
-              
-        }//glass
         
         
         obj.horiz   = function(){
@@ -272,49 +330,47 @@
   
   
         obj.run   = function(html){
+        
+              switch(sandbox_type){
+              
+                case 'type1'    : sandbox1(html);       break;
+                case 'type2'    : sandbox2(html);       break;
+                
+              }//switch
+              
         }//run
         
         
-        build.sandbox   = function(){
-        
-              var attr      = iframe_sandbox;
-                                                                                //console.log(attr);
-              var tokens    = new Set(attr.split(/\s+/).filter(Boolean));
-              
-              if(!chk['allow-scripts'].checked){
-                    tokens.delete('allow-scripts');
-              }
-              if(chk['allow-modals'].checked){
-                    tokens.add('allow-modals');
-              }
-              if(chk['allow-popups'].checked){
-                    tokens.add('allow-popups');
-              }
-              
-              var attr      = [...tokens].join(' ');
-                                                                                debug(attr);
-              iframe.setAttribute('sandbox',attr);
-              
-        }//sandbox
-        
-        
-        obj.sandbox   = function(html){
-                                                                                debug('sandbox');
+        create.iframe   = function({src,onload}={}){
+                                                                                debug('create.iframe',src);
               iframe.remove();
               iframe    = iframe.cloneNode();
-                                                                                debug(sandbox_url);
-              build.sandbox();
               
-              iframe.setAttribute('allow',iframe_allow);
-                                                                                debug(iframe_allow);
-              var src         = iframe_src;
+              var attr    = settings.build.sandbox();
+              iframe.setAttribute('sandbox',attr);
+              
+              var attr    = settings.build.permissions();
+              iframe.setAttribute('allow',attr);
+              
+              /*
               if(chk.isolate.checked){
                     src  += '?isolate';
               }
-              iframe.src      = src;
-                                                                                debug(src);
+              */
+              
+              iframe.src      = src||last_src;
+              laast_src       = src;
+              
               iframe.onload   = onload;
               hldr.append(iframe);
+              
+        }//iframe
+        
+        
+        function sandbox1(html){
+                                                                                debug('sandbox1');
+              var src   = iframe_src;
+              create.iframe({src,onload});
               
               
               function onload(){
@@ -333,11 +389,58 @@
                     
               }//onload
               
-        }//sandbox
+        }//sandbox1
+        
+        
+        async function sandbox2(html){
+                                                                                debug('sandbox2');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              
+              if(!chk['console-persist'].checked){
+                    btn.console.clear();
+              }
+              
+              var echo        = settings.chk['console-echo'].checked;
+              
+              var fn          = await upload();
+                                                                                debug(fn);
+              var src         = sandbox_url.type2+`?fn=${fn}`;
+              
+              create.iframe({src,onload});
+              
+              return promise;
+              
+              
+              async function upload(){
+                                                                                debug('upload');
+                    var {result,error}    = await send({type:'upload',html,echo});
+                    if(error){
+                                                                                debug(error);
+                          log.red(error);
+                          return;
+                    }
+                                                                                debug('ok');
+                    var fn    = result;
+                    return fn;
+                    
+              }//upload
+              
+              
+              async function onload(){
+                                                                                debug('onload');
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
+                    
+                    resolve();
+                    
+              }//onload
+              
+        }//sandbox2
         
         
         
-        obj.srcdoc    = function(html){
+        function srcdoc(html){
         
               iframe.remove();
               iframe    = iframe.cloneNode();
@@ -360,6 +463,37 @@
         
         
         
+  //:
+  
+  
+        function send(payload){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var msgid   = crypto.randomUUID();
+              
+              window.addEventListener('message',onmessage);
+              iframe.contentWindow.postMessage({msgid,payload},'*');
+              
+              return promise;
+              
+              
+              function onmessage(e){
+              
+                    if(e.data?.msgid!==msgid)return;
+                    window.removeEventListener('message',onmessage);
+                    var {result,error}    = e.data;
+                    resolve({result,error});
+                    
+              }//onmessage
+              
+        }//send
+        
+        
+  //:
+  
+  
+  
 /*
         obj.blob    = function(html){
         
@@ -370,14 +504,13 @@
         }//blob
 */
 
+
+
         obj.kill    = function(){return kill()}    //d
         
         function kill(){
         
-              var niframe       = iframe.cloneNode(true);
-              //niframe.srcdoc    = null;
-              hldr.replaceChild(niframe,iframe);
-              iframe            = niframe;
+              create.iframe();
               
         }//kill
         
@@ -396,24 +529,11 @@
   //:
   
   
-        function debug(...args){
-        
-              if(!df && !obj.df)return;
-              args.unshift(`[ ${did} ]`);
-              var fmt     = Array.from({length:args.length}).fill('%O').join(' ');
-              var args2   = [fmt].concat(args);
-              console.groupCollapsed.apply(console,args2);
-              console.trace();
-              console.groupEnd();
-              
-        }//debug
-        
-        
-        
-        
+  
   return obj;
   
-})//output_html
+//output_html
+})
 
       </script>
       
