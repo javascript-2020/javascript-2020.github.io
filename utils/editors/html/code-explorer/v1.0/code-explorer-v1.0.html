@@ -20,19 +20,19 @@
     }
     
   #view
-    {flex:1;display:flex;flex-direction:column;gap:2px;border-top:1px solid lightgray;padding:5px;overflow:auto}
+    {flex:1;display:flex;flex-direction:column;gap:2px;border-top:1px solid lightgray;padding:5px;overflow:auto;max-width:100%}
     
   .item
-    {cursor:pointer}
+    {cursor:pointer;min-width: max-content;}
     
   .fn
     {display:flex;gap:5px}
   .fn .line
-    {width:50px}
+    {width:50px;flex-shrink: 0;}
   .fn .name
-    {font-weight:bold}
+    {font-weight:bold;flex-shrink: 0;}
   .fn .args
-    {}
+    {flex-shrink: 0;}
     
   .label
     {}
@@ -287,9 +287,10 @@
               var name    = txt.slice(i1,i2).trim();
               if(!valid(name))return;
               
-              var args    = parse.fn.args(txt,i1);
+              var args      = parse.fn.args(txt,i1);
+              var indent    = parse.fn.indent(txt,i1);
               
-              return {index:i1,name,args};
+              return {index:i1,name,args,indent};
               
         }//type1
         
@@ -319,9 +320,10 @@
               var name    = txt.slice(i4+1,i3+1);
               if(!valid(name))return;
               
-              var args    = parse.fn.args(txt,i1);
+              var args      = parse.fn.args(txt,i1);
+              var indent    = parse.fn.indent(txt,i1);
               
-              return {index:i1,name,args};
+              return {index:i1,name,args,indent};
               
         }//type2
         
@@ -335,6 +337,18 @@
               return args;
               
         }//args
+        
+        
+        parse.fn.indent   = function(txt,i1){
+        
+              var i2        = txt.lastIndexOf('\n',i1);
+              var i3        = txt.indexOf('\n',i1);
+              var line      = txt.slice(i2+1,i3);
+              var match     = line.match(/^\s*/);
+              var indent    = match ? match[0].length : 0;
+              return indent;
+              
+        }//indent
         
         
         
