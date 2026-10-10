@@ -123,7 +123,7 @@
               editor.initmod({mode:'html',on});
               autosave.initmod({save:btn.save});
               
-              mod.base.add({log,complete,source,focus,editor,filemod});
+              mod.base.add({complete,source,focus,editor,filemod});
               
               await mod.auto();
               
@@ -151,7 +151,7 @@
             <style id=page-inline>
             
   #hdr
-    {padding:5px 5px;height:30px;display:flex;align-items:center;gap:10px}
+    {padding:5px 5px;height:30px;display:flex;/*align-items:center;*/gap:10px;flex-wrap:wrap}
     
   .icon
     {border:1px solid gray;border-radius:3px;box-sizing:border-box;width:30px;height:30px;cursor:pointer}
@@ -195,6 +195,11 @@
   .visually-hidden
     {position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0}
     
+  .radio
+    {border:1px solid lightgray;padding:2px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center}
+  .radio *
+    {cursor:pointer}
+    
   .menu-item
     {gap:20px}
   .menu-item .menu-label
@@ -234,6 +239,13 @@
                   
                   <img id=prettier class=icon title=prettier>
                   <img id=syntax-chk class=icon title=syntax>
+                  
+                  <div id=output-root class=radio>
+                        <input type=checkbox checked>
+                        <label>
+                              output
+                        </label>
+                  </div>
                   
                   <span class=spc></span>
                   
@@ -275,6 +287,7 @@
         var set                 = {};
         
         
+        
         async function initdom(rootnode){   //c
                                                                                 debug('initdom');
               root                                  = rootnode;
@@ -292,6 +305,7 @@
               $('#run').onclick                     = btn.run;
               $(root,'#prettier').onclick           = btn.prettier;
               $(root,'#syntax-chk').onclick         = btn.syntax;
+              $.chkbox(root,'#output-root',btn.output);
               
               $('#horiz').onclick                   = horiz;
               $('#vert').onclick                    = vert;
@@ -362,7 +376,7 @@
         
         btn.run   = function(){
                                                                                 debug('btn.run');
-              run.sandbox();
+              run();
               
         }//run
         
@@ -406,23 +420,24 @@
                                                                                 debug('btn.syntax');
                                                                                 console.clear();
                                                                                 console.log('syntax');
-              var html      = editor.getValue();
-              var index     = 0;
-              var ec        = true;
+              var html            = editor.getValue();
+              var index           = 0;
+              var ec              = true;
               while(ec){
               
-                    var i1   = html.indexOf('<scr'+'ipt>',index);
-                    if(i1==-1){
+                    var i1a       = html.indexOf('<scr'+'ipt',index);
+                    if(i1a==-1){
                           return;
                     }
+                    var i1        = html.indexOf('>',i1a);
                     
-                    var str     = html.slice(0,i1);
-                    var lines   = str.split('\n').length;
+                    var str       = html.slice(0,i1a);
+                    var lines     = str.split('\n').length;
                     
-                    var i2    = html.indexOf('</scr'+'ipt>',i1);
-                    index     = i2+7;
+                    var i2        = html.indexOf('</scr'+'ipt',i1);
+                    index         = i2+7;
                     
-                    var js    = html.slice(i1+8,i2);
+                    var js        = html.slice(i1+8,i2);
                                                                                 //console.log(js);
                     var result    = syntax(js);
                                                                                 //console.log(i1,i2,lines,result);
@@ -440,6 +455,38 @@
               
               
         }//syntax
+        
+        
+        {
+        
+              let w;
+              let h;
+              
+              btn.output    = function(chk){console.log(chk);
+              
+                    if(output.__host.style.display=='none'){
+                          if(ui.mode=='vert'){
+                                editor.__host.style.width     = w;
+                          }else{
+                                editor.__host.style.height    = h;
+                          }
+                          output.__host.style.display         = '';
+                          slider.node.style.display           = '';
+                    }else{
+                          output.__host.style.display         = 'none';
+                          slider.node.style.display           = 'none';
+                          if(ui.mode=='vert'){
+                                w                             = editor.__host.style.width;
+                                editor.__host.style.width     = '100%';
+                          }else{
+                                h                             = editor.__host.style.height;
+                                editor.__host.style.height    = '100%';
+                          }
+                    }
+                    
+              }//show-output
+              
+        }
         
         
   //:
@@ -538,6 +585,8 @@
         
         function horiz(){
         
+              if(output.__host.style.display=='none')return;
+              
               //localStorage.setItem('orientation','horiz');
               
               ui.mode                     = 'horiz';
@@ -556,6 +605,8 @@
         
         function vert(){
         
+              if(output.__host.style.display=='none')return;
+              
               //localStorage.setItem('orientation','vert');
               
               ui.mode                     = 'vert';
@@ -575,8 +626,7 @@
   //:
   
   
-        var run   = {};
-        
+  
         run.srcdoc    = function(){
                                                                                 debug('run.srcdoc');
               if(autosave.checked){
@@ -591,7 +641,7 @@
         }//run
         
         
-        run.sandbox   = function(){
+        function run(){
                                                                                 debug('run.sandbox');
               if(autosave.checked){
                                                                                 debug('autosave');
@@ -599,7 +649,7 @@
               }
               
               var html    = editor.getValue();
-              output.sandbox(html);
+              output.run(html);
               
         }//sandbox
         
