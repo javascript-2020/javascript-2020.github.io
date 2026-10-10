@@ -207,11 +207,11 @@
                     
                     var o;
                     
-                    o   = parse.type1(txt,i1);
+                    o   = parse.fn.type1(txt,i1);
                     if(o){
                           list.push(o);
                     }
-                    o   = parse.type2(txt,i1);
+                    o   = parse.fn.type2(txt,i1);
                     if(o){
                           list.push(o);
                     }
@@ -225,14 +225,14 @@
         }//fn
         
         
-        parse.type1   = function(txt,i1){
+        parse.fn.type1   = function(txt,i1){
         
               i1         += 8;
               var i2      = txt.indexOf('(',i1);
               var name    = txt.slice(i1,i2).trim();
               if(!valid(name))return;
               
-              var args    = parse.args(txt,i1);
+              var args    = parse.fn.args(txt,i1);
               
               var line    = lineno(txt,i1);
               return {line,name,args};
@@ -240,7 +240,7 @@
         }//type1
         
         
-        parse.type2   = function(txt,i1){
+        parse.fn.type2   = function(txt,i1){
         
               var i2    = txt.lastIndexOf('=',i1);
               if(i2==-1)return;
@@ -265,7 +265,7 @@
               var name    = txt.slice(i4+1,i3+1);
               if(!valid(name))return;
               
-              var args    = parse.args(txt,i1);
+              var args    = parse.fn.args(txt,i1);
               
               var line    = lineno(txt,i1);
               return {line,name,args};
@@ -273,7 +273,7 @@
         }//type2
         
         
-        parse.args    = function(txt,i1){
+        parse.fn.args    = function(txt,i1){
         
               var i2      = txt.indexOf('(',i1);
               var i3      = txt.indexOf(')',i2);
