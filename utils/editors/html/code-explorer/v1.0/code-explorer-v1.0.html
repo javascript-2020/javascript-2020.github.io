@@ -493,21 +493,23 @@
                           var attrs     = tagname.slice(i1+1,i2);
 */
                           var match         = tag.match(/^<\s*([a-z0-9\-]+)/i);
-                          var name          = nameMatch ? nameMatch[1].toLowerCase() : '';
-                          
-                          var parser        = new DOMParser();
-                          var doc           = parser.parseFromString(tag,'text/html');
-                          var element       = doc.querySelector(name);
-                          var attributes    = {};
-                          
-                          for(var i=0;i<element.attributes.length;i++){
-                          
-                                var attr                = element.attributes[i];
-                                attributes[attr.name]   = (attr.value==='' ? true : attr.value);
+                          var name          = match ? match[1].toLowerCase() : '';
+                          if(!name)debugger;
+                          if(name){
+                                var parser        = new DOMParser();
+                                var doc           = parser.parseFromString(tag,'text/html');
+                                var element       = doc.querySelector(name);
+                                var attributes    = {};
                                 
-                          }//for
-                          
-                          console.log(name,attributes);
+                                for(var i=0;i<element.attributes.length;i++){
+                                
+                                      var attr                = element.attributes[i];
+                                      attributes[attr.name]   = (attr.value==='' ? true : attr.value);
+                                      
+                                }//for
+                                
+                                console.log(name,attributes);
+                          }
                           
                           
                           //console.log(`Found "${tagName}" at index ${index}`);
