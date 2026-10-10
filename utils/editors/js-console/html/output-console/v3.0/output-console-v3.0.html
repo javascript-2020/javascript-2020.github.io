@@ -98,13 +98,19 @@
                         
                   </div hdr>
                   
+                  
+                  <web-console v3.0 component></web-console>
+                  
+<!--
                   <div id=output-hldr>
                         <pre id=output>
                         </pre>
                         <div id=output-console style='display:none'>
                         </div>
                   </div>
-                  
+-->
+
+
                   <div id=slider></div>
                   
             </div root>
@@ -142,12 +148,12 @@
   
   
         var settings;
+        var webconsole;
         
-        
-        var inspect;
-        var jsconsolemod;
-        var jsconsole;
-        var style;
+        //var inspect;
+        //var jsconsolemod;
+        //var jsconsole;
+        //var style;
         
         
         var con             = {};
@@ -206,6 +212,10 @@
               settings    = mod['output-settings'];
               settings.initmod({output:obj});
               
+              
+              webconsole    = mod['web-console'];
+              
+              
               await Promise.all([
                     mod.auto(),
                     libs(),
@@ -228,13 +238,17 @@
         
               var list      = [];
               
+/*
               var promise   = ext.load.libs('js/string/inspect.js').then(result=>{
               
                    [inspect]    = result;
                    
               });
               list.push(promise);
-              
+*/
+
+
+/*
               var promise   = ext.load.libs('js/dom/web-console/web-console-2.js').then(result=>{
               
                     [jsconsolemod]   = result;
@@ -252,8 +266,9 @@
                     
               });
               list.push(promise);
-              
-              
+*/
+
+
               await Promise.all(list);
                                                                                 //console.log(inspect);
                                                                                 
@@ -269,7 +284,7 @@
               
               var style2                     = $(shadow,'style');
               $.stylesheet.copyrule('#page-inline','.icon',style2);
-              $.editor.ace.import_style(shadow,()=>shadow.append(style));
+              //$.editor.ace.import_style(shadow,()=>shadow.append(style));
               
               
               root                                      = $(shadow,'#root');
@@ -298,7 +313,7 @@
               
               
               output_console                            = $(shadow,'#output-console');
-              jsconsole                                 = jsconsolemod.create(output_console);
+              //jsconsole                                 = jsconsolemod.create(output_console);
               
               shadow.append(style);
               
@@ -327,9 +342,9 @@
         btn.wrap    = function(chk){
                                                                       //console.log('wrap',v);
               if(chk.checked){
-                    output.style.whiteSpace   = 'pre-wrap';
+                    //output.style.whiteSpace   = 'pre-wrap';
               }else{
-                    output.style.whiteSpace   = '';
+                    //output.style.whiteSpace   = '';
               }
               
         }//wrap
