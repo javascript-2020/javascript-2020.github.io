@@ -31,6 +31,8 @@
     {display:flex;gap:5px}
   .fn .line
     {width:50px;flex-shrink: 0;}
+  .fn .indent
+    {}
   .fn .name
     {font-weight:bold;flex-shrink: 0;}
   .fn .args
@@ -52,6 +54,8 @@
             <div id=view>
                   <div class='fn item'>
                         <div class=line>
+                        </div>
+                        <div class=indent>
                         </div>
                         <div class=name>
                         </div>
@@ -172,10 +176,11 @@
               
               list.fn.forEach(o=>{
               
-                    var node                      = ui.fn.cloneNode(true);
-                    $(node,'.line').textContent   = o.line;
-                    $(node,'.name').textContent   = o.name;
-                    $(node,'.args').textContent   = o.args;
+                    var node                          = ui.fn.cloneNode(true);
+                    $(node,'.line').textContent       = o.line;
+                    $(node,'.indent').style.width     = (o.indent*2)+'px';
+                    $(node,'.name').textContent       = o.name;
+                    $(node,'.args').textContent       = o.args;
                     view.append(node);
                     
                     node.onclick    = e=>editor.gotoline(o.line);
