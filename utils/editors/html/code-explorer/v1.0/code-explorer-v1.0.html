@@ -482,9 +482,9 @@
                     if(match===null)break;
                     
                     var index     = match.index;
-                    var tagname   = match[0];
+                    var tag       = match[0];
                     
-                    if(!tagname.startsWith('</')){
+                    if(!tag.startsWith('</')){
                           /*
                           var i1        = tagname.indexOf(' ');
                           var name      = tagname.slice(2,i1);
@@ -492,12 +492,10 @@
                           var attrs     = tagname.slice(i1+1,i2);
                           */
                           
-                          var parser    = new DOMParser();
-                          var doc       = parser.parseFromString(tagString,'text/html');
-                          var element   = doc.body.firstElementChild;
-                          
-                          var tagName   = element.tagName.toLowerCase(); // "div"
-                          
+                          var parser        = new DOMParser();
+                          var doc           = parser.parseFromString(tag,'text/html');
+                          var element       = doc.body.firstElementChild;
+                          var tagName       = element.tagName.toLowerCase();
                           var attributes    = {};
                           
                           for(var i=0;i<element.attributes.length;i++){
