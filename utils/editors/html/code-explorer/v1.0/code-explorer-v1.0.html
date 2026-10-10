@@ -21,8 +21,16 @@
     
   #view
     {flex:1}
+    
   .fn
+    {display:flex;gap:10px}
+  .fn .line
+    {width:50px}
+  .fn .name
+    {font-weight:bold}
+  .fn .args
     {}
+    
   .label
     {}
     
@@ -38,6 +46,12 @@
             
             <div id=view>
                   <div class=fn>
+                        <div class=line>
+                        </div>
+                        <div class=name>
+                        </div>
+                        <div class=args>
+                        </div>
                   </div>
                   <div class=label>
                   </div>
@@ -145,6 +159,16 @@
                                                                 //var d=debug('update');
               var txt   = editor.getvalue();
               parse(txt);
+              
+              view.replaceChildren();
+              
+              list.fn.forEach(o=>{{
+              
+                    var node    = ui.fn.cloneNode(true);
+                    $(node,'.line').textContent   = o.line;
+                    $(node,'.name').textContent   = o.name;
+                    $(node,'.args').textContent   = o.args;
+              });
               
               console.log(list);
               
