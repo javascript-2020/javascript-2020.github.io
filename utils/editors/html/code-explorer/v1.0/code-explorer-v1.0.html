@@ -178,7 +178,7 @@
               var mode    = editor.mode;
                                                                 debug(mode);
               var txt     = editor.getvalue();
-              parse[mode](txt);
+              parse.fn[mode](txt);
                                                                 console.log(list);
               view.replaceChildren();
               
@@ -204,10 +204,12 @@
   
   
   
-        var parse   = {};
+        var parse         = {};
+        parse.fn          = {};
+        parse.html        = {};
         
         
-        parse.javascript    = function(txt){
+        parse.fn.javascript    = function(txt){
         
               list          = {};
               
@@ -220,7 +222,7 @@
         }//js
         
         
-        parse.html    = function(txt){
+        parse.fn.html    = function(txt){
         
               list          = {};
               list.fn       = [];
@@ -432,6 +434,31 @@
         
         
         
+        
+        
+  //:
+  
+  
+        parse.html    = function(){
+        
+              var regex = /<\/?[a-z][a-z0-9]*\b[^>]*>/gi;
+              var match;
+              
+              while(true){
+              
+                  match   = regex.exec(html);
+                  
+                  if(match===null)break;
+                  
+                  var index     = match.index;
+                  var tagName   = match[0];
+                  
+                  console.log(`Found "${tagName}" at index ${index}`);
+                  
+              }//while
+              
+              
+        }//html
         
         
         
