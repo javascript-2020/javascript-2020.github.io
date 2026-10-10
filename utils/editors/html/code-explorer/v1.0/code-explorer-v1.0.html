@@ -116,6 +116,7 @@
         
         
         var btn         = {};
+        var update      = {};
         var sort        = {};
         sort.alpha      = {};
         sort.source     = {};
@@ -168,17 +169,24 @@
         }//update
         
         
+        btn.fn    = function(){
+        }//fn
+        
+        
+        btn.html    = function(){
+        }//html
+        
+        
   //:
   
   
-        obj.update    = update;
-        
-        function update(){   //d
+  
+        update.fn   = function(){
                                                                 //var d=debug('update');
               var mode    = editor.mode;
                                                                 debug(mode);
               var txt     = editor.getvalue();
-              parse.fn[mode](txt);
+              var list    = parse.fn[mode](txt);
                                                                 console.log(list);
               view.replaceChildren();
               
@@ -196,7 +204,19 @@
               });
               
               
-        }//update
+        }//fn
+        
+        
+        update.html   = function(){
+        
+              var txt     = editor.getvalue();
+              var list    = parse.html(txt);
+                                                                console.log(list);
+              view.replaceChildren();
+              
+              
+              
+        }//html
         
         
   //:
@@ -211,7 +231,7 @@
         
         parse.fn.javascript    = function(txt){
         
-              list          = {};
+              var list      = {};
               
               list.fn       = parse.fn(txt);
               list.fn.forEach(o=>o.line=lineno(txt,o.index));
@@ -219,12 +239,13 @@
               list.label    = parse.label(txt);
               list.label.forEach(o=>o.line=lineno(txt,o.index));
               
+              return list;
         }//js
         
         
         parse.fn.html    = function(txt){
         
-              list          = {};
+              var list      = {};
               list.fn       = [];
               list.label    = [];
               
@@ -263,6 +284,8 @@
                     index   = i2+9;
                     
               }//while
+              
+              return list;
               
         }//html
         
