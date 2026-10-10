@@ -478,14 +478,42 @@
               
               while(true){
               
-                  var match     = regex.exec(txt);
-                  if(match===null)break;
-                  
-                  var index     = match.index;
-                  var tagName   = match[0];
-                  
-                  console.log(`Found "${tagName}" at index ${index}`);
-                  
+                    var match     = regex.exec(txt);
+                    if(match===null)break;
+                    
+                    var index     = match.index;
+                    var tagName   = match[0];
+                    
+                    if(!tagname.startsWith('</')){
+                          /*
+                          var i1        = tagname.indexOf(' ');
+                          var name      = tagname.slice(2,i1);
+                          var i2        = tagname.indexOf('>');
+                          var attrs     = tagname.slice(i1+1,i2);
+                          */
+                          
+                          var parser    = new DOMParser();
+                          var doc       = parser.parseFromString(tagString,'text/html');
+                          var element   = doc.body.firstElementChild;
+                          
+                          var tagName   = element.tagName.toLowerCase(); // "div"
+                          
+                          var attributes    = {};
+                          
+                          for(var i=0;i<element.attributes.length;i++){
+                          
+                                var attr                = element.attributes[i];
+                                attributes[attr.name]   = (attr.value==='' ? true : attr.value);
+                                
+                          }//for
+                          
+                          console.log(tagName,attributes);
+                          
+                          
+                          //console.log(`Found "${tagName}" at index ${index}`);
+                          
+                    }
+                    
               }//while
               
               
