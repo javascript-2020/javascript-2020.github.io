@@ -7,7 +7,33 @@
       
             <style>
             
+  :host
+    {}
+    
+    
+  #hdr
+    {}
+    
+    
+  #list
+    {}
+  .fn
+    {}
+  .label
+    {}
+    
+    
             </style>
+            
+            <div id=hdr>
+            </div>
+            
+            <div id=view>
+                  <div class=fn>
+                  </div>
+                  <div class=label>
+                  </div>
+            </div>
             
       </template>
       
@@ -21,7 +47,7 @@
   
         var df=true,did='code-explorer';
         
-        var debug
+        var debug,$,editor
         ;
         
         obj.initmod   = function(...list){
@@ -31,6 +57,7 @@
                     df          = mod.rd(params,'df',df);
                     debug       = mod.rd(params,'debug',debug);
                     $           = mod.rd(params,'$',$);
+                    editor      = mod.rd(params,'editor',editor);
                     
               });
               
@@ -41,6 +68,18 @@
   
   
         var shadow;
+        
+        
+        var view;
+        var ui    = {};
+        
+        
+        
+        
+        var sort        = {};
+        sort.alpha      = {};
+        sort.source     = {};
+        
         
         
   //:
@@ -60,6 +99,16 @@
               shadow          = host.shadowRoot;
               
               
+              view            = $(shadow,'#view');
+              
+              ui.fn           = $(shadow,'.fn');
+              ui.fn.remove();
+              
+              ui.label        = $(shadow,'.label');
+              ui.label.remove();
+              
+              
+              
         }//initdom
         
         
@@ -67,9 +116,201 @@
   
   
   
+        obj.update    = update;
+        
+        function update(){   //d
+                                                                //var d=debug('update');
+              var txt   = editor.getvalue();
+              parse(txt);
+              
+              console.log(list);
+              
+        }//update
+        
+        
   //:
   
   
+  
+  
+        function parse(txt){
+        
+              list          = {};
+              list.fn       = parse.fn(txt);
+              list.label    = parse.label(txt);
+              
+        }//parse
+        
+        
+        parse.fn    = function(txt){
+        
+              var list    = [];
+              var index   = 0;
+              var ec      = true;
+              while(ec){
+              
+                    var i1      = line.indexOf('function',index);
+                    if(i1==-1)break;
+                    
+                    var o;
+                    
+                    o   = parse.type1(txt,i1);
+                    if(o){
+                          list.push(o);
+                    }
+                    o   = parse.type2(txt,i1);
+                    if(o){
+                          list.push(o);
+                    }
+                    
+              }//while
+              
+              return list;
+              
+        }//fn
+        
+        
+        parse.label   = function(txt){
+        
+              var list      = [];
+              var regex     = /\/\/\s*([^:\r\n]+):/g;
+              
+              var ec    = true;
+              while(ec){
+              
+                    var match   = regex.exec(code);
+                    if(match===null)break;
+                    
+                    var line    = lineno(txt,match.index);
+                    var label   = match[1].trim();
+                    
+                    list.push({line,label});
+                    
+              }//while
+              
+              return list;
+              
+        }//label
+        
+        
+        parse.type1   = function(txt,i1){
+        
+              i1         += 8;
+              var i2      = txt.indexOf('(',i1);
+              var name    = txt.slice(i1,i2).trim();
+              if(!valid(name))return;
+              
+              var args    = parse.args(txt,i1);
+              
+              var line    = lineno(txt,i1);
+              return {line,name,args};
+              
+        }//type1
+        
+        
+        parse.type2   = function(txt,i1){
+        
+              var i2    = txt.lastIndexOf('=');
+              if(i2==-1)return;
+              
+              var str   = txt.slice(i2+1,i1);
+              if(!/^\s*$/.test(str))return;
+              
+              for(var i3=i2-1;i3>=0;i3--){
+              
+                    var c   = txt[i3];
+                    if(!/^\s*$/.test(c))break;
+                    
+              }//for
+              
+              for(var i4=i3;i4>=0;i4--){
+              
+                    var c   = txt[i4];
+                    if(/^\s*$/.test(c))break;
+                    
+              }//for
+              
+              var name    = txt.slice(i4+1,i3);
+              if(!valid(name))return;
+              
+              var args    = parse.args(txt,i1);
+              
+              var line    = lineno(txt,i1);
+              return {line,name,args};
+              
+        }//type2
+        
+        
+        parse.args    = function(txt,i1){
+        
+              var i2      = txt.indexOf('(',i1);
+              var i3      = txt.indexOf(')',i2);
+              var args    = txt.slice(i2-1,i3+1);
+              args        = args.replace(' ','');
+              return args;
+              
+        }//args
+        
+        
+        parse.label   = function(txt){
+        }//label
+        
+        
+  //:
+  
+  
+        function valid(str){
+        
+              var regex     = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+              var result    = regex.test(str);
+              return result;
+              
+        }//valid
+        
+        
+        function line(txt,i){
+        
+              var start       = 0;
+              var end         = i;
+              var substring   = str.slice(start,end);
+              var newlines    = substring.match(/\r\n|\n|\r/g);
+              var count       = newlines ? newlines.length : 0;
+              return count;
+              
+        }//line
+        
+        
+        function ws(txt,i1){
+        
+              var regex         = /\s*/y;
+              regex.lastIndex   = index;
+              var match         = txt.match(regex);
+              var n             = math.length;
+              return n;
+              
+        }//ws
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
   return obj;
   
 //code-explorer
