@@ -365,7 +365,6 @@
         on.message    = function(json){
                                                                                 //console.log('output.message',json);
               var {name,args}   = json;
-              //webconsole[name].apply(null,args);
               fn[name].apply(null,args);
               
         }//message
@@ -735,12 +734,15 @@
                     return;
               }
               
+              webconsole.clear();
+              /*
               switch(mode){
               
                 case 'pretty'     : cur.root.replaceChildren();       break;
                 case 'console'    : jsconsole.clear();                break;
                 
               }//switch
+              */
               
               if(settings.chk['console-echo'].checked){
                     console.clear();
@@ -752,8 +754,12 @@
         obj.log   = function(){return log.apply(null,arguments)}
         fn.log    = function(){return log.apply(null,arguments)}
         
-        function log(){
+        function log(...args){
         
+              var node    = webconsole.log(...args);
+              return node;
+              
+              /*
               var div;
               
               switch(mode){
@@ -764,8 +770,51 @@
               }//switch
               
               return div;
+              */
               
         }//log
+        
+        
+        obj.error   = function(){return error.apply(null,arguments)}
+        fn.error    = function(){return error.apply(null,arguments)}
+        
+        function error(){
+        
+              var node    = webconsole.error(...arguments);
+              return node;
+              
+              
+              /*
+              var node;
+              
+              switch(mode){
+              
+                case 'pretty'     :
+                                    node                = log.apply(null,arguments);
+                                    node.style.color    = 'darkred';
+                                                                                          break;
+                case 'console'    :
+                                    jsconsole.error.apply(jsconsole,arguments);
+                                                                                          break;
+                                                                                          
+              }//switch
+              
+              return node;
+              */
+              
+              
+        }//error
+        
+        
+        obj.warn    = warn;
+        fn.warn     = warn;
+        
+        function warn(){
+        
+              var node    = webconsole.warn(...arguments);
+              return node;
+              
+        }//warn
         
         
         obj.groupCollapsed    = function(){return groupCollapsed.apply(null,arguments)}
@@ -786,30 +835,6 @@
               }//switch
               
         }//groupCollapsed
-        
-        
-        obj.error   = function(){return error.apply(null,arguments)}
-        fn.error    = function(){return error.apply(null,arguments)}
-        
-        function error(){
-        
-              var node;
-              
-              switch(mode){
-              
-                case 'pretty'     :
-                                    node                = log.apply(null,arguments);
-                                    node.style.color    = 'darkred';
-                                                                                          break;
-                case 'console'    :
-                                    jsconsole.error.apply(jsconsole,arguments);
-                                                                                          break;
-                                                                                          
-              }//switch
-              
-              return node;
-              
-        }//error
         
         
         
@@ -859,7 +884,7 @@
   
         function datatype(v){return Object.prototype.toString.call(v).slice(8,-1).toLowerCase()}
         
-        
+/*
         function format(args){
         
               if(typeof args[0]!=='string')return args;
@@ -1052,7 +1077,9 @@
               
         }//string
         
-        
+*/
+
+
   //:
   
   
