@@ -486,18 +486,18 @@
                     
                     if(!tag.startsWith('</')){
                                                                                 console.log(tag);
-                          /*
+/*
                           var i1        = tagname.indexOf(' ');
                           var name      = tagname.slice(2,i1);
                           var i2        = tagname.indexOf('>');
                           var attrs     = tagname.slice(i1+1,i2);
-                          */
+*/
+                          var match         = tagString.match(/^<\s*([a-z0-9\-]+)/i);
+                          var name          = nameMatch ? nameMatch[1].toLowerCase() : '';
                           
                           var parser        = new DOMParser();
                           var doc           = parser.parseFromString(tag,'text/html');
-                          console.log(doc);
-                          var element       = doc.body.firstElementChild;
-                          var name          = element.tagName.toLowerCase();
+                          var element       = doc.querySelector(name);
                           var attributes    = {};
                           
                           for(var i=0;i<element.attributes.length;i++){
