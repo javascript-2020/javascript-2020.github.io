@@ -225,29 +225,6 @@
         }//fn
         
         
-        parse.label   = function(txt){
-        
-              var list      = [];
-              var regex     = /\/\/\s*([^:\r\n]+):/g;
-              
-              var ec    = true;
-              while(ec){
-              
-                    var match   = regex.exec(code);
-                    if(match===null)break;
-                    
-                    var line    = lineno(txt,match.index);
-                    var label   = match[1].trim();
-                    
-                    list.push({line,label});
-                    
-              }//while
-              
-              return list;
-              
-        }//label
-        
-        
         parse.type1   = function(txt,i1){
         
               i1         += 8;
@@ -307,8 +284,33 @@
         }//args
         
         
+        
+  //:
+  
+  
         parse.label   = function(txt){
+        
+              var list      = [];
+              var regex     = /\/\/\s*([^:\r\n]+):/g;
+              
+              var ec    = true;
+              while(ec){
+              
+                    var match   = regex.exec(code);
+                    if(match===null)break;
+                    
+                    var line    = lineno(txt,match.index);
+                    var label   = match[1].trim();
+                    
+                    list.push({line,label});
+                    
+              }//while
+              
+              return list;
+              
         }//label
+        
+        
         
         
   //:
