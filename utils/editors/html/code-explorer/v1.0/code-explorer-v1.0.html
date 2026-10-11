@@ -547,9 +547,11 @@
 */
                           var match               = tag.match(/^<\s*\/?\s*([a-z0-9\-]+)/i);
                           var name                = match ? match[1].toLowerCase() : '';
+                          console.log(name);
                           if(!name)debugger;
+                          var attrs   = {};
                           
-                          if(name){
+                          if(name && !name.startsWith('</')){
                                 var parser        = new DOMParser();
                                 var doc           = parser.parseFromString(tag,'text/html');
                                 var element       = doc.querySelector(name);
@@ -563,18 +565,19 @@
                                 }//for
                                 
                                                                                 //console.log(name,attributes);
-                                var line      = lineno(txt,index);
-                                var indent    = parse.indent(txt,index);
-                                
-                                var o   = {
-                                      index,
-                                      line,
-                                      indent,
-                                      name,
-                                      attrs
-                                };
-                                list.push(o);
                           }
+                          
+                          var line      = lineno(txt,index);
+                          var indent    = parse.indent(txt,index);
+                          
+                          var o   = {
+                                index,
+                                line,
+                                indent,
+                                name,
+                                attrs
+                          };
+                          list.push(o);
                           
                           
                           //console.log(`Found "${tagName}" at index ${index}`);
