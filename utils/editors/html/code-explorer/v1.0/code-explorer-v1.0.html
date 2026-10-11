@@ -208,9 +208,8 @@
         btn.fn    = function(){
         
               ui.mode   = 'fn';
+              btn.active('fn');
               update.fn();
-              $(shadow,'#hdr #fn').classList.add('active');
-              $(shadow,'#hdr #html').classList.remove('active');
               
         }//fn
         
@@ -218,11 +217,26 @@
         btn.html    = function(){
         
               ui.mode   = 'html';
+              btn.active('html');
               update.html();
-              $(shadow,'#hdr #fn').classList.remove('active');
-              $(shadow,'#hdr #html').classList.add('active');
               
         }//html
+        
+        
+        btn.active   = function(id){
+        
+              var list    = $.all(shadow,'#hdr img');
+              list.forEach(img=>{
+              
+                    if(img.id==id){
+                          img.classList.add('active');
+                    }else{
+                          img.classList.remove('active');
+                    }
+                    
+              });
+              
+        }//active
         
         
   //:
