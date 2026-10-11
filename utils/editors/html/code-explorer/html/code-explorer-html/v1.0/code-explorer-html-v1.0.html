@@ -1,0 +1,166 @@
+
+
+<code-explorer-html>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  .html
+    {display:flex;gap:5px}
+  .html .line
+    {width:50px;flex-shrink:0;border-right:1px solid lightgray}
+  .html .indent
+    {}
+  .html .name
+    {font-weight:bold;flex-shrink:0}
+  .html .v
+    {flex-shrink:0;font-size:var(--val)}
+  .html .id
+    {color:blue;flex-shrink:0;font-size:var(--val)}
+  .html .class
+    {flex-shrink:0;color:green;font-size:var(--val);font-style:italic}
+    
+            </style>
+            
+            <div class='html item'>
+                  <div class=line>
+                  </div>
+                  <div class=indent>
+                  </div>
+                  <div class=name>
+                  </div>
+                  <div class=v>
+                  </div>
+                  <div class=id>
+                  </div>
+                  <div class=class>
+                  </div>
+            </div>
+            
+      </template>
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {
+        version   : 'v1.0',
+  };
+  
+        var df=true,did='code-explorer-html';
+        
+        
+        obj.initmod   = function(...list){
+        
+              list..forEach(params=>{
+              });
+              
+        }//initmod
+        
+        
+  //:
+  
+  
+  //:
+  
+  
+        obj.init    = async function(){
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = async function(){
+        }//initdom
+        
+        
+  //:
+  
+  
+        parse.html    = function(txt){
+        
+              var list    = [];
+              var regex   = /<\/?[a-z][a-z0-9\-]*\b[^>]*>/gi;
+              var regex = /<\/?[a-z][a-z0-9\-]*(?=[\s\/>])[^>]*>/gi;
+              
+              while(true){
+              
+                    var match     = regex.exec(txt);
+                    if(match===null)break;
+                    
+                    var index     = match.index;
+                    var tag       = match[0];
+                    
+                    if(!tag.startsWith('</')){
+                                                                                //console.log(tag);
+                          var match         = tag.match(/^<\s*([a-z0-9\-]+)/i);
+                          var name          = match ? match[1].toLowerCase() : '';
+                          
+                          /*
+                          var match               = tag.match(/^<\s*\/?\s*([a-z0-9\-]+)/i);
+                          var name                = match ? match[1].toLowerCase() : '';
+                          console.log(name);
+                          */
+                          
+                          if(!name){
+                                //debugger;
+                                                                                console.log('parse.html error',tag);
+                          }
+                          
+                          var attrs   = {};
+                          
+                          if(name){
+                                var parser        = new DOMParser();
+                                var doc           = parser.parseFromString(tag,'text/html');
+                                var element       = doc.querySelector(name);
+                                if(!element){
+                                                                                console.log('parse.html error',tag);
+                                }else{
+                                      var attrs         = {};
+                                      
+                                      for(var i=0;i<element.attributes.length;i++){
+                                      
+                                            var attr            = element.attributes[i];
+                                            attrs[attr.name]    = (attr.value==='' ? true : attr.value);
+                                            
+                                      }//for
+                                      
+                                      var line      = lineno(txt,index);
+                                      var col       = colno(txt,index)-1;
+                                      var indent    = parse.indent(txt,index);
+                                      
+                                      var o   = {
+                                            index,
+                                            line,
+                                            col,
+                                            indent,
+                                            name,
+                                            attrs
+                                      };
+                                      list.push(o);
+                                }
+                          }
+                    }
+                    
+              }//while
+              
+              return list;
+              
+              
+        }//html
+        
+        
+        
+  //:
+  
+  
+  return obj;
+  
+//code-explorer-html
+})
+
+      </script>
+      
+</code-eplorer-html>
