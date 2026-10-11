@@ -50,10 +50,18 @@
   
         var df=true,did='code-explorer-html';
         
+        var debug,$,editor,fn
+        ;
         
         obj.initmod   = function(...list){
         
-              list..forEach(params=>{
+              list.forEach(params=>{
+              
+                    debug       = mod.rd(params,'debug',debug);
+                    $           = mod.rd(params,'$',$);
+                    editor      = mod.rd(params,'editor',editor);
+                    fn          = mod.rd(params,'fn',fn);
+                    
               });
               
         }//initmod
@@ -62,6 +70,9 @@
   //:
   
   
+        var item;
+        
+        
   //:
   
   
@@ -73,13 +84,101 @@
   
   
         obj.initdom   = async function(){
+        
+              shadow    = host.shadowRoot;
+              
+              item      = $(shadow,'.html');
+              item.remove();
+              
         }//initdom
         
         
   //:
   
   
-        parse.html    = function(txt){
+        obj.update    = update;
+        
+        function update(view){
+        
+              var txt     = editor.getvalue();
+              var list    = parse(txt);
+              
+              var colours   = {
+                    head        : 'darkslategray',
+                    body        : 'darkslategray',
+                    script      : 'firebrick',
+                    template    : 'forestgreen',
+                    style       : 'dodgerblue',
+              };
+                                                                console.log(list);
+              view.replaceChildren();
+              
+              list.forEach(o=>{
+              
+                    var node                              = item.cloneNode(true);
+                    
+                    $(node,'.line').textContent           = o.line;
+                    $(node,'.indent').style.width         = (o.indent*3)+'px';
+                    
+                    $(node,'.name').textContent           = o.name;
+                    if(colours[o.name]){
+                          node.style.color                = colours[o.name];
+                    }
+                    if(o.name.includes('-')){
+                          node.style.color                = 'hsl(33,100%,30%)';
+                    }
+                    
+                    var f=false;
+                    if(o.attrs.component){
+                          var regex   = /\bv\d+(?:\.\d+)*(?!\s*=\s*)\b/;
+                          var v;
+                          for(var key in o.attrs){
+                          
+                                if(regex.test(key)){
+                                      v   = key;
+                                      break;
+                                }
+                                
+                          }//for
+                          if(v){
+                                $(node,'.v').textContent    = v;
+                                f   = true;
+                          }
+                    }
+                    if(!f){
+                          $(node,'.v').remove();
+                    }
+                    
+                    if(o.attrs.id){
+                          $(node,'.id').textContent       = o.attrs.id;
+                    }else{
+                          $(node,'.id').remove();
+                    }
+                    
+                    if(o.attrs.class){
+                          $(node,'.class').textContent    = o.attrs.class;
+                    }else{
+                          $(node,'.class').remove();
+                    }
+                    
+                    
+                    
+                    if(o.name=='script'){
+                    }
+                    
+                    
+                    
+                    
+                    node.onclick                          = e=>editor.gotoline(o.line,o.col);
+                    
+                    view.append(node);
+                    
+              });
+              
+        }//html
+        
+        
+        function parse(txt){
         
               var list    = [];
               var regex   = /<\/?[a-z][a-z0-9\-]*\b[^>]*>/gi;
@@ -97,15 +196,8 @@
                                                                                 //console.log(tag);
                           var match         = tag.match(/^<\s*([a-z0-9\-]+)/i);
                           var name          = match ? match[1].toLowerCase() : '';
-                          
-                          /*
-                          var match               = tag.match(/^<\s*\/?\s*([a-z0-9\-]+)/i);
-                          var name                = match ? match[1].toLowerCase() : '';
-                          console.log(name);
-                          */
-                          
                           if(!name){
-                                //debugger;
+                                                                                //debugger;
                                                                                 console.log('parse.html error',tag);
                           }
                           
