@@ -639,29 +639,32 @@
                                 var parser        = new DOMParser();
                                 var doc           = parser.parseFromString(tag,'text/html');
                                 var element       = doc.querySelector(name);
-                                if(!element)debugger;
-                                var attrs         = {};
-                                
-                                for(var i=0;i<element.attributes.length;i++){
-                                
-                                      var attr            = element.attributes[i];
-                                      attrs[attr.name]    = (attr.value==='' ? true : attr.value);
+                                if(!element){
+                                                                                console.log('parse.html error',tag);
+                                }else{
+                                      var attrs         = {};
                                       
-                                }//for
-                                
-                                var line      = lineno(txt,index);
-                                var col       = colno(txt,index)-1;
-                                var indent    = parse.indent(txt,index);
-                                
-                                var o   = {
-                                      index,
-                                      line,
-                                      col,
-                                      indent,
-                                      name,
-                                      attrs
-                                };
-                                list.push(o);
+                                      for(var i=0;i<element.attributes.length;i++){
+                                      
+                                            var attr            = element.attributes[i];
+                                            attrs[attr.name]    = (attr.value==='' ? true : attr.value);
+                                            
+                                      }//for
+                                      
+                                      var line      = lineno(txt,index);
+                                      var col       = colno(txt,index)-1;
+                                      var indent    = parse.indent(txt,index);
+                                      
+                                      var o   = {
+                                            index,
+                                            line,
+                                            col,
+                                            indent,
+                                            name,
+                                            attrs
+                                      };
+                                      list.push(o);
+                                }
                           }
                     }
                     
