@@ -237,12 +237,22 @@
         }//update
         
         
-        update.fn   = function(){
+        update.fn   = function(txt,mode){
                                                                 //var d=debug('update');
-              var mode    = editor.mode;
-                                                                debug(mode);
-              var txt     = editor.getvalue();
+              switch(mode){
+              
+                case undefined    :
+                case 'js'         : mode='javascript';        break;
+                
+              }//switch
+              
+              if(!txt){
+                    mode    = editor.mode;
+                    txt     = editor.getvalue();
+              }
+              
               var list    = parse.fn[mode](txt);
+                                                                debug(mode);
                                                                 console.log(list);
               view.replaceChildren();
               
