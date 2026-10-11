@@ -111,6 +111,10 @@
                   
             </div view>
             
+            <div style='display:none'>
+                  <code-explorer-html v1.0 component=parent></code-explorer-html>
+            </div>
+            
       </template>
       
       <script>
@@ -142,7 +146,9 @@
   //:
   
   
-  
+        var html;
+        
+        
         var shadow;
         
         
@@ -154,7 +160,6 @@
         
         
         var btn         = {};
-        var update      = {};
         var sort        = {};
         sort.alpha      = {};
         sort.source     = {};
@@ -206,7 +211,7 @@
   
         btn.update    = function(){
         
-              update[ui.mode]();
+              update();
               
         }//update
         
@@ -248,7 +253,15 @@
   //:
   
   
-  
+        obj.update    = update;
+        
+        function update(){
+        
+              update[ui.mode]();
+              
+        }//update
+        
+        
         update.fn   = function(){
                                                                 //var d=debug('update');
               var mode    = editor.mode;
