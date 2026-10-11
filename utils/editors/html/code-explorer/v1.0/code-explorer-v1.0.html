@@ -611,7 +611,8 @@
         parse.html    = function(txt){
         
               var list    = [];
-              var regex   = /<\/?[a-z][a-z0-9]*\b[^>]*>/gi;
+              //var regex   = /<\/?[a-z][a-z0-9]*\b[^>]*>/gi;
+              var regex     = /^<\s*([a-z0-9\-]+)(?:\s|>)/i;
               
               while(true){
               
@@ -623,8 +624,7 @@
                     
                     if(!tag.startsWith('</')){
                                                                                 //console.log(tag);
-                          //var match         = tag.match(/^<\s*([a-z0-9\-]+)/i);
-                          var match         = tag.match(/^<\s*([a-z0-9\-]+)(?:\s|>)/i);
+                          var match         = tag.match(/^<\s*([a-z0-9\-]+)/i);
                           var name          = match ? match[1].toLowerCase() : '';
                           
                           /*
