@@ -173,6 +173,9 @@
       content:url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeBAMAAADJHrORAAAAFVBMVEUAAAD7+/v///////8AAADo6OgRERE8gmv3AAAAA3RSTlMA9T5S3MyNAAAAdElEQVQY07WQwQ2AQAgESa4FC7AEDFgBW4r916BgEHLRp/ObYzdcICnIUSTG5cHtlvEvz/o8/6EvXPnL5eDeFwX3vMC62wLJff64+7i5+rj3wd0VtrpH3NdHnCRcn3uNLMOoGIh4oREv4q+9kPVEJ5eN3jgB8k5GOJR+D40AAAAASUVORK5CYII=');
     }
     
+  publish-ui
+    {z-index:1;position:relative}
+    
   #horiz
     {margin-left:50px;border:none}
   #vert
@@ -181,13 +184,17 @@
   #view
     {display:flex;flex:1}
     
-  publish-ui
-    {z-index:1;position:relative}
+    
+  code-explorer
+    {width:250px}
+    
   web-editor
     {width:50%}
     
   output-html
     {flex:1}
+    
+    
     
   button
     {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
@@ -256,6 +263,10 @@
             
             <div id=view>
             
+                  <code-explorer v1.0 component=grp></code-explorer>
+                  
+                  <div id=code-slider style='width:10px;cursor:ew-resize'></div>
+                  
                   <web-editor component></web-editor>
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
@@ -277,6 +288,7 @@
         var root;
         
         var slider              = {};
+        var slider2             = {};
         
         var ui                  = {};
         ui.mode                 = 'vert';
@@ -313,6 +325,7 @@
               var view                              = $('#view');
               ui.root                               = view;
               
+              slider2.node                          = $.slider('code-explorer','#code-slider','web-editor',slider2,ui);
               slider.node                           = $.slider.glass('web-editor','#page-slider','output-html',slider,ui,output);
               
               focus();
