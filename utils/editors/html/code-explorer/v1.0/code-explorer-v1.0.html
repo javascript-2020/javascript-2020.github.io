@@ -539,34 +539,31 @@
                     var index     = match.index;
                     var tag       = match[0];
                     
-                    //if(!tag.startsWith('</')){
+                    if(!tag.startsWith('</')){
                                                                                 //console.log(tag);
-/*
                           var match         = tag.match(/^<\s*([a-z0-9\-]+)/i);
                           var name          = match ? match[1].toLowerCase() : '';
-*/
+                          
+                          /*
                           var match               = tag.match(/^<\s*\/?\s*([a-z0-9\-]+)/i);
                           var name                = match ? match[1].toLowerCase() : '';
                           console.log(name);
+                          */
                           if(!name)debugger;
                           var attrs   = {};
                           
                           if(name){
-                                if(!tag.startsWith('</')){
-                                      var parser        = new DOMParser();
-                                      var doc           = parser.parseFromString(tag,'text/html');
-                                      var element       = doc.querySelector(name);
-                                      var attrs         = {};
+                                var parser        = new DOMParser();
+                                var doc           = parser.parseFromString(tag,'text/html');
+                                var element       = doc.querySelector(name);
+                                var attrs         = {};
+                                
+                                for(var i=0;i<element.attributes.length;i++){
+                                
+                                      var attr            = element.attributes[i];
+                                      attrs[attr.name]    = (attr.value==='' ? true : attr.value);
                                       
-                                      for(var i=0;i<element.attributes.length;i++){
-                                      
-                                            var attr            = element.attributes[i];
-                                            attrs[attr.name]    = (attr.value==='' ? true : attr.value);
-                                            
-                                      }//for
-                                }else{
-                                      name    = '/'+name;
-                                }
+                                }//for
                           }
                           
                           var line      = lineno(txt,index);
