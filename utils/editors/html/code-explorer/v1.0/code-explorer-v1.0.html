@@ -286,16 +286,20 @@
               list.forEach(o=>{
               
                     var node                              = ui.html.cloneNode(true);
+                    
                     $(node,'.line').textContent           = o.line;
                     $(node,'.indent').style.width         = (o.indent*3)+'px';
                     $(node,'.name').textContent           = o.name;
+                    
                     if(o.name.includes('-')){
                           node.style.color                = 'hsl(33,100%,30%)';
                     }
+                    
+                    var f=false;
                     if(o.attrs.component){
                           var regex   = /\bv\d+(?:\.\d+)*(?!\s*=\s*)\b/;
                           var v;
-                          for(var key in attr){
+                          for(var key in o.attrs){
                           
                                 if(regex.test(key)){
                                       v   = key;
@@ -305,15 +309,19 @@
                           }//for
                           if(v){
                                 $(node,'.v').textContent    = v;
-                          }else{
-                                $(node,'.v').remove();
+                                f   = true;
                           }
                     }
+                    if(!f){
+                          $(node,'.v').remove();
+                    }
+                    
                     if(o.attrs.id){
                           $(node,'.id').textContent       = o.attrs.id;
                     }else{
                           $(node,'.id').remove();
                     }
+                    
                     if(o.attrs.class){
                           $(node,'.class').textContent    = o.attrs.class;
                     }else{
