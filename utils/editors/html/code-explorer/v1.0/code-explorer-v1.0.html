@@ -99,6 +99,8 @@
                         </div>
                         <div class=name>
                         </div>
+                        <div class=v>
+                        </div>
                         <div class=id>
                         </div>
                         <div class=class>
@@ -287,6 +289,23 @@
                     $(node,'.name').textContent           = o.name;
                     if(o.name.includes('-')){
                           node.style.color                = 'hsl(33,100%,30%)';
+                    }
+                    if(o.attrs.component){
+                          var regex   = /\bv\d+(?:\.\d+)*(?!\s*=\s*)\b/;
+                          var v;
+                          for(var key in attr){
+                          
+                                if(regex.test(key)){
+                                      v   = key;
+                                      break;
+                                }
+                                
+                          }//for
+                          if(v){
+                                $(node,'.v').textContent    = v;
+                          }else{
+                                $(node,'.v').remove();
+                          }
                     }
                     if(o.attrs.id){
                           $(node,'.id').textContent       = o.attrs.id;
