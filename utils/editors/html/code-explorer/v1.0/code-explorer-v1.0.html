@@ -564,24 +564,20 @@
                                       attrs[attr.name]    = (attr.value==='' ? true : attr.value);
                                       
                                 }//for
+                                
+                                var line      = lineno(txt,index);
+                                var indent    = parse.indent(txt,index);
+                                
+                                var o   = {
+                                      index,
+                                      line,
+                                      indent,
+                                      name,
+                                      attrs
+                                };
+                                list.push(o);
                           }
-                          
-                          var line      = lineno(txt,index);
-                          var indent    = parse.indent(txt,index);
-                          
-                          var o   = {
-                                index,
-                                line,
-                                indent,
-                                name,
-                                attrs
-                          };
-                          list.push(o);
-                          
-                          
-                          //console.log(`Found "${tagName}" at index ${index}`);
-                          
-                    //}
+                    }
                     
               }//while
               
