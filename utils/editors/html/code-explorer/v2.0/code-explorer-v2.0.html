@@ -117,6 +117,7 @@
   //:
   
   
+        var explorer;
         var html;
         
         
@@ -146,7 +147,7 @@
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init');
               html    = mod['code-explorer-html'];
-              html.initmod({fn});
+              html.initmod({explorer,fn});
               
               
         }//init
@@ -230,9 +231,11 @@
   
         obj.update    = update;
         
-        function update(){
-                                                                debug('update',ui.mode);
-              update[ui.mode]();
+        function update(txt,mode){
+        
+              mode    ||= ui.mode;
+                                                                debug('update',mode);
+              update[mode](txt,mode);
               
         }//update
         
