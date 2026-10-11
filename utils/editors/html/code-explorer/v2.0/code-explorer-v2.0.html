@@ -51,20 +51,6 @@
   .label
     {}
     
-  .html
-    {display:flex;gap:5px}
-  .html .line
-    {width:50px;flex-shrink:0;border-right:1px solid lightgray}
-  .html .indent
-    {}
-  .html .name
-    {font-weight:bold;flex-shrink:0}
-  .html .v
-    {flex-shrink:0;font-size:var(--val)}
-  .html .id
-    {color:blue;flex-shrink:0;font-size:var(--val)}
-  .html .class
-    {flex-shrink:0;color:green;font-size:var(--val);font-style:italic}
     
     
   .icon
@@ -145,6 +131,8 @@
         
         
         var btn         = {};
+        var fn          = {};
+        
         var sort        = {};
         sort.alpha      = {};
         sort.source     = {};
@@ -157,6 +145,10 @@
         obj.init    = async function(){
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init');
+              html    = mod['code-eplorer-html'];
+              html.initmod({fn});
+              
+              
         }//init
         
         
@@ -214,7 +206,7 @@
         
               ui.mode   = 'html';
               btn.active('html');
-              update.html();
+              html.update();
               
         }//html
         
@@ -274,84 +266,6 @@
         }//fn
         
         
-        update.html   = function(){
-        
-              var txt     = editor.getvalue();
-              var list    = parse.html(txt);
-              
-              var colours   = {
-                    head        : 'darkslategray',
-                    body        : 'darkslategray',
-                    script      : 'firebrick',
-                    template    : 'forestgreen',
-                    style       : 'dodgerblue',
-              };
-                                                                console.log(list);
-              view.replaceChildren();
-              
-              list.forEach(o=>{
-              
-                    var node                              = ui.html.cloneNode(true);
-                    
-                    $(node,'.line').textContent           = o.line;
-                    $(node,'.indent').style.width         = (o.indent*3)+'px';
-                    
-                    $(node,'.name').textContent           = o.name;
-                    if(colours[o.name]){
-                          node.style.color                = colours[o.name];
-                    }
-                    if(o.name.includes('-')){
-                          node.style.color                = 'hsl(33,100%,30%)';
-                    }
-                    
-                    var f=false;
-                    if(o.attrs.component){
-                          var regex   = /\bv\d+(?:\.\d+)*(?!\s*=\s*)\b/;
-                          var v;
-                          for(var key in o.attrs){
-                          
-                                if(regex.test(key)){
-                                      v   = key;
-                                      break;
-                                }
-                                
-                          }//for
-                          if(v){
-                                $(node,'.v').textContent    = v;
-                                f   = true;
-                          }
-                    }
-                    if(!f){
-                          $(node,'.v').remove();
-                    }
-                    
-                    if(o.attrs.id){
-                          $(node,'.id').textContent       = o.attrs.id;
-                    }else{
-                          $(node,'.id').remove();
-                    }
-                    
-                    if(o.attrs.class){
-                          $(node,'.class').textContent    = o.attrs.class;
-                    }else{
-                          $(node,'.class').remove();
-                    }
-                    
-                    
-                    
-                    if(o.name=='script'){
-                    }
-                    
-                    
-                    
-                    
-                    node.onclick                          = e=>editor.gotoline(o.line,o.col);
-                    
-                    view.append(node);
-                    
-              });
-              
-        }//html
         
         
   //:
@@ -361,7 +275,6 @@
   
         var parse         = {};
         parse.fn          = {};
-        parse.html        = {};
         
         
         parse.fn.javascript    = function(txt){
@@ -463,8 +376,8 @@
               if(!valid(name))return;
               
               var args      = parse.fn.args(txt,i1);
-              var indent    = parse.indent(txt,i1);
-              var col       = colno(txt,i1);
+              var indent    = fn.indent(txt,i1);
+              var col       = fn.colno(txt,i1);
               
               return {index:i1,col,name,args,indent};
               
@@ -497,9 +410,10 @@
               if(!valid(name))return;
               
               var args      = parse.fn.args(txt,i1);
-              var indent    = parse.indent(txt,i1);
+              var indent    = fn.indent(txt,i1);
+              var col       = fn.colno(txt,i1);
               
-              return {index:i1,name,args,indent};
+              return {index:i1,col,name,args,indent};
               
         }//type2
         
@@ -515,16 +429,6 @@
         }//args
         
         
-        parse.indent   = function(txt,i1){
-        
-              var i2        = txt.lastIndexOf('\n',i1);
-              var i3        = txt.indexOf('\n',i1);
-              var line      = txt.slice(i2+1,i3);
-              var match     = line.match(/^\s*/);
-              var indent    = match ? match[0].length : 0;
-              return indent;
-              
-        }//indent
         
         
         
@@ -559,6 +463,8 @@
   //:
   
   
+        fn.valid    = valid;
+        
         function valid(str){
         
               var regex     = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
@@ -567,6 +473,22 @@
               
         }//valid
         
+        
+        fn.indent   = indent;
+        
+        function indent(txt,i1){
+        
+              var i2        = txt.lastIndexOf('\n',i1);
+              var i3        = txt.indexOf('\n',i1);
+              var line      = txt.slice(i2+1,i3);
+              var match     = line.match(/^\s*/);
+              var indent    = match ? match[0].length : 0;
+              return indent;
+              
+        }//indent
+        
+        
+        fn.lineno   = lineno;
         
         function lineno(txt,i){
         
@@ -581,6 +503,8 @@
         }//line
         
         
+        fn.colno    = colno;
+        
         function colno(txt,index){
         
               var i1        = txt.lastIndexOf('\n',index);
@@ -590,15 +514,6 @@
         }//colno
         
         
-        function ws(txt,i1){
-        
-              var regex         = /\s*/y;
-              regex.lastIndex   = index;
-              var match         = txt.match(regex);
-              var n             = math.length;
-              return n;
-              
-        }//ws
         
         
         
@@ -607,96 +522,24 @@
   //:
   
   
-        parse.html    = function(txt){
-        
-              var list    = [];
-              var regex   = /<\/?[a-z][a-z0-9\-]*\b[^>]*>/gi;
-              var regex = /<\/?[a-z][a-z0-9\-]*(?=[\s\/>])[^>]*>/gi;
-              
-              while(true){
-              
-                    var match     = regex.exec(txt);
-                    if(match===null)break;
-                    
-                    var index     = match.index;
-                    var tag       = match[0];
-                    
-                    if(!tag.startsWith('</')){
-                                                                                //console.log(tag);
-                          var match         = tag.match(/^<\s*([a-z0-9\-]+)/i);
-                          var name          = match ? match[1].toLowerCase() : '';
-                          
-                          /*
-                          var match               = tag.match(/^<\s*\/?\s*([a-z0-9\-]+)/i);
-                          var name                = match ? match[1].toLowerCase() : '';
-                          console.log(name);
-                          */
-                          
-                          if(!name){
-                                //debugger;
-                                                                                console.log('parse.html error',tag);
-                          }
-                          
-                          var attrs   = {};
-                          
-                          if(name){
-                                var parser        = new DOMParser();
-                                var doc           = parser.parseFromString(tag,'text/html');
-                                var element       = doc.querySelector(name);
-                                if(!element){
-                                                                                console.log('parse.html error',tag);
-                                }else{
-                                      var attrs         = {};
-                                      
-                                      for(var i=0;i<element.attributes.length;i++){
-                                      
-                                            var attr            = element.attributes[i];
-                                            attrs[attr.name]    = (attr.value==='' ? true : attr.value);
-                                            
-                                      }//for
-                                      
-                                      var line      = lineno(txt,index);
-                                      var col       = colno(txt,index)-1;
-                                      var indent    = parse.indent(txt,index);
-                                      
-                                      var o   = {
-                                            index,
-                                            line,
-                                            col,
-                                            indent,
-                                            name,
-                                            attrs
-                                      };
-                                      list.push(o);
-                                }
-                          }
-                    }
-                    
-              }//while
-              
-              return list;
-              
-              
-        }//html
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   return obj;
   
 //code-explorer
