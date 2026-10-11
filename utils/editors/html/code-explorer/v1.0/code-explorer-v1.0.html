@@ -266,7 +266,7 @@
                     $(node,'.name').textContent       = o.name;
                     $(node,'.args').textContent       = o.args;
                     
-                    node.onclick                      = e=>editor.gotoline(o.line,o.indent);
+                    node.onclick                      = e=>editor.gotoline(o.line,o.col);
                     
                     view.append(node);
                     
@@ -338,7 +338,10 @@
                           $(node,'.class').remove();
                     }
                     
-                    node.onclick                          = e=>editor.gotoline(o.line,o.indent);
+                    if(o.name=='script'){
+                    }
+                    
+                    node.onclick                          = e=>editor.gotoline(o.line,o.col);
                     
                     view.append(node);
                     
@@ -457,8 +460,9 @@
               
               var args      = parse.fn.args(txt,i1);
               var indent    = parse.indent(txt,i1);
+              var col       = colno(txt,i1);
               
-              return {index:i1,name,args,indent};
+              return {index:i1,col,name,args,indent};
               
         }//type1
         
@@ -573,6 +577,15 @@
         }//line
         
         
+        function colno(txt,index){
+        
+              var i1        = txt.lastIndexOf('\n',index);
+              vaar colno    = index-i1;
+              return colno;
+              
+        }//colno
+        
+        
         function ws(txt,i1){
         
               var regex         = /\s*/y;
@@ -631,11 +644,13 @@
                                 }//for
                                 
                                 var line      = lineno(txt,index);
+                                var col       = colno(txt,index);
                                 var indent    = parse.indent(txt,index);
                                 
                                 var o   = {
                                       index,
                                       line,
+                                      col,
                                       indent,
                                       name,
                                       attrs
