@@ -280,6 +280,13 @@
         
               var txt     = editor.getvalue();
               var list    = parse.html(txt);
+              
+              var colours   = {
+                    head        : 'darkslateblue',
+                    body        : 'darkslateblue',
+                    script      : 'firebrick',
+                    template    : 'forestgreen',
+              };
                                                                 console.log(list);
               view.replaceChildren();
               
@@ -291,6 +298,9 @@
                     $(node,'.indent').style.width         = (o.indent*3)+'px';
                     $(node,'.name').textContent           = o.name;
                     
+                    if(colors[o.name]){
+                          node.style.color                = colours[o.name];
+                    }
                     if(o.name.includes('-')){
                           node.style.color                = 'hsl(33,100%,30%)';
                     }
