@@ -551,20 +551,22 @@
                           if(!name)debugger;
                           var attrs   = {};
                           
-                          if(name && !tag.startsWith('</')){
-                                var parser        = new DOMParser();
-                                var doc           = parser.parseFromString(tag,'text/html');
-                                var element       = doc.querySelector(name);
-                                var attrs         = {};
-                                
-                                for(var i=0;i<element.attributes.length;i++){
-                                
-                                      var attr            = element.attributes[i];
-                                      attrs[attr.name]    = (attr.value==='' ? true : attr.value);
+                          if(name){
+                                if(!tag.startsWith('</')){
+                                      var parser        = new DOMParser();
+                                      var doc           = parser.parseFromString(tag,'text/html');
+                                      var element       = doc.querySelector(name);
+                                      var attrs         = {};
                                       
-                                }//for
-                                
-                                                                                //console.log(name,attributes);
+                                      for(var i=0;i<element.attributes.length;i++){
+                                      
+                                            var attr            = element.attributes[i];
+                                            attrs[attr.name]    = (attr.value==='' ? true : attr.value);
+                                            
+                                      }//for
+                                }else{
+                                      name    = '/'+name;
+                                }
                           }
                           
                           var line      = lineno(txt,index);
