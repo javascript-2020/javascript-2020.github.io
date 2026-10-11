@@ -224,9 +224,10 @@
                     $(node,'.indent').style.width     = (o.indent*3)+'px';
                     $(node,'.name').textContent       = o.name;
                     $(node,'.args').textContent       = o.args;
-                    view.append(node);
                     
-                    node.onclick    = e=>editor.gotoline(o.line);
+                    node.onclick                      = e=>editor.gotoline(o.line);
+                    
+                    view.append(node);
                     
               });
               
@@ -243,11 +244,11 @@
               
               list.forEach(o=>{
               
-                    var node    = ui.html.cloneNode(true);
-                    $(node,'.line').textContent   = o.line;
-                    $(node,'.name').textContent   = o.name;
+                    var node                              = ui.html.cloneNode(true);
+                    $(node,'.line').textContent           = o.line;
+                    $(node,'.name').textContent           = o.name;
                     if(o.attrs.id){
-                          $(node,'.id').textContent   = o.attrs.id;
+                          $(node,'.id').textContent       = o.attrs.id;
                     }else{
                           $(node,'.id').remove();
                     }
@@ -256,6 +257,10 @@
                     }else{
                           $(node,'.class').remove();
                     }
+                    
+                    node.onclick                          = e=>editor.gotoLine(o.line);
+                    
+                    view.append(node);
                     
               });
               
