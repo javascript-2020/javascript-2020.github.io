@@ -193,7 +193,8 @@
         function parse(txt){
         
               var list    = [];
-              var regex   = /([^{]+)\{([^}]+)\}/g;
+              //var regex   = /([^{]+)\{([^}]+)\}/g;
+              var regex = /(\s*)([^{]+)\{([^}]+)\}/g;
               
               var ec    = true;
               while(ec){
@@ -201,19 +202,16 @@
                   var match   = regex.exec(txt);
                   if(match===null)break;
                   
-                  var index           = match.index;console.log(index,txt);
-                  var sel             = match[1].trim();
-                  var declarations    = match[2].trim();
+                  var ws              = match[1];
+                  var sel             = match[2];
+                  var declarations    = match[3].trim();
+                  
+                  var index           = match.index+ws.length;
                   
                   var col             = ctx.colno(txt,index);
                   var indent          = ctx.indent(txt,index);
                   
-                  var o   = {
-                        index,
-                        col,
-                        indent,
-                        sel
-                  };
+                  var o   = {index,col,indent,sel};
                   list.push(o);
                   
               }//while
