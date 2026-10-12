@@ -77,6 +77,9 @@
         var item;
         
         
+        var type      = {};
+        
+        
   //:
   
   
@@ -120,9 +123,12 @@
         }//update
         
         
-        function update(txt){
+        function update(txt,mode){
         
-              var list    = parse.html(txt);
+              var list      = {};
+              
+              list.css      = type[mode](txt);
+              list.label    = label(txt);
                                                                                 //console.log(list);
               view.replaceChildren();
               
@@ -153,13 +159,30 @@
         }//update
         
         
+        type.css   = function(txt){
         
-        parse.html    = function(txt){
-        
-              var list      = {};
-              list.css      = [];
-              list.label    = [];
+              var list    = [];
               
+              var arr   = parse(txt);
+              arr.forEach(o=>{
+              
+                    //o.index      += i1+7;
+                                                                                //console.log(txt[o.index],txt[o.index+1]);
+                    o.line      = ctx.lineno(txt,o.index);
+                    o.col       = ctx.colno(txt,o.index)-1;
+                    o.indent    = ctx.indent(txt,o.index);
+                    
+                    list.push(o);
+                    
+              });
+              
+              return list;
+              
+        }//css
+        
+        
+        type.html    = function(list,txt){
+        
               var index     = 0;
               var ec        = true;
               while(ec){
@@ -170,7 +193,9 @@
                     if(i2==-1)break;
                     
                     var str     = txt.slice(i1+7,i2);
-                                                                                //debugger;
+                                                                                 //debugger;
+                    var list    = parse.css(str);
+                    
                     var arr   = parse(str);
                     arr.forEach(o=>{
                     
@@ -186,17 +211,6 @@
                     list.css.push({type:'css-sep'});
                     
                     
-                    /*
-                    var arr   = parse.label(str);
-                    arr.forEach(o=>{
-                    
-                          o.index    += i1+6
-                          var line2   = lineno(txt,o.index);
-                          o.line      = line2;
-                          
-                    });
-                    list.label.push(...arr);
-                    */
                     
                     
                     index   = i2+7;
@@ -236,6 +250,41 @@
               return list;
               
         }//parse
+        
+        
+        
+  //:
+  
+  
+        function label(txt){
+        
+              var list    = [];
+              
+              var arr   = parse.label(txt);
+              arr.forEach(o=>{
+              
+                    o.index    += i1+6
+                    var line2   = lineno(txt,o.index);
+                    o.line      = line2;
+                    
+                    list.label.push(o);
+              });
+              
+              return list;
+              
+        }//label
+        
+        
+        parse.label   = function(txt){
+        
+              var list    = [];
+              return list;
+              
+        }//label
+        
+        
+        
+        
         
         
         
