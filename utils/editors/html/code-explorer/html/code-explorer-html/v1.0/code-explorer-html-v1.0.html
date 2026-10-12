@@ -50,7 +50,7 @@
   
         var df=true,did='code-explorer-html';
         
-        var debug,$,editor,fn,explorer
+        var debug,$,editor,ctx,explorer
         ;
         
         obj.initmod   = function(...list){
@@ -60,7 +60,7 @@
                     debug       = mod.rd(params,'debug',debug);
                     $           = mod.rd(params,'$',$);
                     editor      = mod.rd(params,'editor',editor);
-                    fn          = mod.rd(params,'fn',fn);
+                    ctx         = mod.rd(params,'ctx',ctx);
                     explorer    = mod.rd(params,'explorer',explorer);
                     
               });
@@ -76,6 +76,16 @@
         var view;
         
         var item;
+        
+        
+        var colours   = {
+              head        : 'darkslategray',
+              body        : 'darkslategray',
+              script      : 'firebrick',
+              template    : 'forestgreen',
+              style       : 'dodgerblue',
+        };
+        
         
         
   //:
@@ -112,7 +122,7 @@
   
         obj.update    = function(txt){
         
-              fn.set.mode('html');
+              ctx.set.mode('html');
               update(txt);
               
         }//update
@@ -120,20 +130,8 @@
         
         function update(txt){
         
-              if(!txt){
-                    txt   = editor.getvalue();
-              }
-              
               var list    = parse(txt);
-              
-              var colours   = {
-                    head        : 'darkslategray',
-                    body        : 'darkslategray',
-                    script      : 'firebrick',
-                    template    : 'forestgreen',
-                    style       : 'dodgerblue',
-              };
-                                                                console.log(list);
+                                                                                //console.log(list);
               view.replaceChildren();
               
               list.forEach(o=>{
@@ -242,9 +240,9 @@
                                             
                                       }//for
                                       
-                                      var line      = fn.lineno(txt,index);
-                                      var col       = fn.colno(txt,index)-1;
-                                      var indent    = fn.indent(txt,index);
+                                      var line      = ctx.lineno(txt,index);
+                                      var col       = ctx.colno(txt,index)-1;
+                                      var indent    = ctx.indent(txt,index);
                                       
                                       var o   = {
                                             index,
@@ -264,7 +262,7 @@
               return list;
               
               
-        }//html
+        }//parse
         
         
         
