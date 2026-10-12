@@ -77,6 +77,9 @@
         var item;
         
         
+        var type    = {};
+        
+        
   //:
   
   
@@ -122,7 +125,7 @@
                 
               }//switch
               
-              var list    = parse[mode](txt);
+              var list    = type[mode](txt);
                                                                 debug(mode);
                                                                 console.log(list);
               view.replaceChildren();
@@ -181,7 +184,7 @@
   
   
   
-        parse.javascript    = function(txt){
+        type.javascript    = function(txt){
         
               var list      = {};
               
@@ -195,7 +198,7 @@
         }//js
         
         
-        parse.html    = function(txt){
+        type.html    = function(txt){
         
               var list      = {};
               list.fn       = [];
@@ -210,20 +213,19 @@
                     var i2    = txt.indexOf('</scr'+'ipt>',index);
                     if(i2==-1)break;
                     
-                    //var line    = lineno(txt,i1+8);
                     var str     = txt.slice(i1+8,i2);
                     
                     var arr   = parse(str);
                     arr.forEach(o=>{
                     
                           o.index    += i1+6
-                          var line2   = ctx.lineno(txt,o.index);
-                          o.line      = line2;
+                          o.line      = ctx.lineno(txt,o.index);
                           
                     });
                     list.fn.push(...arr);
                     
                     list.fn.push({type:'fn-sep'});
+                    
                     
                     /*
                     var arr   = parse.label(str);
@@ -247,6 +249,9 @@
         }//html
         
         
+  //:
+  
+  
         function parse(txt){
         
               var list    = [];
@@ -259,11 +264,12 @@
                     
                     var o;
                     
-                    o   = type1(txt,i1);
+                    o   = parse.declaration(txt,i1);
                     if(o){
                           list.push(o);
                     }
-                    o   = type2(txt,i1);
+                    
+                    o   = parse.assignment(txt,i1);
                     if(o){
                           list.push(o);
                     }
@@ -277,7 +283,7 @@
         }//parse
         
         
-        function type1(txt,i1){
+        parse.declaration   = function(txt,i1){
         
               i1         += 8;
               var i2      = txt.indexOf('(',i1);
@@ -293,7 +299,7 @@
         }//type1
         
         
-        function type2(txt,i1){
+        parse.assignment    = function(txt,i1){
         
               var i2    = txt.lastIndexOf('=',i1);
               if(i2==-1)return;
@@ -317,7 +323,7 @@
               }//for
               
               var name    = txt.slice(i4+1,i3+1);
-                                                                                console.log(name);
+                                                                                //console.log(name);
               if(!valid(name))return;
               
               var args      = parse.args(txt,i1);
