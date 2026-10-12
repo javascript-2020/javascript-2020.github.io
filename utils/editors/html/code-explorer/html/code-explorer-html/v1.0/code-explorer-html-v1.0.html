@@ -72,6 +72,9 @@
   
   
         var shadow;
+        
+        var view;
+        
         var item;
         
         
@@ -88,11 +91,13 @@
   //:
   
   
-        obj.initdom   = async function(){
+        obj.initdom   = async function(params){
                                                                                 debug('initdom');
-              shadow    = host.shadowRoot;
+              shadow            = host.shadowRoot;
               
-              item      = $(shadow,'.html');
+              ({view}           = params);
+              
+              item              = $(shadow,'.html');
               item.remove();
               
         }//initdom
@@ -101,11 +106,20 @@
   //:
   
   
-        obj.update    = update;
+        obj.update    = function(txt){
         
-        function update(view){
+              fn.set.mode('html');
+              update(txt);
+              
+        }//update
         
-              var txt     = editor.getvalue();
+        
+        function update(txt){
+        
+              if(!txt){
+                    txt   = editor.getvalue();
+              }
+              
               var list    = parse(txt);
               
               var colours   = {
