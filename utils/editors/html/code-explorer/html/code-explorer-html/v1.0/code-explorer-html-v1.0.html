@@ -93,11 +93,15 @@
   
         obj.initdom   = async function(params){
                                                                                 debug('initdom');
-              shadow            = host.shadowRoot;
+              shadow                    = host.shadowRoot;
               
-              ({view}           = params);
+              var {par:shadow}          = params;
+              ({view}                   = params);
               
-              item              = $(shadow,'.html');
+              var style                 = $(shadow,'style');
+              par.append(style);
+              
+              item                      = $(shadow,'.html');
               item.remove();
               
         }//initdom
