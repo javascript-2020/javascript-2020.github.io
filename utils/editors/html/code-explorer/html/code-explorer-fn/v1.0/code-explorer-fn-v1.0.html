@@ -6,7 +6,10 @@
       
             <style>
             
-  .fn
+  .fn.sep
+    {border-top:1px solid lightgray;margin:7px}
+    
+  .fn.item
     {}
   .fn .line
     {}
@@ -18,6 +21,8 @@
     {color:gray}
     
             </style>
+            
+            <div class='fn sep'></div>
             
             <div class='fn item'>
                   <div class=line>
@@ -68,6 +73,7 @@
         
         var view;
         var empty;
+        var sep;
         var item;
         
         
@@ -95,7 +101,10 @@
               var style                 = $(shadow,'style');
               par.append(style);
               
-              item                      = $(shadow,'.fn');
+              sep                       = $(shadow,'.fn.sep');
+              sep.remove();
+              
+              item                      = $(shadow,'.fn.item');
               item.remove();
               
         }//initdom
@@ -124,20 +133,44 @@
               
               list.fn.forEach(o=>{
               
-                    var node                          = item.cloneNode(true);
-                    $(node,'.line').textContent       = o.line;
-                    $(node,'.indent').style.width     = (o.indent*3)+'px';
-                    $(node,'.name').textContent       = o.name;
-                    $(node,'.args').textContent       = o.args;
+                    if(o.type==='fn-sep'){
+                          var node    = disp.sep(o);
+                          view.append(node);
+                          return;
+                    }
                     
-                    node.onclick                      = e=>editor.gotoline(o.line,o.indent);
-                    
+                    var node    = disp.item(o);
                     view.append(node);
                     
               });
               
               
         }//fn
+        
+        
+        function disp(o){
+        }//disp
+        
+        
+        disp.sep    = function(o){
+        
+              var nsep    = sep.cloneNode(true);
+              return nsep;
+              
+        }//sep
+        
+        
+        disp.item   = function(o){
+        
+              var node                          = item.cloneNode(true);
+              $(node,'.line').textContent       = o.line;
+              $(node,'.indent').style.width     = (o.indent*3)+'px';
+              $(node,'.name').textContent       = o.name;
+              $(node,'.args').textContent       = o.args;
+              
+              node.onclick                      = e=>editor.gotoline(o.line,o.indent);
+              
+        }//item
         
         
   //:
@@ -186,6 +219,7 @@
                     });
                     list.fn.push(...arr);
                     
+                    list.fn.push({type:'fn-sep'});
                     
                     /*
                     var arr   = parse.label(str);
@@ -250,7 +284,7 @@
               var indent    = ctx.indent(txt,i1);
               var col       = ctx.colno(txt,i1);
               
-              return {index:i1,col,name,args,indent};
+              return {type:'fn',index:i1,col,name,args,indent};
               
         }//type1
         
@@ -286,7 +320,7 @@
               var indent    = ctx.indent(txt,i1);
               var col       = ctx.colno(txt,i1);
               
-              return {index:i1,col,name,args,indent};
+              return {type:'fn',index:i1,col,name,args,indent};
               
         }//type2
         
