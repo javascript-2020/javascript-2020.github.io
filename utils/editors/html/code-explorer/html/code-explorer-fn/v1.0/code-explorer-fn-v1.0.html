@@ -6,7 +6,29 @@
       
             <style>
             
+  .fn
+    {display:flex;gap:5px}
+  .fn .line
+    {width:50px;flex-shrink:0;border-right:1px solid lightgray}
+  .fn .indent
+    {}
+  .fn .name
+    {font-weight:bold;flex-shrink:0}
+  .fn .args
+    {flex-shrink:0;color:gray;font-size:var(--val)}
+    
             </style>
+            
+            <div class='fn item'>
+                  <div class=line>
+                  </div>
+                  <div class=indent>
+                  </div>
+                  <div class=name>
+                  </div>
+                  <div class=args>
+                  </div>
+            </div>
             
       </template>
       
@@ -20,6 +42,8 @@
   
         var df=true,did='code-explorer-fn';
         
+        var debug,$,explorer,ctx
+        ;
         
         obj.initmod   = function(...list){
         
@@ -28,6 +52,8 @@
                     debug       = mod.rd(params,'debug',debug);
                     $           = mod.rd(params,'$',$);
                     explorer    = mod.rd(params,'explorer',explorer);
+                    df          = mod.rd(params,'df',df);
+                    ctx         = mod.rd(params,'ctx',ctx);
                     
               });
               
@@ -39,28 +65,283 @@
   
         var shadow;
         
+        var view;
+        
         
   //:
   
   
         obj.init    = async function(){
+                                                                                debug=eval(debug.mod);
+                                                                                debug('init');
+              explorer.update.fn    = update;
+              
         }//init
         
         
   //:
   
   
-        obj.initdom   = async function(){
+        obj.initdom   = async function(params){
+                                                                                debug('initdom');
+              shadow                    = host.shadowRoot;
+              
+              var {shadow:par}          = params;
+              ({view}                   = params);
+              
+              var style                 = $(shadow,'style');
+              par.append(style);
+              
+              item                      = $(shadow,'.fn');
+              item.remove();
+              
         }//initdom
         
         
   //:
   
   
-  
+        function update(txt,mode){
+                                                                //var d=debug('update');
+              switch(mode){
+              
+                case undefined    :
+                case 'js'         : mode='javascript';        break;
+                
+              }//switch
+              
+              var list    = parse.fn[mode](txt);
+                                                                debug(mode);
+                                                                console.log(list);
+              view.replaceChildren();
+              
+              list.fn.forEach(o=>{
+              
+                    var node                          = ui.fn.cloneNode(true);
+                    $(node,'.line').textContent       = o.line;
+                    $(node,'.indent').style.width     = (o.indent*3)+'px';
+                    $(node,'.name').textContent       = o.name;
+                    $(node,'.args').textContent       = o.args;
+                    
+                    node.onclick                      = e=>editor.gotoline(o.line,o.indent);
+                    
+                    view.append(node);
+                    
+              });
+              
+              
+        }//fn
+        
+        
   //:
   
   
+  
+        parse.javascript    = function(txt){
+        
+              var list      = {};
+              
+              list.fn       = parse(txt);
+              list.fn.forEach(o=>o.line=lineno(txt,o.index));
+              
+              //list.label    = parse.label(txt);
+              //list.label.forEach(o=>o.line=lineno(txt,o.index));
+              
+              return list;
+        }//js
+        
+        
+        parse.html    = function(txt){
+        
+              var list      = {};
+              list.fn       = [];
+              list.label    = [];
+              
+              var index     = 0;
+              var ec        = true;
+              while(ec){
+              
+                    var i1    = txt.indexOf('<scr'+'ipt>',index);
+                    if(i1==-1)break;
+                    var i2    = txt.indexOf('</scr'+'ipt',index);
+                    if(i2==-1)break;
+                    
+                    //var line    = lineno(txt,i1+8);
+                    var str     = txt.slice(i1+8,i2);
+                    
+                    var arr   = parse(str);
+                    arr.forEach(o=>{
+                    
+                          o.index    += i1+6
+                          var line2   = lineno(txt,o.index);
+                          o.line      = line2;
+                          
+                    });
+                    list.fn.push(...arr);
+                    
+                    
+                    /*
+                    var arr   = parse.label(str);
+                    arr.forEach(o=>{
+                    
+                          o.index    += i1+6
+                          var line2   = lineno(txt,o.index);
+                          o.line      = line2;
+                          
+                    });
+                    list.label.push(...arr);
+                    */
+                    
+                    
+                    index   = i2+9;
+                    
+              }//while
+              
+              return list;
+              
+        }//html
+        
+        
+        function parse(txt){
+        
+              var list    = [];
+              var index   = 0;
+              var ec      = true;
+              while(ec){
+              
+                    var i1      = txt.indexOf('function',index);
+                    if(i1==-1)break;
+                    
+                    var o;
+                    
+                    o   = type1(txt,i1);
+                    if(o){
+                          list.push(o);
+                    }
+                    o   = type2(txt,i1);
+                    if(o){
+                          list.push(o);
+                    }
+                    
+                    index   = i1+8;
+                    
+              }//while
+              
+              return list;
+              
+        }//parse
+        
+        
+        function type1(txt,i1){
+        
+              i1         += 8;
+              var i2      = txt.indexOf('(',i1);
+              var name    = txt.slice(i1,i2).trim();
+              if(!valid(name))return;
+              
+              var args      = args(txt,i1);
+              var indent    = ctx.indent(txt,i1);
+              var col       = ctx.colno(txt,i1);
+              
+              return {index:i1,col,name,args,indent};
+              
+        }//type1
+        
+        
+        function type2(txt,i1){
+        
+              var i2    = txt.lastIndexOf('=',i1);
+              if(i2==-1)return;
+              
+              var str   = txt.slice(i2+1,i1).trim();
+              if(!(str=='' || str=='async'))return;
+              
+              for(var i3=i2-1;i3>=0;i3--){
+              
+                    var c   = txt[i3];
+                    if(!/^\s*$/.test(c))break;
+                    
+              }//for
+              
+              for(var i4=i3;i4>=0;i4--){
+              
+                    var c   = txt[i4];
+                    if(/^\s*$/.test(c))break;
+                    //if(/[\s\W]/.test(c))break;
+                    
+              }//for
+              
+              var name    = txt.slice(i4+1,i3+1);
+                                                                                console.log(name);
+              if(!valid(name))return;
+              
+              var args      = args(txt,i1);
+              var indent    = ctx.indent(txt,i1);
+              var col       = ctx.colno(txt,i1);
+              
+              return {index:i1,col,name,args,indent};
+              
+        }//type2
+        
+        
+        function args(txt,i1){
+        
+              var i2      = txt.indexOf('(',i1);
+              var i3      = txt.indexOf(')',i2);
+              var args    = txt.slice(i2,i3+1);
+              args        = args.replace(' ','');
+              return args;
+              
+        }//args
+        
+        
+        
+        
+        
+  //:
+  
+  
+        parse.label   = function(txt){
+        
+              var list      = [];
+              var regex     = /\/\/\s*([^:\r\n]+):/g;
+              
+              var ec    = true;
+              while(ec){
+              
+                    var match   = regex.exec(txt);
+                    if(match===null)break;
+                    
+                    var line    = lineno(txt,match.index);
+                    var label   = match[1].trim();
+                    
+                    list.push({line,label});
+                    
+              }//while
+              
+              return list;
+              
+        }//label
+        
+        
+        
+        
+  //:
+  
+  
+        function valid(str){
+        
+              //var regex     = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+              var regex     = /^[a-zA-Z_$][0-9a-zA-Z_$.]*$/;
+              var result    = regex.test(str);
+              return result;
+              
+        }//valid
+        
+        
+        
+        
+        
   return obj;
   
 //code-explorer-fn
