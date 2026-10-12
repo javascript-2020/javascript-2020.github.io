@@ -6,7 +6,30 @@
       
             <style>
             
+  .css
+    {}
+    
+  .css .line
+    {}
+    
+  .css .indent
+    {}
+    
+  .css .sel
+    {}
+    
             </style>
+            
+            <div class='css item'>
+            
+                  <div class=line>
+                  </div>
+                  <div class=indent>
+                  </div>
+                  <div class='sel main'>
+                  </div>
+                  
+            </div>
             
       </template>
       
@@ -21,7 +44,7 @@
   
         var df=true,did='code-explorer-css';
         
-        var debug,$,explorer,ctx
+        var debug,$,explorer,ctx,editor
         ;
         
         obj.initmod   = function(...list){
@@ -32,6 +55,7 @@
                     $           = mod.rd(params,'$',$);
                     explorer    = mod.rd(params,'explorer',explorer);
                     ctx         = mod.rd(params,'ctx',ctx);
+                    editor      = mod.rd(params,'editor'editor);
                     
               });
               
@@ -76,24 +100,119 @@
   //:
   
   
-        function update(){
+        obj.update    = function(txt){
+        
+              ctx.set.mode('html');
+              update(txt);
+              
+        }//update
+        
+        
+        function update(txt){
+        
+              var list    = parse.html(txt);
+                                                                                //console.log(list);
+              view.replaceChildren();
+              
+              if(list.length==0){
+                    view.append(empty);
+              }
+              
+              list.forEach(o=>{
+              
+                    var node                              = item.cloneNode(true);
+                    
+                    $(node,'.line').textContent           = o.line;
+                    $(node,'.indent').style.width         = (o.indent*3)+'px';
+                    $(node,'.sel').textContent            = o.sel;
+                    
+                    node.onclick                          = e=>editor.gotoline(o.line,o.col);
+                    
+                    view.append(node);
+                    
+              });
+              
         }//update
         
         
         
+        parse.html    = function(txt){
+        
+              var list      = {};
+              list.fn       = [];
+              list.label    = [];
+              
+              var index     = 0;
+              var ec        = true;
+              while(ec){
+              
+                    var i1    = txt.indexOf('<style>',index);
+                    if(i1==-1)break;
+                    var i2    = txt.indexOf('</style>',index);
+                    if(i2==-1)break;
+                    
+                    //var line    = lineno(txt,i1+8);
+                    var str     = txt.slice(i1+8,i2);
+                    
+                    var arr   = parse(str);
+                    arr.forEach(o=>{
+                    
+                          o.index    += i1+8
+                          var line    = ctx.lineno(txt,o.index);
+                          o.line      = line;
+                          
+                    });
+                    list.push(...arr);
+                    
+                    
+                    /*
+                    var arr   = parse.label(str);
+                    arr.forEach(o=>{
+                    
+                          o.index    += i1+6
+                          var line2   = lineno(txt,o.index);
+                          o.line      = line2;
+                          
+                    });
+                    list.label.push(...arr);
+                    */
+                    
+                    
+                    index   = i2+7;
+                    
+              }//while
+              
+              return list;
+              
+        }//html
+        
+        
         function parse(txt){
         
-              var cssText = "body { margin: 0; background: #000; } .list, hdr { display: flex; }";
-              var regex = /([^{]+)\{([^}]+)\}/g;
-              var match;
+              var list    = [];
+              var regex   = /([^{]+)\{([^}]+)\}/g;
               
-              while ((match = regex.exec(cssText)) !== null) {
-                  var selector = match[1].trim();
-                  var declarations = match[2].trim();
+              var ec    = true;
+              while(ec){
+              
+                  var match   = regex.exec(txt);
+                  if(match===null)break;
                   
-                  console.log("Selector:", selector);
-                  console.log("Styles:", declarations);
-              }
+                  var index           = match.index;
+                  var sel             = match[1].trim();
+                  var declarations    = match[2].trim();
+                  
+                  var col             = ctx.colno(txt,index);
+                  
+                  var o   = {
+                        index,
+                        col,
+                        indent,
+                        sel
+                  };
+                  list.push(o);
+                  
+              }//while
               
         }//parse
         
