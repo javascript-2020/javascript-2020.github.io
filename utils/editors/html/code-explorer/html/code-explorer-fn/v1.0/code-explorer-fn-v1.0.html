@@ -7,15 +7,15 @@
             <style>
             
   .fn
-    {display:flex;gap:5px}
+    {}
   .fn .line
-    {width:50px;flex-shrink:0;border-right:1px solid lightgray}
+    {}
   .fn .indent
     {}
   .fn .name
-    {font-weight:bold;flex-shrink:0}
+    {}
   .fn .args
-    {flex-shrink:0;color:gray;font-size:var(--val)}
+    {color:gray}
     
             </style>
             
@@ -24,7 +24,7 @@
                   </div>
                   <div class=indent>
                   </div>
-                  <div class=name>
+                  <div class='name main'>
                   </div>
                   <div class=args>
                   </div>
@@ -42,7 +42,7 @@
   
         var df=true,did='code-explorer-fn';
         
-        var debug,$,explorer,ctx
+        var debug,$,explorer,ctx,editor
         ;
         
         obj.initmod   = function(...list){
@@ -54,6 +54,7 @@
                     explorer    = mod.rd(params,'explorer',explorer);
                     df          = mod.rd(params,'df',df);
                     ctx         = mod.rd(params,'ctx',ctx);
+                    editor      = mod.rd(params,'editor',editor);
                     
               });
               
@@ -169,7 +170,7 @@
               
                     var i1    = txt.indexOf('<scr'+'ipt>',index);
                     if(i1==-1)break;
-                    var i2    = txt.indexOf('</scr'+'ipt',index);
+                    var i2    = txt.indexOf('</scr'+'ipt>',index);
                     if(i2==-1)break;
                     
                     //var line    = lineno(txt,i1+8);
