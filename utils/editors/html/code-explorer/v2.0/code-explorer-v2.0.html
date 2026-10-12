@@ -132,7 +132,9 @@
         
         
         var btn         = {};
+        var set         = {};
         var fn          = {};
+        fn.set          = set;
         
         var sort        = {};
         sort.alpha      = {};
@@ -149,7 +151,13 @@
               html    = mod['code-explorer-html'];
               html.initmod({explorer,fn});
               
-              await mod.auto();
+              
+              
+              await Promise.all([
+                    html.init(),
+              ]);
+              
+              
               
         }//init
         
@@ -178,6 +186,7 @@
               ui.label.remove();
               
               
+              await html.initdom({view});
               
               
         }//initdom
@@ -196,7 +205,7 @@
         btn.fn    = function(){
         
               ui.mode   = 'fn';
-              btn.active('fn');
+              set.mode('fn');
               update.fn();
               
         }//fn
@@ -205,14 +214,19 @@
         btn.html    = function(){
         
               ui.mode   = 'html';
-              btn.active('html');
+              set.mode('html');
               html.update();
               
         }//html
         
         
-        btn.active   = function(id){
+  //:
+  
+  
+        set.mode    = function(mode){
         
+              ui.mode   = mode;
+              
               var list    = $.all(shadow,'#hdr img');
               list.forEach(img=>{
               
@@ -224,7 +238,7 @@
                     
               });
               
-        }//active
+        }//mode
         
         
   //:
