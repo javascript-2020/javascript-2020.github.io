@@ -130,8 +130,14 @@
                     view.append(empty);
               }
               
-              list.css.forEach(o=>{
+              list.css.forEach((o,i)=>{
               
+                    if(o.type==='sep' && i!=list.css.length-1){
+                          var nsep    = sep.cloneNode(true);
+                          view.append(nsep);
+                          return;
+                    }
+                    
                     var node                              = item.cloneNode(true);
                     
                     $(node,'.line').textContent           = o.line;
@@ -177,6 +183,8 @@
                           
                     });
                     list.css.push(...arr);
+                    
+                    list.css.push({type:'sep'});
                     
                     
                     /*
