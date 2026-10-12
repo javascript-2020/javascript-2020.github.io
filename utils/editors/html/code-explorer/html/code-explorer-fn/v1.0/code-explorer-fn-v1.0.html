@@ -133,13 +133,15 @@
               
               list.fn.forEach(o=>{
               
-                    if(o.type==='fn-sep'){
-                          var node    = disp.sep(o);
-                          view.append(node);
-                          return;
-                    }
+                    var node;
                     
-                    var node    = disp.item(o);
+                    switch(o.type){
+                    
+                      case 'fn-sep'   : node    = disp.sep(o);        break;
+                      case 'fn'       : node    = disp.item(o);       break;
+                      
+                    }//switch
+                    
                     view.append(node);
                     
               });
@@ -147,6 +149,8 @@
               
         }//fn
         
+        
+        obj.disp    = disp;
         
         function disp(o){
         }//disp
