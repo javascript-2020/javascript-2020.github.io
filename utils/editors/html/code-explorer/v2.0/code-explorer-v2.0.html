@@ -296,7 +296,13 @@
         function indent(txt,i1){
         
               var i2        = txt.lastIndexOf('\n',i1);
+              if(i2==-1){
+                    i2    = 0;
+              }
               var i3        = txt.indexOf('\n',i1);
+              if(i3==-1){
+                    i3    = txt.length;
+              }
               var line      = txt.slice(i2+1,i3);
               var match     = line.match(/^\s*/);
               var indent    = match ? match[0].length : 0;
@@ -325,6 +331,9 @@
         function colno(txt,index){
         
               var i1        = txt.lastIndexOf('\n',index);
+              if(i1==-1){
+                    i1    = 0;
+              }
               var col       = index-i1;
               return col;
               
