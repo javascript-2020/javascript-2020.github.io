@@ -74,7 +74,7 @@
         var shadow;
         
         var view;
-        
+        var empty;
         var item;
         
         
@@ -106,7 +106,7 @@
               shadow                    = host.shadowRoot;
               
               var {shadow:par}          = params;
-              ({view}                   = params);
+              ({view,empty}             = params);
               
               var style                 = $(shadow,'style');
               par.append(style);
@@ -133,6 +133,10 @@
               var list    = parse(txt);
                                                                                 //console.log(list);
               view.replaceChildren();
+              
+              if(list.length==0){
+                    view.append(empty);
+              }
               
               list.forEach(o=>{
               
