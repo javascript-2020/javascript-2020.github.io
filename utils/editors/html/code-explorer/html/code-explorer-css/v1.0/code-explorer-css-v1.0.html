@@ -160,9 +160,11 @@
                     var arr   = parse(str);
                     arr.forEach(o=>{
                     
-                          o.index    += i1+7;
-                          var line    = ctx.lineno(txt,o.index);
-                          o.line      = line;
+                          o.index      += i1+7;
+                          var line      = ctx.lineno(txt,o.index);
+                          var col       = ctx.colno(txt,o.index);
+                          var indent    = ctx.indent(txt,o.index);
+                          o.line        = line;
                           
                     });
                     list.css.push(...arr);
@@ -207,9 +209,6 @@
                   var declarations    = match[3].trim();
                   
                   var index           = match.index+ws.length;
-                  
-                  var col             = ctx.colno(txt,index);
-                  var indent          = ctx.indent(txt,index);
                   
                   var o   = {index,col,indent,sel};
                   console.log(o);
