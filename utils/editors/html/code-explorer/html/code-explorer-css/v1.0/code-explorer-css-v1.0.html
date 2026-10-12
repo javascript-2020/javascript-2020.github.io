@@ -132,7 +132,7 @@
               
               list.css.forEach((o,i)=>{
               
-                    if(o.type==='sep' && i!=list.css.length-1){
+                    if(o.type==='css-sep'){
                           var nsep    = sep.cloneNode(true);
                           view.append(nsep);
                           return;
@@ -169,7 +169,6 @@
                     var i2    = txt.indexOf('</style>',index);
                     if(i2==-1)break;
                     
-                    //var line    = lineno(txt,i1+8);
                     var str     = txt.slice(i1+7,i2);
                                                                                 //debugger;
                     var arr   = parse(str);
@@ -184,7 +183,7 @@
                     });
                     list.css.push(...arr);
                     
-                    list.css.push({type:'sep'});
+                    list.css.push({type:'css-sep'});
                     
                     
                     /*
@@ -228,7 +227,7 @@
                   var index           = match.index+ws.length;
                                                                                 //console.log(txt[index],txt[index+1]);
                                                                                 
-                  var o   = {index,sel};
+                  var o   = {type:'css',index,sel};
                                                                                 //console.log(o);
                   list.push(o);
                   
