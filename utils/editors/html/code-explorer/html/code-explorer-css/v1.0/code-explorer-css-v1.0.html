@@ -1,0 +1,112 @@
+
+
+<code-explorer-css>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+            </style>
+            
+      </template>
+      
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {
+        version   : 'v1.0',
+  };
+  
+        var df=true,did='code-explorer-css';
+        
+        var debug,$,explorer,ctx
+        ;
+        
+        obj.initmod   = function(...list){
+        
+              list.forEach(params=>{
+              
+                    debug       = mod.rd(params,'debug',debug);
+                    $           = mod.rd(params,'$',$);
+                    explorer    = mod.rd(params,'explorer',explorer);
+                    ctx         = mod.rd(params,'ctx',ctx);
+                    
+              });
+              
+        }//initmod
+        
+        
+  //:
+  
+  
+        var shadow;
+        var view;
+        var empty;
+        var item;
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = async function(params){
+        
+              shadow                    = host.shadowRoot;
+              
+              var {shadow:par}          = params;
+              ({view,empty}             = params);
+              
+              var style                 = $(shadow,'style');
+              par.append(style);
+              
+              item                      = $(shadow,'.css');
+              item.remove();
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        function update(){
+        }//update
+        
+        
+        
+        function parse(txt){
+        
+              var cssText = "body { margin: 0; background: #000; } .list, hdr { display: flex; }";
+              var regex = /([^{]+)\{([^}]+)\}/g;
+              var match;
+              
+              while ((match = regex.exec(cssText)) !== null) {
+                  var selector = match[1].trim();
+                  var declarations = match[2].trim();
+                  
+                  console.log("Selector:", selector);
+                  console.log("Styles:", declarations);
+              }
+              
+        }//parse
+        
+        
+        
+  return obj;
+  
+//code-explorer-css
+})
+
+
+      </script>
+      
+</code-explorer-css>
+
+
