@@ -293,15 +293,15 @@
   
         ctx.indent   = indent;
         
-        function indent(txt,i1){
+        function indent(txt,index){
         
-              var i2        = txt.lastIndexOf('\n',i1);
+              var i2        = txt.lastIndexOf('\n',index);
               if(i2==-1){
-                    i2    = 0;
+                    i2      = 0;
               }
-              var i3        = txt.indexOf('\n',i1);
+              var i3        = txt.indexOf('\n',index);
               if(i3==-1){
-                    i3    = txt.length;
+                    i3      = txt.length;
               }
               var line      = txt.slice(i2+1,i3);
               var match     = line.match(/^\s*/);
@@ -313,10 +313,10 @@
         
         ctx.lineno   = lineno;
         
-        function lineno(txt,i){
+        function lineno(txt,index){
         
               var start       = 0;
-              var end         = i;
+              var end         = index;
               var substring   = txt.slice(start,end);
               var newlines    = substring.match(/\r\n|\n|\r/g);
               var count       = newlines ? newlines.length : 0;
