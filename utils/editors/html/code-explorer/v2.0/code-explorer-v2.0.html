@@ -36,6 +36,9 @@
       width: max-content;min-width: 100%;
       }
       
+  #empty
+    {color:gray}
+    
   .item
     {cursor:pointer;min-width:max-content;font-size:14px}
   .item:hover
@@ -61,7 +64,10 @@
             <div id=hldr>
                   <div id=view>
                   
-                  
+                        <div id=empty>
+                              [ Empty ]
+                        </div>
+                        
                         <div class='label item'>
                         </div>
                         
@@ -113,8 +119,8 @@
         
         
         var view;
-        var ui    = {};
-        ui.mode   = 'fn';
+        var ui          = {};
+        ui.mode         = 'fn';
         
         
         
@@ -163,11 +169,13 @@
               
               view                                    = $(shadow,'#view');
               
+              var empty                               = $(shadow,'#empty');
+              
               ui.label                                = $(shadow,'.label');
               ui.label.remove();
               
               
-              var params    = {view,shadow};
+              var params    = {view,shadow,empty};
               await Promise.all([fn.initdom(params),html.initdom(params)]);
               
               
