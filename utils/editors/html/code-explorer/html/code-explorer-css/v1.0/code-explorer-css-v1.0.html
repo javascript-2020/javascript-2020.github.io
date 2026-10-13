@@ -6,6 +6,13 @@
       
             <style>
             
+  .css-sep
+    {}
+  .css-sep .decor
+    {border-top:1px solid lightgray;flex:1}
+  .css-sep .name
+    {margin:0 7px}
+    
   .css.item
     {}
     
@@ -23,7 +30,17 @@
     
             </style>
             
-            <div class='css sep'></div>
+            <div class='css-sep item'>
+                  <div class=line>
+                  </div>
+                  <div class=decor>
+                  </div>
+                  <div class=name>
+                        script
+                  </div>
+                  <div class=decor>
+                  </div>
+            </div>
             
             <div class='css item'>
             
@@ -103,7 +120,7 @@
               var style                 = $(shadow,'style');
               par.append(style);
               
-              sep                       = $(shadow,'.css.sep');
+              sep                       = $(shadow,'.css-sep');
               sep.remove();
               
               item                      = $(shadow,'.css.item');
@@ -226,6 +243,15 @@
               return list;
               
         }//html
+        
+        
+        html.sep    = function(){
+        
+              var line    = ctx.lineno(txt,index);
+              var o       = {type:'css-sep',line}
+              return o;
+              
+        }//sep
         
         
         function parse(txt){
