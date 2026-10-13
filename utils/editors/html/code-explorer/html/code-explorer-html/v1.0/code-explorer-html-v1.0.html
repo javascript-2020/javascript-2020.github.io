@@ -6,6 +6,11 @@
       
             <style>
             
+  .html-label
+    {}
+  .html-label .name
+    {color:gray;font-style:italic}
+    
   .html
     {}
   .html .line
@@ -22,6 +27,13 @@
     {color:green;font-style:italic}
     
             </style>
+            
+            <div class='html-label item'>
+                  <div class=line>
+                  </div>
+                  <div class=label>
+                  </div>
+            </div>
             
             <div class='html item'>
                   <div class=line>
@@ -75,15 +87,17 @@
         
         var view;
         var empty;
+        var label;
         var item;
         
         
         var colours   = {
-              head        : 'darkslategray',
-              body        : 'darkslategray',
-              script      : 'firebrick',
-              template    : 'forestgreen',
-              style       : 'dodgerblue',
+              head                  : 'darkslategray',
+              body                  : 'darkslategray',
+              script                : 'firebrick',
+              template              : 'forestgreen',
+              style                 : 'dodgerblue',
+              'custom-element'      : 'hsl(33,100%,30%)',
         };
         
         
@@ -111,6 +125,9 @@
               var style                 = $(shadow,'style');
               par.append(style);
               
+              label                     = $(shadow,'.html-label');
+              label.remove();
+              
               item                      = $(shadow,'.html');
               item.remove();
               
@@ -130,8 +147,11 @@
         
         function update(txt){
         
-              var list    = parse(txt);
+              var list1   = parse(txt);
+              var list2   = parse.label(txt);
+              var list    = ctx.merge(list1,list2);
                                                                                 //console.log(list);
+                                                                                
               view.replaceChildren();
               
               if(list.length==0){
@@ -140,65 +160,99 @@
               
               list.forEach(o=>{
               
-                    var node                              = item.cloneNode(true);
+                    var node;
                     
-                    $(node,'.line').textContent           = o.line;
-                    $(node,'.indent').style.width         = (o.indent*3)+'px';
+                    switch(o.type){
                     
-                    $(node,'.name').textContent           = o.name;
-                    if(colours[o.name]){
-                          node.style.color                = colours[o.name];
-                    }
-                    if(o.name.includes('-')){
-                          node.style.color                = 'hsl(33,100%,30%)';
-                    }
-                    
-                    var f=false;
-                    if(o.attrs.component){
-                          var regex   = /\bv\d+(?:\.\d+)*(?!\s*=\s*)\b/;
-                          var v;
-                          for(var key in o.attrs){
-                          
-                                if(regex.test(key)){
-                                      v   = key;
-                                      break;
-                                }
-                                
-                          }//for
-                          if(v){
-                                $(node,'.v').textContent    = v;
-                                f   = true;
-                          }
-                    }
-                    if(!f){
-                          $(node,'.v').remove();
-                    }
-                    
-                    if(o.attrs.id){
-                          $(node,'.id').textContent       = o.attrs.id;
-                    }else{
-                          $(node,'.id').remove();
-                    }
-                    
-                    if(o.attrs.class){
-                          $(node,'.class').textContent    = o.attrs.class;
-                    }else{
-                          $(node,'.class').remove();
-                    }
-                    
-                    
-                    
-                    if(o.name=='script'){
-                    }
-                    
-                    
-                    
-                    
-                    node.onclick                          = e=>editor.gotoline(o.line,o.col);
+                      case 'html-label'       : node    = create.label(o);        break;
+                      case 'html'             : node    = create.html(o);         break;
+                      
+                    }//switch
                     
                     view.append(node);
                     
               });
+              
+        }//update
+        
+        
+        var create    = {};
+        
+        
+        create.label    = funciton(o){
+        
+              var nlabel    = label.cloneNode(true);
+              
+              $(nlabel,'.line').textContent     = o.line;
+              $(nlabel,'.label').textContent    = o.label;
+              
+              nlabel.onclick                    = e=>editor.gotoline(o.line,o.col);
+              
+              return nlabel;
+              
+        }//label
+        
+        
+        create.html   = function(o){
+        
+              var node                              = item.cloneNode(true);
+              
+              $(node,'.line').textContent           = o.line;
+              $(node,'.indent').style.width         = (o.indent*3)+'px';
+              
+              $(node,'.name').textContent           = o.name;
+              if(colours[o.name]){
+                    node.style.color                = colours[o.name];
+              }
+              if(o.name.includes('-')){
+                    node.style.color                = colours['custom-element'];
+              }
+              
+                                                                                //v1.0
+              var f=false;
+              if(o.attrs.component){
+                    var regex   = /\bv\d+(?:\.\d+)*(?!\s*=\s*)\b/;
+                    var v;
+                    for(var key in o.attrs){
+                    
+                          if(regex.test(key)){
+                                v   = key;
+                                break;
+                          }
+                          
+                    }//for
+                    if(v){
+                          $(node,'.v').textContent    = v;
+                          f   = true;
+                    }
+              }
+              if(!f){
+                    $(node,'.v').remove();
+              }
+              
+              if(o.attrs.id){
+                    $(node,'.id').textContent       = o.attrs.id;
+              }else{
+                    $(node,'.id').remove();
+              }
+              
+              if(o.attrs.class){
+                    $(node,'.class').textContent    = o.attrs.class;
+              }else{
+                    $(node,'.class').remove();
+              }
+              
+              
+              
+              if(o.name=='script'){
+              }
+              
+              
+              
+              
+              node.onclick                          = e=>editor.gotoline(o.line,o.col);
+              
+              return node;
               
         }//html
         
@@ -268,6 +322,31 @@
               
         }//parse
         
+        
+        
+        parse.label   = function(){
+        
+              var list      = [];
+              
+              var regex   = /[^\S\r\n]*<!--[^\S\r\n]*([^:\r\n]*):(?:[^\S\r\n]*-->)?/g;
+              
+              var ec    = true;
+              while(ec){
+              
+                    var match   = regex.exec(txt);
+                    if(match===null)break;
+                    
+                    var index     = match.index;
+                    var label     = match[1].trim();
+                    var indent    = ctx.indent(txt,index);
+                    
+                    list.push({type:'html-label',index,label,indent});
+                    
+              }//while
+              
+              return list;
+              
+        }//label
         
         
   //:
