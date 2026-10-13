@@ -6,6 +6,11 @@
       
             <style>
             
+  .css-label
+    {}
+  .css-label .name
+    {color:gray;font-style:italic}
+    
   .css-sep
     {}
   .css-sep .decor
@@ -29,6 +34,13 @@
     {border-top:1px solid lightgray;margin:7px}
     
             </style>
+            
+            <div class='css-label item'>
+                  <div class=line>
+                  </div>
+                  <div class=label>
+                  </div>
+            </div>
             
             <div class='css-sep item'>
                   <div class=line>
@@ -91,6 +103,7 @@
         var view;
         var empty;
         var sep;
+        var label;
         var item;
         
         
@@ -122,6 +135,9 @@
               
               sep                       = $(shadow,'.css-sep');
               sep.remove();
+              
+              label                     = $(shadow,'.css-label');
+              label.remove();
               
               item                      = $(shadow,'.css.item');
               item.remove();
@@ -197,6 +213,20 @@
         }//sep
         
         
+        create.label    = function(o){
+        
+              var nlabel                        = label.cloneNode(true);
+              
+              $(nlabel,'.line').textContent     = o.line;
+              $(nlabel,'.label').textContent    = o.label;
+              
+              nlabel.onclick                    = e=>editor.gotoline(o.line,o.col);
+              
+              return nlabel;
+              
+        }//label
+        
+        
         create.css   = function(o){
         
               var node                          = item.cloneNode(true);
@@ -217,7 +247,7 @@
   
         function css(txt){
         
-              var list    = [];
+              var list1   = [];
               
               var arr   = parse(txt);
               arr.forEach(o=>{
@@ -228,10 +258,24 @@
                     o.col       = ctx.colno(txt,o.index)-1;
                     o.indent    = ctx.indent(txt,o.index);
                     
-                    list.push(o);
+                    list1.push(o);
                     
               });
               
+              var list2   = [];
+              
+              var arr   = parse.label(txt);
+              arr=>forEach(o=>{
+              
+                    o.line      = ctx.lineno(txt,o.index);
+                    o.col       = ctx.colno(txt,o.index)-1;
+                    o.indent    = ctx.indent(txt,o.index);
+                    
+                    list2.push(o);
+                    
+              });
+              
+              var list    = ctx.merge(list1,list2);
               return list;
               
         }//css
@@ -239,7 +283,8 @@
         
         function html(txt){
         
-              var list      = [];
+              var list1   = [];
+              var list2   = [];
               
               var index     = 0;
               var ec        = true;
@@ -251,7 +296,7 @@
                     if(i2==-1)break;
                     
                     var o   = html.sep(txt,i1);
-                    list.push(o);
+                    list1.push(o);
                     
                     var str     = txt.slice(i1+7,i2);
                                                                                  //debugger;
@@ -264,16 +309,31 @@
                           o.col       = ctx.colno(txt,o.index)-1;
                           o.indent    = ctx.indent(txt,o.index);
                           
-                          list.push(o);
+                          list1.push(o);
+                          
+                    });
+                    
+                    var arr   = parse.label(str);
+                    arr.forEach(o=>{
+                    
+                          o.index      += i1+7;
+                                                                                //console.log(txt[o.index],txt[o.index+1]);
+                          o.line      = ctx.lineno(txt,o.index);
+                          o.col       = ctx.colno(txt,o.index)-1;
+                          o.indent    = ctx.indent(txt,o.index);
+                          
+                          list2.push(o);
+                          
                     });
                     
                     var o   = html.sep(txt,i2);
-                    list.push(o);
+                    list1.push(o);
                     
                     index   = i2+7;
                     
               }//while
               
+              var list    = ctx.merge(list1,list2);
               return list;
               
         }//html
@@ -326,28 +386,28 @@
   //:
   
   
-        function label(txt){
-        
-              var list    = [];
-              
-              var arr   = parse.label(txt);
-              arr.forEach(o=>{
-              
-                    o.index    += i1+6
-                    var line2   = lineno(txt,o.index);
-                    o.line      = line2;
-                    
-                    list.label.push(o);
-              });
-              
-              return list;
-              
-        }//label
-        
-        
         parse.label   = function(txt){
         
               var list    = [];
+              
+              var regex   = /[^\S\r\n]*\/\*[^\S\r\n]*([^:\r\n]*):(?:[^\S\r\n]*\*\/)?/g;
+              
+              var ec    = true;
+              while(ec){
+              
+                    var match   = regex.exec(txt);
+                    if(match===null)break;
+                    
+                    var index     = match.index;
+                    var line      = ctx.lineno(txt,index);
+                    var label     = match[1].trim();
+                    var indent    = ctx.indent(txt,index);
+                    var col       = ctx.colno(txt,index);
+                    
+                    list.push({type:'css-label',index,line,col,label,indent});
+                    
+              }//while
+              
               return list;
               
         }//label
