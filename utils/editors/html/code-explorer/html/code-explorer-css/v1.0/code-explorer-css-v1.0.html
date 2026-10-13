@@ -36,7 +36,7 @@
                   <div class=decor>
                   </div>
                   <div class=name>
-                        script
+                        style
                   </div>
                   <div class=decor>
                   </div>
@@ -162,19 +162,14 @@
               
               list.css.forEach((o,i)=>{
               
-                    if(o.type==='css-sep'){
-                          var nsep    = sep.cloneNode(true);
-                          view.append(nsep);
-                          return;
-                    }
+                    var node;
                     
-                    var node                              = item.cloneNode(true);
+                    switch(o.type){
                     
-                    $(node,'.line').textContent           = o.line;
-                    $(node,'.indent').style.width         = (o.indent*3)+'px';
-                    $(node,'.sel').textContent            = o.sel;
-                    
-                    node.onclick                          = e=>editor.gotoline(o.line,o.col);
+                      case 'css-sep'    : node    = create.sep(o);        break;
+                      case 'css'        : node    = create.css(o);        break;
+                      
+                    }//switch
                     
                     view.append(node);
                     
@@ -183,6 +178,39 @@
         }//update
         
         
+        obj.create    = create;
+        
+        function create(o){
+        }//create
+        
+        
+        create.sep    = function(o){
+        
+              var nsep    = sep.cloneNode(true);
+              $(nsep,'.line').textContent   = o.line;
+              return nsep;
+              
+        }//sep
+        
+        
+        create.css   = function(o){
+        
+              var node                              = item.cloneNode(true);
+              
+              $(node,'.line').textContent           = o.line;
+              $(node,'.indent').style.width         = (o.indent*3)+'px';
+              $(node,'.sel').textContent            = o.sel;
+              
+              node.onclick                          = e=>editor.gotoline(o.line,o.col);
+              
+              return node;
+              
+        }//css
+        
+        
+  //:
+  
+  
         function css(txt){
         
               var list    = [];
@@ -218,7 +246,8 @@
                     var i2    = txt.indexOf('</style>',index);
                     if(i2==-1)break;
                     
-                    list.push({type:'css-sep'});
+                    var o   = html.sep(txt,i1);
+                    list.push(o);
                     
                     var str     = txt.slice(i1+7,i2);
                                                                                  //debugger;
@@ -234,7 +263,8 @@
                           list.push(o);
                     });
                     
-                    list.push({type:'css-sep'});
+                    var o   = html.sep(txt,i2);
+                    list.push(o);
                     
                     index   = i2+7;
                     
