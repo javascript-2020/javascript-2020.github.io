@@ -277,7 +277,8 @@
                     txt   = editor.getvalue();
               }
                                                                 debug('update',mode);
-              update[mode](txt,emode);
+              var list    = update[mode](txt,emode);
+              
               
         }//update
         
@@ -340,13 +341,66 @@
         }//colno
         
         
+        ctx.merge   = merge;
+        
+        function merge(...lists){
+        
+              var list    = lists.flat().sort((a,b)=>(a.line-b.line));
+              return list;
+              
+        }//merge
+        
+        
+        
+        
+        /*
+        function merge(...lists){
+        
+              var list    = [];
+              
+              var n       = lists.length;
+              var index   = [];
+              for(var i=0;i<n;i++)
+                    index[i]    = 0;
+                    
+              var l;
+              
+              var ec    = true;
+              while(ec){
+              
+                    var c     = 0;
+                    var min   = null;
+                    
+                    for(var i=0;i<n;i++)
+                          if(index[i]<lists[i].length){
+                                var o   = lists[i][index[i]];
+                                if(min===null || o.line<min){
+                                      min   = o.line;
+                                      l     = i;
+                                }
+                          }else{
+                                c++;
+                          }
+                          
+                    if(c==n)break;
+                    
+                    var o   = lists[l][index[l]];
+                    index[l]++;
+                    
+                    list.push(o);
+                    
+              }//while
+              
+              return list;
+              
+        }//merge
+        */
         
         
         
         
         
   //:
-  
   
   
   
