@@ -127,8 +127,15 @@
         
               var list      = {};
               
-              list.css      = type[mode](txt);
+              switch(mode){
+              
+                case 'css'    : list.css    = css(txt);         break;
+                case 'html'   : list.css    = html(txt);        break;
+                
+              }//switch
+              
               list.label    = label(txt);
+              
                                                                                 //console.log(list);
               view.replaceChildren();
               
@@ -159,7 +166,7 @@
         }//update
         
         
-        type.css   = function(txt){
+        function css(txt){
         
               var list    = [];
               
@@ -181,7 +188,7 @@
         }//css
         
         
-        type.html    = function(list,txt){
+        function html(list,txt){
         
               var index     = 0;
               var ec        = true;
