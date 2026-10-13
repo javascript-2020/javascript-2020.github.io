@@ -117,17 +117,20 @@
   
   
         function update(txt,mode){
-                                                                //var d=debug('update');
+                                                                var d=debug('update',mode);
+              var list      = {};
+              list.fn       = [];
+              list.label    = [];
+              
               switch(mode){
               
                 case undefined    :
-                case 'js'         : mode='javascript';        break;
+                case 'js'         : list.fn   = javascript(txt);        break;
+                case 'html'       : list.fn   = html(txt);              break;
                 
               }//switch
-              
-              var list    = type[mode](txt);
-                                                                debug(mode);
                                                                 console.log(list);
+                                                                
               view.replaceChildren();
               
               if(list.fn.length==0){
@@ -184,7 +187,7 @@
   
   
   
-        type.javascript    = function(txt){
+        function javascript(txt){
         
               var list      = {};
               
