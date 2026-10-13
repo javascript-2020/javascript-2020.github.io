@@ -187,7 +187,11 @@
         create.sep    = function(o){
         
               var nsep    = sep.cloneNode(true);
-              $(nsep,'.line').textContent   = o.line;
+              
+              $(nsep,'.line').textContent     = o.line;
+              
+              nsep.onclick                    = e=>editor.gotoline(o.line,o.col);
+              
               return nsep;
               
         }//sep
@@ -195,13 +199,13 @@
         
         create.css   = function(o){
         
-              var node                              = item.cloneNode(true);
+              var node                          = item.cloneNode(true);
               
-              $(node,'.line').textContent           = o.line;
-              $(node,'.indent').style.width         = (o.indent*3)+'px';
-              $(node,'.sel').textContent            = o.sel;
+              $(node,'.line').textContent       = o.line;
+              $(node,'.indent').style.width     = (o.indent*3)+'px';
+              $(node,'.sel').textContent        = o.sel;
               
-              node.onclick                          = e=>editor.gotoline(o.line,o.col);
+              node.onclick                      = e=>editor.gotoline(o.line,o.col);
               
               return node;
               
