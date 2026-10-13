@@ -198,9 +198,14 @@
                     
               });
               
-              //list.label    = parse.label(txt);
-              //list.label.forEach(o=>o.line=lineno(txt,o.index));
+              var list2   = parse.label(txt);
+              list2.forEach(o=>{
               
+                    o.line    = ctx.lineno(txt,o.index);
+                    
+              });
+              
+              list    = ctx.merge(list,list2);
               return list;
               
         }//js
@@ -219,9 +224,12 @@
                     var i2    = txt.indexOf('</scr'+'ipt>',index);
                     if(i2==-1)break;
                     
-                    list.push({type:'fn-sep'});
-                    
                     var str     = txt.slice(i1+8,i2);
+                    
+                    var list1    = [];
+                    
+                    var o   = sep(txt,i1);
+                    list1.push(o);
                     
                     var arr   = parse(str);
                     arr.forEach(o=>{
@@ -229,25 +237,26 @@
                           o.index    += i1+6
                           o.line      = ctx.lineno(txt,o.index);
                           
-                          list.push(o);
+                          list1.push(o);
                           
                     });
                     
-                    list.push({type:'fn-sep'});
+                    var o   = setp(txt,i2);
+                    list1.push(o);
                     
-                    
-                    /*
-                    var arr   = parse.label(str);
+                    var list2   = [];
+                    var arr     = parse.label(str);
                     arr.forEach(o=>{
                     
                           o.index    += i1+6
                           var line2   = lineno(txt,o.index);
                           o.line      = line2;
                           
+                          list2.push(o);
+                          
                     });
-                    list.label.push(...arr);
-                    */
                     
+                    list    = ctx.merge(list,list1,list2);
                     
                     index   = i2+9;
                     
@@ -257,6 +266,14 @@
               
         }//html
         
+        
+        function sep(txt,index){
+        
+              var line    = ctx.lineno(txt,i1);
+              var o       = {type:'fn-sep',line}
+              return o;
+              
+        }//sep
         
   //:
   
@@ -365,6 +382,7 @@
         parse.label   = function(txt){
         
               var list      = [];
+              
               var regex     = /\/\/\s*([^:\r\n]+):/g;
               
               var ec    = true;
