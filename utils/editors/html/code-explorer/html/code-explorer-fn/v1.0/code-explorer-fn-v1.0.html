@@ -38,6 +38,15 @@
                   </div>
             </div>
             
+            <div class='fn-label item'>
+                  <div class=line>
+                  </div>
+                  <div class=indent>
+                  </div>
+                  <div class='name'>
+                  </div>
+            </div>
+            
             <div class='fn item'>
                   <div class=line>
                   </div>
@@ -88,6 +97,7 @@
         var view;
         var empty;
         var sep;
+        var label;
         var item;
         
         
@@ -120,6 +130,9 @@
               
               sep                       = $(shadow,'.fn-sep');
               sep.remove();
+              
+              label                     = $(shadow,'.fn-label');
+              label.remove();
               
               item                      = $(shadow,'.fn.item');
               item.remove();
@@ -156,8 +169,9 @@
                     
                     switch(o.type){
                     
-                      case 'fn-sep'   : node    = disp.sep(o);        break;
-                      case 'fn'       : node    = disp.item(o);       break;
+                      case 'fn-sep'     : node    = create.sep(o);          break;
+                      case 'fn-label'   : node    = create.label(o);        break;
+                      case 'fn'         : node    = create.item(o);         break;
                       
                     }//switch
                     
@@ -169,13 +183,13 @@
         }//update
         
         
-        obj.disp    = disp;
+        obj.create    = create;
         
-        function disp(o){
-        }//disp
+        function create(o){
+        }//create
         
         
-        disp.sep    = function(o){
+        create.sep    = function(o){
         
               var nsep    = sep.cloneNode(true);
               
@@ -188,8 +202,22 @@
         }//sep
         
         
-        disp.item   = function(o){
-                                                                                console.log(o);
+        create.label    = function(o){
+        
+              var nlabel    = label.cloneNode(true);
+              
+              $(nlabel,'.line').textContent   = o.line;
+              $(nlabel,'.name').textContent   = o.label;
+              
+              nlabel.onclick    = e=>editor.gotoline(o.line,o.indent);
+              
+              return nlabel
+              
+        }//label
+        
+        
+        create.item   = function(o){
+                                                                                //console.log(o);
               var node                          = item.cloneNode(true);
               
               $(node,'.line').textContent       = o.line;
