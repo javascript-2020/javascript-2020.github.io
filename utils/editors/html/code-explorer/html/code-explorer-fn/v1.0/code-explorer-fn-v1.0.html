@@ -187,23 +187,20 @@
   
         function javascript(txt){
         
-              var list      = {};
-              
-              list.fn       = parse(txt);
-              list.fn.forEach(o=>o.line=ctx.lineno(txt,o.index));
+              var list       = parse(txt);
+              list.forEach(o=>o.line=ctx.lineno(txt,o.index));
               
               //list.label    = parse.label(txt);
               //list.label.forEach(o=>o.line=lineno(txt,o.index));
               
               return list;
+              
         }//js
         
         
-        type.html    = function(txt){
+        function html(txt){
         
-              var list      = {};
-              list.fn       = [];
-              list.label    = [];
+              var list      = [];
               
               var index     = 0;
               var ec        = true;
@@ -222,10 +219,11 @@
                           o.index    += i1+6
                           o.line      = ctx.lineno(txt,o.index);
                           
+                          list.push(o);
+                          
                     });
-                    list.fn.push(...arr);
                     
-                    list.fn.push({type:'fn-sep'});
+                    list.push({type:'fn-sep'});
                     
                     
                     /*
