@@ -158,16 +158,14 @@
         
         function update(txt,mode){
         
-              var list      = {};
+              var list;
               
               switch(mode){
               
-                case 'css'    : list.css    = css(txt);         break;
-                case 'html'   : list.css    = html(txt);        break;
+                case 'css'    : list    = css(txt);         break;
+                case 'html'   : list    = html(txt);        break;
                 
               }//switch
-              
-              list.label    = label(txt);
               
                                                                                 //console.log(list);
               view.replaceChildren();
@@ -182,8 +180,9 @@
                     
                     switch(o.type){
                     
-                      case 'css-sep'    : node    = create.sep(o);        break;
-                      case 'css'        : node    = create.css(o);        break;
+                      case 'css-sep'      : node    = create.sep(o);          break;
+                      case 'css-label'    : node    = create.label(o);        break;
+                      case 'css'          : node    = create.css(o);          break;
                       
                     }//switch
                     
