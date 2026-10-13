@@ -178,7 +178,11 @@
         disp.sep    = function(o){
         
               var nsep    = sep.cloneNode(true);
-              $(nsep,'.line').textContent   = o.line;
+              
+              $(nsep,'.line').textContent     = o.line;
+              
+              nsep.onclick                    = e=>editor.gotoline(o.line,o.indent);
+              
               return nsep;
               
         }//sep
@@ -187,6 +191,7 @@
         disp.item   = function(o){
                                                                                 console.log(o);
               var node                          = item.cloneNode(true);
+              
               $(node,'.line').textContent       = o.line;
               $(node,'.indent').style.width     = (o.indent*3)+'px';
               $(node,'.name').textContent       = o.name;
