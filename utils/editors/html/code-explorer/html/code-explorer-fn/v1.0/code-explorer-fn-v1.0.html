@@ -189,7 +189,12 @@
         function javascript(txt){
         
               var list       = parse(txt);
-              list.forEach(o=>o.line=ctx.lineno(txt,o.index));
+              
+              list.forEach(o=>{
+              
+                    o.line    = ctx.lineno(txt,o.index);
+                    
+              });
               
               //list.label    = parse.label(txt);
               //list.label.forEach(o=>o.line=lineno(txt,o.index));
@@ -255,6 +260,7 @@
         function parse(txt){
         
               var list    = [];
+              
               var index   = 0;
               var ec      = true;
               while(ec){
