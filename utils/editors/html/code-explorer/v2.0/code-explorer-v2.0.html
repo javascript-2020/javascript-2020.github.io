@@ -199,7 +199,7 @@
               ui.label.remove();
               
               
-              var params    = {view,shadow,empty};
+              var params    = {shadow};
               await mod.initdom([fn,html,css],params);
               
               
@@ -282,6 +282,25 @@
               }
                                                                 debug('update',mode);
               var list    = update[mode](txt,emode);
+              
+              view.replaceChildren();
+              
+              if(list.length==0){
+                    view.append(empty);
+              }
+              
+              list.forEach(o=>{
+              
+                    var node;
+                    
+                    if(o.type.startsWith('fn'))node     = fn.create(o);
+                    if(o.type.startsWith('css'))node    = css.create(o);
+                    if(o.type.startsWith('html'))node   = html.crete(o);
+                    
+                    view.append(node);
+                    
+              });
+              
               
               
         }//update
