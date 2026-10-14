@@ -99,8 +99,6 @@
   
         var shadow;
         
-        var view;
-        var empty;
         var sep;
         var label;
         var item;
@@ -128,7 +126,6 @@
               shadow                    = host.shadowRoot;
               
               var {shadow:par}          = params;
-              ({view,empty}             = params);
               
               var style                 = $(shadow,'style');
               par.append(style);
@@ -150,25 +147,28 @@
   
         function update(txt,mode){
                                                                 var d=debug('update',mode);
-              var list      = {};
+              var list;
               
               switch(mode){
               
                 case undefined      :
                 case 'javascript'   :
-                case 'js'           : list.fn   = javascript(txt);        break;
-                case 'html'         : list.fn   = html(txt);              break;
+                case 'js'           : list   = javascript(txt);        break;
+                case 'html'         : list   = html(txt);              break;
                 
               }//switch
-                                                                console.log(list);
-                                                                
+                                                                //console.log(list);
+              return list;
+              
+              
+/*
               view.replaceChildren();
               
-              if(list.fn.length==0){
+              if(list.length==0){
                     view.append(empty);
               }
               
-              list.fn.forEach(o=>{
+              list.forEach(o=>{
               
                     var node;
                     
@@ -183,14 +183,28 @@
                     view.append(node);
                     
               });
-              
-              
+*/
+
+
         }//update
         
         
         obj.create    = create;
         
         function create(o){
+        
+              var node;
+              
+              switch(o.type){
+              
+                case 'fn-sep'     : node    = create.sep(o);          break;
+                case 'fn-label'   : node    = create.label(o);        break;
+                case 'fn'         : node    = create.item(o);         break;
+                
+              }//switch
+              
+              return node;
+              
         }//create
         
         
