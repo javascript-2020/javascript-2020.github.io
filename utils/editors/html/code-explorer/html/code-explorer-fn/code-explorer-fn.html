@@ -1,0 +1,503 @@
+
+
+<code-explorer-fn>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  .fn-sep
+    {}
+  .fn-sep .decor
+    {border-top:1px solid lightgray;flex:1}
+  .fn-sep .name
+    {margin:0 7px}
+    
+  .fn-label
+    {}
+  .fn-label .name
+    {color:gray;font-style:italic}
+    
+  .fn.item
+    {}
+  .fn .line
+    {}
+  .fn .indent
+    {}
+  .fn .name
+    {}
+  .fn .args
+    {color:gray}
+    
+            </style>
+            
+            <div class='fn-sep item'>
+                  <div class=line>
+                  </div>
+                  <div class=decor>
+                  </div>
+                  <div class=name>
+                        script
+                  </div>
+                  <div class=decor>
+                  </div>
+            </div>
+            
+            <div class='fn-label item'>
+                  <div class=line>
+                  </div>
+                  <div class=indent>
+                  </div>
+                  <div class='name'>
+                  </div>
+            </div>
+            
+            <div class='fn item'>
+                  <div class=line>
+                  </div>
+                  <div class=indent>
+                  </div>
+                  <div class='name main'>
+                  </div>
+                  <div class=args>
+                  </div>
+            </div>
+            
+      </template>
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {
+        version   : 'v1.0',
+  };
+  
+        var df=true,did='code-explorer-fn';
+        
+        var debug,$,explorer,ctx,editor
+        ;
+        
+        obj.initmod   = function(...list){
+        
+              list.forEach(params=>{
+              
+                    debug       = mod.rd(params,'debug',debug);
+                    $           = mod.rd(params,'$',$);
+                    explorer    = mod.rd(params,'explorer',explorer);
+                    df          = mod.rd(params,'df',df);
+                    ctx         = mod.rd(params,'ctx',ctx);
+                    editor      = mod.rd(params,'editor',editor);
+                    
+              });
+              
+        }//initmod
+        
+        
+  //:
+  
+  
+        var shadow;
+        
+        var sep;
+        var label;
+        var item;
+        
+        
+        var type    = {};
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+                                                                                debug=eval(debug.mod);
+                                                                                debug('init');
+              explorer.update.fn    = update;
+              
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = async function(params){
+                                                                                debug('initdom');
+              shadow                    = host.shadowRoot;
+              
+              var {shadow:par}          = params;
+              
+              var style                 = $(shadow,'style');
+              par.append(style);
+              
+              sep                       = $(shadow,'.fn-sep');
+              sep.remove();
+              
+              label                     = $(shadow,'.fn-label');
+              label.remove();
+              
+              item                      = $(shadow,'.fn.item');
+              item.remove();
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        function update(txt,mode){
+                                                                var d=debug('update',mode);
+              var list;
+              
+              switch(mode){
+              
+                case undefined      :
+                case 'javascript'   :
+                case 'js'           : list   = javascript(txt);        break;
+                case 'html'         : list   = html(txt);              break;
+                
+              }//switch
+                                                                //console.log(list);
+              return list;
+              
+              
+/*
+              view.replaceChildren();
+              
+              if(list.length==0){
+                    view.append(empty);
+              }
+              
+              list.forEach(o=>{
+              
+                    var node;
+                    
+                    switch(o.type){
+                    
+                      case 'fn-sep'     : node    = create.sep(o);          break;
+                      case 'fn-label'   : node    = create.label(o);        break;
+                      case 'fn'         : node    = create.item(o);         break;
+                      
+                    }//switch
+                    
+                    view.append(node);
+                    
+              });
+*/
+
+
+        }//update
+        
+        
+        obj.create    = create;
+        
+        function create(o){
+        
+              var node;
+              
+              switch(o.type){
+              
+                case 'fn-sep'     : node    = create.sep(o);          break;
+                case 'fn-label'   : node    = create.label(o);        break;
+                case 'fn'         : node    = create.item(o);         break;
+                
+              }//switch
+              
+              return node;
+              
+        }//create
+        
+        
+        create.sep    = function(o){
+        
+              var nsep    = sep.cloneNode(true);
+              
+              $(nsep,'.line').textContent     = o.line;
+              
+              nsep.onclick                    = e=>editor.gotoline(o.line,o.indent);
+              
+              return nsep;
+              
+        }//sep
+        
+        
+        create.label    = function(o){
+        
+              var nlabel    = label.cloneNode(true);
+              
+              $(nlabel,'.line').textContent   = o.line;
+              $(nlabel,'.name').textContent   = o.label;
+              
+              nlabel.onclick    = e=>editor.gotoline(o.line,o.indent);
+              
+              return nlabel
+              
+        }//label
+        
+        
+        create.item   = function(o){
+                                                                                //console.log(o);
+              var node                          = item.cloneNode(true);
+              
+              $(node,'.line').textContent       = o.line;
+              $(node,'.indent').style.width     = (o.indent*3)+'px';
+              $(node,'.name').textContent       = o.name;
+              $(node,'.args').textContent       = o.args;
+              
+              node.onclick                      = e=>editor.gotoline(o.line,o.indent);
+              
+              return node;
+              
+        }//item
+        
+        
+  //:
+  
+  
+  
+        function javascript(txt){
+        
+              var list       = parse(txt);
+              
+              list.forEach(o=>{
+              
+                    o.line    = ctx.lineno(txt,o.index);
+                    
+              });
+              
+              var list2   = parse.label(txt);
+              list2.forEach(o=>{
+              
+                    o.line    = ctx.lineno(txt,o.index);
+                    
+              });
+              
+              list    = ctx.merge(list,list2);
+              return list;
+              
+        }//js
+        
+        
+        function html(txt){
+        
+              var list      = [];
+              
+              var index     = 0;
+              var ec        = true;
+              while(ec){
+              
+                    var i1    = txt.indexOf('<scr'+'ipt>',index);
+                    if(i1==-1)break;
+                    var i2    = txt.indexOf('</scr'+'ipt>',index);
+                    if(i2==-1)break;
+                    
+                    var str     = txt.slice(i1+8,i2);
+                    
+                    var list1    = [];
+                    
+                    var o   = html.sep(txt,i1);
+                    list1.push(o);
+                    
+                    var arr   = parse(str);
+                    arr.forEach(o=>{
+                    
+                          o.index    += i1+6
+                          o.line      = ctx.lineno(txt,o.index);
+                          
+                          list1.push(o);
+                          
+                    });
+                    
+                    var o   = html.sep(txt,i2);
+                    list1.push(o);
+                    
+                    var list2   = [];
+                    var arr     = parse.label(str);
+                    console.log('js-html-label',arr);
+                    arr.forEach(o=>{
+                    
+                          o.index    += i1+6
+                          o.line      = ctx.lineno(txt,o.index)+1;
+                          
+                          list2.push(o);
+                          
+                    });
+                    
+                    list    = ctx.merge(list,list1,list2);
+                    
+                    index   = i2+9;
+                    
+              }//while
+              
+              return list;
+              
+        }//html
+        
+        
+        html.sep    = function(txt,index){
+        
+              var line    = ctx.lineno(txt,index);
+              var o       = {type:'fn-sep',line}
+              return o;
+              
+        }//sep
+        
+  //:
+  
+  
+        function parse(txt){
+        
+              var list    = [];
+              
+              var index   = 0;
+              var ec      = true;
+              while(ec){
+              
+                    var i1      = txt.indexOf('function',index);
+                    if(i1==-1)break;
+                    
+                    var o;
+                    
+                    o   = parse.declaration(txt,i1);
+                    if(o){
+                          list.push(o);
+                    }
+                    
+                    o   = parse.assignment(txt,i1);
+                    if(o){
+                          list.push(o);
+                    }
+                    
+                    index   = i1+8;
+                    
+              }//while
+              
+              return list;
+              
+        }//parse
+        
+        
+        parse.declaration   = function(txt,i1){
+        
+              i1         += 8;
+              var i2      = txt.indexOf('(',i1);
+              var name    = txt.slice(i1,i2).trim();
+              if(!valid(name))return;
+              
+              var args      = parse.args(txt,i1);
+              var indent    = ctx.indent(txt,i1);
+              var col       = ctx.colno(txt,i1);
+              
+              return {type:'fn',index:i1,col,name,args,indent};
+              
+        }//type1
+        
+        
+        parse.assignment    = function(txt,i1){
+        
+              var i2    = txt.lastIndexOf('=',i1);
+              if(i2==-1)return;
+              
+              var str   = txt.slice(i2+1,i1).trim();
+              if(!(str=='' || str=='async'))return;
+              
+              for(var i3=i2-1;i3>=0;i3--){
+              
+                    var c   = txt[i3];
+                    if(!/^\s*$/.test(c))break;
+                    
+              }//for
+              
+              for(var i4=i3;i4>=0;i4--){
+              
+                    var c   = txt[i4];
+                    if(/^\s*$/.test(c))break;
+                    //if(/[\s\W]/.test(c))break;
+                    
+              }//for
+              
+              var name    = txt.slice(i4+1,i3+1);
+                                                                                //console.log(name);
+              if(!valid(name))return;
+              
+              var args      = parse.args(txt,i1);
+              var indent    = ctx.indent(txt,i1);
+              var col       = ctx.colno(txt,i1);
+              
+              return {type:'fn',index:i1,col,name,args,indent};
+              
+        }//type2
+        
+        
+        parse.args    = function(txt,i1){
+        
+              var i2      = txt.indexOf('(',i1);
+              var i3      = txt.indexOf(')',i2);
+              var args    = txt.slice(i2,i3+1);
+              args        = args.replace(' ','');
+              return args;
+              
+        }//args
+        
+        
+        
+        
+        
+  //:
+  
+  
+        parse.label   = function(txt){
+        
+              var list      = [];
+              
+              //var regex     = /\/\/\s*([^:\r\n]+):/g;
+              var regex = /[^\S\r\n]*\/\/([^:\r\n]*):/g;
+              
+              var ec    = true;
+              while(ec){
+              
+                    var match   = regex.exec(txt);
+                    if(match===null)break;
+                    
+                    var index     = match.index;
+                    var label     = match[1].trim();
+                    var indent    = ctx.indent(txt,index);
+                    
+                    list.push({type:'fn-label',index,label,indent});
+                    
+              }//while
+              
+              return list;
+              
+        }//label
+        
+        
+        
+        
+  //:
+  
+  
+        function valid(str){
+        
+              //var regex     = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/
+              var regex     = /^[a-zA-Z_$][0-9a-zA-Z_$.]*$/;
+              var result    = regex.test(str);
+              return result;
+              
+        }//valid
+        
+        
+        
+        
+        
+  return obj;
+  
+//code-explorer-fn
+})
+
+      </script>
+      
+</code-explorer-fn>
+
+
+
