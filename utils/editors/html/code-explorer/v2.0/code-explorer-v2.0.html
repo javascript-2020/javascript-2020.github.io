@@ -272,16 +272,13 @@
   
         obj.update    = update;
         
-        function update(txt,mode){
+        function update(txt,type,mode){
         
+              txt     ||= editor.getvalue();
+              type    ||= editor.mode;
               mode    ||= ui.mode;
-              
-              var emode   = editor.mode;
-              if(!txt){
-                    txt   = editor.getvalue();
-              }
-                                                                debug('update',mode);
-              var list    = update[mode](txt,emode);
+                                                                debug('update',type,mode);
+              var list    = update[mode](txt,type);
               
               view.replaceChildren();
               
