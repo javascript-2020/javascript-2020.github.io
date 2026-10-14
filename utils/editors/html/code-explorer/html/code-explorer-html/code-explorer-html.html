@@ -1,0 +1,372 @@
+
+
+<code-explorer-html>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  .html-label
+    {}
+  .html-label .name
+    {color:gray;font-style:italic}
+    
+  .html
+    {}
+  .html .line
+    {}
+  .html .indent
+    {}
+  .html .name
+    {}
+  .html .v
+    {}
+  .html .id
+    {color:blue}
+  .html .class
+    {color:green;font-style:italic}
+    
+            </style>
+            
+            <div class='html-label item'>
+                  <div class=line>
+                  </div>
+                  <div class=label>
+                  </div>
+            </div>
+            
+            <div class='html item'>
+                  <div class=line>
+                  </div>
+                  <div class=indent>
+                  </div>
+                  <div class='name main'>
+                  </div>
+                  <div class=v>
+                  </div>
+                  <div class=id>
+                  </div>
+                  <div class=class>
+                  </div>
+            </div>
+            
+      </template>
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {
+        version   : 'v1.0',
+  };
+  
+        var df=true,did='code-explorer-html';
+        
+        var debug,$,editor,ctx,explorer
+        ;
+        
+        obj.initmod   = function(...list){
+        
+              list.forEach(params=>{
+              
+                    debug       = mod.rd(params,'debug',debug);
+                    $           = mod.rd(params,'$',$);
+                    explorer    = mod.rd(params,'explorer',explorer);
+                    ctx         = mod.rd(params,'ctx',ctx);
+                    editor      = mod.rd(params,'editor',editor);
+                    
+              });
+              
+        }//initmod
+        
+        
+  //:
+  
+  
+        var shadow;
+        
+        var label;
+        var item;
+        
+        
+        var colours   = {
+              head                  : 'darkslategray',
+              body                  : 'darkslategray',
+              script                : 'firebrick',
+              template              : 'forestgreen',
+              style                 : 'dodgerblue',
+              'custom-element'      : 'hsl(33,100%,30%)',
+        };
+        
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+                                                                                debug('init');
+              explorer.update.html    = update;
+              
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = async function(params){
+                                                                                debug('initdom');
+              shadow                    = host.shadowRoot;
+              
+              var {shadow:par}          = params;
+              
+              var style                 = $(shadow,'style');
+              par.append(style);
+              
+              label                     = $(shadow,'.html-label');
+              label.remove();
+              
+              item                      = $(shadow,'.html');
+              item.remove();
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        obj.update    = function(txt){
+        
+              ctx.set.mode('html');
+              update(txt);
+              
+        }//update
+        
+        
+        function update(txt){
+        
+              var list1   = parse(txt);
+              var list2   = parse.label(txt);
+              var list    = ctx.merge(list1,list2);
+                                                                                //console.log(list);
+              return list;
+              
+/*
+              view.replaceChildren();
+              
+              if(list.length==0){
+                    view.append(empty);
+              }
+              
+              list.forEach(o=>{
+              
+                    var node;
+                    
+                    switch(o.type){
+                    
+                      case 'html-label'       : node    = create.label(o);        break;
+                      case 'html'             : node    = create.html(o);         break;
+                      
+                    }//switch
+                    
+                    view.append(node);
+                    
+              });
+*/
+
+        }//update
+        
+        
+        obj.create    = create;
+        
+        function create(o){
+        
+              var node;
+              
+              switch(o.type){
+              
+                case 'html-label'       : node    = create.label(o);        break;
+                case 'html'             : node    = create.html(o);         break;
+                
+              }//switch
+              
+              return node;
+              
+        }//create
+        
+        
+        create.label    = function(o){
+        
+              var nlabel                        = label.cloneNode(true);
+              
+              $(nlabel,'.line').textContent     = o.line;
+              $(nlabel,'.label').textContent    = o.label;
+              
+              nlabel.onclick                    = e=>editor.gotoline(o.line,o.col);
+              
+              return nlabel;
+              
+        }//label
+        
+        
+        create.html   = function(o){
+        
+              var node                              = item.cloneNode(true);
+              
+              $(node,'.line').textContent           = o.line;
+              $(node,'.indent').style.width         = (o.indent*3)+'px';
+              
+              $(node,'.name').textContent           = o.name;
+              if(colours[o.name]){
+                    node.style.color                = colours[o.name];
+              }
+              if(o.name.includes('-')){
+                    node.style.color                = colours['custom-element'];
+              }
+              
+                                                                                //v1.0
+              var f=false;
+              if(o.attrs.component){
+                    var regex   = /\bv\d+(?:\.\d+)*(?!\s*=\s*)\b/;
+                    var v;
+                    for(var key in o.attrs){
+                    
+                          if(regex.test(key)){
+                                v   = key;
+                                break;
+                          }
+                          
+                    }//for
+                    if(v){
+                          $(node,'.v').textContent    = v;
+                          f   = true;
+                    }
+              }
+              if(!f){
+                    $(node,'.v').remove();
+              }
+              
+              if(o.attrs.id){
+                    $(node,'.id').textContent       = o.attrs.id;
+              }else{
+                    $(node,'.id').remove();
+              }
+              
+              if(o.attrs.class){
+                    $(node,'.class').textContent    = o.attrs.class;
+              }else{
+                    $(node,'.class').remove();
+              }
+              
+              
+              
+              if(o.name=='script'){
+              }
+              
+              
+              
+              
+              node.onclick                          = e=>editor.gotoline(o.line,o.col);
+              
+              return node;
+              
+        }//html
+        
+        
+        function parse(txt){
+        
+              var list    = [];
+              //var regex   = /<\/?[a-z][a-z0-9\-]*\b[^>]*>/gi;
+              var regex = /<\/?[a-z][a-z0-9\-]*(?=[\s\/>])[^>]*>/gi;
+              
+              while(true){
+              
+                    var match     = regex.exec(txt);
+                    if(match===null)break;
+                    
+                    var index     = match.index;
+                    var tag       = match[0];
+                    
+                    if(!tag.startsWith('</')){
+                                                                                //console.log(tag);
+                          var match         = tag.match(/^<\s*([a-z0-9\-]+)/i);
+                          var name          = match ? match[1].toLowerCase() : '';
+                          if(!name){
+                                                                                //debugger;
+                                                                                console.log('parse.html error',tag);
+                          }
+                          
+                          var attrs   = {};
+                          
+                          if(name){
+                                var parser        = new DOMParser();
+                                var doc           = parser.parseFromString(tag,'text/html');
+                                var element       = doc.querySelector(name);
+                                if(!element){
+                                                                                console.log('parse.html error',tag);
+                                }else{
+                                      var attrs         = {};
+                                      
+                                      for(var i=0;i<element.attributes.length;i++){
+                                      
+                                            var attr            = element.attributes[i];
+                                            attrs[attr.name]    = (attr.value==='' ? true : attr.value);
+                                            
+                                      }//for
+                                      
+                                      var line      = ctx.lineno(txt,index);
+                                      var col       = ctx.colno(txt,index)-1;
+                                      var indent    = ctx.indent(txt,index);
+                                      
+                                      var o   = {type:'html',index,line,col,indent,name,attrs};
+                                      list.push(o);
+                                }
+                          }
+                    }
+                    
+              }//while
+              
+              return list;
+              
+              
+        }//parse
+        
+        
+        
+        parse.label   = function(txt){
+        
+              var list      = [];
+              
+              var regex   = /[^\S\r\n]*<!--[^\S\r\n]*([^:\r\n]*):(?:[^\S\r\n]*-->)?/g;
+              
+              var ec    = true;
+              while(ec){
+              
+                    var match   = regex.exec(txt);
+                    if(match===null)break;
+                    
+                    var index     = match.index;
+                    var line      = ctx.lineno(txt,index);
+                    var label     = match[1].trim();
+                    var indent    = ctx.indent(txt,index);
+                    var col       = ctx.colno(txt,index);
+                    
+                    list.push({type:'html-label',index,line,col,label,indent});
+                    
+              }//while
+              
+              return list;
+              
+        }//label
+        
+        
+  //:
+  
+  
+  return obj;
+  
+//code-explorer-html
+})
+
+      </script>
+      
+</code-eplorer-html>
