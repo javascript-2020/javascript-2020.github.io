@@ -85,8 +85,6 @@
   
         var shadow;
         
-        var view;
-        var empty;
         var label;
         var item;
         
@@ -120,7 +118,6 @@
               shadow                    = host.shadowRoot;
               
               var {shadow:par}          = params;
-              ({view,empty}             = params);
               
               var style                 = $(shadow,'style');
               par.append(style);
@@ -151,7 +148,9 @@
               var list2   = parse.label(txt);
               var list    = ctx.merge(list1,list2);
                                                                                 //console.log(list);
-                                                                                
+              return list;
+              
+/*
               view.replaceChildren();
               
               if(list.length==0){
@@ -172,11 +171,27 @@
                     view.append(node);
                     
               });
-              
+*/
+
         }//update
         
         
-        var create    = {};
+        obj.create    = create;
+        
+        function create(o){
+        
+              var node;
+              
+              switch(o.type){
+              
+                case 'html-label'       : node    = create.label(o);        break;
+                case 'html'             : node    = create.html(o);         break;
+                
+              }//switch
+              
+              return node;
+              
+        }//create
         
         
         create.label    = function(o){
