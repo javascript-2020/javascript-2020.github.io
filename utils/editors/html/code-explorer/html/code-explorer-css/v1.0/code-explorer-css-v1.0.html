@@ -100,8 +100,6 @@
   
   
         var shadow;
-        var view;
-        var empty;
         var sep;
         var label;
         var item;
@@ -128,7 +126,6 @@
               shadow                    = host.shadowRoot;
               
               var {shadow:par}          = params;
-              ({view,empty}             = params);
               
               var style                 = $(shadow,'style');
               par.append(style);
@@ -166,8 +163,10 @@
                 case 'html'   : list    = html(txt);        break;
                 
               }//switch
-              
                                                                                 //console.log(list);
+              return list;
+              
+/*
               view.replaceChildren();
               
               if(list.length==0){
@@ -189,23 +188,37 @@
                     view.append(node);
                     
               });
-              
+*/
+
         }//update
         
         
         obj.create    = create;
         
         function create(o){
+        
+              var node;
+              
+              switch(o.type){
+              
+                case 'css-sep'      : node    = create.sep(o);          break;
+                case 'css-label'    : node    = create.label(o);        break;
+                case 'css'          : node    = create.css(o);          break;
+                
+              }//switch
+              
+              return node;
+              
         }//create
         
         
         create.sep    = function(o){
         
-              var nsep    = sep.cloneNode(true);
+              var nsep                          = sep.cloneNode(true);
               
-              $(nsep,'.line').textContent     = o.line;
+              $(nsep,'.line').textContent       = o.line;
               
-              nsep.onclick                    = e=>editor.gotoline(o.line,o.col);
+              nsep.onclick                      = e=>editor.gotoline(o.line,o.col);
               
               return nsep;
               
