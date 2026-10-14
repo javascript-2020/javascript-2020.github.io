@@ -1,0 +1,443 @@
+
+
+<code-explorer-css>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  .css-label
+    {}
+  .css-label .name
+    {color:gray;font-style:italic}
+    
+  .css-sep
+    {}
+  .css-sep .decor
+    {border-top:1px solid lightgray;flex:1}
+  .css-sep .name
+    {margin:0 7px}
+    
+  .css.item
+    {}
+    
+  .css .line
+    {}
+    
+  .css .indent
+    {}
+    
+  .css .sel
+    {}
+    
+  .css.sep
+    {border-top:1px solid lightgray;margin:7px}
+    
+            </style>
+            
+            <div class='css-label item'>
+                  <div class=line>
+                  </div>
+                  <div class=label>
+                  </div>
+            </div>
+            
+            <div class='css-sep item'>
+                  <div class=line>
+                  </div>
+                  <div class=decor>
+                  </div>
+                  <div class=name>
+                        style
+                  </div>
+                  <div class=decor>
+                  </div>
+            </div>
+            
+            <div class='css item'>
+            
+                  <div class=line>
+                  </div>
+                  <div class=indent>
+                  </div>
+                  <div class='sel main'>
+                  </div>
+                  
+            </div>
+            
+      </template>
+      
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {
+        version   : 'v1.0',
+  };
+  
+        var df=true,did='code-explorer-css';
+        
+        var debug,$,explorer,ctx,editor
+        ;
+        
+        obj.initmod   = function(...list){
+        
+              list.forEach(params=>{
+              
+                    debug       = mod.rd(params,'debug',debug);
+                    $           = mod.rd(params,'$',$);
+                    explorer    = mod.rd(params,'explorer',explorer);
+                    ctx         = mod.rd(params,'ctx',ctx);
+                    editor      = mod.rd(params,'editor',editor);
+                    
+              });
+              
+        }//initmod
+        
+        
+  //:
+  
+  
+        var shadow;
+        var sep;
+        var label;
+        var item;
+        
+        
+        var type      = {};
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+        
+              explorer.update.css   = update;
+              
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = async function(params){
+        
+              shadow                    = host.shadowRoot;
+              
+              var {shadow:par}          = params;
+              
+              var style                 = $(shadow,'style');
+              par.append(style);
+              
+              sep                       = $(shadow,'.css-sep');
+              sep.remove();
+              
+              label                     = $(shadow,'.css-label');
+              label.remove();
+              
+              item                      = $(shadow,'.css.item');
+              item.remove();
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        obj.update    = function(txt){
+        
+              ctx.set.mode('html');
+              update(txt);
+              
+        }//update
+        
+        
+        function update(txt,mode){
+        
+              var list;
+              
+              switch(mode){
+              
+                case 'css'    : list    = css(txt);         break;
+                case 'html'   : list    = html(txt);        break;
+                
+              }//switch
+                                                                                //console.log(list);
+              return list;
+              
+/*
+              view.replaceChildren();
+              
+              if(list.length==0){
+                    view.append(empty);
+              }
+              
+              list.forEach(o=>{
+              
+                    var node;
+                    
+                    switch(o.type){
+                    
+                      case 'css-sep'      : node    = create.sep(o);          break;
+                      case 'css-label'    : node    = create.label(o);        break;
+                      case 'css'          : node    = create.css(o);          break;
+                      
+                    }//switch
+                    
+                    view.append(node);
+                    
+              });
+*/
+
+        }//update
+        
+        
+        obj.create    = create;
+        
+        function create(o){
+        
+              var node;
+              
+              switch(o.type){
+              
+                case 'css-sep'      : node    = create.sep(o);          break;
+                case 'css-label'    : node    = create.label(o);        break;
+                case 'css'          : node    = create.css(o);          break;
+                
+              }//switch
+              
+              return node;
+              
+        }//create
+        
+        
+        create.sep    = function(o){
+        
+              var nsep                          = sep.cloneNode(true);
+              
+              $(nsep,'.line').textContent       = o.line;
+              
+              nsep.onclick                      = e=>editor.gotoline(o.line,o.col);
+              
+              return nsep;
+              
+        }//sep
+        
+        
+        create.label    = function(o){
+        
+              var nlabel                        = label.cloneNode(true);
+              
+              $(nlabel,'.line').textContent     = o.line;
+              $(nlabel,'.label').textContent    = o.label;
+              
+              nlabel.onclick                    = e=>editor.gotoline(o.line,o.col);
+              
+              return nlabel;
+              
+        }//label
+        
+        
+        create.css   = function(o){
+        
+              var node                          = item.cloneNode(true);
+              
+              $(node,'.line').textContent       = o.line;
+              $(node,'.indent').style.width     = (o.indent*3)+'px';
+              $(node,'.sel').textContent        = o.sel;
+              
+              node.onclick                      = e=>editor.gotoline(o.line,o.col);
+              
+              return node;
+              
+        }//css
+        
+        
+  //:
+  
+  
+        function css(txt){
+        
+              var list1   = [];
+              
+              var arr   = parse(txt);
+              arr.forEach(o=>{
+              
+                    //o.index      += i1+7;
+                                                                                //console.log(txt[o.index],txt[o.index+1]);
+                    o.line      = ctx.lineno(txt,o.index);
+                    o.col       = ctx.colno(txt,o.index)-1;
+                    o.indent    = ctx.indent(txt,o.index);
+                    
+                    list1.push(o);
+                    
+              });
+              
+              var list2   = [];
+              
+              var arr   = parse.label(txt);
+              arr=>forEach(o=>{
+              
+                    o.line      = ctx.lineno(txt,o.index);
+                    o.col       = ctx.colno(txt,o.index)-1;
+                    o.indent    = ctx.indent(txt,o.index);
+                    
+                    list2.push(o);
+                    
+              });
+              
+              var list    = ctx.merge(list1,list2);
+              return list;
+              
+        }//css
+        
+        
+        function html(txt){
+        
+              var list1   = [];
+              var list2   = [];
+              
+              var index     = 0;
+              var ec        = true;
+              while(ec){
+              
+                    var i1    = txt.indexOf('<style>',index);
+                    if(i1==-1)break;
+                    var i2    = txt.indexOf('</style>',index);
+                    if(i2==-1)break;
+                    
+                    var o   = html.sep(txt,i1);
+                    list1.push(o);
+                    
+                    var str     = txt.slice(i1+7,i2);
+                                                                                 //debugger;
+                    var arr   = parse(str);
+                    arr.forEach(o=>{
+                    
+                          o.index      += i1+7;
+                                                                                //console.log(txt[o.index],txt[o.index+1]);
+                          o.line      = ctx.lineno(txt,o.index);
+                          o.col       = ctx.colno(txt,o.index)-1;
+                          o.indent    = ctx.indent(txt,o.index);
+                          
+                          list1.push(o);
+                          
+                    });
+                    
+                    var arr   = parse.label(str);
+                    arr.forEach(o=>{
+                    
+                          o.index      += i1+7;
+                                                                                //console.log(txt[o.index],txt[o.index+1]);
+                          o.line      = ctx.lineno(txt,o.index);
+                          o.col       = ctx.colno(txt,o.index)-1;
+                          o.indent    = ctx.indent(txt,o.index);
+                          
+                          list2.push(o);
+                          
+                    });
+                    
+                    var o   = html.sep(txt,i2);
+                    list1.push(o);
+                    
+                    index   = i2+7;
+                    
+              }//while
+              
+              var list    = ctx.merge(list1,list2);
+              return list;
+              
+        }//html
+        
+        
+        html.sep    = function(txt,index){
+        
+              var line    = ctx.lineno(txt,index);
+              var o       = {type:'css-sep',line}
+              return o;
+              
+        }//sep
+        
+        
+        function parse(txt){
+        
+              var list    = [];
+              
+              //var regex   = /([^{]+)\{([^}]+)\}/g;
+              //var regex = /(\s*)([^{]+)\{([^}]+)\}/g;
+              //var regex = /(\s*)([^\r\n{]+?)\s*\{([^}]+)\}/g;
+              var regex = /(\s*)([^\r\n{]+?)\s*\{([^}]*)\}/g;
+              
+              var ec    = true;
+              while(ec){
+              
+                  var match   = regex.exec(txt);
+                  if(match===null)break;
+                  
+                  var ws              = match[1];
+                  var sel             = match[2].trim();
+                  var dec             = match[3].trim();
+                  
+                  var index           = match.index+ws.length;
+                                                                                console.log(txt[index],txt[index+1]);
+                                                                                console.log('['+ws+']',sel,dec);
+                                                                                
+                  var o   = {type:'css',index,sel};
+                                                                                //console.log(o);
+                  list.push(o);
+                  
+              }//while
+              
+              return list;
+              
+        }//parse
+        
+        
+        
+  //:
+  
+  
+        parse.label   = function(txt){
+        
+              var list    = [];
+              
+              var regex   = /[^\S\r\n]*\/\*[^\S\r\n]*([^:\r\n]*):(?:[^\S\r\n]*\*\/)?/g;
+              
+              var ec    = true;
+              while(ec){
+              
+                    var match   = regex.exec(txt);
+                    if(match===null)break;
+                    
+                    var index     = match.index;
+                    var line      = ctx.lineno(txt,index);
+                    var label     = match[1].trim();
+                    var indent    = ctx.indent(txt,index);
+                    var col       = ctx.colno(txt,index);
+                    
+                    list.push({type:'css-label',index,line,col,label,indent});
+                    
+              }//while
+              
+              return list;
+              
+        }//label
+        
+        
+        
+        
+        
+        
+        
+  return obj;
+  
+//code-explorer-css
+})
+
+
+      </script>
+      
+</code-explorer-css>
+
+
