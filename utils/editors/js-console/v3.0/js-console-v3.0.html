@@ -120,6 +120,13 @@
               publish.query();
               
               
+              events();
+              
+        }//init
+        
+        
+        function events(){
+        
               window.addEventListener('beforeunload',event=>{
               
                     if(!status){
@@ -128,8 +135,17 @@
                     
               });
               
+              document.addEventListener('visibilitychange',()=>{
               
-        }//init
+                  if(document.hidden){
+                                                                                debug('hidden');
+                  }else{
+                                                                                debug('visible');
+                  }
+                  
+              });
+              
+        }//events
         
         
             </script>
@@ -307,7 +323,7 @@
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
-                  <output-console component=page></output-console>
+                  <output-console v4.0 component=page></output-console>
                   
             </div>
             
