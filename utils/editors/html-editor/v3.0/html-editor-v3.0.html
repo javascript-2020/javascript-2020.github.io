@@ -143,6 +143,29 @@
         }//init
         
         
+        function events(){
+        
+              window.addEventListener('beforeunload',event=>{
+              
+                    if(!status){
+                          event.preventDefault();
+                    }
+                    
+              });
+              
+              document.addEventListener('visibilitychange',()=>{
+              
+                  if(document.hidden){
+                                                                                debug('hidden');
+                  }else{
+                                                                                debug('visible');
+                  }
+                  
+              });
+              
+        }//events
+        
+        
             </script>
             
             
@@ -282,7 +305,8 @@
       
       <script>
       
-      
+        var status    = false;
+        
         var icon    = {};
         
         var root;
@@ -508,6 +532,7 @@
         on.change   = function(){
                                                                                 //console.log('on.change');
               set.favicon(icon.save);
+              status    = true;
               
         }//change
         
@@ -551,6 +576,7 @@
                     var title     = file.name||file.filename;
                     set.title(title);
                     set.favicon(icon.def);
+                    status    = false;
               }
               
               menu.close();
