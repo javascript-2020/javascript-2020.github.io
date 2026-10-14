@@ -188,8 +188,9 @@
         sandbox_url.type1   = 'https://sandbox.ext-code.com/js-sandbox-1/js-sandbox-1.html';
         sandbox_url.type2   = 'https://sandbox.ext-code.com/js-sandbox-2/js-sandbox-2.html';
         sandbox_url.type3   = 'https://sandbox.ext-code.com/js-sandbox-3/js-sandbox-3.html';
+        sandbox_url.type4   = 'https://sandbox.ext-code.com/js-sandbox-v4.0/js-sandbox-v4.0.html';
         
-        var sandbox_type    = 'type3';
+        var sandbox_type    = 'type4';
         
         
         
@@ -443,6 +444,7 @@
                 case 'type1'    : promise   = sandbox1(js,params);        break;
                 case 'type2'    : promise   = sandbox2(js,params);        break;
                 case 'type3'    : promise   = sandbox3(js,params);        break;
+                case 'type4'    : promise   = sandbox4(js,params);        break;
                 
               }//switch
               
@@ -569,6 +571,43 @@
               }//onload
               
         }//sandbox3
+        
+        
+        function sandbox4(js,params){
+                                                                                debug('sandbox3');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var src   = sandbox_url.type3;
+              
+              create.iframe({src,onload});
+              
+              return promise;
+              
+              
+              async function onload(){
+              
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
+                    
+                    if(!chk['console-persist'].checked){
+                          clear();
+                    }
+                    
+                    var module    = params.module;
+                    var echo      = settings.chk['console-echo'].checked;
+                    
+                    if(params.async){
+                          js      = '(async()=>{\n'+js+'\n})()';
+                    }
+                    
+                    iframe.contentWindow.postMessage({type:'run',js,echo,module},'*');
+                    
+                    resolve();
+                    
+                    
+              }//onload
+              
+        }//sandbox4
         
         
   //:
