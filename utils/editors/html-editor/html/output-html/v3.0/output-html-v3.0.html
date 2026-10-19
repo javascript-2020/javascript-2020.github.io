@@ -27,6 +27,8 @@
     {flex:1;box-sizing:border-box;position:relative}
   iframe
     {width:100%;height:100%;box-sizing:border-box;border:1px solid lightgray}
+  .loading
+    {border-color:orange}
     
     
   #slider
@@ -352,7 +354,7 @@
         }//run
         
         
-        create.iframe   = function({src,onload}={}){
+        create.iframe   = function({src,onload:ponload}={}){
                                                                                 debug('create.iframe',src);
               iframe.remove();
               iframe    = iframe.cloneNode();
@@ -362,6 +364,7 @@
               
               var attr    = settings.build.permissions();
               iframe.setAttribute('allow',attr);
+              iframe.classList.add('loading');
               
               /*
               if(chk.isolate.checked){
@@ -374,6 +377,15 @@
               
               iframe.onload   = onload;
               hldr.append(iframe);
+              
+              
+              function onload(){
+              
+                    iframe.classList.remove('loading');
+                    
+                    ponload();
+                    
+              }//onload
               
         }//iframe
         
