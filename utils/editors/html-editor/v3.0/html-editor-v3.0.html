@@ -107,6 +107,7 @@
         var editor;
         var output;
         var log;
+        var explorer;
         
         
         async function init(){
@@ -119,6 +120,7 @@
               editor                    = mod['web-editor'];
               output                    = mod['output-html'];
               output.df                 = true;
+              explorer                  = mod['code-explorer'];
               
               editor.initmod({mode:'html',on});
               autosave.initmod({save:btn.save});
@@ -377,6 +379,11 @@
               
               if(e.key==' ' && e.ctrlKey){
                     e.preventDefault();
+                    explorer.update();
+              }
+              
+              if(e.key=='m' && e.ctrlKey){
+                    e.preventDefault();
                     menu.open();
               }
               
@@ -583,6 +590,7 @@
               }
               
               menu.close();
+              explorer.update();
               editor.focus();
               
         }//complete
