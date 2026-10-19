@@ -48,6 +48,11 @@
   #slider
     {height:10px;cursor:ns-resize}
     
+  iframe
+    {}
+  .loading
+    {border-color:orange}
+    
   #spc
     {flex:1}
     
@@ -394,7 +399,7 @@
   //:
   
   
-        create.iframe   = function({onload,src}={}){
+        create.iframe   = function({onload:ponload,src}={}){
         
               src   ||= cur.src;
               
@@ -424,6 +429,8 @@
               iframe.style.boxSizing        = 'border-box';
               iframe.style.height           = h||def_h;
               
+              webconsole.__host.classList.add('loading');
+              
               if(!settings.chk.iframe.checked){
                     iframe.style.display    = 'none';
               }
@@ -431,6 +438,15 @@
               root.append(iframe);
               
               slider.node                   = $.slider('web-console','#slider','iframe',null,{root,mode:'horiz'});
+              
+              
+              function onload(){
+              
+                    webconsole.__host.classList.remove('loading');
+                    
+                    ponload();
+                    
+              }//onload
               
         }//iframe
         
