@@ -77,6 +77,7 @@
         var editor;
         var output;
         var log;
+        var explorer;
         
         
   //:
@@ -93,9 +94,8 @@
               editor                    = mod['web-editor'];
               output                    = mod['output-console'];
               log                       = mod['log-mod'];
+              explorer                  = mod['code-explorer'];
               
-              
-              //mod.base.add({log,complete,source,focus,editor,filemod});
               mod.base.add({complete,source,focus,editor,ace});
               
               mainmenu.initmod({par:{clear}});
@@ -712,6 +712,7 @@
                     status        = false;
               }
               menu.close();
+              explorer.update();
               editor.focus();
               
         }//complete
@@ -978,6 +979,7 @@
             editor.clear();
             editor.filename.clear();
             output.kill();
+            explorer.clear();
             
         }//clear
         
