@@ -125,6 +125,29 @@
         }//init
         
         
+        function events(){
+        
+              window.addEventListener('beforeunload',e=>{
+              
+                    if(save_status){
+                          e.preventDefault();
+                    }
+                    
+              });
+              
+              document.addEventListener('visibilitychange',()=>{
+              
+                  if(document.hidden){
+                                                                                debug('hidden');
+                  }else{
+                                                                                debug('visible');
+                  }
+                  
+              });
+              
+        }//events
+        
+        
             </script>
             
             
@@ -231,7 +254,7 @@
       
         var root;
         var autosave;
-        
+        var save_status   = false;
         
         
         
@@ -285,7 +308,7 @@
   
         function kd(e){
         
-              if(e.key==' ' && e.ctrlKey){
+              if(e.key=='m' && e.ctrlKey){
                     e.preventDefault();
                     menu.open();
               }
@@ -319,6 +342,7 @@
         on.change   = function(){
         
               set.favicon(icon.save);
+              save_status   = true;
               
         }//change
         
@@ -351,6 +375,7 @@
                     var title     = file.name||file.filename;
                     set.title(title);
                     set.favicon(icon.def);
+                    save_status   = false;
               }
               
               menu.close();
