@@ -212,8 +212,13 @@
   //:
   
   
-        btn.update    = function(){
+        btn.update    = function(e){
         
+              if(e.shiftKey){
+                    update(null,null,'test');
+                    return;
+              }
+              
               update();
               
         }//update
@@ -293,6 +298,7 @@
                     if(o.type.startsWith('fn'))node     = fn.create(o);
                     if(o.type.startsWith('css'))node    = css.create(o);
                     if(o.type.startsWith('html'))node   = html.create(o);
+                    if(o.type.startsWith('test'))node   = update.test.create(o);
                     
                     view.append(node);
                     
@@ -301,6 +307,29 @@
               
               
         }//update
+        
+        
+        update.test   = function(){
+        
+              var list    = [];
+              for(var i=0;i<100;i++){
+              
+                    var o   = {type:'test',name:'test-'+i};
+                    list.push(o);
+                    
+              }//for
+              return list;
+              
+        }//test
+        
+        
+        update.test.create    - function(o){
+        
+              var div   = document.createElement('div');
+              div.textContent   = o.name;
+              return div;
+              
+        }//create
         
         
         obj.clear   = clear;
