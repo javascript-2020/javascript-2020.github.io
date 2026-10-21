@@ -490,12 +490,14 @@
                                                                                 //console.log(i1,i2,lines,result);
                     if(result.error){
                           result.line  += lines;
-                          var str       = JSON.stringify(result,null,4);
-                                                                                console.log(str);
-                          log.red(str);
+                                                                                console.log(result);
+                          var str       = result.msg+'\n'+
+                                          'line : '+result.line+'\n'+
+                                          'col  : '+result.col;
+                          log.red.pin(str);
                     }else{
                           var str       = JSON.stringify(result,null,4);
-                          log.green(str);
+                          log.green('syntax ok');
                     }
                     
               }//while
