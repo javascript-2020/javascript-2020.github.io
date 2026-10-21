@@ -485,19 +485,21 @@
                     index         = i2+7;
                     
                     var js        = html.slice(i1+8,i2);
+                    if(js){
                                                                                 //console.log(js);
-                    var result    = syntax(js);
+                          var result    = syntax(js);
                                                                                 //console.log(i1,i2,lines,result);
-                    if(result.error){
-                          result.line  += lines;
+                          if(result.error){
+                                result.line  += lines;
                                                                                 console.log(result);
-                          var str       = result.msg+'\n'+
-                                          'line : '+result.line+'\n'+
-                                          'col  : '+result.col;
-                          log.red.pin(str);
-                    }else{
-                          var str       = JSON.stringify(result,null,4);
-                          log.green('syntax ok');
+                                var str       = result.msg+'\n'+
+                                                'line : '+result.line+'\n'+
+                                                'col  : '+result.col;
+                                log.red.pin(str);
+                          }else{
+                                var str       = JSON.stringify(result,null,4);
+                                log.green('syntax ok');
+                          }
                     }
                     
               }//while
