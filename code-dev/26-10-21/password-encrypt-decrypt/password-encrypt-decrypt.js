@@ -23,17 +23,18 @@ var encrypt   = (()=>{
         
 })();
 
-        (async () => {
-        
-              var txt         = 'we build towers to catch the light; but the night belongs to the dark';
-              var password    = 'my-secret-password';
-              
-              var encrypted   = await encrypt(txt,password);
-                                                                                console.log('Encrypted:',encrypted);
-              var decrypted   = await encrypt.decrypt(encrypted,password);
-                                                                                console.log('Decrypted:',decrypted);
-        })();
-        
-        
-        
-        
+
+
+(async () => {
+
+      var txt         = 'we build towers to catch the light; but the night belongs to the dark';
+      var password    = 'my-secret-password';
+      
+      var encrypted   = await encrypt(txt,password);
+                                                                        console.log('Encrypted:',encrypted);
+      var decrypted   = await encrypt.decrypt(encrypted,password);
+                                                                        console.log('Decrypted:',decrypted);
+})();
+
+
+
