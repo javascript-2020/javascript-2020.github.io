@@ -145,54 +145,6 @@
   //:
   
   
-        obj.update    = function(txt){
-        
-              ctx.set.mode('html');
-              update(txt);
-              
-        }//update
-        
-        
-        function update(txt,mode){
-        
-              var list;
-              
-              switch(mode){
-              
-                case 'css'    : list    = css(txt);         break;
-                case 'html'   : list    = html(txt);        break;
-                
-              }//switch
-                                                                                //console.log(list);
-              return list;
-              
-/*
-              view.replaceChildren();
-              
-              if(list.length==0){
-                    view.append(empty);
-              }
-              
-              list.forEach(o=>{
-              
-                    var node;
-                    
-                    switch(o.type){
-                    
-                      case 'css-sep'      : node    = create.sep(o);          break;
-                      case 'css-label'    : node    = create.label(o);        break;
-                      case 'css'          : node    = create.css(o);          break;
-                      
-                    }//switch
-                    
-                    view.append(node);
-                    
-              });
-*/
-
-        }//update
-        
-        
         obj.create    = create;
         
         function create(o){
@@ -257,35 +209,53 @@
   //:
   
   
-        function css(txt){
+/*
+        obj.update    = function(txt){
+        
+              ctx.set.mode('html');
+              update(txt);
+              
+        }//update
+*/
+
+
+        function update(txt,mode){
+        
+              var list;
+              
+              switch(mode){
+              
+                case 'css'    : list    = css(txt);         break;
+                case 'html'   : list    = html(txt);        break;
+                
+              }//switch
+                                                                                //console.log(list);
+              return list;
+              
+        }//update
+        
+        
+        
+        
+        function css(txt,label){
         
               var list1   = [];
-              
-              var arr   = parse(txt);
-              arr.forEach(o=>{
-              
-                    //o.index      += i1+7;
+              if(!label){
+                    var arr   = parse(txt);
+                    arr.forEach(o=>{
+                    
+                          //o.index      += i1+7;
                                                                                 //console.log(txt[o.index],txt[o.index+1]);
-                    o.line      = ctx.lineno(txt,o.index);
-                    o.col       = ctx.colno(txt,o.index)-1;
-                    o.indent    = ctx.indent(txt,o.index);
-                    
-                    list1.push(o);
-                    
-              });
+                          o.line      = ctx.lineno(txt,o.index);
+                          o.col       = ctx.colno(txt,o.index)-1;
+                          o.indent    = ctx.indent(txt,o.index);
+                          
+                          list1.push(o);
+                          
+                    });
+              }
               
-              var list2   = [];
-              
-              var arr   = parse.label(txt);
-              arr=>forEach(o=>{
-              
-                    o.line      = ctx.lineno(txt,o.index);
-                    o.col       = ctx.colno(txt,o.index)-1;
-                    o.indent    = ctx.indent(txt,o.index);
-                    
-                    list2.push(o);
-                    
-              });
+              var list2   = css.label(txt);
               
               var list    = ctx.merge(list1,list2);
               return list;
@@ -293,10 +263,28 @@
         }//css
         
         
-        function html(txt){
+        css.label   = function(txt){
         
-              var list1   = [];
-              var list2   = [];
+              var list    = [];
+              
+              var arr     = parse.label(txt);
+              arr=>forEach(o=>{
+              
+                    o.line      = ctx.lineno(txt,o.index);
+                    o.col       = ctx.colno(txt,o.index)-1;
+                    o.indent    = ctx.indent(txt,o.index);
+                    
+                    list.push(o);
+                    
+              });
+              return list;
+              
+        }//label
+        
+        
+        function html(txt,label){
+        
+              var list      = [];
               
               var index     = 0;
               var ec        = true;
@@ -307,51 +295,73 @@
                     var i2    = txt.indexOf('</style>',index);
                     if(i2==-1)break;
                     
-                    var o   = html.sep(txt,i1);
-                    list1.push(o);
-                    
                     var str     = txt.slice(i1+7,i2);
-                                                                                 //debugger;
-                    var arr   = parse(str);
-                    arr.forEach(o=>{
                     
-                          o.index      += i1+7;
-                                                                                //console.log(txt[o.index],txt[o.index+1]);
-                          o.line      = ctx.lineno(txt,o.index);
-                          o.col       = ctx.colno(txt,o.index)-1;
-                          o.indent    = ctx.indent(txt,o.index);
-                          
+                    var list1   = [];
+                    var list2   = [];
+                    if(!label){
+                          var o   = html.style.start(txt,i1);
                           list1.push(o);
-                          
-                    });
+                          var o   = html.style.end(txt,i2);
+                          list1.push(o);
+                                                                                 //debugger;
+                          list2   = html.style(str,i1);
+                    }
                     
-                    var arr   = parse.label(str);
-                    arr.forEach(o=>{
+                    var list3   = html.label(str,i1);
                     
-                          o.index      += i1+7;
-                                                                                //console.log(txt[o.index],txt[o.index+1]);
-                          o.line      = ctx.lineno(txt,o.index);
-                          o.col       = ctx.colno(txt,o.index)-1;
-                          o.indent    = ctx.indent(txt,o.index);
-                          
-                          list2.push(o);
-                          
-                    });
-                    
-                    var o   = html.sep(txt,i2);
-                    list1.push(o);
+                    list    = ctx.merge(list,list1,list2,list3);
                     
                     index   = i2+7;
                     
               }//while
               
-              var list    = ctx.merge(list1,list2);
               return list;
               
         }//html
         
         
-        html.sep    = function(txt,index){
+        html.style    = function(txt,i1){
+        
+              var list    = [];
+              var arr     = parse(txt);
+              arr.forEach(o=>{
+              
+                    o.index    += i1+7;
+                                                                                //console.log(txt[o.index],txt[o.index+1]);
+                    o.line      = ctx.lineno(txt,o.index);
+                    o.col       = ctx.colno(txt,o.index)-1;
+                    o.indent    = ctx.indent(txt,o.index);
+                    
+                    list.push(o);
+                    
+              });
+              
+              return list;
+              
+        }//style
+        
+        
+        hthml.label   = function(txt,i1){
+        
+              var list3   = [];
+              var arr     = parse.label(str);
+              arr.forEach(o=>{
+              
+                    o.index    += i1+7;
+                                                                                //console.log(txt[o.index],txt[o.index+1]);
+                    o.line      = ctx.lineno(txt,o.index);
+                    o.col       = ctx.colno(txt,o.index)-1;
+                    o.indent    = ctx.indent(txt,o.index);
+                    
+                    list3.push(o);
+                    
+              });
+              
+        }//label
+        
+        
+        html.style.start    = function(txt,index){
         
               var line    = ctx.lineno(txt,index);
               var o       = {type:'css-sep',line}
@@ -360,6 +370,18 @@
         }//sep
         
         
+        html.style.end    = function(txt,index){
+        
+              var line    = ctx.lineno(txt,index);
+              var o       = {type:'css-sep',line}
+              return o;
+              
+        }//end
+        
+        
+  //:
+  
+  
         function parse(txt){
         
               var list    = [];
@@ -394,10 +416,6 @@
         }//parse
         
         
-        
-  //:
-  
-  
         parse.label   = function(txt){
         
               var list    = [];
