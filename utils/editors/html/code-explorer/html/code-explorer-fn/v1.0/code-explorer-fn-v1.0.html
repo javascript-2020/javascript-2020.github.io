@@ -145,42 +145,6 @@
   //:
   
   
-        update.mode   = function(mode){
-        
-              switch(mode){
-              
-                case undefined      :
-                case 'javascript'   :
-                case 'js'           : mode    = 'javascript';        break;
-                case 'html'         : mode    = 'html';              break;
-                
-              }//switch
-              return mode;
-              
-        }//mode
-        
-        
-        function update(txt,mode,label){
-                                                                var d=debug('update',mode);
-              var list;
-              
-              mode    = update.mode(mode);
-              
-              switch(mode){
-              
-                case 'html'         : list   = html(txt,label);              break;
-                default             : list   = javascript(txt,label);
-                
-              }//switch
-                                                                //console.log(list);
-              return list;
-              
-        }//update
-        
-        
-  //:
-  
-  
         obj.create    = create;
         
         function create(o){
@@ -245,6 +209,41 @@
         
   //:
   
+  
+        update.mode   = function(mode){
+        
+              switch(mode){
+              
+                case undefined      :
+                case 'javascript'   :
+                case 'js'           : mode    = 'javascript';        break;
+                case 'html'         : mode    = 'html';              break;
+                
+              }//switch
+              return mode;
+              
+        }//mode
+        
+        
+        function update(txt,mode,label){
+                                                                var d=debug('update',mode,label);
+              var list;
+              
+              mode    = update.mode(mode);
+              
+              switch(mode){
+              
+                case 'html'         : list   = html(txt,label);              break;
+                default             : list   = javascript(txt,label);
+                
+              }//switch
+                                                                //console.log(list);
+              return list;
+              
+        }//update
+        
+        
+  //:
   
   
         function javascript(txt,label){
