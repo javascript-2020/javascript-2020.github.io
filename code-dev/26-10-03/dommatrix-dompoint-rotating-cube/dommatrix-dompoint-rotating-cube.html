@@ -108,6 +108,7 @@
         
         function clear(){draw.forEach(({x,y})=>list[y*gridw+x].style.background='');draw.length=0}
         
+        
         function plot(x,y,c){
         
               x   = Math.floor(x);
@@ -125,10 +126,10 @@
         function fpart(x){return x-ipart(x)}
         function rfpart(x){return 1-fpart(x)}
         
+        
         function line(x0,y0,x1,y1){
         
               var steep   = (Math.abs(y1-y0)>Math.abs(x1-x0));
-              var gradient;
               var t;
               
               if(steep){
@@ -148,15 +149,16 @@
                     y1      = t;
               }
               
+              
               var dx    = x1-x0;
               var dy    = y1-y0;
               
+              var gradient;
               if(dx==0){
                     gradient    = 1.0;
               }else{
                     gradient    = dy/dx;
               }
-              
               
                                                                       // handle first endpoint
               var xend    = round(x0);
