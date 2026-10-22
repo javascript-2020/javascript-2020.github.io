@@ -1,16 +1,16 @@
 
-# DOM-Grid 3D Wireframe Renderer using DOMMatrix / DOMPoint and Wu's Line Algorithm
-
-[DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix)
-
-[DOMPoint](https://developer.mozilla.org/en-US/docs/Web/API/DOMPoint)
-
-[Wu's Line Algorithm](https://en.wikipedia.org/wiki/Xiaolin_Wu%27s_line_algorithm)
+# Demonstration of DOMMatrix / DOMPoint By Rotating A Wireframe Cube And Renderer using Wu's Line Algorithm
 
 
 It turns the browser viewport into a retro low-res pixel display, using a grid of individual div elements,
 native web geometry APIs, and an antialiased line-drawing algorithm, it renders a rotating 3D wireframe
 cube entirely through the DOM and CSS.
+
+[DOMMatrix [mdn]](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix)
+
+[DOMPoint [mdn]](https://developer.mozilla.org/en-US/docs/Web/API/DOMPoint)
+
+[Wu's Line Algorithm [wiki]](https://en.wikipedia.org/wiki/Xiaolin_Wu%27s_line_algorithm)
 
 
 ## How It Works: Step-by-Step
@@ -62,12 +62,12 @@ using the native browser method `.matrixTransform(matrix)`.
 ### 4. Antialiasing via Wu's Line Algorithm
 
 Connecting the 3D dots into 2D lines on a grid requires a rasterization algorithm. Rather than a harsh,
-pixelated [Bresenham line](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm),
+pixelated [Bresenham line [wiki]](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm),
 this snippet implements Xiaolin Wu's line algorithm.
 
 Wu’s algorithm produces antialiased lines. By calculating the fractional distance (fpart, rfpart) of where
 a line crosses grid coordinates, it dynamically adjusts the opacity (rgba(0,0,255,${c})) of adjacent div cells.
-This creates smooth, gradient-softened lines on a rigid grid without sub-pixel hardware rendering.
+This creates smooth, gradient-softened lines on a rigid grid.
 
 
 ### 5. The Animation Loop
