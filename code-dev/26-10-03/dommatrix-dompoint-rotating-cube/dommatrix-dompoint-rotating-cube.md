@@ -69,6 +69,102 @@ Wu’s algorithm produces antialiased lines. By calculating the fractional dista
 a line crosses grid coordinates, it dynamically adjusts the opacity `rgba(0,0,255,${c})` of adjacent div cells.
 This creates smooth, gradient-softened lines on a rigid grid.
 
+The entire line function (along with the helper math functions fpart, rfpart, ipart, and round)
+is an implementation of Xiaolin Wu's line algorithm.
+
+However, the true "magic" of Wu's algorithm—the part that separates it from standard integer-only
+line algorithms like Bresenham—lives in the endpoint handling and the main loop, where it plots
+two pixels at once using fractional opacities.
+
+#### What Makes It Wu's Algorithm? ( Antialiasing )
+
+Traditional pixel lines look jagged (the "staircase effect") because they pick a single closest
+pixel for every step. Wu’s algorithm solves this by antialiasing.
+
+Instead of turning a pixel fully on or off, it calculates how close the exact mathematical line
+is to a grid intersection, and splits the brightness (or in your case, opacity via rgba) between
+two adjacent pixels.
+
+Here is how that breaks down in the code:
+
+  1. **The Fractional Helpers**
+
+```
+function ipart(x){return Math.floor(x)}          // Integer part (e.g., 10.7 -> 10)
+function fpart(x){return x-ipart(x)}              // Fractional part (e.g., 10.7 -> 0.7)
+function rfpart(x){return 1-fpart(x)}             // Reverse fractional part (1 - 0.7 = 0.3)
+```
+
+These helper functions are vital because Wu’s algorithm relies entirely on decimals. If a line
+crosses a column at $y = 10.7$, the integer part is 10, and the fractional part is 0.7.
+
+  2. **Dual-Pixel Plotting with Opacity**
+  
+Look at how the main loop plots points:
+
+```
+plot(x, ipart(intery), rfpart(intery));     // Pixel above/below
+plot(x, ipart(intery) + 1, fpart(intery)); // Adjacent pixel
+```
+Instead of drawing one solid block, it calls plot twice for every single step along the x-axis:
+
+  - It lights up the pixel at the floor integer (ipart(intery)) with an opacity weighted by the
+    reverse fraction (rfpart).
+  - It lights up the very next pixel down (ipart(intery) + 1) with an opacity weighted by the
+    fraction itself (fpart).
+
+The Visual Result: If the line is right on the edge of grid cell 10 and grid cell 11, cell 10
+gets 30% opacity and cell 11 gets 70% opacity. To the human eye, this blends the pixels together,
+creating a smooth, antialiased line across the CSS grid.
+
+  3. **The Accumulator Loop**
+  
+```
+var intery = yend + gradient;
+// ...
+for(var x = xpxl1 + 1; x <= xpxl2 - 1; x++){
+    plot(x, ipart(intery), rfpart(intery));
+    plot(x, ipart(intery) + 1, fpart(intery));
+    var intery = intery + gradient;
+}
+```
+
+As the loop steps forward one column at a time (x++), it accumulates the slope (gradient) into
+the intery variable. This tracks the exact floating-point vertical position of the line,
+allowing the fractional math to continuously shift the opacity balance between the upper and
+lower pixels as the line progresses.
+
+
+  4.  **Checking for "Steepness" :**
+  
+```
+var steep = (Math.abs(y1-y0) > Math.abs(x1-x0));
+```
+It compares the vertical distance (dy) to the horizontal distance (dx). If the line is taller than it is wide,
+steep becomes true.
+
+  5.  **Swapping X and Y for Steep Lines :**
+  
+```
+if(steep){
+    // swaps x0/y0 and x1/y1 coordinates
+}
+```
+If the line is steep, it swaps the $X$ and $Y$ coordinates of both endpoints. This flips the coordinate
+space so the algorithm can always loop smoothly along the $X$-axis (treating the vertical axis as horizontal),
+preventing gaps in steep lines.
+
+  6.  **Ensuring Left-to-Right Direction :**
+  
+```
+if(x0 > x1){
+    // swaps the start point and end point
+}
+```
+It checks if the starting point is to the right of the ending point. If it is, it swaps the entire start
+point and end point so that the line always processes from left to right (from a smaller x to a larger x).
+
+
 
 ### 5. The Animation Loop
 
