@@ -145,50 +145,42 @@
   //:
   
   
-        function update(txt,mode){
-                                                                var d=debug('update',mode);
-              var list;
-              
+        update.mode   = function(mode){
+        
               switch(mode){
               
                 case undefined      :
                 case 'javascript'   :
-                case 'js'           : list   = javascript(txt);        break;
-                case 'html'         : list   = html(txt);              break;
+                case 'js'           : mode    = 'javascript';        break;
+                case 'html'         : mode    = 'html';              break;
+                
+              }//switch
+              return mode;
+              
+        }//mode
+        
+        
+        function update(txt,mode,label){
+                                                                var d=debug('update',mode);
+              var list;
+              
+              mode    = update.mode(mode);
+              
+              switch(mode){
+              
+                case 'html'         : list   = html(txt,label);              break;
+                default             : list   = javascript(txt,label);
                 
               }//switch
                                                                 //console.log(list);
               return list;
               
-              
-/*
-              view.replaceChildren();
-              
-              if(list.length==0){
-                    view.append(empty);
-              }
-              
-              list.forEach(o=>{
-              
-                    var node;
-                    
-                    switch(o.type){
-                    
-                      case 'fn-sep'     : node    = create.sep(o);          break;
-                      case 'fn-label'   : node    = create.label(o);        break;
-                      case 'fn'         : node    = create.item(o);         break;
-                      
-                    }//switch
-                    
-                    view.append(node);
-                    
-              });
-*/
-
-
         }//update
         
         
+  //:
+  
+  
         obj.create    = create;
         
         function create(o){
@@ -255,22 +247,19 @@
   
   
   
-        function javascript(txt){
+        function javascript(txt,label){
         
-              var list       = parse(txt);
-              
-              list.forEach(o=>{
-              
-                    o.line    = ctx.lineno(txt,o.index);
+              var list    = [];
+              if(!label){
+                    list    = parse(txt);
+                    list.forEach(o=>{
                     
-              });
+                          o.line    = ctx.lineno(txt,o.index);
+                          
+                    });
+              }
               
-              var list2   = parse.label(txt);
-              list2.forEach(o=>{
-              
-                    o.line    = ctx.lineno(txt,o.index);
-                    
-              });
+              var list2   = javascript.label(txt);
               
               list    = ctx.merge(list,list2);
               return list;
@@ -278,7 +267,21 @@
         }//js
         
         
-        function html(txt){
+        javascript.label    = function(txt){
+        
+              var list   = parse.label(txt);
+              list.forEach(o=>{
+              
+                    o.line    = ctx.lineno(txt,o.index);
+                    
+              });
+              return list;
+              
+        }//label
+        
+        
+        
+        function html(txt,label){
         
               var list      = [];
               
@@ -286,44 +289,28 @@
               var ec        = true;
               while(ec){
               
-                    var i1    = txt.indexOf('<scr'+'ipt>',index);
+                    var i1      = txt.indexOf('<scr'+'ipt>',index);
                     if(i1==-1)break;
-                    var i2    = txt.indexOf('</scr'+'ipt>',index);
+                    var i2      = txt.indexOf('</scr'+'ipt>',index);
                     if(i2==-1)break;
                     
                     var str     = txt.slice(i1+8,i2);
                     
-                    var list1    = [];
+                    var list1   = [];
+                    var list2   = [];
                     
-                    var o   = html.sep(txt,i1);
-                    list1.push(o);
-                    
-                    var arr   = parse(str);
-                    arr.forEach(o=>{
-                    
-                          o.index    += i1+6
-                          o.line      = ctx.lineno(txt,o.index);
-                          
+                    if(!label){
+                          var o       = html.script.start(txt,i1);
+                          list1.push(o);
+                          var o       = html.script.end(txt,i2);
                           list1.push(o);
                           
-                    });
+                          list2       = html.script(txt,i1);
+                    }
                     
-                    var o   = html.sep(txt,i2);
-                    list1.push(o);
+                    var list3   = html.label(txt,i1);
                     
-                    var list2   = [];
-                    var arr     = parse.label(str);
-                    console.log('js-html-label',arr);
-                    arr.forEach(o=>{
-                    
-                          o.index    += i1+6
-                          o.line      = ctx.lineno(txt,o.index)+1;
-                          
-                          list2.push(o);
-                          
-                    });
-                    
-                    list    = ctx.merge(list,list1,list2);
+                    list    = ctx.merge(list,list1,list2,list3);
                     
                     index   = i2+9;
                     
@@ -334,13 +321,56 @@
         }//html
         
         
-        html.sep    = function(txt,index){
+        html.script   = function(txt,i1){
+        
+              var list    = [];
+              var arr     = parse(txt);
+              arr.forEach(o=>{
+              
+                    o.index    += i1+6
+                    o.line      = ctx.lineno(txt,o.index);
+                    
+                    list.push(o);
+                    
+              });
+              return list;
+              
+        }//script
+        
+        
+        html.label    = function(txt,i1){
+        
+              var list    = [];
+              var arr     = parse.label(txt);
+              arr.forEach(o=>{
+              
+                    o.index    += i1+6
+                    o.line      = ctx.lineno(txt,o.index)+1;
+                    list.push(o);
+                    
+              });
+              return list;
+              
+        }//label
+        
+        
+        html.script.start   = function(txt,index){
         
               var line    = ctx.lineno(txt,index);
               var o       = {type:'fn-sep',line}
               return o;
               
-        }//sep
+        }//start
+        
+        
+        html.script.end   = function(txt,index){
+        
+              var line    = ctx.lineno(txt,index);
+              var o       = {type:'fn-sep',line}
+              return o;
+              
+        }//end
+        
         
   //:
   
