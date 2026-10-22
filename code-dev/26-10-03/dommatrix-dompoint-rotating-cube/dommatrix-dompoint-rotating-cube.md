@@ -1,5 +1,5 @@
 
-# Demonstration of DOMMatrix / DOMPoint By Rotating A Wireframe Cube And Renderer using Wu's Line Algorithm
+# Demonstration of DOMMatrix / DOMPoint By Rotating A Wireframe Cube And Render using Wu's Line Algorithm
 
 
 It turns the browser viewport into a retro low-res pixel display, using a grid of individual div elements,
