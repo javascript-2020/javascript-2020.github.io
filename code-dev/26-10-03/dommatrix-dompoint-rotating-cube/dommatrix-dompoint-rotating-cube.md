@@ -6,6 +6,7 @@ It turns the browser viewport into a retro low-res pixel display, using a grid o
 native web geometry APIs, and an antialiased line-drawing algorithm, it renders a rotating 3D wireframe
 cube entirely through the DOM and CSS.
 
+
 [DOMMatrix [mdn]](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix)
 
 [DOMPoint [mdn]](https://developer.mozilla.org/en-US/docs/Web/API/DOMPoint)
@@ -17,15 +18,16 @@ cube entirely through the DOM and CSS.
 
 ### 1. The DOM-Pixel Grid
  
-The script starts by measuring the screen (window.innerWidth and document.documentElement.scrollHeight)
-and dividing it by a size factor (10px per "pixel"). It dynamically generates a dense matrix of empty div
-elements and appends them to the body, turning the layout into a massive CSS Grid:
+The script starts by measuring the screen ( window.innerWidth and document.documentElement.scrollHeight )
+and dividing it by a size factor ( 10px per "pixel" ). It dynamically generates a matrix of empty div
+elements and appends them to the body, turning the layout into a CSS Grid :
 
 ```
 body.style.cssText = `grid-template-columns:repeat(${gridw},1fr);grid-template-rows:repeat(${gridh},1fr)`;
 ```
 
-Each div acts like a single pixel on a screen. The animation loop targets these cells by their index (y * gridw + x) to light them up or clear them.
+Each div acts like a single pixel on a screen. The animation loop targets these cells by their index
+( y*gridw+x ) to light them up or clear them.
 
 
 
@@ -78,14 +80,15 @@ two pixels at once using fractional opacities.
 
 #### What Makes It Wu's Algorithm? ( Antialiasing )
 
-Traditional pixel lines look jagged (the "staircase effect") because they pick a single closest
+Traditional pixel lines look jagged ( the "staircase effect" ) because they pick a single closest
 pixel for every step. Wu’s algorithm solves this by antialiasing.
 
 Instead of turning a pixel fully on or off, it calculates how close the exact mathematical line
-is to a grid intersection, and splits the brightness (or in your case, opacity via rgba) between
+is to a grid intersection, and splits the brightness (or in this case, opacity via rgba) between
 two adjacent pixels.
 
 Here is how that breaks down in the code:
+
 
   1. **The Fractional Helpers**
 
@@ -96,7 +99,8 @@ function rfpart(x){return 1-fpart(x)}             // Reverse fractional part (1 
 ```
 
 These helper functions are vital because Wu’s algorithm relies entirely on decimals. If a line
-crosses a column at $y = 10.7$, the integer part is 10, and the fractional part is 0.7.
+crosses a column at y = 10.7, the integer part is 10, and the fractional part is 0.7.
+
 
   2. **Dual-Pixel Plotting with Opacity**
   
@@ -117,6 +121,7 @@ The Visual Result: If the line is right on the edge of grid cell 10 and grid cel
 gets 30% opacity and cell 11 gets 70% opacity. To the human eye, this blends the pixels together,
 creating a smooth, antialiased line across the CSS grid.
 
+
   3. **The Accumulator Loop**
   
 ```
@@ -129,7 +134,7 @@ for(var x = xpxl1 + 1; x <= xpxl2 - 1; x++){
 }
 ```
 
-As the loop steps forward one column at a time (x++), it accumulates the slope (gradient) into
+As the loop steps forward one column at a time ( x++ ), it accumulates the slope ( gradient ) into
 the intery variable. This tracks the exact floating-point vertical position of the line,
 allowing the fractional math to continuously shift the opacity balance between the upper and
 lower pixels as the line progresses.
@@ -143,6 +148,7 @@ var steep = (Math.abs(y1-y0) > Math.abs(x1-x0));
 It compares the vertical distance (dy) to the horizontal distance (dx). If the line is taller than it is wide,
 steep becomes true.
 
+
   5.  **Swapping X and Y for Steep Lines :**
   
 ```
@@ -150,9 +156,11 @@ if(steep){
     // swaps x0/y0 and x1/y1 coordinates
 }
 ```
-If the line is steep, it swaps the $X$ and $Y$ coordinates of both endpoints. This flips the coordinate
-space so the algorithm can always loop smoothly along the $X$-axis (treating the vertical axis as horizontal),
+
+If the line is steep, it swaps the x and y coordinates of both endpoints. This flips the coordinate
+space so the algorithm can always loop smoothly along the x-axis ( treating the vertical axis as horizontal ),
 preventing gaps in steep lines.
+
 
   6.  **Ensuring Left-to-Right Direction :**
   
