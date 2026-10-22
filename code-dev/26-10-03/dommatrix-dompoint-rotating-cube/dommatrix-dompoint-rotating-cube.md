@@ -54,7 +54,7 @@ var css = 'translate(50px,50px) rotateZ('+a+'deg) rotateY('+b+'deg) translate3d(
 var matrix = new DOMMatrix(css);
 ```
 
-During every frame of the animation loop, each vertex (DOMPoint) is projected into transformed coordinates
+During every frame of the animation loop, each vertex ( DOMPoint ) is projected into transformed coordinates
 using the native browser method `.matrixTransform(matrix)`.
 
 
@@ -65,8 +65,8 @@ Connecting the 3D dots into 2D lines on a grid requires a rasterization algorith
 pixelated [Bresenham line [wiki]](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm),
 this snippet implements Xiaolin Wu's line algorithm.
 
-Wu’s algorithm produces antialiased lines. By calculating the fractional distance (fpart, rfpart) of where
-a line crosses grid coordinates, it dynamically adjusts the opacity (rgba(0,0,255,${c})) of adjacent div cells.
+Wu’s algorithm produces antialiased lines. By calculating the fractional distance `(fpart,rfpart)` of where
+a line crosses grid coordinates, it dynamically adjusts the opacity `rgba(0,0,255,${c})` of adjacent div cells.
 This creates smooth, gradient-softened lines on a rigid grid.
 
 
