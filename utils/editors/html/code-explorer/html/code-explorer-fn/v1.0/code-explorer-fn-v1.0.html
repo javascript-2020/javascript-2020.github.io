@@ -386,8 +386,10 @@
         
         html.script.start   = function(txt,index){
         
-              var line    = ctx.lineno(txt,index);
-              var o       = {type:'fn-script-start',index,line}
+              var line      = ctx.lineno(txt,index);
+              var col       = ctx.colno(txt,index);
+              var indent    = ctx.indent(txt,index);
+              var o         = {type:'fn-script-start',index,line,col,indent}
               return o;
               
         }//start
@@ -395,8 +397,10 @@
         
         html.script.end   = function(txt,index){
         
-              var line    = ctx.lineno(txt,index);
-              var o       = {type:'fn-script-end',index,line}
+              var line      = ctx.lineno(txt,index);
+              var col       = ctx.colno(txt,index);
+              var indent    = ctx.indent(txt,index);
+              var o         = {type:'fn-script-end',index,line,col,indent}
               return o;
               
         }//end
