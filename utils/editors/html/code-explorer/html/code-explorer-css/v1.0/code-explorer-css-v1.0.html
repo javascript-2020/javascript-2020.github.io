@@ -396,8 +396,10 @@
         
         html.style.start    = function(txt,index){
         
-              var line    = ctx.lineno(txt,index);
-              var o       = {type:'css-style-start',index,line}
+              var line      = ctx.lineno(txt,index);
+              var col       = ctx.colno(txt,index);
+              var indent    = ctx.indent(txt,index);
+              var o         = {type:'css-style-start',index,line,col,indent}
               return o;
               
         }//sep
@@ -405,8 +407,10 @@
         
         html.style.end    = function(txt,index){
         
-              var line    = ctx.lineno(txt,index);
-              var o       = {type:'css-style-end',index,line}
+              var line      = ctx.lineno(txt,index);
+              var col       = ctx.colno(txt,index);
+              var indent    = ctx.indent(txt,index);
+              var o         = {type:'css-style-end',index,line,col,indent}
               return o;
               
         }//end
