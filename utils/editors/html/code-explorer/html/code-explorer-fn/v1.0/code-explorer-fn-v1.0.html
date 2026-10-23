@@ -6,11 +6,11 @@
       
             <style>
             
-  .fn-sep
+  .fn-script
     {}
-  .fn-sep .decor
+  .fn-script .decor,
     {border-top:1px solid lightgray;flex:1}
-  .fn-sep .name
+  .fn-script .name
     {margin:0 7px}
     
   .fn-label
@@ -31,13 +31,25 @@
     
             </style>
             
-            <div class='fn-sep item'>
+            <div id=script-start class='fn-script item'>
                   <div class=line>
                   </div>
                   <div class=decor>
                   </div>
                   <div class=name>
-                        script
+                        &lt;script&gt;
+                  </div>
+                  <div class=decor>
+                  </div>
+            </div>
+            
+            <div id=script-end class='fn-script item'>
+                  <div class=line>
+                  </div>
+                  <div class=decor>
+                  </div>
+                  <div class=name>
+                        &lt;/script&gt;
                   </div>
                   <div class=decor>
                   </div>
@@ -99,7 +111,7 @@
   
         var shadow;
         
-        var sep;
+        var sep   = {};
         var label;
         var item;
         
@@ -130,8 +142,11 @@
               var style                 = $(shadow,'style');
               par.append(style);
               
-              sep                       = $(shadow,'.fn-sep');
-              sep.remove();
+              sep.start                 = $(shadow,'#script-start');
+              sep.start.remove();
+              
+              sep.end                   = $(shadow,'#script-end');
+              sep.end.remove();
               
               label                     = $(shadow,'.fn-label');
               label.remove();
@@ -164,9 +179,24 @@
         }//create
         
         
-        create.sep    = function(o){
+        create.script   = {};
         
-              var nsep    = sep.cloneNode(true);
+        create.script.start    = function(o){
+        
+              var node                        = sep.start.cloneNode(true);
+              
+              $(node,'.line').textContent     = o.line;
+              
+              node.onclick                    = e=>editor.gotoline(o.line,o.indent);
+              
+              return nsep;
+              
+        }//sep
+        
+        
+        create.script.end    = function(o){
+        
+              var nsep                        = sep.end.cloneNode(true);
               
               $(nsep,'.line').textContent     = o.line;
               
@@ -174,7 +204,7 @@
               
               return nsep;
               
-        }//sep
+        }//end
         
         
         create.label    = function(o){
@@ -356,7 +386,7 @@
         html.script.start   = function(txt,index){
         
               var line    = ctx.lineno(txt,index);
-              var o       = {type:'fn-sep',line}
+              var o       = {type:'fn-script-start',line}
               return o;
               
         }//start
@@ -365,7 +395,7 @@
         html.script.end   = function(txt,index){
         
               var line    = ctx.lineno(txt,index);
-              var o       = {type:'fn-sep',line}
+              var o       = {type:'fn-script-end',line}
               return o;
               
         }//end
