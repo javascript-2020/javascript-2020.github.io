@@ -244,7 +244,7 @@
               var list2   = parse.label(txt);
               
               var list    = ctx.merge(list1,list2);
-                                                                                console.log(list);
+                                                                                //console.log(list);
               return list;
               
         }//update
@@ -284,30 +284,12 @@
                           if(name){
                                 var attrs   = parse.attr(tag,name);
                                 attrs     ||= {};
-                                /*
-                                var parser        = new DOMParser();
-                                var doc           = parser.parseFromString(tag,'text/html');
-                                var element       = doc.querySelector(name);
-                                if(!element){
-                                                                                console.log('parse.html error',tag);
-                                }else{
-                                      var attrs         = {};
-                                      
-                                      for(var i=0;i<element.attributes.length;i++){
-                                      
-                                            var attr            = element.attributes[i];
-                                            attrs[attr.name]    = (attr.value==='' ? true : attr.value);
-                                            
-                                      }//for
-                                */
+                                var line      = ctx.lineno(txt,index);
+                                var col       = ctx.colno(txt,index)-1;
+                                var indent    = ctx.indent(txt,index);
                                 
-                                      var line      = ctx.lineno(txt,index);
-                                      var col       = ctx.colno(txt,index)-1;
-                                      var indent    = ctx.indent(txt,index);
-                                      
-                                      var o   = {type:'html',index,line,col,indent,name,attrs};
-                                      list.push(o);
-                                //}
+                                var o   = {type:'html',index,line,col,indent,name,attrs};
+                                list.push(o);
                           }
                     }
                     
