@@ -42,13 +42,25 @@
                   </div>
             </div>
             
-            <div class='css-sep item'>
+            <div id=style-start class='css-sep item'>
                   <div class=line>
                   </div>
                   <div class=decor>
                   </div>
                   <div class=name>
-                        style
+                        &lt;style&gt;
+                  </div>
+                  <div class=decor>
+                  </div>
+            </div>
+            
+            <div id=style-end class='css-sep item'>
+                  <div class=line>
+                  </div>
+                  <div class=decor>
+                  </div>
+                  <div class=name>
+                        &lt;/style&gt;
                   </div>
                   <div class=decor>
                   </div>
@@ -100,7 +112,7 @@
   
   
         var shadow;
-        var sep;
+        var sep   = {};
         var label;
         var item;
         
@@ -130,8 +142,11 @@
               var style                 = $(shadow,'style');
               par.append(style);
               
-              sep                       = $(shadow,'.css-sep');
-              sep.remove();
+              sep.start                 = $(shadow,'#style-start');
+              sep.start.remove();
+              
+              sep.end                   = $(shadow,'#style-end');
+              sep.end.remove();
               
               label                     = $(shadow,'.css-label');
               label.remove();
@@ -153,9 +168,10 @@
               
               switch(o.type){
               
-                case 'css-sep'      : node    = create.sep(o);          break;
-                case 'css-label'    : node    = create.label(o);        break;
-                case 'css'          : node    = create.css(o);          break;
+                case 'css-style-start'      : node    = create.style.start(o);        break;
+                case 'css-style-end'        : node    = create.style.end(o);          break;
+                case 'css-label'            : node    = create.label(o);              break;
+                case 'css'                  : node    = create.css(o);                break;
                 
               }//switch
               
@@ -164,9 +180,11 @@
         }//create
         
         
-        create.sep    = function(o){
+        create.style    = {};
         
-              var nsep                          = sep.cloneNode(true);
+        create.style.start    = function(o){
+        
+              var nsep                          = sep.start.cloneNode(true);
               
               $(nsep,'.line').textContent       = o.line;
               
@@ -174,7 +192,20 @@
               
               return nsep;
               
-        }//sep
+        }//start
+        
+        
+        create.style.end    = function(o){
+        
+              var nsep                          = sep.end.cloneNode(true);
+              
+              $(nsep,'.line').textContent       = o.line;
+              
+              nsep.onclick                      = e=>editor.gotoline(o.line,o.col);
+              
+              return nsep;
+              
+        }//end
         
         
         create.label    = function(o){
@@ -365,7 +396,7 @@
         html.style.start    = function(txt,index){
         
               var line    = ctx.lineno(txt,index);
-              var o       = {type:'css-sep',line}
+              var o       = {type:'css-style-start',line}
               return o;
               
         }//sep
@@ -374,7 +405,7 @@
         html.style.end    = function(txt,index){
         
               var line    = ctx.lineno(txt,index);
-              var o       = {type:'css-sep',line}
+              var o       = {type:'css-style-end',line}
               return o;
               
         }//end
