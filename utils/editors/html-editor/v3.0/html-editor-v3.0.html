@@ -494,7 +494,9 @@
                                 var str       = result.msg+'\n'+
                                                 'line : '+result.line+'\n'+
                                                 'col  : '+result.col;
-                                log.red.pin(str);
+                                var node      = log.red.pin(str);
+                                node.onlick   = e=>editor.gotoline(result.line,result.col);
+                                
                           }else{
                                 var str       = JSON.stringify(result,null,4);
                                 log.green('syntax ok');
