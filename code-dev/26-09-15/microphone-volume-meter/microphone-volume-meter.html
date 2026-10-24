@@ -226,12 +226,14 @@
                                                                                 console.log('microphone-volume-meter');
                                                                                 console.log();
         var stream;
+        var abort;
         
         var audioctx        = new AudioContext();
         var gain            = audioctx.createGain();
         var analyser        = audioctx.createAnalyser();
+        var dest            = audioctx.createMediaStreamDestination();
         
-        var abort;
+        var mediaRecorder;
         
         
         var root;
@@ -306,7 +308,86 @@
         
         btn.microphone    = async function(){
         
-              stream    = microphone.aquire();
+              if(!stream){
+                    setup_audio();
+              }else{
+                    close_audio();
+              }
+              
+        }//microphone
+        
+        
+        btn.record    = function(){
+        }//record
+        
+        
+  //:
+  
+  
+        function update(){
+        
+              if(abort)return;
+              
+              update.peak();
+              update.rms();
+              
+              requestAnimationFrame(update);
+              
+        }//update
+        
+        
+        update.peak   = function(){
+        
+              var data    = new Uint8Array(analyser.fftSize);
+              analyser.getByteTimeDomainData(data);
+              
+              var max   = 0;
+              var sum   = 0;
+              
+              for(var amplitude of data){
+              
+                    var a   = Math.abs(amplitude-127);
+                    if(a>max){
+                          max   = a;
+                    }
+                    
+              }//for
+              
+              $('#peak .meter-value').style.width   = '50%';
+              //meter.value   = max/128;
+              
+        }//peak
+        
+        
+        update.rms    = function(){
+        
+              var data    = new Uint8Array(analyser.frequencyBinCount);
+              console.log(data.length);
+              analyser.getByteTimeDomainData(data);
+              
+              var sumSquares    = 0;
+              for(var i=0;i<data.length;i++){
+              
+                    var normalized    = (data[i]-128)/128;
+                    sumSquares       += normalized*normalized;
+                    
+              }//for
+              
+              var rms   = Math.sqrt(sumSquares/data.length);
+                                                                                // Scale RMS dynamically to fill the meter nicely
+              var pct   = Math.min(100,Math.round(rms*400));
+              $('#rms .meter-value').style.width    = `${pct}%`;
+              
+        }//rms
+        
+        
+  //:
+  
+  
+        function setup_audio(){
+        
+              stream              = await microphone.aquire();
+              if(!stream)return;
               
               var source          = audioctx.createMediaStreamSource(stream);
               
@@ -314,8 +395,6 @@
               gain.gain.value     = v;
               
               analyser.fftSize    = 2048;
-              
-              var dest            = audioctx.createMediaStreamDestination();
               
               source.connect(gain);
               gain.connect(analyser);
@@ -326,13 +405,15 @@
               
               update();
               
-        }//microphone
+        }//setup_audio
         
         
-        btn.record    = function(){
-        }//record
+        function close_audio(){
         
-        
+              microphone.close();
+              record.stop();
+              
+        }//close
         
         
   //:
@@ -410,86 +491,37 @@
   //:
   
   
-        function update(){
-        
-              if(abort)return;
-              
-              update.peak();
-              update.rms();
-              
-              requestAnimationFrame(update);
-              
-        }//update
-        
-        
-        update.peak   = function(){
-        
-              var data    = new Uint8Array(analyser.fftSize);
-              analyser.getByteTimeDomainData(data);
-              
-              var max   = 0;
-              var sum   = 0;
-              
-              for(var amplitude of data){
-              
-                    var a   = Math.abs(amplitude-127);
-                    if(a>max){
-                          max   = a;
-                    }
-                    
-              }//for
-              
-              $('#peak .meter-value').style.width   = '50%';
-              //meter.value   = max/128;
-              
-        }//peak
-        
-        
-        update.rms    = function(){
-        
-              var data    = new Uint8Array(analyser.frequencyBinCount);
-              console.log(data.length);
-              analyser.getByteTimeDomainData(data);
-              
-              var sumSquares    = 0;
-              for(var i=0;i<data.length;i++){
-              
-                    var normalized    = (data[i]-128)/128;
-                    sumSquares       += normalized*normalized;
-                    
-              }//for
-              
-              var rms   = Math.sqrt(sumSquares/data.length);
-                                                                                // Scale RMS dynamically to fill the meter nicely
-              var pct   = Math.min(100,Math.round(rms*400));
-              $('#rms .meter-value').style.width    = `${pct}%`;
-              
-        }//rms
-        
-        
-  //:
-  
-  
         record.start    = function(){
         
-              var mediaRecorder;
-              var recordedChunks    = [];
+              if(!dest.stream){
+                    log('no audio stream');
+                    return;
+              }
               
-              var audioStream       = analyser.stream;
+              var start             = Date.now();
+              
+              var audioStream       = dest.stream;
               mediaRecorder         = new MediaRecorder(audioStream,{mimeType:'audio/webm'});
+              var data              = [];
               
               mediaRecorder.ondataavailable   = e=>{
               
                     if(e.data.size>0){
-                          recordedChunks.push(e.data);
+                          data.push(e.data);
                     }
                     
               }//ondataavailable
               
               mediaRecorder.onstop    = ()=>{
               
+                    var end     = Date.now();
+                    
                     var blob    = new Blob(recordedChunks,{type:'audio/webm'});
                     var url     = URL.createObjectURL(blob);
+                    
+                    var div           = document.createElement('div');
+                    div.textContent   = ts()+'---('+duration(start-end)+').webm';
+                    output.append(div);
                     
                     /*
                     const audio = new Audio(audioUrl);
@@ -506,6 +538,7 @@
         
         record.stop   = function(){
         
+              if(!mediaRecorder)return;
               mediaRecorder.stop();
               
         }//stop
@@ -522,6 +555,34 @@
               
         }//log
         
+        
+        function ts(){
+        
+              var now     = new Date();
+              var year    = now.getFullYear();
+              var month   = String(now.getMonth()+1).padStart(2,'0');
+              var day     = String(now.getDate()).padStart(2,'0');
+              var hour    = String(now.getHours()).padStart(2,'0');
+              var min     = String(now.getMinutes()).padStart(2,'0');
+              var sec     = String(now.getSeconds()).padStart(2,'0');
+              
+              var ts    = `${year}-${month}-${day}---${hours}-${minutes}-${seconds}`;
+              return ts;
+              
+        }//ts
+        
+        
+        function duration(ms){
+        
+              var total   = Math.floor(ms/1000);
+              var hour    = String(Math.floor(total/3600)).padStart(2,'0');
+              var min     = String(Math.floor((total%3600)/60)).padStart(2,'0');
+              var sec     = String(total%60).padStart(2,'0');
+              
+              var dur     = `${hour}:${min}:${sec}`;
+              return dur;
+              
+        }//duration
         
         
         function $(root,sel){return (!sel&&(sel=root,root=document),root.querySelector(sel))}
