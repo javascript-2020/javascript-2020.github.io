@@ -10,13 +10,12 @@
     
   #microphone-volume-meter
     {background-color:whitesmoke;border:1px solid blue;box-sizing:border-box;padding:20px;border-radius:10px;margin-top:30px;
-      display:flex;flex-direction:column;gap:10px;max-width:1000px;max-height:600px;flex:1}
+      display:flex;flex-direction:column;gap:10px;max-width:1000px;flex:1}
       
   #btn
     {text-align:center;margin:0 0 10px}
   #aquire-microphone
-    {font-size:16px;padding:10px 20px;cursor:pointer;background:hsl(217,91%,90%);color:gray;font-weight:bold;
-      border:none;border-radius:6px}
+    {background:hsl(217,91%,90%);color:gray;font-weight:bold;padding:10px 20px}
   #aquire-microphone:hover
     {background:lightyellow}
     
@@ -59,23 +58,47 @@
     {width:22px;height:22px;border:none;border-radius:50%;background:hsl(217,91%,60%)}
     
     
-  meter
-    {height:45px;width:100%;margin:25px 0 0}
+  #peak
+    {margin:25px 0 0}
     
+  .meter-root
+    {display:flex;flex-direction:column;gap:10px;
+      border:1px solid lightgray;padding:10px
+    }
+  .meter-hdr
+    {display:flex}
   .field
-    {display:flex;justify-content:center;gap:10px}
+    {display:flex;gap:10px}
   .field label
-    {width:60px;text-align:right}
+    {width:100px;text-align:right}
   .field .value
     {width:60px;font-weight:bold}
     
-  #value
-    {}
-  #max
-    {}
+  .meter
+    {height:25px;width:100%;border:1px solid lightgray;border-radius:10px;position:relative;overflow:hidden}
+  .meter-value
+    {background:hsl(120,100%,90%);position:absolute;left:0;top:0;bottom:0;
+      width:0%}
+  .meter-max
+    {position:absolute;left:0;top:0;bottom:0;border-right:2px solid orange;box-sizing:border-box;
+      width:0%}
+      
+  audio
+    {width:100%;border:1px solid lightgray;margin-top:20px}
+    
+  .record-root
+    {border:1px solid lightgray;padding:5px 10px;display:flex;gap:10px;align-items:center}
+  .record-root button
+    {background:hsl(0,100%,85%);padding:5px 10px}
+  .record-root button:hover
+    {background:lightred}
     
   #output
     {flex:1;min-height:100px;border:1px solid lightgray;padding:5px;overflow:auto;white-space:pre;margin-top:20px}
+    
+  button
+    {font-size:16px;cursor:pointer;border:none;border-radius:6px}
+    
     
             </style>
       </head>
@@ -91,10 +114,6 @@
                   </div>
                   
                   <div id=hdr>
-                        <label for=audio>
-                              <input id=audio type=checkbox checked>
-                              audio
-                        </label>
                   </div>
                   
                   <div id=gain-root>
@@ -110,31 +129,76 @@
                         <div>
                               0.0
                         </div>
-                        <input id=range type=range min=0 max=5 value=2.5 step=0.1>
+                        <input id=range type=range min=0 max=5 step=0.1 value=1.0>
                         <div>
                               5.0
                         </div>
                   </div>
                   
                   
-                  <meter></meter>
-                  
-                  <div style='display:flex;justify-content:center'>
-                        <div class=field>
-                              <label>
-                                    value
-                              </label>
-                              <div id=value class=value>
-                                    0.0
+                  <div id=peak class=meter-root>
+                        <div class=meter-hdr>
+                              peak
+                              <div class=field>
+                                    <label>
+                                          value
+                                    </label>
+                                    <div id=value class=value>
+                                          0.0
+                                    </div>
+                              </div>
+                              <div class=field>
+                                    <label>
+                                          max
+                                    </label>
+                                    <div id=max class=value>
+                                          0.0
+                                    </div>
                               </div>
                         </div>
-                        <div class=field>
-                              <label>
-                                    max
-                              </label>
-                              <div id=max class=value>
-                                    0.0
+                        <div class=meter>
+                              <div class=meter-value></div>
+                              <div class=meter-max></div>
+                        </div>
+                  </div>
+                  
+                  
+                  <div id=rms class=meter-root>
+                        <div id=rms-root-hdr class=meter-hdr>
+                              rms
+                              <div class=field>
+                                    <label>
+                                          value
+                                    </label>
+                                    <div id=value class=value>
+                                          0.0
+                                    </div>
                               </div>
+                              <div class=field>
+                                    <label>
+                                          max
+                                    </label>
+                                    <div id=max class=value>
+                                          0.0
+                                    </div>
+                              </div>
+                        </div>
+                        <div class=meter>
+                              <div class=meter-value></div>
+                              <div class=meter-max></div>
+                        </div>
+                  </div>
+                  
+                  
+                  <audio controls></audio>
+                  
+                  
+                  <div class=record-root>
+                        <button>
+                              record start
+                        </button>
+                        <div id=time>
+                              00:00:00
                         </div>
                   </div>
                   
@@ -150,21 +214,36 @@
       
       
       
-        /*
-        
-        //microphone-volume-meter:d
-        
-        31-03-24
-        
-        */
+/*
+
+//microphone-volume-meter:d
+
+31-03-24
+24-10-26
+
+*/
                                                                                 console.clear();
                                                                                 console.log('microphone-volume-meter');
                                                                                 console.log();
-        var root;
         var stream;
-        var output;
+        
+        var audioctx        = new AudioContext();
+        var gain            = audioctx.createGain();
+        var analyser        = audioctx.createAnalyser();
+        
         var abort;
+        
+        
+        var root;
+        var range;
         var meter;
+        var audio;
+        var output;
+        
+        
+        
+        
+        
         
         var btn   = {};
         
@@ -182,39 +261,21 @@
         
         async function initdom(rootnode){
         
-              root                    = rootnode;
+              root                            = rootnode;
               
               $(root,'button').onclick        = btn.microphone;
               
-              var range               = $(root,'#range');
-              range.oninput           = change;
-              range.onmousedown       = e=>e.stopPropagation();
-              range.dispatchEvent(new Event('input'));
+              range                           = $(root,'#range');
+              range.oninput                   = change;
+              //range.dispatchEvent(new Event('input'));
+              change();
               
-              meter                   = $(root,'meter');
+              meter                           = $(root,'meter');
               
-              output                  = $(root,'#output');
+              audio                           = $('audio');
+              
+              output                          = $(root,'#output');
               output.replaceChildren();
-              
-              
-              function change(e){
-              
-                    var v     = parseFloat(range.value);
-                    
-                    if(gain.gain){
-                          gain.gain.value   = v;
-                    }
-                    
-                    var s   = v.toFixed(1);
-                    $(root,'#gain').textContent    = s;
-                    
-                    var min   = parseFloat(range.min);
-                    var max   = parseFloat(range.max);
-                    var p     = ((v-min)/(max-min))*100;
-                    range.style.setProperty('--val',p+'%');
-                    
-              }//change
-              
               
               
         }//initdom
@@ -223,6 +284,25 @@
   //:
   
   
+        function change(e){
+        
+              var v     = parseFloat(range.value);
+              
+              if(gain.gain){
+                    gain.gain.value   = v;
+              }
+              
+              var s   = v.toFixed(1);
+              $(root,'#gain').textContent    = s;
+              
+              var min   = parseFloat(range.min);
+              var max   = parseFloat(range.max);
+              var p     = ((v-min)/(max-min))*100;
+              range.style.setProperty('--val',p+'%');
+              
+        }//change
+        
+        
         btn.microphone    = async function(){
                                                                                 log('aquiring microphone');
               var err;
@@ -277,22 +357,19 @@
               }
                                                                                 log('microphone ok');
                                                                                 
-              var audioctx        = new AudioContext();
               var source          = audioctx.createMediaStreamSource(stream);
               
-              var gain            = audioctx.createGain();
               gain.gain.value     = 2.5;
-              source.connect(gain);
               
-              var analyser        = audioctx.createAnalyser();
-              analyser.fftSize    = 32;
+              analyser.fftSize    = 2048;
               var data            = new Uint8Array(analyser.fftSize);
-              gain.connect(analyser);
               
               var dest            = audioctx.createMediaStreamDestination();
+              
+              source.connect(gain);
+              gain.connect(analyser);
               analyser.connect(dest);
               
-              var audio         = new Audio();
               audio.srcObject   = dest.stream;
               audio.play();
               
@@ -301,6 +378,85 @@
         }//microphone
         
         
+/*
+
+let audioCtx;
+let sourceNode;
+let gainNode;
+let analyser;
+let dest;
+let mediaRecorder;
+let recordedChunks = [];
+
+async function initAudio() {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+  sourceNode = audioCtx.createMediaStreamSource(stream);
+  
+  gainNode = audioCtx.createGain();
+  gainNode.gain.value = 1.0;
+  
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 2048;
+  
+  dest = audioCtx.createMediaStreamDestination();
+  
+  // Audio Graph Routing (Fan-out)
+  sourceNode.connect(gainNode);
+  gainNode.connect(analyser);
+  gainNode.connect(dest);
+  
+  // Pipe destination stream to an HTML audio object for live playback
+  const liveAudio = document.createElement('audio');
+  liveAudio.srcObject = dest.stream;
+  liveAudio.autoplay = true;
+  // liveAudio.muted = true; // Uncomment if you get acoustic feedback/echoes
+  document.body.appendChild(liveAudio);
+  
+  // Recorder setup
+  mediaRecorder = new MediaRecorder(dest.stream, { mimeType: 'audio/webm' });
+  
+  mediaRecorder.ondataavailable = (e) => {
+    if (e.data.size > 0) {
+      recordedChunks.push(e.data);
+    }
+  };
+  
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+    const url = URL.createObjectURL(blob);
+    
+    const playbackAudio = new Audio(url);
+    playbackAudio.controls = true;
+    document.body.appendChild(playbackAudio);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'mic-recording.webm';
+    link.textContent = 'Download Recording';
+    document.body.appendChild(link);
+  };
+}
+
+function startRecording() {
+  recordedChunks = [];
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  mediaRecorder.start();
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+  }
+}
+
+*/
+
+
+
         btn.microphone.release    = function(){
         
               close();
@@ -308,12 +464,50 @@
         }//release
         
         
+        btn.record    = function(){
+        
+              var mediaRecorder;
+              var recordedChunks    = [];
+              
+              var audioStream       = analyser.stream;
+              mediaRecorder         = new MediaRecorder(audioStream,{mimeType:'audio/webm'});
+              
+              mediaRecorder.ondataavailable   = e=>{
+              
+                    if(e.data.size>0){
+                          recordedChunks.push(e.data);
+                    }
+                    
+              }//ondataavailable
+              
+              mediaRecorder.onstop    = ()=>{
+              
+                    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(blob);
+                    
+                    const audio = new Audio(audioUrl);
+                    audio.controls = true;
+                    document.body.appendChild(audio); // or bind to a download link
+                    
+              }//onstop
+              
+              mediaRecorder.start();
+              
+              // Stop recording after N seconds or on button click
+              // mediaRecorder.stop();
+              
+              
+        }//record
+        
+        
   //:
   
   
         function close(){
         
-              if(stream)stream.getTracks().forEach(track=>track.stop());
+              if(stream){
+                    stream.getTracks().forEach(track=>track.stop());
+              }
               stream    = null;
               abort     = true;
                                                                                 console.log('closed');
@@ -321,6 +515,18 @@
         
         
         function update(){
+        
+              if(abort)return;
+              
+              update.peak();
+              update.rms();
+              
+              requestAnimationFrame(update);
+              
+        }//update
+        
+        
+        update.peak   = function(){
         
               analyser.getByteTimeDomainData(data);
               
@@ -336,13 +542,32 @@
                     
               }//for
               
-              meter.value   = max/128;
+              $('#peak .meter-value').style.width   = '50%';
+              //meter.value   = max/128;
               
-              if(abort)return;
-              setTimeout(update,50);
+        }//peak
+        
+        
+        update.rms    = function(){
+        
+              var data    = new Uint8Array(analyser.frequencyBinCount);
+              console.log(data.length);
+              analyser.getByteTimeDomainData(data);
               
+              var sumSquares    = 0;
+              for(var i=0;i<data.length;i++){
               
-        }//update
+                    var normalized    = (data[i]-128)/128;
+                    sumSquares       += normalized*normalized;
+                    
+              }//for
+              
+              var rms   = Math.sqrt(sumSquares/data.length);
+                                                                                // Scale RMS dynamically to fill the meter nicely
+              var pct   = Math.min(100,Math.round(rms*400));
+              $('#rms .meter-value').style.width    = `${pct}%`;
+              
+        }//rms
         
         
         function log(str){
