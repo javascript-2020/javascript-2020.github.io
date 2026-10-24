@@ -91,7 +91,7 @@
   .record-root button
     {background:hsl(0,100%,85%);padding:5px 10px}
   .record-root button:hover
-    {background:lightred}
+    {background:hsl(0,100%,50%)}
     
   #output
     {flex:1;min-height:100px;border:1px solid lightgray;padding:5px;overflow:auto;white-space:pre;margin-top:20px}
@@ -261,20 +261,21 @@
         
         async function initdom(rootnode){
         
-              root                            = rootnode;
+              root                                  = rootnode;
               
-              $(root,'button').onclick        = btn.microphone;
+              $(root,'button').onclick              = btn.microphone;
               
-              range                           = $(root,'#range');
-              range.oninput                   = change;
+              range                                 = $(root,'#range');
+              range.oninput                         = change;
               //range.dispatchEvent(new Event('input'));
               change();
               
-              meter                           = $(root,'meter');
               
-              audio                           = $('audio');
+              audio                                 = $('audio');
               
-              output                          = $(root,'#output');
+              $('#record-root button').onclick      = btn.record;
+              
+              output                                = $(root,'#output');
               output.replaceChildren();
               
               
@@ -304,6 +305,40 @@
         
         
         btn.microphone    = async function(){
+        
+              stream    = microphone.aquire();
+              
+              var source          = audioctx.createMediaStreamSource(stream);
+              
+              gain.gain.value     = 2.5;
+              
+              analyser.fftSize    = 2048;
+              var data            = new Uint8Array(analyser.fftSize);
+              
+              var dest            = audioctx.createMediaStreamDestination();
+              
+              source.connect(gain);
+              gain.connect(analyser);
+              analyser.connect(dest);
+              
+              audio.srcObject   = dest.stream;
+              audio.play();
+              
+              update();
+              
+        }//microphone
+        
+        
+        btn.record    = function(){
+        }//record
+        
+        
+        
+        
+  //:
+  
+  
+        microphone.aquire   = async function(){
                                                                                 log('aquiring microphone');
               var err;
               try{
@@ -356,28 +391,145 @@
                     return;
               }
                                                                                 log('microphone ok');
-                                                                                
-              var source          = audioctx.createMediaStreamSource(stream);
+              return stream;
               
-              gain.gain.value     = 2.5;
-              
-              analyser.fftSize    = 2048;
-              var data            = new Uint8Array(analyser.fftSize);
-              
-              var dest            = audioctx.createMediaStreamDestination();
-              
-              source.connect(gain);
-              gain.connect(analyser);
-              analyser.connect(dest);
-              
-              audio.srcObject   = dest.stream;
-              audio.play();
-              
-              update();
-              
-        }//microphone
+        }//aquire
         
         
+        microphone.close    = function(){
+        
+              if(stream){
+                    stream.getTracks().forEach(track=>track.stop());
+              }
+              stream    = null;
+              abort     = true;
+                                                                                log(' microphone closed');
+        }//close
+        
+        
+  //:
+  
+  
+        function update(){
+        
+              if(abort)return;
+              
+              update.peak();
+              update.rms();
+              
+              requestAnimationFrame(update);
+              
+        }//update
+        
+        
+        update.peak   = function(){
+        
+              analyser.getByteTimeDomainData(data);
+              
+              var max   = 0;
+              var sum   = 0;
+              
+              for(var amplitude of data){
+              
+                    var a   = Math.abs(amplitude-127);
+                    if(a>max){
+                          max   = a;
+                    }
+                    
+              }//for
+              
+              $('#peak .meter-value').style.width   = '50%';
+              //meter.value   = max/128;
+              
+        }//peak
+        
+        
+        update.rms    = function(){
+        
+              var data    = new Uint8Array(analyser.frequencyBinCount);
+              console.log(data.length);
+              analyser.getByteTimeDomainData(data);
+              
+              var sumSquares    = 0;
+              for(var i=0;i<data.length;i++){
+              
+                    var normalized    = (data[i]-128)/128;
+                    sumSquares       += normalized*normalized;
+                    
+              }//for
+              
+              var rms   = Math.sqrt(sumSquares/data.length);
+                                                                                // Scale RMS dynamically to fill the meter nicely
+              var pct   = Math.min(100,Math.round(rms*400));
+              $('#rms .meter-value').style.width    = `${pct}%`;
+              
+        }//rms
+        
+        
+  //:
+  
+  
+        record.start    = function(){
+        
+              var mediaRecorder;
+              var recordedChunks    = [];
+              
+              var audioStream       = analyser.stream;
+              mediaRecorder         = new MediaRecorder(audioStream,{mimeType:'audio/webm'});
+              
+              mediaRecorder.ondataavailable   = e=>{
+              
+                    if(e.data.size>0){
+                          recordedChunks.push(e.data);
+                    }
+                    
+              }//ondataavailable
+              
+              mediaRecorder.onstop    = ()=>{
+              
+                    var blob    = new Blob(recordedChunks,{type:'audio/webm'});
+                    var url     = URL.createObjectURL(blob);
+                    
+                    /*
+                    const audio = new Audio(audioUrl);
+                    audio.controls = true;
+                    document.body.appendChild(audio); // or bind to a download link
+                    */
+                    
+              }//onstop
+              
+              mediaRecorder.start();
+              
+        }//start
+        
+        
+        record.stop   = function(){
+        
+              mediaRecorder.stop();
+              
+        }//stop
+        
+        
+  //:
+  
+  
+        function log(str){
+        
+              var div           = document.createElement('div');
+              div.textContent   = str;
+              output.append(div);
+              
+        }//log
+        
+        
+        
+        function $(root,sel){return (!sel&&(sel=root,root=document),root.querySelector(sel))}
+        
+        
+  //:
+  //:
+  
+  
 /*
 
 let audioCtx;
@@ -457,130 +609,9 @@ function stopRecording() {
 
 
 
-        btn.microphone.release    = function(){
-        
-              close();
-              
-        }//release
-        
-        
-        btn.record    = function(){
-        
-              var mediaRecorder;
-              var recordedChunks    = [];
-              
-              var audioStream       = analyser.stream;
-              mediaRecorder         = new MediaRecorder(audioStream,{mimeType:'audio/webm'});
-              
-              mediaRecorder.ondataavailable   = e=>{
-              
-                    if(e.data.size>0){
-                          recordedChunks.push(e.data);
-                    }
-                    
-              }//ondataavailable
-              
-              mediaRecorder.onstop    = ()=>{
-              
-                    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-                    const audioUrl = URL.createObjectURL(blob);
-                    
-                    const audio = new Audio(audioUrl);
-                    audio.controls = true;
-                    document.body.appendChild(audio); // or bind to a download link
-                    
-              }//onstop
-              
-              mediaRecorder.start();
-              
-              // Stop recording after N seconds or on button click
-              // mediaRecorder.stop();
-              
-              
-        }//record
-        
-        
-  //:
-  
-  
-        function close(){
-        
-              if(stream){
-                    stream.getTracks().forEach(track=>track.stop());
-              }
-              stream    = null;
-              abort     = true;
-                                                                                console.log('closed');
-        }//onclose
-        
-        
-        function update(){
-        
-              if(abort)return;
-              
-              update.peak();
-              update.rms();
-              
-              requestAnimationFrame(update);
-              
-        }//update
-        
-        
-        update.peak   = function(){
-        
-              analyser.getByteTimeDomainData(data);
-              
-              var max   = 0;
-              var sum   = 0;
-              
-              for(var amplitude of data){
-              
-                    var a   = Math.abs(amplitude-127);
-                    if(a>max){
-                          max   = a;
-                    }
-                    
-              }//for
-              
-              $('#peak .meter-value').style.width   = '50%';
-              //meter.value   = max/128;
-              
-        }//peak
-        
-        
-        update.rms    = function(){
-        
-              var data    = new Uint8Array(analyser.frequencyBinCount);
-              console.log(data.length);
-              analyser.getByteTimeDomainData(data);
-              
-              var sumSquares    = 0;
-              for(var i=0;i<data.length;i++){
-              
-                    var normalized    = (data[i]-128)/128;
-                    sumSquares       += normalized*normalized;
-                    
-              }//for
-              
-              var rms   = Math.sqrt(sumSquares/data.length);
-                                                                                // Scale RMS dynamically to fill the meter nicely
-              var pct   = Math.min(100,Math.round(rms*400));
-              $('#rms .meter-value').style.width    = `${pct}%`;
-              
-        }//rms
-        
-        
-        function log(str){
-        
-              output.append(str,'\n');
-              
-        }//log
-        
-        
-        
-        function $(root,sel){return (!sel&&(sel=root,root=document),root.querySelector(sel))}
-        
-        
+
+
+
       </script>
       
 </html>
