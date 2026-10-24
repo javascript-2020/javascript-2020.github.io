@@ -412,7 +412,7 @@
               var p1    = (update.rms.max/128)*100+'%';
               
               $('#rms #value').textContent          = rms.toFixed(1);
-              $('#rms #max').textContent            = update.rms.max;
+              $('#rms #max').textContent            = update.rms.max.toFixed(1);
               $('#rms .meter-value').style.width    = p;
               $('#rms .meter-max').style.width      = p1;
               
@@ -517,8 +517,7 @@
               if(err){
                                                                                 console.error(err);
                                                                                 log('error');
-                                                                                log(err.name);
-                                                                                log(err.message);
+                                                                                log(err.stack);
                     return;
               }
                                                                                 log('microphone open');
