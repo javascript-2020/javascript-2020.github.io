@@ -358,6 +358,8 @@
         }//update
         
         
+        update.peak.max   = 0;
+        
         update.peak   = function(){
         
               var data    = new Uint8Array(analyser.fftSize);
@@ -375,13 +377,22 @@
                     
               }//for
               
-              var p   = (max/127)*100+'%';
+              if(max>update.peak.max){
+                    update.peak.max   = max;
+              }
+              
+              var p     = (max/127)*100+'%';
+              var p1    = (update.peak.max/127)*100+'%';
               
               $('#peak #value').textContent         = max;
+              $('#peak #max').textContent           = update.peak.max;
               $('#peak .meter-value').style.width   = p;
+              $('#peak .meter-max').style.width     = p1;
               
         }//peak
         
+        
+        update.rms.max    = 0;
         
         update.rms    = function(){
         
@@ -397,10 +408,17 @@
               }//for
               
               var rms   = Math.sqrt(sum/data.length);
+              if(rms>update.rms.max){
+                    update.rms.max    = rms;
+              }
+              
               var p     = (rms/128)*100+'%';
+              var p1    = (update.rms.max/128)*100+'%';
               
               $('#rms #value').textContent          = rms.toFixed(1);
+              $('#rms #max').textContent            = update.rms.max;
               $('#rms .meter-value').style.width    = p;
+              $('#rms .meter-max').style.width      = p1;
               
         }//rms
         
