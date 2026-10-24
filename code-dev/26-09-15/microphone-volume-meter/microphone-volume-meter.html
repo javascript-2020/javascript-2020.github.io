@@ -358,8 +358,6 @@
         }//update
         
         
-        update.peak.max   = 0;
-        
         update.peak   = function(){
         
               var data    = new Uint8Array(analyser.fftSize);
@@ -391,8 +389,6 @@
               
         }//peak
         
-        
-        update.rms.max    = 0;
         
         update.rms    = function(){
         
@@ -444,7 +440,9 @@
               
               audio.start(dest.stream);
               
-              abort   = false;
+              abort             = false;
+              update.peak.max   = 0;
+              update.rms.max    = 0;
               update();
               
         }//setup_audio
