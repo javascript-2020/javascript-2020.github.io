@@ -310,10 +310,10 @@
               
               var source          = audioctx.createMediaStreamSource(stream);
               
-              gain.gain.value     = 2.5;
+              var v               = parseFloat(range.value);
+              gain.gain.value     = v;
               
               analyser.fftSize    = 2048;
-              var data            = new Uint8Array(analyser.fftSize);
               
               var dest            = audioctx.createMediaStreamDestination();
               
@@ -424,6 +424,7 @@
         
         update.peak   = function(){
         
+              var data    = new Uint8Array(analyser.fftSize);
               analyser.getByteTimeDomainData(data);
               
               var max   = 0;
