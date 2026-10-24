@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+      <head>
+            <style>
+            
+  html
+    {font-family:arial}
+  body
+    {margin:20px;display:flex;justify-content:center}
+    
+  #microphone-volume-meter
+    {background-color:whitesmoke;border:1px solid blue;box-sizing:border-box;padding:10px;border-radius:10px;margin-top:30px;
+      display:flex;flex-direction:column;gap:10px;max-width:1000px;flex:1}
+      
+  #btn
+    {text-align:center;margin:0 0 10px}
+  #aquire-microphone
+    {font-size:16px;padding:10px 20px;cursor:pointer;background:hsl(217,91%,90%);color:gray;font-weight:bold;
+      border:none;border-radius:6px}
+  #aquire-microphone:hover
+    {background:lightyellow}
+    
+  #hdr
+    {margin:0 0 10px}
+  label:has(#audio)
+    {border:1px solid gray;border-radius:5px;padding:5px 10px;display:inline-flex;align-items:center;gap:10px;cursor:pointer}
+  [type=checkbox]
+    {width:20px;height:20px}
+    
+    
+  #gain-root
+    {text-align:center}
+    
+  #range-root
+    {display:flex;gap:10px;align-items:center}
+  #range
+    {flex:1}
+    
+input[type=range]
+  {-webkit-appearance:none;appearance:none;width:100%;margin:0;cursor:pointer;
+    --h:18px;--col1:hsl(217,91%,90%);--col2:lightgray;height:var(--h);
+  }
+  
+  input[type=range]::-webkit-slider-runnable-track
+    {height:var(--h);border-radius:6px;
+      background: linear-gradient(to right,var(--col1) 0%, var(--col1) var(--val,0%),
+        var(--col2) var(--val,0%), var(--col2) 100%)
+        
+    }
+  input[type=range]::-moz-range-track
+    {height:var(--h);border-radius:6px;
+      background: linear-gradient(to right,var(--col1) 0%, var(--col1) var(--val,0%),
+        var(--col2) var(--val,0%), var(--col2) 100%)
+    }
+    
+  input[type=range]::-webkit-slider-thumb
+    {-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:hsl(217,91%,60%);
+      margin-top:-1px}
+  input[type=range]::-moz-range-thumb
+    {width:22px;height:22px;border:none;border-radius:50%;background:hsl(217,91%,60%)}
+    
+    
+  meter
+    {height:45px;width:100%;margin:25px 0 0}
+    
+  .field
+    {display:flex;justify-content:center;gap:10px}
+  .field label
+    {width:60px;text-align:right}
+  .field .value
+    {width:60px;font-weight:bold}
+    
+  #value
+    {}
+  #max
+    {}
+    
+  #output
+    {min-height:100px;border:1px solid lightgray;padding:5px;overflow:auto;white-space:pre;margin-top:20px}
+    
+            </style>
+      </head>
+      
+      <body>
+      
+            <div id=microphone-volume-meter>
+            
+                  <div id=btn>
+                        <button id=aquire-microphone>
+                              aquire microphone
+                        </button>
+                  </div>
+                  
+                  <div id=hdr>
+                        <label for=audio>
+                              <input id=audio type=checkbox checked>
+                              audio
+                        </label>
+                  </div>
+                  
+                  <div id=gain-root>
+                        <span>
+                              microphone gain
+                        </span>
+                        <span id=gain>
+                              2.5
+                        </span>
+                  </div>
+                  
+                  <div id="range-root">
+                        <div>
+                              0.0
+                        </div>
+                        <input id=range type=range min=0 max=5 value=2.5 step=0.1>
+                        <div>
+                              5.0
+                        </div>
+                  </div>
+                  
+                  
+                  <meter></meter>
+                  
+                  <div style='display:flex;justify-content:center'>
+                        <div class=field>
+                              <label>
+                                    value
+                              </label>
+                              <div id=value class=value>
+                                    0.0
+                              </div>
+                        </div>
+                        <div class=field>
+                              <label>
+                                    max
+                              </label>
+                              <div id=max class=value>
+                                    0.0
+                              </div>
+                        </div>
+                  </div>
+                  
+                  
+                  <div id=output>
+                  </div>
+                  
+            </div>
+            
+      </body>
+      
+      <script>
+      
+      
+      
+        /*
+        
+        //microphone-volume-meter:d
+        
+        31-03-24
+        
+        */
+                                                                                console.clear();
+                                                                                console.log('microphone-volume-meter');
+                                                                                console.log();
+        var root;
+        var stream;
+        var output;
+        var abort;
+        var meter;
+        
+        var btn   = {};
+        
+        
+        //:
+        
+        
+        window.onload   = e=>initdom(document.body);
+        
+        
+        //:
+        
+        
+        
+        
+        async function initdom(rootnode){
+        
+              root                    = rootnode;
+              
+              $(root,'button').onclick        = btn.microphone;
+              
+              var range               = $(root,'#range');
+              range.oninput           = change;
+              range.onmousedown       = e=>e.stopPropagation();
+              range.dispatchEvent(new Event('input'));
+              
+              meter                   = $(root,'meter');
+              
+              output                  = $(root,'#output');
+              output.replaceChildren();
+              
+              
+              function change(e){
+              
+                    var v     = parseFloat(range.value);
+                    
+                    if(gain.gain){
+                          gain.gain.value   = v;
+                    }
+                    
+                    var s   = v.toFixed(1);
+                    $(root,'#gain').textContent    = s;
+                    
+                    var min   = parseFloat(range.min);
+                    var max   = parseFloat(range.max);
+                    var p     = ((v-min)/(max-min))*100;
+                    range.style.setProperty('--val',p+'%');
+                    
+              }//change
+              
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        btn.microphone    = async function(){
+                                                                                log('aquiring microphone');
+              var err;
+              try{
+              
+                    stream        = await navigator.mediaDevices.getUserMedia({
+                          video   : false,
+                          audio   : {
+                          
+                                //full
+                                /*
+                                channelCount                : 1,
+                                sampleRate                  : 48000,
+                                sampleSize                  : 16,
+                                latency                     : 0,
+                                
+                                autoGainControl             : true,
+                                echoCancellation            : true,
+                                noiseSuppression            : true,
+                                
+                                googHighpassFilter          : true,
+                                googTypingNoiseDetection    : true,
+                                googNoiseReduction          : true,
+                                */
+                                
+                                //disable audio processing
+                                
+                                autoGainControl             : false,
+                                channelCount                : 1,
+                                echoCancellation            : true,
+                                latency                     : 0,
+                                noiseSuppression            : true,
+                                //sampleRate                  : 48000,
+                                //sampleSize                  : 16,
+                                
+                                //volume                      : 1.0
+                                
+                          }
+                    });
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                log('error');
+                                                                                log(err.name);
+                                                                                log(err.message);
+                    return;
+              }
+                                                                                log('microphone ok');
+                                                                                
+              var audioctx        = new AudioContext();
+              var source          = audioctx.createMediaStreamSource(stream);
+              
+              var gain            = audioctx.createGain();
+              gain.gain.value     = 2.5;
+              source.connect(gain);
+              
+              var analyser        = audioctx.createAnalyser();
+              analyser.fftSize    = 32;
+              var data            = new Uint8Array(analyser.fftSize);
+              gain.connect(analyser);
+              
+              var dest            = audioctx.createMediaStreamDestination();
+              analyser.connect(dest);
+              
+              var audio         = new Audio();
+              audio.srcObject   = dest.stream;
+              audio.play();
+              
+              update();
+              
+        }//microphone
+        
+        
+        btn.microphone.release    = function(){
+        
+              close();
+              
+        }//release
+        
+        
+  //:
+  
+  
+        function close(){
+        
+              if(stream)stream.getTracks().forEach(track=>track.stop());
+              stream    = null;
+              abort     = true;
+                                                                                console.log('closed');
+        }//onclose
+        
+        
+        function update(){
+        
+              analyser.getByteTimeDomainData(data);
+              
+              var max   = 0;
+              var sum   = 0;
+              
+              for(var amplitude of data){
+              
+                    var a   = Math.abs(amplitude-127);
+                    if(a>max){
+                          max   = a;
+                    }
+                    
+              }//for
+              
+              meter.value   = max/128;
+              
+              if(abort)return;
+              setTimeout(update,50);
+              
+              
+        }//update
+        
+        
+        function log(str){
+        
+              output.append(str,'\n');
+              
+        }//log
+        
+        
+        
+        function $(root,sel){return (!sel&&(sel=root,root=document),root.querySelector(sel))}
+        
+        
+      </script>
+      
+</html>
+
+
+
+
