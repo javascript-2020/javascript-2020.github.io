@@ -108,8 +108,8 @@
             <div id=microphone-volume-meter>
             
                   <div id=btn>
-                        <button id=aquire-microphone>
-                              aquire microphone
+                        <button id=microphone>
+                              open microphone
                         </button>
                   </div>
                   
@@ -311,8 +311,10 @@
         btn.microphone    = async function(){
         
               if(!stream){
+                    $('#microphone').textContent   = 'close microphone';
                     setup_audio();
               }else{
+                    $('#microphone').textContent     = 'open microphone';
                     close_audio();
               }
               
@@ -321,13 +323,20 @@
         
         btn.record    = function(){
         
-              if(!mediaRecorder){
+              if(!dest.stream){
                     log('no audio stream');
                     return;
               }
-              if(mediaRecorder.state!='recording'){
+              
+              if(!mediaRecorder || mediaRecorder.state!='recording'){
+                    $('#record-root').style.borderColor     = 'red';
+                    $('#record-root').style.color           = 'red';
+                    $('#record-root button').textContent    = 'record stop';
                     record.start();
               }else{
+                    $('#record-root').style.borderColor     = 'lightgray';
+                    $('#record-root').style.color           = 'black';
+                    $('#record-root button').textContent    = 'record start';
                     record.stop();
               }
               
@@ -514,15 +523,6 @@
   
         record.start    = function(){
         
-              if(!dest.stream){
-                    log('no audio stream');
-                    return;
-              }
-              
-              $('#record-root').style.borderColor     = 'red';
-              $('#record-root').style.color           = 'red';
-              $('#record-root button').textContent    = 'record stop';
-              
               var start             = Date.now();
               
               var audioStream       = dest.stream;
@@ -563,10 +563,6 @@
         
         record.stop   = function(){
         
-              $('#record-root').style.borderColor     = 'lightgray';
-              $('#record-root').style.color           = 'black';
-              $('#record-root button').textContent    = 'record start';
-              
               mediaRecorder.stop();
               
         }//stop
