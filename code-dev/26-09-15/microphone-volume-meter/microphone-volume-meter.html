@@ -318,6 +318,13 @@
         
         
         btn.record    = function(){
+        
+              if(mediaRecorder.state!='recording'){
+                    record.start();
+              }else{
+                    record.stop();
+              }
+              
         }//record
         
         
@@ -384,7 +391,7 @@
   //:
   
   
-        function setup_audio(){
+        async function setup_audio(){
         
               stream              = await microphone.aquire();
               if(!stream)return;
@@ -498,6 +505,10 @@
                     return;
               }
               
+              $('#record-root').style.borderColor     = 'red';
+              $('#record-root').style.color           = 'red';
+              $('#record-root button').textContent    = 'record stop';
+              
               var start             = Date.now();
               
               var audioStream       = dest.stream;
@@ -538,7 +549,10 @@
         
         record.stop   = function(){
         
-              if(!mediaRecorder)return;
+              $('#record-root').style.borderColor     = 'lightgray';
+              $('#record-root').style.color           = 'black';
+              $('#record-root button').textContent    = 'record start';
+              
               mediaRecorder.stop();
               
         }//stop
