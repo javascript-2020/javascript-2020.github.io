@@ -99,6 +99,10 @@
   button
     {font-size:16px;cursor:pointer;border:none;border-radius:6px}
     
+  input
+    {font-size:16px}
+  input[type=button]
+    {cursor:pointer}
     
             </style>
       </head>
@@ -130,9 +134,10 @@
                               0.0
                         </div>
                         <input id=range type=range min=0 max=5 step=0.1 value=1.0>
-                        <div>
+                        <div id=range-max>
                               5.0
                         </div>
+                        <input value=+ type=button>
                   </div>
                   
                   
@@ -273,8 +278,15 @@
               range.oninput                         = change;
               //range.dispatchEvent(new Event('input'));
               change();
+              $('[value="+"]').onclick                = e=>{
               
-              
+                                                            range.max   = parseFloat(range.max)+0.5;
+                                                            $('#range-max').textContent   = parseFloat(range.max).toFixed(1);
+                                                            change();
+                                                            
+                                                      }//value=+
+                                                      
+                                                      
               audio.obj                             = $('audio');
               
               $('#record-root button').onclick      = btn.record;
@@ -379,13 +391,13 @@
                     update.peak.max   = max;
               }
               
-              var p     = (max/127)*100+'%';
-              var p1    = (update.peak.max/127)*100+'%';
+              var p     = (max/127)*100;
+              var p1    = (update.peak.max/127)*100;
               
-              $('#peak #value').textContent         = max;
-              $('#peak #max').textContent           = update.peak.max;
-              $('#peak .meter-value').style.width   = p;
-              $('#peak .meter-max').style.width     = p1;
+              $('#peak #value').textContent         = p;
+              $('#peak #max').textContent           = p1;
+              $('#peak .meter-value').style.width   = p+'%';
+              $('#peak .meter-max').style.width     = p1+'%';
               
         }//peak
         
@@ -408,11 +420,11 @@
                     update.rms.max    = rms;
               }
               
-              var p     = (rms/128)*100+'%';
-              var p1    = (update.rms.max/128)*100+'%';
+              var p     = (rms/128)*100;
+              var p1    = (update.rms.max/128)*100;
               
-              $('#rms #value').textContent          = rms.toFixed(1);
-              $('#rms #max').textContent            = update.rms.max.toFixed(1);
+              $('#rms #value').textContent          = p.toFixed(1);
+              $('#rms #max').textContent            = p1.toFixed(1);
               $('#rms .meter-value').style.width    = p;
               $('#rms .meter-max').style.width      = p1;
               
