@@ -247,7 +247,9 @@
         
         
         
-        var btn   = {};
+        var btn           = {};
+        var microphone    = {};
+        var record        = {};
         
         
         //:
@@ -319,6 +321,10 @@
         
         btn.record    = function(){
         
+              if(!mediaRecorder){
+                    log('no audio stream');
+                    return;
+              }
               if(mediaRecorder.state!='recording'){
                     record.start();
               }else{
