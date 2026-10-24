@@ -439,12 +439,15 @@
               
                     var devices = await navigator.mediaDevices.enumerateDevices();
                     var audioInputs = devices.filter(device=>device.kind==='audioinput');
-                    console.log("Available mics:", audioInputs);
+                                                                                console.log("Available mics:", audioInputs);
+                    var deviceId    = audioInputs[0].deviceId;
                     
                     stream        = await navigator.mediaDevices.getUserMedia({
                           video   : false,
                           audio   : {
                           
+                                deviceId                    : {exact:deviceId},
+                                
                                 //full
                                 /*
                                 channelCount                : 1,
