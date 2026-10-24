@@ -239,7 +239,6 @@
         var root;
         var range;
         var meter;
-        var audio;
         var output;
         
         
@@ -250,6 +249,7 @@
         var btn           = {};
         var microphone    = {};
         var record        = {};
+        var audio         = {};
         
         
         //:
@@ -275,7 +275,7 @@
               change();
               
               
-              audio                                 = $('audio');
+              audio.obj                             = $('audio');
               
               $('#record-root button').onclick      = btn.record;
               
@@ -408,7 +408,7 @@
   
         async function setup_audio(){
         
-              stream              = await microphone.aquire();
+              stream              = await microphone.open();
               if(!stream)return;
               
               var source          = audioctx.createMediaStreamSource(stream);
@@ -422,8 +422,7 @@
               gain.connect(analyser);
               analyser.connect(dest);
               
-              audio.srcObject   = dest.stream;
-              audio.play();
+              audio.start(dest.stream);
               
               update();
               
@@ -432,10 +431,7 @@
         
         function close_audio(){
         
-              audio.pause();
-              audio.currentTime   = 0;
-              audio.srcObject     = null;
-              
+              audio.stop();
               abort   = true;
               microphone.close();
               record.stop();
@@ -446,8 +442,8 @@
   //:
   
   
-        microphone.aquire   = async function(){
-                                                                                log('aquiring microphone');
+        microphone.open   = async function(){
+                                                                                log('opening microphone');
               var err;
               try{
               
@@ -509,7 +505,7 @@
                                                                                 log('microphone ok');
               return stream;
               
-        }//aquire
+        }//open
         
         
         microphone.close    = function(){
@@ -570,6 +566,25 @@
         
               if(!mediaRecorder)return;
               mediaRecorder.stop();
+              
+        }//stop
+        
+        
+  //:
+  
+  
+        audio.start   = function(stream){
+        
+              audio.obj.srcObject   = stream;
+              audio.obj.play();
+              
+        }//start
+        
+        audio.stop    = function(){
+        
+              audio.obj.pause();
+              audio.obj.currentTime   = 0;
+              audio.obj.srcObject     = null;
               
         }//stop
         
