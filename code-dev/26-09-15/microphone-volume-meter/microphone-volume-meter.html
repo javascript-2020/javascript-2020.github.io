@@ -368,37 +368,35 @@
               
               for(var amplitude of data){
               
-                    var a   = Math.abs(amplitude-127);
+                    var a   = Math.abs(amplitude-128);
                     if(a>max){
                           max   = a;
                     }
                     
               }//for
               
-              $('#peak .meter-value').style.width   = '50%';
-              //meter.value   = max/128;
+              var p   = (max/127)*100+'%';
+              $('#peak .meter-value').style.width   = p;
               
         }//peak
         
         
         update.rms    = function(){
         
-              var data    = new Uint8Array(analyser.frequencyBinCount);
-              console.log(data.length);
+              var data    = new Uint8Array(analyser.fftSize);
               analyser.getByteTimeDomainData(data);
               
-              var sumSquares    = 0;
+              var sum   = 0;
               for(var i=0;i<data.length;i++){
               
-                    var normalized    = (data[i]-128)/128;
-                    sumSquares       += normalized*normalized;
+                    var center    = data[i]-128;
+                    sum          += center*center;
                     
               }//for
               
-              var rms   = Math.sqrt(sumSquares/data.length);
-                                                                                // Scale RMS dynamically to fill the meter nicely
-              var pct   = Math.min(100,Math.round(rms*400));
-              $('#rms .meter-value').style.width    = `${pct}%`;
+              var rms   = Math.sqrt(sum/data.length);
+              var p     = (rms/128)*100+'%';
+              $('#rms .meter-value').style.width    = p;
               
         }//rms
         
