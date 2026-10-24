@@ -434,6 +434,7 @@
         
         update.record   = function(){
         
+              if(!mediaRecorder || mediaRecorder.state=='inactive')return;
               var now   = Date.now();
               var dur   = duration(now-record_start);
               $('#record-root #time').textContent   = dur;
@@ -651,7 +652,7 @@
               var min     = String(now.getMinutes()).padStart(2,'0');
               var sec     = String(now.getSeconds()).padStart(2,'0');
               
-              var ts    = `${year}-${month}-${day}---${hours}-${minutes}-${seconds}`;
+              var ts    = `${year}-${month}-${day}---${hour}-${min}-${sec}`;
               return ts;
               
         }//ts
