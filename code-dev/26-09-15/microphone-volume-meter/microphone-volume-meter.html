@@ -437,6 +437,10 @@
               var err;
               try{
               
+                    var devices = await navigator.mediaDevices.enumerateDevices();
+                    var audioInputs = devices.filter(device=>device.kind==='audioinput');
+                    console.log("Available mics:", audioInputs);
+                    
                     stream        = await navigator.mediaDevices.getUserMedia({
                           video   : false,
                           audio   : {
