@@ -99,6 +99,18 @@
     {width:20px;height:20px}
     
     
+  #device-list-root
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
+  #device-list-hdr
+    {display:flex;gap:10px;align-items:center}
+  #device-list
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:5px;min-height:100px}
+  #device-list #empty
+    {text-align:center;color:lightgray;font-weight:bold;margin:20px}
+  #device-list .device
+    {display:flex;gap:10px;align-items:center}
+    
+    
   #gain-root
     {text-align:center}
     
@@ -187,7 +199,7 @@
     {font-size:16px;cursor:pointer;border:none;border-radius:6px}
     
   input
-    {font-size:16px}
+    {font-size:16px;padding:5px 10px}
   input[type=button]
     {cursor:pointer}
     
@@ -224,6 +236,26 @@
                   </div>
                   
                   <div id=hdr>
+                  </div>
+                  
+                  <div id=device-list-root>
+                        <div id=device-list-hdr>
+                              <label>
+                                    device list
+                              </label>
+                              <input value=list type=button>
+                        </div>
+                        <div id=device-list>
+                              <div id=empty>
+                                    [ Empty ]
+                              </div>
+                              <div class=device style='display:none'>
+                                    <input type=checkbox>
+                                    <div class=label></div>
+                                    <div class=kind></div>
+                                    <div class=deviceId></div>
+                              </div>
+                        </div>
                   </div>
                   
                   <div id=gain-root>
@@ -376,16 +408,24 @@
         var record        = {};
         record.list       = [];
         var audio         = {};
+        var device        = {};
+        device.ui         = {};
         
         
-        //:
-        
-        
+  //:
+  
+  
         async function initdom(rootnode){
         
               root                                  = rootnode;
               
               $(root,'button').onclick              = btn.microphone;
+              
+              device.ui.list                        = $('#device-list');
+              device.ui.item                        = $(device.ui.list,'.device');
+              device.ui.item.remove();
+              device.ui.item.style.display          = '';
+              device.ui.empty                       = $(device.ui.list,'#empty');
               
               range                                 = $(root,'#range');
               range.oninput                         = change;
@@ -633,8 +673,9 @@
                                 autoGainControl             : false,
                                 channelCount                : 1,
                                 echoCancellation            : true,
-                                latency                     : 0,
+                                latency                     : {ideal:0},
                                 noiseSuppression            : true,
+                                
                                 //sampleRate                  : 48000,
                                 //sampleSize                  : 16,
                                 
@@ -782,6 +823,43 @@
               //audioElement.load();
               
         }//stop
+        
+        
+  //:
+  
+  
+        device.list   = [];
+        
+        device.enumerate    = async function(){
+        
+              var devices       = await navigator.mediaDevices.enumerateDevices();
+              device.list       = devices.filter(device=>device.kind==='audioinput');
+              device.list.forEach(device=>{
+              
+                    var nitem                           = device.ui.item.cloneNode(true);
+                    $(nitem,'.label').textContent       = device.label;
+                    $(nitem,'.kind').textContent        = deivce.kind;
+                    $(nitem,'.device-id').textContent   = device.deviceId;
+              });
+              
+              var deviceId      = device.list[0].deviceId;
+                                                                                console.log('Available mics :',device.list);
+                                                                                console.log(deviceId);
+                                                                                
+        }//enumerate
+        device.read   = async function(){
+        
+              if(device.list.length==0){
+                    await device.enumerate();
+              }
+              
+              var o           = device.list.find(o=>$(o.node,'[type=checkbox]').checked);
+              if(!o)return;
+              
+              var deviceId    = o.device.deviceId;
+              return deviceId;
+              
+        }//read
         
         
   //:
