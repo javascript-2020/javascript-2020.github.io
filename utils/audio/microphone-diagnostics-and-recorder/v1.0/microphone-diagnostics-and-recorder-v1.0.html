@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html>
+      <head>
+            <style>
+            
+  html
+    {font-family:arial}
+  body
+    {margin:20px;display:flex;justify-content:center}
+    
+  #microphone-volume-meter
+    {background-color:whitesmoke;border:1px solid blue;box-sizing:border-box;padding:20px;border-radius:10px;margin-top:30px;
+      display:flex;flex-direction:column;gap:10px;max-width:1000px;flex:1}
+      
+  #btn
+    {text-align:center;margin:0 0 10px}
+  #microphone
+    {background:hsl(217,91%,90%);color:gray;font-weight:bold;padding:10px 20px}
+  #microphone:hover
+    {background:lightyellow}
+    
+  #hdr
+    {margin:0 0 10px}
+  label:has(#audio)
+    {border:1px solid gray;border-radius:5px;padding:5px 10px;display:inline-flex;align-items:center;gap:10px;cursor:pointer}
+  [type=checkbox]
+    {width:20px;height:20px}
+    
+    
+  #gain-root
+    {text-align:center}
+    
+  #range-root
+    {display:flex;gap:10px;align-items:center}
+  #range
+    {flex:1}
+    
+    
+  input[type=range]
+    {-webkit-appearance:none;appearance:none;width:100%;margin:0;cursor:pointer;
+      --h:18px;--col1:hsl(217,91%,90%);--col2:lightgray;height:var(--h);
+    }
+  input[type=range]::-webkit-slider-runnable-track
+    {height:var(--h);border-radius:6px;
+      background: linear-gradient(to right,var(--col1) 0%, var(--col1) var(--val,0%),
+        var(--col2) var(--val,0%), var(--col2) 100%)
+        
+    }
+  input[type=range]::-moz-range-track
+    {height:var(--h);border-radius:6px;
+      background: linear-gradient(to right,var(--col1) 0%, var(--col1) var(--val,0%),
+        var(--col2) var(--val,0%), var(--col2) 100%)
+    }
+  input[type=range]::-webkit-slider-thumb
+    {-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:hsl(217,91%,60%);
+      margin-top:-1px}
+  input[type=range]::-moz-range-thumb
+    {width:22px;height:22px;border:none;border-radius:50%;background:hsl(217,91%,60%)}
+    
+    
+  #peak
+    {margin:25px 0 0}
+    
+  .meter-root
+    {display:flex;flex-direction:column;gap:10px;
+      border:1px solid lightgray;padding:10px
+    }
+  .meter-hdr
+    {display:flex}
+  .meter-hdr .name
+    {font-weight:bold}
+  .field
+    {display:flex;gap:10px}
+  .field label
+    {width:100px;text-align:right}
+  .field .value
+    {width:60px;font-weight:bold}
+    
+  .meter
+    {height:25px;width:100%;border:1px solid lightgray;border-radius:10px;position:relative;overflow:hidden}
+  .meter-value
+    {background:hsl(120,100%,90%);position:absolute;left:0;top:0;bottom:0;
+      width:0%}
+  .meter-max
+    {position:absolute;left:0;top:0;bottom:0;border-right:2px solid orange;box-sizing:border-box;
+      width:0%}
+      
+  #main
+    {width:100%;border:1px solid lightgray;margin-top:20px}
+    
+  #record-root
+    {border:1px solid lightgray;padding:10px;display:flex;gap:10px;align-items:center}
+  #record-root button
+    {background:hsl(0,100%,85%);padding:5px 10px}
+  #record-root button:hover
+    {background:hsl(0,100%,50%)}
+    
+  .recording
+    {display:flex;gap:10px;align-items:center;border:1px solid lightblue;padding:5px;margin:5px 0}
+  .recording .rem
+    {cursor:pointer;width:20px;height:20px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAj1QTFRFAAAA4Cco6hkY7xQU8RgZ8RgY8BgZ8hgY7xIU6BcW3Sgt2To67RMV9AkJ+QQE/AIC/AIC+AQF9AkK7RET4DMy2Tg38RAP+QQE/AEB/QAB/gAA/QEA+wEB+QQE8Q8P3TQz7BIT+QQE/QEB/QAA+QQD6xMT4CUl9QkJ/AEC9AgI5CMj7BcW+QQE+AUE9wcH+QQE+QQE9wcH+AQF+gME7BYW6REQ+wIB+QUE6RYW0To+6hUV9gcG9gUF6hUR1js66RQX+QQE8g0O5QsL9wgI3kA+////6BYU9gYG9wUF6RMUylBT9QkK/QEC8g0N5QwK+gQE6RER6BIR9gYG9gYG6BQT6RUV+AQF8g0N9QUF6BAO5RQW5RUX5xYY9QcH8w0N5QsK9gYF6hAP5xUX9AcI+wIC/gAB9gYF5RMU5hgb9gcH9gYF5BUV5hYX9wQF6BIT6BMT9QYG9gUE6BER4RQV5BQT6BMS+QQE6RMR5REU9AYH9QYF6RIQ6RQV+gQE5QsL9wcH2zo74xIT8wYG/AIB9wYF6hMR0jg59QcH8Q4O6hAR/AIC+QQF7BUXyzc35xMS9AYF9gYG6RUU3Dk36RUW+QQE8Q8O7BgX+QQD9AcH+QQE+gMD6xYT3Sgm8wkI9QgI4yQk7BIT+AQE+gME7BIV3TQz+AQE+wEC/AEA8A8Q3DQz1zw56xMU8goJ+QQE+wIC+wMC+wMC8wkI6hMU2Ds43Sst6RcX6xMU7xcW7xcV8BcV8BcW7xcY6hUV6BkX3ignt1x/WQAAAL90Uk5TABE5UlhYWFhSORIIYsjy/P3yymQJCYr5///////6jwpo+////GwX0P/UGkb36cTr7sXq+Utk/+1NCErf5FEJSuhpassN/0Xh5EwIwf9uae5PSOLlTE3sbeJKQ0ZI4W1p40tI4f//5EVD4+VGQuNLSOHjS0VFSPBRSuTkS0zsacsMSuP/40wLyG5k/+xPCk/j41EMT+xqRvfH7flLF9DUGmf6/G0J+f//jwoHYMbx/P38yWQJEThSV1dXV1dTOhK+MhyLAAABr0lEQVR4nK3SQUgUURgH8P9/l+jNusIiLB5EEEXFJFmM1csiuHST3IMHQSox2IMEYYIkBXlZFjwpBJ3UwgSriwf1qOvBLhFrGiS4GBQRFHmIZZ1FYsf35o3L7Ahe9Du9md983/vem4+4MHglTBUW4IMFn1weu7nK1nKOpT74W+ZwpTq1vp9xg7Sie0sDhSBzDreQecvbE6v5VXM7jwKmkPvnVQmrlvxtWYEQP2mO8idQr7Y7DBTRqBYHQKktozl+UALa5P5kjs38j2vcATq5qrk/W1IlCkBQJv4DQtwGRPSdi0WXOmmYf4BabspORWxR8/CGZIge1QLsLjKml/vWxW1+k09NXIH/fDaYUA2j9ddn+468PMB9u/gNvvW5WbeW4Begg7tAZC9X9GbfZRa4JQ/2EejmvOtgzxckJ/kBMfLVA26hly/krY1Nap7mLPBY3eXyD594pBZpYLTmoeaXTAnTGKrjNGFC3IyEZ0wYT5jUPMdnfu8PNQppjjjj8JpPUeFGUUzx3tm0LI3PcMLtRurkOgfLo/i+cth4/w15pzyKMtZsp/1GLePOh7gwLsenPLh5H68t6T4AAAAASUVORK5CYII=);
+    }
+    
+  #output
+    {flex:1;min-height:100px;border:1px solid lightgray;padding:5px;overflow:auto;white-space:pre;margin-top:20px}
+    
+    
+  .spc
+    {flex:1}
+    
+  button
+    {font-size:16px;cursor:pointer;border:none;border-radius:6px}
+    
+  input
+    {font-size:16px}
+  input[type=button]
+    {cursor:pointer}
+    
+            </style>
+      </head>
+      
+      <body>
+      
+            <div id=microphone-volume-meter>
+            
+                  <div id=btn>
+                        <button id=microphone>
+                              open microphone
+                        </button>
+                  </div>
+                  
+                  <div id=hdr>
+                  </div>
+                  
+                  <div id=gain-root>
+                        <span>
+                              microphone gain
+                        </span>
+                        <span id=gain>
+                              2.5
+                        </span>
+                  </div>
+                  
+                  <div id="range-root">
+                        <div>
+                              0.0
+                        </div>
+                        <input id=range type=range min=0 max=5 step=0.1 value=1.0>
+                        <div id=range-max>
+                              5.0
+                        </div>
+                        <input value=+ type=button>
+                  </div>
+                  
+                  
+                  <div id=peak class=meter-root>
+                        <div class=meter-hdr>
+                              <div class=name>
+                                    peak
+                              </div>
+                              <div class=field>
+                                    <label>
+                                          value
+                                    </label>
+                                    <div id=value class=value>
+                                          0.0
+                                    </div>
+                              </div>
+                              <div class=field>
+                                    <label>
+                                          max
+                                    </label>
+                                    <div id=max class=value>
+                                          0.0
+                                    </div>
+                              </div>
+                        </div>
+                        <div class=meter>
+                              <div class=meter-value></div>
+                              <div class=meter-max></div>
+                        </div>
+                  </div>
+                  
+                  
+                  <div id=rms class=meter-root>
+                        <div id=rms-root-hdr class=meter-hdr>
+                              <div class=name>
+                                    rms
+                              </div>
+                              <div class=field>
+                                    <label>
+                                          value
+                                    </label>
+                                    <div id=value class=value>
+                                          0.0
+                                    </div>
+                              </div>
+                              <div class=field>
+                                    <label>
+                                          max
+                                    </label>
+                                    <div id=max class=value>
+                                          0.0
+                                    </div>
+                              </div>
+                        </div>
+                        <div class=meter>
+                              <div class=meter-value></div>
+                              <div class=meter-max></div>
+                        </div>
+                  </div>
+                  
+                  
+                  <audio id=main controls></audio>
+                  
+                  
+                  <div id=record-root>
+                        <button>
+                              record start
+                        </button>
+                        <div id=time>
+                              00:00:00
+                        </div>
+                        <div class=recording style='display:none'>
+                              <input type=checkbox>
+                              <div class=ts>
+                              </div>
+                              <div class=size>
+                              </div>
+                              <div class=spc></div>
+                              <audio controls></audio>
+                              <img class=rem>
+                        </div>
+                  </div>
+                  
+                  
+                  <div id=output>
+                  </div>
+                  
+            </div>
+            
+      </body>
+      
+      <script>
+      
+      
+      
+/*
+
+//microphone-volume-meter:d
+
+31-03-24
+24-10-26
+
+*/
+                                                                                console.clear();
+                                                                                console.log('microphone-volume-meter');
+                                                                                console.log();
+        var stream;
+        var abort;
+        
+        var audioctx        = new AudioContext();
+        var gain            = audioctx.createGain();
+        var analyser        = audioctx.createAnalyser();
+        var dest            = audioctx.createMediaStreamDestination();
+        
+        var mediaRecorder;
+        
+        
+        var root;
+        var range;
+        var meter;
+        var output;
+        
+        var record_start;
+        
+        
+        
+        
+        var btn           = {};
+        var microphone    = {};
+        var record        = {};
+        record.list       = [];
+        var audio         = {};
+        
+        
+        //:
+        
+        
+        window.onload   = e=>initdom(document.body);
+        
+        
+        //:
+        
+        
+        
+        
+        async function initdom(rootnode){
+        
+              root                                  = rootnode;
+              
+              $(root,'button').onclick              = btn.microphone;
+              
+              range                                 = $(root,'#range');
+              range.oninput                         = change;
+              //range.dispatchEvent(new Event('input'));
+              change();
+              $('[value="+"]').onclick                = e=>{
+              
+                                                            range.max   = parseFloat(range.max)+0.5;
+                                                            $('#range-max').textContent   = parseFloat(range.max).toFixed(1);
+                                                            change();
+                                                            
+                                                      }//value=+
+                                                      
+                                                      
+              audio.obj                             = $('audio');
+              
+              
+              $('#record-root button').onclick      = btn.record;
+              record.log                            = $('#record-root .recording');
+              record.log.remove();
+              record.log.style.display              = '';
+              
+              
+              output                                = $(root,'#output');
+              output.replaceChildren();
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        function change(e){
+        
+              var v     = parseFloat(range.value);
+              
+              if(gain.gain){
+                    gain.gain.value   = v;
+              }
+              
+              var s   = v.toFixed(1);
+              $(root,'#gain').textContent    = s;
+              
+              var min   = parseFloat(range.min);
+              var max   = parseFloat(range.max);
+              var p     = ((v-min)/(max-min))*100;
+              range.style.setProperty('--val',p+'%');
+              
+        }//change
+        
+        
+        btn.microphone    = async function(){
+        
+              if(!stream){
+                    $('#microphone').textContent   = 'close microphone';
+                    setup_audio();
+              }else{
+                    $('#microphone').textContent     = 'open microphone';
+                    close_audio();
+              }
+              
+        }//microphone
+        
+        
+        btn.record    = function(){
+        
+              if(!dest.stream){
+                    log('no audio stream');
+                    return;
+              }
+              
+              if(!mediaRecorder || mediaRecorder.state!='recording'){
+                    record.start();
+              }else{
+                    record.stop();
+              }
+              
+        }//record
+        
+        
+  //:
+  
+  
+        function update(){
+        
+              if(abort)return;
+              
+              update.peak();
+              update.rms();
+              update.record();
+              
+              requestAnimationFrame(update);
+              
+        }//update
+        
+        
+        update.peak   = function(){
+        
+              var data    = new Uint8Array(analyser.fftSize);
+              analyser.getByteTimeDomainData(data);
+              
+              var max   = 0;
+              var sum   = 0;
+              
+              for(var amplitude of data){
+              
+                    var a   = Math.abs(amplitude-128);
+                    if(a>max){
+                          max   = a;
+                    }
+                    
+              }//for
+              
+              if(max>update.peak.max){
+                    update.peak.max   = max;
+              }
+              
+              var p     = (max/127)*100;
+              var p1    = (update.peak.max/127)*100;
+              
+              $('#peak #value').textContent         = p.toFixed(1)+'%'
+              $('#peak #max').textContent           = p1.toFixed(1)+'%';
+              $('#peak .meter-value').style.width   = p+'%';
+              $('#peak .meter-max').style.width     = p1+'%';
+              
+        }//peak
+        
+        
+        update.rms    = function(){
+        
+              var data    = new Uint8Array(analyser.fftSize);
+              analyser.getByteTimeDomainData(data);
+              
+              var sum   = 0;
+              for(var i=0;i<data.length;i++){
+              
+                    var center    = data[i]-128;
+                    sum          += center*center;
+                    
+              }//for
+              
+              var rms   = Math.sqrt(sum/data.length);
+              if(rms>update.rms.max){
+                    update.rms.max    = rms;
+              }
+              
+              var p     = (rms/128)*100;
+              var p1    = (update.rms.max/128)*100;
+              
+              $('#rms #value').textContent          = p.toFixed(1)+'%'
+              $('#rms #max').textContent            = p1.toFixed(1)+'%';
+              $('#rms .meter-value').style.width    = p;
+              $('#rms .meter-max').style.width      = p1;
+              
+        }//rms
+        
+        
+        update.record   = function(){
+        
+              if(!mediaRecorder || mediaRecorder.state=='inactive')return;
+              var now   = Date.now();
+              var dur   = duration(now-record_start);
+              $('#record-root #time').textContent   = dur;
+              
+        }//record
+        
+        
+  //:
+  
+  
+        async function setup_audio(){
+        
+              stream              = await microphone.open();
+              if(!stream)return;
+              
+              var source          = audioctx.createMediaStreamSource(stream);
+              
+              var v               = parseFloat(range.value);
+              gain.gain.value     = v;
+              
+              analyser.fftSize    = 2048;
+              
+              source.connect(gain);
+              gain.connect(analyser);
+              analyser.connect(dest);
+              
+              audio.start(dest.stream);
+              
+              abort             = false;
+              update.peak.max   = 0;
+              update.rms.max    = 0;
+              update();
+              
+        }//setup_audio
+        
+        
+        function close_audio(){
+        
+              audio.stop();
+              abort   = true;
+              microphone.close();
+              record.stop();
+              
+        }//close
+        
+        
+  //:
+  
+  
+        microphone.open   = async function(){
+                                                                                log('opening microphone');
+              var err;
+              try{
+              
+                    var devices       = await navigator.mediaDevices.enumerateDevices();
+                    var audioInputs   = devices.filter(device=>device.kind==='audioinput');
+                    var deviceId      = audioInputs[0].deviceId;
+                                                                                console.log('Available mics :',audioInputs);
+                                                                                console.log(deviceId);
+                    stream        = await navigator.mediaDevices.getUserMedia({
+                          video   : false,
+                          audio   : {
+                          
+                                deviceId                    : {exact:deviceId},
+                                
+                                //full
+                                /*
+                                channelCount                : 1,
+                                sampleRate                  : 48000,
+                                sampleSize                  : 16,
+                                latency                     : 0,
+                                
+                                autoGainControl             : true,
+                                echoCancellation            : true,
+                                noiseSuppression            : true,
+                                
+                                googHighpassFilter          : true,
+                                googTypingNoiseDetection    : true,
+                                googNoiseReduction          : true,
+                                */
+                                
+                                //disable audio processing
+                                
+                                autoGainControl             : false,
+                                channelCount                : 1,
+                                echoCancellation            : true,
+                                latency                     : 0,
+                                noiseSuppression            : true,
+                                //sampleRate                  : 48000,
+                                //sampleSize                  : 16,
+                                
+                                //volume                      : 1.0
+                                
+                          }
+                    });
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.error(err);
+                                                                                log('error');
+                                                                                log(err.stack);
+                    return;
+              }
+                                                                                log('microphone open');
+              return stream;
+              
+        }//open
+        
+        
+        microphone.close    = function(){
+        
+              if(stream){
+                    stream.getTracks().forEach(track=>track.stop());
+              }
+              stream    = null;
+              abort     = true;
+                                                                                log('microphone closed');
+        }//close
+        
+        
+  //:
+  
+  
+        record.start    = function(){
+        
+              $('#record-root').style.borderColor     = 'red';
+              $('#record-root').style.color           = 'red';
+              $('#record-root button').textContent    = 'record stop';
+              
+              record_start          = Date.now();
+              
+              var audioStream       = dest.stream;
+              mediaRecorder         = new MediaRecorder(audioStream,{mimeType:'audio/webm'});
+              var data              = [];
+              
+              mediaRecorder.start();
+              
+              
+              mediaRecorder.ondataavailable   = e=>{
+              
+                    if(e.data.size>0){
+                          data.push(e.data);
+                    }
+                    
+              }//ondataavailable
+              
+              
+              mediaRecorder.onstop    = ()=>{
+              
+                    var end                               = Date.now();
+                    
+                    var blob                              = new Blob(data,{type:'audio/webm'});
+                    var url                               = URL.createObjectURL(blob);
+                    
+                    var node                              = record.log.cloneNode(true);
+                    
+                    var t                                 = ts();
+                    var dur                               = duration(end-record_start);
+                    var str                               = t+'---'+dur+'.webm';
+                    $(node,'[type=checkbox]').onclick     = chk;
+                    $(node,'.ts').textContent             = str;
+                    $(node,'.size').textContent           = hs(blob.size);
+                    $(node,'audio').src                   = url;
+                    $(node,'.rem').onclick                = rem;
+                    
+                    output.append(node);
+                    
+                    var o   = {blob,url,node};
+                    record.list.push(o);
+                    
+                    
+                    function chk(){
+                    
+                          record.list.forEach(o=>$(o.node,'[type=checkbox]').checked=false);
+                          $(node,'[type=checkbox]').checked   = true;
+                          
+                    }//chk
+                    
+                    
+                    function rem(){
+                    
+                          var i   = record.list.findIndex(v=>v===o);
+                          record.list.splice(i,1);
+                          node.remove();
+                          
+                    }//rem
+                    
+              }//onstop
+              
+        }//start
+        
+        
+        record.stop   = function(){
+        
+              if(!mediaRecorder)return;
+              
+              $('#record-root').style.borderColor     = 'lightgray';
+              $('#record-root').style.color           = 'black';
+              $('#record-root button').textContent    = 'record start';
+              $('#record-root #time').textContent     = '00:00:00';
+              
+              mediaRecorder.stop();
+              
+        }//stop
+        
+        
+  //:
+  
+  
+        audio.start   = function(stream){
+        
+              audio.obj.srcObject   = stream;
+              audio.obj.play();
+              
+        }//start
+        
+        audio.stop    = function(){
+        
+              audio.obj.pause();
+              audio.obj.currentTime   = 0;
+              audio.obj.srcObject     = null;
+              
+              
+              
+              //audioElement.removeAttribute('src');
+                                                                                //  Forces the audio element to flush
+                                                                                //  its pipeline and stop network activity
+              //audioElement.load();
+              
+        }//stop
+        
+        
+  //:
+  
+  
+        function $(root,sel){return (!sel&&(sel=root,root=document),root.querySelector(sel))}
+        
+        
+        function log(str){
+        
+              var div           = document.createElement('div');
+              div.textContent   = str;
+              output.append(div);
+              
+        }//log
+        
+        
+        function ts(){
+        
+              var now     = new Date();
+              var year    = now.getFullYear();
+              var month   = String(now.getMonth()+1).padStart(2,'0');
+              var day     = String(now.getDate()).padStart(2,'0');
+              var hour    = String(now.getHours()).padStart(2,'0');
+              var min     = String(now.getMinutes()).padStart(2,'0');
+              var sec     = String(now.getSeconds()).padStart(2,'0');
+              
+              var ts    = `${year}-${month}-${day}---${hour}-${min}-${sec}`;
+              return ts;
+              
+        }//ts
+        
+        
+        function duration(ms){
+        
+              var total   = Math.floor(ms/1000);
+              var hour    = String(Math.floor(total/3600)).padStart(2,'0');
+              var min     = String(Math.floor((total%3600)/60)).padStart(2,'0');
+              var sec     = String(total%60).padStart(2,'0');
+              
+              var dur     = `${hour}:${min}:${sec}`;
+              return dur;
+              
+        }//duration
+        
+        
+        
+        function hs(size){
+        
+              size    = Number(size);
+              var i   = size==0 ? 0 : Math.floor(Math.log(size)/Math.log(1000));
+              var s   = ((size/Math.pow(1000,i)).toFixed(2))*1+' '+['B','kB','MB','GB','TB'][i];
+              return s;
+              
+        }//hs
+        
+        
+        
+        
+        
+  //:
+  //:
+  
+  
+/*
+
+let audioCtx;
+let sourceNode;
+let gainNode;
+let analyser;
+let dest;
+let mediaRecorder;
+let recordedChunks = [];
+
+async function initAudio() {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+  sourceNode = audioCtx.createMediaStreamSource(stream);
+  
+  gainNode = audioCtx.createGain();
+  gainNode.gain.value = 1.0;
+  
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 2048;
+  
+  dest = audioCtx.createMediaStreamDestination();
+  
+  // Audio Graph Routing (Fan-out)
+  sourceNode.connect(gainNode);
+  gainNode.connect(analyser);
+  gainNode.connect(dest);
+  
+  // Pipe destination stream to an HTML audio object for live playback
+  const liveAudio = document.createElement('audio');
+  liveAudio.srcObject = dest.stream;
+  liveAudio.autoplay = true;
+  // liveAudio.muted = true; // Uncomment if you get acoustic feedback/echoes
+  document.body.appendChild(liveAudio);
+  
+  // Recorder setup
+  mediaRecorder = new MediaRecorder(dest.stream, { mimeType: 'audio/webm' });
+  
+  mediaRecorder.ondataavailable = (e) => {
+    if (e.data.size > 0) {
+      recordedChunks.push(e.data);
+    }
+  };
+  
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+    const url = URL.createObjectURL(blob);
+    
+    const playbackAudio = new Audio(url);
+    playbackAudio.controls = true;
+    document.body.appendChild(playbackAudio);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'mic-recording.webm';
+    link.textContent = 'Download Recording';
+    document.body.appendChild(link);
+  };
+}
+
+function startRecording() {
+  recordedChunks = [];
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  mediaRecorder.start();
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+  }
+}
+
+*/
+
+
+
+
+
+
+      </script>
+      
+</html>
+
+
+
+
