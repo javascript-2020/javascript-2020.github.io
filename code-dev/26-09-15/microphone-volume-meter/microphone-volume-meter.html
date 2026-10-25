@@ -85,7 +85,7 @@
     {position:absolute;left:0;top:0;bottom:0;border-right:2px solid orange;box-sizing:border-box;
       width:0%}
       
-  audio
+  #main
     {width:100%;border:1px solid lightgray;margin-top:20px}
     
   #record-root
@@ -96,7 +96,7 @@
     {background:hsl(0,100%,50%)}
     
   .recording
-    {display:flex;gap:10px}
+    {display:flex;gap:10px;align-items:center}
     
   #output
     {flex:1;min-height:100px;border:1px solid lightgray;padding:5px;overflow:auto;white-space:pre;margin-top:20px}
@@ -208,7 +208,7 @@
                   </div>
                   
                   
-                  <audio controls></audio>
+                  <audio id=main controls></audio>
                   
                   
                   <div id=record-root>
@@ -621,7 +621,7 @@
                     
                     var t                             = ts();
                     var dur                           = duration(end-record_start);
-                    var str                           = t+'---('+dur+').webm';
+                    var str                           = t+'---'+dur+'.webm';
                     $(node,'.ts').textContent         = str;
                     $(node,'.size').textContent       = hs(blob.size);
                     $(node,'audio').src               = url;
