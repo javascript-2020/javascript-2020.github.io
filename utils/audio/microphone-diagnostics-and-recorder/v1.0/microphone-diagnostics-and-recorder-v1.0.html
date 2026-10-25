@@ -569,7 +569,7 @@
   
   
         microphone.open   = async function(){
-                                                                                log('opening microphone');
+                                                                                output.log('opening microphone');
               var err;
               try{
               
@@ -623,11 +623,11 @@
               }//catch
               if(err){
                                                                                 console.error(err);
-                                                                                log('error');
-                                                                                log(err.stack);
+                                                                                output.log('error');
+                                                                                output.log(err.stack);
                     return;
               }
-                                                                                log('microphone open');
+                                                                                output.log('microphone open');
               return stream;
               
         }//open
@@ -640,7 +640,7 @@
               }
               stream    = null;
               abort     = true;
-                                                                                log('microphone closed');
+                                                                                output.log('microphone closed');
         }//close
         
         
@@ -762,7 +762,7 @@
         function $(root,sel){return (!sel&&(sel=root,root=document),root.querySelector(sel))}
         
         
-        function log(str){
+        output.log    = function(str){
         
               var div           = document.createElement('div');
               div.textContent   = str;
