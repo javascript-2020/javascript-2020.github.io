@@ -114,7 +114,7 @@
     {display:table-cell;padding:8px 12px;white-space:nowrap}
   .table-cell:last-child
     {width:100%}
-  .table-cell input[type=checkbox]
+  .table-cell[type=checkbox]
     {vertical-align:middle;margin:0}
   .ellipsis
     {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:1px}
@@ -695,7 +695,7 @@
               var o   = await device.read();
                                                                                 console.log(o);
               if(o){
-                                                                                log('device',o.label,o.deviceId);
+                                                                                log('device','label:',o.label,'deviceId:',o.deviceId);
                     audio.deviceId    = {exact:o.deviceId};
               }else{
                                                                                 log('default device');
@@ -873,7 +873,7 @@
               }
               
               var list       = devices.filter(device=>device.kind==='audioinput');
-                                                                                console.log('Available mics :',device.list);
+                                                                                console.log('Available mics :',list);
               device.ui.list.replaceChildren();
               if(list.length==0){
                     device.ui.list.append(device.ui.empty);
