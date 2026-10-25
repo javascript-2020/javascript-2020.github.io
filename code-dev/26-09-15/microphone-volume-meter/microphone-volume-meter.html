@@ -94,6 +94,8 @@
     {background:hsl(0,100%,85%);padding:5px 10px}
   #record-root button:hover
     {background:hsl(0,100%,50%)}
+  #record-root .recording
+    {display:flex;gap:10px}
     
   #output
     {flex:1;min-height:100px;border:1px solid lightgray;padding:5px;overflow:auto;white-space:pre;margin-top:20px}
@@ -211,6 +213,13 @@
                         <div id=time>
                               00:00:00
                         </div>
+                        <div class=recording style='display:none'>
+                              <input type=checkbox>
+                              <div class=ts>
+                              </div>
+                              <audio controls></audio>
+                              <img class=rem>
+                        </div>
                   </div>
                   
                   
@@ -295,7 +304,12 @@
                                                       
               audio.obj                             = $('audio');
               
+              
               $('#record-root button').onclick      = btn.record;
+              record.log                            = $('#record-root .recording');
+              record.log.remove();
+              record.log.style.display              = '';
+              
               
               output                                = $(root,'#output');
               output.replaceChildren();
@@ -347,14 +361,8 @@
               }
               
               if(!mediaRecorder || mediaRecorder.state!='recording'){
-                    $('#record-root').style.borderColor     = 'red';
-                    $('#record-root').style.color           = 'red';
-                    $('#record-root button').textContent    = 'record stop';
                     record.start();
               }else{
-                    $('#record-root').style.borderColor     = 'lightgray';
-                    $('#record-root').style.color           = 'black';
-                    $('#record-root button').textContent    = 'record start';
                     record.stop();
               }
               
@@ -401,8 +409,8 @@
               var p     = (max/127)*100;
               var p1    = (update.peak.max/127)*100;
               
-              $('#peak #value').textContent         = p.toFixed(1);
-              $('#peak #max').textContent           = p1.toFixed(1);
+              $('#peak #value').textContent         = p.toFixed(1)+'%'
+              $('#peak #max').textContent           = p1.toFixed(1)+'%';
               $('#peak .meter-value').style.width   = p+'%';
               $('#peak .meter-max').style.width     = p1+'%';
               
@@ -430,8 +438,8 @@
               var p     = (rms/128)*100;
               var p1    = (update.rms.max/128)*100;
               
-              $('#rms #value').textContent          = p.toFixed(1);
-              $('#rms #max').textContent            = p1.toFixed(1);
+              $('#rms #value').textContent          = p.toFixed(1)+'%'
+              $('#rms #max').textContent            = p1.toFixed(1)+'%';
               $('#rms .meter-value').style.width    = p;
               $('#rms .meter-max').style.width      = p1;
               
@@ -571,11 +579,18 @@
   
         record.start    = function(){
         
+              $('#record-root').style.borderColor     = 'red';
+              $('#record-root').style.color           = 'red';
+              $('#record-root button').textContent    = 'record stop';
+              
               record_start          = Date.now();
               
               var audioStream       = dest.stream;
               mediaRecorder         = new MediaRecorder(audioStream,{mimeType:'audio/webm'});
               var data              = [];
+              
+              mediaRecorder.start();
+              
               
               mediaRecorder.ondataavailable   = e=>{
               
@@ -585,6 +600,7 @@
                     
               }//ondataavailable
               
+              
               mediaRecorder.onstop    = ()=>{
               
                     var end     = Date.now();
@@ -592,11 +608,15 @@
                     var blob    = new Blob(data,{type:'audio/webm'});
                     var url     = URL.createObjectURL(blob);
                     
-                    var div           = document.createElement('div');
+                    var node          = record.log.cloneNode(true);
+                    
                     var t             = ts();
                     var dur           = duration(end-record_start);
-                    div.textContent   = t+'---('+dur+').webm';
-                    output.append(div);
+                    var str           = t+'---('+dur+').webm';
+                    $(node,'.ts').textContent   = str;
+                    $(node,'audio').srcObject   = blob;
+                    
+                    output.append(node);
                     
                     /*
                     const audio = new Audio(audioUrl);
@@ -606,14 +626,17 @@
                     
               }//onstop
               
-              mediaRecorder.start();
-              
         }//start
         
         
         record.stop   = function(){
         
               if(!mediaRecorder)return;
+              
+              $('#record-root').style.borderColor     = 'lightgray';
+              $('#record-root').style.color           = 'black';
+              $('#record-root button').textContent    = 'record start';
+              
               mediaRecorder.stop();
               
         }//stop
