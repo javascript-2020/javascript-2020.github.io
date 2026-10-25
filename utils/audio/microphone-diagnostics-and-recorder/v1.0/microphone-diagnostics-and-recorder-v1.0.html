@@ -104,12 +104,20 @@
   #device-list-hdr
     {display:flex;gap:10px;align-items:center}
   #device-list
-    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:5px;min-height:100px;overflow:auto}
+    {border:1px solid lightgray;padding:5px;min-height:100px;overflow:auto;
+      display: table;width:100%;table-layout:auto}
   #device-list #empty
     {text-align:center;color:lightgray;font-weight:bold;margin:20px}
   #device-list .device
-    {display:flex;gap:10px;align-items:center}
-    
+    {display: table-row}
+  .table-cell
+    {display:table-cell;padding:8px 12px;white-space:nowrap;vertical-align: middle}
+  .table-cell:last-child
+    {width:100%}
+  .table-cell input[type=checkbox]
+    {vertical-align:middle;margin:0}
+  .ellipsis
+    {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:1px}
     
   #gain-root
     {text-align:center}
@@ -250,10 +258,13 @@
                                     [ Empty ]
                               </div>
                               <div class=device style='display:none'>
-                                    <input type=checkbox>
-                                    <div class=label></div>
-                                    <div class=kind></div>
-                                    <div class=device-id></div>
+                                    <input type=checkbox class=table-cell>
+                                    <div class='label table-cell'></div>
+                                    <div class='kind table-cell'></div>
+                                    <div class='device-id tabel-cell'>
+                                          <div class=elipsis>
+                                          </div>
+                                    </div>
                               </div>
                         </div>
                   </div>
@@ -874,7 +885,7 @@
                     $(node,'[type=checkbox]').checked     = (i==0);
                     $(node,'.label').textContent          = o.label;
                     $(node,'.kind').textContent           = o.kind;
-                    $(node,'.device-id').textContent      = o.deviceId;
+                    $(node,'.device-id .elipsis').textContent      = o.deviceId;
                     
                     device.ui.list.append(node);
                     
