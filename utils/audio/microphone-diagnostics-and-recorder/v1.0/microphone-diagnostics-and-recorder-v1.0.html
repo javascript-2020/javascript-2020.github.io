@@ -682,8 +682,9 @@
 
 
               var o   = await device.read();
+                                                                                console.log(o);
               if(o){
-                                                                                log('device',o.label);
+                                                                                log('device',o.label,o.deviceId);
                     audio.deviceId    = {exact:o.deviceId};
               }else{
                                                                                 log('default device');
@@ -912,8 +913,9 @@
         function $(root,sel){return (!sel&&(sel=root,root=document),root.querySelector(sel))}
         
         
-        function log(str){
+        function log(...args){
         
+              var str           = args.join(' ');
               var div           = document.createElement('div');
               div.textContent   = str;
               output.append(div);
