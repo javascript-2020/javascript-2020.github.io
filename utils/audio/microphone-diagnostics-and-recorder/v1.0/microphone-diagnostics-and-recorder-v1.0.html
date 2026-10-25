@@ -253,7 +253,7 @@
                                     <input type=checkbox>
                                     <div class=label></div>
                                     <div class=kind></div>
-                                    <div class=deviceId></div>
+                                    <div class=device-id></div>
                               </div>
                         </div>
                   </div>
@@ -417,39 +417,40 @@
   
         async function initdom(rootnode){
         
-              root                                  = rootnode;
+              root                                              = rootnode;
               
-              $(root,'button').onclick              = btn.microphone;
+              $(root,'button').onclick                          = btn.microphone;
               
-              device.ui.list                        = $('#device-list');
-              device.ui.item                        = $(device.ui.list,'.device');
+              $('#device-list-root [value=list]').onclick       = btn.device;
+              device.ui.list                                    = $('#device-list');
+              device.ui.item                                    = $(device.ui.list,'.device');
               device.ui.item.remove();
-              device.ui.item.style.display          = '';
-              device.ui.empty                       = $(device.ui.list,'#empty');
+              device.ui.item.style.display                      = '';
+              device.ui.empty                                   = $(device.ui.list,'#empty');
               
-              range                                 = $(root,'#range');
-              range.oninput                         = change;
+              range                                             = $(root,'#range');
+              range.oninput                                     = change;
               //range.dispatchEvent(new Event('input'));
               change();
-              $('[value="+"]').onclick                = e=>{
+              $('[value="+"]').onclick                          = e=>{
               
-                                                            range.max   = parseFloat(range.max)+0.5;
-                                                            $('#range-max').textContent   = parseFloat(range.max).toFixed(1);
-                                                            change();
-                                                            
-                                                      }//value=+
-                                                      
-                                                      
-              audio.obj                             = $('audio');
+                                                                        range.max   = parseFloat(range.max)+0.5;
+                                                                        $('#range-max').textContent   = parseFloat(range.max).toFixed(1);
+                                                                        change();
+                                                                        
+                                                                  }//value=+
+                                                                  
+                                                                  
+              audio.obj                                         = $('audio');
               
               
-              $('#record-root button').onclick      = btn.record;
-              record.log                            = $('#record-root .recording');
+              $('#record-root button').onclick                  = btn.record;
+              record.log                                        = $('#record-root .recording');
               record.log.remove();
-              record.log.style.display              = '';
+              record.log.style.display                          = '';
               
               
-              output                                = $(root,'#output');
+              output                                            = $(root,'#output');
               output.replaceChildren();
               
               
@@ -638,51 +639,58 @@
   
         microphone.open   = async function(){
                                                                                 log('opening microphone');
-              var err;
-              try{
+              var audio       = {
+                    //full
+                    /*
+                    channelCount                : 1,
+                    sampleRate                  : 48000,
+                    sampleSize                  : 16,
+                    latency                     : 0,
+                    
+                    autoGainControl             : true,
+                    echoCancellation            : true,
+                    noiseSuppression            : true,
+                    
+                    googHighpassFilter          : true,
+                    googTypingNoiseDetection    : true,
+                    googNoiseReduction          : true,
+                    */
+                    
+                    //disable audio processing
+                    
+                    autoGainControl             : false,
+                    channelCount                : 1,
+                    echoCancellation            : true,
+                    latency                     : {ideal:0},
+                    noiseSuppression            : true,
+                    
+                    //sampleRate                  : 48000,
+                    //sampleSize                  : 16,
+                    
+                    //volume                      : 1.0
+                    
+              };
               
+              
+/*
                     var devices       = await navigator.mediaDevices.enumerateDevices();
                     var audioInputs   = devices.filter(device=>device.kind==='audioinput');
                     var deviceId      = audioInputs[0].deviceId;
                                                                                 console.log('Available mics :',audioInputs);
                                                                                 console.log(deviceId);
-                    stream        = await navigator.mediaDevices.getUserMedia({
-                          video   : false,
-                          audio   : {
-                          
-                                deviceId                    : {exact:deviceId},
-                                
-                                //full
-                                /*
-                                channelCount                : 1,
-                                sampleRate                  : 48000,
-                                sampleSize                  : 16,
-                                latency                     : 0,
-                                
-                                autoGainControl             : true,
-                                echoCancellation            : true,
-                                noiseSuppression            : true,
-                                
-                                googHighpassFilter          : true,
-                                googTypingNoiseDetection    : true,
-                                googNoiseReduction          : true,
-                                */
-                                
-                                //disable audio processing
-                                
-                                autoGainControl             : false,
-                                channelCount                : 1,
-                                echoCancellation            : true,
-                                latency                     : {ideal:0},
-                                noiseSuppression            : true,
-                                
-                                //sampleRate                  : 48000,
-                                //sampleSize                  : 16,
-                                
-                                //volume                      : 1.0
-                                
-                          }
-                    });
+*/
+
+
+              var deviceId    = await device.read();
+              if(deviceId){
+                    audio.deviceId    = {exact:deviceId};
+              }
+              
+              var err;
+              try{
+              
+                    var opts    = {video:false,audio};
+                    stream      = await navigator.mediaDevices.getUserMedia(opts);
                     
               }//try
               catch(err2){
@@ -832,21 +840,55 @@
         
         device.enumerate    = async function(){
         
-              var devices       = await navigator.mediaDevices.enumerateDevices();
-              device.list       = devices.filter(device=>device.kind==='audioinput');
-              device.list.forEach(device=>{
+              var err;
+              try{
               
-                    var nitem                           = device.ui.item.cloneNode(true);
-                    $(nitem,'.label').textContent       = device.label;
-                    $(nitem,'.kind').textContent        = deivce.kind;
-                    $(nitem,'.device-id').textContent   = device.deviceId;
+                    var devices    = await navigator.mediaDevices.enumerateDevices();
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.error(err);
+                                                                                log(err.stack);
+                    return;
+              }
+              
+              var list       = devices.filter(device=>device.kind==='audioinput');
+                                                                                console.log('Available mics :',device.list);
+              device.ui.list.replaceChildren();
+              if(list.length==0){
+                    device.ui.list.append(device.ui.empty);
+              }
+              list.forEach((o,i)=>{
+              
+                    var node                              = device.ui.item.cloneNode(true);
+                    
+                    $(node,'[type=checkbox]').checked     = (i==0);
+                    $(node,'.label').textContent          = o.label;
+                    $(node,'.kind').textContent           = o.kind;
+                    $(node,'.device-id').textContent      = o.deviceId;
+                    
+                    device.ui.list.append(node);
+                    
+                    device.list.push({device:o,node});
+                    
               });
               
+              
+              
+/*
               var deviceId      = device.list[0].deviceId;
-                                                                                console.log('Available mics :',device.list);
                                                                                 console.log(deviceId);
-                                                                                
+*/
+
+
         }//enumerate
+        
+        
         device.read   = async function(){
         
               if(device.list.length==0){
