@@ -681,9 +681,12 @@
 */
 
 
-              var deviceId    = await device.read();
-              if(deviceId){
-                    audio.deviceId    = {exact:deviceId};
+              var o   = await device.read();
+              if(o){
+                                                                                log('device',o.label);
+                    audio.deviceId    = {exact:o.deviceId};
+              }else{
+                                                                                log('default device');
               }
               
               var err;
@@ -898,8 +901,7 @@
               var o           = device.list.find(o=>$(o.node,'[type=checkbox]').checked);
               if(!o)return;
               
-              var deviceId    = o.device.deviceId;
-              return deviceId;
+              return o.device;
               
         }//read
         
