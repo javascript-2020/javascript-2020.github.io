@@ -882,7 +882,7 @@
               
                     var node                              = device.ui.item.cloneNode(true);
                     
-                    $(node,'[type=checkbox]').checked     = (i==0);
+                    $(node,'[type=checkbox]').checked     = (device.cur===o);
                     $(node,'.label').textContent          = o.label;
                     $(node,'.kind').textContent           = o.kind;
                     $(node,'.device-id .elipsis').textContent      = o.deviceId;
@@ -913,6 +913,7 @@
               var o           = device.list.find(o=>$(o.node,'[type=checkbox]').checked);
               if(!o)return;
               
+              device.cur    = o;
               return o.device;
               
         }//read
