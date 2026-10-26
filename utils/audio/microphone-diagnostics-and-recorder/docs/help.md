@@ -1,7 +1,7 @@
 
 ## microphone diagnostics and recorder
 
-at the current time ( 2026-10-26 ) firefox produces broken audio
+at the current time ( 2026-10-26 ) firefox produces broken audio, the application fixes the broken audio.
 
 
 
