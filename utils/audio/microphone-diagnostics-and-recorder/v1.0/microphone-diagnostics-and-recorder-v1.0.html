@@ -55,6 +55,8 @@
         var df=true,did='mic-diag-rec';
                                                                                 console.log(did,version);
                                                                                 
+        var ffmpeg;
+        
         var filemod;
         
         
@@ -398,19 +400,15 @@
                               00:00:00
                         </div>
                         <div class=recording style='display:none'>
-                              <div id=recording-main>
-                                    <input type=checkbox>
-                                    <div class=ts>
-                                    </div>
-                                    <div class=size>
-                                    </div>
-                                    <div class=spc></div>
-                                    <audio controls></audio>
-                                    <img class=download>
-                                    <img class=rem>
+                              <input type=checkbox>
+                              <div class=ts>
                               </div>
-                              <div id=recording-fix>
+                              <div class=size>
                               </div>
+                              <div class=spc></div>
+                              <audio controls></audio>
+                              <img class=download>
+                              <img class=rem>
                         </div>
                   </div>
                   
@@ -827,7 +825,20 @@
                     blob.name                             = name;
                     
                     var url                               = URL.createObjectURL(blob);
-                    record.test(url);
+                    
+                    var test                              = record.test(url);
+                    if(!test){
+                          log('audio needs fixing, see help');
+                          if(ffmpeg.promise){
+                                log('waiting for ffmpeg ...');
+                          }
+                          await ffmpeg.promise;
+                          URL.revokeObjectURL(url);
+                          blob    = await record.fix(blob);
+                          url     = URL.createObjectURL(blob);
+                          
+                    }
+                    
                     
                     var node                              = record.log.cloneNode(true);
                     
@@ -933,6 +944,20 @@
               }//stop
               
         }//test
+        
+        
+        record.fix    = async function(blob){
+        
+              var uint8   = await ffmpeg._uint8(blob);
+              await ffmpeg.writeFile('audio.webm',uint8);
+              var cmd         = `ffmpeg -i audio.webm -c copy -cues_to_front 1 fixed.webm`;
+              var args        = cmd.split(' ').slice(1);
+              await ffmpeg.exec(args);
+              var data    = await ffmpeg.readFile('fixed.webm');
+              var blob    = ffmpeg._blob(data);
+              return blob;
+              
+        }//fix
         
         
   //:
@@ -1306,6 +1331,8 @@ ffmpeg
         var {FFmpeg}      = FFmpegWASM;
         
         ffmpeg            = new FFmpeg();
+        ffmpeg._uint8     = _uint8;
+        ffmpeg._blob      = _blob;
         await ffmpeg.load({coreURL:'ffmpeg-core.js',wasmURL:files['ffmpeg-core.wasm']});
         
         ffmpeg.on('log',({message})=>onmsg(message));
