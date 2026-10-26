@@ -826,7 +826,7 @@
                     
                     var url                               = URL.createObjectURL(blob);
                     
-                    var test                              = record.test(url);
+                    var test                              = await record.test(url);
                     if(!test){
                           log('audio needs fixing, see help');
                           if(ffmpeg.promise){
@@ -911,6 +911,8 @@
         
         record.test   = function(url){
         
+              var resolve,promise=new Promise(res=>resolve=res);
+              
               var test    = document.createElement('audio');
               test.setAttribute('src',url);
               
@@ -931,7 +933,7 @@
                     
                     stop();
                     
-                    return f;
+                    resolve(f);
                     
               }//onmetadataavailable
               
