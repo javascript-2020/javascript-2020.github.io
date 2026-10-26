@@ -1295,17 +1295,17 @@
         ffmpeg            = new FFmpeg();
         await ffmpeg.load({coreURL:'ffmpeg-core.js',wasmURL:files['ffmpeg-core.wasm']});
         
-        ffmpeg.on('log',({message})=>on.msg(message));
+        ffmpeg.on('log',({message})=>onmsg(message));
         await ffmpeg.exec(['-version']);
         
                                                                                 console.log('ffmpeg ready');
-        on.msg    = message=>{
+        function onmsg(message){
         
               console.log(message);
               //if(!ffmpeg.debug)return;
               log(message);
               
-        }//msg
+        }//onmsg
         
 })()
 ;
