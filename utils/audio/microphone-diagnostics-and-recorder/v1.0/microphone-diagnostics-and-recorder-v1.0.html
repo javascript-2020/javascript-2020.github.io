@@ -62,14 +62,20 @@
                                                                                 debug('init',version);
                                                                                 
                                                                                 
-              filemod   = mod['file-mod'];
+              filemod       = mod['file-mod'];
               filemod.initmod({source,complete});
               
+              vm            = vm();
+              vm.initmod({mod});
+              await vm.init();
+              await vm.initdom();
+              mod.base.add({vm});
               
-              await mod.auto();
               
               
-              await initdom(document.body);
+              await Promise.all([mod.auto()]);
+              
+              await Promise.all([initdom(document.body)]);
               
               
               mod.complete();
@@ -77,9 +83,22 @@
               
         }//init
         
+(async()=>{
+
+        mod.stack.add;
         
+        ({ext}    = await import('https://libs.ext-code.com/js/io/ext-loader/ext-loader.m.js'));
         
+        var promise   = ext.load.libs(
+              'js/dom/viewport-manager/v1.0.0/viewport-manager.js.api',
+        );
+        [vm]   = await promise;
         
+        mod.stack.complete;
+        
+})();
+
+
             </script>
             
             
