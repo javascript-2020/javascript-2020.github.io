@@ -1169,9 +1169,20 @@
         }//read
         
         
+        opfs.delete   = async function(){
+        
+              var {exists}    = await opfs.exists();
+              if(!exists)return;
+              await opfs.ffmpeg.remove({recursive:true});
+              
+        }//delete
+        
+        
 ;
 (async()=>{
 
+        await opfs.delete();
+        
         ffmpeg    = {};
         var resolve;
         ffmpeg.promise    = new Promise(res=>resolve=res);
