@@ -783,7 +783,7 @@
               mediaRecorder.start();
               
               
-              mediaRecorder.ondataavailable   = e=>{
+              mediaRecorder.ondataavailable   = function(e){
               
                     if(e.data.size>0){
                           data.push(e.data);
@@ -792,7 +792,7 @@
               }//ondataavailable
               
               
-              mediaRecorder.onstop    = async()=>{
+              mediaRecorder.onstop    = async function(){
               
                     var end                               = Date.now();
                     
@@ -802,7 +802,7 @@
                     
                     var blob                              = new Blob(data,{type:'audio/webm'});
                     var dur                               = end-record_start;
-                    blob                                  = await fixwebm(blob,dur);
+                    //blob                                  = await fixwebm(blob,dur);
                     blob.name                             = name;
                     
                     var url                               = URL.createObjectURL(blob);
