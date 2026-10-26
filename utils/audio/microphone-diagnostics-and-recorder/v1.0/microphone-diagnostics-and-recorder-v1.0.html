@@ -1236,6 +1236,7 @@ ffmpeg
         }
         
         var fnstr     = (fn,_,js,i1,i2)=>(js=fn+'',i1=js.indexOf('{'),i2=js.lastIndexOf('}'),js.slice(i1+1,i2));
+        var dtype     = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
         var _blob     = v=>new Blob([v]);
         var _uint8    = async v=>(dtype(v)=='blob'||dtype(v)=='file') ? new Uint8Array(await v.arrayBuffer()) : new Uint8Array(v);
         
@@ -1247,7 +1248,6 @@ ffmpeg
               
               var {zip}     = await import('https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js');
               var get       = url=>fetch(url).then(res=>res.blob());
-              var dtype     = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
               
               var zipurl    = [
                     'https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip',
