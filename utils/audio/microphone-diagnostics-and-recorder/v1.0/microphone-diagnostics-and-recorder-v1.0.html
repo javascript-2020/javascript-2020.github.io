@@ -47,7 +47,7 @@
             <meta property=og:image content='https://ext-code.com/utils/editors/html-editor/images/og-image.webp'>
             -->
             
-            
+            <script src='fix-webm.js'></script>
             <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
             <script>
@@ -61,7 +61,8 @@
         
         async function init(){
                                                                                 debug('init',version);
-                                                                                
+              fixwebm   = fixwebm();
+              
               filemod   = mod['file-mod'];
               filemod.initmod({source,complete});
               
@@ -786,11 +787,14 @@
               }//ondataavailable
               
               
-              mediaRecorder.onstop    = ()=>{
+              mediaRecorder.onstop    = async()=>{
               
                     var end                               = Date.now();
                     
                     var blob                              = new Blob(data,{type:'audio/webm'});
+                    var dur                               = end-record_start;
+                    blob                                  = await fixwebm(blob,dur);
+                    
                     var url                               = URL.createObjectURL(blob);
                     
                     var node                              = record.log.cloneNode(true);
