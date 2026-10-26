@@ -913,10 +913,13 @@
               var resolve,promise=new Promise(res=>resolve=res);
               
               var test    = document.createElement('audio');
+              test.onloadedmetadata   = onloadedmetadata;
               test.setAttribute('src',url);
               
+              return promise;
               
-              test.onloadedmetadata   = ()=>{
+              
+              function onloadedmetadata(){
               
                     var dur   = test.duration;
                                                                                 console.log('duration :',dur);
@@ -943,8 +946,6 @@
                     test.load();
                     
               }//stop
-              
-              return promise;
               
         }//test
         
