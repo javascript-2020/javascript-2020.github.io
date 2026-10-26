@@ -56,15 +56,23 @@
         var df=true,did='mic-diag-rec';
                                                                                 console.log(did,version);
                                                                                 
-                                                                                
+        var filemod;
+        
+        
         async function init(){
                                                                                 debug('init',version);
                                                                                 
+              filemod   = mod['file-mod'];
+              
+              
               await mod.auto();
+              
               
               await initdom(document.body);
               
-              mod['audio-hdr'].complete();
+              
+              mod.complete();
+              
               
         }//init
         
@@ -250,6 +258,7 @@
                   </div>
                   
                   <div id=hdr>
+                        <file-mod component></file-mod>
                   </div>
                   
                   <div id=device-list-root>
