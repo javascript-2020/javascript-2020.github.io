@@ -9,6 +9,9 @@
             <title>
                   Microphone Diagnostics and Recorder
             </title>
+            
+            <meta name=description content='Test, calibrate, and record your microphone with real-time RMS metering, peak detection, and gain staging.'>
+            
             <base href='https://ext-code.com/utils/audio/microphone-diagnostics-and-recorder/microphone-diagnostics-and-recorder.html'>
             <link rel=canonical href='https://ext-code.com/utils/audio/microphone-diagnostics-and-recorder/microphone-diagnostics-and-recorder.html'>
             
@@ -44,7 +47,6 @@
             <meta property=og:image content='https://ext-code.com/utils/editors/html-editor/images/og-image.webp'>
             -->
             
-            
             <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
             <script>
@@ -53,15 +55,29 @@
         var df=true,did='mic-diag-rec';
                                                                                 console.log(did,version);
                                                                                 
-                                                                                
+        var filemod;
+        
+        
         async function init(){
                                                                                 debug('init',version);
                                                                                 
+                                                                                
+              filemod   = mod['file-mod'];
+              filemod.initmod({source,complete});
+              
+              
               await mod.auto();
               
-              initdom(document.body);
+              
+              await initdom(document.body);
+              
+              
+              mod.complete();
+              
               
         }//init
+        
+        
         
         
             </script>
@@ -95,6 +111,28 @@
   [type=checkbox]
     {width:20px;height:20px}
     
+    
+  #device-list-root
+    {display:flex;flex-direction:column;gap:10px;border:1px solid lightgray;padding:10px}
+  #device-list-hdr
+    {display:flex;gap:10px;align-items:center}
+  #device-list-hdr #list
+    {margin-left:30px}
+  #device-list
+    {border:1px solid lightgray;padding:5px;min-height:100px;overflow:auto;
+      display: table;width:100%;table-layout:auto}
+  #device-list #empty
+    {text-align:center;color:lightgray;font-weight:bold;margin:20px}
+  #device-list .device
+    {display: table-row}
+  .table-cell
+    {display:table-cell;padding:8px 12px;white-space:nowrap}
+  .table-cell:last-child
+    {width:100%}
+  .table-cell[type=checkbox]
+    {vertical-align:middle;margin:0}
+  .ellipsis
+    {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:1px}
     
   #gain-root
     {text-align:center}
@@ -166,6 +204,10 @@
     
   .recording
     {display:flex;gap:10px;align-items:center;border:1px solid lightblue;padding:5px;margin:5px 0}
+  .recording .download
+    {cursor:pointer;width:20px;height:20px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAS1BMVEVHcExKvJZKvJZKvJZKvJZKvJZKvJZKvJZKvJZKvJZKvJZKvJZKvJZKvJZKvJZHu5T///9VwJ2F0rig3ciT18C05NT0+/nQ7uRvyqv9MGHNAAAADnRSTlMA+dal8RGRBmJhgSIf2AqXbO4AAADzSURBVCjPhZNJFoQgDEQZnLUDOAD3P2kjBAN2+6yFCz/kVSqBsaxllKIB3gg5LuyueRIcUFxMcwX74QOVPkNPtO043MS79qIS/kgi7zv6ZwrepfrDVVl5d9ABPkTP5ErtWq+K/J3+J3jCMIU0xDMWCxupJ5UwcT4yasp4v2m9eU/uJBNU2Vqrdfjs133BGrp96Kiit4YVOSR+lNGUWJ28opCLG7yP1Bgsnqx5V/YLxh1oTWIee4WtM6mxGEvEhRCHWGKoAbutVMIh1DgStVpdy+FI0kDNepPPA03roO7K61AtE/wu08sqvi3y2zN4e0SPT/ALdMMos6XmoPIAAAAASUVORK5CYII=);
+    }
   .recording .rem
     {cursor:pointer;width:20px;height:20px;
       content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAj1QTFRFAAAA4Cco6hkY7xQU8RgZ8RgY8BgZ8hgY7xIU6BcW3Sgt2To67RMV9AkJ+QQE/AIC/AIC+AQF9AkK7RET4DMy2Tg38RAP+QQE/AEB/QAB/gAA/QEA+wEB+QQE8Q8P3TQz7BIT+QQE/QEB/QAA+QQD6xMT4CUl9QkJ/AEC9AgI5CMj7BcW+QQE+AUE9wcH+QQE+QQE9wcH+AQF+gME7BYW6REQ+wIB+QUE6RYW0To+6hUV9gcG9gUF6hUR1js66RQX+QQE8g0O5QsL9wgI3kA+////6BYU9gYG9wUF6RMUylBT9QkK/QEC8g0N5QwK+gQE6RER6BIR9gYG9gYG6BQT6RUV+AQF8g0N9QUF6BAO5RQW5RUX5xYY9QcH8w0N5QsK9gYF6hAP5xUX9AcI+wIC/gAB9gYF5RMU5hgb9gcH9gYF5BUV5hYX9wQF6BIT6BMT9QYG9gUE6BER4RQV5BQT6BMS+QQE6RMR5REU9AYH9QYF6RIQ6RQV+gQE5QsL9wcH2zo74xIT8wYG/AIB9wYF6hMR0jg59QcH8Q4O6hAR/AIC+QQF7BUXyzc35xMS9AYF9gYG6RUU3Dk36RUW+QQE8Q8O7BgX+QQD9AcH+QQE+gMD6xYT3Sgm8wkI9QgI4yQk7BIT+AQE+gME7BIV3TQz+AQE+wEC/AEA8A8Q3DQz1zw56xMU8goJ+QQE+wIC+wMC+wMC8wkI6hMU2Ds43Sst6RcX6xMU7xcW7xcV8BcV8BcW7xcY6hUV6BkX3ignt1x/WQAAAL90Uk5TABE5UlhYWFhSORIIYsjy/P3yymQJCYr5///////6jwpo+////GwX0P/UGkb36cTr7sXq+Utk/+1NCErf5FEJSuhpassN/0Xh5EwIwf9uae5PSOLlTE3sbeJKQ0ZI4W1p40tI4f//5EVD4+VGQuNLSOHjS0VFSPBRSuTkS0zsacsMSuP/40wLyG5k/+xPCk/j41EMT+xqRvfH7flLF9DUGmf6/G0J+f//jwoHYMbx/P38yWQJEThSV1dXV1dTOhK+MhyLAAABr0lEQVR4nK3SQUgUURgH8P9/l+jNusIiLB5EEEXFJFmM1csiuHST3IMHQSox2IMEYYIkBXlZFjwpBJ3UwgSriwf1qOvBLhFrGiS4GBQRFHmIZZ1FYsf35o3L7Ahe9Du9md983/vem4+4MHglTBUW4IMFn1weu7nK1nKOpT74W+ZwpTq1vp9xg7Sie0sDhSBzDreQecvbE6v5VXM7jwKmkPvnVQmrlvxtWYEQP2mO8idQr7Y7DBTRqBYHQKktozl+UALa5P5kjs38j2vcATq5qrk/W1IlCkBQJv4DQtwGRPSdi0WXOmmYf4BabspORWxR8/CGZIge1QLsLjKml/vWxW1+k09NXIH/fDaYUA2j9ddn+468PMB9u/gNvvW5WbeW4Begg7tAZC9X9GbfZRa4JQ/2EejmvOtgzxckJ/kBMfLVA26hly/krY1Nap7mLPBY3eXyD594pBZpYLTmoeaXTAnTGKrjNGFC3IyEZ0wYT5jUPMdnfu8PNQppjjjj8JpPUeFGUUzx3tm0LI3PcMLtRurkOgfLo/i+cth4/w15pzyKMtZsp/1GLePOh7gwLsenPLh5H68t6T4AAAAASUVORK5CYII=);
@@ -184,7 +226,7 @@
     {font-size:16px;cursor:pointer;border:none;border-radius:6px}
     
   input
-    {font-size:16px}
+    {font-size:16px;padding:5px 10px}
   input[type=button]
     {cursor:pointer}
     
@@ -221,6 +263,30 @@
                   </div>
                   
                   <div id=hdr>
+                        <file-mod component></file-mod>
+                  </div>
+                  
+                  <div id=device-list-root>
+                        <div id=device-list-hdr>
+                              <label>
+                                    device list
+                              </label>
+                              <input id=list value='list audio inputs' type=button>
+                        </div>
+                        <div id=device-list>
+                              <div id=empty>
+                                    [ Empty ]
+                              </div>
+                              <div class=device style='display:none'>
+                                    <input type=checkbox class=table-cell>
+                                    <div class='label table-cell'></div>
+                                    <div class='kind table-cell'></div>
+                                    <div class='device-id tabel-cell'>
+                                          <div class=elipsis>
+                                          </div>
+                                    </div>
+                              </div>
+                        </div>
                   </div>
                   
                   <div id=gain-root>
@@ -320,6 +386,7 @@
                               </div>
                               <div class=spc></div>
                               <audio controls></audio>
+                              <img class=download>
                               <img class=rem>
                         </div>
                   </div>
@@ -373,40 +440,49 @@
         var record        = {};
         record.list       = [];
         var audio         = {};
+        var device        = {};
+        device.ui         = {};
         
         
-        //:
-        
-        
+  //:
+  
+  
         async function initdom(rootnode){
         
-              root                                  = rootnode;
+              root                                              = rootnode;
               
-              $(root,'button').onclick              = btn.microphone;
+              $(root,'button').onclick                          = btn.microphone;
               
-              range                                 = $(root,'#range');
-              range.oninput                         = change;
+              $('#device-list-root #list').onclick              = btn.device;
+              device.ui.list                                    = $('#device-list');
+              device.ui.item                                    = $(device.ui.list,'.device');
+              device.ui.item.remove();
+              device.ui.item.style.display                      = '';
+              device.ui.empty                                   = $(device.ui.list,'#empty');
+              
+              range                                             = $(root,'#range');
+              range.oninput                                     = change;
               //range.dispatchEvent(new Event('input'));
               change();
-              $('[value="+"]').onclick                = e=>{
+              $('[value="+"]').onclick                          = e=>{
               
-                                                            range.max   = parseFloat(range.max)+0.5;
-                                                            $('#range-max').textContent   = parseFloat(range.max).toFixed(1);
-                                                            change();
-                                                            
-                                                      }//value=+
-                                                      
-                                                      
-              audio.obj                             = $('audio');
+                                                                        range.max   = parseFloat(range.max)+0.5;
+                                                                        $('#range-max').textContent   = parseFloat(range.max).toFixed(1);
+                                                                        change();
+                                                                        
+                                                                  }//value=+
+                                                                  
+                                                                  
+              audio.obj                                         = $('audio');
               
               
-              $('#record-root button').onclick      = btn.record;
-              record.log                            = $('#record-root .recording');
+              $('#record-root button').onclick                  = btn.record;
+              record.log                                        = $('#record-root .recording');
               record.log.remove();
-              record.log.style.display              = '';
+              record.log.style.display                          = '';
               
               
-              output                                = $(root,'#output');
+              output                                            = $(root,'#output');
               output.replaceChildren();
               
               
@@ -462,6 +538,13 @@
               }
               
         }//record
+        
+        
+        btn.device    = function(){
+        
+              device.enumerate();
+              
+        }//device
         
         
   //:
@@ -595,50 +678,62 @@
   
         microphone.open   = async function(){
                                                                                 log('opening microphone');
-              var err;
-              try{
+              var audio       = {
+                    //full
+                    /*
+                    channelCount                : 1,
+                    sampleRate                  : 48000,
+                    sampleSize                  : 16,
+                    latency                     : 0,
+                    
+                    autoGainControl             : true,
+                    echoCancellation            : true,
+                    noiseSuppression            : true,
+                    
+                    googHighpassFilter          : true,
+                    googTypingNoiseDetection    : true,
+                    googNoiseReduction          : true,
+                    */
+                    
+                    //disable audio processing
+                    
+                    autoGainControl             : false,
+                    channelCount                : 1,
+                    echoCancellation            : true,
+                    latency                     : {ideal:0},
+                    noiseSuppression            : true,
+                    
+                    //sampleRate                  : 48000,
+                    //sampleSize                  : 16,
+                    
+                    //volume                      : 1.0
+                    
+              };
               
+              
+/*
                     var devices       = await navigator.mediaDevices.enumerateDevices();
                     var audioInputs   = devices.filter(device=>device.kind==='audioinput');
                     var deviceId      = audioInputs[0].deviceId;
                                                                                 console.log('Available mics :',audioInputs);
                                                                                 console.log(deviceId);
-                    stream        = await navigator.mediaDevices.getUserMedia({
-                          video   : false,
-                          audio   : {
-                          
-                                deviceId                    : {exact:deviceId},
-                                
-                                //full
-                                /*
-                                channelCount                : 1,
-                                sampleRate                  : 48000,
-                                sampleSize                  : 16,
-                                latency                     : 0,
-                                
-                                autoGainControl             : true,
-                                echoCancellation            : true,
-                                noiseSuppression            : true,
-                                
-                                googHighpassFilter          : true,
-                                googTypingNoiseDetection    : true,
-                                googNoiseReduction          : true,
-                                */
-                                
-                                //disable audio processing
-                                
-                                autoGainControl             : false,
-                                channelCount                : 1,
-                                echoCancellation            : true,
-                                latency                     : 0,
-                                noiseSuppression            : true,
-                                //sampleRate                  : 48000,
-                                //sampleSize                  : 16,
-                                
-                                //volume                      : 1.0
-                                
-                          }
-                    });
+*/
+
+
+              var o   = await device.read();
+                                                                                console.log(o);
+              if(o){
+                                                                                log('device','label:',o.label,'deviceId:',o.deviceId);
+                    audio.deviceId    = {exact:o.deviceId};
+              }else{
+                                                                                log('default device');
+              }
+              
+              var err;
+              try{
+              
+                    var opts    = {video:false,audio};
+                    stream      = await navigator.mediaDevices.getUserMedia(opts);
                     
               }//try
               catch(err2){
@@ -687,7 +782,7 @@
               mediaRecorder.start();
               
               
-              mediaRecorder.ondataavailable   = e=>{
+              mediaRecorder.ondataavailable   = function(e){
               
                     if(e.data.size>0){
                           data.push(e.data);
@@ -696,22 +791,28 @@
               }//ondataavailable
               
               
-              mediaRecorder.onstop    = ()=>{
+              mediaRecorder.onstop    = async function(){
               
                     var end                               = Date.now();
                     
+                    var t                                 = ts();
+                    var dur                               = duration(end-record_start);
+                    var name                              = t+'---'+dur+'.webm';
+                    
                     var blob                              = new Blob(data,{type:'audio/webm'});
+                    var dur                               = end-record_start;
+                    blob.name                             = name;
+                    
                     var url                               = URL.createObjectURL(blob);
+                    record.test(url);
                     
                     var node                              = record.log.cloneNode(true);
                     
-                    var t                                 = ts();
-                    var dur                               = duration(end-record_start);
-                    var str                               = t+'---'+dur+'.webm';
                     $(node,'[type=checkbox]').onclick     = chk;
-                    $(node,'.ts').textContent             = str;
+                    $(node,'.ts').textContent             = name;
                     $(node,'.size').textContent           = hs(blob.size);
                     $(node,'audio').src                   = url;
+                    $(node,'.download').onclick           = download;
                     $(node,'.rem').onclick                = rem;
                     
                     output.append(node);
@@ -726,6 +827,16 @@
                           $(node,'[type=checkbox]').checked   = true;
                           
                     }//chk
+                    
+                    
+                    function download(){
+                    
+                          var a         = document.createElement('a');
+                          a.download    = name;
+                          a.href        = url;
+                          a.click();
+                          
+                    }//download
                     
                     
                     function rem(){
@@ -753,6 +864,52 @@
               mediaRecorder.stop();
               
         }//stop
+        
+        
+        record.read   = function(){
+        
+              var o   = record.list.find(o=>$(o.node,'[type=checkbox]').checked);
+              if(!o)return;
+              return o.blob;
+              
+        }//read
+        
+        
+        record.test   = function(url){
+        
+              var test    = document.createElement('audio');
+              test.setAttribute('src',url);
+              
+              
+              test.onloadedmetadata   = ()=>{
+              
+                    var dur   = test.duration;
+                                                                                console.log('duration :',dur);
+                    var f   = true;
+                    
+                    if(!dur)f    = false;
+                    if(dur===Infinity)f    = false;
+                    if(isNaN(dur))f   = false;
+                    
+                    if(!f){
+                                                                                log('audio needs fixiing!');
+                    }
+                    
+                    stop();
+                    
+                    return f;
+                    
+              }//onmetadataavailable
+              
+              
+              function stop(){
+              
+                    test.removeAttribute('src');
+                    test.load();
+                    
+              }//stop
+              
+        }//test
         
         
   //:
@@ -784,11 +941,98 @@
   //:
   
   
+        device.list   = [];
+        
+        device.enumerate    = async function(){
+        
+              var err;
+              try{
+              
+                    var devices    = await navigator.mediaDevices.enumerateDevices();
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.error(err);
+                                                                                log(err.stack);
+                    return;
+              }
+              
+              var list       = devices.filter(device=>device.kind==='audioinput');
+                                                                                console.log('Available mics :',list);
+              device.ui.list.replaceChildren();
+              if(list.length==0){
+                    device.ui.list.append(device.ui.empty);
+              }
+              list.forEach((o,i)=>{
+              
+                    var node                                        = device.ui.item.cloneNode(true);
+                    
+                    $(node,'[type=checkbox]').checked               = (device.cur===o);
+                    $(node,'.label').textContent                    = o.label||'[ none ]';
+                    $(node,'.kind').textContent                     = o.kind;
+                    $(node,'.device-id .elipsis').textContent       = o.deviceId||'[ none ]'
+                    
+                    device.ui.list.append(node);
+                    
+                    device.list.push({device:o,node});
+                    
+              });
+              
+        }//enumerate
+        
+        
+        device.read   = async function(){
+        
+              if(device.list.length==0){
+                    await device.enumerate();
+              }
+              
+              var o           = device.list.find(o=>$(o.node,'[type=checkbox]').checked);
+              if(!o)return;
+              
+              device.cur    = o;
+              return o.device;
+              
+        }//read
+        
+        
+        
+  //:
+  
+  
+        function source(){
+        
+              var blob    = record.read();
+              return blob;
+              
+        }//source
+        
+        
+        function complete(){
+        }//complete
+        
+        
+        complete.save   = function(file){
+        
+              log(file.name+' saved');
+              
+        }//save
+        
+        
+  //:
+  
+  
         function $(root,sel){return (!sel&&(sel=root,root=document),root.querySelector(sel))}
         
         
-        function log(str){
+        function log(...args){
         
+              var str           = args.join(' ');
               var div           = document.createElement('div');
               div.textContent   = str;
               output.append(div);
