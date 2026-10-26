@@ -63,6 +63,7 @@
                                                                                 debug('init',version);
                                                                                 
               filemod   = mod['file-mod'];
+              filemod.initmod({source,complete});
               
               
               await mod.auto();
@@ -844,6 +845,15 @@
         }//stop
         
         
+        record.read   = function(){
+        
+              var o   = record.list.find(o=>$(o.node,'[type=checkbox]').checked);
+              if(!o)return;
+              return o.blob;
+              
+        }//read
+        
+        
   //:
   
   
@@ -931,6 +941,29 @@
               return o.device;
               
         }//read
+        
+        
+        
+  //:
+  
+  
+        function source(){
+        
+              var blob    = record.read();
+              return blob;
+              
+        }//source
+        
+        
+        function complete(){
+        }//complete
+        
+        
+        complete.save   = function(file){
+        
+              log(file.name+' saved');
+              
+        }//save
         
         
   //:
