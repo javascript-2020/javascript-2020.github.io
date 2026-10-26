@@ -47,7 +47,6 @@
             <meta property=og:image content='https://ext-code.com/utils/editors/html-editor/images/og-image.webp'>
             -->
             
-            <script src='fix-webm.js'></script>
             <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
             
             <script>
@@ -61,8 +60,8 @@
         
         async function init(){
                                                                                 debug('init',version);
-              fixwebm   = fixwebm();
-              
+                                                                                
+                                                                                
               filemod   = mod['file-mod'];
               filemod.initmod({source,complete});
               
@@ -802,10 +801,10 @@
                     
                     var blob                              = new Blob(data,{type:'audio/webm'});
                     var dur                               = end-record_start;
-                    //blob                                  = await fixwebm(blob,dur);
                     blob.name                             = name;
                     
                     var url                               = URL.createObjectURL(blob);
+                    record.test(url);
                     
                     var node                              = record.log.cloneNode(true);
                     
@@ -874,6 +873,42 @@
               return o.blob;
               
         }//read
+        
+        
+        record.test   = function(url){
+        
+              var test    = document.createElement('audio');
+              test.setAttribute('src',url);
+              
+              
+              test.onmetadataavailable    = ()=>{
+              
+                    var dur   = test.duration;
+                                                                                console.log(dur);
+                    var f   = true;
+                    if(!dur)f    = false;
+                    if(dur===Infinity)f    = false;
+                    if(isNaN(dur)f   = false;
+                    
+                    if(!f){
+                                                                                log('audio needs fixiing!');
+                    }
+                    
+                    stop();
+                    
+                    return f;
+                    
+              }//onmetadataavailable
+              
+              
+              function stop(){
+              
+                    test.removeAttribute('src');
+                    test.load();
+                    
+              }//stop
+              
+        }//test
         
         
   //:
