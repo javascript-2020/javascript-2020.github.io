@@ -821,7 +821,6 @@
                     var name                              = t+'---'+dur+'.webm';
                     
                     var blob                              = new Blob(data,{type:'audio/webm'});
-                    var dur                               = end-record_start;
                     blob.name                             = name;
                     
                     var url                               = URL.createObjectURL(blob);
@@ -952,9 +951,11 @@
         
               var uint8   = await ffmpeg._uint8(blob);
               await ffmpeg.writeFile('audio.webm',uint8);
-              var cmd         = `ffmpeg -i audio.webm -c copy -cues_to_front 1 fixed.webm`;
-              var args        = cmd.split(' ').slice(1);
+              
+              var cmd     = `ffmpeg -i audio.webm -c copy -cues_to_front 1 fixed.webm`;
+              var args    = cmd.split(' ').slice(1);
               await ffmpeg.exec(args);
+              
               var data    = await ffmpeg.readFile('fixed.webm');
               var blob    = ffmpeg._blob(data);
               return blob;
