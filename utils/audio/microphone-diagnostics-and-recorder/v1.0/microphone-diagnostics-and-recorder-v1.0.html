@@ -1210,11 +1210,15 @@
               _blob         = v=>new Blob([v]);
               _uint8        = async v=>(dtype(v)=='blob'||dtype(v)=='file') ? new Uint8Array(await v.arrayBuffer()) : new Uint8Array(v);
               console.log('*** 1 ***');
+              var zipurl    = [
+                    'https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip',
+                    'https://cdn.jsdelivr.net/gh/javascript-2020/external/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip',
+              ];
               var blob;
               var err;
               try{
               
-                    blob      = await get('https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip');
+                    blob      = await get(zipurl[1]);
                     
               }//try
               catch(err2){
