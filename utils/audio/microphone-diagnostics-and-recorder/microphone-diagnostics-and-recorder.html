@@ -815,70 +815,9 @@
               mediaRecorder.onstop    = async function(){
               
                     var end                               = Date.now();
-                    
-                    var t                                 = ts();
-                    var dur                               = duration(end-record_start);
-                    var name                              = t+'---'+dur+'.webm';
-                    
+                    var dur                               = end-record_start;
                     var blob                              = new Blob(data,{type:'audio/webm'});
-                    blob.name                             = name;
-                    
-                    var url                               = URL.createObjectURL(blob);
-                    
-                    var test                              = await record.test(url);
-                    if(!test){
-                          log('audio needs fixing, see help');
-                          if(ffmpeg.promise){
-                                log('waiting for ffmpeg ...');
-                          }
-                          await ffmpeg.promise;
-                          URL.revokeObjectURL(url);
-                          blob    = await record.fix(blob);
-                          url     = URL.createObjectURL(blob);
-                          
-                    }
-                    
-                    
-                    var node                              = record.log.cloneNode(true);
-                    
-                    $(node,'[type=checkbox]').onclick     = chk;
-                    $(node,'.ts').textContent             = name;
-                    $(node,'.size').textContent           = hs(blob.size);
-                    $(node,'audio').src                   = url;
-                    $(node,'.download').onclick           = download;
-                    $(node,'.rem').onclick                = rem;
-                    
-                    output.append(node);
-                    
-                    var o   = {blob,url,node};
-                    record.list.push(o);
-                    
-                    
-                    function chk(){
-                    
-                          record.list.forEach(o=>$(o.node,'[type=checkbox]').checked=false);
-                          $(node,'[type=checkbox]').checked   = true;
-                          
-                    }//chk
-                    
-                    
-                    function download(){
-                    
-                          var a         = document.createElement('a');
-                          a.download    = name;
-                          a.href        = url;
-                          a.click();
-                          
-                    }//download
-                    
-                    
-                    function rem(){
-                    
-                          var i   = record.list.findIndex(v=>v===o);
-                          record.list.splice(i,1);
-                          node.remove();
-                          
-                    }//rem
+                    record.create(blob,dur);
                     
               }//onstop
               
@@ -897,6 +836,79 @@
               mediaRecorder.stop();
               
         }//stop
+        
+        
+        record.create   = async function(blob,dur){
+        
+              var t                                 = ts();
+              var dur                               = duration(dur);
+              var name                              = t+'---'+dur+'.webm';
+              
+              blob.name                             = name;
+              
+              var url                               = URL.createObjectURL(blob);
+              
+              var test                              = await record.test(url);
+              var div;
+              if(!test){
+                    div   = log('fixing audio ...');
+                    if(ffmpeg.promise){
+                          var n   = log('waiting for ffmpeg ...');
+                          await ffmpeg.promise;
+                          n.remove();
+                    }
+                    URL.revokeObjectURL(url);
+                    blob    = await record.fix(blob);
+                    url     = URL.createObjectURL(blob);
+              }
+              
+              
+              var node                              = record.log.cloneNode(true);
+              
+              $(node,'[type=checkbox]').onclick     = chk;
+              $(node,'.ts').textContent             = name;
+              $(node,'.size').textContent           = hs(blob.size);
+              $(node,'audio').src                   = url;
+              $(node,'.download').onclick           = download;
+              $(node,'.rem').onclick                = rem;
+              
+              if(div){
+                    output.replaceChild(node,div);
+              }else{
+                    output.append(node);
+              }
+              
+              var o   = {blob,url,node};
+              record.list.push(o);
+              
+              
+              function chk(){
+              
+                    record.list.forEach(o=>$(o.node,'[type=checkbox]').checked=false);
+                    $(node,'[type=checkbox]').checked   = true;
+                    
+              }//chk
+              
+              
+              function download(){
+              
+                    var a         = document.createElement('a');
+                    a.download    = name;
+                    a.href        = url;
+                    a.click();
+                    
+              }//download
+              
+              
+              function rem(){
+              
+                    var i   = record.list.findIndex(v=>v===o);
+                    record.list.splice(i,1);
+                    node.remove();
+                    
+              }//rem
+              
+        }//create
         
         
         record.read   = function(){
@@ -1090,6 +1102,7 @@
               var div           = document.createElement('div');
               div.textContent   = str;
               output.append(div);
+              return div;
               
         }//log
         
@@ -1202,9 +1215,9 @@ ffmpeg
         }//delete
         
         
-        
-        //await opfs.delete();
-        
+    //ffmpeg:
+    
+    
         ffmpeg    = {};
         var resolve;
         ffmpeg.promise    = new Promise(res=>resolve=res);
@@ -1212,7 +1225,9 @@ ffmpeg
         var on    = {};
         
         await opfs.init();
-        var {exists,error}    = await opfs.exists('ffmpeg');
+        //await opfs.delete();
+        
+        var {exists,error}    = await opfs.exists();
         if(error){
               log(error.name);
               log(error.message);
@@ -1228,8 +1243,6 @@ ffmpeg
         
         if(!exists){
                                                                                 console.log('loading ffmpeg');
-              await opfs.create();
-              
               var {zip}     = await import('https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js');
               var get       = url=>fetch(url).then(res=>res.blob());
               
@@ -1258,6 +1271,7 @@ ffmpeg
               
               files     = await zip.rd(blob);
               
+              await opfs.create();
               await Promise.all(files.map(async({name,blob})=>{
               
                     files[name]   = blob;
