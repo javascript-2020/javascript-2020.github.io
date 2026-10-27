@@ -150,6 +150,15 @@
         
         function events(){
         
+              window.addEventListener('message',e=>{
+              
+                    var json    = e.data;
+                    if(json.sandbox){
+                          output.on.message(json);
+                    }
+                    
+              });
+              
               window.addEventListener('beforeunload',event=>{
               
                     if(save_status){
@@ -300,7 +309,7 @@
                   
                   <div id=page-slider style='width:10px;cursor:ew-resize'></div>
                   
-                  <output-html v3.0 component=page></output-html>
+                  <output-html v4.0 component=page></output-html>
                   
             </div>
             
@@ -550,19 +559,6 @@
               save_status    = true;
               
         }//change
-        
-        
-  //:
-  
-  
-        window.addEventListener('message',e=>{
-        
-              var json    = e.data;
-              if(json.sandbox){
-                    output.on.message(json);
-              }
-              
-        });
         
         
   //:
