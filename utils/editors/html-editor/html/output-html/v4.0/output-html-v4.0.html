@@ -226,8 +226,10 @@
               
               on.message    = function(json){
                                                                                 console.log('output.message',json);
-                    var {name,html}   = json;
-                    webconsole[name].display(html);
+                    if(json.type=='console'){
+                          var {name,html}   = json;
+                          webconsole[name].display(html);
+                    }
                     
               }//message
               
