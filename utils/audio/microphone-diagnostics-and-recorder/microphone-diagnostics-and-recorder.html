@@ -485,15 +485,9 @@
               range.oninput                                     = change;
               //range.dispatchEvent(new Event('input'));
               change();
-              $('[value="+"]').onclick                          = e=>{
+              $('[value="+"]').onclick                          = btn.inc;
               
-                                                                        range.max   = parseFloat(range.max)+0.5;
-                                                                        $('#range-max').textContent   = parseFloat(range.max).toFixed(1);
-                                                                        change();
-                                                                        
-                                                                  }//value=+
-                                                                  
-                                                                  
+              
               audio.obj                                         = $('audio');
               
               
@@ -568,6 +562,13 @@
         }//device
         
         
+        btn.inc   = function(e){
+        
+              range.max                     = parseFloat(range.max)+1;
+              $('#range-max').textContent   = parseFloat(range.max).toFixed(1);
+              change();
+              
+        }//inc
   //:
   
   
