@@ -171,11 +171,10 @@
               settings.initmod({output:obj});
               
               
-              await mod.auto();
-              
-              
-              
               events();
+              
+              
+              await mod.auto();
               
               
         }//init
@@ -406,7 +405,7 @@
                     
                     var channel       = new MessageChannel();
                     port              = channel.port1;
-                    port.onmessage    = on.msg;
+                    port.onmessage    = on.message;
                     //port.start();
                     iframe.contentWindow.postMessage({type:'init'},'*',[channel.port2]);
                     
