@@ -1151,17 +1151,9 @@ ffmpeg
 
         var opfs    = {};
         
-        opfs.init   = async function(){
-        
-              opfs.root   = await navigator.storage.getDirectory();
-              
-        }//init
-        
-        
+        opfs.init   = async function(){opfs.root   = await navigator.storage.getDirectory()}
         opfs.exists   = async function(){
         
-              await opfs.init();
-              
               var error;
               try{
               
@@ -1180,15 +1172,7 @@ ffmpeg
               return {exists:true};
               
         }//exists
-        
-        
-        opfs.create   = async function(){
-        
-              opfs.ffmpeg   = await opfs.root.getDirectoryHandle('ffmpeg',{create:true});
-              
-        }//create
-        
-        
+        opfs.create   = async function(){opfs.ffmpeg   = await opfs.root.getDirectoryHandle('ffmpeg',{create:true})}
         opfs.write    = async function(name,blob){
         
               var fh        = await opfs.ffmpeg.getFileHandle(name,{create:true});
@@ -1197,24 +1181,18 @@ ffmpeg
               await stream.close();
               
         }//write
-        
-        
         opfs.read   = async function(){
         
               var files   = {};
-              
               for await(var [name,handle] of opfs.ffmpeg.entries()){
               
                     var file    = await handle.getFile();
                     files[name]   = file;
                     
               }//for
-              
               return files;
               
         }//read
-        
-        
         opfs.delete   = async function(){
         
               var {exists}    = await opfs.exists();
