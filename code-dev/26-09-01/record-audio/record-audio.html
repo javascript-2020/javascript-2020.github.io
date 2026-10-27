@@ -1,0 +1,116 @@
+<style>
+  input {font-size:16px;padding:5px 10px;cursor:pointer}
+  audio {display:block;margin:20px 0}
+</style>
+
+<h3>record audio</h3>
+
+<audio controls></audio>
+
+<input type=button value=start onclick=initAudio()>
+<input type=button value=stop onclick=stopRecording()>
+
+
+<script>
+
+        var audioCtx;
+        var stream;
+        var sourceNode;
+        var gainNode;
+        var dest;
+        var mediaRecorder;
+        var recordedChunks      = [];
+        
+        var liveAudio;
+        
+        var on                  = {};
+        
+        
+        async function initAudio(){
+        
+              audioCtx                          = new AudioContext();
+              
+              stream                            = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+              sourceNode                        = audioCtx.createMediaStreamSource(stream);
+              
+              gainNode                          = audioCtx.createGain();
+              gainNode.gain.value               = 1.0;
+              
+              dest                              = audioCtx.createMediaStreamDestination();
+              
+              sourceNode.connect(gainNode);
+              gainNode.connect(dest);
+              
+              liveAudio                         = document.querySelector('audio');
+              liveAudio.srcObject               = dest.stream;
+              liveAudio.autoplay                = true;
+              
+              mediaRecorder                     = new MediaRecorder(dest.stream,{mimeType:'audio/webm'});
+              mediaRecorder.ondataavailable     = on.dataavailable;
+              mediaRecorder.onstop              = on.stop;
+              
+              startRecording();
+              
+        }//initAudio
+        
+        
+        on.dataavailable    = function(e){
+        
+                if(e.data.size>0){
+                      recordedChunks.push(e.data);
+                }
+                
+        }//dataavailable
+        
+        
+        on.stop   = function(){
+        
+                var blob                  = new Blob(recordedChunks,{type:'audio/webm'});
+                var url                   = URL.createObjectURL(blob);
+                
+                var div                   = document.createElement('div');
+                div.style.cssText         = 'display:flex;align-items:center;gap:20px';
+                
+                var playbackAudio         = new Audio(url);
+                playbackAudio.controls    = true;
+                div.append(playbackAudio);
+                
+                var link                  = document.createElement('a');
+                link.href                 = url;
+                link.download             = 'mic-recording.webm';
+                link.textContent          = 'Download Recording';
+                div.append(link);
+                
+                document.body.append(div);
+                
+        }//stop
+        
+        
+        function startRecording(){
+        
+              recordedChunks    = [];
+              if(audioCtx.state==='suspended'){
+                    audioCtx.resume();
+              }
+              mediaRecorder.start();
+              
+        }//startRecording
+        
+        
+        function stopRecording() {
+        
+              liveAudio.pause();
+              if(stream){
+                    stream.getTracks().forEach(track=>track.stop());
+              }
+              stream    = null;
+              
+              if(mediaRecorder && mediaRecorder.state==='recording'){
+                    mediaRecorder.stop();
+              }
+              
+        }//stopRecording
+        
+        
+</script>
+
