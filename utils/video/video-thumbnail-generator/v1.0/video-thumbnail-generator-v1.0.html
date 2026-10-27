@@ -294,8 +294,7 @@
       
       <script>
       
-        var _blob;
-        var _uint8;
+        var cache_video     = false;
         
         var ffmpeg;
         var ffmpeg_debug    = false;
@@ -332,11 +331,14 @@
               
               output    = $('#output');
               
-              ls.delete.cur;
-              if(!ls.read.cur.error){
-                    var {file,b64}    = ls.read.cur.value;
-                    var blob          = b64_blob(b64);
-                    complete.load(file,blob);
+              if(!cache_video){
+                    ls.delete.cur;
+              }else{
+                    if(!ls.read.cur.error){
+                          var {file,b64}    = ls.read.cur.value;
+                          var blob          = b64_blob(b64);
+                          complete.load(file,blob);
+                    }
               }
               
         }//initdom
@@ -562,8 +564,10 @@
         
         complete.load   = async function(file,blob){
         
-              var b64         = await blob_b64(blob);
-              ls.write.cur    = {file,b64};
+              if(cache_video){
+                    var b64         = await blob_b64(blob);
+                    ls.write.cur    = {file,b64};
+              }
               
               cur.file    = file;
               cur.blob    = blob;
