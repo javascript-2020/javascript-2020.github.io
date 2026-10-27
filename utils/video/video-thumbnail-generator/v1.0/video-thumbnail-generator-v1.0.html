@@ -47,7 +47,7 @@
         
         var ace;
         
-        var ext,$,datatype,menumod,keydown,debug,hs
+        var ext,$,datatype,menumod,keydown,debug,hs,lsmod
         ;
         
         
@@ -61,6 +61,7 @@
         
         async function init(){
         
+              ls                        = lsmod();
               menu                      = menumod();
               
               mod.base.add({ext,$,datatype,keydown,menu,menumod,debug});
@@ -101,8 +102,9 @@
               'js/dom/keydown/keydown.js',
               'js/debug/debug.js',
               'js/string/hs.js',
+              'js/core/ls-mod/ls-mod.js',
         );
-        [$,datatype,menumod,keydown,debug,hs]   = await promise;
+        [$,datatype,menumod,keydown,debug,hs,lsmod]   = await promise;
         
         mod.stack.complete;
         
@@ -330,11 +332,12 @@
               
               output    = $('#output');
               
-              
-              if(window.parent.curvideo){
-                    complete.load(window.parent.curvideo.file,structuredClone(window.parent.curvideo.blob));
+              ls.delete.cur;
+              if(!ls.read.cur.error){
+                    var {file,b64}    = ls.read.cur.value;
+                    var blob          = b64_blob(b64);
+                    complete.load(file,blob);
               }
-              
               
         }//initdom
         
@@ -557,11 +560,10 @@
         
         var complete    = {};
         
-        complete.load   = function(file,blob){
+        complete.load   = async function(file,blob){
         
-              window.parent.curvideo    = {};
-              window.parent.curvideo.file   = file;
-              window.parent.curvideo.blob   = structuredClone(blob);
+              var b64         = await blob_b64(blob);
+              ls.write.cur    = {file,b64};
               
               cur.file    = file;
               cur.blob    = blob;
@@ -580,9 +582,257 @@
         
   //:
   
+  
+        function disp(...args){
+        
+              var str           = args.join(' ');
+              var div           = document.createElement('div');
+              div.textContent   = str;
+              document.querySelector('#output').append(div);
+              
+        }//disp
+        
+        
+  //:
+  
+  
+        async function blob_b64(blob){
+        
+              var buf     = await blob.arrayBuffer();
+              var bytes   = new Uint8Array(buf);
+              var b64     = bytes.toBase64();
+              return b64;
+              
+              var bin     = [...bytes].reduce((acc,byte)=>acc+=String.fromCharCode(byte),'');
+              var b64     = btoa(bin);
+              return b64;
+              
+        }//blob_b64
+        
+        
+        function b64_blob(b64,type='text/plain'){
+        
+              var uint8     = Uint8Array.fromBase64(b64);
+              //var bin       = atob(b64);
+              //var bytes     = [...bin].map(c=>c.charCodeAt(0));
+              //var uint8     = new Uint8Array(bytes);
+              var blob      = new Blob([uint8],{type});
+              return blob;
+              
+        }//b64_blob
+        
+        var _blob     = v=>new Blob([v]);
+        var _uint8    = async v=>(dtype(v)=='blob'||dtype(v)=='file') ? new Uint8Array(await v.arrayBuffer()) : new Uint8Array(v);
+        var dtype     = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
+        
+        
+  //:
+  
+  
+  
 ;
 (async()=>{
-                                                                                disp('loading');
+
+/*
+
+ffmpeg
+
+26-10-26
+
+*/
+
+        var opfs    = {};
+        
+        opfs.init   = async function(){opfs.root   = await navigator.storage.getDirectory()}
+        opfs.exists   = async function(){
+        
+              var error;
+              try{
+              
+                  opfs.ffmpeg   = await opfs.root.getDirectoryHandle('ffmpeg',{create:false});
+                  
+              }//try
+              catch(err){
+              
+                  error   = err;
+                  
+              }//catch
+              if(error){
+                  if(error.name==='NotFoundError')return {exists:false};
+                  return {error};
+              }
+              return {exists:true};
+              
+        }//exists
+        opfs.create   = async function(){opfs.ffmpeg   = await opfs.root.getDirectoryHandle('ffmpeg',{create:true})}
+        opfs.write    = async function(name,blob){
+        
+              var fh        = await opfs.ffmpeg.getFileHandle(name,{create:true});
+              var stream    = await fh.createWritable();
+              await stream.write(blob);
+              await stream.close();
+              
+        }//write
+        opfs.read   = async function(){
+        
+              var files   = {};
+              for await(var [name,handle] of opfs.ffmpeg.entries()){
+              
+                    var file    = await handle.getFile();
+                    files[name]   = file;
+                    
+              }//for
+              return files;
+              
+        }//read
+        opfs.delete   = async function(){
+        
+              var {exists}    = await opfs.exists();
+              if(!exists)return;
+              await opfs.ffmpeg.remove({recursive:true});
+              
+        }//delete
+        
+        
+    //ffmpeg:
+    
+    
+        ffmpeg    = {};
+        var resolve;
+        ffmpeg.promise    = new Promise(res=>resolve=res);
+        
+        var on    = {};
+        
+        await opfs.init();
+        //await opfs.delete();
+        
+        var {exists,error}    = await opfs.exists();
+        if(error){
+              log(error.name);
+              log(error.message);
+              return;
+        }
+        
+        var fnstr     = (fn,_,js,i1,i2)=>(js=fn+'',i1=js.indexOf('{'),i2=js.lastIndexOf('}'),js.slice(i1+1,i2));
+        var dtype     = v=>Object.prototype.toString.call(v).slice(8,-1).toLowerCase();
+        var _blob     = v=>new Blob([v]);
+        var _uint8    = async v=>(dtype(v)=='blob'||dtype(v)=='file') ? new Uint8Array(await v.arrayBuffer()) : new Uint8Array(v);
+        
+        var files;
+        
+        if(!exists){
+                                                                                console.log('loading ffmpeg');
+              var {zip}     = await import('https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js');
+              var get       = url=>fetch(url).then(res=>res.blob());
+              
+              var zipurl    = [
+                    'https://raw.githubusercontent.com/javascript-2020/external/main/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip',
+                    'https://cdn.jsdelivr.net/gh/javascript-2020/external/ffmpeg/ffmpeg-wasm/ffmpeg-wasm.zip',
+              ];
+              var blob;
+              var err;
+              try{
+              
+                    blob      = await get(zipurl[1]);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                                                                                console.error(err);
+                                                                                //console.log(err.name);
+                                                                                //console.log(err.message);
+                    return;
+              }
+              
+              files     = await zip.rd(blob);
+              
+              await opfs.create();
+              await Promise.all(files.map(async({name,blob})=>{
+              
+                    files[name]   = blob;
+                    await opfs.write(name,blob);
+                    
+              }));
+                                                                                console.log('ffmpeg loaded');
+        }
+        if(exists){
+                                                                                console.log('ffmpeg exists');
+              files   = await opfs.read();
+        }
+        
+        files['ffmpeg-core.wasm']   = window.URL.createObjectURL(files['ffmpeg-core.wasm']);
+        var txt       = ['ffmpeg-core.js','index.js','ffmpeg.js','814.ffmpeg.js'];
+        await Promise.all(txt.map(async name=>files[name]=await files[name].text()));
+        
+        var sandbox       = {};
+        
+        sandbox.worker    = function(){
+        
+              self.fetch        = url=>new Promise(async res=>res(new Response('Not Found',{status:404})));
+              self.onmessage    = ({data:{lib,file}})=>{var importScripts=()=>self.eval(lib);eval(file)}
+              
+        }//worker
+        
+        sandbox.main    = function(){
+        
+        (()=>{
+        
+              var globalThis    = {document:{currentScript:{src:'https://null.com/'}}};
+              function Worker(url){
+                                                                                //console.log('worker-sandbox',`${url}`);
+                    var js        = fnstr(sandbox.worker);
+                    var blob      = new Blob([js]);
+                    var url2      = window.URL.createObjectURL(blob);
+                    var worker    = new window.Worker(url2);
+                    var lib       = files['ffmpeg-core.js'];
+                    var name      = url.pathname.split('/').at(-1);
+                    var file      = files[name];
+                    worker.postMessage({lib,file});
+                    return worker;
+                    
+              }//worker
+              
+              eval(files['ffmpeg.js']);
+              
+        })();
+        
+        }//main
+        
+        eval(fnstr(sandbox.main));
+        eval(files['index.js']);
+        
+        var {fetchFile}   = FFmpegUtil;
+        var {FFmpeg}      = FFmpegWASM;
+        
+        ffmpeg            = new FFmpeg();
+        ffmpeg._uint8     = _uint8;
+        ffmpeg._blob      = _blob;
+        await ffmpeg.load({coreURL:'ffmpeg-core.js',wasmURL:files['ffmpeg-core.wasm']});
+        
+        ffmpeg.on('log',({message})=>onmsg(message));
+        //await ffmpeg.exec(['-version']);
+        
+                                                                                console.log('ffmpeg ready');
+        function onmsg(message){
+        
+              console.log(message);
+              //if(!ffmpeg.debug)return;
+              //log(message);
+              
+        }//onmsg
+        
+})()
+;
+
+
+/*
+;
+(async()=>{
+                                                                                disp('loading ffmpeg');
                                                                                 
         var {zip}     = await import('https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js');
         var get       = url=>fetch(url).then(res=>res.blob());
@@ -673,18 +923,13 @@
 })()
 ;
 
+*/
 
-        function disp(str){
-        
-              var div   = document.createElement('div');
-              div.textContent   = str;
-              document.querySelector('#output').append(div);
-              
-        }//disp
-        
-        
-        
-        
+
+
+
+
+
       </script>
       
 </html>
