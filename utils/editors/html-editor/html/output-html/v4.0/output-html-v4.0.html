@@ -1,0 +1,625 @@
+
+
+<output-html>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  :host
+    {display:flex;flex-direction:column;height:100%;overflow:auto}
+    
+  #hdr
+    {display:flex;flex-wrap:wrap}
+    
+    
+  #console-clear
+    {margin-right:20px}
+    
+    
+    
+  #kill
+    {padding:5px 10px;min-width:60px}
+    
+    
+    
+  #hldr
+    {flex:1;box-sizing:border-box;position:relative}
+  iframe
+    {width:100%;height:100%;box-sizing:border-box;border:1px solid lightgray}
+  .loading
+    {border-color:orange}
+    
+    
+  #slider
+    {height:10px;cursor:ns-resize}
+    
+    
+  web-console
+    {border:1px solid lightgray;background:white;padding:5px;box-sizing:border-box}
+    
+    
+  .radio
+    {border:1px solid lightgray;padding:2px 5px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:10px}
+  .radio>*
+    {cursor:pointer}
+  .radio:has([type=checkbox]:disabled)
+    {color:gray;cursor:default}
+  .radio:has([type=checkbox]:disabled)>*
+    {cursor:default}
+    
+  input
+    {font-size:16px;padding:5px 10px}
+  input[type]
+    {cursor:pointer}
+  input[type=checkbox]
+    {width:20px;height:20px}
+    
+            </style>
+            
+            <div id=hdr>
+            
+                  <output-settings component=page></output-settings>
+                  
+                  <span id=allow-scripts class=radio>
+                        <input type=checkbox checked>
+                        allow-scripts
+                  </span>
+                  
+                  <div style='flex:1'></div>
+                  
+                  <span id=console-clear class=radio>
+                        clear
+                  </span>
+                  <span id=console-persist class=radio>
+                        <input type=checkbox>
+                        persist
+                  </span>
+                  <span id=console-wrap class=radio>
+                        <input type=checkbox>
+                        wrap
+                  </span>
+                  
+                  <button id=kill>kill</button>
+                  
+            </div>
+            
+            
+            <div id=hldr>
+                  <iframe></iframe>
+            </div>
+            
+            <div id=slider></div>
+            
+            <web-console v3.0 component h=150></web-console>
+            
+      </template>
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {
+        version   : 'v2.0',
+  };
+        var df=true,did='output-html';
+        
+        var ext,$,debug
+        ;
+        
+        obj.initmod   = function(...list){
+        
+              list.forEach(params=>{
+              
+                    ext         = mod.rd(params,'ext',ext);
+                    $           = mod.rd(params,'$',$);
+                    debug       = mod.rd(params,'debug',debug);
+                    
+              });
+              
+        }//initmod
+        
+        
+  //vars:-
+  
+  
+        var webconsole;
+        var settings;
+        
+        
+        
+        var sandbox_type      = 'type3';
+        var sandbox_url       = {};
+        sandbox_url.type1     = 'https://sandbox.ext-code.com/html-sandbox-1/html-sandbox-1.html';
+        sandbox_url.type2     = 'https://sandbox.ext-code.com/html-sandbox-2/html-sandbox-2.html';
+        sandbox_url.type3     = 'https://sandbox.ext-code.com/html-sandbox-v3.0/html-sandbox-v3.0.html';
+        
+        
+        
+        var shadow;
+        
+        var hldr;
+        var iframe;
+        var last_src;
+        
+        var chk         = {};
+        obj.chk         = chk;
+        
+        
+        
+        var btn         = {};
+        btn.console     = {};
+        var on          = {};
+        obj.on          = on;
+        var create      = {};
+        obj.console     = {};
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+                                                                                debug=eval(debug.mod);
+                                                                                debug('init');
+                                                                                
+              webconsole    = mod['web-console'];
+              
+              settings      = mod['output-settings'];
+              settings.initmod({output:obj});
+              
+              
+              await mod.auto();
+              
+              
+              
+              events();
+              
+              
+        }//init
+        
+        
+        function events(){
+        
+              window.addEventListener('message',event=>{
+                                                                                //console.log(event);
+                                                                                
+                    if(event.source!==iframe.contentWindow)return;
+                    
+                    var data    = event.data;
+                    if(data && data.source==='IFRAME_MOUSE_BRIDGE'){
+                    
+                          var rect            = iframe.getBoundingClientRect();
+                          
+                          var parentClientX   = rect.left+data.clientX;
+                          var parentClientY   = rect.top+data.clientY;
+                          var screenX         = window.screenX+parentClientX;
+                          var screenY         = window.screenY+parentClientY;
+                                                                                //console.log(`Event: ${data.eventType}`,{x:parentClientX,y:parentClientY,nativeEventData:data});
+                          var event2          = new MouseEvent(data.eventType,{
+                                bubbles       : true,
+                                cancelable    : true,
+                                composed      : true,
+                                view          : window,
+                                detail        : data.eventType === 'click' || data.eventType === 'dblclick' ? 1 : 0,
+                                screenX       : screenX,
+                                screenY       : screenY,
+                                clientX       : parentClientX,
+                                clientY       : parentClientY,
+                                pageX         : data.pageX,
+                                pageY         : data.pageY,
+                                ctrlKey       : data.ctrlKey,
+                                altKey        : data.altKey,
+                                shiftKey      : data.shiftKey,
+                                metaKey       : data.metaKey,
+                                button        : data.button,
+                                buttons       : data.buttons
+                          });
+                          
+                          iframe.dispatchEvent(event2);
+                          
+                    }
+                    
+              });
+              
+              
+              on.message    = function(json){
+                                                                                console.log('output.message',json);
+                    var {name,html}   = json;
+                    webconsole[name].display(html);
+                    
+              }//message
+              
+              
+        }//events
+        
+        
+  //:
+  
+  
+        obj.initdom   = function(){
+                                                                                debug('initdom');
+              shadow                                    = host.shadowRoot;
+              
+              var style                                 = $(shadow,'style');
+              $.stylesheet.insert(style,'button','.icon');
+              
+              
+              var hdr                                   = $(shadow,'#hdr');
+              
+              chk['allow-scripts']                      = $.chkbox(hdr,'#allow-scripts',btn['allow-scripts']);
+              
+              $(shadow,'#console-clear').onclick        = btn.console.clear;
+              chk['console-persist']                    = $.chkbox(hdr,'#console-persist');
+              //$.chkbox(shadow,'#console-wrap',btn.console.wrap)
+              
+              $(hdr,'#kill').onclick                    = btn.kill;
+              
+              
+              hldr                                      = $(shadow,'#hldr');
+              iframe                                    = $(shadow,'iframe');
+              
+              
+              $.slider(hldr,'#slider','web-console',null,{root:shadow,mode:'horiz'});
+              
+              
+              var src   = sandbox_url[sandbox_type];
+              create.iframe({src});
+              
+              
+        }//initdom
+        
+        
+  //:
+  
+  
+        btn['allow-scripts']    = function(chk){
+        
+              settings.sandbox.chk['allow-scripts'].checked   = chk.checked;
+              
+        }//allow-scripts
+        
+        
+        btn.kill    = function(){
+        
+              kill();
+              
+        }//kill
+        
+        
+/*
+        btn.isolate   = function(chk){
+        
+              var url   = new URL(sandbox_url);
+              if(chk.checked){
+                    sanbox_url   += '?isolate';
+              }else{
+                    var i         = sandbox_url.indexOf('?');
+                    sandbox_url   = sandbox_url.slice(0,i);
+              }
+              
+        }//isolate
+*/
+
+
+
+        btn.console.clear   = function(){
+        
+              webconsole.clear();
+              
+              if(settings.chk['console-echo'].checked){
+                    console.clear();
+              }
+              
+        }//clear
+        
+        
+        btn.console.wrap    = function(chk){
+        
+              if(chk.checked){
+                    webconsole.style.whiteSpace   = 'pre-wrap';
+              }else{
+                    webconsole.style.whiteSpace   = 'no-wrap';
+              }
+              
+        }//wrap
+        
+        
+  //:
+  
+  
+        obj.console.show    = function(chk){
+        
+              if(chk.checked){
+                    webconsole.host.style.display   = '';
+              }else{
+                    webconsole.host.style.display   = 'none';
+              }
+              
+        }//show
+        
+        
+        obj.horiz   = function(){
+        
+              host.style.width     = '100%';
+              host.style.height    = '50%';
+              
+        }//horiz
+        
+        
+        obj.vert    = function(){
+        
+              host.style.width    = '50%';
+              host.style.height   = '100%';
+              
+        }//vert
+        
+        
+        
+  //:
+  
+  
+        obj.run   = function(html){
+        
+              switch(sandbox_type){
+              
+                case 'type1'    : sandbox1(html);       break;
+                case 'type2'    : sandbox2(html);       break;
+                case 'type3'    : sandbox3(html);       break;
+                
+              }//switch
+              
+        }//run
+        
+        
+        create.iframe   = function({src,onload:ponload}={}){
+                                                                                debug('create.iframe',src);
+              iframe.remove();
+              iframe    = iframe.cloneNode();
+              
+              var attr    = settings.build.sandbox();
+              iframe.setAttribute('sandbox',attr);
+              
+              var attr    = settings.build.permissions();
+              iframe.setAttribute('allow',attr);
+              iframe.classList.add('loading');
+              
+              /*
+              if(chk.isolate.checked){
+                    src  += '?isolate';
+              }
+              */
+              
+              iframe.src      = src||last_src;
+              laast_src       = src;
+              
+              iframe.onload   = onload;
+              hldr.append(iframe);
+              
+              
+              function onload(){
+              
+                    iframe.classList.remove('loading');
+                    
+                    var channel       = new MessageChannel();
+                    port              = channel.port1;
+                    port.onmessage    = on.msg;
+                    iframe.contentWindow.postMessage({type:'init'},'*',[channel.port2]);
+                    
+                    if(typeof ponload=='function'){
+                          ponload();
+                    }
+                    
+              }//onload
+              
+        }//iframe
+        
+        
+        function sandbox1(html){
+                                                                                debug('sandbox1');
+              var src   = iframe_src;
+              create.iframe({src,onload});
+              
+              
+              function onload(){
+                                                                                debug('onload');
+                    iframe.onload   = null;
+                    
+                    if(!chk['console-persist'].checked){
+                          webconsole.clear();
+                          if(chk['console-echo'].checked){
+                                console.clear();
+                          }
+                    }
+                    
+                    var echo    = chk['console-echo'].checked;
+                    iframe.contentWindow.postMessage({type:'run',html,echo},'*');
+                    
+              }//onload
+              
+        }//sandbox1
+        
+        
+        async function sandbox2(html){
+                                                                                debug('sandbox2');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              
+              if(!chk['console-persist'].checked){
+                    btn.console.clear();
+              }
+              
+              var echo        = settings.chk['console-echo'].checked;
+              
+              var fn          = await upload();
+                                                                                debug(fn);
+              var src         = sandbox_url.type2+`?fn=${fn}`;
+              
+              create.iframe({src,onload});
+              
+              return promise;
+              
+              
+              async function upload(){
+                                                                                debug('upload');
+                    var {result,error}    = await send({type:'upload',html,echo});
+                    if(error){
+                                                                                debug(error);
+                          log.red(error);
+                          return;
+                    }
+                                                                                debug('ok');
+                    var fn    = result;
+                    return fn;
+                    
+              }//upload
+              
+              
+              async function onload(){
+                                                                                debug('onload');
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
+                    
+                    resolve();
+                    
+              }//onload
+              
+        }//sandbox2
+        
+        
+        async function sandbox3(html){
+                                                                                debug('sandbox3');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              
+              if(!chk['console-persist'].checked){
+                    btn.console.clear();
+              }
+              var echo        = settings.chk['console-echo'].checked;
+              
+              
+              var fn          = await upload();
+                                                                                //debug(fn);
+              var src         = sandbox_url.type3+`?fn=${fn}`;
+                                                                                debug(src);
+              create.iframe({src,onload});
+              
+              
+              return promise;
+              
+              
+              async function upload(){
+                                                                                debug('upload');
+                    var {result,error}    = await send({type:'upload',html,echo});
+                    if(error){
+                                                                                debug(error);
+                          log.red(error);
+                          return;
+                    }
+                                                                                debug('ok');
+                    var fn    = result;
+                    return fn;
+                    
+              }//upload
+              
+              
+              async function onload(){
+                                                                                debug('onload');
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
+                    
+                    resolve();
+                    
+              }//onload
+              
+        }//sandbox2
+        
+        
+        
+        function srcdoc(html){
+        
+              iframe.remove();
+              iframe    = iframe.cloneNode();
+              
+              build.sandbox();
+              
+              hldr.append(iframe);
+              
+              
+              if(!chk['console-persist'].checked){
+                    webconsole.clear();
+                    if(chk['console-echo'].checked){
+                          console.clear();
+                    }
+              }
+              
+              iframe.srcdoc   = html;
+              
+        }//srcdoc
+        
+        
+        
+  //:
+  
+  
+        function send(payload){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var msgid   = crypto.randomUUID();
+              
+              window.addEventListener('message',onmessage);
+              iframe.contentWindow.postMessage({msgid,payload},'*');
+              
+              return promise;
+              
+              
+              function onmessage(e){
+              
+                    if(e.data?.msgid!==msgid)return;
+                    window.removeEventListener('message',onmessage);
+                    var {result,error}    = e.data;
+                    resolve({result,error});
+                    
+              }//onmessage
+              
+        }//send
+        
+        
+  //:
+  
+  
+  
+/*
+        obj.blob    = function(html){
+        
+              var blob=new Blob([html],{type:'text/html'});
+              var url=URL.createObjectURL(blob);
+              iframe.src=url;
+              
+        }//blob
+*/
+
+
+
+        obj.kill    = function(){return kill()}    //d
+        
+        function kill(){
+        
+              create.iframe();
+              
+        }//kill
+        
+        
+  //:
+  
+  
+  
+  return obj;
+  
+//output_html
+})
+
+      </script>
+      
+</output-html>
+
