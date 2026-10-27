@@ -1195,10 +1195,10 @@ ffmpeg
               
         }//write
         opfs.read   = async function(){
-        
+          console.log('opfs.read');
               var files   = {};
               for await(var [name,handle] of opfs.ffmpeg.entries()){
-              
+console.log('opfs.read',name);
                     var file    = await handle.getFile();
                     files[name]   = file;
                     
@@ -1215,9 +1215,9 @@ ffmpeg
         }//delete
         
         
-        
-        //await opfs.delete();
-        
+    //ffmpeg:
+    
+    
         ffmpeg    = {};
         var resolve;
         ffmpeg.promise    = new Promise(res=>resolve=res);
@@ -1225,7 +1225,9 @@ ffmpeg
         var on    = {};
         
         await opfs.init();
-        var {exists,error}    = await opfs.exists('ffmpeg');
+        await opfs.delete();
+        
+        var {exists,error}    = await opfs.exists();
         if(error){
               log(error.name);
               log(error.message);
@@ -1241,8 +1243,6 @@ ffmpeg
         
         if(!exists){
                                                                                 console.log('loading ffmpeg');
-              await opfs.create();
-              
               var {zip}     = await import('https://cdn.jsdelivr.net/gh/javascript-2020/libs/js/io/tiny-unzip/tiny-unzip.m.js');
               var get       = url=>fetch(url).then(res=>res.blob());
               
@@ -1271,6 +1271,7 @@ ffmpeg
               
               files     = await zip.rd(blob);
               
+              await opfs.create();
               await Promise.all(files.map(async({name,blob})=>{
               
                     files[name]   = blob;
@@ -1279,11 +1280,13 @@ ffmpeg
               }));
                                                                                 console.log('ffmpeg loaded');
         }
-        if(exists){
+        if(exists){debugger;
                                                                                 console.log('ffmpeg exists');
               files   = await opfs.read();
         }
-        
+        console.log('files',files);
+console.log('core.wam',files['ffmpeg-core.wasm']);
+
         files['ffmpeg-core.wasm']   = window.URL.createObjectURL(files['ffmpeg-core.wasm']);
         var txt       = ['ffmpeg-core.js','index.js','ffmpeg.js','814.ffmpeg.js'];
         await Promise.all(txt.map(async name=>files[name]=await files[name].text()));
