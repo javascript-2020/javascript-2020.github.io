@@ -133,6 +133,9 @@
         sandbox_url.type1     = 'https://sandbox.ext-code.com/html-sandbox-1/html-sandbox-1.html';
         sandbox_url.type2     = 'https://sandbox.ext-code.com/html-sandbox-2/html-sandbox-2.html';
         sandbox_url.type3     = 'https://sandbox.ext-code.com/html-sandbox-v3.0/html-sandbox-v3.0.html';
+        sandbox_url.type4     = 'https://sandbox.ext-code.com/html-sandbox-v4.0/html-sandbox-v4.0.html';
+        
+        var port;
         
         
         
@@ -365,6 +368,7 @@
                 case 'type1'    : sandbox1(html);       break;
                 case 'type2'    : sandbox2(html);       break;
                 case 'type3'    : sandbox3(html);       break;
+                case 'type4'    : sandbox4(html);       break;
                 
               }//switch
               
@@ -531,7 +535,56 @@
                     
               }//onload
               
-        }//sandbox2
+        }//sandbox3
+        
+        
+        async function sandbox4(html){
+                                                                                debug('sandbox3');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              
+              if(!chk['console-persist'].checked){
+                    btn.console.clear();
+              }
+              var echo        = settings.chk['console-echo'].checked;
+              
+              
+              var fn          = await upload();
+                                                                                //debug(fn);
+              var src         = sandbox_url.type3+`?fn=${fn}`;
+                                                                                debug(src);
+              create.iframe({src,onload});
+              
+              
+              return promise;
+              
+              
+              async function upload(){
+                                                                                debug('upload');
+                    var {result,error}    = await send2({type:'upload',html,echo});
+                    if(error){
+                                                                                debug(error);
+                          log.red(error);
+                          return;
+                    }
+                                                                                debug('ok');
+                    var fn    = result;
+                    return fn;
+                    
+              }//upload
+              
+              
+              async function onload(){
+                                                                                debug('onload');
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
+                    
+                    resolve();
+                    
+              }//onload
+              
+        }//sandbox4
+        
         
         
         
@@ -577,6 +630,30 @@
               
                     if(e.data?.msgid!==msgid)return;
                     window.removeEventListener('message',onmessage);
+                    var {result,error}    = e.data;
+                    resolve({result,error});
+                    
+              }//onmessage
+              
+        }//send
+        
+        
+        function send2(payload){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var msgid   = crypto.randomUUID();
+              
+              port.addEventListener('message',onmessage);
+              port.postMessage({msgid,payload},'*');
+              
+              return promise;
+              
+              
+              function onmessage(e){
+              
+                    if(e.data?.msgid!==msgid)return;
+                    port.removeEventListener('message',onmessage);
                     var {result,error}    = e.data;
                     resolve({result,error});
                     
