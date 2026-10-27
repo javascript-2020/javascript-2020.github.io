@@ -16,7 +16,7 @@ cube entirely through the DOM and CSS.
 
 ## How It Works: Step-by-Step
 
-### 1. The DOM-Pixel Grid
+### 1. The Pixel Grid
  
 The script starts by measuring the screen ( window.innerWidth and document.documentElement.scrollHeight )
 and dividing it by a size factor ( 10px per "pixel" ). It dynamically generates a matrix of empty div
