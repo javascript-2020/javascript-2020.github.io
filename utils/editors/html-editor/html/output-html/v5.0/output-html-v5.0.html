@@ -599,7 +599,7 @@
               
               var fn          = await upload();
                                                                                 //debug(fn);
-              var src         = sandbox_url.type5+`?fn=${fn}`;
+              var src         = sandbox_url.type3+`?fn=${fn}`;
                                                                                 debug(src);
               create.iframe({src,onload});
               
@@ -609,7 +609,7 @@
               
               async function upload(){
                                                                                 debug('upload');
-                    var {result,error}    = await send({type:'upload',html,echo});
+                    var {result,error}    = await send3({type:'upload',html,echo});
                     if(error){
                                                                                 debug(error);
                           log.red(error);
@@ -631,7 +631,7 @@
                     
               }//onload
               
-        }//sandbox3
+        }//sandbox5
         
         
         
@@ -708,6 +708,32 @@
               }//onmessage
               
         }//send
+        
+        
+        function send3(payload){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var msgid   = crypto.randomUUID();
+              
+              proxy.contetntWindow.addEventListener('message',onmessage);
+              iframe.contentWindow.postMessage({msgid,payload},'*');
+              
+              return promise;
+              
+              
+              function onmessage(e){
+              
+                    if(e.data?.msgid!==msgid)return;
+                    proxy.contentWindow.removeEventListener('message',onmessage);
+                    var {result,error}    = e.data;
+                    resolve({result,error});
+                    
+              }//onmessage
+              
+        }//send
+        
+        
         
         
   //:
