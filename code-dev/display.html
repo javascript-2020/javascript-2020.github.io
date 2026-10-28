@@ -235,25 +235,33 @@
               desc(rel);
               
                                                                                 console.log(fext,fn);
-              var dom;
+              var custom;
               switch(fext){
               
-                case 'html'   : dom   = document.createElement('snippet-html-console');       break;
-                case 'js'     : dom   = document.createElement('snippet-console');            break;
-                
+                case 'html'   :
+                                custom   = document.createElement('snippet-html-console');
+                                custom.toggleAttribute('v3.0',true);
+                                                                                                  break;
+                case 'js'     :
+                                custom   = document.createElement('snippet-console');
+                                custom.toggleAttribute('v2.0',true);
+                                                                                                  break;
+                                                                                                  
               }//switch
               
               
-              dom.setAttribute('id','test');
-              dom.toggleAttribute('component',true);
-              dom.toggleAttribute('v2.0',true);
-              dom.setAttribute('src',rel);
+              custom.setAttribute('id','test');
+              custom.toggleAttribute('component',true);
+              custom.setAttribute('src',rel);
               
-              document.body.append(dom);
-              await mod.build({root:dom,mod});
-              mod.test.initmod({ext,$,menu,ace});
-              await mod.test.init();
-              mod.test.initdom();
+              document.body.append(custom);
+              await mod.build({root:custom,mod});
+              
+              mod.initmod(mod.test);
+              await mod.init(mod.test);
+              //await mod.test.init();
+              await mod.initdom(mod.test);
+              //mod.test.initdom();
               
               
         }//query
