@@ -134,6 +134,7 @@
         sandbox_url.type2     = 'https://sandbox.ext-code.com/html-sandbox-2/html-sandbox-2.html';
         sandbox_url.type3     = 'https://sandbox.ext-code.com/html-sandbox-v3.0/html-sandbox-v3.0.html';
         sandbox_url.type4     = 'https://sandbox.ext-code.com/html-sandbox-v4.0/html-sandbox-v4.0.html';
+        sandbox_url.type5     = 'https://sandbox.ext-code.com/html-sandbox-v5.0/html-sandbox-v5.0.html';
         
         var port;
         
@@ -142,6 +143,7 @@
         var shadow;
         
         var hldr;
+        var proxy;
         var iframe;
         var last_src;
         
@@ -262,7 +264,7 @@
               
               
               hldr                                      = $(shadow,'#hldr');
-              iframe                                    = $(shadow,'iframe');
+              proxy                                     = $(shadow,'iframe');
               
               
               $.slider(hldr,'#slider','web-console',null,{root:shadow,mode:'horiz'});
@@ -381,8 +383,7 @@
         create.iframe   = function({src,onload:ponload}={}){
                                                                                 debug('create.iframe',src);
               iframe.remove();
-              iframe    = iframe.cloneNode();
-              
+              iframe    = document.createElement('iframe');
               
               var attr    = settings.build.sandbox();
               iframe.setAttribute('sandbox',attr);
@@ -398,24 +399,18 @@
               */
               
               iframe.src      = src||last_src;
-              laast_src       = src;
+              last_src       = src;
               
               iframe.onload   = onload;
-              hldr.append(iframe);
+              proxy.contentDocument.body.append(iframe);
               
               
               function onload(){
               
                     iframe.classList.remove('loading');
                     
-                    var channel       = new MessageChannel();
-                    port              = channel.port1;
-                    port.onmessage    = on.message;
-                    //port.start();
-                    iframe.contentWindow.postMessage({type:'init'},'*',[channel.port2]);
-                    
                     if(typeof ponload=='function'){
-                          setTimeout(ponload,10);
+                          ponload();
                     }
                     
               }//onload
@@ -589,6 +584,54 @@
               }//onload
               
         }//sandbox4
+        
+        
+        async function sandbox5(html){
+                                                                                debug('sandbox3');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              
+              if(!chk['console-persist'].checked){
+                    btn.console.clear();
+              }
+              var echo        = settings.chk['console-echo'].checked;
+              
+              
+              var fn          = await upload();
+                                                                                //debug(fn);
+              var src         = sandbox_url.type5+`?fn=${fn}`;
+                                                                                debug(src);
+              create.iframe({src,onload});
+              
+              
+              return promise;
+              
+              
+              async function upload(){
+                                                                                debug('upload');
+                    var {result,error}    = await send({type:'upload',html,echo});
+                    if(error){
+                                                                                debug(error);
+                          log.red(error);
+                          return;
+                    }
+                                                                                debug('ok');
+                    var fn    = result;
+                    return fn;
+                    
+              }//upload
+              
+              
+              async function onload(){
+                                                                                debug('onload');
+                    iframe.onload   = null;
+                    iframe.contentWindow.focus();
+                    
+                    resolve();
+                    
+              }//onload
+              
+        }//sandbox3
         
         
         
