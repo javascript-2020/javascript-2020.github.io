@@ -178,8 +178,6 @@
               settings.initmod({output:obj});
               
               
-              events();
-              
               
               await mod.auto();
               
@@ -189,15 +187,15 @@
         
         function events(){
         
-              window.addEventListener('message',event=>{
+              proxy.contentWindow.addEventListener('message',event=>{
                                                                                 //console.log(event);
                                                                                 
-                    if(event.source!==iframe.contentWindow)return;
+                    if(event.source!==proxy.contentWindow)return;
                     
                     var data    = event.data;
                     if(data && data.source==='IFRAME_MOUSE_BRIDGE'){
                     
-                          var rect            = iframe.getBoundingClientRect();
+                          var rect            = proxy.getBoundingClientRect();
                           
                           var parentClientX   = rect.left+data.clientX;
                           var parentClientY   = rect.top+data.clientY;
@@ -224,12 +222,14 @@
                                 buttons       : data.buttons
                           });
                           
-                          iframe.dispatchEvent(event2);
+                          proxy.dispatchEvent(event2);
                           
                     }
                     
               });
               
+              
+              proxy.contentWindow.addEventListener('message',on.message);
               
               on.message    = function(e){
                                                                                 //console.log('output.message',e);
@@ -270,7 +270,6 @@
               
               hldr                                      = $(shadow,'#hldr');
               proxy                                     = $(shadow,'iframe');
-              proxy.contentWindow.addEventListener('message',on.message);
               var style   = $(host,'style#proxy');
               proxy.contentDocument.head.append(style);
               $.slider(hldr,'#slider','web-console',null,{root:shadow,mode:'horiz'});
@@ -279,6 +278,7 @@
               var src   = sandbox_url[sandbox_type];
               create.iframe({src});
               
+              events();
               
         }//initdom
         
