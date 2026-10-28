@@ -95,6 +95,11 @@
             
       </template>
       
+      <style id=proxy>
+            body{margin:0}
+            iframe{border:none;width:100%;height:100%}
+      </style>
+      
       <script>
       
 (function({mod,host}){
@@ -266,7 +271,8 @@
               hldr                                      = $(shadow,'#hldr');
               proxy                                     = $(shadow,'iframe');
               proxy.contentWindow.addEventListener('message',on.message);
-              
+              var style   = $(shadow,'style#proxy');
+              proxy.contentDocument.head.append(style);
               $.slider(hldr,'#slider','web-console',null,{root:shadow,mode:'horiz'});
               
               
