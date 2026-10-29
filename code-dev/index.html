@@ -247,14 +247,15 @@
               list.forEach(a=>{
               
                       var href                    = a.getAttribute('href');
+                      var url                     = new URL(href);
                       var params                  = new URLSearchParams(href);
                       
                       var i                       = href.indexOf('/');
                       var date                    = href.slice(0,i);
                       $(a,'.date').textContent    = date;
                       
-                      var i                       = href.lastIndexOf('/');
-                      var fn                      = href.slice(i+1);
+                      var i                       = url.pathname.lastIndexOf('/');
+                      var fn                      = url.pathname.slice(i+1);
                       var str                     = title(fn);
                       $(a,'.title').textContent   = str;
                       
