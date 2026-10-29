@@ -210,7 +210,7 @@
             </a>
             
             
-            <a href='25-10-21/override-createserver/override-createserver.html'>
+            <a href='25-10-21/override-createserver/override-createserver.html?isolate'>
                   <span class=date>
                   </span>
                   <img>
@@ -246,26 +246,37 @@
               var list    = rootnode.querySelectorAll('a');
               list.forEach(a=>{
               
-                      var href    = a.getAttribute('href');
+                      var href                    = a.getAttribute('href');
+                      var params                  = new URLSearchParams(href);
                       
-                      var i       = href.indexOf('/');
-                      var date    = href.slice(0,i);
+                      var i                       = href.indexOf('/');
+                      var date                    = href.slice(0,i);
                       $(a,'.date').textContent    = date;
                       
-                      var i       = href.lastIndexOf('/');
-                      var fn      = href.slice(i+1);
-                      
-                      var str     = title(fn);
+                      var i                       = href.lastIndexOf('/');
+                      var fn                      = href.slice(i+1);
+                      var str                     = title(fn);
                       $(a,'.title').textContent   = str;
                       
-                      var svg       = jdenticon.toSvg(href,30);
-                      var dataurl   = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-                      $(a,'img').src    = dataurl;
+                      var svg                     = jdenticon.toSvg(href,30);
+                      var dataurl                 = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+                      $(a,'img').src              = dataurl;
                       
+                      var params2                 = new URLSearchParams();
+                      params2.set('date',date);
+                      params2.set('file',fn);
+                      if(params.has('isolate'){
+                            params2.set('isolate','');
+                      }
+                      var query                   = params.toString();
+                      query                       = query.replace(/=(?=&|$)/g, '');
+                                                                                console.log(query);
+                                                                                
                       a.onclick   = e=>{
                       
                             e.preventDefault();
-                            window.location   = `display.html?date=${date}&file=${fn}`;
+                            //window.location   = `display.html?date=${date}&file=${fn}`;
+                            window.location   = `display?${query}`;
                             
                       }//onclick
                       
