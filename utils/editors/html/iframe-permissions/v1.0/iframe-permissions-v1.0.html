@@ -99,7 +99,7 @@
   //:
   
   
-        var values    = [
+        var values = [
               'accelerometer',
               'ambient-light-sensor',
               'autoplay',
@@ -111,6 +111,8 @@
               'clipboard-read',
               'clipboard-write',
               'compute-pressure',
+              'cross-origin-isolated', // <--- Added
+              'deferred-fetch',        // <--- Added
               'display-capture',
               'encrypted-media',
               'fullscreen',
@@ -120,6 +122,7 @@
               'hid',
               'idle-detection',
               'local-fonts',
+              'local-network',         // <--- Added
               'magnetometer',
               'microphone',
               'midi',
@@ -140,8 +143,9 @@
         var preset          = {};
         preset.min          = 'autoplay; encrypted-media; picture-in-picture;'
         preset.standard     = 'clipboard-write; clipboard-read; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share;';
-        preset.app          = `clipboard-write; clipboard-read; camera; microphone; geolocation; accelerometer; gyroscope; magnetometer; payment; usb; serial;
-                                bluetooth; xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; screen-wake-lock; web-share`;
+        preset.trusted      = `clipboard-write; clipboard-read; camera; cross-origin-isolated microphone; geolocation; accelerometer; gyroscope; local-network
+                                magnetometer; payment; usb; serial; bluetooth; xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture;
+                                screen-wake-lock; web-share`;
         preset.all          = values.join('; ');
         
         
