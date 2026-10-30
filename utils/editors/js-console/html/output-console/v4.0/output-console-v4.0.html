@@ -157,7 +157,7 @@
         var settings;
         var webconsole;
         
-        //var inspect;
+        var inspect;
         //var jsconsolemod;
         //var jsconsole;
         //var style;
@@ -247,16 +247,15 @@
         
               var list      = [];
               
-/*
+              
               var promise   = ext.load.libs('js/string/inspect.js').then(result=>{
               
                    [inspect]    = result;
                    
               });
               list.push(promise);
-*/
-
-
+              
+              
 /*
               var promise   = ext.load.libs('js/dom/web-console/web-console-2.js').then(result=>{
               
@@ -678,10 +677,10 @@
               
                     var win             = iframe.contentWindow;
                     win.focus();
-                    win.console.log     = log;
+                    win.console.log     = (...args)=>log(inspect.build.html(...args));
                     win.console.clear   = clear;
-                    win.console.error   = error;
-                    win.console.write   = write;
+                    win.console.error   = (...args)=>error(inpsect.bui.dhtml(...args));
+                    //win.console.write   = write;
                     
                     if(!chk.persist){
                           clear();
