@@ -73,7 +73,7 @@
                         
                         <div id=attr-btns>
                               <iframe-sandbox component=grp></iframe-sandbox>
-                              <iframe-permissions component=grp></iframe-permissions>
+                              <iframe-allow component=grp></iframe-allow>
                         </div>
                         
                   </div>
@@ -113,7 +113,7 @@
   
   
         var sandbox;
-        var permissions;
+        var allow;
         
         
         var shadow;
@@ -134,9 +134,9 @@
               obj.sandbox         = sandbox;
               sandbox.initmod({output});
               
-              permissions         = mod['iframe-permissions'];
-              obj.permissions     = permissions;
-              permissions.initmod({output});
+              allow               = mod['iframe-allow'];
+              obj.allow           = allow;
+              allow.initmod({output});
               
               await mod.auto();
               
@@ -170,16 +170,16 @@
         obj.build.sandbox   = function(){
         
               var attr      = sandbox.build();
-                                                                                debug(attr);
+                                                                                debug('sandbox',attr);
               return attr;
               
         }//allow
         
         
-        obj.build.permissions   = function(){
+        obj.build.allow   = function(){
         
-              var attr    = permissions.build();
-                                                                                debug(attr);
+              var attr    = allow.build();
+                                                                                debug('allow',attr);
               return attr;
               
         }//allow
