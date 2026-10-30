@@ -392,11 +392,12 @@
         
         
         create.iframe   = function({src,onload:ponload}={}){
-                                                                                debug('create.iframe',src);
+                                                                                debug('create.iframe');
               if(iframe){
                     iframe.remove();
               }
               iframe    = document.createElement('iframe');
+              
               
               var attr    = settings.build.sandbox();
               iframe.setAttribute('sandbox',attr);
@@ -405,12 +406,17 @@
               iframe.setAttribute('allow',attr);
               hldr.classList.add('loading');
               
-              /*
-              if(chk.isolate.checked){
-                    src  += '?isolate';
-              }
-              */
               
+              var url   = new URL(src);
+              
+              if(settings.chk.isolate.checked){
+                    url.searchParams.set('isolate','');
+              }
+              
+              var search    = url.search.replace(/=(?=&|$)/g,'');
+              src           = url.origin+url.pathname+search+url.hash;
+                                                                                debug(src);
+                                                                                
               iframe.src      = src||last_src;
               last_src        = src;
               
