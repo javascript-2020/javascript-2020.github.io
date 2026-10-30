@@ -285,6 +285,20 @@
                   <img id=prettier class=icon title=prettier>
                   <img id=syntax-chk class=icon title=syntax>
                   
+                  <div id=explorer-root class=radio>
+                        <input type=checkbox checked>
+                        <label>
+                              explorer
+                        </label>
+                  </div>
+                  
+                  <div id=editor-root class=radio>
+                        <input type=checkbox checked>
+                        <label>
+                              editor
+                        </label>
+                  </div>
+                  
                   <div id=output-root class=radio>
                         <input type=checkbox checked>
                         <label>
@@ -356,6 +370,8 @@
               $('#run').onclick                     = btn.run;
               $(root,'#prettier').onclick           = btn.prettier;
               $(root,'#syntax-chk').onclick         = btn.syntax;
+              $.chkbox(root,'#explorer-root',btn.explorer);
+              $.chkbox(root,'#editor-root',btn.editor);
               $.chkbox(root,'#output-root',btn.output);
               
               $('#horiz').onclick                   = horiz;
@@ -523,7 +539,7 @@
               let w;
               let h;
               
-              btn.output    = function(chk){console.log(chk);
+              btn.output    = function(chk){
               
                     if(output.__host.style.display=='none'){
                           if(ui.mode=='vert'){
@@ -546,6 +562,17 @@
                     }
                     
               }//show-output
+              
+              
+              btn.explorer    = function(chk){
+              
+                    if(chk.checked){
+                          explorer.style.display    = '';
+                    }else{
+                          explorer.style.display    = 'none';
+                    }
+                    
+              }//explorer
               
         }
         
