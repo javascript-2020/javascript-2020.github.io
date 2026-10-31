@@ -101,6 +101,8 @@
                                                                                 console.log(`html-editor-${version}.html`);
         var df=true,did='html-editor';
         
+        var localRegistry;
+        
         var hdr;
         var filemod;
         var autosave;
@@ -113,6 +115,9 @@
         
         async function init(){
                                                                                 debug('init',version);
+              localRegistry   = new CustomElementRegistry();
+              localRegistry.initialize(document.body);
+              
               hdr                       = mod['editors-hdr'];
               log                       = mod['log-mod'];
               filemod                   = mod['file-mod'];
@@ -909,8 +914,7 @@
         
   //checkbox:
   
-        var localRegistry   = new CustomElementRegistry();
-        
+  
         class checkbox extends HTMLElement {
         
               constructor() {
@@ -964,7 +968,6 @@
         }//class
         
         localRegistry.define('check-box',checkbox);
-        localRegistry.initialize(document.body);
         
         
       </script>
