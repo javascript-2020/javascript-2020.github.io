@@ -286,12 +286,28 @@
                   <img id=prettier class=icon title=prettier>
                   <img id=syntax-chk class=icon title=syntax>
                   
+                  
+                  <div id=explorer-root class=radio>
+                        <input type=checkbox checked>
+                        <label>
+                              explorer
+                        </label>
+                  </div>
+                  
+                  <div id=editor-root class=radio>
+                        <input type=checkbox checked>
+                        <label>
+                              editor
+                        </label>
+                  </div>
+                  
                   <div id=output-root class=radio>
                         <input type=checkbox checked>
                         <label>
                               output
                         </label>
                   </div>
+                  
                   
                   <span class=spc></span>
                   
@@ -326,6 +342,7 @@
         var icon    = {};
         
         var root;
+        var view;
         
         var slider              = {};
         var slider2             = {};
@@ -362,7 +379,7 @@
               $('#horiz').onclick                   = horiz;
               $('#vert').onclick                    = vert;
               
-              var view                              = $('#view');
+              view                                  = $('#view');
               ui.root                               = view;
               
               slider2.node                          = $.slider('code-explorer','#code-slider','web-editor',slider2,ui);
@@ -552,6 +569,30 @@
                     }
                     
               }//show-output
+              
+              
+              btn.editor    = function(chhk){
+              
+                    var node    = $(view,'web-editor');
+                    if(chk.checked){
+                          node.style.display    = '';
+                    }else{
+                          node.style.display    = 'none';
+                    }
+                    
+              }//editor
+              
+              
+              btn.explorer    = function(chk){
+              
+                    var node    = $(view,'code-explorer');
+                    if(chk.checked){
+                          node.style.display    = '';
+                    }else{
+                          node.style.display    = 'none';
+                    }
+                    
+              }//explorer
               
         }
         
