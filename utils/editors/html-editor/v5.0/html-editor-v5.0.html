@@ -414,12 +414,17 @@
         btn.isolate   = function(){
         
               var url   = window.location.toString();
-              var i1    = url.indexOf('?');
-              if(i1!=-1){
-                    url   = urls.lice(0,i1);
+              url       = new URL(url);
+              
+              if(url.searchParams.has('isolate')){
+                    url.searchParams.delete('isolate');
               }else{
-                    url  += '?isolate';
+                    url.searchParams.set('isolate');
               }
+              var search    = url.search.replace(/=(?=&|$)/g,'');
+              
+              url           = url.origin+url.pathname+search+url.hash;
+              
               window.location   = url;
               
         }//isolate
