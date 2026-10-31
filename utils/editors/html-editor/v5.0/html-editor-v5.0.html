@@ -548,8 +548,8 @@
         
         {
         
-              let w;
-              let h;
+              let w   = {};
+              let h   = {};
               
               btn.output    = function(chk){console.log(chk);
               
@@ -561,9 +561,9 @@
                     
                     if(output.__host.style.display=='none'){
                           if(ui.mode=='vert'){
-                                editor.__host.style.width     = w;
+                                editor.__host.style.width     = w.editor;
                           }else{
-                                editor.__host.style.height    = h;
+                                editor.__host.style.height    = h.editor;
                           }
                           output.__host.style.display         = '';
                           slider.node.style.display           = '';
@@ -571,10 +571,10 @@
                           output.__host.style.display         = 'none';
                           slider.node.style.display           = 'none';
                           if(ui.mode=='vert'){
-                                w                             = editor.__host.style.width;
+                                w.editor                      = editor.__host.style.width;
                                 editor.__host.style.width     = '100%';
                           }else{
-                                h                             = editor.__host.style.height;
+                                h.editor                      = editor.__host.style.height;
                                 editor.__host.style.height    = '100%';
                           }
                     }
@@ -584,6 +584,12 @@
               
               btn.editor    = function(chk){
               
+                    var ct    = Object.keys(grp.view).reduce((a,key)=>a+=grp.view[key].checked,0);
+                    if(ct==0){
+                          chk.checked   = true;
+                          return;
+                    }
+                    
                     var node    = $(view,'web-editor');
                     if(chk.checked){
                           node.style.display    = '';
@@ -596,11 +602,18 @@
               
               btn.explorer    = function(chk){
               
+                    var ct    = Object.keys(grp.view).reduce((a,key)=>a+=grp.view[key].checked,0);
+                    if(ct==0){
+                          chk.checked   = true;
+                          return;
+                    }
                     var node    = $(view,'code-explorer');
                     if(chk.checked){
-                          node.style.display    = '';
+                          node.style.display            = '';
+                          slider2.node.style.display    = '';
                     }else{
-                          node.style.display    = 'none';
+                          node.style.display            = 'none';
+                          slider2.node.style.display    = 'none';
                     }
                     
               }//explorer
