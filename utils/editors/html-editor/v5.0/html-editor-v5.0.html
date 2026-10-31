@@ -102,6 +102,9 @@
         var df=true,did='html-editor';
         
         var localRegistry;
+        localRegistry   = new CustomElementRegistry();
+        localRegistry.define('lock-check',lockcheck);
+        localRegistry.initialize(document.documentElement);
         
         var hdr;
         var filemod;
@@ -115,11 +118,8 @@
         
         async function init(){
                                                                                 debug('init',version);
-              localRegistry   = new CustomElementRegistry();
-              localRegistry.define('lock-check',lockcheck);
-              localRegistry.initialize(document.body);
-              
-              
+                                                                                
+                                                                                
               hdr                       = mod['editors-hdr'];
               log                       = mod['log-mod'];
               filemod                   = mod['file-mod'];
