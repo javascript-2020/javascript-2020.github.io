@@ -554,8 +554,10 @@
               btn.output    = function(chk){console.log(chk);
               
                     var ct    = Object.keys(grp.view).reduce((a,key)=>a+=grp.view[key].checked,0);
-                    console.log(ct);
-                    if(ct==1)return;
+                    if(ct==0){
+                          chk.checked   = true;
+                          return;
+                    }
                     
                     if(output.__host.style.display=='none'){
                           if(ui.mode=='vert'){
