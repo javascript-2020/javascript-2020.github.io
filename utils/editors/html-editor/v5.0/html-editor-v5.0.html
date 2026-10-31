@@ -235,7 +235,7 @@
     
     
   #glass
-    {position:absolute;inset:0 0 0 0;background:hsla(195,53%,79%,0.2)}
+    {z-index:2;position:absolute;inset:0 0 0 0;background:hsla(195,53%,79%,0.2)}
   #glass #close
     {position:absolute;left:30px;top:30px;width:30px;height:30px;background:white;border:1px solid blue;cursor:pointer;box-sizing:border-box;
       border-radius:3px;padding:4px 2px;
@@ -376,17 +376,18 @@
               
               menu.add.style();
               
-              var btn1    = document.createElement('input');
-              btn1.type    = 'button';
-              btn1.value   = 'isolate';
-              $(hdr.__host.shadowRoot,'#btns').append(btn1);
+              var btn1                              = document.createElement('input');
+              btn1.type                             = 'button';
+              btn1.value                            = 'isolate';
+              btn1.style.marginRight                = 10px;
               btn1.onclick                          = btn.isolate;
+              $(hdr.__host.shadowRoot,'#btns').append(btn1);
               
-              var btn2    = document.createElement('input');
-              btn2.type   = 'button';
-              btn2.value    = 'glass';
-              $(hdr.__host.shadowRoot,'#btns').append(btn2);
+              var btn2                              = document.createElement('input');
+              btn2.type                             = 'button';
+              btn2.value                            = 'glass';
               btn2.onclick                          = btn.glass;
+              $(hdr.__host.shadowRoot,'#btns').append(btn2);
               
               glass                                 = $('#glass');
               $(glass,'#close').onclick             = btn.glass;
