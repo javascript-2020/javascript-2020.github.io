@@ -234,6 +234,12 @@
     {flex:1}
     
     
+  #glass
+    {position:absolute;inset:0 0 0 0;background:hsla()}
+  #glass #close
+    {position:absolute;left:30px;height:30px;background:white;border:1px solid blue;cursor:pointer;box-sizing:border-box;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAiCAMAAAB/VplGAAAAq1BMVEVHcEzUAADXAADUAADVAADPAADYAADWAADLAADLAADbAADVAADXAADRAADKAADJAADVAADOAADkAADMAADiAADZAADUAADpAADoAADfAADJAADOAADrAADQAADbAADZAADWAADQAADIAADJAADsAADqAADHAADpAADwAADfAADTAAD2AADnAADiAADcAADWAADZAADPAADtAADlAAD6AADzAADMAADsAADJAAAFz1VZAAAAJnRSTlMACA8fA2MsfPdMGFZAtu3nv23t0q2Gj+KY9ng3xsrP/N2j3K+wzYD17h4AAAGhSURBVDjLdZPngoIwEIQJXRSRptjbXSgHoSn4/k92G7hQ5Jx/4QvJ7uyE41ohxdZn3EfNVIyXpth/EHbXWb808auqVKnfbsP2ebeUqirPc2PfrkRziUFHjeGFmkdRlOp8W4j6otiQu6suUZqm2Zkej9w8r4Avd4hhpKdZRgg5aRxanyPKB1dznAIwBClAsxS4ag47W2xJmIA2TkgI5WtxiPlTmJSNkjAEvtLGxnhJGce+H8fASbZcvPk2L2O/Lorab7jybqts+UUAKmrgK/4d899F8AQFhV9ai8lQxK/g+QN6BnXsiVPsAX48KN7I05FqhwAo8KBwpxR5BcP//Cwqfs0OP0zK5qRtXLPSNsIkS1ZS+l1j8ze6v4Dhcc1scdCICseMUM5MHbvC61HacjaS4e9onTc4TKzD30C3g9sltWo42ZqaA4GgcTh1xe8NDBmm3BU5zQnbsLCB8ncML4DyK3VD0ElGo7RjVd9wy//SI6xSoHZ3+A433GZGy0eIqTRoi/Jb36psV8OwQG3YGD5e+T56ypJqjF1Go7AgV/r07H8BUMxF2szPw1wAAAAASUVORK5CYII=);
+    }
     
   button
     {padding:5px 10px;cursor:pointer;height:30px;font-size:16px}
@@ -332,6 +338,10 @@
             
             <log-mod component></log-mod>
             
+            <div id=glass style='display:none'>
+                  <img id=close>
+            </div>
+            
       </body>
       
       
@@ -371,6 +381,14 @@
               $(hdr.__host.shadowRoot,'#btns').append(btn1);
               btn1.onclick                          = btn.isolate;
               
+              var btn2    = document.createElement('input');
+              btn2.type   = 'button';
+              btn2.value    = 'glass';
+              $(hdr.__host.shadowRoot,'#btns').append(btn2);
+              btn2.onclick                          = btn.glass;
+              
+              glass                                 = $('#glass');
+              $(glass,'#close').onclick             = btn.glass;
               
               $(root,'#save').onclick               = btn.save;
               $('#run').onclick                     = btn.run;
@@ -396,6 +414,9 @@
         }//initdom
         
         
+  //:
+  
+  
         function focus(){
         
               editor.focus();
@@ -431,6 +452,18 @@
               }
 */
         }//keydown
+        
+        
+        
+        btn.glass   = function(){
+        
+              if(glass.style.display=='none'){
+                    glass.style.display   = '';
+              }else{
+                    glass.style.display   = 'none';
+              }
+              
+        }//glass
         
         
         btn.isolate   = function(){
