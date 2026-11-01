@@ -297,11 +297,11 @@
                         3 May 2026
                   </time>
                   <div slot=ext>
-                        <input type=button value=isolate>
                         <lock-check id=lock></lock-check>
                         <img id=reload class=icon2>
                         <img id=close class=icon2>
                         <input type=button value=glass>
+                        <input type=button value=isolate>
                   </div>
             </editors-hdr>
             
@@ -412,7 +412,8 @@
               $('[value=isolate]').onclick          = btn.isolate;
               lock                                  = $('#lock');
               $('[value=glass]').onclick            = btn.glass;
-              
+              $('[slot=ext] #reload').onclick       = btn.reload;
+              $('[slot=ext] #close').onclick        = btn.close;
               glass                                 = $('#glass');
               $(glass,'#close').onclick             = btn.glass;
                                                                                 //  Note: passive: false is required if you
@@ -482,6 +483,21 @@
 */
         }//keydown
         
+        
+        
+        btn.reload    = function(){
+        
+              window.location.reload();
+              
+        }//reload
+        
+        
+        btn.close   = function(){
+        
+              lock.checked    = false;
+              window.close();
+              
+        }//close
         
         
         btn.glass   = function(){
