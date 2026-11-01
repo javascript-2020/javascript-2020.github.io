@@ -385,6 +385,7 @@
         grp.view                = {};
         var on                  = {};
         var set                 = {};
+        var wheel               = {};
         
         
         
@@ -400,6 +401,9 @@
               
               glass                                 = $('#glass');
               $(glass,'#close').onclick             = btn.glass;
+                                                                                //  Note: passive: false is required if you
+                                                                                //  use event.preventDefault()
+              glass.addEventListener('wheel',wheel.glass,{passive:false});
               
               $(root,'#save').onclick               = btn.save;
               $('#run').onclick                     = btn.run;
@@ -475,6 +479,54 @@
               }
               
         }//glass
+        
+        
+        wheel.glass   = function(e){
+        
+                event.preventDefault();
+                
+                var wheelEvent    = new WheelEvent('wheel',{
+                                                                                //  Wheel-specific properties
+                      deltaX          : e.deltaX,
+                      deltaY          : e.deltaY,
+                      deltaZ          : e.deltaZ,
+                      deltaMode       : e.deltaMode,
+                                                                                //  Mouse-specific coordinate properties
+                      screenX         : e.screenX,
+                      screenY         : e.screenY,
+                      clientX         : e.clientX,
+                      clientY         : e.clientY,
+                      button          : e.button,
+                      buttons         : e.buttons,
+                      relatedTarget   : e.relatedTarget,
+                                                                                //  Modifier keys
+                      ctrlKey         : e.ctrlKey,
+                      shiftKey        : e.shiftKey,
+                      altKey          : e.altKey,
+                      metaKey         : e.metaKey,
+                      
+                                                                                //  UIEvent properties
+                      view            : e.view||window,
+                      detail          : e.detail,
+                                                                                // Standard Event properties
+                                                                                //  (crucial for shadow dom / bubbling)
+                      bubbles         : true,
+                      cancelable      : true,
+                      composed        : true
+                });
+                
+                var target    = $.point..full(e.clientX,e.clientY);
+                target.dispatchEvent(wheelEvent);
+                
+        }//glass
+        
+        
+        
+        
+        // Usage:
+        //const actualTarget = getElementDeepFromPoint(event.clientX, event.clientY);
+        //console.log(actualTarget); // Returns the actual button/span deep inside the shadow DOM
+        
         
         
         btn.isolate   = function(){
