@@ -302,6 +302,7 @@
                         <img id=close class=icon2>
                         <input type=button value=glass>
                         <input type=button value=isolate>
+                        <input type=button value='local network'>
                   </div>
             </editors-hdr>
             
@@ -419,6 +420,8 @@
                                                                                 //  Note: passive: false is required if you
                                                                                 //  use event.preventDefault()
               glass.addEventListener('wheel',wheel.glass,{passive:false});
+              $('[slot=ext] [value="local network"]').onclick   = btn['local-network'];
+              
               
               $(root,'#save').onclick               = btn.save;
               $('#run').onclick                     = btn.run;
@@ -582,6 +585,27 @@
               window.location   = url;
               
         }//isolate
+        
+        
+        btn['local-network']    = async function(){
+        
+              /*
+              var result    = await navigator.permissions.query({name:'local-network'});
+              if(result!=='granted'){
+                    log('local-network not granted');
+              }else{
+                    log('local-network granted');
+              }
+              */
+              
+              var result    = await navigator.permissions.query({name:'loopback-network'});
+              if(result!=='granted'){
+                    log('loopback-network not granted');
+              }else{
+                    log('loopback-network granted');
+              }
+              
+        }//local-network
         
         
         btn.save    = function(e){
