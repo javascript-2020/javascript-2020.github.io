@@ -605,6 +605,24 @@
                     log.green('loopback-network granted');
               }
               
+              
+    try {
+        // This only executes when the user explicitly clicks the button.
+        // If permission hasn't been granted yet, THIS is what cleanly triggers
+        // the browser's permission prompt right then and there.
+        const response = await fetch('https://localhost/ping', {
+            method: 'GET',
+            mode: 'cors'
+        });
+        
+        if (response.ok) {
+            console.log("Connected to local proxy successfully!");
+            // Proceed to open or load your dashboard UI
+        }
+    } catch (err) {
+        console.warn("User blocked local access or local server is offline:", err);
+    }
+    
         }//local-network
         
         
