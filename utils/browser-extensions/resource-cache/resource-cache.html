@@ -123,6 +123,8 @@
                   </p>
             </div>
             
+            <dir-tree component></dir-tree>
+            
       </body>
       
       <script>
@@ -133,17 +135,29 @@
         var df=true,did='resource-cache.html';
         
         
+        
+              var dir    = {
+                    'cors-chrome'   :{directory:{
+                          'manifest.json'   : {file:{github:{repo:'browser-extensions',path:'/cors/chrome/manifest.json'}}},
+                          'extension.js'    : {file:{github:{repo:'browser-extensions',path:'/cors/chrome/extension.js'}}},
+                          'asterisk.png'    : {file:{github:{repo:'browser-extensions',path:'/cors/chrome/asterisk.png'}}},
+                    }}
+              };
+              
+              
+        var repo        = 'code';
+        var path        = '/browser-extensions/resource-cache/';
         var files       = {
-                                resource-cache    : {
-                                      'maniferst.json'          : null,
-                                      'resource-cache.js'       : null,
-                                      'resource-cache.png'      : null,
-                                      'content-script.js'       : null,
-                                      'file-server-full.js'     : null,
-                                      cache                     : {},
-                                      html                      : {
-                                            'resource-cache.html'   : null,
+                                resource-cache    : {directory:{
+                                      'maniferst.json'          : {file:{github:{repo,path:path+'manifest.json'}}},
+                                      'resource-cache.js'       : {file:{github:{repo,path:path+'extension.js'}}},
+                                      'resource-cache.png'      : {file:{github:{repo,path:path+'icon.png'}}},
+                                      'content-script.js'       : {file:{github:{repo,path:path+'content-script.js'}}},
+                                      cache                     : {directory:{}},
+                                      html                      : {directory:{
+                                            'resource-cache.html'   : {file:{github:{repo,path:path+'html/resource-cache.html'}}},
                                       }
+                                      'file-server-full.js'     : {file:{github:{repo,path:path+'file-server-full.js'}}},
                                 }
                           };
                           
@@ -154,10 +168,9 @@
   
         async function init(){
                                                                                 debug('init');
-              await libs();
+              await Promise.all(libs(),mod.auto());
               
-              console.log(jszip);
-              console.log(github);
+              dirtree   = mod['dir-tree'];
               
               
         }//init
