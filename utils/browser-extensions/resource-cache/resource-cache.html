@@ -148,7 +148,7 @@
         var repo        = 'code';
         var path        = '/browser-extensions/resource-cache/';
         var files       = {
-                                resource-cache    : {directory:{
+                                'resource-cache'    : {directory:{
                                       'maniferst.json'          : {file:{github:{repo,path:path+'manifest.json'}}},
                                       'resource-cache.js'       : {file:{github:{repo,path:path+'extension.js'}}},
                                       'resource-cache.png'      : {file:{github:{repo,path:path+'icon.png'}}},
@@ -156,9 +156,9 @@
                                       cache                     : {directory:{}},
                                       html                      : {directory:{
                                             'resource-cache.html'   : {file:{github:{repo,path:path+'html/resource-cache.html'}}},
-                                      }
+                                      }},
                                       'file-server-full.js'     : {file:{github:{repo,path:path+'file-server-full.js'}}},
-                                }
+                                }}
                           };
                           
                           
@@ -168,9 +168,12 @@
   
         async function init(){
                                                                                 debug('init');
-              await Promise.all(libs(),mod.auto());
+              await Promise.all([libs(),mod.auto()]);
               
               dirtree   = mod['dir-tree'];
+              
+              
+              await initdom();
               
               
         }//init
@@ -200,7 +203,26 @@
   
   
         async function initdom(){
+        
+              var files2    = dirtree.convert.jszip(files);
+              files2        = dirtree.build(files2);
+              dirtree.display(files2,{callback});
+              
         }//initdom
+        
+        
+        var callback    = {};
+        
+        callback.file   = function(name,o){
+        
+              var path    = dirtree.path(o);
+              console.log(name,path,o);
+              
+        }//file
+        
+        
+        callback.dir    = function(name,o){
+        }//dir
         
         
   //:
