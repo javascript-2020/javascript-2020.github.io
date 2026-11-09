@@ -247,21 +247,17 @@
         
               var path    = dirtree.path(o);
               
-              if(cache[path]){
-                    webeditor.set(cache[path]);
-                    return;
+              if(!cache[path]){
+                    var url           = `https://code.ext-code.com/browser-extensions${path}`;
+                    var {txt,error}   = await net.fetch(url);
+                    if(error){
+                          log.red(error);
+                          return;
+                    }
+                    cache[path]   = txt;
               }
               
-              var url           = `https://code.ext-code.com/browser-extensions${path}`;
-              
-              var {txt,error}   = await net.fetch(url);
-              if(error){
-                    log.red(error);
-                    return;
-              }
-              
-              cache[path]   = txt;
-              webeditor.set(txt);
+              webeditor.set(cache[path]);
               webeditor.filename(name);
               
         }//file
