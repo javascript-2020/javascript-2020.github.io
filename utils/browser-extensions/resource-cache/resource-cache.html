@@ -123,7 +123,15 @@
                   </p>
             </div>
             
+            <div>
+                  <button id=download>Download</download>
+            </div>
+            
             <dir-tree component></dir-tree>
+            
+            <mark-down v1.0 component></mark-down>
+            
+            <web-editor component></web-editor>
             
       </body>
       
@@ -135,33 +143,33 @@
         var df=true,did='resource-cache.html';
         
         
+        var dirtree;
+        var markdown;
+        var webeditor;
         
-              var dir    = {
-                    'cors-chrome'   :{directory:{
-                          'manifest.json'   : {file:{github:{repo:'browser-extensions',path:'/cors/chrome/manifest.json'}}},
-                          'extension.js'    : {file:{github:{repo:'browser-extensions',path:'/cors/chrome/extension.js'}}},
-                          'asterisk.png'    : {file:{github:{repo:'browser-extensions',path:'/cors/chrome/asterisk.png'}}},
-                    }}
-              };
-              
-              
+        
         var repo        = 'code';
-        var path        = '/browser-extensions/resource-cache/';
+        var path        = 'https://code.ext-code.com/browser-extensions/resource-cache/';
         var files       = {
                                 'resource-cache'    : {directory:{
-                                      'maniferst.json'          : {file:{github:{repo,path:path+'manifest.json'}}},
-                                      'resource-cache.js'       : {file:{github:{repo,path:path+'extension.js'}}},
-                                      'resource-cache.png'      : {file:{github:{repo,path:path+'icon.png'}}},
-                                      'content-script.js'       : {file:{github:{repo,path:path+'content-script.js'}}},
+                                      'maniferst.json'          : {file:{url:path+'manifest.json'}},
+                                      'resource-cache.js'       : {file:{url:path+'extension.js'}},
+                                      'resource-cache.png'      : {file:{url:path+'icon.png'}},
+                                      'content-script.js'       : {file:{url:path+'content-script.js'}},
                                       cache                     : {directory:{}},
                                       html                      : {directory:{
-                                            'resource-cache.html'   : {file:{github:{repo,path:path+'html/resource-cache.html'}}},
+                                            'resource-cache.html'   : {file:{url:path+'html/resource-cache.html'}},
                                       }},
-                                      'file-server-full.js'     : {file:{github:{repo,path:path+'file-server-full.js'}}},
+                                      'file-server-full.js'     : {file:{url:path+'file-server-full.js'}},
                                 }}
                           };
                           
                           
+                          
+                          
+        var net   = {};
+        
+        
   //:
   
   
@@ -170,7 +178,10 @@
                                                                                 debug('init');
               await Promise.all([libs(),mod.auto()]);
               
-              dirtree   = mod['dir-tree'];
+              
+              dirtree         = mod['dir-tree'];
+              markdown        = mod['mark-down'];
+              webeditor       = mod['web-editor'];
               
               
               await initdom();
@@ -204,8 +215,7 @@
   
         async function initdom(){
         
-              var files2    = dirtree.convert.jszip(files);
-              files2        = dirtree.build(files2);
+              var files2    = dirtree.convert.jszip(files,{build:true});
               dirtree.display(files2,{callback});
               
         }//initdom
@@ -216,7 +226,22 @@
         callback.file   = function(name,o){
         
               var path    = dirtree.path(o);
-              console.log(name,path,o);
+              
+              if(cache[path]){
+                    markdown.set(cache[path]);
+                    return;
+              }
+              
+              var url           = `https://code.ext-code.com/browser-extensions/${path}`;
+              
+              var {txt,error}   = net.fetch(url);
+              if(error){
+                    log.red(error);
+                    return;
+              }
+              
+              cache[path]   = txt;
+              markdown.set(txt);
               
         }//file
         
@@ -245,8 +270,8 @@
               var total   = 0;
               var blob;
               
-              add(dir);
-              await promise;
+              var {ok,error}    = await add(dir);
+              if(error)return;
               
               if(zip){
                     blob      = await zip.generateAsync({type:'blob'});
@@ -279,6 +304,14 @@
                                 complete();
                           }
                           
+                          if(o.file?.url){
+                                var {txt,error}   = net.fetch(o.file.url);
+                                if(error){
+                                      log.red(error);
+                                      resolve({error});
+                                      return;
+                                }
+                          }
                           if(o.file?.contents){
                                                                                 df && debug('file create :',abs+key);
                                 if(zip){
@@ -322,7 +355,7 @@
                           ct++;
                                                                                 df && debug(ct,total);
                           if(ct==total){
-                                resolve();
+                                resolve({ok:'ok'});
                           }
                           
                     }//complete
@@ -332,6 +365,60 @@
               
               
         }//create
+        
+        
+        net.fetch   = async function(url){
+        
+              var err;
+              try{
+              
+                    var res   = await fetch(url);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.message;
+                    return {error};
+              }
+              if(!res.ok){
+                    var error   = await res.text();
+                    return {error};
+              }
+              
+              var txt   = await res.text();
+              return {txt};
+              
+        }//get
+        
+        
+        net.import    = async function(url){
+        
+              var err;
+              try{
+              
+                    var result    = await import(url);
+                    
+              }//try
+              catch(err2){
+              
+                    err   = err2;
+                    
+              }//catch
+              if(err){
+                    var error   = err.message;
+                    return {error};
+              }
+              return {result};
+              
+        }//import
+        
+        
+        
+        
         
         
       </script>
