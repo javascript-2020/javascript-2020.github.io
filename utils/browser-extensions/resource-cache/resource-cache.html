@@ -243,7 +243,7 @@
         
         var callback    = {};
         
-        callback.file   = function(name,o){
+        callback.file   = async function(name,o){
         
               var path    = dirtree.path(o);
               
@@ -254,7 +254,7 @@
               
               var url           = `https://code.ext-code.com/browser-extensions${path}`;
               
-              var {txt,error}   = net.fetch(url);
+              var {txt,error}   = await net.fetch(url);
               if(error){
                     log.red(error);
                     return;
