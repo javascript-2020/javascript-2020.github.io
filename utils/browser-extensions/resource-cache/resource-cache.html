@@ -161,7 +161,7 @@
         var path        = 'https://code.ext-code.com/browser-extensions/resource-cache/';
         var files       = {
                                 'resource-cache'    : {directory:{
-                                      'maniferst.json'          : {file:{url:path+'manifest.json'}},
+                                      'manifest.json'           : {file:{url:path+'manifest.json'}},
                                       'resource-cache.js'       : {file:{url:path+'extension.js'}},
                                       'resource-cache.png'      : {file:{url:path+'icon.png'}},
                                       'content-script.js'       : {file:{url:path+'content-script.js'}},
@@ -225,6 +225,15 @@
         async function initdom(){
         
               var files2    = dirtree.convert.jszip(files,{build:true,disp:true,callback});
+              
+              var url           = files['resource-cache'].directory['manifest.json'].file.url;
+              var {txt,error}   = await net.fetch(url);
+              if(error){
+                    log.red(error);
+                    return;
+              }
+              webeditor.set(txt);
+              webeditor.filename('manifest.json');
               
         }//initdom
         
