@@ -8,6 +8,6 @@ var blank_png   = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC
       content:url(/images/spinner.gif);
     }
 
-<img id=page-loading src='/images/spinner.gif'>
+&lt;img id=page-loading src='/images/spinner.gif'&gt;
 
 
