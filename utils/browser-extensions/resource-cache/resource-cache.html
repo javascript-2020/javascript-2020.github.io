@@ -203,7 +203,8 @@
                                                                                 debug('init');
               await Promise.all([libs(),mod.auto()]);
               
-              
+console.log(jszip);
+
               dirtree                 = mod['dir-tree'];
               markdown                = mod['mark-down'];
               markdown.set.base(base);
@@ -220,7 +221,7 @@
         
               var list    = [];
               
-              var promise   = net.import('https://cdn.jsdelivr.net/npm/jszip/+esm').then(result=>jszip=result.default);
+              var promise   = net.import('https://cdn.jsdelivr.net/npm/jszip/+esm').then(({result,error})=>jszip=result.default);
               list.push(promise);
               
 /*
@@ -486,6 +487,7 @@
               }//catch
               if(err){
                     var error   = err.message;
+                    log.red(error);
                     return {error};
               }
               return {result};
