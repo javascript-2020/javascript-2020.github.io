@@ -331,7 +331,9 @@ console.log(jszip);
               var total   = 0;
               var blob;
               
-              var {ok,error}    = await add(dir);
+              add(dir);
+              
+              var {ok,error}    = await promise;
               if(error)return;
               
               if(zip){
@@ -371,7 +373,7 @@ console.log(jszip);
                                 if(error){
                                       log.red(error);
                                       resolve({error});
-                                      return;
+                                      return {error};
                                 }
                           }
                           if(o.file?.contents){
