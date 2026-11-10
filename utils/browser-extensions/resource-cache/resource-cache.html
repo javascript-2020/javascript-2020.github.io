@@ -65,6 +65,10 @@
     
   #hdr
     {display:flex;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid lightgray}
+  #hdr #page-loading
+    {width:30px;height:30px;border:1px solid lightgray;border-radius:5px;
+      content:url(/images/spinner.git);
+    }
   #hdr a:first-of-type
     {margin-right:20px}
   #hdr h3
@@ -108,6 +112,7 @@
       
             <div id=hdr>
                   <div>
+                        <img id=page-loading>
                         <a href='/'>
                               home
                         </a>
@@ -194,6 +199,9 @@
                           
                           
                           
+        var blank     = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+        
+        
         var btn       = {};
         var display   = {};
         var net       = {};
@@ -253,6 +261,10 @@
               
               display.markdown('docs/resource-cache.md');
               display.editor('manifest.json');
+              
+              var img                 = $('#page-loading');
+              img.style.visibility    = 'hidden';
+              img.src                 = blank;
               
         }//initdom
         
