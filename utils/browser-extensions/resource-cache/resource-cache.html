@@ -353,6 +353,8 @@
               var total   = 1;
               var blob;
               
+              $('#bar').style.width   = 0;
+              
               add(dir);
               
               var {ok,error}    = await promise;
@@ -447,6 +449,8 @@
                     
                           ct++;
                                                                                 df && debug('complete',ct,total);
+                          $('#bar').style.width   = (ct/total)*100+'%';
+                          
                           if(ct==total){
                                 resolve({ok:'ok'});
                           }
