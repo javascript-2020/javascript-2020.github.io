@@ -372,7 +372,11 @@
                           }
                           
                           if(o.file?.url){
-                                var {txt,error}   = await net.fetch(abs+o.file.url);
+                                                                                df && debug('file.contents :',abs+key);
+                                var path          = abs+o.file.url;
+                                var i             = path.indexOf('/');
+                                path              = path.slice(i+1);
+                                var {txt,error}   = await net.fetch(path);
                                 if(error){
                                       log.red(error);
                                       resolve({error});
@@ -380,7 +384,7 @@
                                 }
                           }
                           if(o.file?.contents){
-                                                                                df && debug('file create :',abs+key);
+                                                                                df && debug('file.contents :',abs+key);
                                 if(zip){
                                       zip.file(abs+key,o.file.contents);
                                 }
