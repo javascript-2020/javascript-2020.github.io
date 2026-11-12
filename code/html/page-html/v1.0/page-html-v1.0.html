@@ -52,6 +52,8 @@
         
         var ace;
         var md;
+        
+        var hdr;
         var dirtree;
         var snippet;
         var editor;
@@ -69,8 +71,10 @@
               });
               md.use(markdownItAttrs,{leftDelimiter:'{',rightDelimiter:'}',allowedAttributes:['id','class',/^data-.*$/]});
               
+              
               var mod2      = mod.child.find(o=>o.name=='page-html');
               
+              hdr           = mod2['code-hdr'];
               dirtree       = mod2['dir-tree'];
               snippet       = mod2['snippet-html-console'];
               editor        = mod2['web-editor'];
@@ -132,6 +136,20 @@
                   </h2>
                   <time slot=date datetime=2026-02-10>
                   </time>
+                  <slot slot=breadcrumb>
+                        <div class=item>
+                              <a id=list class=item-label href='/code/nodejs/nodejs.html'>
+                                    nodejs
+                              </a>
+                        </div>
+                        
+                        <div class=item>
+                              <a id=list class=item-label href='/code/nodejs/servers/servers.html'>
+                                    servers
+                              </a>
+                        </div>
+                  </slot
+                  
             </code-hdr>
             
             <script>
@@ -315,8 +333,10 @@
               
               var {txt}   = await get(url);
               if(!txt)return;
+              
               editor.setvalue(txt);
               editor.filename(file);
+              debugger;
               editor.mode   = 'js';
               
         }//source
