@@ -310,7 +310,7 @@
   
         display.markdown    = async function(path){
         
-              var {txt,error}   = await net.fetch(path);
+              var {txt,error}   = await net.fetch.txt(path);
               if(error)return;
               
               markdown.set(txt);
@@ -320,7 +320,7 @@
         
         display.editor    = async function(path){
         
-              var {txt,error}   = await net.fetch(path);
+              var {txt,error}   = await net.fetch.txt(path);
               if(error)return;
               
               webeditor.set(txt);
@@ -394,16 +394,16 @@
                           
                           if(o.file?.url){
                                                                                 df && debug('file.url :',abs+key);
-                                var path          = abs+o.file.url;
-                                var i             = path.indexOf('/');
-                                path              = path.slice(i+1);
-                                var {txt,error}   = await net.fetch(path);
+                                var path            = abs+o.file.url;
+                                var i               = path.indexOf('/');
+                                path                = path.slice(i+1);
+                                var {blob,error}    = await net.fetch(path);
                                 if(error){
                                       log.red(error);
                                       resolve({error});
                                       return {error};
                                 }
-                                zip.file(abs+key,txt);
+                                zip.file(abs+key,blob);
                                 complete();
                           }
                           if(o.file?.contents){
@@ -502,12 +502,24 @@
                     return {error};
               }
               
-              var txt             = await res.text();
-              cache[url]          = txt;
+              var blob            = await res.blob();
+              cache[url]          = blob;
               
+              return {blob};
+              
+        }//fetch
+        
+        
+        net.fetch.txt   = async function(path){
+        
+              var {blob,error}    = await net.fetch(path);
+              if(error){
+                    return {error};
+              }
+              var txt   = await blob.text();
               return {txt};
               
-        }//get
+        }//txt
         
         
         net.import    = async function(url){
