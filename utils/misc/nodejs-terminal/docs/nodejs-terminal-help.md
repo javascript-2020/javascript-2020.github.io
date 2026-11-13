@@ -31,7 +31,7 @@ you can download a https server from the more menu
 - menus and viewports can be mvoed, left click and drag ( components that capture cursor use ctrl )
 - menus and viewports can be resized, right click and drag ( components that capture cursor use ctrl )
 
-
+( including this help viewport, try it out )
 
 
 ---
