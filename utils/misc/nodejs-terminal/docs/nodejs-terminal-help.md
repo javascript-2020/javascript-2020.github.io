@@ -8,11 +8,10 @@ one and execute shell commands in another simultaneously.
 
 Secure, sandboxed execution of Node.js, JavaScript and TypeScript.
 
-### note :
 
-- menus and viewports can be mvoed, left click and drag ( components that capture cursor use ctrl )
-- menus and viewports can be resized, right click and drag ( components that capture cursor use ctrl )
 
+
+### servers and opening ports
 
 when servers are run, check the `ports` viewport to show the associated url
 
@@ -22,7 +21,17 @@ then create an iframe using the url
 
 <img style='width:30px;height:30px;cursor:pointer;border:1px solid lightgray;vertical-align:middle' class=icon onclick='btn.ports()' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAw1BMVEUrecM8RlEsesU8RlAtesA9RlArecMvecAuer8/SVPKzc+GjJJXlM5DiMlLjcvQ4PDc6PQueb9YYWk8hMcyfsRDTFY9R1E8Rk+Mtdy81OuYveDF2u00fsWox+Qzeb0+R09HcEx5qtc4gcW30elKU11wd36fo6gtecI9RlA8RlA9Rk+tyuXv9Pl8q9hqoNK4u792fYQveb56gYg+R1G6vsFrc3rHyswwer+Bh42Ump8yer5IS0orecM8RlApeMM5Q00od8KQ9boaAAAAPHRSTlP7QZr3XXL+cp/88fXy9fPs7Z/09vr5/Zzq7e7s9+kkKgDx9On38+bLbtZr7e3q7urpaPAd6erkRObpPwF4XDSbAAABE0lEQVQoz5WR2W6DMBBFhyykSY0BswTSsDR70n3f7MH//1U1fiASBUs9sixZR3M11oWyOI17OFg/UBxFL0cLTkLEsYhFfRTVGfWaw1hUb1/DHWO7qXpHz5cNTOu4+nyN3rfbWaT05mHW8FjpabFhgkUR0+nTMzr8MDQwhxfLQAEfAwMjmHADFzCx/6XRrIPQpMP0XnZrVLmSeFRil8aA2FwuUqBO4/1GY5BmwEP3TiYuxfa0smmASDwHl1njGy2TWyrVvQaOK+8G2tPO1XqFS/da8nDhkfZ07TOos2XiEflnNeUJqL25TWjH5spLna3/36E5UtdBQyUhtY2NYatQ39y3D08GbQ8g30Mv+28o81EvefkLrY2Is/tHNSYAAAAASUVORK5CYII='>
 
-you can download a https server from the more menu <img style='width:30px;height:30px;cursor:pointer;border:1px solid lightgray;vertical-align:middle' class=icon onclick='menu.click()' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAw1BMVEUrecM8RlEsesU8RlAtesA9RlArecMvecAuer8/SVPKzc+GjJJXlM5DiMlLjcvQ4PDc6PQueb9YYWk8hMcyfsRDTFY9R1E8Rk+Mtdy81OuYveDF2u00fsWox+Qzeb0+R09HcEx5qtc4gcW30elKU11wd36fo6gtecI9RlA8RlA9Rk+tyuXv9Pl8q9hqoNK4u792fYQveb56gYg+R1G6vsFrc3rHyswwer+Bh42Ump8yer5IS0orecM8RlApeMM5Q00od8KQ9boaAAAAPHRSTlP7QZr3XXL+cp/88fXy9fPs7Z/09vr5/Zzq7e7s9+kkKgDx9On38+bLbtZr7e3q7urpaPAd6erkRObpPwF4XDSbAAABE0lEQVQoz5WR2W6DMBBFhyykSY0BswTSsDR70n3f7MH//1U1fiASBUs9sixZR3M11oWyOI17OFg/UBxFL0cLTkLEsYhFfRTVGfWaw1hUb1/DHWO7qXpHz5cNTOu4+nyN3rfbWaT05mHW8FjpabFhgkUR0+nTMzr8MDQwhxfLQAEfAwMjmHADFzCx/6XRrIPQpMP0XnZrVLmSeFRil8aA2FwuUqBO4/1GY5BmwEP3TiYuxfa0smmASDwHl1njGy2TWyrVvQaOK+8G2tPO1XqFS/da8nDhkfZ07TOos2XiEflnNeUJqL25TWjH5spLna3/36E5UtdBQyUhtY2NYatQ39y3D08GbQ8g30Mv+28o81EvefkLrY2Is/tHNSYAAAAASUVORK5CYII='>
+you can download a https server from the more menu <img style='width:15px;height:24px;border:1px solid gray;padding:2px;background:buttonface;box-sizing:border-box;cursor:pointer;border-radius:3px;vertical-align:middle' class=icon onclick='menu.click()' src='data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAt1BMVEVHcEwbmPYcgfMchvQbsfkay/wbtvkbnfccefMayfwbmfYch/QchvQbtfkbmfYa1P0ddfIcivQcl/Ycj/Ubp/gcmfYdbPEbrvkazPwcmfYbqfgayfwayPwbv/sbvvobsvkazPwbqvga0fwbvPobtvocjvUbofcbpvccfPMcgPMcgvMdafAdbfEckfUbtvka0PwcfPIaxvsbwfsbvPodb/EcnPYclvYckfUbpvccjPQdd/IbofcbrPiPy8D0AAAAMHRSTlMAA/79/v7+5ycVZ3Y3h0xhu9jp8kFeF9OkVfQOrZi+Mh1z/iUJQ+/dx4fOYq7hybzs5xU1AAABIklEQVQ4y+2Ux3aDMBBFpTR6M92AwYB7S6EG/v+7MsJJnBBKVsnGdwHozT1HQgxC6MrfEkiSM+Y4khSgUxhazLDHWGF4QveAO2gyLnGQ9QS4wcDaXGJYiPGegVnU50UzUvdgTsd7AfrMaEaqXvO+sfAAHP0uzz+SmhCfR7FwB5gdpm+SyoeHEJ5P67o2tbanmRBP5/iSgFkUxaplaisIv3kAu6yqihK/RiIF0ZJtT6NTaZpS9iWwm0D/uXB7kmXZ5LOgN0O7ayvEQ57nKtssCbMqDA5i9+YulLIsVQ5MzKnwqCz6Phev3AIcxhy5K3x/A/DbG2CzIdctP9RS9PrxnTU92KOYll8bZHqs7Wk5AcY9hIx9kuyN3/xuxm5nXA+df+cNJSAgjMbiFSoAAAAASUVORK5CYII='>
+
+
+
+
+
+### note :
+
+- menus and viewports can be mvoed, left click and drag ( components that capture cursor use ctrl )
+- menus and viewports can be resized, right click and drag ( components that capture cursor use ctrl )
+
 
 
 
