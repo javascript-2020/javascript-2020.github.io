@@ -91,7 +91,7 @@
     {display:inline-flex;gap:10px;justify-content:center}
   #download
     {font-size:16px;font-weight:bold;cursor:pointer;padding:10px 20px;border:none;border-radius:5px;background:#0066cc;color:white;
-      position:relative}
+      position:relative;overflow:hidden}
   #download:hover
     {background:#0055b3}
 /*
@@ -100,6 +100,8 @@
 */
   #bar
     {width:0;height:100%;background:lightblue;position:absolute;left:0;top:0}
+  #download-label
+    {position:relative;z-index:1}
     
   mark-down
     {margin-bottom:20px}
@@ -151,8 +153,10 @@
             
             <div id=download-btn>
                   <button id=download>
-                        <span id=bar style='width:35%'></span>
-                        Download
+                        <span id=bar></span>
+                        <span id=download-label>
+                              Download
+                        </span>
                   </button>
             </div>
             
@@ -373,6 +377,8 @@
                           a.click();
                     }
               }
+              
+              $('#bar').style.width   = 0;
               
               return blob;
               
