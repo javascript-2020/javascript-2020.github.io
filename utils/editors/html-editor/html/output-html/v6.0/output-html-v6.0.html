@@ -105,7 +105,7 @@
 (function({mod,host}){
 
   var obj   = {
-        version   : 'v5.0',
+        version   : 'v6.0',
   };
         var df=true,did='output-html';
         
@@ -165,7 +165,7 @@
   
         obj.init    = async function(){
                                                                                 debug=eval(debug.mod);
-                                                                                debug('init');
+                                                                                debug('init',obj.version);
                                                                                 
               webconsole    = mod['web-console'];
               
@@ -397,8 +397,10 @@
         
               var resolve,promise=new Promise(res=>resolve=res);
               
-              proxy           = document.createElement('iframe');
-              proxy.onload    = onload;
+              proxy                 = document.createElement('iframe');
+              proxy.style.display   = 'none';
+              proxy.onload          = onload;
+              shadow.append(proxy);
               
               return promise;
               
