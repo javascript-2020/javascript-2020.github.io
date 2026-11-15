@@ -195,17 +195,18 @@
         
         var files       = {
                                 'resource-cache'    : {directory:{
-                                      'manifest.json'           : {file:{url:'manifest.json'}},
-                                      'extension.js'            : {file:{url:'extension.js'}},
-                                      'icon.png'                : {file:{url:'icon.png'}},
-                                      'content-script.js'       : {file:{url:'content-script.js'}},
-                                      'file-server.js'          : {file:{github:{owner:'javascript-2020',repo:'code',branch:'main',path:'/nodejs/servers/file-server/file-server.js'}}},
+                                      'manifest.json'           : {file:{base:'manifest.json'}},
+                                      'extension.js'            : {file:{base:'extension.js'}},
+                                      'icon.png'                : {file:{base:'icon.png'}},
+                                      'content-script.js'       : {file:{base:'content-script.js'}},
+                                      'file-server.js'          : {file:{code:'/nodejs/servers/file-server/file-server.js'}},
+                                        //github:{owner:'javascript-2020',repo:'code',branch:'main',path:'/nodejs/servers/file-server/file-server.js'}}},
                                       cache                     : {directory:{}},
                                       html                      : {directory:{
-                                            'resource-cache.html'   : {file:{url:'resource-cache.html'}},
+                                            'resource-cache.html'   : {file:{base:'resource-cache.html'}},
                                       }},
                                       docs                      : {directory:{
-                                            'resource-cache.md'     : {file:{url:'resource-cache.md'}},
+                                            'resource-cache.md'     : {file:{base:'resource-cache.md'}},
                                       }},
                                 }}
                           };
@@ -354,21 +355,20 @@
                     zip   = new jszip();
               }
               
+              $('#bar').style.width   = 0;
+              
               var resolve,promise=new Promise(res=>resolve=res);
               
               var ct      = 0;
               var total   = 0;
-              var blob;
-              
-              $('#bar').style.width   = 0;
               
               add(dir);
               
               var {ok,error}    = await promise;
-              if(error)return;
+              if(error)return {error};
               
               if(zip){
-                    blob      = await zip.generateAsync({type:'blob'});
+                    var blob    = await zip.generateAsync({type:'blob'});
                     if(download){
                           var url       = window.URL.createObjectURL(blob);
                           var a         = document.createElement('a');
@@ -376,21 +376,22 @@
                           a.href        = url;
                           a.click();
                     }
-              }
+              }//zip
               
               $('#bar').style.width   = 0;
               
-              return blob;
+              return {blob};
               
               
               async function add(dir,abs=''){
               
+                    total++;
+                    
                     for(let key in dir)
                     (async()=>{
                     
                           total++;
                                                                                 df && debug('add',total,key);
-                                                                                
                           var o   = dir[key];
                           
                           if(o.directory){
@@ -400,31 +401,45 @@
                                 }
                                 add(o.directory,abs+key+'/');
                                 complete();
-                          }
+                          }//directory
                           
-                          if(o.file?.url){
-                                                                                df && debug('file.url :',abs+key);
-                                var path            = abs+o.file.url;
-                                var i               = path.indexOf('/');
-                                path                = path.slice(i+1);
-                                var {blob,error}    = await net.fetch(path);
-                                if(error){
-                                      log.red(error);
-                                      resolve({error});
-                                      return {error};
-                                }
-                                zip.file(abs+key,blob);
-                                complete();
-                          }
                           if(o.file?.contents){
                                                                                 df && debug('file.contents :',abs+key);
                                 if(zip){
                                       zip.file(abs+key,o.file.contents);
                                 }
                                 complete();
-                          }
+                          }//contents
+                          
+                          if(o.file?.base){
+                                                                                df && debug('file.base :',abs+key);
+                                var path            = abs+o.file.base;
+                                var i               = path.indexOf('/');
+                                path                = path.slice(i+1);
+                                var url             = base+path;
+                                var {blob,error}    = await net.fetch(url);
+                                if(error){
+                                      resolve({error});
+                                      return {error};
+                                }
+                                zip.file(abs+key,blob);
+                                complete();
+                          }//base
+                          
+                          if(o.file.code){
+                                                                                df && debug('file.code :',abs+key);
+                                var url   = `https://code.ext-code.com${o.file.code}`;
+                                var {blob,error}    = await net.fetch(url);
+                                if(error){
+                                      resolve({error});
+                                      return {error};
+                                }
+                                zip.file(abs+key,blob);
+                                complete();
+                          }//code
                           
                           if(o.file?.github){
+                                                                                df && debug('file.github :',abs+key);
                                 var owner,repo,branch,path;
                                 if(typeof o.file.github=='string'){
                                       path    = o.file.github;
@@ -437,21 +452,22 @@
                                 if(path.startsWith('/')){
                                       path    = path.slice(1);
                                 }
-                                                                                df && debug('file github :',abs+key);
                                                                                 df && debug(owner,repo,branch,path);
                                 if(zip){
-                                      fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`)
-                                        .then(res=>res.text().then(txt=>{
-                                        
-                                              zip.file(abs+key,txt);
-                                              complete();
-                                              
-                                        }));
+                                      var url             = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`;
+                                      var {blob,error}    = await net.fetch(url);
+                                      if(error){
+                                            resolve({error});
+                                            return {error};
+                                      }
+                                      zip.file(abs+key,blob);
+                                      complete();
                                 }
-                          }
-                          
+                          }//github
                           
                     })();
+                    
+                    complete();
                     
                     
                     function complete(){
@@ -468,18 +484,11 @@
                     
               }//add
               
-              
-              
         }//create
         
         
-        net.fetch   = async function(path){
+        net.fetch   = async function(url){
         
-              var url   = path;
-              if(!url.startsWith('https://')){
-                    url           = base+path;
-              }
-              
               if(cache[url]){
                     var blob    = cache[url];
                     return {blob};
@@ -499,15 +508,15 @@
               }//catch
               if(err){
                     var error     = err.message;
-                    log.red(url);
-                    log.red(err.name);
-                    log.red(error);
+                    log.red.pin(url);
+                    log.red.pin(err.name);
+                    log.red.pin(error);
                     return {error};
               }
               if(!res.ok){
                     var error     = await res.text();
-                    log.red(url);
-                    log.red(error);
+                    log.red.pin(url);
+                    log.red.pin(error);
                     return {error};
               }
               
