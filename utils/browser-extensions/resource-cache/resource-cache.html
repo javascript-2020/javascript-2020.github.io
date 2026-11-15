@@ -302,8 +302,8 @@
         callback.file   = async function(name,o){
         
               var path    = dirtree.path(o);
-              var i       = pathname.indexOf('/');
-              pathname    = pathname.slice(i+1);
+              var i       = path.indexOf('/');
+              path        = path.slice(i+1);
               display.editor(path);
               
         }//file
@@ -318,7 +318,8 @@
   
         display.markdown    = async function(path){
         
-              var {txt,error}   = await net.fetch.txt(path);
+              var url           = base+path;
+              var {txt,error}   = await net.fetch.txt(url);
               if(error)return;
               
               markdown.set(txt);
@@ -328,7 +329,8 @@
         
         display.editor    = async function(path){
         
-              var {txt,error}   = await net.fetch.txt(path);
+              var url           = base+path;
+              var {txt,error}   = await net.fetch.txt(url);
               if(error)return;
               
               webeditor.set(txt);
@@ -528,9 +530,9 @@
         }//fetch
         
         
-        net.fetch.txt   = async function(path){
+        net.fetch.txt   = async function(url){
         
-              var {blob,error}    = await net.fetch(path);
+              var {blob,error}    = await net.fetch(url);
               if(error){
                     return {error};
               }
