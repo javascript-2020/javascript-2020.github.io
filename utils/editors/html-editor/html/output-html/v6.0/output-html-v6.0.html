@@ -94,12 +94,6 @@
             <web-console v3.0 component h=150></web-console>
             
             
-            <style id=proxy>
-                  body{margin:0}
-                  iframe{border:none;width:100%;height:100%}
-            </style>
-            
-            
       </template>
       
       
@@ -135,25 +129,18 @@
         var settings;
         
         
-        
-        var sandbox_type      = 'type5';
-        var sandbox_url       = {};
-        sandbox_url.type1     = 'https://sandbox.ext-code.com/html-sandbox-1/html-sandbox-1.html';
-        sandbox_url.type2     = 'https://sandbox.ext-code.com/html-sandbox-2/html-sandbox-2.html';
-        sandbox_url.type3     = 'https://sandbox.ext-code.com/html-sandbox-v3.0/html-sandbox-v3.0.html';
-        sandbox_url.type4     = 'https://sandbox.ext-code.com/html-sandbox-v4.0/html-sandbox-v4.0.html';
-        sandbox_url.type5     = 'https://sandbox.ext-code.com/html-sandbox-v5.0/html-sandbox-v5.0.html';
-        
-        var port;
+        var control_url       = 'https://sandbox.ext-code.com/html-sandbox-v6.0/html-sandbox-control-v6.0.html';
+        var sandbox_url       = 'https://sandbox.ext-code.com/html-sandbox-v6.0/html-sandbox-v6.0.html';
         
         
         
         var shadow;
         
-        var hldr;
         var proxy;
+        var control;
+        
+        var hldr;
         var iframe;
-        var last_src;
         
         var chk         = {};
         obj.chk         = chk;
@@ -191,6 +178,8 @@
         function events(){
                                                                                 debug('events');
                                                                                 
+/*
+
               proxy.contentWindow.addEventListener('message',event=>{
                                                                                 //console.log(event);
                                                                                 
@@ -246,7 +235,9 @@
                     
               }//message
               
-              
+*/
+
+
         }//events
         
         
@@ -273,16 +264,18 @@
               
               
               hldr                                      = $(shadow,'#hldr');
-              proxy                                     = $(shadow,'iframe');
-              var style   = $(shadow,'style#proxy');
-              proxy.contentDocument.head.append(style);
+              ifame                                     = $(shadow,'iframe');
+              
+              
               $.slider(hldr,'#slider','web-console',null,{root:shadow,mode:'horiz'});
               
               
-              var src   = sandbox_url[sandbox_type];
-              create.iframe({src});
+              create.proxy();
+              create.iframe({src:sandbox_url});
+              
               
               events();
+              
               
         }//initdom
         
@@ -378,17 +371,39 @@
   
         obj.run   = function(html){
         
-              switch(sandbox_type){
-              
-                case 'type1'    : sandbox1(html);       break;
-                case 'type2'    : sandbox2(html);       break;
-                case 'type3'    : sandbox3(html);       break;
-                case 'type4'    : sandbox4(html);       break;
-                case 'type5'    : sandbox5(html);       break;
-                
-              }//switch
+              sandbox6(html);
               
         }//run
+        
+        
+        create.proxy    = function(){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              proxy           = document.createElement('iframe');
+              proxy.onload    = onload;
+              
+              return promise;
+              
+              
+              function onload(){
+              
+                    control           = document.createElement('iframe');
+                    control.src       = control_url;
+                    console.onload    = onload;
+                    proxy.contentDocument.body.append(control);
+                    
+                    
+                    function onload(){
+                    
+                          resolve();
+                          
+                    }//onload
+                    
+              }//onload
+              
+              
+        }//proxy
         
         
         create.iframe   = function({src,onload:ponload}={}){
@@ -399,34 +414,36 @@
               iframe    = document.createElement('iframe');
               
               
-              var attr    = settings.build.sandbox();
+              var attr        = settings.build.sandbox();
               iframe.setAttribute('sandbox',attr);
               
-              var attr    = settings.build.allow();
+              var attr        = settings.build.allow();
               iframe.setAttribute('allow',attr);
+              
               hldr.classList.add('loading');
               
               
-              var url   = new URL(src);
+              var url         = new URL(src);
               
               if(settings.chk.isolate.checked){
                     url.searchParams.set('isolate','');
               }
+                                                                                //  remove the ugly isolate= from query
+              var search      = url.search.replace(/=(?=&|$)/g,'');
               
-              var search    = url.search.replace(/=(?=&|$)/g,'');
-              src           = url.origin+url.pathname+search+url.hash;
+              src             = url.origin+url.pathname+search+url.hash;
                                                                                 debug(src);
-                                                                                
-              iframe.src      = src||last_src;
-              last_src        = src;
+              iframe.src      = src;
               
               iframe.onload   = onload;
-              proxy.contentDocument.body.append(iframe);
+              hldr.append(iframe);
               
               
               function onload(){
               
                     hldr.classList.remove('loading');
+                    
+                    iframe.onload   = null;
                     
                     if(typeof ponload=='function'){
                           ponload();
@@ -437,80 +454,8 @@
         }//iframe
         
         
-        function sandbox1(html){
-                                                                                debug('sandbox1');
-              var src   = iframe_src;
-              create.iframe({src,onload});
-              
-              
-              function onload(){
-                                                                                debug('onload');
-                    iframe.onload   = null;
-                    
-                    if(!chk['console-persist'].checked){
-                          webconsole.clear();
-                          if(chk['console-echo'].checked){
-                                console.clear();
-                          }
-                    }
-                    
-                    var echo    = chk['console-echo'].checked;
-                    iframe.contentWindow.postMessage({type:'run',html,echo},'*');
-                    
-              }//onload
-              
-        }//sandbox1
-        
-        
-        async function sandbox2(html){
-                                                                                debug('sandbox2');
-              var resolve,promise=new Promise(res=>resolve=res);
-              
-              
-              if(!chk['console-persist'].checked){
-                    btn.console.clear();
-              }
-              
-              var echo        = settings.chk['console-echo'].checked;
-              
-              var fn          = await upload();
-                                                                                debug(fn);
-              var src         = sandbox_url.type2+`?fn=${fn}`;
-              
-              create.iframe({src,onload});
-              
-              return promise;
-              
-              
-              async function upload(){
-                                                                                debug('upload');
-                    var {result,error}    = await send({type:'upload',html,echo});
-                    if(error){
-                                                                                debug(error);
-                          log.red(error);
-                          return;
-                    }
-                                                                                debug('ok');
-                    var fn    = result;
-                    return fn;
-                    
-              }//upload
-              
-              
-              async function onload(){
-                                                                                debug('onload');
-                    iframe.onload   = null;
-                    iframe.contentWindow.focus();
-                    
-                    resolve();
-                    
-              }//onload
-              
-        }//sandbox2
-        
-        
-        async function sandbox3(html){
-                                                                                debug('sandbox3');
+        async function sandbox6(html){
+                                                                                debug('sandbox6');
               var resolve,promise=new Promise(res=>resolve=res);
               
               
@@ -520,103 +465,7 @@
               var echo        = settings.chk['console-echo'].checked;
               
               
-              var fn          = await upload();
-                                                                                //debug(fn);
-              var src         = sandbox_url.type3+`?fn=${fn}`;
-                                                                                debug(src);
-              create.iframe({src,onload});
-              
-              
-              return promise;
-              
-              
-              async function upload(){
-                                                                                debug('upload');
-                    var {result,error}    = await send({type:'upload',html,echo});
-                    if(error){
-                                                                                debug(error);
-                          log.red(error);
-                          return;
-                    }
-                                                                                debug('ok');
-                    var fn    = result;
-                    return fn;
-                    
-              }//upload
-              
-              
-              async function onload(){
-                                                                                debug('onload');
-                    iframe.onload   = null;
-                    iframe.contentWindow.focus();
-                    
-                    resolve();
-                    
-              }//onload
-              
-        }//sandbox3
-        
-        
-        async function sandbox4(html){
-                                                                                debug('sandbox4');
-              var resolve,promise=new Promise(res=>resolve=res);
-              
-              
-              if(!chk['console-persist'].checked){
-                    btn.console.clear();
-              }
-              var echo        = settings.chk['console-echo'].checked;
-              
-              
-              var fn          = await upload();
-                                                                                //debug(fn);
-              var src         = sandbox_url.type4+`?fn=${fn}`;
-                                                                                debug(src);
-              create.iframe({src,onload});
-              
-              
-              return promise;
-              
-              
-              async function upload(){
-                                                                                debug('upload');
-                    var {result,error}    = await send2({type:'upload',html,echo});
-                    if(error){
-                                                                                debug(error);
-                          log.red(error);
-                          return;
-                    }
-                                                                                debug('ok');
-                    var fn    = result;
-                    return fn;
-                    
-              }//upload
-              
-              
-              async function onload(){
-                                                                                debug('onload');
-                    iframe.onload   = null;
-                    iframe.contentWindow.focus();
-                    
-                    resolve();
-                    
-              }//onload
-              
-        }//sandbox4
-        
-        
-        async function sandbox5(html){
-                                                                                debug('sandbox3');
-              var resolve,promise=new Promise(res=>resolve=res);
-              
-              
-              if(!chk['console-persist'].checked){
-                    btn.console.clear();
-              }
-              var echo        = settings.chk['console-echo'].checked;
-              
-              
-              var fn          = await upload();
+              var fn          = await upload(hhtml,echo);
                                                                                 //debug(fn);
               var src         = sandbox_url.type5+`?fn=${fn}`;
                                                                                 debug(src);
@@ -626,24 +475,8 @@
               return promise;
               
               
-              async function upload(){
-                                                                                debug('upload');
-                    var {result,error}    = await send3({type:'upload',html,echo});
-                    if(error){
-                                                                                debug(error);
-                          log.red(error);
-                          return;
-                    }
-                                                                                debug('ok');
-                    var fn    = result;
-                    return fn;
-                    
-              }//upload
-              
-              
               async function onload(){
                                                                                 debug('onload');
-                    iframe.onload   = null;
                     iframe.contentWindow.focus();
                     
                     resolve();
@@ -653,8 +486,48 @@
         }//sandbox5
         
         
+        async function upload(html,echo){
+                                                                                debug('upload');
+              var {result,error}    = await send({type:'upload',html,echo});
+              if(error){
+                                                                                debug(error);
+                    log.red(error);
+                    return;
+              }
+                                                                                debug('ok');
+              var fn    = result;
+              return fn;
+              
+        }//upload
         
         
+        function send(payload){
+        
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              var msgid   = crypto.randomUUID();
+              
+              proxy.contentWindow.addEventListener('message',onmessage);
+              control.contentWindow.postMessage({msgid,payload},'*');
+              
+              return promise;
+              
+              
+              function onmessage(e){
+              
+                    if(e.data?.msgid!==msgid)return;
+                    proxy.contentWindow.removeEventListener('message',onmessage);
+                    var {result,error}    = e.data;
+                    resolve({result,error});
+                    
+              }//onmessage
+              
+        }//send
+        
+        
+  //:
+  
+  
         function srcdoc(html){
         
               iframe.remove();
@@ -675,82 +548,6 @@
               iframe.srcdoc   = html;
               
         }//srcdoc
-        
-        
-        
-  //:
-  
-  
-        function send(payload){
-        
-              var resolve,promise=new Promise(res=>resolve=res);
-              
-              var msgid   = crypto.randomUUID();
-              
-              window.addEventListener('message',onmessage);
-              iframe.contentWindow.postMessage({msgid,payload},'*');
-              
-              return promise;
-              
-              
-              function onmessage(e){
-              
-                    if(e.data?.msgid!==msgid)return;
-                    window.removeEventListener('message',onmessage);
-                    var {result,error}    = e.data;
-                    resolve({result,error});
-                    
-              }//onmessage
-              
-        }//send
-        
-        
-        function send2(payload){
-        
-              var resolve,promise=new Promise(res=>resolve=res);
-              
-              var msgid   = crypto.randomUUID();
-              
-              port.addEventListener('message',onmessage);
-              port.postMessage({msgid,payload});
-              
-              return promise;
-              
-              
-              function onmessage(e){
-              
-                    if(e.data?.msgid!==msgid)return;
-                    port.removeEventListener('message',onmessage);
-                    var {result,error}    = e.data;
-                    resolve({result,error});
-                    
-              }//onmessage
-              
-        }//send
-        
-        
-        function send3(payload){
-        
-              var resolve,promise=new Promise(res=>resolve=res);
-              
-              var msgid   = crypto.randomUUID();
-              
-              proxy.contentWindow.addEventListener('message',onmessage);
-              iframe.contentWindow.postMessage({msgid,payload},'*');
-              
-              return promise;
-              
-              
-              function onmessage(e){
-              
-                    if(e.data?.msgid!==msgid)return;
-                    proxy.contentWindow.removeEventListener('message',onmessage);
-                    var {result,error}    = e.data;
-                    resolve({result,error});
-                    
-              }//onmessage
-              
-        }//send
         
         
         
