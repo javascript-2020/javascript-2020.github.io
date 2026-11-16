@@ -302,7 +302,7 @@
               
               
               create.proxy();
-              create.iframe({src:sandbox_url});
+              create.iframe();
               
               
               events();
@@ -465,8 +465,10 @@
         }//proxy
         
         
-        create.iframe   = function({src,onload:ponload}={}){
+        create.iframe   = function({fn,onload}={}){
                                                                                 debug('create.iframe');
+              hldr.classList.add('loading');
+              
               if(iframe){
                     iframe.remove();
               }
@@ -479,11 +481,12 @@
               var attr        = settings.build.allow();
               iframe.setAttribute('allow',attr);
               
-              hldr.classList.add('loading');
               
+              var url         = new URL(sandbox_url);
               
-              var url         = new URL(src);
-              
+              if(fn){
+                    url.searchParams.set('fn',fn);
+              }
               if(settings.chk.isolate.checked){
                     url.searchParams.set('isolate','');
               }
@@ -492,20 +495,20 @@
               
               src             = url.origin+url.pathname+search+url.hash;
                                                                                 debug(src);
+                                                                                
               iframe.src      = src;
-              
-              iframe.onload   = onload;
+              iframe.onload   = iframe_onload;
               hldr.append(iframe);
               
               
-              function onload(){
+              function iframe_onload(){
               
                     hldr.classList.remove('loading');
                     
                     iframe.onload   = null;
                     
-                    if(typeof ponload=='function'){
-                          ponload();
+                    if(typeof onload=='function'){
+                          onload();
                     }
                     
               }//onload
@@ -526,9 +529,7 @@
               
               var fn          = await upload(html,echo);
                                                                                 //debug(fn);
-              var src         = sandbox_url+`?fn=${fn}`;
-                                                                                debug(src);
-              create.iframe({src,onload});
+              create.iframe({fn,onload});
               
               
               return promise;
