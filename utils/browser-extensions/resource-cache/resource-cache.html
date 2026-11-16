@@ -274,8 +274,9 @@
               
               dirtree.convert.jszip(files,{build:true,disp:true,callback});
               
-              display.markdown('docs/resource-cache.md');
-              display.editor('manifest.json');
+              display.markdown(base+'docs/resource-cache.md');
+              
+              display.editor(base+'manifest.json');
               
               var img                 = $('#page-loading');
               img.style.visibility    = 'hidden';
@@ -297,28 +298,56 @@
   //:
   
   
+        display.markdown    = async function(url){
+        
+              var {txt,error}   = await net.fetch.txt(url);
+              if(error)return;
+              
+              markdown.set(txt);
+              
+        }//markdown
+        
+        
+  //:
+  
+  
         var callback    = {};
         
         callback.file   = async function(name,o,mime){
                                                                                 debug('callback.file',name,o,mime);
               var path    = dirtree.path(o);
                                                                                 debug(path);
-              var o   = files;
-              path.split('/').filter(Boolean).forEach(name=>{
+              var file;
+              var fn;
+              var dir   = '';
+              var o     = files;
+              path.split('/').filter(Boolean).forEach((name,i)=>{
               
-                    o   = o[name];
+                    fn    = name;
+                    o     = o[name];
                     if(o.directory){
+                          if(i){
+                                dir  += name+'/';
+                          }
                           o   = o.directory;
                     }
                     
               });
-              var file    = o;
-              console.log(file);
+              var file    = o.file;
+                                                                                console.log(dir,fn,file);
+              var url;
+              if(file.base){
+                    url     = base+dir+fn;
+              }
+              if(file.code){
+                    url     = `https://code.ext-code.com/${file.code}`;
+              }
               
-              path        = path.slice(1);
-              var i       = path.indexOf('/');
-              path        = path.slice(i+1);
-              display.editor(path);
+              //path        = path.slice(1);
+              //var i       = path.indexOf('/');
+              //path        = path.slice(i+1);
+              
+              display.editor(url);
               
         }//file
         
@@ -330,28 +359,16 @@
   //:
   
   
-        display.markdown    = async function(path){
+        display.editor    = async function(url){
         
-              var url           = base+path;
-              var {txt,error}   = await net.fetch.txt(url);
-              if(error)return;
-              
-              markdown.set(txt);
-              
-        }//markdown
-        
-        
-        display.editor    = async function(path){
-        
-              var url           = base+path;
               var {txt,error}   = await net.fetch.txt(url);
               if(error)return;
               
               webeditor.set(txt);
               
-              var i       = path.lastIndexOf('/');
-              var fn      = path.slice(i+1);
-              webeditor.filename(path);
+              var i       = url.lastIndexOf('/');
+              var fn      = url.slice(i+1);
+              webeditor.filename(fn);
               
         }//display
         
