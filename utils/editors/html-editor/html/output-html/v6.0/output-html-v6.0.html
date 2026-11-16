@@ -92,9 +92,7 @@
             <div id=web-console-root>
                   <div id=web-console-hdr>
                   
-                        <span id=console-clear class=radio>
-                              clear
-                        </span>
+                        <div class=spc></div>
                         <span id=console-persist class=radio>
                               <input type=checkbox>
                               persist
@@ -103,10 +101,13 @@
                               <input type=checkbox>
                               wrap
                         </span>
+                        <span id=console-clear class=radio>
+                              clear
+                        </span>
                         
                   </div>
                   <web-console v3.0 component h='auto'></web-console>
-            </div>
+            </div web-console-root>
             
             
       </template>
@@ -163,8 +164,6 @@
         
         var chk         = {};
         obj.chk         = chk;
-        
-        var slider      = {};
         
         
         var btn         = {};
@@ -292,7 +291,7 @@
               ifame                                     = $(shadow,'iframe');
               
               
-              $.slider(hldr,'#slider','#web-console-root',slider,{root:shadow,mode:'horiz'});
+              $.slider(hldr,'#slider','#web-console-root',{md:show.glass,mu:hide.glass},{root:shadow,mode:'horiz'});
               
               
               $(shadow,'#console-clear').onclick        = btn.console.clear;
@@ -375,20 +374,6 @@
   //:
   
   
-        slider.md   = function(e){
-        
-              show.glass();
-              
-        }//md
-        
-        
-        slider.mu   = function(e){
-        
-              hide.glass();
-              
-        }//mu
-        
-        
         show.glass    = function(){
         
               glass.style.display   = '';
