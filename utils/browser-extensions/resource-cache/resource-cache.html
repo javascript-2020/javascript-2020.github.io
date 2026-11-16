@@ -303,8 +303,16 @@
                                                                                 debug('callback.file',name,o,mime);
               var path    = dirtree.path(o);
                                                                                 debug(path);
-              var file    = files;
-              path.split('/').filter(Boolean).forEach(name=>file=file[name]);
+              var o   = files;
+              path.split('/').filter(Boolean).forEach(name=>{
+              
+                    o   = o[name];
+                    if(o.directory){
+                          o   = o.directory;
+                    }
+                    
+              });
+              var file    = o;
               console.log(file);
               
               path        = path.slice(1);
