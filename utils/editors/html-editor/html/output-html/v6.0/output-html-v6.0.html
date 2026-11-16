@@ -36,7 +36,10 @@
   #slider
     {height:10px;cursor:ns-resize}
     
-    
+  web-console-root
+    {}
+  web-console-hdr
+    {}
   web-console
     {border:1px solid lightgray;background:white;padding:5px;box-sizing:border-box}
     
@@ -72,19 +75,7 @@
                         loopback-network
                   </span>
                   
-                  <div style='flex:1'></div>
-                  
-                  <span id=console-clear class=radio>
-                        clear
-                  </span>
-                  <span id=console-persist class=radio>
-                        <input type=checkbox>
-                        persist
-                  </span>
-                  <span id=console-wrap class=radio>
-                        <input type=checkbox>
-                        wrap
-                  </span>
+                  <div class=spc></div>
                   
                   <button id=kill>kill</button>
                   
@@ -98,7 +89,24 @@
             
             <div id=slider></div>
             
-            <web-console v3.0 component h=150></web-console>
+            <div id=web-console-root>
+                  <div id=web-console-hdr>
+                  
+                        <span id=console-clear class=radio>
+                              clear
+                        </span>
+                        <span id=console-persist class=radio>
+                              <input type=checkbox>
+                              persist
+                        </span>
+                        <span id=console-wrap class=radio>
+                              <input type=checkbox>
+                              wrap
+                        </span>
+                        
+                  </div>
+                  <web-console v3.0 component h=150></web-console>
+            </div>
             
             
       </template>
@@ -142,6 +150,9 @@
         
         
         var shadow;
+        
+        var root              = {};
+        
         
         var proxy;
         var control;
@@ -273,10 +284,6 @@
               chk['allow-scripts']                      = $.chkbox(hdr,'#allow-scripts',btn['allow-scripts']);
               chk['loopback-network']                   = $.chkbox(hdr,'#loopback-network',btn['loopback-network']);
               
-              $(shadow,'#console-clear').onclick        = btn.console.clear;
-              chk['console-persist']                    = $.chkbox(hdr,'#console-persist');
-              //$.chkbox(shadow,'#console-wrap',btn.console.wrap)
-              
               $(hdr,'#kill').onclick                    = btn.kill;
               
               
@@ -285,7 +292,12 @@
               ifame                                     = $(shadow,'iframe');
               
               
-              $.slider(hldr,'#slider','web-console',slider,{root:shadow,mode:'horiz'});
+              $.slider(hldr,'#slider','#web-console-root',slider,{root:shadow,mode:'horiz'});
+              
+              
+              $(shadow,'#console-clear').onclick        = btn.console.clear;
+              chk['console-persist']                    = $.chkbox(hdr,'#console-persist');
+              //$.chkbox(shadow,'#console-wrap',btn.console.wrap)
               
               
               create.proxy();
