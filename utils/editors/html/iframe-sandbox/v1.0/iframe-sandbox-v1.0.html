@@ -143,6 +143,8 @@
         var chk     = {};
         obj.chk     = chk;
         var btn     = {};
+        var set     = {};
+        obj.set     = set;
         
         
   //:
@@ -205,11 +207,7 @@
   
         btn.preset    = function(key){
         
-              values.forEach(value=>{
-              
-                    chk[value].checked    = (preset[key].indexOf(value)!=-1);
-                    
-              });
+              set.preset(key);
               
         }//preset
         
@@ -221,6 +219,20 @@
               }
               
         }//click
+        
+        
+        set.preset    = function(key){
+        
+              values.forEach(value=>{
+              
+                    chk[value].checked    = (preset[key].indexOf(value)!=-1);
+                    if(output.chk[value]){
+                          output.chk[value].checked    = chk[value].checked;
+                    }
+                    
+              });
+              
+        }//preset
         
         
   //:
