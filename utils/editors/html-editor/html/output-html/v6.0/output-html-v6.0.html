@@ -92,7 +92,7 @@
             
             
             <div id=hldr>
-                  <iframe sandbox-proxy></iframe>
+                  <iframe sandbox-proxy style='display:none'></iframe>
                   <div id=glass style='display:none'></div>
             </div>
             
@@ -448,10 +448,17 @@
                                                                                 debug('control.create');
               var resolve,promise=new Promise(res=>resolve=res);
               
+              /*
+              if(control.proxy){
+                    control.proxy.remove();
+              }
               control.proxy                 = document.createElement('iframe');
               control.proxy.style.display   = 'none';
               control.proxy.onload          = onload;
               shadow.append(control.proxy);
+              */
+              
+              onload();
               
               return promise;
               
