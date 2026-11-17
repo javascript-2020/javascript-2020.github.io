@@ -64,7 +64,7 @@
     
             </style>
             
-            <style id=output-proxy>
+            <style sandbox-proxy>
             
   iframe
     {position:absolute;left:0;top:0;width:100%;height:100%;border:none}
@@ -92,7 +92,7 @@
             
             
             <div id=hldr>
-                  <iframe></iframe>
+                  <iframe sandbox-proxy></iframe>
                   <div id=glass style='display:none'></div>
             </div>
             
@@ -177,8 +177,6 @@
         btn.console     = {};
         var on          = {};
         obj.on          = on;
-        var create      = {};
-        obj.console     = {};
         var show        = {};
         obj.show        = show;
         var hide        = {};
@@ -192,11 +190,12 @@
                                                                                 debug=eval(debug.mod);
                                                                                 debug('init',obj.version);
                                                                                 
-              webconsole    = mod['web-console'];
+              webconsole          = mod['web-console'];
+              obj.webconsole      = webconsole;
               
-              settings      = mod['output-settings'];
+              settings            = mod['output-settings'];
+              obj.settings        = settings;
               settings.initmod({output:obj});
-              
               
               
               await mod.auto();
@@ -254,7 +253,7 @@
               
 */
 
-              output.proxy.contentWindow.addEventListener('message',e=>on.message(e));
+              sandbox.proxy.contentWindow.addEventListener('message',e=>on.message(e));
               
               on.message    = function(e){
                                                                                 //console.log('output.message',e);
@@ -294,12 +293,12 @@
               hldr                                      = $(shadow,'#hldr');
               glass                                     = $(shadow,'#glass');
               
-              output.proxy                              = $(shadow,'iframe');
-              var style                                 = $(shadow,'#output-proxy');
-              output.proxy.contentDocument.head.append(style);
+              sandbox.proxy                             = $(shadow,'iframe');
+              var style                                 = $(shadow,'style[output-proxy]');
+              sandbox.proxy.contentDocument.head.append(style);
               
-              create.control();
-              create.output();
+              control.create();
+              sandbox.create();
               
               events();
               
@@ -385,7 +384,7 @@
   //:
   
   
-        obj.console.show    = function(chk){
+        show.webconsole    = function(chk){
         
               if(chk.checked){
                     webconsole.host.style.display   = '';
@@ -416,15 +415,37 @@
   
   
         obj.run   = async function(html){
-        
-              //await create.proxy();
-              sandbox6(html);
+                                                                                debug('run');
+              var resolve,promise=new Promise(res=>resolve=res);
+              
+              if(!chk['console-persist'].checked){
+                    btn.console.clear();
+              }
+              var echo        = settings.chk['console-echo'].checked;
+              
+              
+              var {fn,error}    = await control.upload(html,echo);
+              if(error)return;
+              
+              sandbox.create({fn,onload});
+              
+              return promise;
+              
+              
+              async function onload(){
+                                                                                debug('run.onload');
+                    resolve();
+                    
+              }//onload
               
         }//run
         
         
-        create.control    = function(){
-                                                                                debug('create.control');
+  //:
+  
+  
+        control.create    = function(){
+                                                                                debug('control.create');
               var resolve,promise=new Promise(res=>resolve=res);
               
               control.proxy                 = document.createElement('iframe');
@@ -436,7 +457,7 @@
               
               
               function onload(){
-                                                                                debug('proxy.onload');
+                                                                                debug('control.proxy onload');
                     var url           = new URL(control_url);
                     
                     if(settings.chk.isolate.checked){
@@ -453,7 +474,7 @@
                     
                     
                     function onload(){
-                                                                                debug('control.onload');
+                                                                                debug('control.iframe onload');
                           resolve();
                           
                     }//onload
@@ -463,107 +484,22 @@
         }//proxy
         
         
-        create.output   = function({fn,onload}={}){
-                                                                                debug('create.output');
-              hldr.classList.add('loading');
-              
-              if(output.iframe){
-                    output.iframe.remove();
-              }
-              output.iframe    = document.createElement('iframe');
-              
-              
-              var attr        = settings.build.sandbox();
-              output.iframe.setAttribute('sandbox',attr);
-              
-              var attr        = settings.build.allow();
-              output.iframe.setAttribute('allow',attr);
-              
-              /*
-              var flag        = settings.chk.credentialless.checked;
-                                                                                debug('credentialless',flag);
-              iframe.toggleAttribute('credentialless',flag);
-              */
-              
-              
-              var url                 = new URL(sandbox_url);
-              
-              if(fn){
-                    url.searchParams.set('fn',fn);
-              }
-              if(settings.chk.isolate.checked){
-                    url.searchParams.set('isolate','');
-              }
-                                                                                //  remove the ugly isolate= from query
-              var search              = url.search.replace(/=(?=&|$)/g,'');
-              var src                 = url.origin+url.pathname+search+url.hash;
-                                                                                debug(src);
-              output.iframe.src       = src;
-              output.iframe.onload    = iframe_onload;
-              
-              output.proxy.contentDocument.body.append(output.iframe);
-              
-              
-              function iframe_onload(){
-              
-                    hldr.classList.remove('loading');
-                    
-                    output.iframe.onload   = null;
-                    output.iframe.contentWindow.focus();
-                    
-                    if(typeof onload=='function'){
-                          onload();
-                    }
-                    
-              }//onload
-              
-        }//output
-        
-        
-        async function sandbox6(html){
-                                                                                debug('sandbox6');
-              var resolve,promise=new Promise(res=>resolve=res);
-              
-              
-              if(!chk['console-persist'].checked){
-                    btn.console.clear();
-              }
-              var echo        = settings.chk['console-echo'].checked;
-              
-              
-              var fn          = await upload(html,echo);
-                                                                                //debug(fn);
-              create.output({fn,onload});
-              
-              
-              return promise;
-              
-              
-              async function onload(){
-                                                                                debug('onload');
-                    resolve();
-                    
-              }//onload
-              
-        }//sandbox5
-        
-        
-        async function upload(html,echo){
-                                                                                debug('upload');
-              var {result,error}    = await send({type:'upload',html,echo});
+        control.upload    = async function(html,echo){
+                                                                                debug('control.upload');
+              var {result,error}    = await control.send({type:'upload',html,echo});
               if(error){
                                                                                 debug(error);
                     log.red(error);
-                    return;
+                    return {error};
               }
-                                                                                debug('ok');
               var fn    = result;
-              return fn;
+                                                                                debug('ok',fn);
+              return {fn};
               
         }//upload
         
         
-        function send(payload){
+        control.send    = function(payload){
         
               var resolve,promise=new Promise(res=>resolve=res);
               
@@ -585,6 +521,66 @@
               }//onmessage
               
         }//send
+        
+        
+  //:
+  
+  
+        sandbox.create   = function({fn,onload}={}){
+                                                                                debug('sandbox.create');
+              hldr.classList.add('loading');
+              
+              if(output.iframe){
+                    output.iframe.remove();
+              }
+              output.iframe    = document.createElement('iframe');
+              
+              
+              var attr        = settings.build.sandbox();
+              output.iframe.setAttribute('sandbox',attr);
+              
+              var attr        = settings.build.allow();
+              output.iframe.setAttribute('allow',attr);
+              
+              /*
+              var flag        = settings.chk.credentialless.checked;
+                                                                                debug('credentialless',flag);
+              iframe.toggleAttribute('credentialless',flag);
+              */
+              
+              
+              var url                   = new URL(sandbox_url);
+              
+              if(fn){
+                    url.searchParams.set('fn',fn);
+              }
+              if(settings.chk.isolate.checked){
+                    url.searchParams.set('isolate','');
+              }
+                                                                                //  remove the ugly isolate= from query
+              var search                = url.search.replace(/=(?=&|$)/g,'');
+              var src                   = url.origin+url.pathname+search+url.hash;
+                                                                                debug(src);
+              sandbox.iframe.src        = src;
+              sandbox.iframe.onload     = iframe_onload;
+              
+              output.proxy.contentDocument.body.append(output.iframe);
+              
+              
+              function iframe_onload(){
+                                                                                debug('sandbox.iframe onload');
+                    hldr.classList.remove('loading');
+                    
+                    sandbox.iframe.onload   = null;
+                    sandbox.iframe.contentWindow.focus();
+                    
+                    if(typeof onload=='function'){
+                          onload();
+                    }
+                    
+              }//onload
+              
+        }//output
         
         
   //:
