@@ -418,6 +418,8 @@
                                                                                 debug('run');
               var resolve,promise=new Promise(res=>resolve=res);
               
+              hldr.classList.add('loading');
+              
               if(!chk['console-persist'].checked){
                     btn.console.clear();
               }
@@ -434,6 +436,8 @@
               
               async function onload(){
                                                                                 debug('run.onload');
+                    hldr.classList.remove('loading');
+                    
                     resolve();
                     
               }//onload
@@ -533,8 +537,6 @@
   
         sandbox.create   = function({fn,onload}={}){
                                                                                 debug('sandbox.create');
-              hldr.classList.add('loading');
-              
               if(sandbox.iframe){
                     sandbox.iframe.remove();
               }
@@ -574,8 +576,6 @@
               
               function iframe_onload(){
                                                                                 debug('sandbox.iframe onload');
-                    hldr.classList.remove('loading');
-                    
                     sandbox.iframe.onload   = null;
                     sandbox.iframe.contentWindow.focus();
                     
