@@ -153,16 +153,17 @@
               events();
               
               
-              if(window.opener && !window.opener.closed){
-                    var url   = new URL(window.location);
-                    var id    = url.searchParams.get('opener');
-                    if(id){
-                          url.searchParams.delete('opener');
-                          var next    = url.toString();
-                          window.history.replaceState(null,'',next);
-                    }
+              var url   = new URL(window.location);
+              var id    = url.searchParams.get('opener');
+              if(id!==null){
+                    url.searchParams.delete('opener');
+                    var next    = url.toString();
+                    window.history.replaceState(null,'',next);
+              }
+              if(window.opener){
                     window.opener.postMessage({type:'ready',id},'*');
               }
+              
               
               
         }//init
@@ -180,6 +181,9 @@
         events.message    = function(data){
         
               switch(e.data?.type){
+              
+                case 'editor.set'   : editor.set(e.data.html);        break;
+                
               }//switch
               
         }//onmessage
