@@ -153,35 +153,57 @@
               events();
               
               
+              if(window.opener && !window.opener.closed){
+                    var url   = new URL(window.location);
+                    var id    = url.searchParams.get('opener');
+                    if(id){
+                          url.searchParams.delete('opener');
+                          var next    = url.toString();
+                          window.history.replaceState(null,'',next);
+                    }
+                    window.opener.postMessage({type:'ready',id},'*');
+              }
+              
+              
         }//init
         
         
         function events(){
         
-              window.addEventListener('message',e=>{
-              });
-              
-              window.addEventListener('beforeunload',event=>{
-              
-                    if(save_status || lock.checked){
-                          event.preventDefault();
-                    }
-                    
-              });
-              
-              document.addEventListener('visibilitychange',()=>{
-              
-                  if(document.hidden){
-                                                                                //debug('hidden');
-                  }else{
-                                                                                //debug('visible');
-                        explorer.update();
-                  }
-                  
-              });
+              window.addEventListener('message',events.message);
+              window.addEventListener('beforeunload',events.beforeunload);
+              document.addEventListener('visibilitychange',events.visibilitychange);
               
         }//events
         
+        
+        events.message    = function(data){
+        
+              switch(e.data?.type){
+              }//switch
+              
+        }//onmessage
+        
+        
+        events.beforeunload   = function(e){
+        
+              if(save_status || lock.checked){
+                    e.preventDefault();
+              }
+              
+        }//beforeunload
+        
+        
+        events.visibilitychange   = function(e){
+        
+              if(document.hidden){
+                                                                                //debug('hidden');
+              }else{
+                                                                                //debug('visible');
+                    explorer.update();
+              }
+              
+        }//visibilitychange
         
             </script>
             
