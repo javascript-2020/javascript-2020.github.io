@@ -284,9 +284,6 @@
               $.slider(hldr,'#slider','web-console',{md:show.glass,mu:hide.glass},{root:shadow,mode:'horiz'});
               
               
-              $(shadow,'#console-clear').onclick        = btn.console.clear;
-              chk['console-persist']                    = $.chkbox(shadow,'#console-persist');
-              $.chkbox(shadow,'#console-wrap',btn.console.wrap)
               
               
               settings.allow.set.preset('standard');
@@ -320,26 +317,6 @@
         }//kill
         
         
-        btn.console.clear   = function(){
-        
-              webconsole.clear();
-              
-              if(settings.chk['console-echo'].checked){
-                    console.clear();
-              }
-              
-        }//clear
-        
-        
-        btn.console.wrap    = function(chk){
-        
-              if(chk.checked){
-                    webconsole.style.whiteSpace   = 'pre-wrap';
-              }else{
-                    webconsole.style.whiteSpace   = 'no-wrap';
-              }
-              
-        }//wrap
         
         
   //:
@@ -398,12 +375,10 @@
               
               hldr.classList.add('loading');
               
-              if(!chk['console-persist'].checked){
-                    btn.console.clear();
-              }
-              var echo        = settings.chk['console-echo'].checked;
-              
-              
+              webconsole.clear();
+              var echo        = webconsole.chk['echo'].checked;
+                                                                                debug('echo',echo);
+                                                                                
               var {fn,error}    = await control.upload(html,echo);
               if(error)return;
               
