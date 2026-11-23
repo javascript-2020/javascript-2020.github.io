@@ -45,9 +45,13 @@ It’s perfect for:
 To run this script, you’ll need:
 
 ```bash
+
 mkdir torrent && cd torrent
-npm init
+
+npm init -y
+
 npm install webtorrent
+
 ```
 
 > ⚠️ **Note**: WebTorrent requires a modern Node.js.
