@@ -22,7 +22,17 @@ It’s perfect for:
 - Building decentralized content delivery systems
 - Learning about P2P networking and torrent mechanics
 
+Github repo
+
+[https://github.com/webtorrent/webtorrent](https://github.com/webtorrent/webtorrent)
+
+npm
+
+[https://www.npmjs.com/package/webtorrent](https://www.npmjs.com/package/webtorrent)
+
+
 ---
+
 
 ## How It Works
 
