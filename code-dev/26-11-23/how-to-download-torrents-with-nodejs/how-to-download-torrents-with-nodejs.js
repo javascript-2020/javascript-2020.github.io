@@ -4,16 +4,16 @@
         import WebTorrent from 'webtorrent';
         
         var MAGNET_URL        = 'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel';
-        var DOWNLOAD_PATH     = './downloads';
         
+        var DOWNLOAD_PATH     = './downloads';
         var client            = new WebTorrent();
         
         client.on('error',err=>{
                                                                                 console.error('[CLIENT ERROR]', err.message);
         });
         
-                                                                                //see also
-                                                                                //https://github.com/ngosang/trackerslist
+                                                                                //  see also
+                                                                                //  https://github.com/ngosang/trackerslist
         var TRACKERS    = [
               'wss://tracker.openwebtorrent.com',
               'wss://tracker.webtorrent.dev',
