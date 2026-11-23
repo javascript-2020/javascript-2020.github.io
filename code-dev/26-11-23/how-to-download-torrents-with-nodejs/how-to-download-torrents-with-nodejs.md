@@ -45,7 +45,7 @@ It’s perfect for:
 To run this script, you’ll need:
 
 ```bash
-mkdir torrent
+mkdir torrent && cd torrent
 npm init
 npm install webtorrent
 ```
