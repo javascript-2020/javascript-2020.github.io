@@ -7,7 +7,71 @@
       
             <style>
             
+  :host
+    {position:relative}
+    
+    
+  .item
+    {display:inline-flex;align-items:center;text-align:center;background:buttonface;
+      border-radius:3px;border:1px solid lightgray;padding:5px 7px;cursor:pointer}
+  .item:hover
+    {background:lightyellow}
+    
+  .item-icon
+    {display:flex;flex-direction:column;align-items:center}
+    
+  .icon
+    {cursor:pointer;width:20px;height:20px;border:none}
+    
+  .item-label
+    {color:blue}
+    
+    
+    
+  ::slotted([slot=title])
+    {text-align:center;position:absolute;left:0;right:0;top:0px;z-index:-1;margin:0 auto}
+    
+    
+    
+  a
+    {color:blue}
+  a:visited
+    {color:blue}
+    
+    
             </style>
+            
+            
+            <slot name=title></slot>
+            
+            <a class=item href='/'>
+                  <div class=item-icon>
+                        <img class=icon style='width:20px;height:20px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAcCAMAAABBJv+bAAAAQlBMVEVHcEwyODg0ODkzNzgxNzc0ODk0ODkzODgzODgzNzgyNzgzODg0ODkzODgyNzgzODgzODgzODk0ODk0ODkyNzg0ODmObyvDAAAAFXRSTlMABvaSDbPHe15GL5u9hRxvO6rn2VJXM6DpAAAAxElEQVQoz71TyRbDIAh0Ie6J2fz/Xy3Y2pDktZ5aTiODCAMK0QxAPoFsgNk0JrMEQmEwyU5ndt4K2khQEzLhdNeQTznCWREegNEOOe18fRO8i6ooz+gRw1k9gMkyo/E9zY5yKMX+ihbLq8mjFB5N4UepYLGRmdM7OnLlpYtJXWQQkFCIpHcpfBVpCxeRV/KuodHzmfaNxuTmlpxmoEzc5bs0rnGdQQZeybWxRX6Vxf5rJJ116CxTZxX5Isf7Ive+wadP9AAuFg97y3bd7gAAAABJRU5ErkJggg=='>
+                        <div class=icon-label>
+                              home
+                        </div>
+                  </div>
+                  <!--
+                  <top-menu component=grp v2.0></top-menu>
+                  -->
+            </a>
+            
+            <a class=item href='/ai/ai.html'>
+                  <div class=item-icon>
+                        <img class=icon style='width:20px;height:20px' src='data:image/png;base64,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'>
+                        <div class=icon-label>
+                              ai
+                        </div>
+                  </div>
+                  <!--
+                  <top-menu component=grp v2.0></top-menu>
+                  -->
+            </a>
+            
+            <div class=spc></div>
+            
+            <slot name=date></slot>
+            
             
       </template>
       
@@ -28,8 +92,8 @@
         
               list.forEach(params=>{
               
-                    $       = mod.rd(params,'$',$);
-                    debug   = mod.rd(params,'debug',debug);
+                    $         = mod.rd(params,'$',$);
+                    debug     = mod.rd(params,'debug',debug);
                     
               });
               
