@@ -36,6 +36,10 @@ mkdir -p ~/ai && cd ~/ai
 
 ### Clone and Build llama.cpp
 
+Documentation for llama.cpp
+
+[https://github.com/ggml-org/llama.cpp/tree/master](https://github.com/ggml-org/llama.cpp/tree/master)
+
 ```
 
 git clone https://github.com/ggml-org/llama.cpp.git && cd llama.cpp
