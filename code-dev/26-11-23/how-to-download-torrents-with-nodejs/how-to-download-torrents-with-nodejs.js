@@ -40,9 +40,8 @@
         });
         
         torrent.on('download',()=>{
-        
-              var pct     = (torrent.progress*100).toFixed(1);
-              var kbps    = (torrent.downloadSpeed/1024).toFixed(1);
+                                                                                var pct=(torrent.progress*100).toFixed(1);
+                                                                                var kbps=(torrent.downloadSpeed/1024).toFixed(1);
                                                                                 var s=`\rProgress: ${pct}% | Speed: ${kbps} KB/s | Peers: ${torrent.numPeers}   `;
                                                                                 process.stdout.write(s);
         });
@@ -50,7 +49,7 @@
         torrent.on('done',()=>{
                                                                                 console.log('\n4. Done! Saved to',DOWNLOAD_PATH);
               client.destroy();
-              
+              //process.exit();
         });
         
         
