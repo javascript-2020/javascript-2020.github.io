@@ -208,7 +208,9 @@ this pattern is both powerful and accessible.
 
 ## Notes 
 
-To run this script you will need to complete the tutorial [Getting started with llama.cpp [ext-code.com]](https://ext-code.com/ai/getting-started-with-llama-cpp/getting-started-with-llama-cpp.html)
+To run this script you will need to complete the tutorial [Getting started with llama.cpp 
+[ext-code.com]](https://ext-code.com/ai/getting-started-with-llama-cpp/getting-started-with-llama-cpp.html)
+
 and have the server running on ` host : 127.0.0.1 ` ` port : 8443 `
 
 
