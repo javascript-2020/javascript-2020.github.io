@@ -98,6 +98,7 @@ requires loopback-network permission
                                                                   body      : JSON.stringify({messages,tools,temperature:0.2,stream:false})
                                                            });
                     data            = await res.json();
+                                                                                console.json(data);
                     assistantMsg    = data.choices[0].message;
               }
               
