@@ -45,7 +45,7 @@ requires loopback-network permission
                             }
         ];
         
-                                                                                // Run it:
+                                                                                // Run it:  1764
         var txt   = await runToolAgent('what is the square of 42 ?');
         console.log(txt);
         
