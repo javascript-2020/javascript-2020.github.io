@@ -10,7 +10,7 @@ how-to-download-torrents-with-nodejs.js
 
 note:
 
-nodejs script
+nodejs script, remember to save with .mjs
 
 
 */
