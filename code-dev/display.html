@@ -201,25 +201,29 @@
         
               var date;
               var fn;
+              var type;
               
               if(!rel){
                     var url     = new URL(window.location.toString());
                     
                     if(url.searchParams.toString()==''){
-                          console.log('no search params');
+                                                                                console.log('no search params');
                           return;
                     }
                     
-                    date        = url.searchParams.get('date');
-                    fn          = url.searchParams.get('file');
-                    var i       = fn.lastIndexOf('.');
-                    var dir     = fn.slice(0,i);
-                    rel         = `${date}/${dir}/${fn}`;
+                    date              = url.searchParams.get('date');
+                    fn                = url.searchParams.get('file');
+                    if(url.searchParams.has('type')){
+                          type        = url.searchParams.get('type');
+                    }
+                    var i             = fn.lastIndexOf('.');
+                    var dir           = fn.slice(0,i);
+                    rel               = `${date}/${dir}/${fn}`;
               }else{
-                    var i   = rel.indexOf('/');
-                    date    = rel.slice(0,i);
-                    var i   = rel.lastIndexOf('/');
-                    fn      = rel.slice(i+1);
+                    var i             = rel.indexOf('/');
+                    date              = rel.slice(0,i);
+                    var i             = rel.lastIndexOf('/');
+                    fn                = rel.slice(i+1);
               }
               
               var i       = rel.lastIndexOf('.');
@@ -232,17 +236,22 @@
               title(rel);
               desc(rel);
               
-                                                                                console.log(fext,fn);
+              type    ||= fext;
+                                                                                console.log(fext,fn,type);
               var custom;
-              switch(fext){
+              switch(type){
               
-                case 'html'   :
-                                custom   = document.createElement('snippet-html-console');
-                                custom.toggleAttribute('v2.1',true);
+                case 'html'     :
+                                  custom   = document.createElement('snippet-html-console');
+                                  custom.toggleAttribute('v2.1',true);
                                                                                                   break;
-                case 'js'     :
-                                custom   = document.createElement('snippet-console');
-                                custom.toggleAttribute('v2.0',true);
+                case 'js'       :
+                                  custom   = document.createElement('snippet-console');
+                                  custom.toggleAttribute('v2.0',true);
+                                                                                                  break;
+                case 'nodejs'   :
+                                  custom    = document.createElement('web-editor');
+                                  custom.toggleAttribute('v2.0',true);
                                                                                                   break;
                                                                                                   
               }//switch
