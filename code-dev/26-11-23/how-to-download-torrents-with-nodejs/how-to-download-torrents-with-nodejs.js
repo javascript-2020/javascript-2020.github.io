@@ -21,8 +21,8 @@ nodejs script
         var MAGNET_URL        = 'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel';
         
         var DOWNLOAD_PATH     = './downloads';
-        var client            = new WebTorrent();
         
+        var client            = new WebTorrent();
         client.on('error',err=>{
                                                                                 console.error('[CLIENT ERROR]', err.message);
         });
