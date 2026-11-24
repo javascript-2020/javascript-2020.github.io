@@ -30,11 +30,16 @@ nodejs script
                                                                                 //  see also
                                                                                 //  https://github.com/ngosang/trackerslist
         var TRACKERS    = [
+        
               'wss://tracker.openwebtorrent.com',
               'wss://tracker.webtorrent.dev',
+              'wss://tracker.fastcast.nz',
+              'wss://tracker.btorrent.xyz',
+              
               'udp://tracker.opentrackr.org:1337/announce',
               'udp://open.tracker.cl:1337/announce',
               'http://tracker.openwebtorrent.com:80/announce',
+              
         ];
                                                                                 console.log('1. Adding torrent...');
                                                                                 
