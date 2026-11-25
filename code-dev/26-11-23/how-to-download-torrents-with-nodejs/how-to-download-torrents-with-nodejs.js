@@ -44,9 +44,9 @@ nodejs script, remember to save with .mjs
                                                                                 console.log('1. Adding torrent...');
                                                                                 
         var torrent   = client.add(MAGNET_URL,{path:DOWNLOAD_PATH,announce:TRACKERS},torrent=>{
-                                                                                console.log('2. Metadata loaded:',torrent.name);
-                                                                                console.log('   InfoHash:',torrent.infoHash);
-                                                                                console.log('   Files:',torrent.files.map(f=>f.name));
+                                                                                console.log('2. Metadata loaded  :',torrent.name);
+                                                                                console.log('          InfoHash  :',torrent.infoHash);
+                                                                                console.log('             Files  :',torrent.files.map(f=>f.name));
         });
         
         torrent.on('warning',err=>console.log('[WARN]',err.message));
