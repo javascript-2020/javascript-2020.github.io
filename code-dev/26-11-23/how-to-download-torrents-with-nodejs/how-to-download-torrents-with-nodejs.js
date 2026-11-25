@@ -24,7 +24,7 @@ nodejs script, remember to save with .mjs
         
         var client            = new WebTorrent();
         client.on('error',err=>{
-                                                                                console.error('[CLIENT ERROR]', err.message);
+                                                                                console.error('[CLIENT ERROR]',err.message);
         });
         
                                                                                 //  see also
