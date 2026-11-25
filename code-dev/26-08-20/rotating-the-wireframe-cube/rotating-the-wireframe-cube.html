@@ -1,0 +1,419 @@
+
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+      <head>
+            <meta charset=utf-8>
+            <meta name=viewport content='width=device-width, initial-scale=1.0'>
+            <title>
+                  Rotating The Wireframe Cube
+            </title>
+            
+            <style>
+            
+  body {margin:0;min-height:100vh;display:grid;place-items:center;background:#111318;color:#e6edf3;
+        font-family:system-ui, -apple-system, sans-serif;}
+  .center {display:flex;flex-direction:column;align-items:center;gap:12px;}
+  canvas {border:1px solid #2b313c;border-radius:8px;background:#090b0e;}
+  .controls {display:flex;gap:10px;align-items:center;}
+  button {padding:8px 16px;border:1px solid #3b4252;border-radius:6px;background:#1f2430;
+          color:#f0f6fc;font-size:14px;cursor:pointer;}
+  button:hover {background:#2b3242;}
+  .paused {background:#5c1d24;border-color:#9e2a37;}
+  button.paused:hover {background:darkred;}
+  span {font-size: 13px;color: #9aa5b1;}
+  
+            </style>
+      </head>
+      
+      <body>
+      
+      <div class=center>
+            <canvas width=480 height=360></canvas>
+            <div class=controls>
+                  <button id=pause type=button>
+                        Pause
+                  </button>
+            </div>
+      </div>
+      
+      <script>
+      
+                                                                                // cube,hex,dodecahedron,toroid
+        var name                = 'cube';
+        
+        transform.scale         = 50;       //  50
+        transform.x             = 0;        //  0
+        transform.y             = 0;        //  0
+        transform.z             = 220;      //  220
+        
+        perspective.dist        = 10;       //  10
+        
+        screen.scale            = 50;       //  50
+        
+        
+        var angleX              = 0.0;
+        var dx                  = 0.012;    //  0.012
+        var angleY              = 0.0;
+        var dy                  = 0.018;    //  0.018
+        var angleZ              = 0.0;
+        var dz                  = 0.00;     //  0.00
+        
+        var running             = true;
+        var ct                  = 0;
+        requestAnimationFrame(loop);
+        
+        
+        var canvas      = document.getElementsByTagName('CANVAS')[0];
+        var ctx         = canvas.getContext('2d');
+        var pause       = document.getElementById('pause');
+        pause.onclick   = ()=>{
+        
+                                running   = !running;
+                                
+                                if(running){
+                                      pause.textContent   = 'Pause';
+                                      pause.classList.remove('paused');
+                                      loop();
+                                }else{
+                                      pause.textContent   = 'Resume';
+                                      pause.classList.add('paused');
+                                }
+                                
+                          }//onclick
+                          
+                          
+        function rotate([x,y,z],{ax=0,ay=0,az=0}){
+                                                                                // Rotate around X
+              var cosX    = Math.cos(ax);
+              var sinX    = Math.sin(ax);
+              
+              var x1      = x;
+              var y1      = y*cosX-z*sinX;
+              var z1      = y*sinX+z*cosX;
+                                                                                // Rotate around Y
+              var cosY    = Math.cos(ay);
+              var sinY    = Math.sin(ay);
+              
+              var x2      =  x1*cosY+z1*sinY;
+              var y2      =  y1;
+              var z2      = -x1*sinY+z1*cosY;
+              
+              var cosZ    = Math.cos(az);
+              var sinZ    = Math.sin(az);
+              
+              var x3      = x2*cosZ-y2*sinZ;
+              var y3      = x2*sinZ+y2*cosZ;
+              var z3      = z2;
+              
+              return [x3,y3,z3];
+              
+        }//rotate
+        
+        
+        function transform([x,y,z],{scale,tx,ty,tz}={}){
+                                                                                //  transform to world coordinate space
+              scale         ??= transform.scale;
+              
+              x              *= scale;
+              y              *= scale;
+              z              *= scale;
+              
+              tx            ??= transform.x;
+              ty            ??= transform.y;
+              tz            ??= transform.z;
+              
+              x              += tx;
+              y              += ty;
+              z              += tz;
+              
+              return [x,y,z];
+              
+        }//transform
+        
+        
+        function perspective([x,y,z],{dist}={}){
+                                                                                //  apply perspective transformation
+              dist          ??= perspective.dist;
+              
+              var x1          = x*dist/z;
+              var y1          = y*dist/z;
+              
+              return [x1,y1,z];
+              
+        }//perspective
+        
+        
+        function screen([x,y,z],{scale}={}){
+                                                                                //  transform to screen coordinate space
+              scale         ??= screen.scale;
+              
+              x               = x*scale;
+              y               = y*scale;
+              
+              var cx          = canvas.width/2;
+              var cy          = canvas.height/2;
+              
+              var xs          = cx+x;
+              var ys          = cy+y;
+              
+              return [xs,ys];
+              
+        }//screen
+        
+        
+        function project([x,y,z]){
+        
+              [x,y,z]   = transform([x,y,z]);
+              [x,y,z]   = perspective([x,y,z]);
+              [x,y]     = screen([x,y,z]);
+              
+              return [x,y];
+              
+        }//project
+        
+        
+        function draw(shape){
+        
+              var {vertices,edges}    = shape;
+              
+              ctx.clearRect(0,0,canvas.width,canvas.height);
+              
+              ctx.strokeStyle   = "#4ea8de";
+              ctx.lineWidth     = 2;
+              ctx.beginPath();
+              
+              var projected   = vertices.map(pt=>project(rotate(pt,{ax:angleX,ay:angleY,az:angleZ})));
+              for(var [a,b] of edges){
+              
+                    var [x1,y1]   = projected[a];
+                    var [x2,y2]   = projected[b];
+                    ctx.moveTo(x1,y1);
+                    ctx.lineTo(x2,y2);
+                    
+              }//for
+              
+              ctx.stroke();
+              
+        }//draw
+        
+        
+        function loop(){
+        
+              var shape   = shapes[name];
+              
+              if(shape.loop){
+                    shape.loop(ct);
+              }
+              
+              draw(shape);
+              
+              ct++;
+              angleX   += dx;
+              angleY   += dy;
+              angleZ   += dz;
+              
+              if(!running)return;
+              
+              requestAnimationFrame(loop);
+              
+        }//loop
+        
+        
+  //  shapes:
+  
+    var shapes    = {};
+    
+    
+  //  cube:
+  
+    shapes.cube    = {
+    
+          vertices    : [
+          
+                            [-1,-1,-1],[ 1,-1,-1],
+                            [ 1, 1,-1],[-1, 1,-1],
+                            [-1,-1, 1],[ 1,-1, 1],
+                            [ 1, 1, 1],[-1, 1, 1],
+                            
+                      ],
+          edges       : [
+          
+                            [0,1],[1,2],[2,3],[3,0],
+                            [4,5],[5,6],[6,7],[7,4],
+                            [0,4],[1,5],[2,6],[3,7],
+                            
+                      ]
+                      
+    };
+    
+    
+  //  hex:
+  
+    shapes.hex   = {
+    
+          vertices    : [
+                                                                                // Bottom face (y = -0.5)
+                [ 1.0,      -0.5,  0.0      ], // 0
+                [ 0.5,      -0.5,  0.866025 ], // 1
+                [-0.5,      -0.5,  0.866025 ], // 2
+                [-1.0,      -0.5,  0.0      ], // 3
+                [-0.5,      -0.5, -0.866025 ], // 4
+                [ 0.5,      -0.5, -0.866025 ], // 5
+                                                                                // Top face (y = 0.5)
+                [ 1.0,       0.5,  0.0      ], // 6
+                [ 0.5,       0.5,  0.866025 ], // 7
+                [-0.5,       0.5,  0.866025 ], // 8
+                [-1.0,       0.5,  0.0      ], // 9
+                [-0.5,       0.5, -0.866025 ], // 10
+                [ 0.5,       0.5, -0.866025 ]  // 11
+                
+          ],
+          edges   : [
+                                                                                // Bottom hexagon ring,
+                [0,1],[1,2],[2,3],[3,4],[4,5],[5,0],
+                                                                                // Top hexagon ring,
+                [6,7],[7,8],[8,9],[9,10],[10,11],[11,6],
+                                                                                // Vertical pillars connecting bottom to top,
+                [0,6],[1,7],[2,8],[3,9],[4,10],[5,11]
+                
+          ]
+          
+    };//hex
+    
+    
+  //dodecahedron:
+  
+    shapes.dodecahedron    = {
+    
+          vertices : [
+                                                                                // Inner cube corners (0–7)
+                [-1.0,      -1.0,      -1.0      ], // 0
+                [-1.0,      -1.0,       1.0      ], // 1
+                [-1.0,       1.0,      -1.0      ], // 2
+                [-1.0,       1.0,       1.0      ], // 3
+                [ 1.0,      -1.0,      -1.0      ], // 4
+                [ 1.0,      -1.0,       1.0      ], // 5
+                [ 1.0,       1.0,      -1.0      ], // 6
+                [ 1.0,       1.0,       1.0      ], // 7
+                
+                                                                                // YZ-plane (8–11)
+                [ 0.0,      -1.618034, -0.618034 ], // 8
+                [ 0.0,      -1.618034,  0.618034 ], // 9
+                [ 0.0,       1.618034, -0.618034 ], // 10
+                [ 0.0,       1.618034,  0.618034 ], // 11
+                
+                                                                                // XZ-plane (12–15)
+                [-0.618034,  0.0,      -1.618034 ], // 12
+                [-0.618034,  0.0,       1.618034 ], // 13
+                [ 0.618034,  0.0,      -1.618034 ], // 14
+                [ 0.618034,  0.0,       1.618034 ], // 15
+                
+                                                                                // XY-plane (16–19)
+                [-1.618034, -0.618034,  0.0      ], // 16
+                [-1.618034,  0.618034,  0.0      ], // 17
+                [ 1.618034, -0.618034,  0.0      ], // 18
+                [ 1.618034,  0.618034,  0.0      ]  // 19
+                
+          ],
+          edges   : [
+                                                                                // Cube corners to peaks
+                [ 0, 8 ],  [ 0, 12 ], [ 0, 16 ],
+                [ 1, 9 ],  [ 1, 13 ], [ 1, 16 ],
+                [ 2, 10 ], [ 2, 12 ], [ 2, 17 ],
+                [ 3, 11 ], [ 3, 13 ], [ 3, 17 ],
+                [ 4, 8 ],  [ 4, 14 ], [ 4, 18 ],
+                [ 5, 9 ],  [ 5, 15 ], [ 5, 18 ],
+                [ 6, 10 ], [ 6, 14 ], [ 6, 19 ],
+                [ 7, 11 ], [ 7, 15 ], [ 7, 19 ],
+                                                                                // Ridge edges connecting the peaks
+                [ 8, 9 ],
+                [ 10, 11 ],
+                [ 12, 14 ],
+                [ 13, 15 ],
+                [ 16, 17 ],
+                [18,19]
+                
+          ]
+          
+    };//dodecahedron
+    
+    
+  // toroid:
+  
+{
+
+    let shape       = {vertices:[],edges:[]};
+    shapes.toroid   = shape;
+    
+    let pentagon    = [
+          [ 1.0         ,  0.0        , 0],
+          [ 0.309017    ,  0.951057   , 0],
+          [-0.809017    ,  0.587785   , 0],
+          [-0.809017    , -0.587785   , 0],
+          [ 0.309017    , -0.951057   , 0]
+    ];
+    let edges   = [
+          [0,1],[1,2],[2,3],[3,4],[4,0]
+    ];
+    
+    
+    let n   = 10;
+    for(let i=0;i<n;i++){
+    
+          let edges2    = structuredClone(edges);
+          edges2        = edges2.map(([e1,e2])=>[e1+i*5,e2+i*5]);
+          shape.edges.push(edges2);
+          
+          let edges3    = [];
+          for(let j=0;j<5;j++){
+          
+                edges3.push([i*5+j,(i*5+(j+5))%(n*5)])
+                
+          }//for
+          shape.edges.push(edges3);
+          
+    }//for
+    
+    shape.edges       = shape.edges.flat();
+    
+    shape.loop      = ct=>{
+    
+                            shape.vertices   = [];
+                            
+                            for(let i=0;i<n;i++){
+                            
+                                  let ay    = i/n*Math.PI*2+(ct/40);
+                                  let az    = i/n*Math.PI*2+(ct/100);
+                                  
+                                  let v     = structuredClone(pentagon);
+                                  v         = v.map(v=>rotate(v,{ax:0,ay:0,az}));
+                                  v         = v.map(v=>transform(v,{scale:0.5,tx:1,ty:0,tz:0}));
+                                  v         = v.map(v=>rotate(v,{ax:0,ay,az:0}));
+                                  v         = v.map(v=>transform(v,{scale:1,tx:0,ty:0,tz:0}));
+                                  shape.vertices.push(v);
+                                  
+                            }//for
+                            
+                            shape.vertices    = shape.vertices.flat();
+                            
+                      }//loop
+                      
+    shape.loop(0);
+    
+    
+}
+
+
+            </script>
+            
+      </body>
+      
+</html>
+
+
+
+
