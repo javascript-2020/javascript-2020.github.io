@@ -5,12 +5,14 @@
             <style>
             
   :host
-    {transition:0.1s;height:0}
+    {transition:0.1s;height:100px}
     
             </style>
             
             
       </template>
+      
+      <range-element id=temperature component=page></range-element>
       
       <script>
       
@@ -42,6 +44,7 @@
   
         var shadow;
         
+        var temperature;
         
         
 /*
@@ -58,6 +61,12 @@
   
   
         obj.init    = async function(){
+        
+              await mod.auto();
+              
+              temperature   = mod.temperature;
+              
+              
         }//init
         
         
@@ -88,6 +97,9 @@
               
         }//hide
         
+        
+        obj.read    = function(){
+        }//read
         
         
   //:
