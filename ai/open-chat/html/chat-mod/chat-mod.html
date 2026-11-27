@@ -1,0 +1,130 @@
+
+
+
+<chat-mod>
+
+      <template shadowrootmode=open>
+      
+            <style>
+            
+  #chat
+    {flex:1;display:flex;flex-direction:column;gap:10px;overflow:auto;margin:20px 0}
+    
+  .user
+    {border:1px solid lightblue;padding:10px;border-radius:6px;position:relative}
+    
+  .assistant
+    {border:1px solid lightgray;padding:10px;border-radius:6px;position:relative}
+    
+  .icons
+    {display:flex;gap:3px;position:absolute;top:2;right:2}
+  .icons .icon
+    {width:18px;height:18px}
+  .icon
+    {border:1px solid lightgray;background:white;border-radius:3px;cursor:pointer;box-sizing:border-box}
+  .icon:hover
+    {background:lightyellow}
+    
+  .consolidate
+    {padding:3px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABZVBMVEVHcEwCAQEHAwUDAgEICQ4DAgIGBAYGBAMCAQAFAgMSFSIhGhQmQTEDAwIBAABVRjEGBgcbHzUMEBYpL1EZFRUXKyEGCAcMEQ03UTghMCIEAwQZLSMHBwoEAwEGBQI0PWgKCxENFhEhJ0gOEBgEAwMmLEsXGywICA8+SX0UJRwoTDsGCAcRGhQxRzECAQANECYBAQAHBwovN10CAgEHCAwCAQASFSMGBwsRHBYXGiticr4CAAA/SXwYGy5NV4dnecwzOVZXZq1fb7tNWpkhMCIbKBya5pw6RHRLWZc3QW+d6p9JVpKQ5aF42qKc6J5SYKRATIdx26ZivZA7ZEmW4ZlKbkuX5Z1TfFRz3KdlwpNDUI1UhF1TYqeK4qCE4KFVo3xmxZZBfF+P15Rt06JQdlAcI0wVGjuL0Y1+xYowO3BYZ7BMkm+IyYpnetBsgNo8dFmW4JhTnnlsp3VRX6FQXqB1r3dZabKIR62cAAAARnRSTlMAYAxlnyFFEzgq1QLyXTQBhOPA+wT5qK/34m3ilT4a/trT7zFs8tex/vD2j8DyT/RMkPpxpX7P78eplHni3CHeKefi8frvi7lsSwAAAeBJREFUKM+1klV320AQhUds2TLIIDMlxjjUcDFFoUnGmu0wl/v7u4qcnDxYees8zdlvdubenQV4GvFUKg6WYbPLst32DL27s+SI1jW5bsFZRPcVab8g29kFGPMV8ruK5MlLPmwBpkgy4VQkIhEjqUXd/Q7AlE80OBxW2p3K4Ttr3wgXnM9gDM3+T9jNkJq2w7gXuQLXNrmXvL1N7pHbNIU/Zfhm6eWrN5JWk6/+yjVZ8vHeF+uPFQzp69euNCWbSylSKpdVtF+/+z6SmWNPcrjFe2OEjcEkKcPYiJiX36olPaaIRG7IY+a09x9N5Tjl5IdvE/d4eUnemfdZ/vBojNSyrjnukw+Penn5gGP1JRNvbpzmTZmO12dnu+a+cOF0Y90wnAm3u6GgsWKmxJ2ccCVDMRUMddvhjB+wtZuq2hoEcXB7mkeqetREivHgoKWqFxwG6T+qKIqVFRqo8HlVFDu9KAV0qIUOy5M0fD43kq/fIhAPdVA6Ol6JQ6Zr3BlPA/Dlpip2KnoTA9fad1RYOeZcgLURHumNIgiD8qiiN6Is4Ks/y+OK/mMVBzZ8UR7r+kwA9mDWmE64CJJLR697vesojdIIN5k2Zgfow7NCMZAm/IZZ2hsIeOn7/RLpQFFg4R/6/VOncO55yQAAAABJRU5ErkJggg==);
+    }
+  .paste
+    {padding:2px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==);
+    }
+  .copy
+    {padding:2px;
+      content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAABSlBMVEVHcEwnz/4C8P4g1P4L6P43wf5Mr/4a2v4Y3P4/uv5PrP4+vf5Auv4ozv5KsP4vyv45wP5Jsf5Auf49vP5Mrv4zxf44wf5Lr/46wP4h1P5Lr/46vv5Jsv4R5P5Hs/5Etv44wf5Hs/41w/4uyv47vv49vP5Ftf5GtP4c2f4rzP4tyv4m0f5Etv5Nrv4xxv4xxv4xx/4W3/5KsP5Mr/4/u/4uyv5Isv4K6f4l0f4qzv4W3/4V3/5Nrv5Mrv5Mrv5Mr/4W3v4e2P5BuP5Hsv4N5v4K6f4O5v42w/5Dt/4E7/4uyf4C8P4nz/4M5/4K6v4oz/4P5f4k0v4b2v5Gs/4E7v4I6/5Nrf4e1/4H7P4E7v5Auv5Dtv4sy/5Isv5GtP4wx/49vP4zxf47vv44wP42w/5LsP5Jsf4i1P4n0P4N5v4k0v4a2v4S4v4X3v6OfcqkAAAAVnRSTlMACo7CjQWN/VczjgIJMfIXJzHtjj5iVekR71Hvtz7CjelXjre2wiJj2PCFIWbR7+fEnXaodz3544/USfOC22Tm7CXOnqfUZ+/3VTV9bsTzqGDahpb2tyRB6bIAAAIDSURBVDjLrZVpV9pAFIYntdFiQkZsLCQECtJSlqAsFRBU3Kuta1sncYGuJEDt///aISkkkyHo6enzLTlP5s5758wNAC526pd3d1++/fzx/evNze1tp210wxURUMTWBz2v2EWtLc7jBTPmoJfNrqy8i0ajixgB00VISJIeW9JMKbcWDAYDNiFMQN1EqAAJcUfSBif0fsQWQjLxpjGnXUJa5CoIbTiP8KJ0OqfNMLQIZhGad/Ke3t///vWwGKv1+yPxfW55+TnmJWZW5ggxcqX3m6WSVTpSdPcxHCLExmf97AI8e1j8cK1f8X9Fq/Sotrf0k2v9KRiJ08L8mwhf2CQx8oK/yJyPw3Q67ULaV4Tr7tRCwFfkllLF4ushccwGPyUMzwzhMQz/X1Kz+QVMmh2LcjgsTxDZ3OpqIpFYfDu+KGwoxE5JvTtpF9NX9BEB792jn0gD4eNEsVAQHyXOO7fQFmNNLZOnPV5BqEyI+Yxm1qkluS0BCWRp8FEze6mTJQtVVd8MUfcEhBSGFOGMOWmaoc0AmRoXP5cmiHEReEXANOopzCsLRYlXjWolGXE2jK/r/ujEWAdOFIxWGrjO8ljXazG6MeynthEn2gAP9P7B4XCE2thzdG2v2jbK5LfHZ3hINbclSco6o/kIh1Einq4e1qxp5m2PkqZ/CPvbXvFot+xe7w/EpaiUrJ24NAAAAABJRU5ErkJggg==);
+    }
+  .remove
+    {padding:3px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAB8lBMVEVHcEyOHRhsWl2aJyJxHx6bFQ16MTNlLy+cGBGUJSKEGxWbHxmAIBu/HxSWFhGFJyJuHh1MNjeWFAyVMCyaGhGiGhGfGBCPHBeVGBOHHBeWHxifJiGZKCGyJh2KGRiBIByJGxe9MijIQTiZEw10HR2gMSywKCDLOjGpGg+oGxSnFg6oHBSiHxekHhajHhaMHRurHRSwKSCfGRKPFxCaGhSxHRLDQzmbFRB+IBuwJh2rJh6bJiK+Iha9NiuzKSCNFxKPFhC8KyGvIReFGBLCMSSTEwyLFBCJFg+hJR7FNy6OFA27NCqNFhWoGA+tHxWdFxCnIBWrIReoKCHMSD+5MCXYRz2/MSmuKyOsKiOwJx6XJh+3KyTQPDLYQDevLSK3KCG+Jx/PMSXRST3bcGfRSj+yMCXEQDWzGQ6uGA2pFw7QJxy/GxGkFQyqEwufFQy4Fw28GA/OIxmtFQzaZFnFNSnCJxy0Fg2wFQzGHRTKIBbVKh7da2ClEgvgPjTri4O6HRPPTUPKQjbiOjDidW3UWU/YRTvvpqHYW1PfcWbMRjzcLSPgMynIPTLlenPZNy7TMifnhX3ng3roSD7pWE7oUkzuVEvuoJn0ubbxq6fDGxG4Gw/WWE7ecGTMSUDqg4DrlY7tT0TuYVbfSUDzYFnyXVXytLG4Q/qNAAAAZ3RSTlMATgIcCvIIBc0aPl44/q4UDwT+CtXX3lV/aoY3I6JJHkPw8PYYDbL59LL3q5aZeSrf0sKQo/T45iq2gijv01Kcs9rHdrP3xKuS1+aVW+3s6d/Rr+WO9KxOPmFxj+v3wEmt8PX282vL3D9FWAAAAhFJREFUKM9jUE1NS0ny9JZmYkAHwvEJNgzeyTOmL53WHBwigyqpaueSWOrEoD5t+oy2trb5xbZ2SAYIh7vEtipKqTCotdTV1U2YOKGuQ8lKFSrJFBEWOrk1TgGoXt5DqXrivN7mOR3VjbKcYFmZ6JjJC5Ws+MEcQYUgs+Le5uri9pYeNWaguZGeixZPsWWEW8XCaGlWXF08u6GzxJLZWlZ9ypJWNQtkZwpwG3a2tzQ0lpQ6OdZOnaruwY/mSRkdxbkg6azaBZMUo9gwAoFd3LCkp6S/aVKtIyMDNqAfWNrXVNtXKiuITVZYz6aqu6mfN92UG4ssvy5vVVd3VX16erqBNIYspzZvVlVXloEYUDrDiBlNllkzuzCrKiuAi0s0Awh02FH1amZXFmZl+YkzMPCIAKU1UKzn155VUVlYaCoJ4vCIZGZkilojZFl007MrKivrpSBGAuUzM03gIcOkl1Ews6Kynk8AKsAllpmpBTee0Te/ILuCVxQRC4z+OTkc8lBHc5QDpbM1xJEcI8makyMFYUpklgGl042R/SIokZdjDg4cfbEioHQ6zCyYa+3z8sCuk8gpKi/L1/JBD0WjPFY5IM1Rk1teVsTHgh7KXOZCDkBB5ZrconKwQjTgLKTMCJHO5cNMHgwCDkJ8wgxuebm5rArYEgCPF9BQSdeaPGOs6QNovDuDgL2ruwpWWQYVNy8AZ7mGL3iyyLYAAAAASUVORK5CYII=);
+    }
+    
+            </style>
+            
+            
+            <div class=user>
+                  <div class=icons style='display:none'>
+                        <img class='consolidate icon'>
+                        <img class='remove icon'>
+                  </div>
+                  <div class='content markdown-body'>
+                  </div>
+            </div>
+            
+            <div class=assistant>
+                  <div class=icons>
+                        <img class='consolidate icon'>
+                        <img class='remove icon'>
+                  </div>
+                  <div class='content markdown-body'>
+                  </div>
+            </div>
+            
+            
+      </template>
+      
+      <script>
+      
+(function({mod,host}){
+
+  var obj   = {
+        version   : 'v1.0',
+  };
+  
+        var df=true,did='chat-mod';
+        
+        var $,debug,list
+        ;
+        
+        obj.initmod   = function(...list){
+        
+              list.forEach(params=>{
+              
+                    $       = mod.rd(params,'$',$);
+                    debug   = mod.rd(params,'debug',debug);
+                    list    = mod.rd(params,'list',list);
+                    
+              });
+              
+        }//initmod
+        
+        
+  //vars:
+  
+  
+        var create    = {};
+        
+        
+  //:
+  
+  
+        obj.init    = async function(){
+        }//init
+        
+        
+  //:
+  
+  
+        obj.initdom   = async function(){
+        }//initdom
+        
+        
+  //:
+  
+  
+  //:
+  
+  
+  return obj;
+  
+//chat-mod
+})
+
+      </script>
+      
+</chat-mod>
+
+
