@@ -202,43 +202,60 @@
         var version   = 'v1.0'
         
         
+        var md;
+        
+        
+        
         var server    = 'https://127.0.0.1:8443';
         var activeModelId;
         
         
-        var md;
+        
         
         var hdr   = {};
+        
+        var system;
+        
         var ui    = {};
         
         var prompt;
         
         
-        var list   = [
-              {role:'system',content:'You are a concise JavaScript coding assistant.'}
-        ];
+        var list   = [];
+        
         list.messages         = ()=>{
         
-                                      var messages    = list.map(o=>({role:o.role,content:o.content}));
+                                      var messages    = list.map(o=>{
+                                      
+                                            if(!o.status)return;
+                                            return {role:o.role,content:o.content};
+                                            
+                                      }).filter(Boolean);
                                       return messages;
                                       
                                 }//messages
-        list.add              = (role,content,node)=>{
+        list.add              = ({role,content,node,status})=>{
         
                                       var id    = new_id();
-                                      list.push({id,role,content,node});
+                                      list.push({id,role,content,node,status});
                                       return id;
                                       
                                 }//add
-        list.add.user         = (content,node)=>{
+        list.add.system       = ({content,node,status})=>{
         
-                                      var id    = list.add('user',content,node);
+                                      var id    = list.add({role:'system',content,node,status});
+                                      return id;
+                                      
+                                }//system
+        list.add.user         = ({content,node,status})=>{
+        
+                                      var id    = list.add({role:'user',content,node,status});
                                       return id;
                                       
                                 }//user
-        list.add.assistant    = (content,node)=>{
+        list.add.assistant    = ({content,node,status})=>{
         
-                                      var id    = list.add('assistant',content,node);
+                                      var id    = list.add({role:'assistant',content,node,status});
                                       return id;
                                       
                                 }//assistant
@@ -250,9 +267,11 @@
                                       
                                 }//content
                                 
-                                
-                                
-                                
+        list.add.system({content:'You are a concise JavaScript coding assistant.',node:null,status:true});
+        //{role:'system',content:'You are a concise JavaScript coding assistant.',status:true}
+        
+        
+        
         var btn       = {};
         var create    = {};
         
@@ -308,8 +327,8 @@
               
               hdr.total_tokens                          = $('#hdr #total');
               
-              
-              $('#system #content').textContent         = list[0].content;
+              system                                    = $('#system #content');
+              system.textContent                        = list[0].content;
               
               
               ui.chat                                   = $('#chat');
@@ -320,9 +339,6 @@
               
               ui.assistant                              = $('.assistant');
               ui.assistant.remove();
-              
-              
-              
               
               
               
@@ -376,7 +392,7 @@
               ui.chat.append(node);
               ui.chat.scrollTop                 = 999_999;
               
-              var id    = list.add.user({content:txt,node});
+              var id    = list.add.user({content:txt,node,status:true});
               
               return {id,node};
               
@@ -421,7 +437,7 @@
               var icons                         = $(node,'.icons');
               ui.chat.append(node);
               
-              var id    = list.add.assistant({content:'',node});
+              var id    = list.add.assistant({content:'',node,status:false});
               return {id,node};
               
               
@@ -490,6 +506,7 @@
               var endpoint          = server+'/v1/chat/completions';
               var messages          = list.messages();
                                                                                 //console.json(messages);
+                                                                                //return;
                                                                                 
               var headers           = {'content-type':'application/json'};
               var body              = JSON.stringify({
