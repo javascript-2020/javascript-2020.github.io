@@ -65,16 +65,45 @@
   
         obj.initdom   = async function(){
                                                                                 debug('initdom');
-              shadow    = host.shadowRoot;
+              shadow                                    = host.shadowRoot;
               
-              prompt    = $(shadow,'#prompt');
+              prompt                                    = $(shadow,'#prompt');
+              prompt.onkeydown                          = kd;
+              prompt.focus();
               
         }//initdom
+        
+        
+        kd.mode   = 'single';
+        
+        function kd(e){
+        
+              if(e.key=='Enter'){
+                    if(e.ctrlKey){
+                          send();
+                          e.preventDefault();
+                    }
+                    if(e.shiftKey){
+                          kd.mode   = 'multi';
+                    }
+                    if(kd.mode=='multi')return;
+                    send();
+                    e.preventDefault();
+              }
+              
+        }//kd
         
         
   //:
   
   
+        obj.focus   = function(){
+        
+              prompt.focus();
+              
+        }//focus
+        
+        
         obj.clear   = function(){
         
               prompt.textContent    = '';
