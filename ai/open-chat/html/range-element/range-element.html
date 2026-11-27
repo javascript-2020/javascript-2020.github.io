@@ -122,11 +122,13 @@
               chk                                 = $(shadow,'[type=checkbox]');
               
               label                               = $(shadow,'#name');
-              console.log(host.textContent);
-              /*
-              if(host.hasAttribute('id')){
-                    label.textContent             =
-              */
+              var txt                             = get_text(host);
+              if(!txt){
+                    txt   = host.id;
+              }
+              if(txt){
+                    label.textContent             = txt;
+              }
               
               range                               = $(shadow,'[type=range]');
               range.oninput                       = on.input.range;
@@ -217,6 +219,17 @@
               return {enabled,value:v};
               
         }//read
+        
+        
+  //:
+  
+  
+        function get_text(node){
+        
+              var txt   = [...node.childNodes].filter(node=>node.nodeType==Node.TEXT_NODE).map(node => node.textContent).join('').trim();
+              return txt;
+              
+        }//get_text
         
         
   //:
