@@ -95,7 +95,10 @@
   //vars:
   
   
+        var ui        = {};
+        
         var create    = {};
+        obj.create    = create;
         
         
   //:
@@ -109,12 +112,126 @@
   
   
         obj.initdom   = async function(){
+        
+              shadow                                    = host.shadowRoot;
+              
+              ui.user                                   = $(shadow,'.user');
+              ui.user.remove();
+              
+              ui.assistant                              = $(shadow,'.assistant');
+              ui.assistant.remove();
+              
         }//initdom
         
         
   //:
   
   
+        obj.add   = function(v){
+        
+              host.append(v);
+              
+        }//add
+        
+        
+  //:
+  
+  
+        create.user   = function({txt}){
+                                                                                //console.log(txt);
+                                                                                
+              var node                          = ui.user.cloneNode(true);
+              
+              node.onclick                      = click;
+              node.onmouseenter                 = me;
+              node.onmouseleave                 = ml;
+              
+              var icons                         = $(node,'.icons');
+              
+              //var html                          = md.render(txt);
+              $(node,'.content').textContent    = txt;
+              
+              ui.chat.append(node);
+              ui.chat.scrollTop                 = 999_999;
+              
+              var id    = list.add.user({content:txt,node,status:true});
+              
+              return {id,node};
+              
+              
+              function click(e){
+              
+                    if(e.target.classList.contains('consolidate')){
+                    }
+                    if(e.target.classList.contains('remove')){
+                          var index   = list.findIndex(o=>o.id===id);
+                          list.splice(index,1);
+                          node.remove();
+                    }
+                    
+              }//click
+              
+              
+              function me(){
+              
+                    icons.style.display   = '';
+                    
+              }//me
+              
+              
+              function ml(){
+              
+                    icons.style.display   = 'none';
+                    
+              }//ml
+              
+        }//user
+        
+        
+        create.assistant    = function({}={}){
+        
+              var node                          = ui.assistant.cloneNode(true);
+              
+              node.onclick                      = click;
+              node.onmouseenter                 = me;
+              node.onmouseleave                 = ml;
+              
+              var icons                         = $(node,'.icons');
+              ui.chat.append(node);
+              
+              var id    = list.add.assistant({content:'',node,status:false});
+              return {id,node};
+              
+              
+              function click(e){
+              
+                    if(e.target.classList.contains('consolidate')){
+                    }
+                    if(e.target.classList.contains('remove')){
+                          var index   = list.findIndex(o=>o.id===id);
+                          list.splice(index,1);
+                          node.remove();
+                    }
+                    
+              }//click
+              
+              
+              function me(){
+              
+                    icons.style.display   = '';
+                    
+              }//me
+              
+              
+              function ml(){
+              
+                    icons.style.display   = 'none';
+                    
+              }//ml
+              
+        }//bot
+        
+        
   //:
   
   
