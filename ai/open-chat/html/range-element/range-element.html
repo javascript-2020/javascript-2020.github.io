@@ -67,8 +67,12 @@
         var shadow;
         var range;
         var value;
+        var min         = 0;
+        var max         = 1;
+        var step        = 0.1;
         
         var on    = {};
+        on.input    = {};
         var btn   = {};
         
   //:
@@ -88,39 +92,68 @@
               shadow    = host.shadowRoot;
               
               range                               = $(shadow,'[type=range]');
-              range.oninput                       = on.input;
+              range.oninput                       = on.input.range;
               
               $(shadow,'[value=-]').onclick       = btn.dec;
+              
+              value                               = $(shadow,'#value');
+              value.oninput                       = on.input.value;
+              
               $(shadow,'[value=+]').onclick       = btn.inc;
               
         }//initdom
         
         
-        on.input    = function(){
+        on.input.range    = function(){
         
               var v         = range.value;
               value.value   = v;
               
-        }//input
+        }//range
+        
+        
+        on.input.value    = function(){
+        
+              var v         = value.value;
+              range.value   = v;
+              
+        }//value
         
         
         btn.dec   = function(){
+        
+              var v         = Number(value.value);
+              v            -= step;
+              value.value   = v;
+              
         }//dec
         
         
         btn.inc   = function(){
+        
+              var v   = Number(value.value);
+              v            += step;
+              value.value   = v;
+              
         }//inc
         
         
   //:
   
   
-        obj.create    = function({name}){
+        obj.create    = function(params){
         
-              $(shadow,'label').textContent       = name;
+              if('min' in params){
+                    min   = params.min;
+              }
+              if('max' in params){
+                    max   = params.max;
+              }
+              if('step' in params){
+                    step    = params.step;
+              }
               
-              
-              
+              $(shadow,'label').textContent       = params.name;
               
               
         }//create
@@ -128,7 +161,7 @@
         
         obj.read    = function(){
         
-              var v   = value.value;
+              var v   = Number(value.value);
               return v;
               
         }//read
