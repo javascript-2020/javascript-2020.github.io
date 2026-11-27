@@ -97,6 +97,7 @@
   
         var ui        = {};
         
+        obj.scroll    = {};
         var create    = {};
         obj.create    = create;
         
@@ -134,6 +135,13 @@
         }//add
         
         
+        obj.scroll.bottom   = function(){
+        
+              host.scrollTop    = 999_999;
+              
+        }//bottom
+        
+        
   //:
   
   
@@ -151,8 +159,8 @@
               //var html                          = md.render(txt);
               $(node,'.content').textContent    = txt;
               
-              ui.chat.append(node);
-              ui.chat.scrollTop                 = 999_999;
+              host.append(node);
+              host.scrollTop                 = 999_999;
               
               var id    = list.add.user({content:txt,node,status:true});
               
@@ -197,7 +205,8 @@
               node.onmouseleave                 = ml;
               
               var icons                         = $(node,'.icons');
-              ui.chat.append(node);
+              host.append(node);
+              host.scrollTop                    = 999_999;
               
               var id    = list.add.assistant({content:'',node,status:false});
               return {id,node};
