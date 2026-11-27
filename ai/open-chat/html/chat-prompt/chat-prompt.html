@@ -77,6 +77,9 @@
         var prompt;
         
         
+        var btn   = {};
+        
+        
   //:
   
   
@@ -92,6 +95,8 @@
         obj.initdom   = async function(){
                                                                                 debug('initdom');
               shadow                                    = host.shadowRoot;
+              
+              $(shadow,'#settings').onclick             = btn.settings;
               
               prompt                                    = $(shadow,'#prompt');
               prompt.onkeydown                          = kd;
@@ -118,6 +123,13 @@
               }
               
         }//kd
+        
+        
+        btn.settings    = function(){
+        
+              settings.toggle();
+              
+        }//settings
         
         
   //:
