@@ -23,9 +23,11 @@
     
             </style>
             
-            
-            <label>
-            </label>
+            <div>
+                  <input type=checkbox>
+                  <label id=name>
+                  </label>
+            </div>
             
             <div id=value-root>
                   <input type=button value=->
@@ -65,6 +67,8 @@
   
   
         var shadow;
+        
+        var chk;
         var range;
         var value;
         var min         = 0;
@@ -91,6 +95,9 @@
         
               shadow                              = host.shadowRoot;
               
+              chk                                 = $(shadow,'[type=checkbox]');
+              
+              label                               = $(shadow,'#name');
               
               range                               = $(shadow,'[type=range]');
               range.oninput                       = on.input.range;
@@ -160,9 +167,9 @@
                     v   = params.value;
               }
               
-              $(shadow,'label').textContent       = params.name;
-              value.value   = v;
-              range.value   = v;
+              label.textContent     = params.name;
+              value.value           = v;
+              range.value           = v;
               
               
         }//create
@@ -170,8 +177,9 @@
         
         obj.read    = function(){
         
-              var v   = Number(value.value);
-              return v;
+              var v         = Number(value.value);
+              var enabled   = chhk.checked;
+              return {enabled,value:v};
               
         }//read
         
