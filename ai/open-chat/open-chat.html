@@ -67,19 +67,9 @@
     {padding:10px}
     
     
-  #chat
+  chat-mod
     {flex:1;display:flex;flex-direction:column;gap:10px;overflow:auto;margin:20px 0}
     
-  .user
-    {border:1px solid lightblue;padding:10px;border-radius:6px;position:relative}
-    
-  .assistant
-    {border:1px solid lightgray;padding:10px;border-radius:6px;position:relative}
-    
-  .icons
-    {display:flex;gap:3px;position:absolute;top:2;right:2}
-  .icons .icon
-    {width:18px;height:18px}
   .icon
     {border:1px solid lightgray;background:white;border-radius:3px;cursor:pointer;box-sizing:border-box}
   .icon:hover
@@ -167,23 +157,7 @@
             
             <hr>
             
-            <div id=chat>
-                  <div class=user>
-                        <div class=icons style='display:none'>
-                              <img class='consolidate icon'>
-                              <img class='remove icon'>
-                        </div>
-                        <div class='content markdown-body'>
-                        </div>
-                  </div>
-                  <div class=assistant>
-                        <div class=icons>
-                        </div>
-                        <div class='content markdown-body'>
-                        </div>
-                  </div>
-            </div>
-            
+            <chat-mod component=page></chat-mod>
             
             <chat-prompt component=page></chat-prompt>
             
@@ -218,6 +192,7 @@
         
         var ui    = {};
         
+        var chat;
         var prompt;
         
         
@@ -264,6 +239,7 @@
         
                                       var index             = list.findIndex(o=>o.id===id);
                                       list[index].content   = content;
+                                      list[index].status    = true;
                                       
                                 }//content
                                 
@@ -291,7 +267,8 @@
               md.use(markdownItAttrs,{leftDelimiter:'{',rightDelimiter:'}',allowedAttributes:['id','class',/^data-.*$/]});
               
               
-              
+              chat      = mod['chat-mod'];
+              chat.initmod({list});
               prompt    = mod['chat-prompt'];
               
               
@@ -304,7 +281,7 @@
               
               prompt.focus();
               
-              create.user({txt:'hello'});
+              //create.user({txt:'hello'});
               
         }//ready
         
@@ -331,16 +308,6 @@
               system.textContent                        = list[0].content;
               
               
-              ui.chat                                   = $('#chat');
-              
-              
-              ui.user                                   = $('.user');
-              ui.user.remove();
-              
-              ui.assistant                              = $('.assistant');
-              ui.assistant.remove();
-              
-              
               
         }//initdom
         
@@ -356,7 +323,7 @@
                     white-space   : pre;
               `;
               div.textContent     = JSON.stringify(data,null,4);
-              ui.chat.append(div);
+              chat.add(div);
               
         }//props
         
@@ -370,104 +337,11 @@
                     white-space   : pre;
               `;
               div.textContent     = JSON.stringify(data,null,4);
-              ui.chat.append(div);
+              chat.add(div);
               
         }//models
         
         
-        create.user   = function({txt}){
-                                                                                //console.log(txt);
-                                                                                
-              var node                          = ui.user.cloneNode(true);
-              
-              node.onclick                      = click;
-              node.onmouseenter                 = me;
-              node.onmouseleave                 = ml;
-              
-              var icons                         = $(node,'.icons');
-              
-              //var html                          = md.render(txt);
-              $(node,'.content').textContent    = txt;
-              
-              ui.chat.append(node);
-              ui.chat.scrollTop                 = 999_999;
-              
-              var id    = list.add.user({content:txt,node,status:true});
-              
-              return {id,node};
-              
-              
-              function click(e){
-              
-                    if(e.target.classList.contains('consolidate')){
-                    }
-                    if(e.target.classList.contains('remove')){
-                          var index   = list.findIndex(o=>o.id===id);
-                          list.splice(index,1);
-                          node.remove();
-                    }
-                    
-              }//click
-              
-              
-              function me(){
-              
-                    icons.style.display   = '';
-                    
-              }//me
-              
-              
-              function ml(){
-              
-                    icons.style.display   = 'none';
-                    
-              }//ml
-              
-        }//user
-        
-        
-        create.assistant    = function({}={}){
-        
-              var node                          = ui.assistant.cloneNode(true);
-              
-              node.onclick                      = click;
-              node.onmouseenter                 = me;
-              node.onmouseleave                 = ml;
-              
-              var icons                         = $(node,'.icons');
-              ui.chat.append(node);
-              
-              var id    = list.add.assistant({content:'',node,status:false});
-              return {id,node};
-              
-              
-              function click(e){
-              
-                    if(e.target.classList.contains('consolidate')){
-                    }
-                    if(e.target.classList.contains('remove')){
-                          var index   = list.findIndex(o=>o.id===id);
-                          list.splice(index,1);
-                          node.remove();
-                    }
-                    
-              }//click
-              
-              
-              function me(){
-              
-                    icons.style.display   = '';
-                    
-              }//me
-              
-              
-              function ml(){
-              
-                    icons.style.display   = 'none';
-                    
-              }//ml
-              
-        }//bot
         
         
   //:
@@ -475,30 +349,12 @@
   
         async function send(){
         
-              var txt           = prompt.read();
+              var txt               = prompt.read();
+              create.user({txt});
               prompt.clear();
               
-              create.user({txt});
+              var {id,node}         = chat.create.assistant();
               
-              var {id,node}     = create.assistant();
-              var result        = await chat(txt,id,node);
-                                                                                //console.log(result);
-        }//send
-        
-        
-  //:
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-        async function chat(prompt,id,node,{maxTokens=3072}={}){
-        
               var txt               = system.textContent.trim();
               list[0].content       = txt;
               
@@ -582,7 +438,7 @@
                                                                                 console.log(`[Finished] Reason: ${finishReason}`);
                                                                                 //console.log(fullContent);
                                                                                 // Save the assembled message back to history
-              list.content(id,{content,node});
+              list.content(id,content);
               
               return {content,finishReason};
               
