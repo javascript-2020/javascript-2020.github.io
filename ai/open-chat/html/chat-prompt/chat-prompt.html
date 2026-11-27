@@ -8,10 +8,15 @@
             <style>
             
   :host
-    {}
+    {padding:10px;border:1px solid lightgray;border-radius:6px}
     
+  #prompt
+    {min-height:30px;outline:none}
     
             </style>
+            
+            <div id=prompt contenteditable>
+            </div>
             
       </template>
       
@@ -41,10 +46,17 @@
   //vars:
   
   
+        var shadow;
+        
+        var prompt;
+        
+        
   //:
   
   
         obj.init    = async function(){
+                                                                                debug=eval(debug.mod);
+                                                                                debug('init');
         }//init
         
         
@@ -52,6 +64,11 @@
   
   
         obj.initdom   = async function(){
+                                                                                debug('initdom');
+              shadow    = host.shadowRoot;
+              
+              prompt    = $(shadow,'#prompt');
+              
         }//initdom
         
         
@@ -59,6 +76,10 @@
   
   
         obj.read    = function(){
+        
+              var txt   = prompt.textContent.trim();
+              return txt;
+              
         }//read
         
         
