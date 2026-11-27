@@ -103,6 +103,20 @@
   
         obj.initdom   = async function(){
         
+              if(host.hasAttribute('min')){
+                    min   = Number(host.getAttribute('min');
+              }
+              if(host.hasAttribute('max')){
+                    max   = Number(host.getAttribute('max');
+              }
+              if(host.hasAttribute('step')){
+                    step   = Number(host.getAttribute('step');
+              }
+              var v   = null;
+              if(host.hasAttribute('value')){
+                    v   = Number(host.getAttribute('value');
+              }
+              
               shadow                              = host.shadowRoot;
               
               chk                                 = $(shadow,'[type=checkbox]');
@@ -111,11 +125,17 @@
               
               range                               = $(shadow,'[type=range]');
               range.oninput                       = on.input.range;
+              if(v!==null){
+                    range.value                   = v;
+              }
               
               $(shadow,'[value="-"]').onclick       = btn.dec;
               
               value                               = $(shadow,'#value');
               value.oninput                       = on.input.value;
+              if(v!==null){
+                    input.value                   = v;
+              }
               
               $(shadow,'[value="+"]').onclick       = btn.inc;
               
