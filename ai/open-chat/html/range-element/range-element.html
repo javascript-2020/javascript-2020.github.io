@@ -104,15 +104,6 @@
         obj.initdom   = async function(){
         
         
-              if(host.hasAttribute('min')){
-                    min   = Number(host.getAttribute('min'));
-              }
-              if(host.hasAttribute('max')){
-                    max   = Number(host.getAttribute('max'));
-              }
-              if(host.hasAttribute('step')){
-                    step   = Number(host.getAttribute('step'));
-              }
               var v   = null;
               if(host.hasAttribute('value')){
                     v   = Number(host.getAttribute('value'));
@@ -129,6 +120,7 @@
               chk                                 = $(shadow,'[type=checkbox]');
               chk.checked                         = checked;
               
+              
               label                               = $(shadow,'#name');
               var txt                             = get_text(host);
               if(!txt){
@@ -138,11 +130,22 @@
                     label.textContent             = txt;
               }
               
+              
               range                               = $(shadow,'[type=range]');
+              if(host.hasAttribute('min')){
+                    range.min   = Number(host.getAttribute('min'));
+              }
+              if(host.hasAttribute('max')){
+                    range.max   = Number(host.getAttribute('max'));
+              }
+              if(host.hasAttribute('step')){
+                    range.step   = Number(host.getAttribute('step'));
+              }
               range.oninput                       = on.input.range;
               if(v!==null){
                     range.value                   = v;
               }
+              
               
               $(shadow,'[value="-"]').onclick       = btn.dec;
               
@@ -200,13 +203,13 @@
         obj.create    = function(params){
         
               if('min' in params){
-                    min   = params.min;
+                    range.min   = params.min;
               }
               if('max' in params){
-                    max   = params.max;
+                    range.max   = params.max;
               }
               if('step' in params){
-                    step    = params.step;
+                    range.step    = params.step;
               }
               if('value' in params){
                     var v         = params.value;
