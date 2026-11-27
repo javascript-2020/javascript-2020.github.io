@@ -94,6 +94,10 @@
     
     
     
+  button
+    {font-size:16px;padding:5px 10px;cursor:pointer}
+    
+    
   input
     {font-size:16px;padding:5px 10px;box-sizing:border-box}
   hr
@@ -161,6 +165,9 @@
             
             <chat-prompt component=page></chat-prompt>
             
+            <prompt-settings component=page style='display:none'></prompt-settings>
+            
+            
             
       </body>
       
@@ -194,6 +201,7 @@
         
         var chat;
         var prompt;
+        var settings;
         
         
         var list   = [];
@@ -267,10 +275,12 @@
               md.use(markdownItAttrs,{leftDelimiter:'{',rightDelimiter:'}',allowedAttributes:['id','class',/^data-.*$/]});
               
               
-              chat      = mod['chat-mod'];
-              chat.initmod({list});
-              prompt    = mod['chat-prompt'];
+              chat            = mod['chat-mod'];
+              prompt          = mod['chat-prompt'];
+              settings        = mod['prompt-settings'];
               
+              chat.initmod({list});
+              prompt.initmod({settings});
               
               
               await initdom();
