@@ -43,7 +43,8 @@
         
   //vars:
   
-  
+        var status    = true;
+        
         var shadow;
         
         var temperature;
@@ -88,15 +89,32 @@
   //:
   
   
-        obj.show    = function(){
+        obj.toggle    = function(){
         
+              if(status){
+                    hide();
+              }else{
+                    show();
+              }
+              
+        }//toggle
+        
+        
+        obj.show    = show;
+        
+        function show(){
+        
+              status    = true;
               host.style.height   = 'auto';
               
         }//show
         
         
-        obj.hide    = function(){
+        obj.hide    = hide;
         
+        function hide(){
+        
+              status    = false;
               host.style.height   = '';
               
         }//hide
