@@ -1,0 +1,661 @@
+
+
+
+<!DOCTYPE html>
+
+<html lang=en>
+
+      <head>
+            <meta charset=utf-8>
+            
+            <title>
+                  llama.cpp Chat
+            </title>
+            
+            <meta name=description content=''>
+            
+            <base href='https://ext-code.com/ai/llama-cpp-using-tools/llama-cpp-using-tools.html'>
+            <link rel=canonical href='https://ext-code.com/ai/llama-cpp/llama-cpp-using-tools.html'>
+            
+            <link rel=icon type='image/png' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAQlBMVEVHcEwWFhYUFBQSEhISEhIREREbGxseHh4TExMXFxcuLi4UFBQgICAWFhYWFhYTExMVFRUZGRkSEhIVFRUXFxcRERG2oz3cAAAAFXRSTlMAZY/s2vkfErw8BJ0Le02qcC/Kh1g6UeKBAAAAqUlEQVQoz4WSSQ7EIAwEWUIW9gD5/1fnMAgsGpK+loxcphlr0SWpp2bb2Rgun5YI9Cb0PEaqQ6fKw7BXHQc90uPsVF4wHDt9MtB963QiJcgwB3q9SlkiJVGqECmDUonsdcOwI3s5PDaRSiClDTn2h5QFqY9jEynBcG3RYjIfUlaC+He0TahJBasmfdvDcLDzNk00OewlFm2adCrDcFwcvtbCrqXU5v6N+wGGpSETEATQKgAAAABJRU5ErkJggg=='>
+            <meta name=viewport content='width=device-width, initial-scale=1'>
+            
+            
+            <link rel=stylesheet href='https://ext-code.com/css/github-markdown-light.css'>
+            
+            <script src='https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js'></script>
+            <script src='https://cdn.jsdelivr.net/npm/markdown-it-attrs@4.3.1/markdown-it-attrs.browser.min.js'></script>
+            <script src='https://cdn.jsdelivr.net/npm/markdown-it-container@4.0.0/dist/markdown-it-container.min.js'></script>
+            
+            <!--
+            <script src='https://cdn.jsdelivr.net/npm/ace-builds/src-min-noconflict/ace.js'></script>
+            -->
+            
+            
+            
+            <script src='https://libs.ext-code.com/js/dom/component/v3.0/component.js?hdr'></script>
+            
+            
+            <style>
+            
+  html
+    {height:100%;font-family:arial}
+  body
+    {height:calc(100% - 16px);max-width:1000px;margin:auto;
+      display:flex;flex-direction:column;gap:10px}
+      
+      
+  #hdr
+    {display:flex;flex-direction:column;gap:5px;/*padding-bottom:20px*/}
+    
+  #hdr #server
+    {display:flex;gap:10px;align-items:center}
+  #hdr #server #endpoint
+    {flex:1}
+    
+  #hdr #tokens
+    {display:flex;gap:10px;aalign-items:center}
+  #hdr #tokens #total
+    {}
+    
+    
+  #system
+    {border:1px solid lightgreen;padding:10px;border-radius:6px;position:relative}
+  #system label
+    {font-style:italic;color:gray;font-size:14px;/*margin-bottom:5px;display:block*/}
+  #system #content
+    {padding:10px}
+    
+    
+  #chat
+    {flex:1;display:flex;flex-direction:column;gap:10px;overflow:auto;margin:20px 0}
+    
+  .user
+    {border:1px solid lightblue;padding:10px;border-radius:6px;position:relative}
+    
+  .assistant
+    {border:1px solid lightgray;padding:10px;border-radius:6px;position:relative}
+    
+    
+    
+  #consolidate
+    {
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAABZVBMVEVHcEwCAQEHAwUDAgEICQ4DAgIGBAYGBAMCAQAFAgMSFSIhGhQmQTEDAwIBAABVRjEGBgcbHzUMEBYpL1EZFRUXKyEGCAcMEQ03UTghMCIEAwQZLSMHBwoEAwEGBQI0PWgKCxENFhEhJ0gOEBgEAwMmLEsXGywICA8+SX0UJRwoTDsGCAcRGhQxRzECAQANECYBAQAHBwovN10CAgEHCAwCAQASFSMGBwsRHBYXGiticr4CAAA/SXwYGy5NV4dnecwzOVZXZq1fb7tNWpkhMCIbKBya5pw6RHRLWZc3QW+d6p9JVpKQ5aF42qKc6J5SYKRATIdx26ZivZA7ZEmW4ZlKbkuX5Z1TfFRz3KdlwpNDUI1UhF1TYqeK4qCE4KFVo3xmxZZBfF+P15Rt06JQdlAcI0wVGjuL0Y1+xYowO3BYZ7BMkm+IyYpnetBsgNo8dFmW4JhTnnlsp3VRX6FQXqB1r3dZabKIR62cAAAARnRSTlMAYAxlnyFFEzgq1QLyXTQBhOPA+wT5qK/34m3ilT4a/trT7zFs8tex/vD2j8DyT/RMkPpxpX7P78eplHni3CHeKefi8frvi7lsSwAAAeBJREFUKM+1klV320AQhUds2TLIIDMlxjjUcDFFoUnGmu0wl/v7u4qcnDxYees8zdlvdubenQV4GvFUKg6WYbPLst32DL27s+SI1jW5bsFZRPcVab8g29kFGPMV8ruK5MlLPmwBpkgy4VQkIhEjqUXd/Q7AlE80OBxW2p3K4Ttr3wgXnM9gDM3+T9jNkJq2w7gXuQLXNrmXvL1N7pHbNIU/Zfhm6eWrN5JWk6/+yjVZ8vHeF+uPFQzp69euNCWbSylSKpdVtF+/+z6SmWNPcrjFe2OEjcEkKcPYiJiX36olPaaIRG7IY+a09x9N5Tjl5IdvE/d4eUnemfdZ/vBojNSyrjnukw+Penn5gGP1JRNvbpzmTZmO12dnu+a+cOF0Y90wnAm3u6GgsWKmxJ2ccCVDMRUMddvhjB+wtZuq2hoEcXB7mkeqetREivHgoKWqFxwG6T+qKIqVFRqo8HlVFDu9KAV0qIUOy5M0fD43kq/fIhAPdVA6Ol6JQ6Zr3BlPA/Dlpip2KnoTA9fad1RYOeZcgLURHumNIgiD8qiiN6Is4Ks/y+OK/mMVBzZ8UR7r+kwA9mDWmE64CJJLR697vesojdIIN5k2Zgfow7NCMZAm/IZZ2hsIeOn7/RLpQFFg4R/6/VOncO55yQAAAABJRU5ErkJggg==);
+    }
+  .paste
+    {padding:2px;
+      content:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAVlJREFUSEvtlj1ug0AQhcdIW6RLeiQy6XKElLRIlOlp6LmBlRsgtzTUOQAtcZMzpMpInAGlQSjRWl7LxrM/dlhZUbwtu/PNvH07zAIutBYX4oIzGBG/95MkIuezXHFOh6MoegqC4F0GEELAMAybWL+BG8GI+AwArypjRFTAgyLOSeAIHIbhjRDii5NHgcdxhK7rWHu4JnEEnt6ljK6AUxIRcfAPInq0mVYL/lwSrNa3UL7d2WKA3CvXw8vuKqzeMYKtxMmGK9ik2FVq+XQ2rVE5VSeXMpLNgLp3fZbUrlCVFAc/GaygbdvaioU4jrU9/W+CVUVc6U3TQJIkfio2geVV/C+pi6KAsiz9SN33PaRpyrrbu9R1XbPgLMv83bHJXHmeQ1VVp0tt6w6zN5DtqHMwynJJeAGbqkVEOefc2xTZ/+7Uq10CcgOh7pzz38kFPMce6zQ4B4SL8QNf7+YfCGbtNAAAAABJRU5ErkJggg==);
+    }
+  .copy
+    {padding:2px;
+      content:url(data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAABSlBMVEVHcEwnz/4C8P4g1P4L6P43wf5Mr/4a2v4Y3P4/uv5PrP4+vf5Auv4ozv5KsP4vyv45wP5Jsf5Auf49vP5Mrv4zxf44wf5Lr/46wP4h1P5Lr/46vv5Jsv4R5P5Hs/5Etv44wf5Hs/41w/4uyv47vv49vP5Ftf5GtP4c2f4rzP4tyv4m0f5Etv5Nrv4xxv4xxv4xx/4W3/5KsP5Mr/4/u/4uyv5Isv4K6f4l0f4qzv4W3/4V3/5Nrv5Mrv5Mrv5Mr/4W3v4e2P5BuP5Hsv4N5v4K6f4O5v42w/5Dt/4E7/4uyf4C8P4nz/4M5/4K6v4oz/4P5f4k0v4b2v5Gs/4E7v4I6/5Nrf4e1/4H7P4E7v5Auv5Dtv4sy/5Isv5GtP4wx/49vP4zxf47vv44wP42w/5LsP5Jsf4i1P4n0P4N5v4k0v4a2v4S4v4X3v6OfcqkAAAAVnRSTlMACo7CjQWN/VczjgIJMfIXJzHtjj5iVekR71Hvtz7CjelXjre2wiJj2PCFIWbR7+fEnXaodz3544/USfOC22Tm7CXOnqfUZ+/3VTV9bsTzqGDahpb2tyRB6bIAAAIDSURBVDjLrZVpV9pAFIYntdFiQkZsLCQECtJSlqAsFRBU3Kuta1sncYGuJEDt///aISkkkyHo6enzLTlP5s5758wNAC526pd3d1++/fzx/evNze1tp210wxURUMTWBz2v2EWtLc7jBTPmoJfNrqy8i0ajixgB00VISJIeW9JMKbcWDAYDNiFMQN1EqAAJcUfSBif0fsQWQjLxpjGnXUJa5CoIbTiP8KJ0OqfNMLQIZhGad/Ke3t///vWwGKv1+yPxfW55+TnmJWZW5ggxcqX3m6WSVTpSdPcxHCLExmf97AI8e1j8cK1f8X9Fq/Sotrf0k2v9KRiJ08L8mwhf2CQx8oK/yJyPw3Q67ULaV4Tr7tRCwFfkllLF4ushccwGPyUMzwzhMQz/X1Kz+QVMmh2LcjgsTxDZ3OpqIpFYfDu+KGwoxE5JvTtpF9NX9BEB792jn0gD4eNEsVAQHyXOO7fQFmNNLZOnPV5BqEyI+Yxm1qkluS0BCWRp8FEze6mTJQtVVd8MUfcEhBSGFOGMOWmaoc0AmRoXP5cmiHEReEXANOopzCsLRYlXjWolGXE2jK/r/ujEWAdOFIxWGrjO8ljXazG6MeynthEn2gAP9P7B4XCE2thzdG2v2jbK5LfHZ3hINbclSco6o/kIh1Einq4e1qxp5m2PkqZ/CPvbXvFot+xe7w/EpaiUrJ24NAAAAABJRU5ErkJggg==);
+    }
+    
+  #prompt-root
+    {padding:10px;border:1px solid lightgray;border-radius:6px}
+  #prompt
+    {min-height:30px;outline:none}
+    
+    
+  input
+    {font-size:16px;padding:5px 10px;box-sizing:border-box}
+  hr
+    {width: 100%}
+    
+            </style>
+            
+      </head>
+      
+      
+      <body>
+      
+            <ai-hdr v1.0 component=grp>
+                  <h1 slot=title>
+                        llama.cpp Chat
+                  </h1>
+                  <date slot=date datetime=26-11-23>
+                        25 Nov 2026
+                  </date>
+            </ai-hdr>
+            
+            
+            <div id=hdr>
+            
+                  <div id=server>
+                        <label>
+                              server
+                        </label>
+                        <input id=endpoint>
+                  </div>
+                  <div>
+                        <button id=props>
+                              props
+                        </button>
+                        <button id=models>
+                              models
+                        </button>
+                  </div>
+                  
+                  <div id=tokens>
+                        <label>
+                              tokens
+                        </label>
+                        <div id=total>
+                              0
+                        </div>
+                        <div>/</div>
+                        <div id=max>
+                              0
+                        </div>
+                  </div>
+            </div>
+            
+            <div id=system>
+                  <label>
+                        system prompt
+                  </label>
+                  <div id=content contenteditable>
+                  </div>
+            </div>
+            
+            <hr>
+            
+            <div id=chat>
+                  <div class=user>
+                        <div class=icons>
+                        
+                        </div>
+                        <div class='content markdown-body'>
+                        </div>
+                  </div>
+                  <div class=assistant>
+                        <div class=icons>
+                        </div>
+                        <div class='content markdown-body'>
+                        </div>
+                  </div>
+            </div>
+            
+            <!--
+            <prompt component=page></prompt>
+            -->
+            
+            
+            <div id=prompt-root>
+            
+                  <div id=prompt contenteditable>
+                  </div>
+                  
+            </div>
+            
+            
+      </body>
+      
+      
+      <script>
+      
+                                                                                console.clear();
+                                                                                console.log('code-dev/display.html');
+                                                                                console.log();
+                                                                                console.json=v=>console.log(JSON.stringify(v,null,4));
+        var df=true,did='html';
+        
+        var version   = 'v1.0'
+        
+        
+        var server    = 'https://127.0.0.1:8443';
+        var activeModelId;
+        
+        
+        var md;
+        
+        var hdr   = {};
+        var ui    = {};
+        
+        var prompt;
+        
+        
+        var list   = [
+              {role:'system',content:'You are a concise JavaScript coding assistant.'}
+        ];
+        list.messages         = ()=>{
+        
+                                      var messages    = list.map(o=>({role:o.role,content:o.content}));
+                                      return messages;
+                                      
+                                }//messages
+        list.add              = (role,content,node)=>{
+        
+                                      var id    = new_id();
+                                      list.push({id,role,content,node});
+                                      return id;
+                                      
+                                }//add
+        list.add.user         = (content,node)=>{
+        
+                                      var id    = list.add('user',content,node);
+                                      return id;
+                                      
+                                }//user
+        list.add.assistant    = (content,node)=>{
+                                }//assistant
+                                
+                                
+        var btn       = {};
+        var create    = {};
+        
+        
+  //:
+  
+  
+        async function ready(){
+        
+        
+              md    = markdownit({
+                    html          : true,
+                    breaks        : false,
+                    linkify       : true,
+                    linkTarget    : '_blank',
+              });
+              md.use(markdownItAttrs,{leftDelimiter:'{',rightDelimiter:'}',allowedAttributes:['id','class',/^data-.*$/]});
+              
+              
+              
+              await initdom();
+              
+              
+              props();
+              models();
+              
+              
+              
+        }//ready
+        
+        
+  //:
+  
+  
+        function initdom(){
+        
+        
+              //document.onclick                          = e=>prompt.focus();
+              
+              
+              hdr.root                                  = $('#hdr');
+              hdr.server                                = $('#hdr #endpoint');
+              hdr.server.value                          = server;
+              
+              $(hdr.root,'#props').onclick              = btn.props;
+              $(hdr.root,'#models').onclick             = btn.models;
+              
+              hdr.total_tokens                          = $('#hdr #total');
+              
+              
+              $('#system #content').textContent         = list[0].content;
+              
+              
+              ui.chat                                   = $('#chat');
+              
+              
+              ui.user                                   = $('.user');
+              ui.user.remove();
+              
+              ui.assistant                              = $('.assistant');
+              ui.assistant.remove();
+              
+              
+              
+              prompt                                    = $('#prompt');
+              prompt.onkeydown                          = kd;
+              prompt.focus();
+              
+              
+              
+        }//initdom
+        
+        
+        kd.mode   = 'single';
+        
+        function kd(e){
+        
+              if(e.key=='Enter'){
+                    if(e.ctrlKey){
+                          send();
+                          e.preventDefault();
+                    }
+                    if(e.shiftKey){
+                          kd.mode   = 'multi';
+                    }
+                    if(kd.mode=='multi')return;
+                    send();
+                    e.preventDefault();
+              }
+              
+        }//kd
+        
+        
+        btn.props   = async function(){
+        
+              var data            = await props();
+              
+              var div             = document.createElement('div');
+              div.style.cssText   = `
+                    white-space   : pre;
+              `;
+              div.textContent     = JSON.stringify(data,null,4);
+              ui.chat.append(div);
+              
+        }//props
+        
+        
+        btn.models    = async function(){
+        
+              var data            = await models();
+              
+              var div             = document.createElement('div');
+              div.style.cssText   = `
+                    white-space   : pre;
+              `;
+              div.textContent     = JSON.stringify(data,null,4);
+              ui.chat.append(div);
+              
+        }//models
+        
+        
+        create.user   = function({txt}){
+                                                                                //console.log(txt);
+                                                                                
+              var node                          = ui.user.cloneNode(true);
+              
+              node.onmouseenter                 = me;
+              node.onmouseleave                 = ml;
+              
+              var html                          = md.render(txt);
+              $(node,'.content').textContent    = html;
+              
+              ui.chat.append(node);
+              ui.chat.scrollTop                 = 999_999;
+              var id                            = new_id();
+              list.push({id,role:'user',content:txt,node});
+              
+              return node;
+              
+              
+              function me(){
+              }//me
+              
+              
+              function ml(){
+              }//ml
+              
+        }//user
+        
+        
+        create.assistant    = function({}={}){
+        
+              var node                           = ui.assistant.cloneNode(true);
+              
+              ui.chat.append(node);
+              
+              return node;
+              
+        }//bot
+        
+        
+  //:
+  
+  
+        async function send(){
+        
+              var txt                           = prompt.textContent;
+              prompt.textContent                = '';
+              create.user({txt});
+              /*
+              var user                          = ui.user.cloneNode(true);
+              var html                          = md.render(txt);
+              $(user,'.content').innerHTML      = html;
+              ui.chat.append(user);
+              list.push({role:'user',content:txt,node:user});
+              */
+              
+              
+              var node     = create.assistant();
+              /*
+              var bot                           = ui.bot.cloneNode(true);
+              ui.chat.append(bot);
+              */
+              
+              var result                        = await chat(txt,node);
+                                                                                //console.log(result);
+                                                                                
+        }//send
+        
+        
+  //:
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+        async function chat(prompt,node,{maxTokens=3072}={}){
+        
+              var txt               = system.textContent.trim();
+              list[0].content       = txt;
+              
+              var server            = hdr.server.value;
+              var endpoint          = server+'/v1/chat/completions';
+              var messages          = list.messages();
+                                                                                //console.json(messages);
+                                                                                
+              var headers           = {'content-type':'application/json'};
+              var body              = JSON.stringify({
+                                            messages          : messages,
+                                            temperature       : 0.3,
+                                            top_p             : 0.8,
+                                            top_k             : 20,
+                                            min_p             : 0.0,
+                                            repeat_penalty    : 1.0,
+                                            
+                                            //max_tokens        : maxTokens,
+                                            
+                                            stream            : true,
+                                            stream_options    : {include_usage:true}
+                                      });
+                                      
+              var res               = await fetch(endpoint,{method:'POST',headers,body});
+              
+              var reader            = res.body.getReader();
+              var decoder           = new TextDecoder('utf-8');
+              
+              var buffer            = '';
+              var content           = '';
+              var finishReason      = null;
+              
+              while(true){
+              
+                    var {value,done}    = await reader.read();
+                    if(done)break;
+                    
+                    buffer     += decoder.decode(value,{stream:true});
+                    
+                    var lines   = buffer.split('\n');
+                                                                                // Keep any incomplete trailing line in the buffer for the next chunk
+                    buffer      = lines.pop();
+                    
+                    for(var line of lines){
+                    
+                          var trimmed   = line.trim();
+                          if(!trimmed || !trimmed.startsWith('data: '))continue;
+                                                                                //console.log(trimmed);
+                                                                                // Strip 'data: '
+                          var payload   = trimmed.slice(6);
+                          if(payload==='[DONE]')break;
+                          
+                          var chunk     = JSON.parse(payload);
+                          
+                          if(chunk.usage){
+                                                                                //console.log("Exact Prompt Tokens:", chunk.usage.prompt_tokens);
+                                                                                //console.log("Exact Completion Tokens:", chunk.usage.completion_tokens);
+                                hdr.total_tokens.textContent    = chunk.usage.total_tokens;
+                          }
+                          
+                          var choice    = chunk.choices[0];
+                          if(choice){
+                                                                                // Capture why generation stopped ('stop' vs 'length')
+                                if(choice.finish_reason){
+                                      finishReason    = choice.finish_reason;
+                                }
+                                                                                // Extract the new token text (or reasoning_content if Qwen3 emits <think>)
+                                var delta   = choice.delta?.content;
+                                if(delta){
+                                      content                          += delta;
+                                      var html                          = md.render(content);
+                                      $(node,'.content').innerHTML      = html;
+                                      ui.chat.scrollTop                 = 999_999;
+                                }
+                          }
+                          
+                    }//for
+                    
+              }//while
+                                                                                console.log(`[Finished] Reason: ${finishReason}`);
+                                                                                //console.log(fullContent);
+                                                                                // Save the assembled message back to history
+              list.add.assistant({content,node});
+              
+              return {content,finishReason};
+              
+        }//chat
+        
+        
+        
+        
+        
+        async function consolidate(messages,keepRecent=2){
+        
+              if(messages.length<=keepRecent+2){
+                                                                                // Nothing to compact
+                    return messages;
+              }
+              
+              var sys           = messages[0]?.role==="system" ? messages[0] : null;
+              var bodyTurns     = systemMsg ? messages.slice(1) : messages;
+              
+              var olderTurns    = bodyTurns.slice(0,-keepRecent);
+              var recentTurns   = bodyTurns.slice(-keepRecent);
+              
+              var transcript    = olderTurns.map(m=>{
+              
+                    var str   = typeof m.content=='string' ? m.content : JSON.stringify(m.content);
+                    return m.role+':'+str;
+                    
+              });
+              transcript    = transcript.join('\n\n');
+              
+              var header    = {'content-type':'application/json'};
+              var body      = JSON.stringify({
+                    messages      : [
+                                          {role:"system",content:"Compress the conversation into a factual state summary: decisions made, current code/artifacts, tool results, and open tasks. Omit filler."},
+                                          {role:"user",content:transcript }
+                                    ],
+                    temperature   : 0.1,
+                    max_tokens    : 512,
+                    stream        : false,
+                    
+                    model         : activeModelId,
+                    
+              });
+              
+              var res       = await fetch(endpoint,{method:'post',headers,body});
+              var data      = await res.json();
+              var summary   = data.choices[0].message.content;
+              
+              return [
+                    ...(systemMsg ? [systemMsg] : []),
+                    { role: "user", content: `[Consolidated prior context]\n${summary}` },
+                    { role: "assistant", content: "Understood. Continuing from the consolidated state." },
+                    ...recentTurns
+              ];
+              
+        }//consolidate
+        
+        
+        async function props(){
+        
+              var server      = hdr.server.value;
+              var endpoint    = server+'/props';
+              
+              var res       = await fetch(endpoint);
+              var data      = await res.json();
+                                                                                //console.json(data);
+              var max                               = data.default_generation_settings.n_ctx;
+              $('#hdr #tokens #max').textContent    = max;
+              
+              return data;
+              
+        }//props
+        
+        
+        async function models(){
+        
+              var url         = hdr.server.value+'/v1/models';
+              
+              var res         = await fetch(url);
+              var payload     = await res.json();
+                                                                                //console.json(data);
+              activeModelId   = payload.data?.[0]?.id ?? payload.models?.[0]?.model ?? 'default';
+                                                                                //console.log('activeModelId',activeModelId);
+              return payload;
+              
+        }//models
+        
+        
+  //:
+  
+  
+        function new_id(){
+        
+              var id    = Math.random().toString(36).slice(2,9);
+              return id;
+              
+        }//new_id
+        
+        
+        
+/*
+
+
+./build/bin/llama-server \
+  -m ~/ai/models/Qwen3-4B-Instruct-2507-Q4_K_M.gguf \
+  -c 8192 \
+  -n 4096 \
+  -ngl 99 \
+  --reasoning-format deepseek \
+  --temp 0.7 --top-p 0.8 --top-k 20 \
+  --host 127.0.0.1 \
+  --port 8443 \
+  --ssl-cert-file ~/.config/llama.cpp/certs/cert.pem \
+  --ssl-key-file ~/.config/llama.cpp/certs/key.pem
+  --alias Qwen3-4B-Instruct-2507
+  
+Inspect exact server defaults via /props
+
+
+
+
+*/
+
+
+
+
+      </script>
+      
+      
+</html>
+
+
