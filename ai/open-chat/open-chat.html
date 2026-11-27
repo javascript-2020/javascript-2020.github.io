@@ -237,7 +237,20 @@
                                       
                                 }//user
         list.add.assistant    = (content,node)=>{
+        
+                                      var id    = list.add('assistant',content,node);
+                                      return id;
+                                      
                                 }//assistant
+                                
+        list.content          = (id,content)=>{
+        
+                                      var index             = list.findIndex(o=>o.id===id);
+                                      list[index].content   = content;
+                                      
+                                }//content
+                                
+                                
                                 
                                 
         var btn       = {};
@@ -351,9 +364,9 @@
                                                                                 
               var node                          = ui.user.cloneNode(true);
               
+              node.onclick                      = click;
               node.onmouseenter                 = me;
               node.onmouseleave                 = ml;
-              node.onclick                      = click;
               
               var icons                         = $(node,'.icons');
               
@@ -362,10 +375,10 @@
               
               ui.chat.append(node);
               ui.chat.scrollTop                 = 999_999;
-              var id                            = new_id();
-              list.push({id,role:'user',content:txt,node});
               
-              return node;
+              var id    = list.add.user({content:txt,node});
+              
+              return {id,node};
               
               
               function click(e){
@@ -399,11 +412,44 @@
         
         create.assistant    = function({}={}){
         
-              var node                           = ui.assistant.cloneNode(true);
+              var node                          = ui.assistant.cloneNode(true);
               
+              node.onclick                      = click;
+              node.onmouseenter                 = me;
+              node.onmouseleave                 = ml;
+              
+              var icons                         = $(node,'.icons');
               ui.chat.append(node);
               
-              return node;
+              var id    = list.add.assistant({content:'',node});
+              return {id,node};
+              
+              
+              function click(e){
+              
+                    if(e.target.classList.contains('consolidate')){
+                    }
+                    if(e.target.classList.contains('remove')){
+                          var index   = list.findIndex(o=>o.id===id);
+                          list.splice(index,1);
+                          node.remove();
+                    }
+                    
+              }//click
+              
+              
+              function me(){
+              
+                    icons.style.display   = '';
+                    
+              }//me
+              
+              
+              function ml(){
+              
+                    icons.style.display   = 'none';
+                    
+              }//ml
               
         }//bot
         
@@ -413,13 +459,13 @@
   
         async function send(){
         
-              var txt       = prompt.read();
+              var txt           = prompt.read();
               prompt.clear();
               
               create.user({txt});
               
-              var node      = create.assistant();
-              var result    = await chat(txt,node);
+              var {id,node}     = create.assistant();
+              var result        = await chat(txt,id,node);
                                                                                 //console.log(result);
         }//send
         
@@ -435,7 +481,7 @@
   
   
   
-        async function chat(prompt,node,{maxTokens=3072}={}){
+        async function chat(prompt,id,node,{maxTokens=3072}={}){
         
               var txt               = system.textContent.trim();
               list[0].content       = txt;
@@ -519,7 +565,7 @@
                                                                                 console.log(`[Finished] Reason: ${finishReason}`);
                                                                                 //console.log(fullContent);
                                                                                 // Save the assembled message back to history
-              list.add.assistant({content,node});
+              list.content(id,{content,node});
               
               return {content,finishReason};
               
